@@ -58,11 +58,11 @@ public without sharing class Logger {
 
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
         Boolean meetsLoggingLevel = meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel);
-        //if(getSettings().GenerateLogFile__c) log.LogEntries.add(logEntry);
-        String type = ex != null ? 'Exception' : 'Debug';
+
+        String type = ex == null ? 'Debug' : 'Exception';
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return;
         if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
-        //if(!getSettings().GenerateLogFile__c) return;
+
         if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return;
 
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
@@ -75,9 +75,11 @@ public without sharing class Logger {
             MethodName__c          = methodName,
             ParentId__c            = parentId,
             ProcessBuilderName__c  = processBuilderName,
-            Timestamp__c           = System.now(), //logEntry.Timestamp,
-            TransactionId__c       = TRANSACTION_ID,//log.TransactionId,
-            Type__c                = type
+            SourceType__c          = processBuilderName != null ? 'Process Builder' : 'Apex',
+            Timestamp__c           = System.now(),
+            TransactionId__c       = TRANSACTION_ID,
+            Type__c                = type,
+            UserLoggingLevel__c    = getUserLoggingLevel().name()
         );
         logEntries.add(platformLogEntry);
 
@@ -95,7 +97,7 @@ public without sharing class Logger {
     public static void addProcessBuilderEntries(List<ProcessBuilderLogEntry> processBuilderLogEntries) {
         for(ProcessBuilderLogEntry logEntry : processBuilderLogEntries) {
             LoggingLevel loggingLevel = getLoggingLevel(logEntry.LoggingLevelName);
-            addEntry(loggingLevel, logEntry.Message, null, null, null, logEntry.ProcessBuilderName, logEntry.RecordId);
+            addEntry(loggingLevel, logEntry.Message, null, null, null, logEntry.ProcessBuilderName, logEntry.ParentId);
         }
         saveLog();
     }
@@ -135,7 +137,7 @@ public without sharing class Logger {
         return logEntryLoggingLevel.ordinal() >= userLoggingLevel.ordinal();
     }
 
-    public class ProcessBuilderLogEntry implements Comparable {
+    public class ProcessBuilderLogEntry {
 
         @InvocableVariable(required=true)
         public String Message;
@@ -143,20 +145,13 @@ public without sharing class Logger {
         public String ProcessBuilderName;
         @InvocableVariable(label='(Optional) Logging Level')
         public String LoggingLevelName;
-        @InvocableVariable(label='(Optional) Record ID')
-        public String RecordId;
+        @InvocableVariable(label='(Optional) Parent Record ID')
+        public Id ParentId;
 
         public Datetime Timestamp;
 
         public ProcessBuilderLogEntry() {
             this.Timestamp = System.now();
-        }
-
-        public Integer compareTo(Object compareTo) {
-            Datetime compareToTimestamp = ((ProcessBuilderLogEntry)compareTo).Timestamp;
-            if(this.Timestamp == compareToTimestamp) return 0;
-            else if(this.Timestamp > compareToTimestamp) return 1;
-            else return -1;
         }
 
     }
