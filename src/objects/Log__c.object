@@ -76,44 +76,8 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>NONE</fullName>
-                    <default>false</default>
-                    <label>NONE</label>
-                </value>
-                <value>
-                    <fullName>ERROR</fullName>
-                    <default>false</default>
-                    <label>ERROR</label>
-                </value>
-                <value>
-                    <fullName>WARN</fullName>
-                    <default>false</default>
-                    <label>WARN</label>
-                </value>
-                <value>
-                    <fullName>INFO</fullName>
-                    <default>false</default>
-                    <label>INFO</label>
-                </value>
-                <value>
-                    <fullName>DEBUG</fullName>
-                    <default>false</default>
-                    <label>DEBUG</label>
-                </value>
-                <value>
-                    <fullName>FINE</fullName>
-                    <default>false</default>
-                    <label>FINE</label>
-                </value>
-                <value>
-                    <fullName>FINER</fullName>
-                    <default>false</default>
-                    <label>FINER</label>
-                </value>
-            </valueSetDefinition>
+            <restricted>true</restricted>
+            <valueSetName>LoggingLevel</valueSetName>
         </valueSet>
     </fields>
     <label>Log</label>
