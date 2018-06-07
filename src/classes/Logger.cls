@@ -4,12 +4,12 @@ public without sharing class Logger {
 
     private static List<LogEntryEvent__e> logEntries = new List<LogEntryEvent__e>();
 
-    public static void addDebugEntry(LoggingLevel loggingLevel, String message) {
-        addEntry(loggingLevel, message, null, null, null, null, null);
-    }
-
     public static void addDebugEntry(String message) {
         addEntry(null, message, null, null, null, null, null);
+    }
+
+    public static void addDebugEntry(LoggingLevel loggingLevel, String message) {
+        addEntry(loggingLevel, message, null, null, null, null, null);
     }
 
     public static void addDebugEntry(String message, String className, String methodName) {
@@ -28,12 +28,12 @@ public without sharing class Logger {
         addEntry(null, message, null, className, methodName, null, parentId);
     }
 
-    public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex) {
-        addEntry(loggingLevel, null, ex, null, null, null, null);
-    }
-
     public static void addExceptionEntry(Exception ex) {
         addEntry(null, null, ex, null, null, null, null);
+    }
+
+    public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex) {
+        addEntry(loggingLevel, null, ex, null, null, null, null);
     }
 
     public static void addExceptionEntry(Exception ex, String className, String methodName) {
