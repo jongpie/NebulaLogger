@@ -1,6 +1,6 @@
 public without sharing class Logger {
 
-    private static final String TRANSACTION_ID = new Uuid().getValue();
+    private static final String TRANSACTION_ID = generateUuid();
 
     private static List<LogEntryEvent__e> logEntries = new List<LogEntryEvent__e>();
 
@@ -63,6 +63,21 @@ public without sharing class Logger {
 
     public static void saveLog() {
         if(!logEntries.isEmpty()) EventBus.publish(logEntries);
+    }
+
+    private static String generateUuid() {
+        Blob generatedBlob = Crypto.GenerateAESKey(128);
+        String unformattedValue = EncodingUtil.ConvertTohex(generatedBlob);
+        // Remove any non-alphanumeric characters. Should be unnecessary, but better to be safe than sorry.
+        unformattedValue = unformattedValue.replaceAll('[^a-zA-Z0-9]', '');
+
+        String formattedValue = unformattedValue.substring(0, 8)
+            + '-' + unformattedValue.substring(8, 12)
+            + '-' + unformattedValue.substring(12, 16)
+            + '-' + unformattedValue.substring(16, 20)
+            + '-' + unformattedValue.substring(20);
+
+        return formattedValue.toUpperCase();
     }
 
     private static LoggerSettings__c getSettings() {
