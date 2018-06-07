@@ -4,51 +4,51 @@ public without sharing class Logger {
 
     private static List<LogEntryEvent__e> logEntries = new List<LogEntryEvent__e>();
 
-    public static void addEntry(LoggingLevel loggingLevel, String message) {
+    public static void addDebugEntry(LoggingLevel loggingLevel, String message) {
         addEntry(loggingLevel, message, null, null, null, null, null);
     }
 
-    public static void addEntry(String message) {
+    public static void addDebugEntry(String message) {
         addEntry(null, message, null, null, null, null, null);
     }
 
-    public static void addEntry(String message, String className, String methodName) {
+    public static void addDebugEntry(String message, String className, String methodName) {
         addEntry(null, message, null, className, methodName, null, null);
     }
 
-    public static void addEntry(LoggingLevel loggingLevel, String message, String className, String methodName) {
+    public static void addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName) {
         addEntry(loggingLevel, message, null, className, methodName, null, null);
     }
 
-    public static void addEntry(String message, String className, String methodName, Id parentId) {
+    public static void addDebugEntry(String message, String className, String methodName, Id parentId) {
         addEntry(null, message, null, className, methodName, parentId, null);
     }
 
-    public static void addEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
+    public static void addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
         addEntry(null, message, null, className, methodName, parentId, null);
     }
 
-    public static void addEntry(LoggingLevel loggingLevel, Exception ex) {
+    public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex) {
         addEntry(loggingLevel, null, ex, null, null, null, null);
     }
 
-    public static void addEntry(Exception ex) {
+    public static void addExceptionEntry(Exception ex) {
         addEntry(null, null, ex, null, null, null, null);
     }
 
-    public static void addEntry(Exception ex, String className, String methodName) {
+    public static void addExceptionEntry(Exception ex, String className, String methodName) {
         addEntry(null, null, ex, className, methodName, null, null);
     }
 
-    public static void addEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName) {
+    public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName) {
         addEntry(null, null, ex, className, methodName, null, null);
     }
 
-    public static void addEntry(Exception ex, String className, String methodName, Id parentId) {
+    public static void addExceptionEntry(Exception ex, String className, String methodName, Id parentId) {
         addEntry(null, null, ex, className, methodName, parentId, null);
     }
 
-    public static void addEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName, Id parentId) {
+    public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName, Id parentId) {
         addEntry(loggingLevel, null, ex, className, methodName, parentId, null);
     }
 
