@@ -104,6 +104,17 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>LoggingLevelOrdinal__c</fullName>
+        <externalId>false</externalId>
+        <label>Logging Level Ordinal</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LoggingLevel__c</fullName>
         <externalId>false</externalId>
         <label>Logging Level</label>

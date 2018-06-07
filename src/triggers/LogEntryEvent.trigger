@@ -4,9 +4,10 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
     List<LogEntry__c > logEntries = new List<LogEntry__c>();
     for(LogEntryEvent__e logEntryEvent : Trigger.new) {
         logs.add(new Log__c(
-            OwnerId             = logEntryEvent.CreatedById,
-            TransactionId__c    = logEntryEvent.TransactionId__c,
-            UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c
+            OwnerId                    = logEntryEvent.CreatedById,
+            TransactionId__c           = logEntryEvent.TransactionId__c,
+            UserLoggingLevel__c        = logEntryEvent.UserLoggingLevel__c,
+            UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c
         ));
         logEntries.add(new LogEntry__c (
             ClassName__c           = logEntryEvent.ClassName__c,
@@ -14,6 +15,7 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
             ExceptionTypeName__c   = logEntryEvent.ExceptionTypeName__c,
             Log__r                 = new Log__c(TransactionId__c = logEntryEvent.TransactionId__c),
             LoggingLevel__c        = logEntryEvent.LoggingLevel__c,
+            LoggingLevelOrdinal__c = logEntryEvent.LoggingLevelOrdinal__c,
             Message__c             = logEntryEvent.Message__c,
             MethodName__c          = logEntryEvent.MethodName__c,
             ParentId__c            = logEntryEvent.ParentId__c,

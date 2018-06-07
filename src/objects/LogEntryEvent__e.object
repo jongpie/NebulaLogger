@@ -38,6 +38,19 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LoggingLevelOrdinal__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Logging Level Ordinal</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LoggingLevel__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>
@@ -45,7 +58,7 @@
         <isSortingDisabled>false</isSortingDisabled>
         <label>Logging Level</label>
         <length>255</length>
-        <required>false</required>
+        <required>true</required>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -115,7 +128,7 @@
         <isNameField>false</isNameField>
         <isSortingDisabled>false</isSortingDisabled>
         <label>Timestamp</label>
-        <required>false</required>
+        <required>true</required>
         <type>DateTime</type>
     </fields>
     <fields>
@@ -126,7 +139,7 @@
         <isSortingDisabled>false</isSortingDisabled>
         <label>Transaction ID</label>
         <length>36</length>
-        <required>false</required>
+        <required>true</required>
         <type>Text</type>
         <unique>false</unique>
     </fields>
@@ -138,8 +151,21 @@
         <isSortingDisabled>false</isSortingDisabled>
         <label>Type</label>
         <length>255</length>
-        <required>false</required>
+        <required>true</required>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserLoggingLevelOrdinal__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>User Logging Level Ordinal</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -150,7 +176,7 @@
         <isSortingDisabled>false</isSortingDisabled>
         <label>User Logging Level</label>
         <length>255</length>
-        <required>false</required>
+        <required>true</required>
         <type>Text</type>
         <unique>false</unique>
     </fields>
