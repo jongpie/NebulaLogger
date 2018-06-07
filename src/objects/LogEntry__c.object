@@ -220,8 +220,8 @@
         <externalId>false</externalId>
         <formula>IF(
     ISPICKVAL(Type__c, &apos;Exception&apos;),
-    IMAGE(&quot;/img/samples/color_red.gif&quot;, &quot;Red&quot;, 16, 16) + &apos; &apos; + TEXT(Type__c),
-    IMAGE(&quot;/img/samples/flag_green.gif&quot;, &quot;Red&quot;, 16, 16) + &apos; &apos; + TEXT(Type__c)
+    IMAGE(&apos;/img/samples/color_red.gif&apos;, &apos;Exception&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c),
+    IMAGE(&apos;/img/samples/color_green.gif&apos;, &apos;Debug&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Type</label>
