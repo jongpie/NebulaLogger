@@ -4,7 +4,15 @@
     <description>Controls the behavior of the class Logger.cls</description>
     <enableFeeds>false</enableFeeds>
     <fields>
-        <fullName>DebugLoggingLevel__c</fullName>
+        <fullName>GenerateDebugStatements__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Generate Debug Statements</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LoggingLevel__c</fullName>
         <defaultValue>&apos;DEBUG&apos;</defaultValue>
         <externalId>false</externalId>
         <inlineHelpText>Possible values: 
@@ -16,28 +24,12 @@ DEBUG
 FINE
 FINER
 FINEST</inlineHelpText>
-        <label>Debug Logging Level</label>
+        <label>Logging Level</label>
         <length>255</length>
         <required>true</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>GenerateDebugStatements__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Generate Debug Statements</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>GenerateLogFile__c</fullName>
-        <defaultValue>true</defaultValue>
-        <externalId>false</externalId>
-        <label>Generate Log File</label>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>StoreDebugLogEntries__c</fullName>
