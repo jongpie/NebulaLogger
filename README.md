@@ -1,9 +1,8 @@
 # Apex Logger for Salesforce
 [![Travis CI](https://img.shields.io/travis/jongpie/ApexLogger/master.svg)](https://travis-ci.org/jongpie/ApexLogger)
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=financialforcedev&repo=fflib-apex-common">
-  <img alt="Deploy to Salesforce"
-       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
+<a href="https://githubsfdeploy.herokuapp.com">
+  <img alt="Deploy to Salesforce" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
 </a>
 
 Features
