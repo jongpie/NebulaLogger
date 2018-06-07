@@ -1,11 +1,11 @@
-# Apex Logger for Salesforce
-[![Travis CI](https://img.shields.io/travis/jongpie/ApexLogger/master.svg)](https://travis-ci.org/jongpie/ApexLogger)
+# Nebula Logger for Salesforce Apex, Process Builder & Flow
+[![Travis CI](https://img.shields.io/travis/jongpie/NebulaLogger/master.svg)](https://travis-ci.org/jongpie/NebulaLogger)
 
 <a href="https://githubsfdeploy.herokuapp.com">
   <img alt="Deploy to Salesforce" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
 </a>
 
-Features
+## Features
 1. Generates 1 log per transaction that can be permanently stored in Salesforce
 2. Supports adding log entries via Apex, Process Builder & Flow
 3. Supports adding both debug & exception log entries to the log
