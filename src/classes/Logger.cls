@@ -25,7 +25,7 @@ public without sharing class Logger {
     }
 
     public static void addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
-        addEntry(null, message, null, className, methodName, null, parentId);
+        addEntry(LoggingLevel, message, null, className, methodName, null, parentId);
     }
 
     public static void addExceptionEntry(Exception ex) {
@@ -41,7 +41,7 @@ public without sharing class Logger {
     }
 
     public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName) {
-        addEntry(null, null, ex, className, methodName, null, null);
+        addEntry(loggingLevel, null, ex, className, methodName, null, null);
     }
 
     public static void addExceptionEntry(Exception ex, String className, String methodName, Id parentId) {
@@ -66,8 +66,8 @@ public without sharing class Logger {
     }
 
     private static String generateUuid() {
-        Blob generatedBlob = Crypto.GenerateAESKey(128);
-        String unformattedValue = EncodingUtil.ConvertTohex(generatedBlob);
+        Blob generatedBlob      = Crypto.generateAesKey(128);
+        String unformattedValue = EncodingUtil.convertTohex(generatedBlob);
         // Remove any non-alphanumeric characters. Should be unnecessary, but better to be safe than sorry.
         unformattedValue = unformattedValue.replaceAll('[^a-zA-Z0-9]', '');
 
@@ -110,7 +110,7 @@ public without sharing class Logger {
     }
 
     private static Boolean meetsLoggingLevel(LoggingLevel userLoggingLevel, LoggingLevel logEntryLoggingLevel) {
-        return userLoggingLevel.ordinal() >= logEntryLoggingLevel.ordinal();
+        return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
     private static void addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String processBuilderName, Id parentId) {
@@ -118,28 +118,28 @@ public without sharing class Logger {
         if(ex != null) message = ex.getMessage();
 
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
-        Boolean meetsLoggingLevel = meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel);
+        if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return;
 
         String type = ex == null ? 'Debug' : 'Exception';
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return;
         if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
 
-        if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return;
-
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
-            ClassName__c           = className,
-            ExceptionStackTrace__c = ex == null ? null : ex.getStackTraceString(),
-            ExceptionTypeName__c   = ex == null ? null : ex.getTypeName(),
-            LoggingLevel__c        = logEntryLoggingLevel.name(),
-            Message__c             = message,
-            MethodName__c          = methodName,
-            ParentId__c            = parentId,
-            ProcessBuilderName__c  = processBuilderName,
-            SourceType__c          = processBuilderName != null ? 'Process Builder' : 'Apex',
-            Timestamp__c           = System.now(),
-            TransactionId__c       = TRANSACTION_ID,
-            Type__c                = type,
-            UserLoggingLevel__c    = getUserLoggingLevel().name()
+            ClassName__c               = className,
+            ExceptionStackTrace__c     = ex == null ? null : ex.getStackTraceString(),
+            ExceptionTypeName__c       = ex == null ? null : ex.getTypeName(),
+            LoggingLevel__c            = logEntryLoggingLevel.name(),
+            LoggingLevelOrdinal__c     = logEntryLoggingLevel.ordinal(),
+            Message__c                 = message,
+            MethodName__c              = methodName,
+            ParentId__c                = parentId,
+            ProcessBuilderName__c      = processBuilderName,
+            SourceType__c              = processBuilderName != null ? 'Process Builder' : 'Apex',
+            Timestamp__c               = System.now(),
+            TransactionId__c           = TRANSACTION_ID,
+            Type__c                    = type,
+            UserLoggingLevel__c        = getUserLoggingLevel().name(),
+            UserLoggingLevelOrdinal__c = getUserLoggingLevel().ordinal()
         );
         logEntries.add(platformLogEntry);
 
