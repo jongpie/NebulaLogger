@@ -21,6 +21,10 @@
         <name>CustomTab</name>
     </types>
     <types>
+        <members>*</members>
+        <name>GlobalValueSet</name>
+    </types>
+    <types>
         <members>LogEntry__c-Log Entry Layout</members>
         <members>Log__c-Log Layout</members>
         <name>Layout</name>

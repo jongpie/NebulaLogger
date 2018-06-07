@@ -103,14 +103,16 @@
     </fields>
     <fields>
         <fullName>Log__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Log</label>
         <referenceTo>Log__c</referenceTo>
+        <relationshipLabel>Log Entries</relationshipLabel>
         <relationshipName>Log_Entry_Derps</relationshipName>
-        <required>false</required>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
         <trackTrending>false</trackTrending>
-        <type>Lookup</type>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
         <fullName>LoggingLevel__c</fullName>
@@ -162,15 +164,38 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>SourceType__c</fullName>
+        <externalId>false</externalId>
+        <label>Source Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Apex</fullName>
+                    <default>false</default>
+                    <label>Apex</label>
+                </value>
+                <value>
+                    <fullName>Process Builder/Flow</fullName>
+                    <default>false</default>
+                    <label>Process Builder/Flow</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Source__c</fullName>
         <externalId>false</externalId>
         <formula>IF(
      NOT(ISBLANK(ProcessBuilderName__c)),
-     &apos;Process Builder/Flow: &apos; + ProcessBuilderName__c,
+     ProcessBuilderName__c,
      IF(
          AND(NOT(ISBLANK(ClassName__c)), NOT(ISBLANK(MethodName__c))),
-         &apos;Apex: &apos; + ClassName__c + &apos;.&apos; + MethodName__c,
-         &apos;Apex: Unknown/Anonymous Apex&apos;
+         ClassName__c + &apos;.&apos; + MethodName__c,
+         &apos;Unknown/Anonymous Apex&apos;
      )
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -189,6 +214,21 @@
         <type>DateTime</type>
     </fields>
     <fields>
+        <fullName>TypeImage__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+    ISPICKVAL(Type__c, &apos;Exception&apos;),
+    IMAGE(&quot;/img/samples/color_red.gif&quot;, &quot;Red&quot;, 16, 16) + &apos; &apos; + TEXT(Type__c),
+    IMAGE(&quot;/img/samples/flag_green.gif&quot;, &quot;Red&quot;, 16, 16) + &apos; &apos; + TEXT(Type__c)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Type__c</fullName>
         <externalId>false</externalId>
         <label>Type</label>
@@ -198,7 +238,7 @@
         <valueSet>
             <restricted>true</restricted>
             <valueSetDefinition>
-                <sorted>true</sorted>
+                <sorted>false</sorted>
                 <value>
                     <fullName>Debug</fullName>
                     <default>false</default>
@@ -221,6 +261,6 @@
     </nameField>
     <pluralLabel>Log Entries</pluralLabel>
     <searchLayouts/>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

@@ -21,11 +21,11 @@ public without sharing class Logger {
     }
 
     public static void addDebugEntry(String message, String className, String methodName, Id parentId) {
-        addEntry(null, message, null, className, methodName, parentId, null);
+        addEntry(null, message, null, className, methodName, null, parentId);
     }
 
     public static void addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
-        addEntry(null, message, null, className, methodName, parentId, null);
+        addEntry(null, message, null, className, methodName, null, parentId);
     }
 
     public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex) {
@@ -45,48 +45,11 @@ public without sharing class Logger {
     }
 
     public static void addExceptionEntry(Exception ex, String className, String methodName, Id parentId) {
-        addEntry(null, null, ex, className, methodName, parentId, null);
+        addEntry(null, null, ex, className, methodName, null, parentId);
     }
 
     public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName, Id parentId) {
-        addEntry(loggingLevel, null, ex, className, methodName, parentId, null);
-    }
-
-    private static void addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String processBuilderName, Id parentId) {
-        if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
-        if(ex != null) message = ex.getMessage();
-
-        if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
-        Boolean meetsLoggingLevel = meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel);
-
-        String type = ex == null ? 'Debug' : 'Exception';
-        if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return;
-        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
-
-        if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return;
-
-        LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
-            ClassName__c           = className,
-            ExceptionLineNumber__c = ex == null ? null : ex.getLineNumber(),
-            ExceptionStackTrace__c = ex == null ? null : ex.getStackTraceString(),
-            ExceptionTypeName__c   = ex == null ? null : ex.getTypeName(),
-            LoggingLevel__c        = logEntryLoggingLevel.name(),
-            Message__c             = message,
-            MethodName__c          = methodName,
-            ParentId__c            = parentId,
-            ProcessBuilderName__c  = processBuilderName,
-            SourceType__c          = processBuilderName != null ? 'Process Builder' : 'Apex',
-            Timestamp__c           = System.now(),
-            TransactionId__c       = TRANSACTION_ID,
-            Type__c                = type,
-            UserLoggingLevel__c    = getUserLoggingLevel().name()
-        );
-        logEntries.add(platformLogEntry);
-
-        if(ex != null) {
-            saveLog();
-            throw ex;
-        }
+        addEntry(loggingLevel, null, ex, className, methodName, null, parentId);
     }
 
     @InvocableMethod(label='Add Log Entry' description='Stores a log entry for a process builder or flow')
@@ -131,6 +94,43 @@ public without sharing class Logger {
 
     private static Boolean meetsLoggingLevel(LoggingLevel userLoggingLevel, LoggingLevel logEntryLoggingLevel) {
         return logEntryLoggingLevel.ordinal() >= userLoggingLevel.ordinal();
+    }
+
+    private static void addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String processBuilderName, Id parentId) {
+        if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
+        if(ex != null) message = ex.getMessage();
+
+        if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
+        Boolean meetsLoggingLevel = meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel);
+
+        String type = ex == null ? 'Debug' : 'Exception';
+        if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return;
+        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
+
+        if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return;
+
+        LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
+            ClassName__c           = className,
+            ExceptionLineNumber__c = ex == null ? null : ex.getLineNumber(),
+            ExceptionStackTrace__c = ex == null ? null : ex.getStackTraceString(),
+            ExceptionTypeName__c   = ex == null ? null : ex.getTypeName(),
+            LoggingLevel__c        = logEntryLoggingLevel.name(),
+            Message__c             = message,
+            MethodName__c          = methodName,
+            ParentId__c            = parentId,
+            ProcessBuilderName__c  = processBuilderName,
+            SourceType__c          = processBuilderName != null ? 'Process Builder' : 'Apex',
+            Timestamp__c           = System.now(),
+            TransactionId__c       = TRANSACTION_ID,
+            Type__c                = type,
+            UserLoggingLevel__c    = getUserLoggingLevel().name()
+        );
+        logEntries.add(platformLogEntry);
+
+        if(ex != null) {
+            saveLog();
+            throw ex;
+        }
     }
 
     public class ProcessBuilderLogEntry {

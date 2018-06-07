@@ -9,12 +9,12 @@
         <label>Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Name</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Required</behavior>
                 <field>TransactionId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>UserLoggingLevel__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -58,15 +58,16 @@
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>Timestamp__c</fields>
-        <fields>Type__c</fields>
+        <fields>TypeImage__c</fields>
         <fields>Source__c</fields>
+        <fields>SourceType__c</fields>
         <fields>LoggingLevel__c</fields>
         <fields>Message__c</fields>
         <fields>ParentId__c</fields>
         <fields>ArchiveDate__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
-        <sortField>Timestamp__c</sortField>
-        <sortOrder>Desc</sortOrder>
+        <sortField>NAME</sortField>
+        <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedFileList</relatedList>
