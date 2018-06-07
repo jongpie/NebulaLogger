@@ -5,8 +5,10 @@
   <img alt="Deploy to Salesforce" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
 </a>
 
+Designed for Salesforce admins & developers.
+
 ## Features
-Designed for Salesforce admins & developers. A robust logger for Salesforce that's simple to implement & configurable at the org, profile & user level.
+A robust logger for Salesforce that's simple to implement & configurable at the org, profile & user level.
 1. Generates 1 log per transaction that can be permanently stored in Salesforce
 2. Supports adding log entries via Apex, Process Builder & Flow
 3. Supports adding both debug & exception log entries to the log
