@@ -90,7 +90,9 @@ public without sharing class Logger {
     }
 
     private static LoggingLevel getLoggingLevel(String loggingLevelName) {
-        switch on loggingLevelName.toUpperCase() {
+        if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
+
+        switch on loggingLevelName {
             when 'NONE'   { return LoggingLevel.NONE; }
             when 'ERROR'  { return LoggingLevel.ERROR; }
             when 'WARN'   { return LoggingLevel.WARN; }
