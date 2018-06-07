@@ -59,12 +59,9 @@
         <fields>NAME</fields>
         <fields>Timestamp__c</fields>
         <fields>TypeImage__c</fields>
-        <fields>Source__c</fields>
         <fields>SourceType__c</fields>
-        <fields>LoggingLevel__c</fields>
+        <fields>Source__c</fields>
         <fields>Message__c</fields>
-        <fields>ParentId__c</fields>
-        <fields>ArchiveDate__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
         <sortField>NAME</sortField>
         <sortOrder>Asc</sortOrder>
