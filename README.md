@@ -6,6 +6,7 @@
 </a>
 
 ## Features
+Designed for Salesforce admins & developers. A robust logger for Salesforce that's simple to implement & configurable at the org, profile & user level.
 1. Generates 1 log per transaction that can be permanently stored in Salesforce
 2. Supports adding log entries via Apex, Process Builder & Flow
 3. Supports adding both debug & exception log entries to the log
