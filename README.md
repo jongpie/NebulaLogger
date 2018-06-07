@@ -1,8 +1,10 @@
 # Apex Logger for Salesforce
-[![Deploy to Salesforce](https://img.shields.io/badge/salesforce-deploy-blue.svg)](https://githubsfdeploy.herokuapp.com)
-[![License: MIT](https://img.shields.io/badge/license-MIT-d742f4.svg)](https://opensource.org/licenses/MIT)
 [![Travis CI](https://img.shields.io/travis/jongpie/ApexLogger/master.svg)](https://travis-ci.org/jongpie/ApexLogger)
-[![Code Climate](https://img.shields.io/codeclimate/github/jongpie/ApexLogger.svg)](https://codeclimate.com/github/jongpie/ApexLogger)
+
+<a href="https://githubsfdeploy.herokuapp.com?owner=financialforcedev&repo=fflib-apex-common">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
+</a>
 
 Features
 1. Generates 1 log per transaction that can be permanently stored in Salesforce
