@@ -72,17 +72,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>ExceptionLineNumber__c</fullName>
-        <externalId>false</externalId>
-        <label>Exception Line Number</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>ExceptionStackTrace__c</fullName>
         <externalId>false</externalId>
         <label>Exception Stack Trace</label>

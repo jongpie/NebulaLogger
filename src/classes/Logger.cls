@@ -128,7 +128,6 @@ public without sharing class Logger {
 
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
             ClassName__c           = className,
-            ExceptionLineNumber__c = ex == null ? null : ex.getLineNumber(),
             ExceptionStackTrace__c = ex == null ? null : ex.getStackTraceString(),
             ExceptionTypeName__c   = ex == null ? null : ex.getTypeName(),
             LoggingLevel__c        = logEntryLoggingLevel.name(),
