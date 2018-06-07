@@ -93,7 +93,7 @@ public without sharing class Logger {
     }
 
     private static Boolean meetsLoggingLevel(LoggingLevel userLoggingLevel, LoggingLevel logEntryLoggingLevel) {
-        return logEntryLoggingLevel.ordinal() >= userLoggingLevel.ordinal();
+        return userLoggingLevel.ordinal() >= logEntryLoggingLevel.ordinal();
     }
 
     private static void addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String processBuilderName, Id parentId) {
