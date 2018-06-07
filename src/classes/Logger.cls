@@ -89,10 +89,6 @@ public without sharing class Logger {
         }
     }
 
-    public static void addEntries(List<String> messages) {
-        for(String message : messages) addEntry(message, null, null);
-    }
-
     @InvocableMethod(label='Add Log Entry' description='Stores a log entry for a process builder or flow')
     public static void addProcessBuilderEntries(List<ProcessBuilderLogEntry> processBuilderLogEntries) {
         for(ProcessBuilderLogEntry logEntry : processBuilderLogEntries) {
