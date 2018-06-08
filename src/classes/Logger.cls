@@ -65,6 +65,22 @@ public without sharing class Logger {
         saveLog();
     }
 
+    public static LoggingLevel getLoggingLevel(String loggingLevelName) {
+        if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
+
+        switch on loggingLevelName {
+            when 'NONE'   { return LoggingLevel.NONE; }
+            when 'ERROR'  { return LoggingLevel.ERROR; }
+            when 'WARN'   { return LoggingLevel.WARN; }
+            when 'INFO'   { return LoggingLevel.INFO; }
+            when 'DEBUG'  { return LoggingLevel.DEBUG; }
+            when 'FINE'   { return LoggingLevel.FINE; }
+            when 'FINER'  { return LoggingLevel.FINER; }
+            when 'FINEST' { return LoggingLevel.FINEST; }
+            when else     { return LoggingLevel.NONE; }
+        }
+    }
+
     public static void saveLog() {
         if(!logEntries.isEmpty()) EventBus.publish(logEntries);
     }
@@ -93,22 +109,6 @@ public without sharing class Logger {
         // No ID -- > no settings have been configured in the org, so create org defaults
         upsert LoggerSettings__c.getOrgDefaults();
         return LoggerSettings__c.getInstance();
-    }
-
-    private static LoggingLevel getLoggingLevel(String loggingLevelName) {
-        if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
-
-        switch on loggingLevelName {
-            when 'NONE'   { return LoggingLevel.NONE; }
-            when 'ERROR'  { return LoggingLevel.ERROR; }
-            when 'WARN'   { return LoggingLevel.WARN; }
-            when 'INFO'   { return LoggingLevel.INFO; }
-            when 'DEBUG'  { return LoggingLevel.DEBUG; }
-            when 'FINE'   { return LoggingLevel.FINE; }
-            when 'FINER'  { return LoggingLevel.FINER; }
-            when 'FINEST' { return LoggingLevel.FINEST; }
-            when else     { return LoggingLevel.NONE; }
-        }
     }
 
     private static LoggingLevel getUserLoggingLevel() {
