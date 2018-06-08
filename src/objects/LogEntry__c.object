@@ -40,16 +40,16 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
-    <allowInChatterGroups>false</allowInChatterGroups>
+    <allowInChatterGroups>true</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <enableActivities>false</enableActivities>
+    <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
-    <enableSearch>false</enableSearch>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
