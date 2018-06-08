@@ -157,14 +157,17 @@ public without sharing class Logger {
 
     public class ProcessBuilderLogEntry {
 
-        @InvocableVariable(required=true)
-        public String Message;
         @InvocableVariable(required=true label='Process Builder/Flow Name')
         public String ProcessBuilderName;
-        @InvocableVariable(label='(Optional) Logging Level')
-        public String LoggingLevelName;
+
+        @InvocableVariable(required=true)
+        public String Message;
+
         @InvocableVariable(label='(Optional) Parent Record ID')
         public Id ParentId;
+
+        @InvocableVariable(label='(Optional) Logging Level')
+        public String LoggingLevelName;
 
         public Datetime Timestamp;
 
