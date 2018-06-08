@@ -169,7 +169,7 @@ public without sharing class Logger {
         @InvocableVariable(label='(Optional) Logging Level')
         public String LoggingLevelName;
 
-        public Datetime Timestamp;
+        public DateTime Timestamp;
 
         public ProcessBuilderLogEntry() {
             this.Timestamp = System.now();
