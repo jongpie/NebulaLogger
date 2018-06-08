@@ -130,13 +130,17 @@ public without sharing class Logger {
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return;
         if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
 
+        String truncatedMessage = truncateLogEntryMessage(message);
+        Boolean messageTruncated = message != truncatedMessage;
+
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
             ClassName__c               = className,
             ExceptionStackTrace__c     = ex == null ? null : ex.getStackTraceString(),
             ExceptionTypeName__c       = ex == null ? null : ex.getTypeName(),
             LoggingLevel__c            = logEntryLoggingLevel.name(),
             LoggingLevelOrdinal__c     = logEntryLoggingLevel.ordinal(),
-            Message__c                 = message,
+            Message__c                 = truncatedMessage,
+            MessageTruncated__c        = messageTruncated,
             MethodName__c              = methodName,
             ParentId__c                = parentId,
             ProcessBuilderName__c      = processBuilderName,
@@ -153,6 +157,11 @@ public without sharing class Logger {
             saveLog();
             throw ex;
         }
+    }
+
+    private static String truncateLogEntryMessage(String message) {
+        Integer messageMaxLength = Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
+        return message;
     }
 
     public class ProcessBuilderLogEntry {

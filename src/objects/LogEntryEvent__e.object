@@ -63,6 +63,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>MessageTruncated__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Message Truncated</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Message__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>

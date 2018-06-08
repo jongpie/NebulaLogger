@@ -17,6 +17,7 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
             LoggingLevel__c        = logEntryEvent.LoggingLevel__c,
             LoggingLevelOrdinal__c = logEntryEvent.LoggingLevelOrdinal__c,
             Message__c             = logEntryEvent.Message__c,
+            MessageTruncated__c    = logEntryEvent.MessageTruncated__c,
             MethodName__c          = logEntryEvent.MethodName__c,
             ParentId__c            = logEntryEvent.ParentId__c,
             ProcessBuilderName__c  = logEntryEvent.ProcessBuilderName__c,
