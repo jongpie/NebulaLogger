@@ -54,6 +54,47 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>TotalDebugLogEntries__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Debug Log Entries</label>
+        <summaryFilterItems>
+            <field>LogEntry__c.Type__c</field>
+            <operation>equals</operation>
+            <value>Debug</value>
+        </summaryFilterItems>
+        <summaryForeignKey>LogEntry__c.Log__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalExceptionLogEntries__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Exception Log Entries</label>
+        <summaryFilterItems>
+            <field>LogEntry__c.Type__c</field>
+            <operation>equals</operation>
+            <value>Exception</value>
+        </summaryFilterItems>
+        <summaryForeignKey>LogEntry__c.Log__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalLogEntries__c</fullName>
+        <externalId>false</externalId>
+        <formula>TotalDebugLogEntries__c + TotalExceptionLogEntries__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Log Entries</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>TransactionId__c</fullName>
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
