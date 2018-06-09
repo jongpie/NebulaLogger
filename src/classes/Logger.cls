@@ -130,6 +130,11 @@ public without sharing class Logger {
         return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
+    private static String truncateLogEntryMessage(String message) {
+        Integer messageMaxLength = Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
+        return message;
+    }
+
     private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String processBuilderName, Id parentId) {
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
@@ -174,33 +179,6 @@ public without sharing class Logger {
         }
 
         return platformLogEntry.TransactionEntryId__c;
-    }
-
-    private static String truncateLogEntryMessage(String message) {
-        Integer messageMaxLength = Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
-        return message;
-    }
-
-    public class ProcessBuilderLogEntry {
-
-        @InvocableVariable(required=true label='Process Builder/Flow Name')
-        public String ProcessBuilderName;
-
-        @InvocableVariable(required=true)
-        public String Message;
-
-        @InvocableVariable(label='(Optional) Parent Record ID')
-        public Id ParentId;
-
-        @InvocableVariable(label='(Optional) Logging Level')
-        public String LoggingLevelName;
-
-        public DateTime Timestamp;
-
-        public ProcessBuilderLogEntry() {
-            this.Timestamp = System.now();
-        }
-
     }
 
 }
