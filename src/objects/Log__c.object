@@ -161,7 +161,7 @@
         <label>My Logs</label>
     </listViews>
     <nameField>
-        <displayFormat>Log-{00000}</displayFormat>
+        <displayFormat>Log-{000000}</displayFormat>
         <label>Log Number</label>
         <type>AutoNumber</type>
     </nameField>
@@ -170,6 +170,27 @@
         <customTabListAdditionalFields>TransactionId__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>TransactionId__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>UserLoggingLevel__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TotalLogEntries__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TotalDebugLogEntries__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TransactionId__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>OWNER.ALIAS</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>UserLoggingLevel__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TotalDebugLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>TransactionId__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>UserLoggingLevel__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TotalLogEntries__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TotalDebugLogEntries__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TotalExceptionLogEntries__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

@@ -42,6 +42,17 @@
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>LogEntryCompact</fullName>
+        <fields>Name</fields>
+        <fields>Log__c</fields>
+        <fields>Type__c</fields>
+        <fields>Timestamp__c</fields>
+        <fields>SourceType__c</fields>
+        <fields>Source__c</fields>
+        <fields>ParentId__c</fields>
+        <label>Log Entry Compact</label>
+    </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
@@ -141,7 +152,7 @@
         <fullName>MessageTruncated__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <inlineHelpText>Indicates if the message truncated due to being too long to fit into the Message field</inlineHelpText>
+        <inlineHelpText>Indicates if the message was truncated due to being too long to fit into the Message field</inlineHelpText>
         <label>Message Truncated</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -274,11 +285,13 @@
                 <sorted>false</sorted>
                 <value>
                     <fullName>Debug</fullName>
+                    <color>#33FF33</color>
                     <default>false</default>
                     <label>Debug</label>
                 </value>
                 <value>
                     <fullName>Exception</fullName>
+                    <color>#FF0000</color>
                     <default>false</default>
                     <label>Exception</label>
                 </value>
@@ -288,12 +301,27 @@
     <gender>Masculine</gender>
     <label>Log Entry</label>
     <nameField>
-        <displayFormat>Entry-{00000}</displayFormat>
-        <label>Log Entry Name</label>
-        <type>AutoNumber</type>
+        <label>Log Entry Transaction ID</label>
+        <type>Text</type>
     </nameField>
     <pluralLabel>Log Entries</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TypeImage__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>SourceType__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Source__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Message__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Log__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Timestamp__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>SourceType__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Source__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Message__c</lookupPhoneDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>
