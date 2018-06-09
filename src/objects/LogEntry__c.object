@@ -236,6 +236,17 @@
         <type>DateTime</type>
     </fields>
     <fields>
+        <fullName>TransactionEntryId__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Transaction Entry ID</label>
+        <length>36</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
         <fullName>TypeImage__c</fullName>
         <externalId>false</externalId>
         <formula>IF(

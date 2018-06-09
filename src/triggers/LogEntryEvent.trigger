@@ -19,14 +19,16 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
             Message__c             = logEntryEvent.Message__c,
             MessageTruncated__c    = logEntryEvent.MessageTruncated__c,
             MethodName__c          = logEntryEvent.MethodName__c,
+            Name                   = logEntryEvent.TransactionEntryId__c,
             ParentId__c            = logEntryEvent.ParentId__c,
             ProcessBuilderName__c  = logEntryEvent.ProcessBuilderName__c,
             SourceType__c          = logEntryEvent.SourceType__c,
             Timestamp__c           = logEntryEvent.Timestamp__c,
+            TransactionEntryId__c  = logEntryEvent.TransactionEntryId__c,
             Type__c                = logEntryEvent.Type__c
         ));
     }
     upsert new List<Log__c>(logs) TransactionId__c;
-    upsert logEntries;
+    upsert logEntries TransactionEntryId__c;
 
 }
