@@ -56,13 +56,13 @@ public without sharing class Logger {
         addEntry(loggingLevel, null, ex, className, methodName, null, parentId);
     }
 
-    @InvocableMethod(label='Add Log Entry' description='Stores a log entry for a process builder or flow')
-    public static void addProcessBuilderEntries(List<ProcessBuilderLogEntry> processBuilderLogEntries) {
-        for(ProcessBuilderLogEntry logEntry : processBuilderLogEntries) {
-            LoggingLevel loggingLevel = getLoggingLevel(logEntry.LoggingLevelName);
-            addEntry(loggingLevel, logEntry.Message, null, null, null, logEntry.ProcessBuilderName, logEntry.ParentId);
+
+    public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
+        for(FlowLogEntry flowLogEntry : flowLogEntries) {
+            LoggingLevel loggingLevel;
+            if(!String.isBlank(flowLogEntry.LoggingLevelName)) loggingLevel = getLoggingLevel(flowLogEntry.LoggingLevelName);
+            addEntry(loggingLevel, flowLogEntry.Message, null, null, null, flowLogEntry.ProcessBuilderName, flowLogEntry.ParentId);
         }
-        saveLog();
     }
 
     public static LoggingLevel getLoggingLevel(String loggingLevelName) {
@@ -81,8 +81,12 @@ public without sharing class Logger {
         }
     }
 
+    @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
     public static void saveLog() {
-        if(!logEntries.isEmpty()) EventBus.publish(logEntries);
+        if(logEntries.isEmpty()) return;
+
+        EventBus.publish(logEntries);
+        logEntries.clear();
     }
 
     private static String generateUuid() {
