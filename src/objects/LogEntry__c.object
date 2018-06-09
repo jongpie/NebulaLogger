@@ -334,7 +334,6 @@
             </valueSetDefinition>
         </valueSet>
     </fields>
-    <gender>Masculine</gender>
     <label>Log Entry</label>
     <nameField>
         <label>Log Entry Transaction ID</label>
