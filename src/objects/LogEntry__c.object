@@ -252,7 +252,7 @@
         <externalId>true</externalId>
         <label>Transaction Entry ID</label>
         <length>36</length>
-        <required>true</required>
+        <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>

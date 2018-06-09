@@ -13,10 +13,6 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>Name</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Required</behavior>
                 <field>Log__c</field>
             </layoutItems>
             <layoutItems>
@@ -25,7 +21,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>TransactionEntryId__c</field>
+                <field>Name</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -130,7 +126,6 @@
         <fields>TypeImage__c</fields>
         <fields>Timestamp__c</fields>
         <fields>Message__c</fields>
-        <fields>Name</fields>
     </miniLayout>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
