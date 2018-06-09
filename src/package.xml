@@ -29,5 +29,9 @@
         <members>Log__c-Log Layout</members>
         <name>Layout</name>
     </types>
+    <types>
+        <members>*</members>
+        <name>PermissionSet</name>
+    </types>
     <version>43.0</version>
 </Package>
