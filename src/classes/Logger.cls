@@ -8,54 +8,61 @@ public without sharing class Logger {
         return TRANSACTION_ID;
     }
 
-    public static void addDebugEntry(String message) {
-        addEntry(null, message, null, null, null, null, null);
+    public static String addDebugEntry(String message) {
+        return addEntry(null, message, null, null, null, null, null);
     }
 
-    public static void addDebugEntry(LoggingLevel loggingLevel, String message) {
-        addEntry(loggingLevel, message, null, null, null, null, null);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message) {
+        return addEntry(loggingLevel, message, null, null, null, null, null);
     }
 
-    public static void addDebugEntry(String message, String className, String methodName) {
-        addEntry(null, message, null, className, methodName, null, null);
+    public static String addDebugEntry(String message, String className, String methodName) {
+        return addEntry(null, message, null, className, methodName, null, null);
     }
 
-    public static void addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName) {
-        addEntry(loggingLevel, message, null, className, methodName, null, null);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName) {
+        return addEntry(loggingLevel, message, null, className, methodName, null, null);
     }
 
-    public static void addDebugEntry(String message, String className, String methodName, Id parentId) {
-        addEntry(null, message, null, className, methodName, null, parentId);
+    public static String addDebugEntry(String message, Id parentId) {
+        return addEntry(null, message, null, null, null, null, parentId);
     }
 
-    public static void addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
-        addEntry(LoggingLevel, message, null, className, methodName, null, parentId);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message, Id parentId) {
+        return addEntry(loggingLevel, message, null, null, null, null, parentId);
     }
 
-    public static void addExceptionEntry(Exception ex) {
-        addEntry(null, null, ex, null, null, null, null);
+    public static String addDebugEntry(String message, String className, String methodName, Id parentId) {
+        return addEntry(null, message, null, className, methodName, null, parentId);
     }
 
-    public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex) {
-        addEntry(loggingLevel, null, ex, null, null, null, null);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
+        return addEntry(LoggingLevel, message, null, className, methodName, null, parentId);
     }
 
-    public static void addExceptionEntry(Exception ex, String className, String methodName) {
-        addEntry(null, null, ex, className, methodName, null, null);
+    public static String addExceptionEntry(Exception ex) {
+        return addEntry(null, null, ex, null, null, null, null);
     }
 
-    public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName) {
-        addEntry(loggingLevel, null, ex, className, methodName, null, null);
+    public static String addExceptionEntry(LoggingLevel loggingLevel, Exception ex) {
+        return addEntry(loggingLevel, null, ex, null, null, null, null);
     }
 
-    public static void addExceptionEntry(Exception ex, String className, String methodName, Id parentId) {
-        addEntry(null, null, ex, className, methodName, null, parentId);
+    public static String addExceptionEntry(Exception ex, String className, String methodName) {
+        return addEntry(null, null, ex, className, methodName, null, null);
     }
 
-    public static void addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName, Id parentId) {
-        addEntry(loggingLevel, null, ex, className, methodName, null, parentId);
+    public static String addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName) {
+        return addEntry(loggingLevel, null, ex, className, methodName, null, null);
     }
 
+    public static String addExceptionEntry(Exception ex, String className, String methodName, Id parentId) {
+        return addEntry(null, null, ex, className, methodName, null, parentId);
+    }
+
+    public static String addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName, Id parentId) {
+        return addEntry(loggingLevel, null, ex, className, methodName, null, parentId);
+    }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
@@ -123,15 +130,17 @@ public without sharing class Logger {
         return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
-    private static void addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String processBuilderName, Id parentId) {
+    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String processBuilderName, Id parentId) {
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
 
+        String logEntryTransactionId = generateUuid();
+
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
-        if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return;
+        if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
 
         String type = ex == null ? 'Debug' : 'Exception';
-        if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return;
+        if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return logEntryTransactionId;
         if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
 
         String truncatedMessage = truncateLogEntryMessage(message);
@@ -151,6 +160,7 @@ public without sharing class Logger {
             SourceType__c              = processBuilderName != null ? 'Process Builder' : 'Apex',
             Timestamp__c               = System.now(),
             TransactionId__c           = TRANSACTION_ID,
+            TransactionEntryId__c      = logEntryTransactionId,
             Type__c                    = type,
             UserLoggingLevel__c        = getUserLoggingLevel().name(),
             UserLoggingLevelOrdinal__c = getUserLoggingLevel().ordinal()
@@ -161,6 +171,8 @@ public without sharing class Logger {
             saveLog();
             throw ex;
         }
+
+        return platformLogEntry.TransactionEntryId__c;
     }
 
     private static String truncateLogEntryMessage(String message) {
