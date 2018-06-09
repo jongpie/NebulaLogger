@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+    - "7"
+install:
+    - npm install -g jsforce-metadata-tools
+script:
+    - jsforce-deploy --checkOnly -u $DEPLOYMENT_USERNAME -p $DEPLOYMENT_PASSWORD$DEPLOYMENT_TOKEN -D $TRAVIS_BUILD_DIR/src -l $DEPLOYMENT_LOGIN_URL --rollbackOnError true --testLevel $DEPLOYMENT_TEST_LEVEL --pollTimeout $POLL_TIMEOUT --pollInterval $POLL_INTERVAL--verbose
