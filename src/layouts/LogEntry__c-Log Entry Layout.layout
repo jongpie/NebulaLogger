@@ -24,12 +24,12 @@
                 <field>Name</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>SourceType__c</field>
+                <behavior>Readonly</behavior>
+                <field>Source__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>Source__c</field>
+                <field>ParentRecord__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -48,10 +48,6 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>ArchiveDate__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ParentId__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -121,8 +117,6 @@
     </layoutSections>
     <miniLayout>
         <fields>Log__c</fields>
-        <fields>SourceType__c</fields>
-        <fields>Source__c</fields>
         <fields>TypeImage__c</fields>
         <fields>Timestamp__c</fields>
         <fields>Message__c</fields>

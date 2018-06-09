@@ -132,10 +132,15 @@
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>TransactionId__c</columns>
-        <columns>CREATEDBY_USER</columns>
+        <columns>TotalLogEntries__c</columns>
+        <columns>TotalDebugLogEntries__c</columns>
+        <columns>TotalExceptionLogEntries__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>UserLoggingLevel__c</columns>
         <columns>CREATED_DATE</columns>
         <filterScope>Mine</filterScope>
         <label>All</label>
+        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>All_Logs</fullName>
@@ -167,7 +172,11 @@
     <pluralLabel>Logs</pluralLabel>
     <searchLayouts>
         <customTabListAdditionalFields>TransactionId__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
+        <customTabListAdditionalFields>TotalLogEntries__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>TotalDebugLogEntries__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>TotalExceptionLogEntries__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
+        <customTabListAdditionalFields>UserLoggingLevel__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>

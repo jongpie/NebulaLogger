@@ -21,6 +21,7 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
             MethodName__c          = logEntryEvent.MethodName__c,
             Name                   = logEntryEvent.TransactionEntryId__c,
             ParentId__c            = logEntryEvent.ParentId__c,
+            ParentSobjectType__c   = logEntryEvent.ParentSobjectType__c,
             ProcessBuilderName__c  = logEntryEvent.ProcessBuilderName__c,
             SourceType__c          = logEntryEvent.SourceType__c,
             Timestamp__c           = logEntryEvent.Timestamp__c,

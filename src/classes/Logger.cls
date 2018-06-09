@@ -156,6 +156,7 @@ public without sharing class Logger {
             MessageTruncated__c        = messageTruncated,
             MethodName__c              = methodName,
             ParentId__c                = parentId,
+            ParentSobjectType__c       = parentId == null ? null : String.valueOf(parentId.getSobjectType()),
             ProcessBuilderName__c      = processBuilderName,
             SourceType__c              = processBuilderName != null ? 'Process Builder' : 'Apex',
             Timestamp__c               = System.now(),
