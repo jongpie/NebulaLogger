@@ -45,10 +45,6 @@
                 <behavior>Edit</behavior>
                 <field>Timestamp__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ArchiveDate__c</field>
-            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>

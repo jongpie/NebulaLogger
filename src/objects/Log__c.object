@@ -200,6 +200,6 @@
         <searchResultsAdditionalFields>TotalDebugLogEntries__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>TotalExceptionLogEntries__c</searchResultsAdditionalFields>
     </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

@@ -3,11 +3,6 @@
     <description>Provides access to manage logs</description>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.ArchiveDate__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntry__c.ClassName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -59,12 +54,12 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.ParentRecord__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.ParentSobjectType__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -84,7 +79,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.Source__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -94,7 +89,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.TransactionEntryId__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -129,7 +124,7 @@
     <hasActivationRequired>false</hasActivationRequired>
     <label>Log Admin</label>
     <objectPermissions>
-        <allowCreate>false</allowCreate>
+        <allowCreate>true</allowCreate>
         <allowDelete>false</allowDelete>
         <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
@@ -144,7 +139,7 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>LogEntry__c</object>
-        <viewAllRecords>false</viewAllRecords>
+        <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
@@ -153,7 +148,7 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>Log__c</object>
-        <viewAllRecords>false</viewAllRecords>
+        <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <tabSettings>
         <tab>Log__c</tab>

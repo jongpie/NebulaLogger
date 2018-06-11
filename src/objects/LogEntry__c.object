@@ -64,15 +64,6 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>ArchiveDate__c</fullName>
-        <defaultValue>NOW() + 1</defaultValue>
-        <externalId>false</externalId>
-        <label>Archive Date</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>DateTime</type>
-    </fields>
-    <fields>
         <fullName>ClassName__c</fullName>
         <externalId>true</externalId>
         <label>Class Name</label>
