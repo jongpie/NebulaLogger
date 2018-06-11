@@ -1,0 +1,12 @@
+#Folders to exclude
+.settings/
+config/
+debug/
+deploy/
+
+#Files to exclude
+*.log
+*.sublime-project
+*.sublime-workspace
+*.sublime-settings
+
