@@ -93,6 +93,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>FlowName__c</fullName>
+        <externalId>true</externalId>
+        <label>Process Builder/Flow Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LogTransactionId__c</fullName>
         <externalId>false</externalId>
         <formula>Log__r.TransactionId__c</formula>
@@ -199,21 +209,11 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>ProcessBuilderName__c</fullName>
-        <externalId>true</externalId>
-        <label>Process Builder Name</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>SourceName__c</fullName>
         <externalId>false</externalId>
         <formula>IF(
-     NOT(ISBLANK(ProcessBuilderName__c)),
-     ProcessBuilderName__c,
+     NOT(ISBLANK(FlowName__c)),
+     FlowName__c,
      IF(
          AND(NOT(ISBLANK(ClassName__c)), NOT(ISBLANK(MethodName__c))),
          ClassName__c + &apos;.&apos; + MethodName__c,

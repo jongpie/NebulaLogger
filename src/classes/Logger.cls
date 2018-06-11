@@ -68,7 +68,7 @@ public without sharing class Logger {
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
             LoggingLevel loggingLevel;
             if(!String.isBlank(flowLogEntry.LoggingLevelName)) loggingLevel = getLoggingLevel(flowLogEntry.LoggingLevelName);
-            addEntry(loggingLevel, flowLogEntry.Message, null, null, null, flowLogEntry.ProcessBuilderName, flowLogEntry.ParentId);
+            addEntry(loggingLevel, flowLogEntry.Message, null, null, null, flowLogEntry.FlowName, flowLogEntry.ParentId);
         }
     }
 
@@ -135,7 +135,7 @@ public without sharing class Logger {
         return message;
     }
 
-    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String processBuilderName, Id parentId) {
+    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String flowName, Id parentId) {
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
 
@@ -155,6 +155,7 @@ public without sharing class Logger {
             ClassName__c               = className,
             ExceptionStackTrace__c     = ex == null ? null : ex.getStackTraceString(),
             ExceptionTypeName__c       = ex == null ? null : ex.getTypeName(),
+            FlowName__c                = flowName,
             LoggingLevel__c            = logEntryLoggingLevel.name(),
             LoggingLevelOrdinal__c     = logEntryLoggingLevel.ordinal(),
             Message__c                 = truncatedMessage,
@@ -162,8 +163,7 @@ public without sharing class Logger {
             MethodName__c              = methodName,
             ParentId__c                = parentId,
             ParentSobjectType__c       = parentId == null ? null : String.valueOf(parentId.getSobjectType()),
-            ProcessBuilderName__c      = processBuilderName,
-            SourceType__c              = processBuilderName != null ? 'Process Builder' : 'Apex',
+            SourceType__c              = flowName != null ? 'Process Builder/Flow' : 'Apex',
             Timestamp__c               = System.now(),
             TransactionId__c           = TRANSACTION_ID,
             TransactionEntryId__c      = logEntryTransactionId,

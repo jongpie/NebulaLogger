@@ -1,3 +1,7 @@
+/*************************************************************************************************
+* This file is part of the Nebula Framework project, released under the MIT License.             *
+* See LICENSE file or go to https://github.com/jongpie/NebulaFramework for full license details. *
+*************************************************************************************************/
 public without sharing class FlowLogEntry {
 
     @InvocableMethod(label='Add Log Entry' description='Stores a log entry for a process builder or flow')
@@ -6,7 +10,7 @@ public without sharing class FlowLogEntry {
     }
 
     @InvocableVariable(required=true label='Process Builder/Flow Name')
-    public String ProcessBuilderName;
+    public String FlowName;
 
     @InvocableVariable(required=true)
     public String Message;

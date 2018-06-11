@@ -38,6 +38,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>FlowName__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Process Builder/Flow Name</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LoggingLevelOrdinal__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>
@@ -114,18 +126,6 @@
         <isNameField>false</isNameField>
         <isSortingDisabled>false</isSortingDisabled>
         <label>Parent Record SObject Type</label>
-        <length>255</length>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>ProcessBuilderName__c</fullName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Process Builder Name</label>
         <length>255</length>
         <required>false</required>
         <type>Text</type>
