@@ -129,7 +129,7 @@
     </fields>
     <label>Log</label>
     <listViews>
-        <fullName>All</fullName>
+        <fullName>AllLogs</fullName>
         <columns>NAME</columns>
         <columns>TransactionId__c</columns>
         <columns>TotalLogEntries__c</columns>
@@ -139,30 +139,22 @@
         <columns>UserLoggingLevel__c</columns>
         <columns>CREATED_DATE</columns>
         <filterScope>Mine</filterScope>
-        <label>All</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>All_Logs</fullName>
-        <columns>NAME</columns>
-        <columns>TransactionId__c</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>OWNER.ALIAS</columns>
-        <columns>OWNER.FIRST_NAME</columns>
-        <columns>OWNER.LAST_NAME</columns>
-        <filterScope>Everything</filterScope>
         <label>All Logs</label>
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>My_Logs</fullName>
+        <fullName>MyLogs</fullName>
         <columns>NAME</columns>
         <columns>TransactionId__c</columns>
+        <columns>TotalLogEntries__c</columns>
+        <columns>TotalDebugLogEntries__c</columns>
+        <columns>TotalExceptionLogEntries__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>UserLoggingLevel__c</columns>
         <columns>CREATED_DATE</columns>
-        <columns>UPDATEDBY_USER</columns>
-        <columns>LAST_UPDATE</columns>
         <filterScope>Mine</filterScope>
         <label>My Logs</label>
+        <language>en_US</language>
     </listViews>
     <nameField>
         <displayFormat>Log-{000000}</displayFormat>
