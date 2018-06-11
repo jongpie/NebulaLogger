@@ -1,3 +1,7 @@
+/*************************************************************************************************
+* This file is part of the Nebula Framework project, released under the MIT License.             *
+* See LICENSE file or go to https://github.com/jongpie/NebulaFramework for full license details. *
+*************************************************************************************************/
 public without sharing class Logger {
 
     private static final String TRANSACTION_ID = generateUuid();
@@ -8,14 +12,6 @@ public without sharing class Logger {
         return TRANSACTION_ID;
     }
 
-    public static String addDebugEntry(String message) {
-        return addEntry(null, message, null, null, null, null, null);
-    }
-
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message) {
-        return addEntry(loggingLevel, message, null, null, null, null, null);
-    }
-
     public static String addDebugEntry(String message, String className, String methodName) {
         return addEntry(null, message, null, className, methodName, null, null);
     }
@@ -24,28 +20,12 @@ public without sharing class Logger {
         return addEntry(loggingLevel, message, null, className, methodName, null, null);
     }
 
-    public static String addDebugEntry(String message, Id parentId) {
-        return addEntry(null, message, null, null, null, null, parentId);
-    }
-
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message, Id parentId) {
-        return addEntry(loggingLevel, message, null, null, null, null, parentId);
-    }
-
     public static String addDebugEntry(String message, String className, String methodName, Id parentId) {
         return addEntry(null, message, null, className, methodName, null, parentId);
     }
 
     public static String addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
         return addEntry(LoggingLevel, message, null, className, methodName, null, parentId);
-    }
-
-    public static String addExceptionEntry(Exception ex) {
-        return addEntry(null, null, ex, null, null, null, null);
-    }
-
-    public static String addExceptionEntry(LoggingLevel loggingLevel, Exception ex) {
-        return addEntry(loggingLevel, null, ex, null, null, null, null);
     }
 
     public static String addExceptionEntry(Exception ex, String className, String methodName) {
@@ -172,11 +152,6 @@ public without sharing class Logger {
             UserLoggingLevelOrdinal__c = getUserLoggingLevel().ordinal()
         );
         logEntries.add(platformLogEntry);
-
-        if(ex != null) {
-            saveLog();
-            throw ex;
-        }
 
         return platformLogEntry.TransactionEntryId__c;
     }
