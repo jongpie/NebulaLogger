@@ -12,6 +12,7 @@
         <members>LogEntryEvent__e</members>
         <members>LogEntry__c</members>
         <members>Log__c</members>
+        <members>LoggerIntegrationSettings__c</members>
         <members>LoggerSettings__c</members>
         <name>CustomObject</name>
     </types>
