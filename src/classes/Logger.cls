@@ -110,9 +110,10 @@ public without sharing class Logger {
         return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
-    private static String truncateLogEntryMessage(String message) {
-        Integer messageMaxLength = Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
-        return message;
+    private static String truncateFieldValue(Schema.SobjectField field, String value) {
+        Integer fieldMaxLength = field.getDescribe().getLength();
+        if(value.length() <= fieldMaxLength) return value;
+        else return value.left(fieldMaxLength);
     }
 
     private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String flowName, Id parentId) {
@@ -128,11 +129,11 @@ public without sharing class Logger {
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return logEntryTransactionId;
         if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
 
-        String truncatedMessage = truncateLogEntryMessage(message);
+        String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
         Boolean messageTruncated = message != truncatedMessage;
 
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
-            ClassName__c               = className,
+            ClassName__c               = truncateFieldValue(Schema.LogEntryEvent__e.ClassName__c, className),
             ExceptionStackTrace__c     = ex == null ? null : ex.getStackTraceString(),
             ExceptionTypeName__c       = ex == null ? null : ex.getTypeName(),
             FlowName__c                = flowName,
@@ -140,7 +141,7 @@ public without sharing class Logger {
             LoggingLevelOrdinal__c     = logEntryLoggingLevel.ordinal(),
             Message__c                 = truncatedMessage,
             MessageTruncated__c        = messageTruncated,
-            MethodName__c              = methodName,
+            MethodName__c              = truncateFieldValue(Schema.LogEntryEvent__e.MethodName__c, methodName),
             ParentId__c                = parentId,
             ParentSobjectType__c       = parentId == null ? null : String.valueOf(parentId.getSobjectType()),
             SourceType__c              = flowName != null ? 'Process Builder/Flow' : 'Apex',
