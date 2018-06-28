@@ -112,7 +112,8 @@ public without sharing class Logger {
 
     private static String truncateFieldValue(Schema.SobjectField field, String value) {
         Integer fieldMaxLength = field.getDescribe().getLength();
-        if(value.length() <= fieldMaxLength) return value;
+        if(String.isEmpty(value)) return value;
+        else if(value.length() <= fieldMaxLength) return value;
         else return value.left(fieldMaxLength);
     }
 
