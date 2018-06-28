@@ -106,7 +106,7 @@ public without sharing class Logger {
         return getLoggingLevel(getSettings().LoggingLevel__c);
     }
 
-    private static Boolean meetsLoggingLevel(LoggingLevel userLoggingLevel, LoggingLevel logEntryLoggingLevel) {
+    private static Boolean meetsUserLoggingLevel(LoggingLevel userLoggingLevel, LoggingLevel logEntryLoggingLevel) {
         return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
@@ -124,7 +124,7 @@ public without sharing class Logger {
         String logEntryTransactionId = generateUuid();
 
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
-        if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
+        if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
 
         String type = ex == null ? 'Debug' : 'Exception';
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return logEntryTransactionId;
