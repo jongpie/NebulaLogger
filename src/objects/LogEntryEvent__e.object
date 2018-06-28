@@ -26,12 +26,12 @@
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
-        <fullName>ExceptionTypeName__c</fullName>
+        <fullName>ExceptionType__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>
         <isNameField>false</isNameField>
         <isSortingDisabled>false</isSortingDisabled>
-        <label>Exception Type Name</label>
+        <label>Exception Type</label>
         <length>255</length>
         <required>false</required>
         <type>Text</type>

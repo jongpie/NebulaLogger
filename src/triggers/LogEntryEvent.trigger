@@ -17,7 +17,7 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
         logEntries.add(new LogEntry__c(
             ClassName__c           = logEntryEvent.ClassName__c,
             ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
-            ExceptionType__c       = logEntryEvent.ExceptionTypeName__c,
+            ExceptionType__c       = logEntryEvent.ExceptionType__c,
             FlowName__c            = logEntryEvent.FlowName__c,
             Log__r                 = new Log__c(TransactionId__c = logEntryEvent.TransactionId__c),
             LoggingLevel__c        = logEntryEvent.LoggingLevel__c,
