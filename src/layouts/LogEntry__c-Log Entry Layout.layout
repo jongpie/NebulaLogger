@@ -69,7 +69,7 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>ExceptionTypeName__c</field>
+                <field>ExceptionType__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>

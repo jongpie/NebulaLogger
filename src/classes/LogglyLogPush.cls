@@ -55,7 +55,7 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         // LogEntry__c fields
         List<String> logEntryQueryFields = new List<String>{
             String.valueOf(Schema.LogEntry__c.Id), String.valueOf(Schema.LogEntry__c.ClassName__c),
-            String.valueOf(Schema.LogEntry__c.ExceptionStackTrace__c), String.valueOf(Schema.LogEntry__c.ExceptionTypeName__c),
+            String.valueOf(Schema.LogEntry__c.ExceptionStackTrace__c), String.valueOf(Schema.LogEntry__c.ExceptionType__c),
             String.valueOf(Schema.LogEntry__c.Log__c), String.valueOf(Schema.LogEntry__c.Message__c),
             String.valueOf(Schema.LogEntry__c.MethodName__c), String.valueOf(Schema.LogEntry__c.Source__c),
             String.valueOf(Schema.LogEntry__c.Timestamp__c), String.valueOf(Schema.LogEntry__c.TransactionEntryId__c),

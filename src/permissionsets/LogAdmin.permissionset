@@ -13,8 +13,8 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.ExceptionTypeName__c</field>
-        <readable>true</readable>
+        <field>LogEntry__c.ExceptionType__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
