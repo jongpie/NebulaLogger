@@ -14,7 +14,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.ExceptionType__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
