@@ -106,6 +106,8 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         log.message             = logEntry.Message__c;
         log.methodname          = logEntry.MethodName__c;
         log.organization        = organization;
+        log.sourceSystem        = 'Salesforce';
+        log.sourceUrl           = Url.getSalesforceBaseUrl().toExternalForm();
         log.timestamp           = this.getFormattedTimestamp(logEntry.Timestamp__c);
         log.transactionentryid  = logEntry.TransactionEntryId__c;
         log.transactionid       = parentLog.TransactionId__c;
@@ -125,6 +127,8 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         public String message;
         public String methodName;
         public OrganizationDto organization;
+        public String sourceSystem;
+        public String sourceUrl;
         public String timestamp;
         public String transactionEntryId;
         public String transactionId;
