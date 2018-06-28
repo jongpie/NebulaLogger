@@ -135,7 +135,7 @@ public without sharing class Logger {
 
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
             ClassName__c               = truncateFieldValue(Schema.LogEntryEvent__e.ClassName__c, className),
-            ExceptionStackTrace__c     = ex == null ? null : ex.getStackTraceString(),
+            ExceptionStackTrace__c     = ex == null ? null : truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, ex.getStackTraceString()),
             ExceptionTypeName__c       = ex == null ? null : ex.getTypeName(),
             FlowName__c                = flowName,
             LoggingLevel__c            = logEntryLoggingLevel.name(),
