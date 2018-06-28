@@ -119,7 +119,7 @@
         <label>Log</label>
         <referenceTo>Log__c</referenceTo>
         <relationshipLabel>Log Entries</relationshipLabel>
-        <relationshipName>Log_Entry_Derps</relationshipName>
+        <relationshipName>LogEntries</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
         <trackTrending>false</trackTrending>
