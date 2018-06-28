@@ -10,21 +10,21 @@ public without sharing class FlowLogEntry {
     }
 
     @InvocableVariable(required=true label='Process Builder/Flow Name')
-    public String FlowName;
+    public String flowName;
 
     @InvocableVariable(required=true)
-    public String Message;
+    public String message;
 
     @InvocableVariable(label='(Optional) Parent Record ID')
-    public Id ParentId;
+    public Id parentId;
 
     @InvocableVariable(label='(Optional) Logging Level')
-    public String LoggingLevelName;
+    public String loggingLevelName;
 
-    public DateTime Timestamp;
+    public DateTime timestamp;
 
     public FlowLogEntry() {
-        this.Timestamp        = System.now();
+        this.timestamp = System.now();
     }
 
 }
