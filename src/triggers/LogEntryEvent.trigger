@@ -8,12 +8,13 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
     List<LogEntry__c > logEntries = new List<LogEntry__c>();
     for(LogEntryEvent__e logEntryEvent : Trigger.new) {
         logs.add(new Log__c(
+            LoggedBy__c                = logEntryEvent.CreatedById,
             OwnerId                    = logEntryEvent.CreatedById,
             TransactionId__c           = logEntryEvent.TransactionId__c,
             UserLoggingLevel__c        = logEntryEvent.UserLoggingLevel__c,
             UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c
         ));
-        logEntries.add(new LogEntry__c (
+        logEntries.add(new LogEntry__c(
             ClassName__c           = logEntryEvent.ClassName__c,
             ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
             ExceptionTypeName__c   = logEntryEvent.ExceptionTypeName__c,
