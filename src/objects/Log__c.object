@@ -53,9 +53,36 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>LoggedBy__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Logged By</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Logs</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>PushToLoggly__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Push To Loggly</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PushedToLogglyDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Pushed To Loggly Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>TotalDebugLogEntries__c</fullName>
         <externalId>false</externalId>
-        <label>Total Debug Log Entries</label>
+        <label>Total Debug Entries</label>
         <summaryFilterItems>
             <field>LogEntry__c.Type__c</field>
             <operation>equals</operation>
@@ -69,7 +96,7 @@
     <fields>
         <fullName>TotalExceptionLogEntries__c</fullName>
         <externalId>false</externalId>
-        <label>Total Exception Log Entries</label>
+        <label>Total Exception Entries</label>
         <summaryFilterItems>
             <field>LogEntry__c.Type__c</field>
             <operation>equals</operation>
@@ -85,7 +112,7 @@
         <externalId>false</externalId>
         <formula>TotalDebugLogEntries__c + TotalExceptionLogEntries__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Total Log Entries</label>
+        <label>Total Entries</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -131,13 +158,13 @@
     <listViews>
         <fullName>AllLogs</fullName>
         <columns>NAME</columns>
-        <columns>TransactionId__c</columns>
+        <columns>LoggedBy__c</columns>
+        <columns>CREATED_DATE</columns>
         <columns>TotalLogEntries__c</columns>
         <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
-        <columns>OWNER.ALIAS</columns>
         <columns>UserLoggingLevel__c</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>TransactionId__c</columns>
         <filterScope>Mine</filterScope>
         <label>All Logs</label>
         <language>en_US</language>
@@ -145,13 +172,13 @@
     <listViews>
         <fullName>MyLogs</fullName>
         <columns>NAME</columns>
-        <columns>TransactionId__c</columns>
+        <columns>LoggedBy__c</columns>
+        <columns>CREATED_DATE</columns>
         <columns>TotalLogEntries__c</columns>
         <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
-        <columns>OWNER.ALIAS</columns>
+        <columns>TransactionId__c</columns>
         <columns>UserLoggingLevel__c</columns>
-        <columns>CREATED_DATE</columns>
         <filterScope>Mine</filterScope>
         <label>My Logs</label>
         <language>en_US</language>
