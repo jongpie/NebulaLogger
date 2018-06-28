@@ -12,7 +12,7 @@ public without sharing class FlowLogEntry {
     @InvocableVariable(required=true label='Process Builder/Flow Name')
     public String flowName;
 
-    @InvocableVariable(required=true)
+    @InvocableVariable(required=true label='Log Entry Message')
     public String message;
 
     @InvocableVariable(label='(Optional) Parent Record ID')
