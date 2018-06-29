@@ -17,12 +17,10 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         }
 
         HttpRequest request = new HttpRequest();
-        request.setEndpoint(SETTINGS.BaseUrl__c + '/bulk/' + SETTINGS.ApiToken__c + '/tag/bulk/');
+        request.setEndpoint(SETTINGS.BaseUrl__c + '/bulk/' + SETTINGS.ApiToken__c + '/tag/salesforce/');
         request.setMethod('POST');
         request.setHeader('Content-Type', 'text/plain');
         request.setBody(String.join(logEntryStrings, '\n'));
-        // TODO figure out how to best use Loggly tags
-        //if(!tags.isEmpty()) request.setHeader('X-LOGGLY-TAG', String.join(tags, ','));
 
         HttpResponse response = new Http().send(request);
         System.debug(response.toString());
@@ -96,21 +94,21 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         organization.name = UserInfo.getOrganizationName();
 
         LogDto log = new LogDto();
-        log.classname           = logEntry.ClassName__c;
-        log.exceptionstacktrace = logEntry.ExceptionStackTrace__c;
-        log.exceptiontype       = logEntry.ExceptionType__c;
+        log.className           = logEntry.ClassName__c;
+        log.exceptionStackTrace = logEntry.ExceptionStackTrace__c;
+        log.exceptionType       = logEntry.ExceptionType__c;
         log.location            = logEntry.Source__c;
-        log.logentryid          = logEntry.Id;
-        log.logid               = logEntry.Log__c;
+        log.logEntryId          = logEntry.Id;
+        log.logId               = logEntry.Log__c;
         log.logType             = logEntry.Type__c;
         log.message             = logEntry.Message__c;
-        log.methodname          = logEntry.MethodName__c;
+        log.methodName          = logEntry.MethodName__c;
         log.organization        = organization;
         log.sourceSystem        = 'Salesforce';
         log.sourceUrl           = Url.getSalesforceBaseUrl().toExternalForm();
         log.timestamp           = this.getFormattedTimestamp(logEntry.Timestamp__c);
-        log.transactionentryid  = logEntry.TransactionEntryId__c;
-        log.transactionid       = parentLog.TransactionId__c;
+        log.transactionEntryId  = logEntry.TransactionEntryId__c;
+        log.transactionId       = parentLog.TransactionId__c;
         log.user                = user;
 
         return log;
