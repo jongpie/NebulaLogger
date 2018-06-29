@@ -53,4 +53,33 @@ private class LogglyLogPush_Tests {
         System.assertEquals(System.today(), logEntry.Log__r.PushedToLogglyDate__c.date());
     }
 
+    @isTest
+    static void it_should_not_push_a_debug_log_entry_when_push_field_is_false() {
+        verifyLogEntryCount(0);
+        Logger.addDebugEntry('testing', 'ClassName', 'methodName');
+        Logger.saveLog();
+        Test.getEventBus().deliver();
+        verifyLogEntryCount(1);
+
+        // To make sure that Loggly push is not triggered, we need to update a field on the parent Log__c
+        Log__c log = [SELECT Id, PushToLoggly__c FROM Log__c];
+        log.PushToLoggly__c = false;
+        update log;
+
+        LogEntry__c logEntry = [SELECT Id, Log__r.PushToLoggly__c, Log__r.PushedToLogglyDate__c FROM LogEntry__c];
+        System.assertEquals(false, logEntry.Log__r.PushToLoggly__c);
+        System.assertEquals(null, logEntry.Log__r.PushedToLogglyDate__c);
+
+        Test.startTest();
+        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+
+        Database.executeBatch(new LogglyLogPush());
+
+        Test.stopTest();
+
+        logEntry = [SELECT Id, Log__r.PushToLoggly__c, Log__r.PushedToLogglyDate__c FROM LogEntry__c];
+        System.assertEquals(false, logEntry.Log__r.PushToLoggly__c);
+        System.assertEquals(null, logEntry.Log__r.PushedToLogglyDate__c);
+    }
+
 }
