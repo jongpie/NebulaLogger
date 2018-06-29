@@ -32,6 +32,11 @@ private class LogglyLogPush_Tests {
         Test.getEventBus().deliver();
         verifyLogEntryCount(1);
 
+        // To trigger Loggly push, we need to update a field on the parent Log__c
+        Log__c log = [SELECT Id, PushToLoggly__c FROM Log__c];
+        log.PushToLoggly__c = true;
+        update log;
+
         LogEntry__c logEntry = [SELECT Id, Log__r.PushToLoggly__c, Log__r.PushedToLogglyDate__c FROM LogEntry__c];
         System.assertEquals(true, logEntry.Log__r.PushToLoggly__c);
         System.assertEquals(null, logEntry.Log__r.PushedToLogglyDate__c);
