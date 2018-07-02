@@ -18,19 +18,32 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
             UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c
         ));
         LogEntry__c logEntry = new LogEntry__c(
-            ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
-            ExceptionType__c       = logEntryEvent.ExceptionType__c,
-            Log__r                 = new Log__c(TransactionId__c = logEntryEvent.TransactionId__c),
-            LoggingLevel__c        = logEntryEvent.LoggingLevel__c,
-            LoggingLevelOrdinal__c = logEntryEvent.LoggingLevelOrdinal__c,
-            Message__c             = logEntryEvent.Message__c,
-            MessageTruncated__c    = logEntryEvent.MessageTruncated__c,
-            Name                   = logEntryEvent.TransactionEntryId__c,
-            OriginType__c          = logEntryEvent.OriginType__c,
-            OriginLocation__c      = logEntryEvent.OriginLocation__c,
-            Timestamp__c           = logEntryEvent.Timestamp__c,
-            TransactionEntryId__c  = logEntryEvent.TransactionEntryId__c,
-            Type__c                = logEntryEvent.Type__c
+            ContextIsApexRest__c           = logEntryEvent.ContextIsApexRest__c,
+            ContextIsBatch__c              = logEntryEvent.ContextIsBatch__c,
+            ContextIsFuture__c             = logEntryEvent.ContextIsFuture__c,
+            ContextIsLightning__c          = logEntryEvent.ContextIsLightning__c,
+            ContextIsLightningConsole__c   = logEntryEvent.ContextIsLightningConsole__c,
+            ContextIsMobileApp__c          = logEntryEvent.ContextIsMobileApp__c,
+            ContextIsQueueable__c          = logEntryEvent.ContextIsQueueable__c,
+            ContextIsScheduledJob__c       = logEntryEvent.ContextIsScheduledJob__c,
+            ContextIsTriggerExecuting__c   = logEntryEvent.ContextIsTriggerExecuting__c,
+            ContextIsVisualforce__c        = logEntryEvent.ContextIsVisualforce__c,
+            ContextTriggerOperationType__c = logEntryEvent.ContextTriggerOperationType__c,
+            ContextTriggerSobjectType__c   = logEntryEvent.ContextTriggerSobjectType__c,
+            ContextVisualforcePage__c      = logEntryEvent.ContextVisualforcePage__c,
+            ExceptionStackTrace__c         = logEntryEvent.ExceptionStackTrace__c,
+            ExceptionType__c               = logEntryEvent.ExceptionType__c,
+            Log__r                         = new Log__c(TransactionId__c = logEntryEvent.TransactionId__c),
+            LoggingLevel__c                = logEntryEvent.LoggingLevel__c,
+            LoggingLevelOrdinal__c         = logEntryEvent.LoggingLevelOrdinal__c,
+            Message__c                     = logEntryEvent.Message__c,
+            MessageTruncated__c            = logEntryEvent.MessageTruncated__c,
+            Name                           = logEntryEvent.TransactionEntryId__c,
+            OriginType__c                  = logEntryEvent.OriginType__c,
+            OriginLocation__c              = logEntryEvent.OriginLocation__c,
+            Timestamp__c                   = logEntryEvent.Timestamp__c,
+            TransactionEntryId__c          = logEntryEvent.TransactionEntryId__c,
+            Type__c                        = logEntryEvent.Type__c
         );
         logEntries.add(logEntry);
 

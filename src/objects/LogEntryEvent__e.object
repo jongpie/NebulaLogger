@@ -3,6 +3,152 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <eventType>StandardVolume</eventType>
     <fields>
+        <fullName>ContextIsApexRest__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Apex REST</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsBatch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Batch</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsFuture__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Future</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsLightningConsole__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Lightning Console</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsLightning__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Lightning</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsMobileApp__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Mobile App</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsQueueable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Queueable</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsScheduledJob__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Scheduled Job</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsScheduled__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Scheduled</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsTriggerExecuting__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Trigger Executing</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsVisualforce__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Visualforce</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextTriggerOperationType__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Trigger Operation Type</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ContextTriggerSobjectType__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Trigger SObject Type</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ContextVisualforcePage__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Visualforce Page</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ExceptionStackTrace__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>
@@ -137,6 +283,18 @@
         <label>Transaction ID</label>
         <length>36</length>
         <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TriggerOperationType__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Trigger Operation Type</label>
+        <length>255</length>
+        <required>false</required>
         <type>Text</type>
         <unique>false</unique>
     </fields>
