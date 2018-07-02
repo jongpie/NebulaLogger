@@ -26,7 +26,7 @@ public without sharing class Logger {
 
     public static String addExceptionEntry(Exception ex, String originLocation, List<String> topics) {
         return addEntry(LoggingLevel.ERROR, ex.getMessage(), ex, 'Apex', originLocation, topics);
-}
+    }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
