@@ -217,6 +217,13 @@
         <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalDebugLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>LoggedBy__c</searchFilterFields>
+        <searchFilterFields>TotalDebugLogEntries__c</searchFilterFields>
+        <searchFilterFields>TotalLogEntries__c</searchFilterFields>
+        <searchFilterFields>TotalExceptionLogEntries__c</searchFilterFields>
+        <searchFilterFields>UserLoggingLevel__c</searchFilterFields>
+        <searchFilterFields>CREATED_DATE</searchFilterFields>
         <searchResultsAdditionalFields>TransactionId__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>UserLoggingLevel__c</searchResultsAdditionalFields>

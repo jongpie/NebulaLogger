@@ -343,6 +343,366 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsAggregateQueriesMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Aggregate Queries Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAggregateQueriesUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Aggregate Queries Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAsyncCallsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Async Calls Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAsyncCallsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Async Calls Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCalloutsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Callouts Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCalloutsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Callouts Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCpuTimeMax__c</fullName>
+        <externalId>false</externalId>
+        <label>CPU Time Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCpuTimeUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>CPU Time Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlRowsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>DML Rows Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlRowsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>DML Rows Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlStatementsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>DML Statements Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlStatementsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>DML Statements Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsEmailInvocationsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Email Invocations Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsEmailInvocationsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Email Invocations Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsFutureCallsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Future Calls Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsFutureCallsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Future Calls Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsHeapSizeMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Heap Size Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsHeapSizeUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Heap Size Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsMobilePushApexCallsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Mobile Push Apex Calls Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsMobilePushApexCallsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Mobile Push Apex Calls Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsQueueableJobsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Queueable Jobs Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsQueueableJobsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Queueable Jobs Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueriesMax__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Queries Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueriesUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Queries Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueryLocatorRowsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Query Locator Rows Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueryLocatorRowsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Query Locator Rows Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueryRowsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Query Rows Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueryRowsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Query Rows Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoslSearchesMax__c</fullName>
+        <externalId>false</externalId>
+        <label>SOSL Searches Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoslSearchesUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>SOSL Searches Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LogTransactionId__c</fullName>
         <externalId>false</externalId>
         <formula>Log__r.TransactionId__c</formula>
@@ -371,7 +731,7 @@
         <fullName>LoggingLevelOrdinal__c</fullName>
         <externalId>false</externalId>
         <label>Logging Level Ordinal</label>
-        <precision>3</precision>
+        <precision>10</precision>
         <required>false</required>
         <scale>0</scale>
         <trackFeedHistory>false</trackFeedHistory>
