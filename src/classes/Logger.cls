@@ -32,7 +32,6 @@ public without sharing class Logger {
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
             LoggingLevel loggingLevel;
             if(!String.isBlank(flowLogEntry.LoggingLevelName)) loggingLevel = getLoggingLevel(flowLogEntry.LoggingLevelName);
-            if(loggingLevel == null) loggingLevel = System.LoggingLevel.DEBUG;
 
             addEntry(loggingLevel, flowLogEntry.Message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics);
         }
