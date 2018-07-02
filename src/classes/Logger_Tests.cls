@@ -13,6 +13,15 @@ private class Logger_Tests {
         return (LogEntry__c)Database.query(query);
     }
 
+    @testSetup
+    static void setup() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.LoggingLevel__c             = 'FINEST';
+        settings.StoreDebugLogEntries__c     = true;
+        settings.StoreExceptionLogEntries__c = true;
+        upsert settings;
+    }
+
     @isTest
     static void it_should_return_transaction_id() {
         String transactionId = Logger.getTransactionId();
