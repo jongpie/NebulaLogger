@@ -41,15 +41,15 @@ public without sharing class Logger {
         if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
 
         switch on loggingLevelName {
-            when 'NONE'   { return LoggingLevel.NONE; }
-            when 'ERROR'  { return LoggingLevel.ERROR; }
-            when 'WARN'   { return LoggingLevel.WARN; }
-            when 'INFO'   { return LoggingLevel.INFO; }
-            when 'DEBUG'  { return LoggingLevel.DEBUG; }
-            when 'FINE'   { return LoggingLevel.FINE; }
-            when 'FINER'  { return LoggingLevel.FINER; }
+            when 'NONE'   { return LoggingLevel.NONE;   }
+            when 'ERROR'  { return LoggingLevel.ERROR;  }
+            when 'WARN'   { return LoggingLevel.WARN;   }
+            when 'INFO'   { return LoggingLevel.INFO;   }
+            when 'DEBUG'  { return LoggingLevel.DEBUG;  }
+            when 'FINE'   { return LoggingLevel.FINE;   }
+            when 'FINER'  { return LoggingLevel.FINER;  }
             when 'FINEST' { return LoggingLevel.FINEST; }
-            when else     { return LoggingLevel.NONE; }
+            when else     { return LoggingLevel.NONE;   }
         }
     }
 
