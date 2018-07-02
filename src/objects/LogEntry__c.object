@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionOverrides>
         <actionName>Accept</actionName>
         <type>Default</type>
@@ -48,36 +48,24 @@
         <fields>Log__c</fields>
         <fields>Type__c</fields>
         <fields>Timestamp__c</fields>
-        <fields>SourceType__c</fields>
-        <fields>SourceName__c</fields>
-        <fields>ParentId__c</fields>
         <label>Log Entry Compact</label>
     </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
-    <enableFeeds>false</enableFeeds>
+    <enableFeeds>true</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>ClassName__c</fullName>
-        <externalId>true</externalId>
-        <label>Class Name</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>ExceptionStackTrace__c</fullName>
         <externalId>false</externalId>
         <label>Exception Stack Trace</label>
         <length>131072</length>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
@@ -87,6 +75,7 @@
         <externalId>false</externalId>
         <label>Exception Type</label>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -216,6 +205,7 @@
         <label>Process Builder/Flow Name</label>
         <length>255</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -240,6 +230,7 @@
         <relationshipName>LogEntries</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
@@ -251,6 +242,7 @@
         <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -260,6 +252,7 @@
         <externalId>false</externalId>
         <label>Logging Level</label>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -273,6 +266,7 @@
         <externalId>false</externalId>
         <inlineHelpText>Indicates if the message was truncated due to being too long to fit into the Message field</inlineHelpText>
         <label>Message Truncated</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -281,78 +275,32 @@
         <externalId>false</externalId>
         <label>Message</label>
         <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
-        <fullName>MethodName__c</fullName>
-        <externalId>true</externalId>
-        <label>Method Name</label>
+        <fullName>OriginLocation__c</fullName>
+        <externalId>false</externalId>
+        <label>Origin Location</label>
         <length>255</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>ParentId__c</fullName>
-        <externalId>true</externalId>
-        <label>Parent ID</label>
-        <length>18</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>ParentRecord__c</fullName>
+        <fullName>OriginType__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&apos;/&apos; + ParentId__c, ParentSobjectType__c, &apos;_top&apos;)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Parent Record</label>
+        <label>Origin Type</label>
         <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>ParentSobjectType__c</fullName>
-        <externalId>true</externalId>
-        <label>Parent SObject Type</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>SourceName__c</fullName>
-        <externalId>false</externalId>
-        <formula>IF(
-     NOT(ISBLANK(FlowName__c)),
-     FlowName__c,
-     IF(
-         AND(NOT(ISBLANK(ClassName__c)), NOT(ISBLANK(MethodName__c))),
-         ClassName__c + &apos;.&apos; + MethodName__c,
-         &apos;Unknown/Anonymous Apex&apos;
-     )
-)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Source Name</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>SourceType__c</fullName>
-        <externalId>false</externalId>
-        <label>Source Type</label>
-        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
+            <restricted>true</restricted>
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
@@ -369,25 +317,11 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Source__c</fullName>
-        <externalId>false</externalId>
-        <formula>IF(
-  ISPICKVAL(SourceType__c, &apos;&apos;)
-  ,&apos;&apos;
-  ,TEXT(SourceType__c) + &apos;: &apos; + SourceName__c
-)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Source</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Timestamp__c</fullName>
         <externalId>false</externalId>
         <label>Timestamp</label>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
@@ -398,6 +332,7 @@
         <label>Transaction Entry ID</label>
         <length>36</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>
@@ -422,6 +357,7 @@
         <externalId>false</externalId>
         <label>Type</label>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -446,6 +382,7 @@
     <label>Log Entry</label>
     <nameField>
         <label>Log Entry Transaction ID</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>Log Entries</pluralLabel>
@@ -456,14 +393,14 @@
         <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TypeImage__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>SourceType__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>SourceName__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields xsi:nil="true"/>
+        <lookupDialogsAdditionalFields xsi:nil="true"/>
         <lookupDialogsAdditionalFields>Message__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Log__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Timestamp__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Type__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>SourceType__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>SourceName__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields xsi:nil="true"/>
+        <lookupPhoneDialogsAdditionalFields xsi:nil="true"/>
         <lookupPhoneDialogsAdditionalFields>Message__c</lookupPhoneDialogsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>

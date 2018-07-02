@@ -15,11 +15,11 @@ public without sharing class FlowLogEntry {
     @InvocableVariable(required=true label='Log Entry Message')
     public String message;
 
-    @InvocableVariable(label='(Optional) Parent Record ID')
-    public Id parentId;
-
     @InvocableVariable(label='(Optional) Logging Level')
     public String loggingLevelName;
+
+    @InvocableVariable(label='(Optional) Topics')
+    public List<String> topics;
 
     public DateTime timestamp;
 

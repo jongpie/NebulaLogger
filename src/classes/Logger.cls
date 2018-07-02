@@ -12,43 +12,29 @@ public without sharing class Logger {
         return TRANSACTION_ID;
     }
 
-    public static String addDebugEntry(String message, String className, String methodName) {
-        return addEntry(null, message, null, className, methodName, null, null);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation) {
+        return addDebugEntry(loggingLevel, message, originLocation, null);
     }
 
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName) {
-        return addEntry(loggingLevel, message, null, className, methodName, null, null);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation, List<String> topics) {
+        return addEntry(loggingLevel, message, null, 'Apex', originLocation, topics);
     }
 
-    public static String addDebugEntry(String message, String className, String methodName, Id parentId) {
-        return addEntry(null, message, null, className, methodName, null, parentId);
+    public static String addExceptionEntry(Exception ex, String originLocation) {
+        return addExceptionEntry(ex, originLocation, null);
     }
 
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
-        return addEntry(LoggingLevel, message, null, className, methodName, null, parentId);
-    }
-
-    public static String addExceptionEntry(Exception ex, String className, String methodName) {
-        return addEntry(null, null, ex, className, methodName, null, null);
-    }
-
-    public static String addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName) {
-        return addEntry(loggingLevel, null, ex, className, methodName, null, null);
-    }
-
-    public static String addExceptionEntry(Exception ex, String className, String methodName, Id parentId) {
-        return addEntry(null, null, ex, className, methodName, null, parentId);
-    }
-
-    public static String addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName, Id parentId) {
-        return addEntry(loggingLevel, null, ex, className, methodName, null, parentId);
-    }
+    public static String addExceptionEntry(Exception ex, String originLocation, List<String> topics) {
+        return addEntry(LoggingLevel.ERROR, ex.getMessage(), ex, 'Apex', originLocation, topics);
+}
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
             LoggingLevel loggingLevel;
             if(!String.isBlank(flowLogEntry.LoggingLevelName)) loggingLevel = getLoggingLevel(flowLogEntry.LoggingLevelName);
-            addEntry(loggingLevel, flowLogEntry.Message, null, null, null, flowLogEntry.FlowName, flowLogEntry.ParentId);
+            if(loggingLevel == null) loggingLevel = System.LoggingLevel.DEBUG;
+
+            addEntry(loggingLevel, flowLogEntry.Message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics);
         }
     }
 
@@ -117,7 +103,7 @@ public without sharing class Logger {
         else return value.left(fieldMaxLength);
     }
 
-    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String flowName, Id parentId) {
+    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics) {
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
 
@@ -134,21 +120,18 @@ public without sharing class Logger {
         Boolean messageTruncated = message != truncatedMessage;
 
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
-            ClassName__c               = truncateFieldValue(Schema.LogEntryEvent__e.ClassName__c, className),
             ExceptionStackTrace__c     = ex == null ? null : truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, ex.getStackTraceString()),
             ExceptionType__c           = ex == null ? null : ex.getTypeName(),
-            FlowName__c                = flowName,
             LoggingLevel__c            = logEntryLoggingLevel.name(),
             LoggingLevelOrdinal__c     = logEntryLoggingLevel.ordinal(),
             Message__c                 = truncatedMessage,
             MessageTruncated__c        = messageTruncated,
-            MethodName__c              = truncateFieldValue(Schema.LogEntryEvent__e.MethodName__c, methodName),
-            ParentId__c                = parentId,
-            ParentSobjectType__c       = parentId == null ? null : String.valueOf(parentId.getSobjectType()),
-            SourceType__c              = flowName != null ? 'Process Builder/Flow' : 'Apex',
+            OriginType__c              = originType,
+            OriginLocation__c          = originLocation,
             Timestamp__c               = System.now(),
             TransactionId__c           = TRANSACTION_ID,
             TransactionEntryId__c      = logEntryTransactionId,
+            Topics__c                  = topics != null ? String.join(topics, ',') : null,
             Type__c                    = type,
             UserLoggingLevel__c        = getUserLoggingLevel().name(),
             UserLoggingLevelOrdinal__c = getUserLoggingLevel().ordinal()

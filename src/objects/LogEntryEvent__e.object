@@ -3,18 +3,6 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <eventType>StandardVolume</eventType>
     <fields>
-        <fullName>ClassName__c</fullName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Class Name</label>
-        <length>255</length>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>ExceptionStackTrace__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>
@@ -32,18 +20,6 @@
         <isNameField>false</isNameField>
         <isSortingDisabled>false</isSortingDisabled>
         <label>Exception Type</label>
-        <length>255</length>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>FlowName__c</fullName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Process Builder/Flow Name</label>
         <length>255</length>
         <required>false</required>
         <type>Text</type>
@@ -96,48 +72,24 @@
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
-        <fullName>MethodName__c</fullName>
+        <fullName>OriginLocation__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>
         <isNameField>false</isNameField>
         <isSortingDisabled>false</isSortingDisabled>
-        <label>Method Name</label>
+        <label>Origin Location</label>
         <length>255</length>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>ParentId__c</fullName>
+        <fullName>OriginType__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>
         <isNameField>false</isNameField>
         <isSortingDisabled>false</isSortingDisabled>
-        <label>Parent ID</label>
-        <length>18</length>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>ParentSobjectType__c</fullName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Parent Record SObject Type</label>
-        <length>255</length>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>SourceType__c</fullName>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Source Type</label>
+        <label>Origin Type</label>
         <length>255</length>
         <required>false</required>
         <type>Text</type>
@@ -152,6 +104,17 @@
         <label>Timestamp</label>
         <required>true</required>
         <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Topics__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Topics</label>
+        <length>32768</length>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>TransactionEntryId__c</fullName>
