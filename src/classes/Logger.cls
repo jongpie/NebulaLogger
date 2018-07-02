@@ -12,6 +12,10 @@ public without sharing class Logger {
         return TRANSACTION_ID;
     }
 
+    public static String addDebugEntry(String message, String originLocation) {
+        return addDebugEntry(null, message, originLocation);
+    }
+
     public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation) {
         return addDebugEntry(loggingLevel, message, originLocation, null);
     }

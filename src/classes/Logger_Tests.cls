@@ -48,7 +48,24 @@ private class Logger_Tests {
     }
 
     @isTest
-    static void it_should_add_a_debug_entry() {
+    static void it_should_add_a_debug_entry_with_default_logging_level() {
+        String message = 'my test message';
+        String originLocation = 'MyClass.myMethod()';
+
+        Test.startTest();
+        Logger.addDebugEntry(message, originLocation);
+        Logger.saveLog();
+        Test.stopTest();
+
+        LogEntry__c logEntry = getLogEntry();
+        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+    }
+
+    @isTest
+    static void it_should_add_a_debug_entry_with_logging_level() {
         LoggingLevel logLevel = LoggingLevel.WARN;
         String message = 'my test message';
         String originLocation = 'MyClass.myMethod()';
@@ -59,6 +76,7 @@ private class Logger_Tests {
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry();
+        System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
         System.assertEquals(originLocation, logEntry.OriginLocation__c);
