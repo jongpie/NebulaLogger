@@ -49,20 +49,24 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
     }
 
     private List<String> getQueryFields() {
-        List<String> logQueryFields = new List<String>();
-        logQueryFields.add(String.valueOf(Schema.Log__c.Name));
-        logQueryFields.add(String.valueOf(Schema.Log__c.LoggedBy__c));
-        logQueryFields.add('LoggedBy__r.Name');
-        logQueryFields.add(String.valueOf(Schema.Log__c.TransactionId__c));
+        List<String> logQueryFields = new List<String>{
+            String.valueOf(Schema.Log__c.Name),
+            'LoggedBy__r.Name',
+            String.valueOf(Schema.Log__c.LoggedBy__c),
+            String.valueOf(Schema.Log__c.TransactionId__c)
+        };
         logQueryFields.sort();
 
-        // LogEntry__c fields
         List<String> logEntryQueryFields = new List<String>{
-            String.valueOf(Schema.LogEntry__c.Id), String.valueOf(Schema.LogEntry__c.ClassName__c),
-            String.valueOf(Schema.LogEntry__c.ExceptionStackTrace__c), String.valueOf(Schema.LogEntry__c.ExceptionType__c),
-            String.valueOf(Schema.LogEntry__c.Log__c), String.valueOf(Schema.LogEntry__c.Message__c),
-            String.valueOf(Schema.LogEntry__c.MethodName__c), String.valueOf(Schema.LogEntry__c.Source__c),
-            String.valueOf(Schema.LogEntry__c.Timestamp__c), String.valueOf(Schema.LogEntry__c.TransactionEntryId__c),
+            String.valueOf(Schema.LogEntry__c.Id),
+            String.valueOf(Schema.LogEntry__c.ExceptionStackTrace__c),
+            String.valueOf(Schema.LogEntry__c.ExceptionType__c),
+            String.valueOf(Schema.LogEntry__c.Log__c),
+            String.valueOf(Schema.LogEntry__c.Message__c),
+            String.valueOf(Schema.LogEntry__c.OriginLocation__c),
+            String.valueOf(Schema.LogEntry__c.OriginType__c),
+            String.valueOf(Schema.LogEntry__c.Timestamp__c),
+            String.valueOf(Schema.LogEntry__c.TransactionEntryId__c),
             String.valueOf(Schema.LogEntry__c.Type__c)
         };
         logEntryQueryFields.sort();
@@ -94,15 +98,14 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         organization.name = UserInfo.getOrganizationName();
 
         LogDto log = new LogDto();
-        log.className           = logEntry.ClassName__c;
         log.exceptionStackTrace = logEntry.ExceptionStackTrace__c;
         log.exceptionType       = logEntry.ExceptionType__c;
-        log.location            = logEntry.Source__c;
+        log.originLocation      = logEntry.OriginLocation__c;
+        log.originType          = logEntry.OriginType__c;
         log.logEntryId          = logEntry.Id;
         log.logId               = logEntry.Log__c;
         log.logType             = logEntry.Type__c;
         log.message             = logEntry.Message__c;
-        log.methodName          = logEntry.MethodName__c;
         log.organization        = organization;
         log.sourceSystem        = 'Salesforce';
         log.sourceUrl           = Url.getSalesforceBaseUrl().toExternalForm();
@@ -124,6 +127,8 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         public String logType;
         public String message;
         public String methodName;
+        public String originLocation;
+        public String originType;
         public OrganizationDto organization;
         public String sourceSystem;
         public String sourceUrl;

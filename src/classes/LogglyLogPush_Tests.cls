@@ -19,18 +19,18 @@ private class LogglyLogPush_Tests {
         }
     }
 
-    static void verifyLogEntryCount(Integer expectedCount) {
+    static void verifyLogEntryCountEquals(Integer expectedCount) {
         List<LogEntry__c> existingLogEntries = [SELECT Id FROM LogEntry__c];
         System.assertEquals(expectedCount, existingLogEntries.size());
     }
 
     @isTest
     static void it_should_push_a_debug_log_entry_and_update_push_date() {
-        verifyLogEntryCount(0);
-        Logger.addDebugEntry('testing', 'ClassName', 'methodName');
+        verifyLogEntryCountEquals(0);
+        Logger.addDebugEntry(LoggingLevel.DEBUG, 'testing', 'MyClass.myMethodName()');
         Logger.saveLog();
         Test.getEventBus().deliver();
-        verifyLogEntryCount(1);
+        verifyLogEntryCountEquals(1);
 
         // To trigger Loggly push, we need to update a field on the parent Log__c
         Log__c log = [SELECT Id, PushToLoggly__c FROM Log__c];
@@ -55,11 +55,11 @@ private class LogglyLogPush_Tests {
 
     @isTest
     static void it_should_not_push_a_debug_log_entry_when_push_field_is_false() {
-        verifyLogEntryCount(0);
-        Logger.addDebugEntry('testing', 'ClassName', 'methodName');
+        verifyLogEntryCountEquals(0);
+        Logger.addDebugEntry(LoggingLevel.DEBUG, 'testing', 'MyClass.myMethodName()');
         Logger.saveLog();
         Test.getEventBus().deliver();
-        verifyLogEntryCount(1);
+        verifyLogEntryCountEquals(1);
 
         // To make sure that Loggly push is not triggered, we need to update a field on the parent Log__c
         Log__c log = [SELECT Id, PushToLoggly__c FROM Log__c];
