@@ -115,7 +115,7 @@ public without sharing class Logger {
 
         String type = ex == null ? 'Debug' : 'Exception';
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return logEntryTransactionId;
-        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
+        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) return logEntryTransactionId;
 
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
         Boolean messageTruncated = message != truncatedMessage;
