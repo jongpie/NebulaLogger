@@ -103,6 +103,8 @@ public without sharing class Logger {
     }
 
     private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics) {
+        Datetime logEntryTimestamp = System.now();
+
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
 
@@ -126,8 +128,8 @@ public without sharing class Logger {
             Message__c                 = String.escapeSingleQuotes(truncatedMessage),
             MessageTruncated__c        = messageTruncated,
             OriginType__c              = originType,
-            Timestamp__c               = System.now(),
             OriginLocation__c          = truncateFieldValue(Schema.LogEntryEvent__e.OriginLocation__c, originLocation),
+            Timestamp__c               = logEntryTimestamp,
             TransactionId__c           = TRANSACTION_ID,
             TransactionEntryId__c      = logEntryTransactionId,
             Topics__c                  = topics == null ? null : String.escapeSingleQuotes(String.join(topics, ',')),
