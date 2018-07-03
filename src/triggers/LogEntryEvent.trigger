@@ -11,6 +11,12 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
 
     for(LogEntryEvent__e logEntryEvent : Trigger.new) {
         logs.add(new Log__c(
+            ContextIsApexRest__c       = logEntryEvent.ContextIsApexRest__c,
+            ContextIsBatch__c          = logEntryEvent.ContextIsBatch__c,
+            ContextIsFuture__c         = logEntryEvent.ContextIsFuture__c,
+            ContextIsQueueable__c      = logEntryEvent.ContextIsQueueable__c,
+            ContextIsScheduledJob__c   = logEntryEvent.ContextIsScheduledJob__c,
+            ContextThemeDisplayed__c   = logEntryEvent.ContextThemeDisplayed__c,
             LoggedBy__c                = logEntryEvent.CreatedById,
             OwnerId                    = logEntryEvent.CreatedById,
             TransactionId__c           = logEntryEvent.TransactionId__c,
@@ -18,14 +24,6 @@ trigger LogEntryEvent on LogEntryEvent__e(after insert) {
             UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c
         ));
         LogEntry__c logEntry = new LogEntry__c(
-            ContextIsApexRest__c              = logEntryEvent.ContextIsApexRest__c,
-            ContextIsBatch__c                 = logEntryEvent.ContextIsBatch__c,
-            ContextIsFuture__c                = logEntryEvent.ContextIsFuture__c,
-            ContextIsLightning__c             = logEntryEvent.ContextIsLightning__c,
-            ContextIsLightningConsole__c      = logEntryEvent.ContextIsLightningConsole__c,
-            ContextIsMobileApp__c             = logEntryEvent.ContextIsMobileApp__c,
-            ContextIsQueueable__c             = logEntryEvent.ContextIsQueueable__c,
-            ContextIsScheduledJob__c          = logEntryEvent.ContextIsScheduledJob__c,
             ContextIsTriggerExecuting__c      = logEntryEvent.ContextIsTriggerExecuting__c,
             ContextIsVisualforce__c           = logEntryEvent.ContextIsVisualforce__c,
             ContextTriggerOperationType__c    = logEntryEvent.ContextTriggerOperationType__c,

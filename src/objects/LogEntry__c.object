@@ -88,33 +88,6 @@
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>ContextIsLightningConsole__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Lightning Console</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>ContextIsLightning__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Lightning</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>ContextIsMobileApp__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Mobile App</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>ContextIsQueueable__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -128,15 +101,6 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Scheduled Job</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>ContextIsScheduled__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Scheduled</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -158,6 +122,61 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextThemeDisplayed__c</fullName>
+        <externalId>false</externalId>
+        <label>Theme Displayed</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Theme1</fullName>
+                    <default>false</default>
+                    <label>Obsolete Salesforce Theme</label>
+                </value>
+                <value>
+                    <fullName>Theme2</fullName>
+                    <default>false</default>
+                    <label>Salesforce Classic 2005</label>
+                </value>
+                <value>
+                    <fullName>Theme3</fullName>
+                    <default>false</default>
+                    <label>Salesforce Classic</label>
+                </value>
+                <value>
+                    <fullName>Theme4d</fullName>
+                    <default>false</default>
+                    <label>Lightning Experience</label>
+                </value>
+                <value>
+                    <fullName>Theme4t</fullName>
+                    <default>false</default>
+                    <label>Salesforce Mobile App</label>
+                </value>
+                <value>
+                    <fullName>Theme4u</fullName>
+                    <default>false</default>
+                    <label>Lightning Console</label>
+                </value>
+                <value>
+                    <fullName>PortalDefault</fullName>
+                    <default>false</default>
+                    <label>Customer Portal</label>
+                </value>
+                <value>
+                    <fullName>Webstore</fullName>
+                    <default>false</default>
+                    <label>AppExchange</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>ContextTriggerOperationType__c</fullName>

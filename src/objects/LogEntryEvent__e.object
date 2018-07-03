@@ -33,36 +33,6 @@
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>ContextIsLightningConsole__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Lightning Console</label>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>ContextIsLightning__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Lightning</label>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>ContextIsMobileApp__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <isFilteringDisabled>false</isFilteringDisabled>
-        <isNameField>false</isNameField>
-        <isSortingDisabled>false</isSortingDisabled>
-        <label>Mobile App</label>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>ContextIsQueueable__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -111,6 +81,18 @@
         <isSortingDisabled>false</isSortingDisabled>
         <label>Visualforce</label>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextThemeDisplayed__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Theme Displayed</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ContextTriggerOperationType__c</fullName>
