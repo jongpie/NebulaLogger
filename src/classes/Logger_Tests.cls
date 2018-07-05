@@ -26,16 +26,11 @@ private class Logger_Tests {
     static void it_should_return_transaction_id() {
         String transactionId = Logger.getTransactionId();
         System.assert(!String.isBlank(transactionId));
-
-        Test.startTest();
-        System.assertEquals(transactionId, Logger.getTransactionId());
-        Test.stopTest();
-
-        System.assertEquals(transactionId, Logger.getTransactionId());
     }
 
     @isTest
     static void it_should_return_logging_level() {
+        System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('fake'));
         System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
         System.assertEquals(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
         System.assertEquals(LoggingLevel.WARN, Logger.getLoggingLevel('warn'));
@@ -44,7 +39,6 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.FINE, Logger.getLoggingLevel('fine'));
         System.assertEquals(LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
         System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
-        System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('fake'));
     }
 
     @isTest
