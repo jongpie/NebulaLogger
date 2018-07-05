@@ -48,27 +48,165 @@
         <fields>Log__c</fields>
         <fields>Type__c</fields>
         <fields>Timestamp__c</fields>
-        <fields>SourceType__c</fields>
-        <fields>SourceName__c</fields>
-        <fields>ParentId__c</fields>
         <label>Log Entry Compact</label>
     </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
-    <enableFeeds>false</enableFeeds>
+    <enableFeeds>true</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>ClassName__c</fullName>
-        <externalId>true</externalId>
-        <label>Class Name</label>
+        <fullName>ContextIsApexRest__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Apex REST</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsBatch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Batch</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsFuture__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Future</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsQueueable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Queueable</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsScheduledJob__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Scheduled Job</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsTriggerExecuting__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Trigger Executing</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsVisualforce__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Visualforce</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextThemeDisplayed__c</fullName>
+        <externalId>false</externalId>
+        <label>Theme Displayed</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Theme1</fullName>
+                    <default>false</default>
+                    <label>Obsolete Salesforce Theme</label>
+                </value>
+                <value>
+                    <fullName>Theme2</fullName>
+                    <default>false</default>
+                    <label>Salesforce Classic 2005</label>
+                </value>
+                <value>
+                    <fullName>Theme3</fullName>
+                    <default>false</default>
+                    <label>Salesforce Classic</label>
+                </value>
+                <value>
+                    <fullName>Theme4d</fullName>
+                    <default>false</default>
+                    <label>Lightning Experience</label>
+                </value>
+                <value>
+                    <fullName>Theme4t</fullName>
+                    <default>false</default>
+                    <label>Salesforce Mobile App</label>
+                </value>
+                <value>
+                    <fullName>Theme4u</fullName>
+                    <default>false</default>
+                    <label>Lightning Console</label>
+                </value>
+                <value>
+                    <fullName>PortalDefault</fullName>
+                    <default>false</default>
+                    <label>Customer Portal</label>
+                </value>
+                <value>
+                    <fullName>Webstore</fullName>
+                    <default>false</default>
+                    <label>AppExchange</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ContextTriggerOperationType__c</fullName>
+        <externalId>false</externalId>
+        <label>Trigger Operation Type</label>
         <length>255</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ContextTriggerSobjectType__c</fullName>
+        <externalId>false</externalId>
+        <label>Trigger SObject Type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ContextVisualforcePage__c</fullName>
+        <externalId>false</externalId>
+        <label>Visualforce Page</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -78,19 +216,139 @@
         <externalId>false</externalId>
         <label>Exception Stack Trace</label>
         <length>131072</length>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
-        <fullName>ExceptionTypeName__c</fullName>
+        <fullName>ExceptionType__c</fullName>
         <externalId>false</externalId>
-        <label>Exception Type Name</label>
-        <length>255</length>
+        <label>Exception Type</label>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AsyncException</fullName>
+                    <default>false</default>
+                    <label>AsyncException</label>
+                </value>
+                <value>
+                    <fullName>CalloutException</fullName>
+                    <default>false</default>
+                    <label>CalloutException</label>
+                </value>
+                <value>
+                    <fullName>DmlException</fullName>
+                    <default>false</default>
+                    <label>DmlException</label>
+                </value>
+                <value>
+                    <fullName>EmailException</fullName>
+                    <default>false</default>
+                    <label>EmailException</label>
+                </value>
+                <value>
+                    <fullName>ExternalObjectException</fullName>
+                    <default>false</default>
+                    <label>ExternalObjectException</label>
+                </value>
+                <value>
+                    <fullName>InvalidParameterValueException</fullName>
+                    <default>false</default>
+                    <label>InvalidParameterValueException</label>
+                </value>
+                <value>
+                    <fullName>LimitException</fullName>
+                    <default>false</default>
+                    <label>LimitException</label>
+                </value>
+                <value>
+                    <fullName>JSONException</fullName>
+                    <default>false</default>
+                    <label>JSONException</label>
+                </value>
+                <value>
+                    <fullName>ListException</fullName>
+                    <default>false</default>
+                    <label>ListException</label>
+                </value>
+                <value>
+                    <fullName>MathException</fullName>
+                    <default>false</default>
+                    <label>MathException</label>
+                </value>
+                <value>
+                    <fullName>NoAccessException</fullName>
+                    <default>false</default>
+                    <label>NoAccessException</label>
+                </value>
+                <value>
+                    <fullName>NoDataFoundException</fullName>
+                    <default>false</default>
+                    <label>NoDataFoundException</label>
+                </value>
+                <value>
+                    <fullName>NoSuchElementException</fullName>
+                    <default>false</default>
+                    <label>NoSuchElementException</label>
+                </value>
+                <value>
+                    <fullName>NullPointerException</fullName>
+                    <default>false</default>
+                    <label>NullPointerException</label>
+                </value>
+                <value>
+                    <fullName>QueryException</fullName>
+                    <default>false</default>
+                    <label>QueryException</label>
+                </value>
+                <value>
+                    <fullName>SearchException</fullName>
+                    <default>false</default>
+                    <label>SearchException</label>
+                </value>
+                <value>
+                    <fullName>SecurityException</fullName>
+                    <default>false</default>
+                    <label>SecurityException</label>
+                </value>
+                <value>
+                    <fullName>SerializationException</fullName>
+                    <default>false</default>
+                    <label>SerializationException</label>
+                </value>
+                <value>
+                    <fullName>SObjectException</fullName>
+                    <default>false</default>
+                    <label>SObjectException</label>
+                </value>
+                <value>
+                    <fullName>StringException</fullName>
+                    <default>false</default>
+                    <label>StringException</label>
+                </value>
+                <value>
+                    <fullName>TypeException</fullName>
+                    <default>false</default>
+                    <label>TypeException</label>
+                </value>
+                <value>
+                    <fullName>VisualforceException</fullName>
+                    <default>false</default>
+                    <label>VisualforceException</label>
+                </value>
+                <value>
+                    <fullName>XmlException</fullName>
+                    <default>false</default>
+                    <label>XmlException</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
     </fields>
     <fields>
         <fullName>FlowName__c</fullName>
@@ -98,8 +356,369 @@
         <label>Process Builder/Flow Name</label>
         <length>255</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAggregateQueriesMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Aggregate Queries Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAggregateQueriesUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Aggregate Queries Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAsyncCallsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Async Calls Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAsyncCallsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Async Calls Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCalloutsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Callouts Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCalloutsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Callouts Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCpuTimeMax__c</fullName>
+        <externalId>false</externalId>
+        <label>CPU Time Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCpuTimeUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>CPU Time Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlRowsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>DML Rows Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlRowsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>DML Rows Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlStatementsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>DML Statements Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlStatementsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>DML Statements Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsEmailInvocationsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Email Invocations Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsEmailInvocationsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Email Invocations Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsFutureCallsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Future Calls Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsFutureCallsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Future Calls Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsHeapSizeMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Heap Size Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsHeapSizeUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Heap Size Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsMobilePushApexCallsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Mobile Push Apex Calls Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsMobilePushApexCallsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Mobile Push Apex Calls Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsQueueableJobsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>Queueable Jobs Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsQueueableJobsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>Queueable Jobs Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueriesMax__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Queries Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueriesUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Queries Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueryLocatorRowsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Query Locator Rows Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueryLocatorRowsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Query Locator Rows Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueryRowsMax__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Query Rows Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueryRowsUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>SOQL Query Rows Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoslSearchesMax__c</fullName>
+        <externalId>false</externalId>
+        <label>SOSL Searches Max</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoslSearchesUsed__c</fullName>
+        <externalId>false</externalId>
+        <label>SOSL Searches Used</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -119,9 +738,10 @@
         <label>Log</label>
         <referenceTo>Log__c</referenceTo>
         <relationshipLabel>Log Entries</relationshipLabel>
-        <relationshipName>Log_Entry_Derps</relationshipName>
+        <relationshipName>LogEntries</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
@@ -130,9 +750,10 @@
         <fullName>LoggingLevelOrdinal__c</fullName>
         <externalId>false</externalId>
         <label>Logging Level Ordinal</label>
-        <precision>3</precision>
+        <precision>10</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -142,6 +763,7 @@
         <externalId>false</externalId>
         <label>Logging Level</label>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -155,6 +777,7 @@
         <externalId>false</externalId>
         <inlineHelpText>Indicates if the message was truncated due to being too long to fit into the Message field</inlineHelpText>
         <label>Message Truncated</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -163,78 +786,32 @@
         <externalId>false</externalId>
         <label>Message</label>
         <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
-        <fullName>MethodName__c</fullName>
-        <externalId>true</externalId>
-        <label>Method Name</label>
+        <fullName>OriginLocation__c</fullName>
+        <externalId>false</externalId>
+        <label>Origin Location</label>
         <length>255</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>ParentId__c</fullName>
-        <externalId>true</externalId>
-        <label>Parent ID</label>
-        <length>18</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>ParentRecord__c</fullName>
+        <fullName>OriginType__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&apos;/&apos; + ParentId__c, ParentSobjectType__c, &apos;_top&apos;)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Parent Record</label>
+        <label>Origin Type</label>
         <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>ParentSobjectType__c</fullName>
-        <externalId>true</externalId>
-        <label>Parent SObject Type</label>
-        <length>255</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>SourceName__c</fullName>
-        <externalId>false</externalId>
-        <formula>IF(
-     NOT(ISBLANK(FlowName__c)),
-     FlowName__c,
-     IF(
-         AND(NOT(ISBLANK(ClassName__c)), NOT(ISBLANK(MethodName__c))),
-         ClassName__c + &apos;.&apos; + MethodName__c,
-         &apos;Unknown/Anonymous Apex&apos;
-     )
-)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Source Name</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>SourceType__c</fullName>
-        <externalId>false</externalId>
-        <label>Source Type</label>
-        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
+            <restricted>true</restricted>
             <valueSetDefinition>
                 <sorted>false</sorted>
                 <value>
@@ -251,25 +828,11 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Source__c</fullName>
-        <externalId>false</externalId>
-        <formula>IF(
-  ISPICKVAL(SourceType__c, &apos;&apos;)
-  ,&apos;&apos;
-  ,TEXT(SourceType__c) + &apos;: &apos; + SourceName__c
-)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Source</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Timestamp__c</fullName>
         <externalId>false</externalId>
         <label>Timestamp</label>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
@@ -280,6 +843,7 @@
         <label>Transaction Entry ID</label>
         <length>36</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>
@@ -304,6 +868,7 @@
         <externalId>false</externalId>
         <label>Type</label>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -328,24 +893,21 @@
     <label>Log Entry</label>
     <nameField>
         <label>Log Entry Transaction ID</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>Log Entries</pluralLabel>
     <searchLayouts>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TypeImage__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>SourceType__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>SourceName__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Message__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Log__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Timestamp__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Type__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>SourceType__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>SourceName__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Message__c</lookupPhoneDialogsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>

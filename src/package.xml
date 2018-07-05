@@ -9,9 +9,14 @@
         <name>ApexTrigger</name>
     </types>
     <types>
+        <members>*</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
         <members>LogEntryEvent__e</members>
         <members>LogEntry__c</members>
         <members>Log__c</members>
+        <members>LoggerIntegration__mdt</members>
         <members>LoggerSettings__c</members>
         <name>CustomObject</name>
     </types>
@@ -31,6 +36,11 @@
     <types>
         <members>*</members>
         <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>LogEntry__c</members>
+        <members>Log__c</members>
+        <name>TopicsForObjects</name>
     </types>
     <version>43.0</version>
 </Package>

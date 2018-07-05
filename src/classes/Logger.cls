@@ -12,59 +12,52 @@ public without sharing class Logger {
         return TRANSACTION_ID;
     }
 
-    public static String addDebugEntry(String message, String className, String methodName) {
-        return addEntry(null, message, null, className, methodName, null, null);
+    public static String addDebugEntry(String message, String originLocation) {
+        return addDebugEntry(null, message, originLocation);
     }
 
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName) {
-        return addEntry(loggingLevel, message, null, className, methodName, null, null);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation) {
+        return addDebugEntry(loggingLevel, message, originLocation, null);
     }
 
-    public static String addDebugEntry(String message, String className, String methodName, Id parentId) {
-        return addEntry(null, message, null, className, methodName, null, parentId);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation, List<String> topics) {
+        return addEntry(loggingLevel, message, null, 'Apex', originLocation, topics);
     }
 
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String className, String methodName, Id parentId) {
-        return addEntry(LoggingLevel, message, null, className, methodName, null, parentId);
+    public static String addExceptionEntry(Exception ex, String originLocation) {
+        return addExceptionEntry(ex, originLocation, null);
     }
 
-    public static String addExceptionEntry(Exception ex, String className, String methodName) {
-        return addEntry(null, null, ex, className, methodName, null, null);
-    }
-
-    public static String addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName) {
-        return addEntry(loggingLevel, null, ex, className, methodName, null, null);
-    }
-
-    public static String addExceptionEntry(Exception ex, String className, String methodName, Id parentId) {
-        return addEntry(null, null, ex, className, methodName, null, parentId);
-    }
-
-    public static String addExceptionEntry(LoggingLevel loggingLevel, Exception ex, String className, String methodName, Id parentId) {
-        return addEntry(loggingLevel, null, ex, className, methodName, null, parentId);
+    public static String addExceptionEntry(Exception ex, String originLocation, List<String> topics) {
+        return addEntry(LoggingLevel.ERROR, ex.getMessage(), ex, 'Apex', originLocation, topics);
     }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
+        Boolean saveLog = false;
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
             LoggingLevel loggingLevel;
             if(!String.isBlank(flowLogEntry.LoggingLevelName)) loggingLevel = getLoggingLevel(flowLogEntry.LoggingLevelName);
-            addEntry(loggingLevel, flowLogEntry.Message, null, null, null, flowLogEntry.FlowName, flowLogEntry.ParentId);
+
+            if(flowLogEntry.saveLog) saveLog = true;
+
+            addEntry(loggingLevel, flowLogEntry.Message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics);
         }
+        if(saveLog) saveLog();
     }
 
     public static LoggingLevel getLoggingLevel(String loggingLevelName) {
         if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
 
         switch on loggingLevelName {
-            when 'NONE'   { return LoggingLevel.NONE; }
-            when 'ERROR'  { return LoggingLevel.ERROR; }
-            when 'WARN'   { return LoggingLevel.WARN; }
-            when 'INFO'   { return LoggingLevel.INFO; }
-            when 'DEBUG'  { return LoggingLevel.DEBUG; }
-            when 'FINE'   { return LoggingLevel.FINE; }
-            when 'FINER'  { return LoggingLevel.FINER; }
+            when 'NONE'   { return LoggingLevel.NONE;   }
+            when 'ERROR'  { return LoggingLevel.ERROR;  }
+            when 'WARN'   { return LoggingLevel.WARN;   }
+            when 'INFO'   { return LoggingLevel.INFO;   }
+            when 'DEBUG'  { return LoggingLevel.DEBUG;  }
+            when 'FINE'   { return LoggingLevel.FINE;   }
+            when 'FINER'  { return LoggingLevel.FINER;  }
             when 'FINEST' { return LoggingLevel.FINEST; }
-            when else     { return LoggingLevel.NONE; }
+            when else     { return LoggingLevel.NONE;   }
         }
     }
 
@@ -106,52 +99,100 @@ public without sharing class Logger {
         return getLoggingLevel(getSettings().LoggingLevel__c);
     }
 
-    private static Boolean meetsLoggingLevel(LoggingLevel userLoggingLevel, LoggingLevel logEntryLoggingLevel) {
+    private static Boolean meetsUserLoggingLevel(LoggingLevel userLoggingLevel, LoggingLevel logEntryLoggingLevel) {
         return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
-    private static String truncateLogEntryMessage(String message) {
-        Integer messageMaxLength = Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
-        return message;
+    private static String truncateFieldValue(Schema.SobjectField field, String value) {
+        Integer fieldMaxLength = field.getDescribe().getLength();
+        if(String.isEmpty(value)) return value;
+        else if(value.length() <= fieldMaxLength) return value;
+        else return value.left(fieldMaxLength);
     }
 
-    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String className, String methodName, String flowName, Id parentId) {
+    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics) {
+        Datetime logEntryTimestamp = System.now();
+
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
 
         String logEntryTransactionId = generateUuid();
 
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
-        if(!meetsLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
+        if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
 
         String type = ex == null ? 'Debug' : 'Exception';
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return logEntryTransactionId;
-        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) throw ex;
+        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) return logEntryTransactionId;
 
-        String truncatedMessage = truncateLogEntryMessage(message);
+        String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
         Boolean messageTruncated = message != truncatedMessage;
 
+        String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
+        if(visualforcePageName != null && visualforcePageName.contains('?')) visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
+        else if(visualforcePageName != null) visualforcePageName = visualforcePageName.substringAfter('apex/');
+
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
-            ClassName__c               = className,
-            ExceptionStackTrace__c     = ex == null ? null : ex.getStackTraceString(),
-            ExceptionTypeName__c       = ex == null ? null : ex.getTypeName(),
-            FlowName__c                = flowName,
-            LoggingLevel__c            = logEntryLoggingLevel.name(),
-            LoggingLevelOrdinal__c     = logEntryLoggingLevel.ordinal(),
-            Message__c                 = truncatedMessage,
-            MessageTruncated__c        = messageTruncated,
-            MethodName__c              = methodName,
-            ParentId__c                = parentId,
-            ParentSobjectType__c       = parentId == null ? null : String.valueOf(parentId.getSobjectType()),
-            SourceType__c              = flowName != null ? 'Process Builder/Flow' : 'Apex',
-            Timestamp__c               = System.now(),
-            TransactionId__c           = TRANSACTION_ID,
-            TransactionEntryId__c      = logEntryTransactionId,
-            Type__c                    = type,
-            UserLoggingLevel__c        = getUserLoggingLevel().name(),
-            UserLoggingLevelOrdinal__c = getUserLoggingLevel().ordinal()
+            ContextIsApexRest__c              = RestContext.request != null,
+            ContextIsBatch__c                 = System.isBatch(),
+            ContextIsFuture__c                = System.isFuture(),
+            ContextIsQueueable__c             = System.isQueueable(),
+            ContextIsScheduledJob__c          = System.isScheduled(),
+            ContextIsTriggerExecuting__c      = Trigger.isExecuting,
+            ContextIsVisualforce__c           = ApexPages.currentPage() != null,
+            ContextThemeDisplayed__c          = UserInfo.getUiThemeDisplayed(),
+            ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
+            ContextTriggerSobjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSobjectType()),
+            ContextVisualforcePage__c         = visualforcePageName,
+            ExceptionStackTrace__c            = ex == null ? null : truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, ex.getStackTraceString()),
+            ExceptionType__c                  = ex == null ? null : ex.getTypeName(),
+            LimitsAggregateQueriesMax__c      = Limits.getLimitAggregateQueries(),
+            LimitsAggregateQueriesUsed__c     = Limits.getAggregateQueries(),
+            LimitsAsyncCallsMax__c            = Limits.getLimitAsyncCalls(),
+            LimitsAsyncCallsUsed__c           = Limits.getAsyncCalls(),
+            LimitsCalloutsMax__c              = Limits.getLimitCallouts(),
+            LimitsCalloutsUsed__c             = Limits.getCallouts(),
+            LimitsCpuTimeMax__c               = Limits.getLimitCpuTime(),
+            LimitsCpuTimeUsed__c              = Limits.getCpuTime(),
+            LimitsDmlRowsMax__c               = Limits.getLimitDmlRows(),
+            LimitsDmlRowsUsed__c              = Limits.getDmlRows(),
+            LimitsDmlStatementsMax__c         = Limits.getLimitDmlStatements(),
+            LimitsDmlStatementsUsed__c        = Limits.getDmlStatements(),
+            LimitsEmailInvocationsMax__c      = Limits.getLimitEmailInvocations(),
+            LimitsEmailInvocationsUsed__c     = Limits.getEmailInvocations(),
+            LimitsFutureCallsMax__c           = Limits.getLimitFutureCalls(),
+            LimitsFutureCallsUsed__c          = Limits.getFutureCalls(),
+            LimitsHeapSizeMax__c              = Limits.getLimitHeapSize(),
+            LimitsHeapSizeUsed__c             = Limits.getHeapSize(),
+            LimitsMobilePushApexCallsMax__c   = Limits.getLimitMobilePushApexCalls(),
+            LimitsMobilePushApexCallsUsed__c  = Limits.getMobilePushApexCalls(),
+            LimitsQueueableJobsMax__c         = Limits.getLimitQueueableJobs(),
+            LimitsQueueableJobsUsed__c        = Limits.getQueueableJobs(),
+            LimitsSoqlQueriesMax__c           = Limits.getLimitQueries(),
+            LimitsSoqlQueriesUsed__c          = Limits.getQueries(),
+            LimitsSoqlQueryLocatorRowsMax__c  = Limits.getLimitQueryLocatorRows(),
+            LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows(),
+            LimitsSoqlQueryRowsMax__c         = Limits.getLimitQueryRows(),
+            LimitsSoqlQueryRowsUsed__c        = Limits.getQueryRows(),
+            LimitsSoslSearchesMax__c          = Limits.getLimitSoslQueries(),
+            LimitsSoslSearchesUsed__c         = Limits.getSoslQueries(),
+            LoggingLevel__c                   = logEntryLoggingLevel.name(),
+            LoggingLevelOrdinal__c            = logEntryLoggingLevel.ordinal(),
+            Message__c                        = String.escapeSingleQuotes(truncatedMessage),
+            MessageTruncated__c               = messageTruncated,
+            OriginType__c                     = originType,
+            OriginLocation__c                 = truncateFieldValue(Schema.LogEntryEvent__e.OriginLocation__c, originLocation),
+            Timestamp__c                      = logEntryTimestamp,
+            TransactionId__c                  = TRANSACTION_ID,
+            TransactionEntryId__c             = logEntryTransactionId,
+            Topics__c                         = topics == null ? null : String.escapeSingleQuotes(String.join(topics, ',')),
+            Type__c                           = type,
+            UserLoggingLevel__c               = getUserLoggingLevel().name(),
+            UserLoggingLevelOrdinal__c        = getUserLoggingLevel().ordinal()
         );
         logEntries.add(platformLogEntry);
+
+        if(ex != null && getSettings().AutoSaveExceptionEntries__c) saveLog();
 
         return platformLogEntry.TransactionEntryId__c;
     }

@@ -13,225 +13,165 @@ private class Logger_Tests {
         return (LogEntry__c)Database.query(query);
     }
 
+    @testSetup
+    static void setup() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.LoggingLevel__c             = 'FINEST';
+        settings.StoreDebugLogEntries__c     = true;
+        settings.StoreExceptionLogEntries__c = true;
+        upsert settings;
+    }
+
     @isTest
     static void it_should_return_transaction_id() {
         String transactionId = Logger.getTransactionId();
         System.assert(!String.isBlank(transactionId));
-
-        Test.startTest();
-        System.assertEquals(transactionId, Logger.getTransactionId());
-        Test.stopTest();
-
-        System.assertEquals(transactionId, Logger.getTransactionId());
     }
 
     @isTest
-    static void it_should_add_entry_for_a_class_method_message() {
+    static void it_should_return_logging_level() {
+        System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('fake'));
+        System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
+        System.assertEquals(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
+        System.assertEquals(LoggingLevel.WARN, Logger.getLoggingLevel('warn'));
+        System.assertEquals(LoggingLevel.INFO, Logger.getLoggingLevel('info'));
+        System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('debug'));
+        System.assertEquals(LoggingLevel.FINE, Logger.getLoggingLevel('fine'));
+        System.assertEquals(LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
+        System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
+    }
+
+    @isTest
+    static void it_should_add_a_debug_entry_with_default_logging_level() {
         String message = 'my test message';
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
+        String originLocation = 'MyClass.myMethod()';
 
         Test.startTest();
-        Logger.addDebugEntry(message, className, methodName);
+        Logger.addDebugEntry(message, originLocation);
         Logger.saveLog();
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry();
+        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
-    static void it_should_add_entry_for_a_class_method_message_with_logging_level() {
+    static void it_should_add_a_debug_entry_with_logging_level() {
         LoggingLevel logLevel = LoggingLevel.WARN;
         String message = 'my test message';
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
+        String originLocation = 'MyClass.myMethod()';
 
         Test.startTest();
-        Logger.addDebugEntry(logLevel, message, className, methodName);
-        Logger.saveLog();
-        Test.stopTest();
-
-        LogEntry__c logEntry = getLogEntry();
-        System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
-    }
-
-    @isTest
-    static void it_should_add_entry_for_a_class_method_message_with_parent_id() {
-        String message = 'my test message';
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
-        Id parentId = UserInfo.getUserId();
-
-        Test.startTest();
-        Logger.addDebugEntry(message, className, methodName, parentId);
-        Logger.saveLog();
-        Test.stopTest();
-
-        LogEntry__c logEntry = getLogEntry();
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals(parentId, logEntry.ParentId__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
-    }
-
-    @isTest
-    static void it_should_add_entry_for_a_class_method_message_with_logging_level_and_parent_id() {
-        LoggingLevel logLevel = LoggingLevel.WARN;
-        String message = 'my test message';
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
-        Id parentId = UserInfo.getUserId();
-
-        Test.startTest();
-        Logger.addDebugEntry(logLevel, message, className, methodName, parentId);
+        Logger.addDebugEntry(logLevel, message, originLocation);
         Logger.saveLog();
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry();
         System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals(parentId, logEntry.ParentId__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
-    static void it_should_add_entry_for_a_class_method_exception() {
-        Exception exceptionResult;
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
-
-        Test.startTest();
-        try {
-            insert new Lead();
-        } catch(Exception ex) {
-            exceptionResult = ex;
-            Logger.addExceptionEntry(ex, className, methodName);
-            Logger.saveLog();
-        }
-        Test.stopTest();
-
-        LogEntry__c logEntry = getLogEntry();
-        System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
-    }
-
-    @isTest
-    static void it_should_add_entry_for_a_class_method_exception_with_logging_level() {
+    static void it_should_add_a_debug_entry_and_truncate_a_long_message() {
         LoggingLevel logLevel = LoggingLevel.WARN;
-        Exception exceptionResult;
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
+        Integer messageMaxLength = Schema.LogEntry__c.SobjectType.Message__c.getDescribe().getLength();
+        String message = 'my test message string';
+        while(message.length() < messageMaxLength + 200) {
+            message += message;
+        }
+        String originLocation = 'MyClass.myMethod()';
 
         Test.startTest();
-        try {
-            insert new Lead();
-        } catch(Exception ex) {
-            exceptionResult = ex;
-            Logger.addExceptionEntry(logLevel, ex, className, methodName);
-            Logger.saveLog();
-        }
+        Logger.addDebugEntry(logLevel, message, originLocation);
+        Logger.saveLog();
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry();
-        System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
+        System.assertEquals(message.left(messageMaxLength), logEntry.Message__c);
+        System.assertEquals(true, logEntry.MessageTruncated__c);
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
-    static void it_should_add_entry_for_an_exception_with_logging_level_and_parent_id() {
+    static void it_should_add_a_debug_entry_with_topics() {
         LoggingLevel logLevel = LoggingLevel.WARN;
-        Exception exceptionResult;
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
-        Id parentId = UserInfo.getUserId();
+        String message = 'my test message';
+        String originLocation = 'MyClass.myMethod()';
+        List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
 
         Test.startTest();
-        try {
-            insert new Lead();
-        } catch(Exception ex) {
-            exceptionResult = ex;
-            Logger.addExceptionEntry(logLevel, ex, className, methodName, parentId);
-            Logger.saveLog();
-        }
+        Logger.addDebugEntry(logLevel, message, originLocation, topicNames);
+        Logger.saveLog();
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry();
-        System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals(parentId, logEntry.ParentId__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+
+        List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
+        System.assertEquals(topicNames.size(), topicAssignments.size());
+        for(TopicAssignment topicAssignment : topicAssignments) {
+            System.assert(new Set<String>(topicNames).contains(topicAssignment.Topic.Name));
+        }
     }
 
     @isTest
-    static void it_should_add_entry_for_a_class_method_exception_with_parent_id() {
+    static void it_should_add_entry_for_an_exception() {
         Exception exceptionResult;
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
-        Id parentId = UserInfo.getUserId();
+        String originLocation = 'MyClass.myMethod()';
 
         Test.startTest();
         try {
             insert new Lead();
         } catch(Exception ex) {
             exceptionResult = ex;
-            Logger.addExceptionEntry(ex, className, methodName, parentId);
+            Logger.addExceptionEntry(ex, originLocation);
             Logger.saveLog();
         }
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry();
         System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals(parentId, logEntry.ParentId__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+
     }
 
     @isTest
-    static void it_should_add_entry_for_a_class_method_exception_with_logging_level_and_parent_id() {
-        LoggingLevel logLevel = LoggingLevel.WARN;
+    static void it_should_add_entry_for_an_exception_with_topics() {
         Exception exceptionResult;
-        String className = 'MyClass';
-        String methodName = 'myMethod()';
-        Id parentId = UserInfo.getUserId();
+        String originLocation = 'MyClass.myMethod()';
+        List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
 
         Test.startTest();
         try {
             insert new Lead();
         } catch(Exception ex) {
             exceptionResult = ex;
-            Logger.addExceptionEntry(logLevel, ex, className, methodName, parentId);
+            Logger.addExceptionEntry(ex, originLocation, topicNames);
             Logger.saveLog();
         }
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry();
-        System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
         System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-        System.assertEquals(className, logEntry.ClassName__c);
-        System.assertEquals(methodName, logEntry.MethodName__c);
-        System.assertEquals(parentId, logEntry.ParentId__c);
-        System.assertEquals('Apex', logEntry.SourceType__c);
-    }
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(originLocation, logEntry.OriginLocation__c);
 
+
+        List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
+        System.assertEquals(topicNames.size(), topicAssignments.size());
+        for(TopicAssignment topicAssignment : topicAssignments) {
+            System.assert(new Set<String>(topicNames).contains(topicAssignment.Topic.Name));
+        }
+    }
 
     @isTest
     static void it_should_add_entries_for_a_list_of_flow_messages() {
@@ -240,17 +180,17 @@ private class Logger_Tests {
         List<FlowLogEntry> flowLogEntries = new List<FlowLogEntry>();
 
         Test.startTest();
-        FlowLogEntry flowLogEntry = new FlowLogEntry();
-        flowLogEntry.FlowName = flowName;
-        flowLogEntry.Message = message;
-        Logger.addFlowEntries(new List<FlowLogEntry>{flowLogEntry});
+        FlowLogEntry flowEntry = new FlowLogEntry();
+        flowEntry.FlowName = flowName;
+        flowEntry.Message = message;
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
         Logger.saveLog();
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry();
         System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(flowName, logEntry.FlowName__c);
-        System.assertEquals('Process Builder/Flow', logEntry.SourceType__c);
+        System.assertEquals('Process Builder/Flow', logEntry.OriginType__c);
+        System.assertEquals(flowName, logEntry.OriginLocation__c);
     }
 
 }

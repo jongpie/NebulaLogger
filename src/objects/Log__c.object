@@ -46,16 +46,144 @@
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableChangeDataCapture>false</enableChangeDataCapture>
-    <enableFeeds>false</enableFeeds>
+    <enableFeeds>true</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>ContextIsApexRest__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Apex REST</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsBatch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Batch</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsFuture__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Future</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsQueueable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Queueable</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextIsScheduledJob__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Scheduled Job</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextThemeDisplayed__c</fullName>
+        <externalId>false</externalId>
+        <label>Theme Displayed</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Theme1</fullName>
+                    <default>false</default>
+                    <label>Obsolete Salesforce Theme</label>
+                </value>
+                <value>
+                    <fullName>Theme2</fullName>
+                    <default>false</default>
+                    <label>Salesforce Classic 2005</label>
+                </value>
+                <value>
+                    <fullName>Theme3</fullName>
+                    <default>false</default>
+                    <label>Salesforce Classic</label>
+                </value>
+                <value>
+                    <fullName>Theme4d</fullName>
+                    <default>false</default>
+                    <label>Lightning Experience</label>
+                </value>
+                <value>
+                    <fullName>Theme4t</fullName>
+                    <default>false</default>
+                    <label>Salesforce Mobile App</label>
+                </value>
+                <value>
+                    <fullName>Theme4u</fullName>
+                    <default>false</default>
+                    <label>Lightning Console</label>
+                </value>
+                <value>
+                    <fullName>PortalDefault</fullName>
+                    <default>false</default>
+                    <label>Customer Portal</label>
+                </value>
+                <value>
+                    <fullName>Webstore</fullName>
+                    <default>false</default>
+                    <label>AppExchange</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>LoggedBy__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Logged By</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Logs</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>PushToLoggly__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Push To Loggly</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PushedToLogglyDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Pushed To Loggly Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>TotalDebugLogEntries__c</fullName>
         <externalId>false</externalId>
-        <label>Total Debug Log Entries</label>
+        <label>Total Debug Entries</label>
         <summaryFilterItems>
             <field>LogEntry__c.Type__c</field>
             <operation>equals</operation>
@@ -69,7 +197,7 @@
     <fields>
         <fullName>TotalExceptionLogEntries__c</fullName>
         <externalId>false</externalId>
-        <label>Total Exception Log Entries</label>
+        <label>Total Exception Entries</label>
         <summaryFilterItems>
             <field>LogEntry__c.Type__c</field>
             <operation>equals</operation>
@@ -85,7 +213,7 @@
         <externalId>false</externalId>
         <formula>TotalDebugLogEntries__c + TotalExceptionLogEntries__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Total Log Entries</label>
+        <label>Total Entries</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -100,6 +228,7 @@
         <label>Transaction ID</label>
         <length>36</length>
         <required>true</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>
@@ -111,6 +240,7 @@
         <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -120,6 +250,7 @@
         <externalId>false</externalId>
         <label>User Logging Level</label>
         <required>true</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -131,13 +262,13 @@
     <listViews>
         <fullName>AllLogs</fullName>
         <columns>NAME</columns>
-        <columns>TransactionId__c</columns>
+        <columns>LoggedBy__c</columns>
+        <columns>CREATED_DATE</columns>
         <columns>TotalLogEntries__c</columns>
         <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
-        <columns>OWNER.ALIAS</columns>
         <columns>UserLoggingLevel__c</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>TransactionId__c</columns>
         <filterScope>Mine</filterScope>
         <label>All Logs</label>
         <language>en_US</language>
@@ -145,13 +276,13 @@
     <listViews>
         <fullName>MyLogs</fullName>
         <columns>NAME</columns>
-        <columns>TransactionId__c</columns>
+        <columns>LoggedBy__c</columns>
+        <columns>CREATED_DATE</columns>
         <columns>TotalLogEntries__c</columns>
         <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
-        <columns>OWNER.ALIAS</columns>
+        <columns>TransactionId__c</columns>
         <columns>UserLoggingLevel__c</columns>
-        <columns>CREATED_DATE</columns>
         <filterScope>Mine</filterScope>
         <label>My Logs</label>
         <language>en_US</language>
@@ -159,6 +290,7 @@
     <nameField>
         <displayFormat>Log-{000000}</displayFormat>
         <label>Log Number</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Logs</pluralLabel>
@@ -185,6 +317,13 @@
         <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalDebugLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>LoggedBy__c</searchFilterFields>
+        <searchFilterFields>TotalDebugLogEntries__c</searchFilterFields>
+        <searchFilterFields>TotalLogEntries__c</searchFilterFields>
+        <searchFilterFields>TotalExceptionLogEntries__c</searchFilterFields>
+        <searchFilterFields>UserLoggingLevel__c</searchFilterFields>
+        <searchFilterFields>CREATED_DATE</searchFilterFields>
         <searchResultsAdditionalFields>TransactionId__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>UserLoggingLevel__c</searchResultsAdditionalFields>
