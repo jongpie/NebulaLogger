@@ -4,7 +4,7 @@
 *************************************************************************************************/
 public without sharing class LogEntryEventHandler {
 
-    private static final Log__c log = new Log__c();
+    private static final Log__c LOG = new Log__c();
 
     List<LogEntry__c> logEntries;
     Map<LogEntry__c, List<String>> logEntryToTopics;
@@ -27,7 +27,7 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void insertLog() {
-        if(log.Id != null) return; // Log only needs to be saved once
+        if(LOG.Id != null) return; // Log only needs to be saved once
         if(Trigger.new == null) return; // This class should only be used in a trigger context...
         if(Trigger.new.getSobjectType() != Schema.LogEntryEvent__e.SobjectType) return; //...for the LogEntryEvent__e object
 
@@ -35,22 +35,22 @@ public without sharing class LogEntryEventHandler {
         // The first LogEntryEvent__e record is used to normalize the data
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e)Trigger.new[0];
 
-        log.ContextIsApexRest__c       = logEntryEvent.ContextIsApexRest__c;
-        log.ContextIsBatch__c          = logEntryEvent.ContextIsBatch__c;
-        log.ContextIsFuture__c         = logEntryEvent.ContextIsFuture__c;
-        log.ContextIsQueueable__c      = logEntryEvent.ContextIsQueueable__c;
-        log.ContextIsScheduledJob__c   = logEntryEvent.ContextIsScheduledJob__c;
-        log.ContextThemeDisplayed__c   = logEntryEvent.ContextThemeDisplayed__c;
-        log.LoggedBy__c                = logEntryEvent.CreatedById;
-        log.OwnerId                    = logEntryEvent.CreatedById;
-        log.TransactionId__c           = logEntryEvent.TransactionId__c;
-        log.UserLoggingLevel__c        = logEntryEvent.UserLoggingLevel__c;
-        log.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
+        LOG.ContextIsApexRest__c       = logEntryEvent.ContextIsApexRest__c;
+        LOG.ContextIsBatch__c          = logEntryEvent.ContextIsBatch__c;
+        LOG.ContextIsFuture__c         = logEntryEvent.ContextIsFuture__c;
+        LOG.ContextIsQueueable__c      = logEntryEvent.ContextIsQueueable__c;
+        LOG.ContextIsScheduledJob__c   = logEntryEvent.ContextIsScheduledJob__c;
+        LOG.ContextThemeDisplayed__c   = logEntryEvent.ContextThemeDisplayed__c;
+        LOG.LoggedBy__c                = logEntryEvent.CreatedById;
+        LOG.OwnerId                    = logEntryEvent.CreatedById;
+        LOG.TransactionId__c           = logEntryEvent.TransactionId__c;
+        LOG.UserLoggingLevel__c        = logEntryEvent.UserLoggingLevel__c;
+        LOG.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
         insert log;
     }
 
     private void insertLogEntries() {
-        if(log.Id == null) return; // Avoid an exception - if there is no log, we can't save log entries
+        if(LOG.Id == null) return; // Avoid an exception - if there is no log, we can't save log entries
 
         for(LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>)Trigger.new) {
             LogEntry__c logEntry = new LogEntry__c(
@@ -91,7 +91,7 @@ public without sharing class LogEntryEventHandler {
                 LimitsSoqlQueryRowsUsed__c        = logEntryEvent.LimitsSoqlQueryRowsUsed__c,
                 LimitsSoslSearchesUsed__c         = logEntryEvent.LimitsSoslSearchesUsed__c,
                 LimitsSoslSearchesMax__c          = logEntryEvent.LimitsSoslSearchesMax__c,
-                Log__c                            = log.Id,
+                Log__c                            = LOG.Id,
                 LoggingLevel__c                   = logEntryEvent.LoggingLevel__c,
                 LoggingLevelOrdinal__c            = logEntryEvent.LoggingLevelOrdinal__c,
                 Message__c                        = logEntryEvent.Message__c,
@@ -150,7 +150,7 @@ public without sharing class LogEntryEventHandler {
 
                 // Add all topics to the parent log when enabled
                 topicAssignments.add(new TopicAssignment(
-                    EntityId = log.Id,
+                    EntityId = LOG.Id,
                     TopicId  = topicNameToTopics.get(topicName).Id
                 ));
             }
