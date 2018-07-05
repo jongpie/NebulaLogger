@@ -89,7 +89,6 @@ public without sharing class LogEntryEventHandler {
                 LimitsSoqlQueryRowsUsed__c        = logEntryEvent.LimitsSoqlQueryRowsUsed__c,
                 LimitsSoslSearchesUsed__c         = logEntryEvent.LimitsSoslSearchesUsed__c,
                 LimitsSoslSearchesMax__c          = logEntryEvent.LimitsSoslSearchesMax__c,
-                //Log__r                            = new Log__c(TransactionId__c = logEntryEvent.TransactionId__c),
                 Log__c                            = log.Id,
                 LoggingLevel__c                   = logEntryEvent.LoggingLevel__c,
                 LoggingLevelOrdinal__c            = logEntryEvent.LoggingLevelOrdinal__c,
@@ -109,8 +108,8 @@ public without sharing class LogEntryEventHandler {
                 this.logEntryToTopics.put(logEntry, LogEntryEvent.Topics__c.split(','));
             }
         }
-        //upsert new List<Log__c>(logs) TransactionId__c;
-        upsert logEntries TransactionEntryId__c;
+        //upsert logEntries TransactionEntryId__c;
+        insert logEntries;
     }
 
     private void insertTopics() {
