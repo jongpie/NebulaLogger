@@ -33,12 +33,16 @@ public without sharing class Logger {
     }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
+        Boolean saveLog = false;
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
             LoggingLevel loggingLevel;
             if(!String.isBlank(flowLogEntry.LoggingLevelName)) loggingLevel = getLoggingLevel(flowLogEntry.LoggingLevelName);
 
+            if(flowLogEntry.saveLog) saveLog = true;
+
             addEntry(loggingLevel, flowLogEntry.Message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics);
         }
+        if(saveLog) saveLog();
     }
 
     public static LoggingLevel getLoggingLevel(String loggingLevelName) {

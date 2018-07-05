@@ -4,7 +4,7 @@
 *************************************************************************************************/
 public without sharing class FlowLogEntry {
 
-    @InvocableMethod(label='Add Log Entry' description='Stores a log entry for a process builder or flow')
+    @InvocableMethod(label='Add Log Entry' description='Creates a log entry for a process builder or flow')
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         Logger.addFlowEntries(flowLogEntries);
     }
@@ -15,6 +15,9 @@ public without sharing class FlowLogEntry {
     @InvocableVariable(required=true label='Log Entry Message')
     public String message;
 
+    @InvocableVariable(required=true label='Save Log')
+    public Boolean saveLog;
+
     @InvocableVariable(label='(Optional) Logging Level')
     public String loggingLevelName;
 
@@ -24,6 +27,7 @@ public without sharing class FlowLogEntry {
     public DateTime timestamp;
 
     public FlowLogEntry() {
+        this.saveLog   = true;
         this.timestamp = System.now();
     }
 
