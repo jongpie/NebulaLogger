@@ -2,18 +2,26 @@
 * This file is part of the Nebula Logger project, released under the MIT License.                *
 * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
 *************************************************************************************************/
-public without sharing class LogglyLogPush implements Database.Batchable<Log__c>, Database.AllowsCallouts {
+public without sharing class LogglyLogPusher implements Database.Batchable<Log__c>, Database.AllowsCallouts {
 
     private static final LoggerIntegration__mdt SETTINGS = [SELECT BaseUrl__c, ApiToken__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Loggly'];
 
     public List<Log__c> start(Database.BatchableContext batchableContext) {
-        return (List<Log__c>)Database.query(this.getQuery());
+        return [
+            SELECT Name, LoggedBy__r.Name, LoggedBy__c, TransactionId__c
+            FROM Log__c
+            WHERE PushToLoggly__c = true
+            AND PushedToLogglyDate__c = null
+            AND TotalLogEntries__c > 0
+        ];
     }
 
     public void execute(Database.BatchableContext batchableContext, List<Log__c> logs) {
         List<String> logEntryStrings = new List<String>();
+        Map<Id, List<LogEntry__c>> logEntriesMap = this.getLogEntriesMap(logs);
         for(Log__c log : logs) {
-            for(LogEntry__c logEntry : log.LogEntries__r) {
+            List<LogEntry__c> logEntries = logEntriesMap.get(log.Id);
+            for(LogEntry__c logEntry : logEntries) {
                 LogDto convertedLogEntry = this.convertLogEntry(log, logEntry);
                 logEntryStrings.add(Json.serialize(convertedLogEntry));
             }
@@ -27,68 +35,41 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         request.setBody(String.join(logEntryStrings, '\n'));
 
         HttpResponse response = new Http().send(request);
-        System.debug(response.toString());
         update logs;
     }
 
     public void finish(Database.BatchableContext batchableContext) {
         // If new logs have generated while the batch has been running, start a new batch
-        Integer countOfRemainingLogEntries = Database.countQuery(this.getCountQuery());
-        if(countOfRemainingLogEntries > 0) Database.executeBatch(new LogglyLogPush());
-    }
-
-    private String getQuery() {
-        return String.format(this.getBaseQuery(), new List<String>{String.join(this.getQueryFields(), ', ')});
-    }
-
-    private String getCountQuery() {
-        String count = 'count()';
-        return String.format(this.getBaseQuery(), new List<String>{count});
-    }
-
-    private String getBaseQuery() {
-        return 'SELECT {0} FROM ' + Schema.Log__c.SobjectType
-            + ' WHERE ' + Schema.Log__c.PushToLoggly__c + ' = true'
-            + ' AND ' + Schema.Log__c.PushedToLogglyDate__c + ' = null';
-    }
-
-    private List<String> getQueryFields() {
-        List<String> logQueryFields = new List<String>{
-            String.valueOf(Schema.Log__c.Name),
-            'LoggedBy__r.Name',
-            String.valueOf(Schema.Log__c.LoggedBy__c),
-            String.valueOf(Schema.Log__c.TransactionId__c)
-        };
-        logQueryFields.sort();
-
-        List<String> logEntryQueryFields = new List<String>{
-            String.valueOf(Schema.LogEntry__c.Id),
-            String.valueOf(Schema.LogEntry__c.ExceptionStackTrace__c),
-            String.valueOf(Schema.LogEntry__c.ExceptionType__c),
-            String.valueOf(Schema.LogEntry__c.Log__c),
-            String.valueOf(Schema.LogEntry__c.Message__c),
-            String.valueOf(Schema.LogEntry__c.OriginLocation__c),
-            String.valueOf(Schema.LogEntry__c.OriginType__c),
-            String.valueOf(Schema.LogEntry__c.Timestamp__c),
-            String.valueOf(Schema.LogEntry__c.TransactionEntryId__c),
-            String.valueOf(Schema.LogEntry__c.Type__c)
-        };
-        logEntryQueryFields.sort();
-
-        String childRelationshipName;
-        for(Schema.ChildRelationship childRelationship : Log__c.SObjectType.getDescribe().getChildRelationships()) {
-            if(childRelationship.getField() != Schema.LogEntry__c.Log__c) continue;
-
-            childRelationshipName = childRelationship.getRelationshipName();
-            break;
-        }
-
-        logQueryFields.add('(SELECT ' + String.join(logEntryQueryFields, ', ') + ' FROM ' + childRelationshipName + ')');
-        return logQueryFields;
+        Integer countOfRemainingLogEntries = [
+            SELECT COUNT()
+            FROM Log__c
+            WHERE PushToLoggly__c = true
+            AND PushedToLogglyDate__c = null
+            AND TotalLogEntries__c > 0
+        ];
+        if(countOfRemainingLogEntries > 0) Database.executeBatch(new LogglyLogPusher());
     }
 
     private String getFormattedTimestamp(Datetime timestamp) {
         return timestamp.format('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'', 'Greenwich Mean Time');
+    }
+
+    private Map<Id, List<LogEntry__c>> getLogEntriesMap(List<Log__c> logs) {
+        Map<Id, List<LogEntry__c>> logEntriesMap = new Map<Id, List<LogEntry__c>>();
+        for(LogEntry__c logEntry : [
+            SELECT Id, ExceptionStackTrace__c, ExceptionType__c, Log__c, Message__c, OriginLocation__c, OriginType__c,
+                Timestamp__c, TransactionEntryId__c, Type__c,
+                (SELECT Id, TopicId, Topic.Name FROM TopicAssignments)
+            FROM LogEntry__c
+            WHERE Log__c IN :logs
+        ]) {
+            if(!logEntriesMap.containsKey(logEntry.Log__c)) logEntriesMap.put(logEntry.Log__c, new List<LogEntry__c>());
+            List<LogEntry__c> logEntries = logEntriesMap.get(logEntry.Log__c);
+            logEntries.add(logEntry);
+            logEntriesMap.put(logEntry.Log__c, logEntries);
+        }
+
+        return logEntriesMap;
     }
 
     private LogDto convertLogEntry(Log__c parentLog, LogEntry__c logEntry) {
@@ -101,6 +82,11 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         organization.id   = UserInfo.getOrganizationId();
         organization.name = UserInfo.getOrganizationName();
 
+        List<String> topicNames = new List<String>();
+        for(TopicAssignment topicAssignment : logEntry.TopicAssignments) {
+            topicNames.add(topicAssignment.Topic.Name);
+        }
+
         LogDto log = new LogDto();
         log.exceptionStackTrace = logEntry.ExceptionStackTrace__c;
         log.exceptionType       = logEntry.ExceptionType__c;
@@ -109,11 +95,13 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         log.logEntryId          = logEntry.Id;
         log.logId               = logEntry.Log__c;
         log.logType             = logEntry.Type__c;
+        log.logUrl              = Url.getSalesforceBaseUrl().toExternalForm() + '/' + logEntry.Log__c;
         log.message             = logEntry.Message__c;
         log.organization        = organization;
         log.sourceSystem        = 'Salesforce';
         log.sourceUrl           = Url.getSalesforceBaseUrl().toExternalForm();
         log.timestamp           = this.getFormattedTimestamp(logEntry.Timestamp__c);
+        log.topics              = topicNames;
         log.transactionEntryId  = logEntry.TransactionEntryId__c;
         log.transactionId       = parentLog.TransactionId__c;
         log.user                = user;
@@ -129,14 +117,15 @@ public without sharing class LogglyLogPush implements Database.Batchable<Log__c>
         public Id logId;
         public Id logEntryId;
         public String logType;
+        public String logUrl;
         public String message;
-        public String methodName;
         public String originLocation;
         public String originType;
         public OrganizationDto organization;
         public String sourceSystem;
         public String sourceUrl;
         public String timestamp;
+        public List<String> topics;
         public String transactionEntryId;
         public String transactionId;
         public UserDto user;
