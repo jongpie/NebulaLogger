@@ -13,6 +13,14 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>AutoSaveExceptionEntries__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Auto Save Exception Entries</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>GenerateDebugStatements__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>

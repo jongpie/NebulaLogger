@@ -192,6 +192,8 @@ public without sharing class Logger {
         );
         logEntries.add(platformLogEntry);
 
+        if(ex != null && getSettings().AutoSaveExceptionEntries__c) saveLog();
+
         return platformLogEntry.TransactionEntryId__c;
     }
 
