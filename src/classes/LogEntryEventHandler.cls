@@ -27,10 +27,12 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void insertLog() {
-        if(log.Id != null) return;
-        if(Trigger.new == null) return;
-        if(Trigger.new.getSobjectType() != Schema.LogEntryEvent__e.SobjectType) return;
+        if(log.Id != null) return; // Log only needs to be saved once
+        if(Trigger.new == null) return; // This class should only be used in a trigger context...
+        if(Trigger.new.getSobjectType() != Schema.LogEntryEvent__e.SobjectType) return; //...for the LogEntryEvent__e object
 
+        // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
+        // The first LogEntryEvent__e record is used to normalize the data
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e)Trigger.new[0];
 
         log.ContextIsApexRest__c       = logEntryEvent.ContextIsApexRest__c;
@@ -48,7 +50,7 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void insertLogEntries() {
-        if(log.Id == null) return;
+        if(log.Id == null) return; // Avoid an exception - if there is no log, we can't save log entries
 
         for(LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>)Trigger.new) {
             LogEntry__c logEntry = new LogEntry__c(
@@ -138,14 +140,17 @@ public without sharing class LogEntryEventHandler {
         Set<TopicAssignment> topicAssignments = new Set<TopicAssignment>();
         for(LogEntry__c logEntry : logEntryToTopics.keySet()) {
             for(String topicName : logEntryToTopics.get(logEntry)) {
-                // Add all topics to the parent log
-                topicAssignments.add(new TopicAssignment(
-                    EntityId = log.Id,
-                    TopicId  = topicNameToTopics.get(topicName).Id
-                ));
                 // Add log entry-specific topics
                 topicAssignments.add(new TopicAssignment(
                     EntityId = logEntry.Id,
+                    TopicId  = topicNameToTopics.get(topicName).Id
+                ));
+
+                if(!LoggerSettings__c.getInstance().AddLogEntryTopicsToLog__c) continue;
+
+                // Add all topics to the parent log when enabled
+                topicAssignments.add(new TopicAssignment(
+                    EntityId = log.Id,
                     TopicId  = topicNameToTopics.get(topicName).Id
                 ));
             }

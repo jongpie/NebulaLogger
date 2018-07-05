@@ -4,6 +4,15 @@
     <description>Controls the behavior of the class Logger.cls</description>
     <enableFeeds>false</enableFeeds>
     <fields>
+        <fullName>AddLogEntryTopicsToLog__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>When checked, any topics associated with log entries will be automatically associated to the parent log as well.</inlineHelpText>
+        <label>Add Log Entry Topics to Log</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>GenerateDebugStatements__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
