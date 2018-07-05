@@ -122,7 +122,6 @@ private class Logger_Tests {
         }
     }
 
-
     @isTest
     static void it_should_add_entry_for_an_exception() {
         Exception exceptionResult;
