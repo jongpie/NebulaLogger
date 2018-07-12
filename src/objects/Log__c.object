@@ -169,6 +169,16 @@
         <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>Push To Loggly</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PushToSlack__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Push To Slack</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -177,6 +187,16 @@
         <externalId>false</externalId>
         <label>Pushed To Loggly Date</label>
         <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>PushedToSlackDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Pushed To Slack Date</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
