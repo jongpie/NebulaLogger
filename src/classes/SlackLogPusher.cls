@@ -39,7 +39,7 @@ public without sharing class SlackLogPusher implements Database.Batchable<Log__c
     public void finish(Database.BatchableContext batchableContext) {
         // If new logs have generated while the batch has been running, start a new batch
         Integer countOfRemainingLogEntries = Database.countQuery(this.getCountQuery());
-        if(countOfRemainingLogEntries > 0) Database.executeBatch(new SlackLogPush());
+        if(countOfRemainingLogEntries > 0) Database.executeBatch(new SlackLogPusher());
     }
 
     private String getQuery() {
