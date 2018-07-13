@@ -31,11 +31,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalExceptionLogEntries__c</field>
+                <field>TotalDebugLogEntries__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalDebugLogEntries__c</field>
+                <field>TotalExceptionLogEntries__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
