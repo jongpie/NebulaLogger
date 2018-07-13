@@ -89,6 +89,10 @@
                 <behavior>Edit</behavior>
                 <field>PushToSlack__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PushToTrello__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -98,6 +102,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>PushedToSlackDate__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PushedToTrelloDate__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
