@@ -51,7 +51,7 @@ public without sharing class LogglyLogPusher implements Database.AllowsCallouts,
         for(LogEntry__c logEntry : [
             SELECT Id, ExceptionStackTrace__c, ExceptionType__c, Log__c, Message__c, OriginLocation__c, OriginType__c,
                 Timestamp__c, TransactionEntryId__c, Type__c,
-                (SELECT Id, TopicId, Topic.Name FROM TopicAssignments)
+                (SELECT Topic.Name FROM TopicAssignments)
             FROM LogEntry__c
             WHERE Log__c IN :logs
         ]) {
