@@ -280,6 +280,25 @@
     </fields>
     <label>Log</label>
     <listViews>
+        <fullName>AllExceptionLogs</fullName>
+        <columns>NAME</columns>
+        <columns>LoggedBy__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>TotalLogEntries__c</columns>
+        <columns>TotalDebugLogEntries__c</columns>
+        <columns>TotalExceptionLogEntries__c</columns>
+        <columns>UserLoggingLevel__c</columns>
+        <columns>TransactionId__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>TotalExceptionLogEntries__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </filters>
+        <label>All Exception Logs</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>AllLogs</fullName>
         <columns>NAME</columns>
         <columns>LoggedBy__c</columns>
