@@ -11,7 +11,8 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
         return [
             SELECT
                 LoggedBy__c, LoggedBy__r.Name, Name,
-                TotalDebugLogEntries__c, TotalExceptionLogEntries__c, TransactionId__c
+                TotalDebugLogEntries__c, TotalExceptionLogEntries__c, TransactionId__c,
+                (SELECT Topic.Name FROM TopicAssignments)
             FROM Log__c
             WHERE PushToSlack__c = true
             AND PushedToSlackDate__c = null
@@ -74,6 +75,20 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
         totalDebugsField.title   = '# of Debug Entries';
         totalDebugsField.value   = String.valueOf(log.TotalDebugLogEntries__c);
         notification.fields.add(totalDebugsField);
+
+        List<String> topicNames = new List<String>();
+        for(TopicAssignment topicAssignment : log.TopicAssignments) {
+            topicNames.add(topicAssignment.Topic.Name);
+        }
+        topicNames.sort();
+
+        if(topicNames.isEmpty()) return notification;
+
+        FieldDto topicsField = new FieldDto();
+        topicsField.isShort = false;
+        topicsField.title   = 'Topics';
+        topicsField.value   = String.join(topicNames, ', ');
+        notification.fields.add(topicsField);
 
         return notification;
     }
