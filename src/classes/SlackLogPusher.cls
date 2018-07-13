@@ -56,25 +56,35 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
         notification.title       = log.Name;
         notification.title_link  = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
 
-        FieldDto orgInfoField = new FieldDto();
-        orgInfoField.isShort = false;
-        orgInfoField.title   = 'Salesforce Org';
-        orgInfoField.value   = 'Name: ' + UserInfo.getOrganizationName()
-            + '\nID: `' + UserInfo.getOrganizationId() + '`'
-            + '\nProduction: ' + '`' + !ORG.IsSandbox + '`';
-        notification.fields.add(orgInfoField);
+        FieldDto orgNameField = new FieldDto();
+        orgNameField.isShort = false;
+        orgNameField.title   = 'Org Name';
+        orgNameField.value   = UserInfo.getOrganizationName();
+        notification.fields.add(orgNameField);
 
-        FieldDto totalExceptionsField = new FieldDto();
-        totalExceptionsField.isShort = true;
-        totalExceptionsField.title   = '# of Exception Entries';
-        totalExceptionsField.value   = String.valueOf(log.TotalExceptionLogEntries__c);
-        notification.fields.add(totalExceptionsField);
+        FieldDto orgIdField = new FieldDto();
+        orgIdField.isShort = true;
+        orgIdField.title   = 'Org ID';
+        orgIdField.value   = '`' + UserInfo.getOrganizationId() + '`';
+        notification.fields.add(orgIdField);
 
-        FieldDto totalDebugsField = new FieldDto();
-        totalDebugsField.isShort = true;
-        totalDebugsField.title   = '# of Debug Entries';
-        totalDebugsField.value   = String.valueOf(log.TotalDebugLogEntries__c);
-        notification.fields.add(totalDebugsField);
+        FieldDto orgIsProductionField = new FieldDto();
+        orgIsProductionField.isShort = true;
+        orgIsProductionField.title   = 'Production?';
+        orgIsProductionField.value   = '`' + !ORG.IsSandbox + '`';
+        notification.fields.add(orgIsProductionField);
+
+        FieldDto totalDebugEntriesField = new FieldDto();
+        totalDebugEntriesField.isShort = true;
+        totalDebugEntriesField.title   = '# of Debug Entries';
+        totalDebugEntriesField.value   = String.valueOf(log.TotalDebugLogEntries__c);
+        notification.fields.add(totalDebugEntriesField);
+
+        FieldDto totalExceptionEntriesField = new FieldDto();
+        totalExceptionEntriesField.isShort = true;
+        totalExceptionEntriesField.title   = '# of Exception Entries';
+        totalExceptionEntriesField.value   = String.valueOf(log.TotalExceptionLogEntries__c);
+        notification.fields.add(totalExceptionEntriesField);
 
         List<String> topicNames = new List<String>();
         for(TopicAssignment topicAssignment : log.TopicAssignments) {
@@ -94,34 +104,34 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
     }
 
     private class NotificationDto {
-        public String text;
         public List<LogDto> attachments;
+        public String text;
     }
 
     private class LogDto {
-        public String fallback;
-        public String color;
-        public String pretext;
+        public List<ActionDto> actions;
         public String author_name;
         public String author_link;
         public String author_icon;
+        public String color;
+        public String fallback;
+        public List<FieldDto> fields;
+        public String pretext;
+        public String text;
         public String title;
         public String title_link;
-        public String text;
-        public List<ActionDto> actions;
-        public List<FieldDto> fields;
     }
 
     private class ActionDto {
-        public String type;
         public String text;
+        public String type;
         public String url;
     }
 
     private class FieldDto {
+        public Boolean isShort;
         public String title;
         public String value;
-        public Boolean isShort;
     }
 /*
 {
