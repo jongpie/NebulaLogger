@@ -3,7 +3,7 @@
 * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
 *************************************************************************************************/
 @isTest
-private class LogglyLogPushScheduler_Tests {
+private class SlackLogPushScheduler_Tests {
 
     @isTest
     static void it_should_schedule_the_batch_job() {
@@ -12,7 +12,7 @@ private class LogglyLogPushScheduler_Tests {
         System.assertEquals(0, numberOfScheduledJobs);
 
         Test.startTest();
-        String jobId = System.schedule('LogglyLogPushScheduler', cronExpression, new LogglyLogPushScheduler());
+        String jobId = System.schedule('SlackLogPushScheduler', cronExpression, new SlackLogPushScheduler());
         Test.stopTest();
 
         CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE Id = :jobId];
@@ -25,7 +25,7 @@ private class LogglyLogPushScheduler_Tests {
         System.assertEquals(0, numberOfScheduledJobs);
 
         Test.startTest();
-        LogglyLogPushScheduler.scheduleEveryXMinutes(5);
+        SlackLogPushScheduler.scheduleEveryXMinutes(5);
         Test.stopTest();
     }
 
@@ -35,7 +35,7 @@ private class LogglyLogPushScheduler_Tests {
         System.assertEquals(0, numberOfScheduledJobs);
 
         Test.startTest();
-        LogglyLogPushScheduler.scheduleHourly(0);
+        SlackLogPushScheduler.scheduleHourly(0);
         Test.stopTest();
     }
 

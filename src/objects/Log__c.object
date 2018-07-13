@@ -166,9 +166,19 @@
     </fields>
     <fields>
         <fullName>PushToLoggly__c</fullName>
-        <defaultValue>true</defaultValue>
+        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Push To Loggly</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PushToSlack__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Push To Slack</label>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -177,6 +187,16 @@
         <externalId>false</externalId>
         <label>Pushed To Loggly Date</label>
         <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>PushedToSlackDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Pushed To Slack Date</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
@@ -259,6 +279,25 @@
         </valueSet>
     </fields>
     <label>Log</label>
+    <listViews>
+        <fullName>AllExceptionLogs</fullName>
+        <columns>NAME</columns>
+        <columns>LoggedBy__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>TotalLogEntries__c</columns>
+        <columns>TotalDebugLogEntries__c</columns>
+        <columns>TotalExceptionLogEntries__c</columns>
+        <columns>UserLoggingLevel__c</columns>
+        <columns>TransactionId__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>TotalExceptionLogEntries__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </filters>
+        <label>All Exception Logs</label>
+        <language>en_US</language>
+    </listViews>
     <listViews>
         <fullName>AllLogs</fullName>
         <columns>NAME</columns>

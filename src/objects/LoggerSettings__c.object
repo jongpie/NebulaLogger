@@ -8,7 +8,7 @@
         <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <inlineHelpText>When checked, any topics associated with log entries will be automatically associated to the parent log as well.</inlineHelpText>
-        <label>Add Log Entry Topics to Log</label>
+        <label>Add Log Entry Topics To Log</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -22,7 +22,7 @@
     </fields>
     <fields>
         <fullName>GenerateDebugStatements__c</fullName>
-        <defaultValue>false</defaultValue>
+        <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>Generate Debug Statements</label>
         <trackTrending>false</trackTrending>

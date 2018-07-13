@@ -31,11 +31,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalExceptionLogEntries__c</field>
+                <field>TotalDebugLogEntries__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalDebugLogEntries__c</field>
+                <field>TotalExceptionLogEntries__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -85,11 +85,19 @@
                 <behavior>Edit</behavior>
                 <field>PushToLoggly__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PushToSlack__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>PushedToLogglyDate__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>PushedToSlackDate__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
@@ -128,9 +136,9 @@
         <fields>NAME</fields>
         <fields>TypeImage__c</fields>
         <fields>Message__c</fields>
-        <fields>LoggingLevel__c</fields>
         <fields>OriginType__c</fields>
         <fields>OriginLocation__c</fields>
+        <fields>LoggingLevel__c</fields>
         <fields>Timestamp__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
         <sortField>Timestamp__c</sortField>
