@@ -166,7 +166,7 @@
     </fields>
     <fields>
         <fullName>PushToLoggly__c</fullName>
-        <defaultValue>true</defaultValue>
+        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Push To Loggly</label>
         <trackFeedHistory>false</trackFeedHistory>
