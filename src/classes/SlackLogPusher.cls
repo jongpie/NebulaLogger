@@ -2,13 +2,21 @@
 * This file is part of the Nebula Logger project, released under the MIT License.                *
 * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
 *************************************************************************************************/
-public without sharing class SlackLogPusher implements Database.Batchable<Log__c>, Database.AllowsCallouts {
+public without sharing class SlackLogPusher implements Database.AllowsCallouts, Database.Batchable<Log__c>  {
 
-    private static final Organization ORG = [SELECT Id, IsSandbox FROM Organization LIMIT 1];
-    private static final LoggerIntegration__mdt SETTINGS = [SELECT BaseUrl__c, ApiToken__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Slack'];
+    private static final Organization ORG                = [SELECT Id, IsSandbox FROM Organization LIMIT 1];
+    private static final LoggerIntegration__mdt SETTINGS = [SELECT ApiToken__c, BaseUrl__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Slack'];
 
     public List<Log__c> start(Database.BatchableContext batchableContext) {
-        return (List<Log__c>)Database.query(this.getQuery() + ' ORDER BY CreatedDate DESC LIMIT 1');
+        return [
+            SELECT
+                LoggedBy__c, LoggedBy__r.Name, Name,
+                TotalDebugLogEntries__c, TotalExceptionLogEntries__c, TransactionId__c
+            FROM Log__c
+            WHERE PushToSlack__c = true
+            AND PushedToSlackDate__c = null
+            AND TotalLogEntries__c > 0
+        ];
     }
 
     public void execute(Database.BatchableContext batchableContext, List<Log__c> logs) {
@@ -16,19 +24,18 @@ public without sharing class SlackLogPusher implements Database.Batchable<Log__c
             NotificationDto notification = new NotificationDto();
             notification.text = 'New Salesforce Log Created';
             notification.attachments = new List<LogDto>();
-            notification.attachments.add(convertLog(log));
+            notification.attachments.add(this.convertLog(log));
 
             HttpRequest request = new HttpRequest();
             request.setEndpoint(SETTINGS.BaseUrl__c + SETTINGS.ApiToken__c);
             request.setMethod('POST');
             request.setHeader('Content-Type', 'application/json');
             String jsonString = Json.serialize(notification);
+            // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
             jsonString = jsonString.replace('"isShort"', '"short"');
             request.setBody(jsonString);
-            System.debug('ze json=' + Json.serialize(notification).replace('"isShort"', '"short"'));
 
             HttpResponse response = new Http().send(request);
-            System.debug(response.toString());
 
             log.PushedToSlackDate__c = System.now();
         }
@@ -36,54 +43,17 @@ public without sharing class SlackLogPusher implements Database.Batchable<Log__c
         update logs;
     }
 
-    public void finish(Database.BatchableContext batchableContext) {
-        // If new logs have generated while the batch has been running, start a new batch
-        Integer countOfRemainingLogEntries = Database.countQuery(this.getCountQuery());
-        if(countOfRemainingLogEntries > 0) Database.executeBatch(new SlackLogPusher());
-    }
+    public void finish(Database.BatchableContext batchableContext) {}
 
-    private String getQuery() {
-        return String.format(this.getBaseQuery(), new List<String>{String.join(this.getQueryFields(), ', ')});
-    }
-
-    private String getCountQuery() {
-        String count = 'count()';
-        return String.format(this.getBaseQuery(), new List<String>{count});
-    }
-
-    private String getBaseQuery() {
-        return 'SELECT {0} FROM ' + Schema.Log__c.SobjectType
-            + ' WHERE ' + Schema.Log__c.PushToSlack__c + ' = true'
-            + ' AND ' + Schema.Log__c.PushedToSlackDate__c + ' = null';
-    }
-
-    private List<String> getQueryFields() {
-        List<String> queryFields = new List<String>();
-        queryFields.add(String.valueOf(Schema.Log__c.LoggedBy__c));
-        queryFields.add('LoggedBy__r.Name');
-        queryFields.add(String.valueOf(Schema.Log__c.Name));
-        /*queryFields.add(String.valueOf(Schema.Log__c.OwnerId));
-        queryFields.add('Owner.Name');
-        queryFields.add('Owner.Type');*/
-        queryFields.add(String.valueOf(Schema.Log__c.TotalDebugLogEntries__c));
-        queryFields.add(String.valueOf(Schema.Log__c.TotalExceptionLogEntries__c));
-        queryFields.add(String.valueOf(Schema.Log__c.TransactionId__c));
-
-        queryFields.sort();
-        return queryFields;
-    }
-
-    private static LogDto convertLog(Log__c log) {
+    private LogDto convertLog(Log__c log) {
         LogDto notification = new LogDto();
         notification.author_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.LoggedBy__c;
-        notification.author_name = log.LoggedBy__r.Name;// + ' (Type: ' + log.Owner.Type + ')';
-        notification.color       = log.TotalExceptionLogEntries__c >= 1 ? '#FF7373' : '#7CD197';
-        //notification.text        = logEntry.Message__c;
+        notification.author_name = log.LoggedBy__r.Name;
+        notification.color       = log.TotalExceptionLogEntries__c >= 1 ? '#FF7373' : '#7CD197'; // Red if there are exceptions, otherwise green
+        notification.fields      = new List<FieldDto>();
         notification.text        = 'Transaction ID: ' + log.TransactionId__c;
         notification.title       = log.Name;
         notification.title_link  = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
-
-        notification.fields = new List<FieldDto>();
 
         FieldDto orgInfoField = new FieldDto();
         orgInfoField.isShort = false;
@@ -104,21 +74,6 @@ public without sharing class SlackLogPusher implements Database.Batchable<Log__c
         totalDebugsField.title   = '# of Debug Entries';
         totalDebugsField.value   = String.valueOf(log.TotalDebugLogEntries__c);
         notification.fields.add(totalDebugsField);
-
-        //FieldDto userInfoField = new FieldDto();
-        //userInfoField.isShort = true;
-        //userInfoField.title   = 'Logged By';
-        //userInfoField.value   = 'Name: ' + UserInfo.getName()
-             //+ '\nID: `' + UserInfo.getUserId() + '`'
-             //+ '\nUsername: ' + UserInfo.getUserName();
-        //notification.fields.add(userInfoField);
-
-        //notification.actions = new List<ActionDto>();
-        //ActionDto logLinkAction = new ActionDto();
-        //logLinkAction.type = 'button';
-        //logLinkAction.text = 'View ' + log.Name;
-        //logLinkAction.url  = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
-        //notification.actions.add(logLinkAction);
 
         return notification;
     }
@@ -141,11 +96,13 @@ public without sharing class SlackLogPusher implements Database.Batchable<Log__c
         public List<ActionDto> actions;
         public List<FieldDto> fields;
     }
+
     private class ActionDto {
         public String type;
         public String text;
         public String url;
     }
+
     private class FieldDto {
         public String title;
         public String value;
