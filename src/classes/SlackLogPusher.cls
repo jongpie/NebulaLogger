@@ -70,7 +70,7 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
 
         FieldDto orgIsProductionField = new FieldDto();
         orgIsProductionField.isShort = true;
-        orgIsProductionField.title   = 'Production?';
+        orgIsProductionField.title   = 'Production';
         orgIsProductionField.value   = '`' + !ORG.IsSandbox + '`';
         notification.fields.add(orgIsProductionField);
 
