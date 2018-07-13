@@ -110,7 +110,6 @@ public without sharing class LogEntryEventHandler {
                 this.logEntryToTopics.put(logEntry, LogEntryEvent.Topics__c.split(','));
             }
         }
-        //upsert logEntries TransactionEntryId__c;
         insert logEntries;
     }
 
