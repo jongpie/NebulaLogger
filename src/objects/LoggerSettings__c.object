@@ -22,7 +22,7 @@
     </fields>
     <fields>
         <fullName>GenerateDebugStatements__c</fullName>
-        <defaultValue>false</defaultValue>
+        <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>Generate Debug Statements</label>
         <trackTrending>false</trackTrending>
