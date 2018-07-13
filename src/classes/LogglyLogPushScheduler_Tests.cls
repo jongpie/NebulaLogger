@@ -5,7 +5,6 @@
 @isTest
 private class LogglyLogPushScheduler_Tests {
 
-
     @isTest
     static void it_should_schedule_the_batch_job() {
         String cronExpression = '0 0 0 15 3 ? 2022';
