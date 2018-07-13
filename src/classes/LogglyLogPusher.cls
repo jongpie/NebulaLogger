@@ -2,9 +2,10 @@
 * This file is part of the Nebula Logger project, released under the MIT License.                *
 * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
 *************************************************************************************************/
-public without sharing class LogglyLogPusher implements Database.Batchable<Log__c>, Database.AllowsCallouts {
+public without sharing class LogglyLogPusher implements Database.AllowsCallouts, Database.Batchable<Log__c> {
 
-    private static final LoggerIntegration__mdt SETTINGS = [SELECT BaseUrl__c, ApiToken__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Loggly'];
+    private static final Organization ORG                = [SELECT Id, IsSandbox FROM Organization LIMIT 1];
+    private static final LoggerIntegration__mdt SETTINGS = [SELECT ApiToken__c, BaseUrl__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Loggly'];
 
     public List<Log__c> start(Database.BatchableContext batchableContext) {
         return [
@@ -38,17 +39,7 @@ public without sharing class LogglyLogPusher implements Database.Batchable<Log__
         update logs;
     }
 
-    public void finish(Database.BatchableContext batchableContext) {
-        // If new logs have generated while the batch has been running, start a new batch
-        Integer countOfRemainingLogEntries = [
-            SELECT COUNT()
-            FROM Log__c
-            WHERE PushToLoggly__c = true
-            AND PushedToLogglyDate__c = null
-            AND TotalLogEntries__c > 0
-        ];
-        if(countOfRemainingLogEntries > 0) Database.executeBatch(new LogglyLogPusher());
-    }
+    public void finish(Database.BatchableContext batchableContext) {}
 
     private String getFormattedTimestamp(Datetime timestamp) {
         return timestamp.format('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'', 'Greenwich Mean Time');
@@ -56,6 +47,7 @@ public without sharing class LogglyLogPusher implements Database.Batchable<Log__
 
     private Map<Id, List<LogEntry__c>> getLogEntriesMap(List<Log__c> logs) {
         Map<Id, List<LogEntry__c>> logEntriesMap = new Map<Id, List<LogEntry__c>>();
+        // TODO cleanup formatting of code
         for(LogEntry__c logEntry : [
             SELECT Id, ExceptionStackTrace__c, ExceptionType__c, Log__c, Message__c, OriginLocation__c, OriginType__c,
                 Timestamp__c, TransactionEntryId__c, Type__c,
@@ -64,6 +56,7 @@ public without sharing class LogglyLogPusher implements Database.Batchable<Log__
             WHERE Log__c IN :logs
         ]) {
             if(!logEntriesMap.containsKey(logEntry.Log__c)) logEntriesMap.put(logEntry.Log__c, new List<LogEntry__c>());
+
             List<LogEntry__c> logEntries = logEntriesMap.get(logEntry.Log__c);
             logEntries.add(logEntry);
             logEntriesMap.put(logEntry.Log__c, logEntries);
@@ -90,6 +83,7 @@ public without sharing class LogglyLogPusher implements Database.Batchable<Log__
         LogDto log = new LogDto();
         log.exceptionStackTrace = logEntry.ExceptionStackTrace__c;
         log.exceptionType       = logEntry.ExceptionType__c;
+        log.originIsProduction  = !ORG.IsSandbox;
         log.originLocation      = logEntry.OriginLocation__c;
         log.originType          = logEntry.OriginType__c;
         log.logEntryId          = logEntry.Id;
@@ -119,6 +113,7 @@ public without sharing class LogglyLogPusher implements Database.Batchable<Log__
         public String logType;
         public String logUrl;
         public String message;
+        public Boolean originIsProduction;
         public String originLocation;
         public String originType;
         public OrganizationDto organization;
