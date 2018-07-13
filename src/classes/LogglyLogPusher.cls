@@ -79,7 +79,6 @@ public without sharing class LogglyLogPusher implements Database.AllowsCallouts,
         for(TopicAssignment topicAssignment : logEntry.TopicAssignments) {
             topicNames.add(topicAssignment.Topic.Name);
         }
-        topicNames.sort();
 
         LogDto log = new LogDto();
         log.exceptionStackTrace = logEntry.ExceptionStackTrace__c;
