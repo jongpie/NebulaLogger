@@ -26,7 +26,7 @@ public without sharing class SlackLogPushScheduler implements System.Schedulable
         // Any records that need to be processed will be processed the next time the job executes
         if(this.getNumberOfRunningBatchJobs() >= 5) return;
 
-        Database.executebatch(new SlackLogPusher());
+        Database.executebatch(new SlackLogPusher(), 100);
     }
 
     private Integer getNumberOfRunningBatchJobs() {
