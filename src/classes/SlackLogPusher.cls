@@ -111,8 +111,8 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
     private class LogDto {
         public List<ActionDto> actions;
         public String author_name;
-        public String author_link;
         public String author_icon;
+        public String author_link;
         public String color;
         public String fallback;
         public List<FieldDto> fields;
