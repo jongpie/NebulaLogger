@@ -30,7 +30,7 @@ public without sharing class TrelloLogPusher implements Database.AllowsCallouts,
         for(Log__c log : logs) {
             LogEntry__c lastException = log.LogEntries__r[0];
 
-            String cardName           = log.Name + ' logged by ' + log.LoggedBy__r.Name;
+            String cardName = log.Name + ' logged by ' + log.LoggedBy__r.Name;
 
             List<String> topicNames = new List<String>();
             for(TopicAssignment topicAssignment : log.TopicAssignments) {
@@ -38,20 +38,21 @@ public without sharing class TrelloLogPusher implements Database.AllowsCallouts,
             }
             if(!topicNames.isEmpty()) cardName +=  '\n\n' + String.join(topicNames, ' ');
 
-            String cardDescription    =
+            String cardDescription =
                 '**Transaction ID:** ' + log.TransactionId__c
                 + '\n\n**Timestamp:** ' + this.getFormattedTimestamp(lastException.Timestamp__c)
                 + '\n\n**Exception Type:** ' + lastException.ExceptionType__c
                 + '\n\n**Message:** ' + lastException.Message__c
                 + '\n\n**Stack Trace:** ' + lastException.ExceptionStackTrace__c;
 
+            String urlParameters = SETTINGS.UrlParameters__c == null ? '' : '&' + SETTINGS.UrlParameters__c.replace('\n', '&').replace('\r', '').replace(' ', '');
             String newTrelloCardEndpoint = SETTINGS.BaseUrl__c + '/1/cards'
                 + '?name=' + EncodingUtil.urlEncode(cardName, 'UTF-8').replace('+', '%20')
                 + '&desc=' + EncodingUtil.urlEncode(cardDescription, 'UTF-8').replace('+', '%20')
                 + '&urlSource=' + EncodingUtil.urlEncode(Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id, 'UTF-8')
                 + '&key=' + SETTINGS.ApiKey__c
                 + '&token=' + SETTINGS.ApiToken__c
-                + '&' + SETTINGS.UrlParameters__c.replace('\n', '&').replace('\r', '').replace(' ', '');
+                + urlParameters;
 
             HttpRequest request = new HttpRequest();
             request.setEndpoint(newTrelloCardEndpoint);
