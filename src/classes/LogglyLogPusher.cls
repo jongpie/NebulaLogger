@@ -29,8 +29,9 @@ public without sharing class LogglyLogPusher implements Database.AllowsCallouts,
             log.PushedToLogglyDate__c = System.now();
         }
 
+        String urlParameters = SETTINGS.UrlParameters__c == null ? '' : '?' + SETTINGS.UrlParameters__c.replace('\n', '&');
         HttpRequest request = new HttpRequest();
-        request.setEndpoint(SETTINGS.BaseUrl__c + '/bulk/' + SETTINGS.ApiToken__c + '/tag/salesforce/' + '?' + SETTINGS.UrlParameters__c.replace('\n', '&'));
+        request.setEndpoint(SETTINGS.BaseUrl__c + '/bulk/' + SETTINGS.ApiToken__c + '/tag/salesforce/' + urlParameters);
         request.setMethod('POST');
         request.setHeader('Content-Type', 'text/plain');
         request.setBody(String.join(logEntryStrings, '\n'));

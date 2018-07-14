@@ -27,8 +27,9 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
             notification.attachments = new List<LogDto>();
             notification.attachments.add(this.convertLog(log));
 
+            String urlParameters = SETTINGS.UrlParameters__c == null ? '' : '?' + SETTINGS.UrlParameters__c.replace('\n', '&');
             HttpRequest request = new HttpRequest();
-            request.setEndpoint(SETTINGS.BaseUrl__c + SETTINGS.ApiToken__c + '?' + SETTINGS.UrlParameters__c.replace('\n', '&'));
+            request.setEndpoint(SETTINGS.BaseUrl__c + '/services/' + SETTINGS.ApiToken__c + urlParameters);
             request.setMethod('POST');
             request.setHeader('Content-Type', 'application/json');
             String jsonString = Json.serialize(notification);
