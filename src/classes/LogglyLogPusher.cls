@@ -37,6 +37,9 @@ public without sharing class LogglyLogPusher implements Database.AllowsCallouts,
         request.setBody(String.join(logEntryStrings, '\n'));
 
         HttpResponse response = new Http().send(request);
+
+        if(response.getStatusCode() >= 400) throw new LogglyApiException(response.getBody());
+
         update logs;
     }
 
@@ -103,6 +106,8 @@ public without sharing class LogglyLogPusher implements Database.AllowsCallouts,
 
         return log;
     }
+
+    private class LogglyApiException extends Exception {}
 
     private class LogDto {
         public String className;

@@ -39,6 +39,8 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
 
             HttpResponse response = new Http().send(request);
 
+            if(response.getStatusCode() >= 400) throw new SlackApiException(response.getBody());
+
             log.PushedToSlackDate__c = System.now();
         }
 
@@ -102,6 +104,8 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
 
         return notification;
     }
+
+    private class SlackApiException extends Exception {}
 
     private class NotificationDto {
         public List<LogDto> attachments;
