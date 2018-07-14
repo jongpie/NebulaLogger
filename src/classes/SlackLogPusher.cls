@@ -90,7 +90,6 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
         for(TopicAssignment topicAssignment : log.TopicAssignments) {
             topicNames.add(topicAssignment.Topic.Name);
         }
-        topicNames.sort();
 
         if(topicNames.isEmpty()) return notification;
 
