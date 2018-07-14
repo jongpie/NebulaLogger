@@ -5,7 +5,7 @@
 public without sharing class SlackLogPusher implements Database.AllowsCallouts, Database.Batchable<Log__c>  {
 
     private static final Organization ORG                = [SELECT Id, IsSandbox FROM Organization LIMIT 1];
-    private static final LoggerIntegration__mdt SETTINGS = [SELECT ApiToken__c, BaseUrl__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Slack'];
+    private static final LoggerIntegration__mdt SETTINGS = [SELECT ApiToken__c, BaseUrl__c, UrlParameters__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Slack'];
 
     public List<Log__c> start(Database.BatchableContext batchableContext) {
         return [
@@ -28,7 +28,7 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
             notification.attachments.add(this.convertLog(log));
 
             HttpRequest request = new HttpRequest();
-            request.setEndpoint(SETTINGS.BaseUrl__c + SETTINGS.ApiToken__c);
+            request.setEndpoint(SETTINGS.BaseUrl__c + SETTINGS.ApiToken__c + '?' + SETTINGS.UrlParameters__c.replace('\n', '&'));
             request.setMethod('POST');
             request.setHeader('Content-Type', 'application/json');
             String jsonString = Json.serialize(notification);

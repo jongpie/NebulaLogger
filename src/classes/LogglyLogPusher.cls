@@ -5,7 +5,7 @@
 public without sharing class LogglyLogPusher implements Database.AllowsCallouts, Database.Batchable<Log__c> {
 
     private static final Organization ORG                = [SELECT Id, IsSandbox FROM Organization LIMIT 1];
-    private static final LoggerIntegration__mdt SETTINGS = [SELECT ApiToken__c, BaseUrl__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Loggly'];
+    private static final LoggerIntegration__mdt SETTINGS = [SELECT ApiToken__c, BaseUrl__c, UrlParameters__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Loggly'];
 
     public List<Log__c> start(Database.BatchableContext batchableContext) {
         return [
@@ -30,7 +30,7 @@ public without sharing class LogglyLogPusher implements Database.AllowsCallouts,
         }
 
         HttpRequest request = new HttpRequest();
-        request.setEndpoint(SETTINGS.BaseUrl__c + '/bulk/' + SETTINGS.ApiToken__c + '/tag/salesforce/');
+        request.setEndpoint(SETTINGS.BaseUrl__c + '/bulk/' + SETTINGS.ApiToken__c + '/tag/salesforce/' + '?' + SETTINGS.UrlParameters__c.replace('\n', '&'));
         request.setMethod('POST');
         request.setHeader('Content-Type', 'text/plain');
         request.setBody(String.join(logEntryStrings, '\n'));
