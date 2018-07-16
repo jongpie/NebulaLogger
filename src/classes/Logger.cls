@@ -122,15 +122,15 @@ public without sharing class Logger {
         else return value.left(fieldMaxLength);
     }
 
-    private static String getExceptionStackTrace(Exception ex, LightningLogEntry.Error lightningError) {
+    private static String getExceptionStackTrace(Exception ex, LightningLogEntry lightningLogEntry) {
         if(ex != null) return ex.getStackTraceString();
-        else if(lightningError != null) return lightningError.stack;
+        else if(lightningLogEntry != null & lightningLogEntry.error != null) return lightningLogEntry.error.stack;
         else return null;
     }
 
-    private static String getExceptionType(Exception ex, LightningLogEntry.Error lightningError) {
+    private static String getExceptionType(Exception ex, LightningLogEntry lightningLogEntry) {
         if(ex != null) return ex.getTypeName();
-        else if(lightningError != null) return 'LightningError';
+        else if(lightningLogEntry != null & lightningLogEntry.error != null) return 'LightningError';
         else return null;
     }
 
@@ -145,7 +145,6 @@ public without sharing class Logger {
 
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
         if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
-
 
         String type = 'Debug';
         if(ex != null) type = 'Exception';
@@ -175,8 +174,8 @@ public without sharing class Logger {
             ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
             ContextTriggerSobjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSobjectType()),
             ContextVisualforcePage__c         = visualforcePageName,
-            ExceptionStackTrace__c            = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, getExceptionStackTrace(ex, lightningLogEntry.error)),
-            ExceptionType__c                  = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionType__c, getExceptionType(ex, lightningLogEntry.error)),
+            ExceptionStackTrace__c            = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, getExceptionStackTrace(ex, lightningLogEntry)),
+            ExceptionType__c                  = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionType__c, getExceptionType(ex, lightningLogEntry)),
             LimitsAggregateQueriesMax__c      = Limits.getLimitAggregateQueries(),
             LimitsAggregateQueriesUsed__c     = Limits.getAggregateQueries(),
             LimitsAsyncCallsMax__c            = Limits.getLimitAsyncCalls(),
