@@ -17,20 +17,16 @@
         }
 
         var logEntry = {
-            componentName:  args.component.getName(),
-            message:        args.message,
-            error:          error,
-            originLocation: args.originLocation,
-            topics:         args.topics,
-            timestamp:      timestamp
+            componentName:    args.component.getName(),
+            message:          args.message,
+            error:            error,
+            loggingLevelName: args.loggingLevelName,
+            originLocation:   args.originLocation,
+            topics:           args.topics,
+            timestamp:        timestamp
         };
         console.log('New Log Entry Added');
         console.log(logEntry);
-        if(logEntry.error) {
-            console.log('logEntry.error');
-            console.log(logEntry.error.message);
-            console.log(JSON.stringify(logEntry.error));
-        }
         logEntries.push(logEntry);
         component.set('v.logEntries', logEntries);
     },

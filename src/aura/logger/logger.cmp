@@ -6,6 +6,7 @@
     <!-- Public Functions -->
     <aura:method name="addDebugEntry" action="{!c.addDebugEntry}">
         <aura:attribute name="component" type="Object" required="true" />
+        <aura:attribute name="loggingLevelName" type="String" />
         <aura:attribute name="message" type="String" />
         <aura:attribute name="originLocation" type="String" required="true" />
         <aura:attribute name="topics" type="String[]" />
