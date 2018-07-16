@@ -3,12 +3,22 @@
     <description>Provides access to manage logs</description>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.ContextIsLightningComponent__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.ContextIsTriggerExecuting__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.ContextIsVisualforce__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ContextLightningComponentName__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -61,6 +61,15 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>ContextIsLightningComponent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Lightning Component</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>ContextIsTriggerExecuting__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -77,6 +86,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextLightningComponentName__c</fullName>
+        <externalId>false</externalId>
+        <label>Lightning Component Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ContextTriggerOperationType__c</fullName>
@@ -723,6 +743,11 @@
                     <fullName>Process Builder/Flow</fullName>
                     <default>false</default>
                     <label>Process Builder/Flow</label>
+                </value>
+                <value>
+                    <fullName>Lightning Component</fullName>
+                    <default>false</default>
+                    <label>Lightning Component</label>
                 </value>
             </valueSetDefinition>
         </valueSet>

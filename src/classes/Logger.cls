@@ -21,7 +21,7 @@ public without sharing class Logger {
     }
 
     public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation, List<String> topics) {
-        return addEntry(loggingLevel, message, null, 'Apex', originLocation, topics);
+        return addEntry(loggingLevel, message, null, 'Apex', originLocation, topics, null);
     }
 
     public static String addExceptionEntry(Exception ex, String originLocation) {
@@ -29,7 +29,7 @@ public without sharing class Logger {
     }
 
     public static String addExceptionEntry(Exception ex, String originLocation, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, ex.getMessage(), ex, 'Apex', originLocation, topics);
+        return addEntry(LoggingLevel.ERROR, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
     }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
@@ -40,9 +40,21 @@ public without sharing class Logger {
 
             if(flowLogEntry.saveLog) saveLog = true;
 
-            addEntry(loggingLevel, flowLogEntry.Message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics);
+            addEntry(loggingLevel, flowLogEntry.message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics, null);
         }
         if(saveLog) saveLog();
+    }
+
+    @AuraEnabled
+    public static void saveLightningEntries(String logEntriesJson) {
+        List<LightningLogEntry> lightningLogEntries = (List<LightningLogEntry>)Json.deserialize(logEntriesJson, List<LightningLogEntry>.class);
+        for(LightningLogEntry logEntry : lightningLogEntries) {
+            LoggingLevel loggingLevel;
+            if(!String.isBlank(logEntry.loggingLevelName)) loggingLevel = getLoggingLevel(logEntry.loggingLevelName);
+
+            addEntry(loggingLevel, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
+        }
+        saveLog();
     }
 
     public static LoggingLevel getLoggingLevel(String loggingLevelName) {
@@ -110,8 +122,8 @@ public without sharing class Logger {
         else return value.left(fieldMaxLength);
     }
 
-    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics) {
-        Datetime logEntryTimestamp = System.now();
+    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics, LightningLogEntry lightningLogEntry) {
+        Datetime logEntryTimestamp = lightningLogEntry == null ? System.now() : lightningLogEntry.timestamp;
 
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
@@ -136,10 +148,12 @@ public without sharing class Logger {
             ContextIsApexRest__c              = RestContext.request != null,
             ContextIsBatch__c                 = System.isBatch(),
             ContextIsFuture__c                = System.isFuture(),
+            ContextIsLightningComponent__c    = lightningLogEntry != null,
             ContextIsQueueable__c             = System.isQueueable(),
             ContextIsScheduledJob__c          = System.isScheduled(),
             ContextIsTriggerExecuting__c      = Trigger.isExecuting,
             ContextIsVisualforce__c           = ApexPages.currentPage() != null,
+            ContextLightningComponentName__c  = lightningLogEntry == null ? null : lightningLogEntry.componentName,
             ContextThemeDisplayed__c          = UserInfo.getUiThemeDisplayed(),
             ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
             ContextTriggerSobjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSobjectType()),

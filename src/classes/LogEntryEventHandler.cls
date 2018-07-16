@@ -54,8 +54,10 @@ public without sharing class LogEntryEventHandler {
 
         for(LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>)Trigger.new) {
             LogEntry__c logEntry = new LogEntry__c(
+                ContextIsLightningComponent__c    = logEntryEvent.ContextIsLightningComponent__c,
                 ContextIsTriggerExecuting__c      = logEntryEvent.ContextIsTriggerExecuting__c,
                 ContextIsVisualforce__c           = logEntryEvent.ContextIsVisualforce__c,
+                ContextLightningComponentName__c  = logEntryEvent.ContextLightningComponentName__c,
                 ContextTriggerOperationType__c    = logEntryEvent.ContextTriggerOperationType__c,
                 ContextTriggerSobjectType__c      = logEntryEvent.ContextTriggerSobjectType__c,
                 ContextVisualforcePage__c         = logEntryEvent.ContextVisualforcePage__c,
