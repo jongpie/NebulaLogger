@@ -151,121 +151,126 @@
         <type>Picklist</type>
         <valueSet>
             <valueSetDefinition>
-                <sorted>false</sorted>
+                <sorted>true</sorted>
                 <value>
-                    <fullName>AsyncException</fullName>
+                    <fullName>LightningError</fullName>
                     <default>false</default>
-                    <label>AsyncException</label>
+                    <label>LightningError</label>
                 </value>
                 <value>
-                    <fullName>CalloutException</fullName>
+                    <fullName>System.AsyncException</fullName>
                     <default>false</default>
-                    <label>CalloutException</label>
+                    <label>System.AsyncException</label>
                 </value>
                 <value>
-                    <fullName>DmlException</fullName>
+                    <fullName>System.CalloutException</fullName>
                     <default>false</default>
-                    <label>DmlException</label>
+                    <label>System.CalloutException</label>
                 </value>
                 <value>
-                    <fullName>EmailException</fullName>
+                    <fullName>System.DmlException</fullName>
                     <default>false</default>
-                    <label>EmailException</label>
+                    <label>System.DmlException</label>
                 </value>
                 <value>
-                    <fullName>ExternalObjectException</fullName>
+                    <fullName>System.EmailException</fullName>
                     <default>false</default>
-                    <label>ExternalObjectException</label>
+                    <label>System.EmailException</label>
                 </value>
                 <value>
-                    <fullName>InvalidParameterValueException</fullName>
+                    <fullName>System.ExternalObjectException</fullName>
                     <default>false</default>
-                    <label>InvalidParameterValueException</label>
+                    <label>System.ExternalObjectException</label>
                 </value>
                 <value>
-                    <fullName>LimitException</fullName>
+                    <fullName>System.InvalidParameterValueException</fullName>
                     <default>false</default>
-                    <label>LimitException</label>
+                    <label>System.InvalidParameterValueException</label>
                 </value>
                 <value>
-                    <fullName>JSONException</fullName>
+                    <fullName>System.JSONException</fullName>
                     <default>false</default>
-                    <label>JSONException</label>
+                    <label>System.JSONException</label>
                 </value>
                 <value>
-                    <fullName>ListException</fullName>
+                    <fullName>System.LimitException</fullName>
                     <default>false</default>
-                    <label>ListException</label>
+                    <label>System.LimitException</label>
                 </value>
                 <value>
-                    <fullName>MathException</fullName>
+                    <fullName>System.ListException</fullName>
                     <default>false</default>
-                    <label>MathException</label>
+                    <label>System.ListException</label>
                 </value>
                 <value>
-                    <fullName>NoAccessException</fullName>
+                    <fullName>System.MathException</fullName>
                     <default>false</default>
-                    <label>NoAccessException</label>
+                    <label>System.MathException</label>
                 </value>
                 <value>
-                    <fullName>NoDataFoundException</fullName>
+                    <fullName>System.NoAccessException</fullName>
                     <default>false</default>
-                    <label>NoDataFoundException</label>
+                    <label>System.NoAccessException</label>
                 </value>
                 <value>
-                    <fullName>NoSuchElementException</fullName>
+                    <fullName>System.NoDataFoundException</fullName>
                     <default>false</default>
-                    <label>NoSuchElementException</label>
+                    <label>System.NoDataFoundException</label>
                 </value>
                 <value>
-                    <fullName>NullPointerException</fullName>
+                    <fullName>System.NoSuchElementException</fullName>
                     <default>false</default>
-                    <label>NullPointerException</label>
+                    <label>System.NoSuchElementException</label>
                 </value>
                 <value>
-                    <fullName>QueryException</fullName>
+                    <fullName>System.NullPointerException</fullName>
                     <default>false</default>
-                    <label>QueryException</label>
+                    <label>System.NullPointerException</label>
                 </value>
                 <value>
-                    <fullName>SearchException</fullName>
+                    <fullName>System.QueryException</fullName>
                     <default>false</default>
-                    <label>SearchException</label>
+                    <label>System.QueryException</label>
                 </value>
                 <value>
-                    <fullName>SecurityException</fullName>
+                    <fullName>System.SearchException</fullName>
                     <default>false</default>
-                    <label>SecurityException</label>
+                    <label>System.SearchException</label>
                 </value>
                 <value>
-                    <fullName>SerializationException</fullName>
+                    <fullName>System.SecurityException</fullName>
                     <default>false</default>
-                    <label>SerializationException</label>
+                    <label>System.SecurityException</label>
                 </value>
                 <value>
-                    <fullName>SObjectException</fullName>
+                    <fullName>System.SerializationException</fullName>
                     <default>false</default>
-                    <label>SObjectException</label>
+                    <label>System.SerializationException</label>
                 </value>
                 <value>
-                    <fullName>StringException</fullName>
+                    <fullName>System.SObjectException</fullName>
                     <default>false</default>
-                    <label>StringException</label>
+                    <label>System.SObjectException</label>
                 </value>
                 <value>
-                    <fullName>TypeException</fullName>
+                    <fullName>System.StringException</fullName>
                     <default>false</default>
-                    <label>TypeException</label>
+                    <label>System.StringException</label>
                 </value>
                 <value>
-                    <fullName>VisualforceException</fullName>
+                    <fullName>System.TypeException</fullName>
                     <default>false</default>
-                    <label>VisualforceException</label>
+                    <label>System.TypeException</label>
                 </value>
                 <value>
-                    <fullName>XmlException</fullName>
+                    <fullName>System.VisualforceException</fullName>
                     <default>false</default>
-                    <label>XmlException</label>
+                    <label>System.VisualforceException</label>
+                </value>
+                <value>
+                    <fullName>System.XmlException</fullName>
+                    <default>false</default>
+                    <label>System.XmlException</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
