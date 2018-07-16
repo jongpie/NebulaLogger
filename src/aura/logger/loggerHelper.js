@@ -3,6 +3,7 @@
         var timestamp = new Date().toISOString();
 
         var logEntries = component.get('v.logEntries');
+        if(logEntries == undefined || logEntries == null) logEntries = [];
         var args = event.getParam('arguments');
         var logEntry = {
             componentName:  args.component.getName(),
@@ -11,8 +12,8 @@
             originLocation: args.originLocation,
             topics:         args.topics,
             timestamp:      timestamp
-            //componentName:  component.getName()
         };
+        console.log('New Log Entry Added');
         console.log(logEntry);
         logEntries.push(logEntry);
         component.set('v.logEntries', logEntries);
@@ -20,7 +21,7 @@
     save : function(component, event) {
         var logEntries = component.get('v.logEntries');
 
-        if(logEntries == null) return;
+        if(logEntries.size == 0) return;
 
         var action = component.get('c.saveLightningEntries');
         action.setParams({
@@ -28,7 +29,7 @@
         });
         action.setCallback(this, function(response) {
             if(response.getState() === 'SUCCESS') {
-                component.set('v.logEntries', null);
+                component.set('v.logEntries', []);
             } else if(response.getState() === 'ERROR') {
                 // TODO this.processCallbackErrors(response);
             }

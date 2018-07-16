@@ -1,11 +1,11 @@
 <aura:component controller="Logger">
 
     <!-- Private Attributes -->
-    <aura:attribute name="logEntries" type="LightningLogEntry[]" access="private" default="[]" />
+    <aura:attribute name="logEntries" type="LightningLogEntry[]" access="private" />
 
     <!-- Public Functions -->
     <aura:method name="addEntry" action="{!c.addEntry}">
-        <aura:attribute name="component" type="Object" />
+        <aura:attribute name="component" type="Object" required="true" />
         <aura:attribute name="message" type="String" />
         <aura:attribute name="error" type="Object" />
         <aura:attribute name="originLocation" type="String" required="true" />

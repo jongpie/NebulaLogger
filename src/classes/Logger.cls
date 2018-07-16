@@ -122,18 +122,35 @@ public without sharing class Logger {
         else return value.left(fieldMaxLength);
     }
 
+    private static String getExceptionStackTrace(Exception ex, LightningLogEntry.Error lightningError) {
+        if(ex != null) return ex.getStackTraceString();
+        else if(lightningError != null) return lightningError.stack;
+        else return null;
+    }
+
+    private static String getExceptionType(Exception ex, LightningLogEntry.Error lightningError) {
+        if(ex != null) return ex.getTypeName();
+        else if(lightningError != null) return 'LightningError';
+        else return null;
+    }
+
     private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics, LightningLogEntry lightningLogEntry) {
         Datetime logEntryTimestamp = lightningLogEntry == null ? System.now() : lightningLogEntry.timestamp;
 
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
+        if(lightningLogEntry != null && lightningLogEntry.error != null) message = lightningLogEntry.error.message;
 
         String logEntryTransactionId = generateUuid();
 
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
         if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
 
-        String type = ex == null ? 'Debug' : 'Exception';
+
+        String type = 'Debug';
+        if(ex != null) type = 'Exception';
+        if(lightningLogEntry != null && lightningLogEntry.error != null) type = 'Exception';
+
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return logEntryTransactionId;
         if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) return logEntryTransactionId;
 
@@ -158,8 +175,8 @@ public without sharing class Logger {
             ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
             ContextTriggerSobjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSobjectType()),
             ContextVisualforcePage__c         = visualforcePageName,
-            ExceptionStackTrace__c            = ex == null ? null : truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, ex.getStackTraceString()),
-            ExceptionType__c                  = ex == null ? null : ex.getTypeName(),
+            ExceptionStackTrace__c            = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, getExceptionStackTrace(ex, lightningLogEntry.error)),
+            ExceptionType__c                  = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionType__c, getExceptionType(ex, lightningLogEntry.error)),
             LimitsAggregateQueriesMax__c      = Limits.getLimitAggregateQueries(),
             LimitsAggregateQueriesUsed__c     = Limits.getAggregateQueries(),
             LimitsAsyncCallsMax__c            = Limits.getLimitAsyncCalls(),
@@ -192,7 +209,7 @@ public without sharing class Logger {
             LimitsSoslSearchesUsed__c         = Limits.getSoslQueries(),
             LoggingLevel__c                   = logEntryLoggingLevel.name(),
             LoggingLevelOrdinal__c            = logEntryLoggingLevel.ordinal(),
-            Message__c                        = String.escapeSingleQuotes(truncatedMessage),
+            Message__c                        = truncatedMessage == null ? null : String.escapeSingleQuotes(truncatedMessage),
             MessageTruncated__c               = messageTruncated,
             OriginType__c                     = originType,
             OriginLocation__c                 = truncateFieldValue(Schema.LogEntryEvent__e.OriginLocation__c, originLocation),
