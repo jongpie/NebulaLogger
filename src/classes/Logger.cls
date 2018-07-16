@@ -49,10 +49,11 @@ public without sharing class Logger {
     public static void saveLightningEntries(String logEntriesJson) {
         List<LightningLogEntry> lightningLogEntries = (List<LightningLogEntry>)Json.deserialize(logEntriesJson, List<LightningLogEntry>.class);
         for(LightningLogEntry logEntry : lightningLogEntries) {
-            LoggingLevel loggingLevel;
-            if(!String.isBlank(logEntry.loggingLevelName)) loggingLevel = getLoggingLevel(logEntry.loggingLevelName);
+            LoggingLevel logLevel;
+            if(!String.isBlank(logEntry.loggingLevelName)) logLevel = getLoggingLevel(logEntry.loggingLevelName);
+            if(logEntry.error != null) logLevel = LoggingLevel.ERROR;
 
-            addEntry(loggingLevel, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
+            addEntry(logLevel, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
         }
         saveLog();
     }
