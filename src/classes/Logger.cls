@@ -124,13 +124,13 @@ public without sharing class Logger {
 
     private static String getExceptionStackTrace(Exception ex, LightningLogEntry lightningLogEntry) {
         if(ex != null) return ex.getStackTraceString();
-        else if(lightningLogEntry != null & lightningLogEntry.error != null) return lightningLogEntry.error.stack;
+        else if(lightningLogEntry != null && lightningLogEntry.error != null) return lightningLogEntry.error.stack;
         else return null;
     }
 
     private static String getExceptionType(Exception ex, LightningLogEntry lightningLogEntry) {
         if(ex != null) return ex.getTypeName();
-        else if(lightningLogEntry != null & lightningLogEntry.error != null) return 'LightningError';
+        else if(lightningLogEntry != null && lightningLogEntry.error != null) return 'LightningError';
         else return null;
     }
 
