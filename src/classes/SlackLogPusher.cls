@@ -5,7 +5,7 @@
 public without sharing class SlackLogPusher implements Database.AllowsCallouts, Database.Batchable<Log__c>  {
 
     private static final Organization ORG                = [SELECT Id, IsSandbox FROM Organization LIMIT 1];
-    private static final LoggerIntegration__mdt SETTINGS = [SELECT ApiToken__c, BaseUrl__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Slack'];
+    private static final LoggerIntegration__mdt SETTINGS = [SELECT ApiToken__c, BaseUrl__c, UrlParameters__c FROM LoggerIntegration__mdt WHERE DeveloperName = 'Slack'];
 
     public List<Log__c> start(Database.BatchableContext batchableContext) {
         return [
@@ -27,8 +27,9 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
             notification.attachments = new List<LogDto>();
             notification.attachments.add(this.convertLog(log));
 
+            String urlParameters = SETTINGS.UrlParameters__c == null ? '' : '?' + SETTINGS.UrlParameters__c.replace('\n', '&');
             HttpRequest request = new HttpRequest();
-            request.setEndpoint(SETTINGS.BaseUrl__c + SETTINGS.ApiToken__c);
+            request.setEndpoint(SETTINGS.BaseUrl__c + '/services/' + SETTINGS.ApiToken__c + urlParameters);
             request.setMethod('POST');
             request.setHeader('Content-Type', 'application/json');
             String jsonString = Json.serialize(notification);
@@ -37,6 +38,8 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
             request.setBody(jsonString);
 
             HttpResponse response = new Http().send(request);
+
+            if(response.getStatusCode() >= 400) throw new SlackApiException(response.getBody());
 
             log.PushedToSlackDate__c = System.now();
         }
@@ -90,7 +93,6 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
         for(TopicAssignment topicAssignment : log.TopicAssignments) {
             topicNames.add(topicAssignment.Topic.Name);
         }
-        topicNames.sort();
 
         if(topicNames.isEmpty()) return notification;
 
@@ -103,6 +105,8 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
         return notification;
     }
 
+    private class SlackApiException extends Exception {}
+
     private class NotificationDto {
         public List<LogDto> attachments;
         public String text;
@@ -111,8 +115,8 @@ public without sharing class SlackLogPusher implements Database.AllowsCallouts, 
     private class LogDto {
         public List<ActionDto> actions;
         public String author_name;
-        public String author_link;
         public String author_icon;
+        public String author_link;
         public String color;
         public String fallback;
         public List<FieldDto> fields;
