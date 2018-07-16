@@ -4,10 +4,17 @@
     <aura:attribute name="logEntries" type="LightningLogEntry[]" access="private" />
 
     <!-- Public Functions -->
-    <aura:method name="addEntry" action="{!c.addEntry}">
+    <aura:method name="addDebugEntry" action="{!c.addDebugEntry}">
         <aura:attribute name="component" type="Object" required="true" />
         <aura:attribute name="message" type="String" />
-        <aura:attribute name="error" type="Object" />
+        <aura:attribute name="originLocation" type="String" required="true" />
+        <aura:attribute name="topics" type="String[]" />
+        <aura:attribute name="callback" type="function" />
+    </aura:method>
+
+    <aura:method name="addExceptionEntry" action="{!c.addExceptionEntry}">
+        <aura:attribute name="component" type="Object" required="true" />
+        <aura:attribute name="error" type="Error" />
         <aura:attribute name="originLocation" type="String" required="true" />
         <aura:attribute name="topics" type="String[]" />
         <aura:attribute name="callback" type="function" />
