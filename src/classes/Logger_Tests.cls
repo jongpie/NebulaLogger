@@ -193,4 +193,29 @@ private class Logger_Tests {
         System.assertEquals(flowName, logEntry.OriginLocation__c);
     }
 
+    @isTest
+    static void it_should_save_entries_for_a_list_of_lightning_messages() {
+        Datetime timestamp = System.now().addMinutes(-5);
+        List<LightningLogEntry> lightningLogEntries = new List<LightningLogEntry>();
+
+        Test.startTest();
+        LightningLogEntry lightningLogEntry = new LightningLogEntry();
+        lightningLogEntry.componentName    = 'myComponent';
+        lightningLogEntry.loggingLevelName = 'DEBUG';
+        lightningLogEntry.message          = 'my test message';
+        lightningLogEntry.originLocation   = 'test';
+        lightningLogEntry.timestamp        = timestamp;
+
+        lightningLogEntries.add(lightningLogEntry);
+        Logger.saveLightningEntries(Json.serialize(lightningLogEntries));
+        Test.stopTest();
+
+        LogEntry__c logEntry = getLogEntry();
+        System.assertEquals(lightningLogEntry.componentName, logEntry.ContextLightningComponentName__c);
+        System.assertEquals(lightningLogEntry.message, logEntry.Message__c);
+        System.assertEquals('Lightning Component', logEntry.OriginType__c);
+        System.assertEquals(lightningLogEntry.originLocation, logEntry.OriginLocation__c);
+        System.assertEquals(timestamp, logEntry.Timestamp__c);
+    }
+
 }
