@@ -33,6 +33,16 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>ContextIsLightningComponent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Lightning Component</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>ContextIsQueueable__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -81,6 +91,18 @@
         <isSortingDisabled>false</isSortingDisabled>
         <label>Visualforce</label>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContextLightningComponentName__c</fullName>
+        <externalId>false</externalId>
+        <isFilteringDisabled>false</isFilteringDisabled>
+        <isNameField>false</isNameField>
+        <isSortingDisabled>false</isSortingDisabled>
+        <label>Lightning Component Name</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ContextThemeDisplayed__c</fullName>

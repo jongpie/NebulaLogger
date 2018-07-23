@@ -1,0 +1,26 @@
+<aura:component controller="Logger">
+
+    <!-- Private Attributes -->
+    <aura:attribute name="logEntries" type="LightningLogEntry[]" access="private" />
+
+    <!-- Public Functions -->
+    <aura:method name="addDebugEntry" action="{!c.addDebugEntry}">
+        <aura:attribute name="component" type="Object" required="true" />
+        <aura:attribute name="loggingLevelName" type="String" />
+        <aura:attribute name="message" type="String" />
+        <aura:attribute name="originLocation" type="String" required="true" />
+        <aura:attribute name="topics" type="String[]" />
+        <aura:attribute name="callback" type="function" />
+    </aura:method>
+
+    <aura:method name="addExceptionEntry" action="{!c.addExceptionEntry}">
+        <aura:attribute name="component" type="Object" required="true" />
+        <aura:attribute name="error" type="Error" />
+        <aura:attribute name="originLocation" type="String" required="true" />
+        <aura:attribute name="topics" type="String[]" />
+        <aura:attribute name="callback" type="function" />
+    </aura:method>
+
+    <aura:method name="save" action="{!c.save}" />
+
+</aura:component>

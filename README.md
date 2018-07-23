@@ -1,4 +1,4 @@
-# Nebula Logger for Salesforce Apex, Process Builder & Flow
+# Nebula Logger for Salesforce Apex, Lightning Components, Process Builder & Flow
 [![Travis CI](https://img.shields.io/travis/jongpie/NebulaLogger/master.svg)](https://travis-ci.org/jongpie/NebulaLogger)
 
 <a href="https://githubsfdeploy.herokuapp.com" target="_blank">

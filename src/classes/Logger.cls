@@ -21,7 +21,7 @@ public without sharing class Logger {
     }
 
     public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation, List<String> topics) {
-        return addEntry(loggingLevel, message, null, 'Apex', originLocation, topics);
+        return addEntry(loggingLevel, message, null, 'Apex', originLocation, topics, null);
     }
 
     public static String addExceptionEntry(Exception ex, String originLocation) {
@@ -29,7 +29,7 @@ public without sharing class Logger {
     }
 
     public static String addExceptionEntry(Exception ex, String originLocation, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, ex.getMessage(), ex, 'Apex', originLocation, topics);
+        return addEntry(LoggingLevel.ERROR, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
     }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
@@ -40,9 +40,22 @@ public without sharing class Logger {
 
             if(flowLogEntry.saveLog) saveLog = true;
 
-            addEntry(loggingLevel, flowLogEntry.Message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics);
+            addEntry(loggingLevel, flowLogEntry.message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics, null);
         }
         if(saveLog) saveLog();
+    }
+
+    @AuraEnabled
+    public static void saveLightningEntries(String logEntriesJson) {
+        List<LightningLogEntry> lightningLogEntries = (List<LightningLogEntry>)Json.deserialize(logEntriesJson, List<LightningLogEntry>.class);
+        for(LightningLogEntry logEntry : lightningLogEntries) {
+            LoggingLevel logLevel;
+            if(!String.isBlank(logEntry.loggingLevelName)) logLevel = getLoggingLevel(logEntry.loggingLevelName);
+            if(logEntry.error != null) logLevel = LoggingLevel.ERROR;
+
+            addEntry(logLevel, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
+        }
+        saveLog();
     }
 
     public static LoggingLevel getLoggingLevel(String loggingLevelName) {
@@ -110,18 +123,34 @@ public without sharing class Logger {
         else return value.left(fieldMaxLength);
     }
 
-    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics) {
-        Datetime logEntryTimestamp = System.now();
+    private static String getExceptionStackTrace(Exception ex, LightningLogEntry lightningLogEntry) {
+        if(ex != null) return ex.getStackTraceString();
+        else if(lightningLogEntry != null && lightningLogEntry.error != null) return lightningLogEntry.error.stack;
+        else return null;
+    }
+
+    private static String getExceptionType(Exception ex, LightningLogEntry lightningLogEntry) {
+        if(ex != null) return ex.getTypeName();
+        else if(lightningLogEntry != null && lightningLogEntry.error != null) return 'LightningError';
+        else return null;
+    }
+
+    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics, LightningLogEntry lightningLogEntry) {
+        Datetime logEntryTimestamp = lightningLogEntry == null ? System.now() : lightningLogEntry.timestamp;
 
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
         if(ex != null) message = ex.getMessage();
+        if(lightningLogEntry != null && lightningLogEntry.error != null) message = lightningLogEntry.error.message;
 
         String logEntryTransactionId = generateUuid();
 
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
         if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
 
-        String type = ex == null ? 'Debug' : 'Exception';
+        String type = 'Debug';
+        if(ex != null) type = 'Exception';
+        if(lightningLogEntry != null && lightningLogEntry.error != null) type = 'Exception';
+
         if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return logEntryTransactionId;
         if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) return logEntryTransactionId;
 
@@ -136,16 +165,18 @@ public without sharing class Logger {
             ContextIsApexRest__c              = RestContext.request != null,
             ContextIsBatch__c                 = System.isBatch(),
             ContextIsFuture__c                = System.isFuture(),
+            ContextIsLightningComponent__c    = lightningLogEntry != null,
             ContextIsQueueable__c             = System.isQueueable(),
             ContextIsScheduledJob__c          = System.isScheduled(),
             ContextIsTriggerExecuting__c      = Trigger.isExecuting,
             ContextIsVisualforce__c           = ApexPages.currentPage() != null,
+            ContextLightningComponentName__c  = lightningLogEntry == null ? null : lightningLogEntry.componentName,
             ContextThemeDisplayed__c          = UserInfo.getUiThemeDisplayed(),
             ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
             ContextTriggerSobjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSobjectType()),
             ContextVisualforcePage__c         = visualforcePageName,
-            ExceptionStackTrace__c            = ex == null ? null : truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, ex.getStackTraceString()),
-            ExceptionType__c                  = ex == null ? null : ex.getTypeName(),
+            ExceptionStackTrace__c            = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, getExceptionStackTrace(ex, lightningLogEntry)),
+            ExceptionType__c                  = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionType__c, getExceptionType(ex, lightningLogEntry)),
             LimitsAggregateQueriesMax__c      = Limits.getLimitAggregateQueries(),
             LimitsAggregateQueriesUsed__c     = Limits.getAggregateQueries(),
             LimitsAsyncCallsMax__c            = Limits.getLimitAsyncCalls(),
@@ -178,7 +209,7 @@ public without sharing class Logger {
             LimitsSoslSearchesUsed__c         = Limits.getSoslQueries(),
             LoggingLevel__c                   = logEntryLoggingLevel.name(),
             LoggingLevelOrdinal__c            = logEntryLoggingLevel.ordinal(),
-            Message__c                        = String.escapeSingleQuotes(truncatedMessage),
+            Message__c                        = truncatedMessage == null ? null : String.escapeSingleQuotes(truncatedMessage),
             MessageTruncated__c               = messageTruncated,
             OriginType__c                     = originType,
             OriginLocation__c                 = truncateFieldValue(Schema.LogEntryEvent__e.OriginLocation__c, originLocation),

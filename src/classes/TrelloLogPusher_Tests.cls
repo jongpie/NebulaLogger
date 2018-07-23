@@ -5,6 +5,8 @@
 @isTest
 private class TrelloLogPusher_Tests {
 
+    public class TrelloLogPusherException extends Exception {}
+
     public class SuccessCalloutMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest request) {
             HttpResponse response = new HttpResponse();
@@ -29,9 +31,9 @@ private class TrelloLogPusher_Tests {
     }
 
     @isTest
-    static void it_should_push_a_debug_log_entry_and_update_push_date() {
+    static void it_should_push_an_exception_log_entry_and_update_push_date() {
         verifyLogEntryCountEquals(0);
-        Logger.addDebugEntry(LoggingLevel.DEBUG, 'testing', 'MyClass.myMethodName()');
+        Logger.addExceptionEntry(new TrelloLogPusherException('Testing Trello errors'), 'MyClass.myMethodName()');
         Logger.saveLog();
         Test.getEventBus().deliver();
         verifyLogEntryCountEquals(1);
@@ -54,13 +56,14 @@ private class TrelloLogPusher_Tests {
 
         logEntry = [SELECT Id, Log__r.PushToTrello__c, Log__r.PushedToTrelloDate__c FROM LogEntry__c];
         System.assertEquals(true, logEntry.Log__r.PushToTrello__c);
+        System.assertNotEquals(null, logEntry.Log__r.PushedToTrelloDate__c);
         System.assertEquals(System.today(), logEntry.Log__r.PushedToTrelloDate__c.date());
     }
 
     @isTest
-    static void it_should_not_push_a_debug_log_entry_when_push_field_is_false() {
+    static void it_should_not_push_an_exception_log_entry_when_push_field_is_false() {
         verifyLogEntryCountEquals(0);
-        Logger.addDebugEntry(LoggingLevel.DEBUG, 'testing', 'MyClass.myMethodName()');
+        Logger.addExceptionEntry(new TrelloLogPusherException('Testing Trello errors'), 'MyClass.myMethodName()');
         Logger.saveLog();
         Test.getEventBus().deliver();
         verifyLogEntryCountEquals(1);
