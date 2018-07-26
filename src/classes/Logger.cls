@@ -4,7 +4,7 @@
 *************************************************************************************************/
 public without sharing class Logger {
 
-    private static final String TRANSACTION_ID = generateUuid();
+    private static final String TRANSACTION_ID = new Uuid().getValue();
 
     private static List<LogEntryEvent__e> logEntries = new List<LogEntryEvent__e>();
 
@@ -82,21 +82,6 @@ public without sharing class Logger {
         logEntries.clear();
     }
 
-    private static String generateUuid() {
-        Blob generatedBlob      = Crypto.generateAesKey(128);
-        String unformattedValue = EncodingUtil.convertTohex(generatedBlob);
-        // Remove any non-alphanumeric characters. Should be unnecessary, but better to be safe than sorry.
-        unformattedValue = unformattedValue.replaceAll('[^a-zA-Z0-9]', '');
-
-        String formattedValue = unformattedValue.substring(0, 8)
-            + '-' + unformattedValue.substring(8, 12)
-            + '-' + unformattedValue.substring(12, 16)
-            + '-' + unformattedValue.substring(16, 20)
-            + '-' + unformattedValue.substring(20);
-
-        return formattedValue.toUpperCase();
-    }
-
     private static LoggerSettings__c getSettings() {
         LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
 
@@ -142,7 +127,7 @@ public without sharing class Logger {
         if(ex != null) message = ex.getMessage();
         if(lightningLogEntry != null && lightningLogEntry.error != null) message = lightningLogEntry.error.message;
 
-        String logEntryTransactionId = generateUuid();
+        String logEntryTransactionId = new Uuid().getValue();
 
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
         if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
