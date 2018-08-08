@@ -4,20 +4,23 @@
 *************************************************************************************************/
 public without sharing class SlackLogPushScheduler implements System.Schedulable {
 
-    public static void scheduleEveryXMinutes(Integer x) {
+    public static List<Id> scheduleEveryXMinutes(Integer x) {
+        List<Id> jobIds = new List<Id>();
         for(Integer i = 0; i < 60; i += x) {
-            scheduleHourly(i);
+            jobIds.add(scheduleHourly(i));
         }
+        return jobIds;
     }
 
-    public static void scheduleHourly(Integer startingMinuteInHour) {
+    public static Id scheduleHourly(Integer startingMinuteInHour) {
         String minuteString = String.valueOf(startingMinuteInHour);
         minuteString = minuteString.leftPad(2, '0');
-        scheduleHourly(startingMinuteInHour, 'Slack Log Sync: Every Hour at ' + minuteString);
+        return scheduleHourly(startingMinuteInHour, 'Slack Log Sync: Every Hour at ' + minuteString);
     }
 
-    public static void scheduleHourly(Integer startingMinuteInHour, String jobName) {
-        System.schedule(jobName, '0 ' + startingMinuteInHour + ' * * * ?', new SlackLogPushScheduler());
+    public static Id scheduleHourly(Integer startingMinuteInHour, String jobName) {
+        Id jobId = System.schedule(jobName, '0 ' + startingMinuteInHour + ' * * * ?', new SlackLogPushScheduler());
+        return jobId;
     }
 
     public void execute(SchedulableContext sc) {

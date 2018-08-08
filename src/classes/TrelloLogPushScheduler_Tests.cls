@@ -5,6 +5,13 @@
 @isTest
 private class TrelloLogPushScheduler_Tests {
 
+    @testSetup
+    static void testSetup() {
+        for(CronTrigger ct : [SELECT Id FROM CronTrigger]) {
+            System.abortJob(ct.Id);
+        }
+    }
+
     @isTest
     static void it_should_schedule_the_batch_job() {
         String cronExpression = '0 0 0 15 3 ? 2022';
@@ -19,24 +26,51 @@ private class TrelloLogPushScheduler_Tests {
         System.assertEquals(cronExpression, ct.CronExpression);
     }
 
-    @isTest
+     @isTest
     static void it_should_schedule_the_batch_job_schedule_every_5_minutes() {
+        List<String> cronExpressionsForEvery5Minutes = new List<String>{
+            '0 0 * * * ?',
+            '0 5 * * * ?',
+            '0 10 * * * ?',
+            '0 15 * * * ?',
+            '0 20 * * * ?',
+            '0 25 * * * ?',
+            '0 30 * * * ?',
+            '0 35 * * * ?',
+            '0 40 * * * ?',
+            '0 45 * * * ?',
+            '0 50 * * * ?',
+            '0 55 * * * ?'
+        };
+
         Integer numberOfScheduledJobs = [SELECT COUNT() FROM CronTrigger];
         System.assertEquals(0, numberOfScheduledJobs);
 
         Test.startTest();
-        TrelloLogPushScheduler.scheduleEveryXMinutes(5);
+        List<Id> jobIds = TrelloLogPushScheduler.scheduleEveryXMinutes(5);
         Test.stopTest();
+
+        List<CronTrigger> cts = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE Id IN :jobIds];
+        System.assertEquals(cronExpressionsForEvery5Minutes.size(), cts.size());
+        for(CronTrigger ct : cts) {
+            System.assert(cronExpressionsForEvery5Minutes.contains(ct.cronExpression), ct.CronExpression);
+        }
     }
 
     @isTest
     static void it_should_schedule_the_batch_job_schedule_hourly() {
+        Integer startingMinuteInHour = 0;
+        String expectedCronExpression = '0 ' + startingMinuteInHour + ' * * * ?';
+
         Integer numberOfScheduledJobs = [SELECT COUNT() FROM CronTrigger];
         System.assertEquals(0, numberOfScheduledJobs);
 
         Test.startTest();
-        TrelloLogPushScheduler.scheduleHourly(0);
+        Id jobId = TrelloLogPushScheduler.scheduleHourly(0);
         Test.stopTest();
+
+        CronTrigger ct = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE Id = :jobId];
+        System.assertEquals(expectedCronExpression, ct.CronExpression);
     }
 
 }
