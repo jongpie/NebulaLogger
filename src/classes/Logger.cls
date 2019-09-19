@@ -101,7 +101,7 @@ public without sharing class Logger {
         return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
-    private static String truncateFieldValue(Schema.SobjectField field, String value) {
+    private static String truncateFieldValue(Schema.SObjectField field, String value) {
         Integer fieldMaxLength = field.getDescribe().getLength();
         if(String.isEmpty(value)) return value;
         else if(value.length() <= fieldMaxLength) return value;
@@ -158,7 +158,7 @@ public without sharing class Logger {
             ContextLightningComponentName__c  = lightningLogEntry == null ? null : lightningLogEntry.componentName,
             ContextThemeDisplayed__c          = UserInfo.getUiThemeDisplayed(),
             ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
-            ContextTriggerSobjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSobjectType()),
+            ContextTriggerSObjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType()),
             ContextVisualforcePage__c         = visualforcePageName,
             ExceptionStackTrace__c            = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, getExceptionStackTrace(ex, lightningLogEntry)),
             ExceptionType__c                  = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionType__c, getExceptionType(ex, lightningLogEntry)),

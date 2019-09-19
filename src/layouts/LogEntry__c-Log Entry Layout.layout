@@ -90,7 +90,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>ContextTriggerSobjectType__c</field>
+                <field>ContextTriggerSObjectType__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>

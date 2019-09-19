@@ -29,7 +29,7 @@ public without sharing class LogEntryEventHandler {
     private void insertLog() {
         if(LOG.Id != null) return; // Log only needs to be saved once
         if(Trigger.new == null) return; // This class should only be used in a trigger context...
-        if(Trigger.new.getSobjectType() != Schema.LogEntryEvent__e.SobjectType) return; //...for the LogEntryEvent__e object
+        if(Trigger.new.getSObjectType() != Schema.LogEntryEvent__e.SObjectType) return; //...for the LogEntryEvent__e object
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
         // The first LogEntryEvent__e record is used to normalize the data
@@ -59,7 +59,7 @@ public without sharing class LogEntryEventHandler {
                 ContextIsVisualforce__c           = logEntryEvent.ContextIsVisualforce__c,
                 ContextLightningComponentName__c  = logEntryEvent.ContextLightningComponentName__c,
                 ContextTriggerOperationType__c    = logEntryEvent.ContextTriggerOperationType__c,
-                ContextTriggerSobjectType__c      = logEntryEvent.ContextTriggerSobjectType__c,
+                ContextTriggerSObjectType__c      = logEntryEvent.ContextTriggerSObjectType__c,
                 ContextVisualforcePage__c         = logEntryEvent.ContextVisualforcePage__c,
                 ExceptionStackTrace__c            = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c                  = logEntryEvent.ExceptionType__c,

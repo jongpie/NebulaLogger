@@ -129,7 +129,7 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>ContextTriggerSobjectType__c</fullName>
+        <fullName>ContextTriggerSObjectType__c</fullName>
         <externalId>false</externalId>
         <isFilteringDisabled>false</isFilteringDisabled>
         <isNameField>false</isNameField>
@@ -744,4 +744,5 @@
     </fields>
     <label>Log Entry Event</label>
     <pluralLabel>Log Entry Events</pluralLabel>
+    <publishBehavior>PublishImmediately</publishBehavior>
 </CustomObject>

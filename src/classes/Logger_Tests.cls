@@ -8,8 +8,8 @@ private class Logger_Tests {
     private class Logger_TestsException extends Exception {}
 
     static LogEntry__c getLogEntry() {
-        List<String> fields = new List<String>(Schema.LogEntry__c.SobjectType.getDescribe().fields.getMap().keySet());
-        String query = 'SELECT ' + String.join(fields, ', ') + ' FROM ' + Schema.LogEntry__c.SobjectType;
+        List<String> fields = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+        String query = 'SELECT ' + String.join(fields, ', ') + ' FROM ' + Schema.LogEntry__c.SObjectType;
         return (LogEntry__c)Database.query(query);
     }
 
@@ -79,7 +79,7 @@ private class Logger_Tests {
     @isTest
     static void it_should_add_a_debug_entry_and_truncate_a_long_message() {
         LoggingLevel logLevel = LoggingLevel.WARN;
-        Integer messageMaxLength = Schema.LogEntry__c.SobjectType.Message__c.getDescribe().getLength();
+        Integer messageMaxLength = Schema.LogEntry__c.SObjectType.Message__c.getDescribe().getLength();
         String message = 'my test message string';
         while(message.length() < messageMaxLength + 200) {
             message += message;

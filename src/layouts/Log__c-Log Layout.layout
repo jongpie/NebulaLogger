@@ -149,8 +149,8 @@
         <fields>LoggingLevel__c</fields>
         <fields>Timestamp__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
-        <sortField>Timestamp__c</sortField>
-        <sortOrder>Asc</sortOrder>
+        <sortField>NAME</sortField>
+        <sortOrder>Desc</sortOrder>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

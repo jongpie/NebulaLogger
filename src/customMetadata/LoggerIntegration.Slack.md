@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>ApiKey__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">&lt;YOUR_API_TOKEN&gt;</value>
     </values>
     <values>
         <field>ApiToken__c</field>
