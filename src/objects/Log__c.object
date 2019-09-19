@@ -141,7 +141,17 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <compactLayoutAssignment>LogCompact</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>LogCompact</fullName>
+        <fields>Name</fields>
+        <fields>LoggedBy__c</fields>
+        <fields>UserLoggingLevel__c</fields>
+        <fields>TotalDebugLogEntries__c</fields>
+        <fields>TotalExceptionLogEntries__c</fields>
+        <fields>ContextThemeDisplayed__c</fields>
+        <label>Log Compact</label>
+    </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
@@ -266,7 +276,7 @@
     </fields>
     <fields>
         <fullName>PushToLoggly__c</fullName>
-        <defaultValue>false</defaultValue>
+        <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>Push To Loggly</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -275,7 +285,7 @@
     </fields>
     <fields>
         <fullName>PushToSlack__c</fullName>
-        <defaultValue>false</defaultValue>
+        <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>Push To Slack</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -284,7 +294,7 @@
     </fields>
     <fields>
         <fullName>PushToTrello__c</fullName>
-        <defaultValue>false</defaultValue>
+        <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>Push To Trello</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -426,7 +436,7 @@
         <columns>TotalExceptionLogEntries__c</columns>
         <columns>UserLoggingLevel__c</columns>
         <columns>TransactionId__c</columns>
-        <filterScope>Mine</filterScope>
+        <filterScope>Everything</filterScope>
         <label>All Logs</label>
         <language>en_US</language>
     </listViews>

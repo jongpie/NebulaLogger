@@ -32,6 +32,7 @@
     </types>
     <types>
         <members>LogEntry__c.LogEntryCompact</members>
+        <members>Log__c.LogCompact</members>
         <name>CompactLayout</name>
     </types>
     <types>

@@ -141,7 +141,7 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <compactLayoutAssignment>LogEntryCompact</compactLayoutAssignment>
     <compactLayouts>
         <fullName>LogEntryCompact</fullName>
         <fields>Name</fields>
