@@ -78,7 +78,8 @@
         <name>ListView</name>
     </types>
     <types>
-        <members>LogAdmin</members>
+        <members>LoggerAdmin</members>
+        <members>LoggerEndUser</members>
         <name>PermissionSet</name>
     </types>
     <types>
