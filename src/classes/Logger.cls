@@ -96,13 +96,6 @@ public without sharing class Logger {
     }
 
     private static LoggerSettings__c getSettings() {
-        LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
-
-        // If there's an ID, then the settings exist at some level (org, profile or user)
-        if(loggerSettings.Id != null) return loggerSettings;
-
-        // No ID -- > no settings have been configured in the org, so create org defaults
-        upsert LoggerSettings__c.getOrgDefaults();
         return LoggerSettings__c.getInstance();
     }
 
