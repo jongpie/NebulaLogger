@@ -900,7 +900,7 @@
         <formula>IF(
     ISBLANK(RelatedRecordName__c),
     RelatedRecordId__c,
-    HYPERLINK(&apos;/lightning/r/&apos; + TEXT(RelatedRecordType__c) + &apos;/&apos; + RelatedRecordId__c + &apos;/view&apos;, RelatedRecordName__c, &apos;_top&apos;)
+    HYPERLINK(&apos;/&apos; + RelatedRecordId__c, RelatedRecordName__c, &apos;_top&apos;)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Related Record</label>
@@ -916,6 +916,7 @@
      TEXT(RelatedRecordType__c),
      &apos;Account&apos;, Account__r.Name,
      &apos;Case&apos;, Case__r.CaseNumber,
+     &apos;User&apos;, User__r.Username,
      null
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -945,6 +946,11 @@
                     <fullName>Case</fullName>
                     <default>false</default>
                     <label>Case</label>
+                </value>
+                <value>
+                    <fullName>User</fullName>
+                    <default>false</default>
+                    <label>User</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
@@ -979,7 +985,7 @@
     IMAGE(&apos;/img/samples/color_green.gif&apos;, &apos;Debug&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Type</label>
+        <label>Entry Type</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -1011,6 +1017,18 @@
                 </value>
             </valueSetDefinition>
         </valueSet>
+    </fields>
+    <fields>
+        <fullName>User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>LogEntries</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <label>Log Entry</label>
     <nameField>
