@@ -128,29 +128,36 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>LogRecordPage</content>
         <formFactor>Large</formFactor>
-        <type>Default</type>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>LogRecordPage</content>
         <formFactor>Small</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
-    <compactLayoutAssignment>LogCompact</compactLayoutAssignment>
+    <compactLayoutAssignment>LogCompactLayout</compactLayoutAssignment>
     <compactLayouts>
-        <fullName>LogCompact</fullName>
+        <fullName>LogCompactLayout</fullName>
         <fields>Name</fields>
         <fields>LoggedBy__c</fields>
-        <fields>UserLoggingLevel__c</fields>
-        <fields>TotalDebugLogEntries__c</fields>
+        <fields>TransactionId__c</fields>
+        <fields>StartTime__c</fields>
+        <fields>DurationInSeconds__c</fields>
+        <fields>TotalLogEntries__c</fields>
         <fields>TotalExceptionLogEntries__c</fields>
-        <fields>ContextThemeDisplayed__c</fields>
-        <label>Log Compact</label>
+        <label>Log Compact Layout</label>
     </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
@@ -167,7 +174,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Apex REST</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -176,7 +183,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Batch</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -185,7 +192,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Future</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -194,7 +201,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Queueable</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -203,7 +210,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Scheduled Job</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -212,7 +219,7 @@
         <externalId>false</externalId>
         <label>Theme Displayed</label>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -293,7 +300,7 @@
         <referenceTo>User</referenceTo>
         <relationshipName>Logs</relationshipName>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -409,7 +416,7 @@
         <label>Transaction ID</label>
         <length>36</length>
         <required>true</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>
@@ -431,7 +438,7 @@
         <externalId>false</externalId>
         <label>User Logging Level</label>
         <required>true</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -476,21 +483,19 @@
     <listViews>
         <fullName>MyLogs</fullName>
         <columns>NAME</columns>
-        <columns>LoggedBy__c</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>StartTime__c</columns>
+        <columns>DurationInSeconds__c</columns>
         <columns>TotalLogEntries__c</columns>
         <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
         <columns>TransactionId__c</columns>
-        <columns>UserLoggingLevel__c</columns>
         <filterScope>Mine</filterScope>
         <label>My Logs</label>
-        <language>en_US</language>
     </listViews>
     <nameField>
         <displayFormat>Log-{000000}</displayFormat>
         <label>Log Number</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Logs</pluralLabel>
@@ -503,6 +508,8 @@
         <customTabListAdditionalFields>UserLoggingLevel__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
+        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
         <lookupDialogsAdditionalFields>TransactionId__c</lookupDialogsAdditionalFields>

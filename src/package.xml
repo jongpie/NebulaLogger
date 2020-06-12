@@ -31,8 +31,8 @@
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
-        <members>LogEntry__c.LogEntryCompact</members>
-        <members>Log__c.LogCompact</members>
+        <members>LogEntry__c.LogEntryCompactLayout</members>
+        <members>Log__c.LogCompactLayout</members>
         <name>CompactLayout</name>
     </types>
     <types>
