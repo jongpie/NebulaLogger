@@ -6,11 +6,11 @@ public without sharing class LogEntryEventHandler {
 
     private static final Log__c LOG = new Log__c();
 
-    List<LogEntry__c> logEntries;
-    Map<LogEntry__c, List<String>> logEntryToTopics;
-    Set<String> topicNames;
-    List<Topic> topics;
-    List<TopicAssignment> topicAssignments;
+    private List<LogEntry__c> logEntries;
+    private Map<LogEntry__c, List<String>> logEntryToTopics;
+    private Set<String> topicNames;
+    private List<Topic> topics;
+    private List<TopicAssignment> topicAssignments;
 
     public LogEntryEventHandler() {
         this.logEntries       = new List<LogEntry__c>();
@@ -101,10 +101,13 @@ public without sharing class LogEntryEventHandler {
                 Name                              = logEntryEvent.TransactionEntryId__c,
                 OriginType__c                     = logEntryEvent.OriginType__c,
                 OriginLocation__c                 = logEntryEvent.OriginLocation__c,
+                RelatedRecordId__c                = logEntryEvent.RelatedRecordId__c,
                 Timestamp__c                      = logEntryEvent.Timestamp__c,
                 TransactionEntryId__c             = logEntryEvent.TransactionEntryId__c,
                 Type__c                           = logEntryEvent.Type__c
             );
+            this.setRelatedRecordLookupField(logEntry);
+
             this.logEntries.add(logEntry);
 
             if(logEntryEvent.Topics__c != null) {
@@ -113,6 +116,20 @@ public without sharing class LogEntryEventHandler {
             }
         }
         insert logEntries;
+    }
+
+    private void setRelatedRecordLookupField(LogEntry__c logEntry) {
+        if(logEntry.RelatedRecordId__c == null) return;
+
+        DescribeSObjectResult sobjectDescribe = Schema.LogEntry__c.SObjectType.getDescribe();
+
+        Id relatedRecordId = (Id)logEntry.RelatedRecordId__c;
+        logEntry.RelatedRecordType__c = String.valueOf(relatedRecordId.getSObjectType());
+
+        String lookupFieldName = logEntry.RelatedRecordType__c.endsWith('__c') ? logEntry.RelatedRecordType__c : logEntry.RelatedRecordType__c + '__c';
+        Schema.SObjectField lookupField = sobjectDescribe.fields.getMap().get(lookupFieldName);
+        
+        if(lookupField != null) logEntry.put(lookupField, relatedRecordId);
     }
 
     private void insertTopics() {

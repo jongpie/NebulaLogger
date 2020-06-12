@@ -18,13 +18,16 @@ public without sharing class FlowLogEntry {
     @InvocableVariable(required=true label='Save Log')
     public Boolean saveLog;
 
+    @InvocableVariable(label='(Optional) Record ID')
+    public Id recordId;
+
     @InvocableVariable(label='(Optional) Logging Level')
     public String loggingLevelName;
 
     @InvocableVariable(label='(Optional) Topics')
     public List<String> topics;
 
-    public DateTime timestamp;
+    public DateTime timestamp {get; private set;}
 
     public FlowLogEntry() {
         this.saveLog   = true;

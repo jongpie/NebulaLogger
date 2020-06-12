@@ -5,8 +5,8 @@
 public without sharing class Logger {
 
     private static final String TRANSACTION_ID = new Uuid().getValue();
+    private static final List<LogEntryEvent__e> LOG_ENTRIES = new List<LogEntryEvent__e>();
 
-    private static List<LogEntryEvent__e> logEntries = new List<LogEntryEvent__e>();
     private static Boolean suspendSaving = false;
 
     public static String getTransactionId() {
@@ -21,6 +21,18 @@ public without sharing class Logger {
         suspendSaving = false;
     }
 
+    public static String addRecordDebugEntry(SObject record, String message, String originLocation) {
+        return addRecordDebugEntry(null, record, message, originLocation);
+    }
+
+    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, String originLocation) {
+        return addRecordDebugEntry(loggingLevel, record, message, originLocation, null);
+    }
+
+    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, String originLocation, List<String> topics) {
+        return addEntry(loggingLevel, record, message, null, 'Apex', originLocation, topics, null);
+    }
+
     public static String addDebugEntry(String message, String originLocation) {
         return addDebugEntry(null, message, originLocation);
     }
@@ -30,7 +42,15 @@ public without sharing class Logger {
     }
 
     public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation, List<String> topics) {
-        return addEntry(loggingLevel, message, null, 'Apex', originLocation, topics, null);
+        return addEntry(loggingLevel, null, message, null, 'Apex', originLocation, topics, null);
+    }
+
+    public static String addRecordExceptionEntry(SObject record, Exception ex, String originLocation) {
+        return addRecordExceptionEntry(record, ex, originLocation, null);
+    }
+
+    public static String addRecordExceptionEntry(SObject record, Exception ex, String originLocation, List<String> topics) {
+        return addEntry(LoggingLevel.ERROR, record, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
     }
 
     public static String addExceptionEntry(Exception ex, String originLocation) {
@@ -38,7 +58,7 @@ public without sharing class Logger {
     }
 
     public static String addExceptionEntry(Exception ex, String originLocation, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
+        return addEntry(LoggingLevel.ERROR, null, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
     }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
@@ -49,7 +69,9 @@ public without sharing class Logger {
 
             if(flowLogEntry.saveLog) saveLog = true;
 
-            addEntry(loggingLevel, flowLogEntry.message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics, null);
+            SObject record = flowLogEntry.recordId == null ? null : flowLogEntry.recordId.getSObjectType().newSObject(flowLogEntry.recordId);
+
+            addEntry(loggingLevel, record, flowLogEntry.message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics, null);
         }
         if(saveLog) saveLog();
     }
@@ -62,7 +84,7 @@ public without sharing class Logger {
             if(!String.isBlank(logEntry.loggingLevelName)) logLevel = getLoggingLevel(logEntry.loggingLevelName);
             if(logEntry.error != null) logLevel = LoggingLevel.ERROR;
 
-            addEntry(logLevel, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
+            addEntry(logLevel, null, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
         }
         saveLog();
     }
@@ -88,11 +110,12 @@ public without sharing class Logger {
 
     @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
     public static void saveLog() {
-        if(logEntries.isEmpty()) return;
+        if(LOG_ENTRIES.isEmpty()) return;
         if(suspendSaving) return;
 
-        EventBus.publish(logEntries);
-        logEntries.clear();
+        EventBus.publish(LOG_ENTRIES);
+
+        LOG_ENTRIES.clear();
     }
 
     private static LoggerSettings__c getSettings() {
@@ -126,7 +149,7 @@ public without sharing class Logger {
         else return null;
     }
 
-    private static String addEntry(LoggingLevel logEntryLoggingLevel, String message, Exception ex, String originType, String originLocation, List<String> topics, LightningLogEntry lightningLogEntry) {
+    private static String addEntry(LoggingLevel logEntryLoggingLevel, SObject record, String message, Exception ex, String originType, String originLocation, List<String> topics, LightningLogEntry lightningLogEntry) {
         Datetime logEntryTimestamp = lightningLogEntry == null ? System.now() : lightningLogEntry.timestamp;
 
         if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
@@ -204,6 +227,7 @@ public without sharing class Logger {
             MessageTruncated__c               = messageTruncated,
             OriginType__c                     = originType,
             OriginLocation__c                 = truncateFieldValue(Schema.LogEntryEvent__e.OriginLocation__c, originLocation),
+            RelatedRecordId__c                = record != null && record.Id != null ? record.Id : null,
             Timestamp__c                      = logEntryTimestamp,
             TransactionId__c                  = TRANSACTION_ID,
             TransactionEntryId__c             = logEntryTransactionId,
@@ -212,7 +236,7 @@ public without sharing class Logger {
             UserLoggingLevel__c               = getUserLoggingLevel().name(),
             UserLoggingLevelOrdinal__c        = getUserLoggingLevel().ordinal()
         );
-        logEntries.add(platformLogEntry);
+        LOG_ENTRIES.add(platformLogEntry);
 
         if(ex != null && getSettings().AutoSaveExceptionEntries__c) saveLog();
 

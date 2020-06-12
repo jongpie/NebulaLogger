@@ -161,6 +161,32 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Log Entries</relationshipLabel>
+        <relationshipName>LogEntries</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Case__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Case</label>
+        <referenceTo>Case</referenceTo>
+        <relationshipLabel>Log Entries</relationshipLabel>
+        <relationshipName>LogEntries</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>ContextIsLightningComponent__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -853,6 +879,72 @@
                     <fullName>Lightning Component</fullName>
                     <default>false</default>
                     <label>Lightning Component</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>RelatedRecordId__c</fullName>
+        <externalId>false</externalId>
+        <label>Related Record ID</label>
+        <length>18</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RelatedRecordLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+    ISBLANK(RelatedRecordName__c),
+    RelatedRecordId__c,
+    HYPERLINK(&apos;/lightning/r/&apos; + TEXT(RelatedRecordType__c) + &apos;/&apos; + RelatedRecordId__c + &apos;/view&apos;, RelatedRecordName__c, &apos;_top&apos;)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Related Record</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RelatedRecordName__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(
+     TEXT(RelatedRecordType__c),
+     &apos;Account&apos;, Account__r.Name,
+     &apos;Case&apos;, Case__r.CaseNumber,
+     null
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Related Record Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RelatedRecordType__c</fullName>
+        <externalId>false</externalId>
+        <label>Related Record Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Account</fullName>
+                    <default>false</default>
+                    <label>Account</label>
+                </value>
+                <value>
+                    <fullName>Case</fullName>
+                    <default>false</default>
+                    <label>Case</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
