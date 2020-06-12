@@ -7,9 +7,18 @@ public without sharing class Logger {
     private static final String TRANSACTION_ID = new Uuid().getValue();
 
     private static List<LogEntryEvent__e> logEntries = new List<LogEntryEvent__e>();
+    private static Boolean suspendSaving = false;
 
     public static String getTransactionId() {
         return TRANSACTION_ID;
+    }
+
+    public static void suspendSaving() {
+        suspendSaving = true;
+    }
+
+    public static void resumeSaving() {
+        suspendSaving = false;
     }
 
     public static String addDebugEntry(String message, String originLocation) {
@@ -70,13 +79,17 @@ public without sharing class Logger {
             when 'FINE'   { return LoggingLevel.FINE;   }
             when 'FINER'  { return LoggingLevel.FINER;  }
             when 'FINEST' { return LoggingLevel.FINEST; }
-            when else     { return LoggingLevel.NONE;   }
+            when else     { 
+                addDebugEntry('Unknown logging level ' + loggingLevelName + ', using DEBUG', 'Logger.getLoggingLevel(String loggingLevelName)');
+                return LoggingLevel.DEBUG;   
+            }
         }
     }
 
     @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
     public static void saveLog() {
         if(logEntries.isEmpty()) return;
+        if(suspendSaving) return;
 
         EventBus.publish(logEntries);
         logEntries.clear();
