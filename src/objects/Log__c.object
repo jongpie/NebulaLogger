@@ -263,6 +263,29 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>DurationInSeconds__c</fullName>
+        <externalId>false</externalId>
+        <formula>(TIMEVALUE(EndTime__c) - TIMEVALUE(StartTime__c)) / 1000</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Duration (In Seconds)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EndTime__c</fullName>
+        <externalId>false</externalId>
+        <label>End Time</label>
+        <summarizedField>LogEntry__c.Timestamp__c</summarizedField>
+        <summaryForeignKey>LogEntry__c.Log__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
         <fullName>LoggedBy__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -327,6 +350,16 @@
         <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>StartTime__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Time</label>
+        <summarizedField>LogEntry__c.Timestamp__c</summarizedField>
+        <summaryForeignKey>LogEntry__c.Log__c</summaryForeignKey>
+        <summaryOperation>min</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
     </fields>
     <fields>
         <fullName>TotalDebugLogEntries__c</fullName>
@@ -430,11 +463,11 @@
         <fullName>AllLogs</fullName>
         <columns>NAME</columns>
         <columns>LoggedBy__c</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>StartTime__c</columns>
+        <columns>DurationInSeconds__c</columns>
         <columns>TotalLogEntries__c</columns>
         <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
-        <columns>UserLoggingLevel__c</columns>
         <columns>TransactionId__c</columns>
         <filterScope>Everything</filterScope>
         <label>All Logs</label>
