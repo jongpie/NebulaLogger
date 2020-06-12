@@ -437,6 +437,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsAggregateQueries__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsAggregateQueriesUsed__c) + &apos; / &apos; + TEXT(LimitsAggregateQueriesMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Aggregate Queries</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsAsyncCallsMax__c</fullName>
         <externalId>false</externalId>
         <label>Async Calls Max</label>
@@ -458,6 +469,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAsyncCalls__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsAsyncCallsUsed__c) + &apos; / &apos; + TEXT(LimitsAsyncCallsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Async Calls</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -485,6 +507,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsCallouts__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsCalloutsUsed__c) + &apos; / &apos; + TEXT(LimitsCalloutsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Callouts</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsCpuTimeMax__c</fullName>
         <externalId>false</externalId>
         <label>CPU Time Max</label>
@@ -506,6 +539,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCpuTime__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsCpuTimeUsed__c) + &apos; / &apos; + TEXT(LimitsCpuTimeMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CPU Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -533,6 +577,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsDmlRows__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsDmlRowsUsed__c) + &apos; / &apos; + TEXT(LimitsDmlRowsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DML Rows</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsDmlStatementsMax__c</fullName>
         <externalId>false</externalId>
         <label>DML Statements Max</label>
@@ -554,6 +609,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlStatements__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsDmlStatementsUsed__c) + &apos; / &apos; + TEXT(LimitsDmlStatementsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DML Statements</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -581,6 +647,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsEmailInvocations__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsEmailInvocationsUsed__c) + &apos; / &apos; + TEXT(LimitsEmailInvocationsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Email Invocations</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsFutureCallsMax__c</fullName>
         <externalId>false</externalId>
         <label>Future Calls Max</label>
@@ -602,6 +679,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsFutureCalls__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsFutureCallsUsed__c) + &apos; / &apos; + TEXT(LimitsFutureCallsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Future Calls</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -629,6 +717,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsHeapSize__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsHeapSizeUsed__c) + &apos; / &apos; + TEXT(LimitsHeapSizeMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Heap Size</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsMobilePushApexCallsMax__c</fullName>
         <externalId>false</externalId>
         <label>Mobile Push Apex Calls Max</label>
@@ -650,6 +749,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsMobilePushApexCalls__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsMobilePushApexCallsUsed__c) + &apos; / &apos; + TEXT(LimitsMobilePushApexCallsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Mobile Push Apex Calls</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -677,6 +787,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsQueueableJobs__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsQueueableJobsUsed__c) + &apos; / &apos; + TEXT(LimitsQueueableJobsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Queueable Jobs</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsSoqlQueriesMax__c</fullName>
         <externalId>false</externalId>
         <label>SOQL Queries Max</label>
@@ -698,6 +819,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueries__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsSoqlQueriesUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueriesMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SOQL Queries</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -725,6 +857,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsSoqlQueryLocatorRows__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsSoqlQueryLocatorRowsUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueryLocatorRowsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SOQL Query Locator Rows</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsSoqlQueryRowsMax__c</fullName>
         <externalId>false</externalId>
         <label>SOQL Query Rows Max</label>
@@ -749,6 +892,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsSoqlQueryRows__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsSoqlQueryRowsUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueryRowsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SOQL Query Rows</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsSoslSearchesMax__c</fullName>
         <externalId>false</externalId>
         <label>SOSL Searches Max</label>
@@ -770,6 +924,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoslSearches__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsSoslSearchesUsed__c) + &apos; / &apos; + TEXT(LimitsSoslSearchesMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SOSL Searches</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
