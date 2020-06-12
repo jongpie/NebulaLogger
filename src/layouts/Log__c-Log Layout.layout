@@ -6,8 +6,27 @@
     <excludeButtons>Edit</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>User Details</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>LoggedBy__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>UserLoggingLevel__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <style>TwoColumnsTopToBottom</style>
+    </layoutSections>
+    <layoutSections>
         <customLabel>false</customLabel>
-        <detailHeading>false</detailHeading>
+        <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>Information</label>
         <layoutColumns>
@@ -16,12 +35,16 @@
                 <field>TransactionId__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LoggedBy__c</field>
+                <behavior>Readonly</behavior>
+                <field>StartTime__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>UserLoggingLevel__c</field>
+                <behavior>Readonly</behavior>
+                <field>EndTime__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>DurationInSeconds__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -140,17 +163,19 @@
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
+        <excludeButtons>MassChangeOwner</excludeButtons>
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>TypeImage__c</fields>
+        <fields>RelatedRecordLink__c</fields>
         <fields>Message__c</fields>
         <fields>OriginType__c</fields>
         <fields>OriginLocation__c</fields>
         <fields>LoggingLevel__c</fields>
         <fields>Timestamp__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
-        <sortField>NAME</sortField>
-        <sortOrder>Desc</sortOrder>
+        <sortField>Timestamp__c</sortField>
+        <sortOrder>Asc</sortOrder>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

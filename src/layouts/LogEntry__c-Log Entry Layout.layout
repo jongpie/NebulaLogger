@@ -7,7 +7,7 @@
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
-        <detailHeading>false</detailHeading>
+        <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>Information</label>
         <layoutColumns>
@@ -20,12 +20,8 @@
                 <field>Name</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>OriginType__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>OriginLocation__c</field>
+                <behavior>Readonly</behavior>
+                <field>LoggedByLink__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -40,6 +36,33 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Timestamp__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <style>TwoColumnsTopToBottom</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Log Entry Origin</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>OriginType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>OriginLocation__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>RelatedRecordType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RelatedRecordLink__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -124,126 +147,66 @@
         <label>Limits</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsAggregateQueriesUsed__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsAggregateQueries__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsAsyncCallsUsed__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsAsyncCalls__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsCalloutsUsed__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsCallouts__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsCpuTimeUsed__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsCpuTime__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsDmlRowsUsed__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsDmlRows__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsDmlStatementsUsed__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsDmlStatements__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsEmailInvocationsUsed__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsEmailInvocations__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsFutureCallsUsed__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsHeapSizeUsed__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsMobilePushApexCallsUsed__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsQueueableJobsUsed__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsSoqlQueriesUsed__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsSoqlQueryLocatorRowsUsed__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsSoqlQueryRowsUsed__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsSoslSearchesUsed__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsFutureCalls__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsAggregateQueriesMax__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsHeapSize__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsAsyncCallsMax__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsMobilePushApexCalls__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsCalloutsMax__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsQueueableJobs__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsCpuTimeMax__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsSoqlQueries__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsDmlRowsMax__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsSoqlQueryLocatorRows__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsDmlStatementsMax__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsSoqlQueryRows__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsEmailInvocationsMax__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsFutureCallsMax__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsHeapSizeMax__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsMobilePushApexCallsMax__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsQueueableJobsMax__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsSoqlQueriesMax__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsSoqlQueryLocatorRowsMax__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsSoqlQueryRowsMax__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LimitsSoslSearchesMax__c</field>
+                <behavior>Readonly</behavior>
+                <field>LimitsSoslSearches__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
