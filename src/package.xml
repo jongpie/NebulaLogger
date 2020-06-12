@@ -54,6 +54,11 @@
         <name>CustomTab</name>
     </types>
     <types>
+        <members>LogEntryRecordPage</members>
+        <members>LogRecordPage</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
         <members>LoggingLevel</members>
         <name>GlobalValueSet</name>
     </types>
