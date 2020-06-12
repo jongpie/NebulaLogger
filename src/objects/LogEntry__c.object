@@ -963,6 +963,17 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>LoggedByLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(Log__r.LoggedBy__c, Log__r.LoggedBy__r.Username, &apos;_top&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Logged By</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LoggingLevelOrdinal__c</fullName>
         <externalId>false</externalId>
         <label>Logging Level Ordinal</label>
