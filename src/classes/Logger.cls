@@ -4,7 +4,7 @@
 *************************************************************************************************/
 public without sharing class Logger {
 
-    private static final String TRANSACTION_ID = new Uuid().getValue();
+    private static final String TRANSACTION_ID              = new Uuid().getValue();
     private static final List<LogEntryEvent__e> LOG_ENTRIES = new List<LogEntryEvent__e>();
 
     private static Boolean suspendSaving = false;
@@ -19,6 +19,10 @@ public without sharing class Logger {
 
     public static void resumeSaving() {
         suspendSaving = false;
+    }
+
+    public static void flushBuffer() {
+        LOG_ENTRIES.clear();
     }
 
     public static String addRecordDebugEntry(SObject record, String message, String originLocation) {
@@ -110,8 +114,8 @@ public without sharing class Logger {
 
     @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
     public static void saveLog() {
-        if(LOG_ENTRIES.isEmpty()) return;
         if(suspendSaving) return;
+        if(LOG_ENTRIES.isEmpty()) return;
 
         EventBus.publish(LOG_ENTRIES);
 
@@ -225,13 +229,13 @@ public without sharing class Logger {
             LoggingLevelOrdinal__c            = logEntryLoggingLevel.ordinal(),
             Message__c                        = truncatedMessage == null ? null : String.escapeSingleQuotes(truncatedMessage),
             MessageTruncated__c               = messageTruncated,
-            OriginType__c                     = originType,
             OriginLocation__c                 = truncateFieldValue(Schema.LogEntryEvent__e.OriginLocation__c, originLocation),
+            OriginType__c                     = originType,
             RelatedRecordId__c                = record != null && record.Id != null ? record.Id : null,
             Timestamp__c                      = logEntryTimestamp,
-            TransactionId__c                  = TRANSACTION_ID,
-            TransactionEntryId__c             = logEntryTransactionId,
             Topics__c                         = topics == null ? null : String.escapeSingleQuotes(String.join(topics, ',')),
+            TransactionEntryId__c             = logEntryTransactionId,
+            TransactionId__c                  = TRANSACTION_ID,
             Type__c                           = type,
             UserLoggingLevel__c               = getUserLoggingLevel().name(),
             UserLoggingLevelOrdinal__c        = getUserLoggingLevel().ordinal()
