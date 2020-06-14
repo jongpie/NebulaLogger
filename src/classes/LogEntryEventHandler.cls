@@ -106,7 +106,6 @@ public without sharing class LogEntryEventHandler {
                 TransactionEntryId__c             = logEntryEvent.TransactionEntryId__c,
                 Type__c                           = logEntryEvent.Type__c
             );
-            this.setRelatedRecordLookupField(logEntry);
 
             this.logEntries.add(logEntry);
 
@@ -116,20 +115,6 @@ public without sharing class LogEntryEventHandler {
             }
         }
         insert logEntries;
-    }
-
-    private void setRelatedRecordLookupField(LogEntry__c logEntry) {
-        if(logEntry.RelatedRecordId__c == null) return;
-
-        DescribeSObjectResult sobjectDescribe = Schema.LogEntry__c.SObjectType.getDescribe();
-
-        Id relatedRecordId = (Id)logEntry.RelatedRecordId__c;
-        logEntry.RelatedRecordType__c = String.valueOf(relatedRecordId.getSObjectType());
-
-        String lookupFieldName = logEntry.RelatedRecordType__c.endsWith('__c') ? logEntry.RelatedRecordType__c : logEntry.RelatedRecordType__c + '__c';
-        Schema.SObjectField lookupField = sobjectDescribe.fields.getMap().get(lookupFieldName);
-        
-        if(lookupField != null) logEntry.put(lookupField, relatedRecordId);
     }
 
     private void insertTopics() {

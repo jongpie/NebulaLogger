@@ -4,8 +4,7 @@
         <members>FlowLogEntry</members>
         <members>LightningLogEntry</members>
         <members>LogEntryEventHandler</members>
-        <members>LogPurger</members>
-        <members>LogPurger_Tests</members>
+        <members>LogEntryHandler</members>
         <members>Logger</members>
         <members>Logger_Tests</members>
         <members>LogglyLogPushScheduler</members>
@@ -16,7 +15,6 @@
         <members>SlackLogPushScheduler_Tests</members>
         <members>SlackLogPusher</members>
         <members>SlackLogPusher_Tests</members>
-        <members>TestDataFactory</members>
         <members>TrelloLogPushScheduler</members>
         <members>TrelloLogPushScheduler_Tests</members>
         <members>TrelloLogPusher</members>
@@ -26,6 +24,7 @@
         <name>ApexClass</name>
     </types>
     <types>
+        <members>LogEntry</members>
         <members>LogEntryEvent</members>
         <name>ApexTrigger</name>
     </types>
@@ -34,8 +33,7 @@
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
-        <members>LogEntry__c.LogEntryCompactLayout</members>
-        <members>Log__c.LogCompactLayout</members>
+        <members>LogEntry__c.LogEntryCompact</members>
         <name>CompactLayout</name>
     </types>
     <types>
@@ -57,7 +55,6 @@
         <name>CustomTab</name>
     </types>
     <types>
-        <members>LogEntryRecordPage</members>
         <members>LogRecordPage</members>
         <name>FlexiPage</name>
     </types>
@@ -78,8 +75,7 @@
         <name>ListView</name>
     </types>
     <types>
-        <members>LoggerAdmin</members>
-        <members>LoggerEndUser</members>
+        <members>LogAdmin</members>
         <name>PermissionSet</name>
     </types>
     <types>
