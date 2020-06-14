@@ -33,7 +33,6 @@
         <members>LogEntryEvent__e</members>
         <members>LogEntry__c</members>
         <members>Log__c</members>
-        <members>LoggerIntegration__mdt</members>
         <members>LoggerSettings__c</members>
         <name>CustomObject</name>
     </types>
@@ -53,7 +52,6 @@
     <types>
         <members>LogEntry__c-Log Entry Layout</members>
         <members>Log__c-Log Layout</members>
-        <members>LoggerIntegration__mdt-Logger Integration Layout</members>
         <name>Layout</name>
     </types>
     <types>
