@@ -34,6 +34,7 @@
     </types>
     <types>
         <members>LogEntry__c.LogEntryCompact</members>
+        <members>Log__c.LogCompact</members>
         <name>CompactLayout</name>
     </types>
     <types>
@@ -75,7 +76,8 @@
         <name>ListView</name>
     </types>
     <types>
-        <members>LogAdmin</members>
+        <members>LoggerAdmin</members>
+        <members>LoggerEndUser</members>
         <name>PermissionSet</name>
     </types>
     <types>

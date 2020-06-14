@@ -21,7 +21,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>LoggedByLink__c</field>
+                <field>LoggedByUsernameLink__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>

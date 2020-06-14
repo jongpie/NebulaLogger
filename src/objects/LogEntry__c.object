@@ -152,7 +152,7 @@
         <fullName>LogEntryCompactLayout</fullName>
         <fields>Name</fields>
         <fields>Log__c</fields>
-        <fields>LoggedByLink__c</fields>
+        <fields>LoggedByUsernameLink__c</fields>
         <fields>Timestamp__c</fields>
         <fields>TypeImage__c</fields>
         <label>Log Entry Compact Layout</label>
@@ -970,11 +970,11 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
-        <fullName>LoggedByLink__c</fullName>
+        <fullName>LoggedByUsernameLink__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(Log__r.LoggedBy__c, Log__r.LoggedBy__r.Username, &apos;_top&apos;)</formula>
+        <formula>Log__r.LoggedByUsernameLink__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Logged By</label>
+        <label>Username</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -1067,6 +1067,25 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>RelatedRecordDetailedLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(
+    &apos;/&apos; + RelatedRecordId__c,
+    TEXT(RelatedRecordType__c) + &apos;: &apos; + IF(
+        ISBLANK(RelatedRecordName__c),
+        RelatedRecordId__c,
+        RelatedRecordName__c
+    ),
+    &apos;_top&apos;
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Related Record</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>RelatedRecordId__c</fullName>
         <externalId>false</externalId>
         <label>Related Record ID</label>
@@ -1080,10 +1099,14 @@
     <fields>
         <fullName>RelatedRecordLink__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(
-    ISBLANK(RelatedRecordName__c),
-    RelatedRecordId__c,
-    HYPERLINK(&apos;/&apos; + RelatedRecordId__c, RelatedRecordName__c, &apos;_top&apos;)
+        <formula>HYPERLINK(
+    &apos;/&apos; + RelatedRecordId__c,
+    IF(
+        ISBLANK(RelatedRecordName__c),
+        RelatedRecordId__c,
+        RelatedRecordName__c
+    ),
+    &apos;_top&apos;
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Related Record</label>
@@ -1164,8 +1187,8 @@
         <externalId>false</externalId>
         <formula>IF(
     ISPICKVAL(Type__c, &apos;Exception&apos;),
-    IMAGE(&apos;/img/samples/color_red.gif&apos;, &apos;Exception&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c),
-    IMAGE(&apos;/img/samples/color_green.gif&apos;, &apos;Debug&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c)
+    IMAGE(&apos;/img/samples/flag_red.gif&apos;, &apos;Exception&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c),
+    IMAGE(&apos;/img/samples/flag_green.gif&apos;, &apos;Debug&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Entry Type</label>
@@ -1215,7 +1238,7 @@
     </fields>
     <label>Log Entry</label>
     <nameField>
-        <label>Log Entry Transaction ID</label>
+        <label>Entry ID</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
     </nameField>

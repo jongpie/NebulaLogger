@@ -12,8 +12,8 @@
         <label>User Details</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LoggedBy__c</field>
+                <behavior>Readonly</behavior>
+                <field>LoggedByUsernameLink__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -165,6 +165,11 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
+            <actionName>Delete</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>0</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
             <actionName>Share</actionName>
             <actionType>StandardButton</actionType>
             <sortOrder>1</sortOrder>
@@ -173,11 +178,6 @@
             <actionName>FeedItem.TextPost</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>2</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
-            <actionName>Delete</actionName>
-            <actionType>StandardButton</actionType>
-            <sortOrder>0</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
             <actionName>NewTask</actionName>
@@ -195,7 +195,7 @@
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>TypeImage__c</fields>
-        <fields>RelatedRecordLink__c</fields>
+        <fields>RelatedRecordDetailedLink__c</fields>
         <fields>Message__c</fields>
         <fields>OriginType__c</fields>
         <fields>OriginLocation__c</fields>

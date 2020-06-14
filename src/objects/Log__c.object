@@ -151,12 +151,12 @@
     <compactLayouts>
         <fullName>LogCompactLayout</fullName>
         <fields>Name</fields>
-        <fields>LoggedBy__c</fields>
-        <fields>TransactionId__c</fields>
+        <fields>LoggedByUsernameLink__c</fields>
         <fields>StartTime__c</fields>
         <fields>DurationInSeconds__c</fields>
         <fields>TotalLogEntries__c</fields>
         <fields>TotalExceptionLogEntries__c</fields>
+        <fields>TransactionId__c</fields>
         <label>Log Compact Layout</label>
     </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -274,6 +274,7 @@
         <externalId>false</externalId>
         <formula>(TIMEVALUE(EndTime__c) - TIMEVALUE(StartTime__c)) / 1000</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Estimated duration of the transaction, measured in seconds</inlineHelpText>
         <label>Duration (In Seconds)</label>
         <precision>18</precision>
         <required>false</required>
@@ -291,6 +292,17 @@
         <summaryOperation>max</summaryOperation>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>LoggedByUsernameLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(LoggedBy__c, LoggedBy__r.Username, &apos;_top&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Username</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>LoggedBy__c</fullName>
@@ -450,10 +462,10 @@
     <listViews>
         <fullName>AllExceptionLogs</fullName>
         <columns>NAME</columns>
-        <columns>LoggedBy__c</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>LoggedByUsernameLink__c</columns>
+        <columns>StartTime__c</columns>
+        <columns>DurationInSeconds__c</columns>
         <columns>TotalLogEntries__c</columns>
-        <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
         <columns>UserLoggingLevel__c</columns>
         <columns>TransactionId__c</columns>
@@ -464,21 +476,18 @@
             <value>0</value>
         </filters>
         <label>All Exception Logs</label>
-        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>AllLogs</fullName>
         <columns>NAME</columns>
-        <columns>LoggedBy__c</columns>
+        <columns>LoggedByUsernameLink__c</columns>
         <columns>StartTime__c</columns>
         <columns>DurationInSeconds__c</columns>
         <columns>TotalLogEntries__c</columns>
-        <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
         <columns>TransactionId__c</columns>
         <filterScope>Everything</filterScope>
         <label>All Logs</label>
-        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>MyLogs</fullName>
