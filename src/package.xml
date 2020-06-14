@@ -5,22 +5,25 @@
         <members>LightningLogEntry</members>
         <members>LogEntryEventHandler</members>
         <members>LogEntryHandler</members>
-        <members>Logger</members>
         <members>Logger_Tests</members>
-        <members>LogglyLogPushScheduler</members>
-        <members>LogglyLogPushScheduler_Tests</members>
-        <members>LogglyLogPusher</members>
+        <members>Logger</members>
         <members>LogglyLogPusher_Tests</members>
-        <members>SlackLogPushScheduler</members>
-        <members>SlackLogPushScheduler_Tests</members>
-        <members>SlackLogPusher</members>
+        <members>LogglyLogPusher</members>
+        <members>LogglyLogPushScheduler_Tests</members>
+        <members>LogglyLogPushScheduler</members>
+        <members>LogPurger_Tests</members>
+        <members>LogPurger</members>
         <members>SlackLogPusher_Tests</members>
-        <members>TrelloLogPushScheduler</members>
-        <members>TrelloLogPushScheduler_Tests</members>
-        <members>TrelloLogPusher</members>
+        <members>SlackLogPusher</members>
+        <members>SlackLogPushScheduler_Tests</members>
+        <members>SlackLogPushScheduler</members>
+        <members>TestDataFactory</members>
         <members>TrelloLogPusher_Tests</members>
-        <members>Uuid</members>
+        <members>TrelloLogPusher</members>
+        <members>TrelloLogPushScheduler_Tests</members>
+        <members>TrelloLogPushScheduler</members>
         <members>Uuid_Tests</members>
+        <members>Uuid</members>
         <name>ApexClass</name>
     </types>
     <types>
@@ -56,6 +59,7 @@
         <name>CustomTab</name>
     </types>
     <types>
+        <members>LogEntryRecordPage</members>
         <members>LogRecordPage</members>
         <name>FlexiPage</name>
     </types>
