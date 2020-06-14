@@ -25,18 +25,6 @@ public without sharing class Logger {
         LOG_ENTRIES.clear();
     }
 
-    public static String addRecordDebugEntry(SObject record, String message, String originLocation) {
-        return addRecordDebugEntry(null, record, message, originLocation);
-    }
-
-    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, String originLocation) {
-        return addRecordDebugEntry(loggingLevel, record, message, originLocation, null);
-    }
-
-    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, String originLocation, List<String> topics) {
-        return addEntry(loggingLevel, record, message, null, 'Apex', originLocation, topics, null);
-    }
-
     public static String addDebugEntry(String message, String originLocation) {
         return addDebugEntry(null, message, originLocation);
     }
@@ -49,20 +37,32 @@ public without sharing class Logger {
         return addEntry(loggingLevel, null, message, null, 'Apex', originLocation, topics, null);
     }
 
-    public static String addRecordExceptionEntry(SObject record, Exception ex, String originLocation) {
-        return addRecordExceptionEntry(record, ex, originLocation, null);
-    }
-
-    public static String addRecordExceptionEntry(SObject record, Exception ex, String originLocation, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, record, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
-    }
-
     public static String addExceptionEntry(Exception ex, String originLocation) {
         return addExceptionEntry(ex, originLocation, null);
     }
 
     public static String addExceptionEntry(Exception ex, String originLocation, List<String> topics) {
         return addEntry(LoggingLevel.ERROR, null, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
+    }
+
+    public static String addRecordDebugEntry(SObject record, String message, String originLocation) {
+        return addRecordDebugEntry(null, record, message, originLocation);
+    }
+
+    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, String originLocation) {
+        return addRecordDebugEntry(loggingLevel, record, message, originLocation, null);
+    }
+
+    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, String originLocation, List<String> topics) {
+        return addEntry(loggingLevel, record, message, null, 'Apex', originLocation, topics, null);
+    }
+    
+    public static String addRecordExceptionEntry(SObject record, Exception ex, String originLocation) {
+        return addRecordExceptionEntry(record, ex, originLocation, null);
+    }
+
+    public static String addRecordExceptionEntry(SObject record, Exception ex, String originLocation, List<String> topics) {
+        return addEntry(LoggingLevel.ERROR, record, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
     }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
