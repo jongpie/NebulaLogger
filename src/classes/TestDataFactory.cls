@@ -1,34 +1,34 @@
 /******************************************************************************************************
-* This file is part of the Simple Trigger handler project, released under the MIT License.            *
+* This file is part of the Smart Test Data Factory project, released under the MIT License.           *
 * See LICENSE file or go to https://github.com/jongpie/SmartTestDataFactory for full license details. *
 ******************************************************************************************************/
 @isTest
 public class TestDataFactory {
 
-    private final Schema.SobjectType sobjectType;
-    private final List<Schema.SobjectField> requiredFields;
+    private final Schema.SObjectType sobjectType;
+    private final List<Schema.SObjectField> requiredFields;
 
-    private Sobject record;
+    private SObject record;
 
-    public TestDataFactory(Schema.SobjectType sobjectType) {
-        this(sobjectType.newSobject());
+    public TestDataFactory(Schema.SObjectType sobjectType) {
+        this(sobjectType.newSObject());
     }
 
-    public TestDataFactory(Sobject record) {
+    public TestDataFactory(SObject record) {
         this.record      = record;
-        this.sobjectType = record.getSobjectType();
+        this.sobjectType = record.getSObjectType();
 
         this.requiredFields = this.getRequiredFields();
     }
 
-    public Sobject populateRequiredFields() {
+    public SObject populateRequiredFields() {
         this.setRequiredFieldsOnRecord();
         return this.record;
     }
 
-    private List<Schema.SobjectField> getRequiredFields() {
-        List<SobjectField> requiredFields = new List<SobjectField>();
-        for(Schema.SobjectField field : this.sobjectType.getDescribe().fields.getMap().values()) {
+    private List<Schema.SObjectField> getRequiredFields() {
+        List<SObjectField> requiredFields = new List<SObjectField>();
+        for(Schema.SObjectField field : this.sobjectType.getDescribe().fields.getMap().values()) {
             Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
 
             // Guard clauses for fields that aren't required
@@ -44,9 +44,9 @@ public class TestDataFactory {
 
     private void setRequiredFieldsOnRecord() {
         Map<String, Object> populatedFields = this.record.getPopulatedFieldsAsMap();
-        for(Schema.SobjectField field : this.requiredFields) {
+        for(Schema.SObjectField field : this.requiredFields) {
             Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-            // If a field was already populated by using the constructor 'TestDataFactory(Sobject record)', then don't change it
+            // If a field was already populated by using the constructor 'TestDataFactory(SObject record)', then don't change it
             if(populatedFields.containsKey(fieldDescribe.getName())) continue;
 
             Object fieldValue;

@@ -6,7 +6,7 @@
 private class LogPurger_Tests {
 
     @testSetup
-    static void setupData(){
+    static void setupData() {
         Log__c log = new Log__c();
         new TestDataFactory(log).populateRequiredFields();
         insert log;
@@ -31,7 +31,7 @@ private class LogPurger_Tests {
         System.assertNotEquals(0, logEntries.size());
 
         Test.startTest();
-        Database.executeBatch(new LogPurger());
+        Database.executeBatch(new LogPurger(7));
         Test.stopTest();
 
         logs = [SELECT Id FROM Log__c];
