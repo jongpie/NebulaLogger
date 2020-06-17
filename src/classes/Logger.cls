@@ -117,11 +117,7 @@ public without sharing class Logger {
         saveLog(false);
     }
     
-    public static void saveLogViaRestApi() {
-        saveLog(true);
-    }
-    
-    private static void saveLog(Boolean saveLogViaRestApi) {
+    public static void saveLog(Boolean saveLogViaRestApi) {
         if(LOG_ENTRIES.isEmpty()) return;
 
         if(suspendSaving) {
