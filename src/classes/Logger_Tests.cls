@@ -51,49 +51,52 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_resume_saving() {
-        Integer countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfExistingLogEntries);
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+
+        List<String> logEntryTransactionIds = new List<String>();
 
         Logger.suspendSaving();
-        Logger.addDebugEntry('test log entry', 'Logger_Tests.it_should_resume_saving');
+        logEntryTransactionIds.add(Logger.addDebugEntry('test log entry', 'Logger_Tests.it_should_resume_saving'));
         
         Test.startTest();
         
-        Logger.addDebugEntry('another test log entry', 'Logger_Tests.it_should_resume_saving');
+        logEntryTransactionIds.add(Logger.addDebugEntry('another test log entry', 'Logger_Tests.it_should_resume_saving'));
         Logger.saveLog();
 
-        countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfExistingLogEntries);
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
 
         Logger.resumeSaving();
         Logger.saveLog();
         
         Test.stopTest();
         
-        countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(2, countOfExistingLogEntries);
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WHERE TransactionEntryId__c IN :logEntryTransactionIds];
+        System.assertEquals(logEntryTransactionIds.size(), countOfLogEntries);
         System.assertEquals(1, Limits.getDmlStatements());
     }
 
     @isTest
     static void it_should_flush_buffer() {
-        Integer countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfExistingLogEntries);
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
 
         Test.startTest();
-        
-        Logger.addDebugEntry('test log entry', 'Logger_Tests.it_should_flush_buffer');
-        Logger.addDebugEntry('another test log entry', 'Logger_Tests.it_should_flush_buffer');
+        List<String> logEntryTransactionIds = new List<String>();
+
+        logEntryTransactionIds.add(Logger.addDebugEntry('test log entry', 'Logger_Tests.it_should_flush_buffer'));
+        logEntryTransactionIds.add(Logger.addDebugEntry('another test log entry', 'Logger_Tests.it_should_flush_buffer'));
         
         Logger.flushBuffer();
         
-        Logger.addDebugEntry('the only log entry to save', 'Logger_Tests.it_should_flush_buffer');
+        logEntryTransactionIds.add(Logger.addDebugEntry('the only log entry to save', 'Logger_Tests.it_should_flush_buffer'));
         Logger.saveLog();
         
         Test.stopTest();
         
-        countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(1, countOfExistingLogEntries);
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WHERE TransactionEntryId__c IN :logEntryTransactionIds];
+        System.assertEquals(1, countOfLogEntries);
     }
 
     @isTest
