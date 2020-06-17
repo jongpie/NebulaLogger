@@ -114,20 +114,28 @@ public without sharing class Logger {
 
     @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
     public static void saveLog() {
-        if(suspendSaving) return;
-        if(LOG_ENTRIES.isEmpty()) return;
-
-        EventBus.publish(LOG_ENTRIES);
-
-        LOG_ENTRIES.clear();
+        saveLog(false);
     }
     
     public static void saveLogViaRestApi() {
-        if(suspendSaving) return;
+        saveLog(true);
+    }
+    
+    private static void saveLog(Boolean saveLogViaRestApi) {
         if(LOG_ENTRIES.isEmpty()) return;
-        
-        addDebugEntry('Saving log entries via REST API', 'Logger.saveLogViaRestApi()');
-        RestApi.insertRecords(LOG_ENTRIES);
+
+        if(suspendSaving) {
+            String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
+            addDebugEntry(LoggingLevel.FINEST, suspendSavingLogMessage, 'Logger.saveLog(Boolean saveLogViaRestApi=' + saveLogViaRestApi + ')');
+            return;
+        }
+
+        String savingLogMessage = 'Saving log entries';
+        if(saveLogViaRestApi) savingLogMessage += ' via REST API';
+        addDebugEntry(LoggingLevel.FINEST, savingLogMessage, 'Logger.saveLog(Boolean saveLogViaRestApi=' + saveLogViaRestApi + ')');
+
+        if(saveLogViaRestApi) RestApi.insertRecords(LOG_ENTRIES);
+        else EventBus.publish(LOG_ENTRIES);
         
         LOG_ENTRIES.clear();
     }
