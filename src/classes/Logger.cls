@@ -79,23 +79,10 @@ public without sharing class Logger {
         }
         if(saveLog) saveLog();
     }
-
-    @AuraEnabled
-    public static void saveLightningEntries(String logEntriesJson) {
-        List<LightningLogEntry> lightningLogEntries = (List<LightningLogEntry>)Json.deserialize(logEntriesJson, List<LightningLogEntry>.class);
-        for(LightningLogEntry logEntry : lightningLogEntries) {
-            LoggingLevel logLevel;
-            if(!String.isBlank(logEntry.loggingLevelName)) logLevel = getLoggingLevel(logEntry.loggingLevelName);
-            if(logEntry.error != null) logLevel = LoggingLevel.ERROR;
-
-            addEntry(logLevel, null, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
-        }
-        saveLog();
-    }
-
+    
     public static LoggingLevel getLoggingLevel(String loggingLevelName) {
         if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
-
+        
         switch on loggingLevelName {
             when 'NONE'   { return LoggingLevel.NONE;   }
             when 'ERROR'  { return LoggingLevel.ERROR;  }
@@ -111,6 +98,19 @@ public without sharing class Logger {
             }
         }
     }
+    
+    @AuraEnabled
+    public static void saveLightningEntries(String logEntriesJson) {
+        List<LightningLogEntry> lightningLogEntries = (List<LightningLogEntry>)Json.deserialize(logEntriesJson, List<LightningLogEntry>.class);
+        for(LightningLogEntry logEntry : lightningLogEntries) {
+            LoggingLevel logLevel;
+            if(!String.isBlank(logEntry.loggingLevelName)) logLevel = getLoggingLevel(logEntry.loggingLevelName);
+            if(logEntry.error != null) logLevel = LoggingLevel.ERROR;
+
+            addEntry(logLevel, null, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
+        }
+        saveLog();
+    }
 
     @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
     public static void saveLog() {
@@ -121,7 +121,7 @@ public without sharing class Logger {
 
         LOG_ENTRIES.clear();
     }
-
+    
     private static LoggerSettings__c getSettings() {
         return LoggerSettings__c.getInstance();
     }
