@@ -31,13 +31,13 @@ private class LogPurger_Tests {
         System.assertNotEquals(0, logEntries.size());
 
         Test.startTest();
-        Database.executeBatch(new LogPurger(7));
+        Database.executeBatch(new LogPurger(5));
         Test.stopTest();
 
         logs = [SELECT Id FROM Log__c];
         logEntries = [SELECT Id FROM LogEntry__c];
-        System.assertEquals(0, logs.size());
-        System.assertEquals(0, logEntries.size());
+        System.assertEquals(0, logs.size(), logs);
+        System.assertEquals(0, logEntries.size(), logEntries);
     }
 
 }

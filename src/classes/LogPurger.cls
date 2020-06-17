@@ -18,16 +18,22 @@ public without sharing class LogPurger implements Database.Batchable<SObject>, D
         Date purgeDate = System.today() - daysToKeep;
 
         return Database.getQueryLocator([
-            SELECT Id, Name, CreatedDate, CreatedBy.Name
+            SELECT Id, (SELECT Id FROM LogEntries__r)
             FROM Log__c
             WHERE CreatedDate <= :purgeDate
-            ORDER By CreatedDate
         ]);
     }
 
     public void execute(Database.BatchableContext batchableContext, List<Log__c> scope) {
-        delete scope;
-        Database.emptyRecycleBin(scope);
+        List<SObject> recordsToDelete = new List<SObject>();
+        
+        for(Log__c log : scope) {
+            recordsToDelete.addAll(log.LogEntries__r);
+            recordsToDelete.add(log);
+        }
+        
+        delete recordsToDelete;
+        Database.emptyRecycleBin(recordsToDelete);
     }
 
     public void finish(Database.BatchableContext batchableContext) { }
