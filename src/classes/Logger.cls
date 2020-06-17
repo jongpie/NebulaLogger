@@ -122,6 +122,16 @@ public without sharing class Logger {
         LOG_ENTRIES.clear();
     }
     
+    public static void saveLogViaRestApi() {
+        if(suspendSaving) return;
+        if(LOG_ENTRIES.isEmpty()) return;
+        
+        addDebugEntry('Saving log entries via REST API', 'Logger.saveLogViaRestApi()');
+        RestApi.insertRecords(LOG_ENTRIES);
+        
+        LOG_ENTRIES.clear();
+    }
+
     private static LoggerSettings__c getSettings() {
         return LoggerSettings__c.getInstance();
     }

@@ -10,6 +10,7 @@
         <members>LogPurger_Tests</members>
         <members>Logger</members>
         <members>Logger_Tests</members>
+        <members>RestApi</members>
         <members>TestDataFactory</members>
         <members>Uuid</members>
         <members>Uuid_Tests</members>
