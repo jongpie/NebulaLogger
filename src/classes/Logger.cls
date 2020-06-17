@@ -130,7 +130,7 @@ public without sharing class Logger {
             return;
         }
 
-        String savingLogMessage = 'Saving log entries';
+        String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries';
         if(saveLogViaRestApi) savingLogMessage += ' via REST API';
         addDebugEntry(LoggingLevel.FINEST, savingLogMessage, 'Logger.saveLog(Boolean saveLogViaRestApi=' + saveLogViaRestApi + ')');
 
