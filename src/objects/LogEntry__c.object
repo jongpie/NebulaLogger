@@ -1069,14 +1069,18 @@
     <fields>
         <fullName>RelatedRecordDetailedLink__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(
-    &apos;/&apos; + RelatedRecordId__c,
-    TEXT(RelatedRecordType__c) + &apos;: &apos; + IF(
-        ISBLANK(RelatedRecordName__c),
-        RelatedRecordId__c,
-        RelatedRecordName__c
-    ),
+        <formula>IF(
+    RelatedRecordId__c == null,
+    &apos;&apos;,
+    HYPERLINK(
+        &apos;/&apos; + RelatedRecordId__c,
+        TEXT(RelatedRecordType__c) + &apos;: &apos; + IF(
+            ISBLANK(RelatedRecordName__c),
+            RelatedRecordId__c,
+            RelatedRecordName__c
+        ),
     &apos;_top&apos;
+    )
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Related Record</label>
