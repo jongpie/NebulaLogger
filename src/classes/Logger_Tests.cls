@@ -9,7 +9,7 @@ private class Logger_Tests {
 
     static LogEntry__c getLogEntry(String transactionEntryId) {
         List<String> fields = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
-        String query = 'SELECT ' + String.join(fields, ', ') 
+        String query = 'SELECT ' + String.join(fields, ', ')
             + ' FROM ' + Schema.LogEntry__c.SObjectType
             + ' WHERE TransactionEntryId__c = :transactionEntryId';
         return (LogEntry__c)Database.query(query);
@@ -40,11 +40,11 @@ private class Logger_Tests {
 
         Logger.suspendSaving();
 
-        Logger.addDebugEntry('test log entry', 'Logger_Tests.it_should_suspend_saving');
+        Logger.addDebugEntry('test log entry');
         Logger.saveLog();
-        
+
         Test.stopTest();
-        
+
         countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfExistingLogEntries);
     }
@@ -57,11 +57,11 @@ private class Logger_Tests {
         List<String> logEntryTransactionIds = new List<String>();
 
         Logger.suspendSaving();
-        logEntryTransactionIds.add(Logger.addDebugEntry('test log entry', 'Logger_Tests.it_should_resume_saving'));
-        
+        logEntryTransactionIds.add(Logger.addDebugEntry('test log entry'));
+
         Test.startTest();
-        
-        logEntryTransactionIds.add(Logger.addDebugEntry('another test log entry', 'Logger_Tests.it_should_resume_saving'));
+
+        logEntryTransactionIds.add(Logger.addDebugEntry('another test log entry'));
         Logger.saveLog();
 
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -69,9 +69,9 @@ private class Logger_Tests {
 
         Logger.resumeSaving();
         Logger.saveLog();
-        
+
         Test.stopTest();
-        
+
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WHERE TransactionEntryId__c IN :logEntryTransactionIds];
         System.assertEquals(logEntryTransactionIds.size(), countOfLogEntries);
         System.assertEquals(1, Limits.getDmlStatements());
@@ -85,40 +85,40 @@ private class Logger_Tests {
         Test.startTest();
         List<String> logEntryTransactionIds = new List<String>();
 
-        logEntryTransactionIds.add(Logger.addDebugEntry('test log entry', 'Logger_Tests.it_should_flush_buffer'));
-        logEntryTransactionIds.add(Logger.addDebugEntry('another test log entry', 'Logger_Tests.it_should_flush_buffer'));
-        
+        logEntryTransactionIds.add(Logger.addDebugEntry('test log entry'));
+        logEntryTransactionIds.add(Logger.addDebugEntry('another test log entry'));
+
         Logger.flushBuffer();
-        
-        logEntryTransactionIds.add(Logger.addDebugEntry('the only log entry to save', 'Logger_Tests.it_should_flush_buffer'));
+
+        logEntryTransactionIds.add(Logger.addDebugEntry('the only log entry to save'));
         Logger.saveLog();
-        
+
         Test.stopTest();
-        
+
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WHERE TransactionEntryId__c IN :logEntryTransactionIds];
         System.assertEquals(1, countOfLogEntries);
     }
 
-    @isTest
-    static void it_should_return_logging_level() {
-        System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
-        System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
-        System.assertEquals(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
-        System.assertEquals(LoggingLevel.WARN, Logger.getLoggingLevel('warn'));
-        System.assertEquals(LoggingLevel.INFO, Logger.getLoggingLevel('info'));
-        System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('debug'));
-        System.assertEquals(LoggingLevel.FINE, Logger.getLoggingLevel('fine'));
-        System.assertEquals(LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
-        System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
-    }
+    // @isTest
+    // static void it_should_return_logging_level() {
+    //     System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
+    //     System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
+    //     System.assertEquals(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
+    //     System.assertEquals(LoggingLevel.WARN, Logger.getLoggingLevel('warn'));
+    //     System.assertEquals(LoggingLevel.INFO, Logger.getLoggingLevel('info'));
+    //     System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('debug'));
+    //     System.assertEquals(LoggingLevel.FINE, Logger.getLoggingLevel('fine'));
+    //     System.assertEquals(LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
+    //     System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
+    // }
 
     @isTest
     static void it_should_add_a_debug_entry_with_default_logging_level() {
         String message = 'my test message';
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
 
         Test.startTest();
-        String transactionEntryId = Logger.addDebugEntry(message, originLocation);
+        String transactionEntryId = Logger.addDebugEntry(message);
         Logger.saveLog();
         Test.stopTest();
 
@@ -126,17 +126,17 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
     static void it_should_add_a_debug_entry_with_logging_level() {
         LoggingLevel logLevel = LoggingLevel.WARN;
         String message = 'my test message';
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
 
         Test.startTest();
-        String transactionEntryId = Logger.addDebugEntry(logLevel, message, originLocation);
+        String transactionEntryId = Logger.addDebugEntry(logLevel, message);
         Logger.saveLog();
         Test.stopTest();
 
@@ -144,7 +144,7 @@ private class Logger_Tests {
         System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
@@ -155,10 +155,10 @@ private class Logger_Tests {
         while(message.length() < messageMaxLength + 200) {
             message += message;
         }
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
 
         Test.startTest();
-        String transactionEntryId = Logger.addDebugEntry(logLevel, message, originLocation);
+        String transactionEntryId = Logger.addDebugEntry(logLevel, message);
         Logger.saveLog();
         Test.stopTest();
 
@@ -166,25 +166,25 @@ private class Logger_Tests {
         System.assertEquals(message.left(messageMaxLength), logEntry.Message__c);
         System.assertEquals(true, logEntry.MessageTruncated__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
     static void it_should_add_a_debug_entry_with_topics() {
         LoggingLevel logLevel = LoggingLevel.WARN;
         String message = 'my test message';
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
         List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
 
         Test.startTest();
-        String transactionEntryId = Logger.addDebugEntry(logLevel, message, originLocation, topicNames);
+        String transactionEntryId = Logger.addDebugEntry(logLevel, message, topicNames);
         Logger.saveLog();
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry(transactionEntryId);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
 
         List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
         //System.assertEquals(topicNames.size(), topicAssignments.size());
@@ -196,7 +196,7 @@ private class Logger_Tests {
     @isTest
     static void it_should_add_entry_for_an_exception() {
         Exception exceptionResult;
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
 
         Test.startTest();
         String transactionEntryId;
@@ -204,7 +204,7 @@ private class Logger_Tests {
             insert new Lead();
         } catch(Exception ex) {
             exceptionResult = ex;
-            transactionEntryId = Logger.addExceptionEntry(ex, originLocation);
+            transactionEntryId = Logger.addExceptionEntry(ex);
             Logger.saveLog();
         }
         Test.stopTest();
@@ -212,14 +212,13 @@ private class Logger_Tests {
         LogEntry__c logEntry = getLogEntry(transactionEntryId);
         System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
-
+       // System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
     static void it_should_add_entry_for_an_exception_with_topics() {
         Exception exceptionResult;
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
         List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
 
         Test.startTest();
@@ -228,7 +227,7 @@ private class Logger_Tests {
             insert new Lead();
         } catch(Exception ex) {
             exceptionResult = ex;
-            transactionEntryId = Logger.addExceptionEntry(ex, originLocation, topicNames);
+            transactionEntryId = Logger.addExceptionEntry(ex, topicNames);
             Logger.saveLog();
         }
         Test.stopTest();
@@ -236,7 +235,7 @@ private class Logger_Tests {
         LogEntry__c logEntry = getLogEntry(transactionEntryId);
         System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
 
         List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
         //System.assertEquals(topicNames.size(), topicAssignments.size());
@@ -248,11 +247,11 @@ private class Logger_Tests {
     @isTest
     static void it_should_add_a_record_debug_entry_with_default_logging_level() {
         String message = 'my test message';
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
         User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
         Test.startTest();
-        String transactionEntryId = Logger.addRecordDebugEntry(user, message, originLocation);
+        String transactionEntryId = Logger.addRecordDebugEntry(user, message);
         Logger.saveLog();
         Test.stopTest();
 
@@ -260,18 +259,18 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
     static void it_should_add_a_record_debug_entry_with_logging_level() {
         LoggingLevel logLevel = LoggingLevel.WARN;
         String message = 'my test message';
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
         User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
         Test.startTest();
-        String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message, originLocation);
+        String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message);
         Logger.saveLog();
         Test.stopTest();
 
@@ -279,7 +278,7 @@ private class Logger_Tests {
         System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
@@ -290,11 +289,11 @@ private class Logger_Tests {
         while(message.length() < messageMaxLength + 200) {
             message += message;
         }
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
         User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
         Test.startTest();
-        String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message, originLocation);
+        String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message);
         Logger.saveLog();
         Test.stopTest();
 
@@ -302,26 +301,26 @@ private class Logger_Tests {
         System.assertEquals(message.left(messageMaxLength), logEntry.Message__c);
         System.assertEquals(true, logEntry.MessageTruncated__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
     static void it_should_add_a_record_debug_entry_with_topics() {
         LoggingLevel logLevel = LoggingLevel.WARN;
         String message = 'my test message';
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
         List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
         User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
         Test.startTest();
-        String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message, originLocation, topicNames);
+        String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message, topicNames);
         Logger.saveLog();
         Test.stopTest();
 
         LogEntry__c logEntry = getLogEntry(transactionEntryId);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
 
         List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
         //System.assertEquals(topicNames.size(), topicAssignments.size());
@@ -333,7 +332,7 @@ private class Logger_Tests {
     @isTest
     static void it_should_add_record_entry_for_an_exception() {
         Exception exceptionResult;
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
         User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
         Test.startTest();
@@ -342,7 +341,7 @@ private class Logger_Tests {
             insert new Lead();
         } catch(Exception ex) {
             exceptionResult = ex;
-            transactionEntryId = Logger.addRecordExceptionEntry(user, ex, originLocation);
+            transactionEntryId = Logger.addRecordExceptionEntry(user, ex);
             Logger.saveLog();
         }
         Test.stopTest();
@@ -350,14 +349,13 @@ private class Logger_Tests {
         LogEntry__c logEntry = getLogEntry(transactionEntryId);
         System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
-
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
     }
 
     @isTest
     static void it_should_add_record_entry_for_an_exception_with_topics() {
         Exception exceptionResult;
-        String originLocation = 'MyClass.myMethod()';
+        //String originLocation = 'MyClass.myMethod()';
         List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
         User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
 
@@ -367,7 +365,7 @@ private class Logger_Tests {
             insert new Lead();
         } catch(Exception ex) {
             exceptionResult = ex;
-            transactionEntryId = Logger.addRecordExceptionEntry(user, ex, originLocation, topicNames);
+            transactionEntryId = Logger.addRecordExceptionEntry(user, ex, topicNames);
             Logger.saveLog();
         }
         Test.stopTest();
@@ -375,7 +373,7 @@ private class Logger_Tests {
         LogEntry__c logEntry = getLogEntry(transactionEntryId);
         System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
         System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(originLocation, logEntry.OriginLocation__c);
+        //System.assertEquals(originLocation, logEntry.OriginLocation__c);
 
         List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
         //System.assertEquals(topicNames.size(), topicAssignments.size());
@@ -403,12 +401,12 @@ private class Logger_Tests {
         System.assertEquals('Process Builder/Flow', logEntry.OriginType__c);
         System.assertEquals(flowName, logEntry.OriginLocation__c);
     }
-    
+
     @isTest
     static void it_should_save_entries_for_a_list_of_lightning_messages() {
         Datetime timestamp = System.now().addMinutes(-5);
         List<LightningLogEntry> lightningLogEntries = new List<LightningLogEntry>();
-        
+
         Test.startTest();
         LightningLogEntry lightningLogEntry = new LightningLogEntry();
         lightningLogEntry.componentName    = 'myComponent';
@@ -416,11 +414,11 @@ private class Logger_Tests {
         lightningLogEntry.message          = 'my test message';
         lightningLogEntry.originLocation   = 'test';
         lightningLogEntry.timestamp        = timestamp;
-        
+
         lightningLogEntries.add(lightningLogEntry);
         Logger.saveLightningEntries(Json.serialize(lightningLogEntries));
         Test.stopTest();
-        
+
         LogEntry__c logEntry = [SELECT Id, ContextLightningComponentName__c, Message__c, OriginType__c, OriginLocation__c, Timestamp__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
         System.assertEquals(lightningLogEntry.componentName, logEntry.ContextLightningComponentName__c);
         System.assertEquals(lightningLogEntry.message, logEntry.Message__c);

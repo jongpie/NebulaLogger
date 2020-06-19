@@ -3,7 +3,7 @@
 * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
 *************************************************************************************************/
 public without sharing class Logger {
-
+    
     private static final String TRANSACTION_ID              = new Uuid().getValue();
     private static final List<LogEntryEvent__e> LOG_ENTRIES = new List<LogEntryEvent__e>();
 
@@ -25,44 +25,44 @@ public without sharing class Logger {
         LOG_ENTRIES.clear();
     }
 
-    public static String addDebugEntry(String message, String originLocation) {
-        return addDebugEntry(null, message, originLocation);
+    public static String addDebugEntry(String message) {
+        return addDebugEntry(null, message);
     }
 
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation) {
-        return addDebugEntry(loggingLevel, message, originLocation, null);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message) {
+        return addDebugEntry(loggingLevel, message, null);
     }
 
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message, String originLocation, List<String> topics) {
-        return addEntry(loggingLevel, null, message, null, 'Apex', originLocation, topics, null);
+    public static String addDebugEntry(LoggingLevel loggingLevel, String message, List<String> topics) {
+        return addEntry(loggingLevel, null, message, null, 'Apex', getStackTraceString(), topics, null);
     }
 
-    public static String addExceptionEntry(Exception ex, String originLocation) {
-        return addExceptionEntry(ex, originLocation, null);
+    public static String addExceptionEntry(Exception ex) {
+        return addExceptionEntry(ex, null);
     }
 
-    public static String addExceptionEntry(Exception ex, String originLocation, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, null, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
+    public static String addExceptionEntry(Exception ex, List<String> topics) {
+        return addEntry(LoggingLevel.ERROR, null, ex.getMessage(), ex, 'Apex', getStackTraceString(), topics, null);
     }
 
-    public static String addRecordDebugEntry(SObject record, String message, String originLocation) {
-        return addRecordDebugEntry(null, record, message, originLocation);
+    public static String addRecordDebugEntry(SObject record, String message) {
+        return addRecordDebugEntry(null, record, message);
     }
 
-    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, String originLocation) {
-        return addRecordDebugEntry(loggingLevel, record, message, originLocation, null);
+    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message) {
+        return addRecordDebugEntry(loggingLevel, record, message, null);
     }
 
-    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, String originLocation, List<String> topics) {
-        return addEntry(loggingLevel, record, message, null, 'Apex', originLocation, topics, null);
+    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, List<String> topics) {
+        return addEntry(loggingLevel, record, message, null, 'Apex', getStackTraceString(), topics, null);
     }
     
-    public static String addRecordExceptionEntry(SObject record, Exception ex, String originLocation) {
-        return addRecordExceptionEntry(record, ex, originLocation, null);
+    public static String addRecordExceptionEntry(SObject record, Exception ex) {
+        return addRecordExceptionEntry(record, ex, null);
     }
 
-    public static String addRecordExceptionEntry(SObject record, Exception ex, String originLocation, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, record, ex.getMessage(), ex, 'Apex', originLocation, topics, null);
+    public static String addRecordExceptionEntry(SObject record, Exception ex, List<String> topics) {
+        return addEntry(LoggingLevel.ERROR, record, ex.getMessage(), ex, 'Apex', getStackTraceString(), topics, null);
     }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
@@ -138,6 +138,21 @@ public without sharing class Logger {
 
     private static LoggerSettings__c getSettings() {
         return LoggerSettings__c.getInstance();
+    }
+
+    private static String getStackTraceString() {
+        String stackTraceString;
+        for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
+            if(currentStackTraceLine.contains(Logger.class.getName())) continue;
+            
+            stackTraceString = currentStackTraceLine.substringBefore(':');
+            if(stackTraceString.startsWith('Class.')) {
+                stackTraceString = stackTraceString.substringAfter('Class.');
+            }
+            break;
+        } 
+     
+        return stackTraceString;
     }
 
     private static LoggingLevel getUserLoggingLevel() {
