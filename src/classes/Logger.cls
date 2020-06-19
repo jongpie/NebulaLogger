@@ -3,7 +3,7 @@
 * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
 *************************************************************************************************/
 public without sharing class Logger {
-    
+
     private static final String TRANSACTION_ID              = new Uuid().getValue();
     private static final List<LogEntryEvent__e> LOG_ENTRIES = new List<LogEntryEvent__e>();
 
@@ -56,7 +56,7 @@ public without sharing class Logger {
     public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, List<String> topics) {
         return addEntry(loggingLevel, record, message, null, 'Apex', getStackTraceString(), topics, null);
     }
-    
+
     public static String addRecordExceptionEntry(SObject record, Exception ex) {
         return addRecordExceptionEntry(record, ex, null);
     }
@@ -79,26 +79,7 @@ public without sharing class Logger {
         }
         if(saveLog) saveLog();
     }
-    
-    public static LoggingLevel getLoggingLevel(String loggingLevelName) {
-        if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
-        
-        switch on loggingLevelName {
-            when 'NONE'   { return LoggingLevel.NONE;   }
-            when 'ERROR'  { return LoggingLevel.ERROR;  }
-            when 'WARN'   { return LoggingLevel.WARN;   }
-            when 'INFO'   { return LoggingLevel.INFO;   }
-            when 'DEBUG'  { return LoggingLevel.DEBUG;  }
-            when 'FINE'   { return LoggingLevel.FINE;   }
-            when 'FINER'  { return LoggingLevel.FINER;  }
-            when 'FINEST' { return LoggingLevel.FINEST; }
-            when else     { 
-                addDebugEntry('Unknown logging level ' + loggingLevelName + ', using DEBUG', 'Logger.getLoggingLevel(String loggingLevelName)');
-                return LoggingLevel.DEBUG;   
-            }
-        }
-    }
-    
+
     @AuraEnabled
     public static void saveLightningEntries(String logEntriesJson) {
         List<LightningLogEntry> lightningLogEntries = (List<LightningLogEntry>)Json.deserialize(logEntriesJson, List<LightningLogEntry>.class);
@@ -116,7 +97,7 @@ public without sharing class Logger {
     public static void saveLog() {
         saveLog(false);
     }
-    
+
     public static void saveLog(Boolean saveLogViaRestApi) {
         if(LOG_ENTRIES.isEmpty()) return;
 
@@ -132,7 +113,7 @@ public without sharing class Logger {
 
         if(saveLogViaRestApi) RestApi.insertRecords(LOG_ENTRIES);
         else EventBus.publish(LOG_ENTRIES);
-        
+
         LOG_ENTRIES.clear();
     }
 
@@ -144,15 +125,40 @@ public without sharing class Logger {
         String stackTraceString;
         for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
             if(currentStackTraceLine.contains(Logger.class.getName())) continue;
-            
+
             stackTraceString = currentStackTraceLine.substringBefore(':');
             if(stackTraceString.startsWith('Class.')) {
                 stackTraceString = stackTraceString.substringAfter('Class.');
             }
             break;
-        } 
-     
+        }
+
         return stackTraceString;
+    }
+
+    private static LoggingLevel getLoggingLevel(String loggingLevelName) {
+        if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
+
+        switch on loggingLevelName {
+            when 'NONE'   { return LoggingLevel.NONE;   }
+            when 'ERROR'  { return LoggingLevel.ERROR;  }
+            when 'WARN'   { return LoggingLevel.WARN;   }
+            when 'INFO'   { return LoggingLevel.INFO;   }
+            when 'DEBUG'  { return LoggingLevel.DEBUG;  }
+            when 'FINE'   { return LoggingLevel.FINE;   }
+            when 'FINER'  { return LoggingLevel.FINER;  }
+            when 'FINEST' { return LoggingLevel.FINEST; }
+            when else     {
+                final LoggingLevel DEFAULT_LEVEL = LoggingLevel.DEBUG;
+
+                String originLocation             = 'Logger.getLoggingLevel';
+                String unknownLoggingLevelMessage = 'Unknown logging level ' + loggingLevelName + ', using ' + DEFAULT_LEVEL.name();
+
+                addEntry(LoggingLevel.FINEST, null, unknownLoggingLevelMessage, null, 'Apex', originLocation, null, null);
+
+                return DEFAULT_LEVEL;
+            }
+        }
     }
 
     private static LoggingLevel getUserLoggingLevel() {
