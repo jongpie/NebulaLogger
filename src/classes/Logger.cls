@@ -98,23 +98,29 @@ public without sharing class Logger {
         saveLog(false);
     }
 
-    public static void saveLog(Boolean saveLogViaRestApi) {
-        if(LOG_ENTRIES.isEmpty()) return;
+    public static String saveLog(Boolean saveLogViaRestApi) {
+        if(LOG_ENTRIES.isEmpty()) return getTransactionId();
 
+        String originLocation = 'Logger.saveLog';
         if(suspendSaving) {
             String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
-            addDebugEntry(LoggingLevel.FINEST, suspendSavingLogMessage, 'Logger.saveLog(Boolean saveLogViaRestApi=' + saveLogViaRestApi + ')');
-            return;
+
+            addEntry(LoggingLevel.FINEST, null, suspendSavingLogMessage, null, 'Apex', originLocation, null, null);
+
+            return getTransactionId();
         }
 
         String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries';
         if(saveLogViaRestApi) savingLogMessage += ' via REST API';
-        addDebugEntry(LoggingLevel.FINEST, savingLogMessage, 'Logger.saveLog(Boolean saveLogViaRestApi=' + saveLogViaRestApi + ')');
+
+        addEntry(LoggingLevel.FINEST, null, savingLogMessage, null, 'Apex', originLocation, null, null);
 
         if(saveLogViaRestApi) RestApi.insertRecords(LOG_ENTRIES);
         else EventBus.publish(LOG_ENTRIES);
 
         LOG_ENTRIES.clear();
+
+        return getTransactionId();
     }
 
     private static LoggerSettings__c getSettings() {
