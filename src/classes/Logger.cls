@@ -136,16 +136,7 @@ public without sharing class Logger {
             when 'FINE'   { return LoggingLevel.FINE;   }
             when 'FINER'  { return LoggingLevel.FINER;  }
             when 'FINEST' { return LoggingLevel.FINEST; }
-            when else     {
-                final LoggingLevel DEFAULT_LEVEL = LoggingLevel.DEBUG;
-
-                String originLocation             = 'Logger.getLoggingLevel';
-                String unknownLoggingLevelMessage = 'Unknown logging level ' + loggingLevelName + ', using ' + DEFAULT_LEVEL.name();
-
-                addEntry(LoggingLevel.FINEST, null, unknownLoggingLevelMessage, null, 'Apex', originLocation, null, null);
-
-                return DEFAULT_LEVEL;
-            }
+            when else     { return LoggingLevel.DEBUG;  }
         }
     }
 
