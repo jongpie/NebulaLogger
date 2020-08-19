@@ -360,7 +360,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RelatedRecordType__c</field>
+        <field>LogEntry__c.RelatedRecordSObject__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

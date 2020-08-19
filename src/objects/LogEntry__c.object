@@ -1074,7 +1074,7 @@
     &apos;&apos;,
     HYPERLINK(
         &apos;/&apos; + RelatedRecordId__c,
-        TEXT(RelatedRecordType__c) + &apos;: &apos; + IF(
+        TEXT(RelatedRecordSObject__c) + &apos;: &apos; + IF(
             ISBLANK(RelatedRecordName__c),
             RelatedRecordId__c,
             RelatedRecordName__c
@@ -1123,7 +1123,7 @@
         <fullName>RelatedRecordName__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(
-     TEXT(RelatedRecordType__c),
+     TEXT(RelatedRecordSObject__c),
      &apos;Account&apos;, Account__r.Name,
      &apos;Case&apos;, Case__r.CaseNumber,
      &apos;User&apos;, User__r.Username,
@@ -1137,16 +1137,16 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>RelatedRecordType__c</fullName>
+        <fullName>RelatedRecordSObject__c</fullName>
         <externalId>false</externalId>
-        <label>Related Record Type</label>
+        <label>Related Record Object</label>
         <required>false</required>
         <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
             <valueSetDefinition>
-                <sorted>true</sorted>
+                <sorted>false</sorted>
                 <value>
                     <fullName>Account</fullName>
                     <default>false</default>

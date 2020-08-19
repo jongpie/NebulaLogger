@@ -29,7 +29,7 @@ private class LogEntryHandler_Tests {
         logEntry = [SELECT Id, RelatedRecordId__c FROM LogEntry__c WHERE Id = :logEntry.Id];
         System.assertEquals(null, logEntry.RelatedRecordId__c);
     }
-    
+
     @isTest
     static void it_should_populate_related_fields_on_log_entry_with_related_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
@@ -44,10 +44,10 @@ private class LogEntryHandler_Tests {
         insert logEntry;
         Test.stopTest();
 
-        logEntry = [SELECT Id, RelatedRecordId__c, RelatedRecordName__c, RelatedRecordType__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        logEntry = [SELECT Id, RelatedRecordId__c, RelatedRecordName__c, RelatedRecordSObject__c FROM LogEntry__c WHERE Id = :logEntry.Id];
         System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
         System.assertEquals(currentUser.Username, logEntry.RelatedRecordName__c);
-        System.assertEquals('User', logEntry.RelatedRecordType__c);
+        System.assertEquals('User', logEntry.RelatedRecordSObject__c);
     }
 
 }
