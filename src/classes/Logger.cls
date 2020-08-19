@@ -6,6 +6,7 @@ public without sharing class Logger {
 
     private static final String TRANSACTION_ID              = new Uuid().getValue();
     private static final List<LogEntryEvent__e> LOG_ENTRIES = new List<LogEntryEvent__e>();
+    private static final User CURRENT_USER                  = [SELECT Id, Profile.Name, UserRole.Name FROM User WHERE Id = :UserInfo.getUserId()];
 
     private static Boolean suspendSaving = false;
 
@@ -26,7 +27,7 @@ public without sharing class Logger {
     }
 
     public static String addDebugEntry(String message) {
-        return addDebugEntry(null, message);
+        return addDebugEntry(LoggingLevel.DEBUG, message);
     }
 
     public static String addDebugEntry(LoggingLevel loggingLevel, String message) {
@@ -34,7 +35,7 @@ public without sharing class Logger {
     }
 
     public static String addDebugEntry(LoggingLevel loggingLevel, String message, List<String> topics) {
-        return addEntry(loggingLevel, null, message, null, 'Apex', getStackTraceString(), topics, null);
+        return addEntry(loggingLevel, null, message, null, 'Apex', getOriginLocation(), topics, null);
     }
 
     public static String addExceptionEntry(Exception ex) {
@@ -42,11 +43,11 @@ public without sharing class Logger {
     }
 
     public static String addExceptionEntry(Exception ex, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, null, ex.getMessage(), ex, 'Apex', getStackTraceString(), topics, null);
+        return addEntry(LoggingLevel.ERROR, null, ex.getMessage(), ex, 'Apex', getOriginLocation(), topics, null);
     }
 
     public static String addRecordDebugEntry(SObject record, String message) {
-        return addRecordDebugEntry(null, record, message);
+        return addRecordDebugEntry(LoggingLevel.DEBUG, record, message);
     }
 
     public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message) {
@@ -54,7 +55,7 @@ public without sharing class Logger {
     }
 
     public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, List<String> topics) {
-        return addEntry(loggingLevel, record, message, null, 'Apex', getStackTraceString(), topics, null);
+        return addEntry(loggingLevel, record, message, null, 'Apex', getOriginLocation(), topics, null);
     }
 
     public static String addRecordExceptionEntry(SObject record, Exception ex) {
@@ -62,7 +63,7 @@ public without sharing class Logger {
     }
 
     public static String addRecordExceptionEntry(SObject record, Exception ex, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, record, ex.getMessage(), ex, 'Apex', getStackTraceString(), topics, null);
+        return addEntry(LoggingLevel.ERROR, record, ex.getMessage(), ex, 'Apex', getOriginLocation(), topics, null);
     }
 
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
@@ -123,26 +124,7 @@ public without sharing class Logger {
         return getTransactionId();
     }
 
-    private static LoggerSettings__c getSettings() {
-        return LoggerSettings__c.getInstance();
-    }
-
-    private static String getStackTraceString() {
-        String stackTraceString;
-        for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
-            if(currentStackTraceLine.contains(Logger.class.getName())) continue;
-
-            stackTraceString = currentStackTraceLine.substringBefore(':');
-            if(stackTraceString.startsWith('Class.')) {
-                stackTraceString = stackTraceString.substringAfter('Class.');
-            }
-            break;
-        }
-
-        return stackTraceString;
-    }
-
-    private static LoggingLevel getLoggingLevel(String loggingLevelName) {
+    public static LoggingLevel getLoggingLevel(String loggingLevelName) {
         if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
 
         switch on loggingLevelName {
@@ -165,6 +147,25 @@ public without sharing class Logger {
                 return DEFAULT_LEVEL;
             }
         }
+    }
+
+    private static LoggerSettings__c getSettings() {
+        return LoggerSettings__c.getInstance();
+    }
+
+    private static String getOriginLocation() {
+        String originLocation;
+        for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
+            if(currentStackTraceLine.contains('.Logger.')) continue;
+
+            originLocation = currentStackTraceLine.substringBefore(':');
+            if(originLocation.startsWith('Class.')) {
+                originLocation = originLocation.substringAfter('Class.');
+            }
+            break;
+        }
+
+        return originLocation;
     }
 
     private static LoggingLevel getUserLoggingLevel() {
@@ -220,6 +221,8 @@ public without sharing class Logger {
         if(visualforcePageName != null && visualforcePageName.contains('?')) visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
         else if(visualforcePageName != null) visualforcePageName = visualforcePageName.substringAfter('apex/');
 
+        Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
+
         LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
             ContextIsApexRest__c              = RestContext.request != null,
             ContextIsBatch__c                 = System.isBatch(),
@@ -266,20 +269,36 @@ public without sharing class Logger {
             LimitsSoqlQueryRowsUsed__c        = Limits.getQueryRows(),
             LimitsSoslSearchesMax__c          = Limits.getLimitSoslQueries(),
             LimitsSoslSearchesUsed__c         = Limits.getSoslQueries(),
+            Locale__c                         = UserInfo.getLocale(),
             LoggingLevel__c                   = logEntryLoggingLevel.name(),
             LoggingLevelOrdinal__c            = logEntryLoggingLevel.ordinal(),
+            LoginDomain__c                    = sessionMap == null ? null : sessionMap.get('LoginDomain'),
+            LoginHistoryId__c                 = sessionMap == null ? null : sessionMap.get('LoginHistoryId'),
+            LoginType__c                      = sessionMap == null ? null : sessionMap.get('LoginType'),
+            LogoutUrl__c                      = sessionMap == null ? null : sessionMap.get('LogoutUrl'),
             Message__c                        = truncatedMessage == null ? null : String.escapeSingleQuotes(truncatedMessage),
             MessageTruncated__c               = messageTruncated,
             OriginLocation__c                 = truncateFieldValue(Schema.LogEntryEvent__e.OriginLocation__c, originLocation),
             OriginType__c                     = originType,
+            ProfileId__c                      = UserInfo.getProfileId(),
+            ProfileName__c                    = CURRENT_USER.Profile.Name,
             RelatedRecordId__c                = record != null && record.Id != null ? record.Id : null,
+            SessionId__c                      = sessionMap == null ? null : sessionMap.get('SessionId'),
+            SessionSecurityLevel__c           = sessionMap == null ? null : sessionMap.get('SessionSecurityLevel'),
+            SessionType__c                    = sessionMap == null ? null : sessionMap.get('SessionType'),
+            SourceIp__c                       = sessionMap == null ? null : sessionMap.get('SourceIp'),
             Timestamp__c                      = logEntryTimestamp,
+            TimeZoneId__c                     = UserInfo.getTimeZone().getId(),
+            TimeZoneName__c                   = UserInfo.getTimeZone().getDisplayName(),
             Topics__c                         = topics == null ? null : String.escapeSingleQuotes(String.join(topics, ',')),
             TransactionEntryId__c             = logEntryTransactionId,
             TransactionId__c                  = TRANSACTION_ID,
             Type__c                           = type,
             UserLoggingLevel__c               = getUserLoggingLevel().name(),
-            UserLoggingLevelOrdinal__c        = getUserLoggingLevel().ordinal()
+            UserLoggingLevelOrdinal__c        = getUserLoggingLevel().ordinal(),
+            UserRoleId__c                     = UserInfo.getUserRoleId(),
+            UserRoleName__c                   = CURRENT_USER.UserRole.Name,
+            UserType__c                       = UserInfo.getUserType()
         );
         LOG_ENTRIES.add(platformLogEntry);
 
