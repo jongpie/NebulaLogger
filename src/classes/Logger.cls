@@ -193,17 +193,15 @@ public without sharing class Logger {
         if(ex != null) message = ex.getMessage();
         if(lightningLogEntry != null && lightningLogEntry.error != null) message = lightningLogEntry.error.message;
 
-        String logEntryTransactionId = new Uuid().getValue();
-
         if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
-        if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return logEntryTransactionId;
+        if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return null;
 
         String type = 'Debug';
         if(ex != null) type = 'Exception';
         if(lightningLogEntry != null && lightningLogEntry.error != null) type = 'Exception';
 
-        if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return logEntryTransactionId;
-        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) return logEntryTransactionId;
+        if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return null;
+        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) return null;
 
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
         Boolean messageTruncated = message != truncatedMessage;
@@ -282,7 +280,7 @@ public without sharing class Logger {
             TimeZoneId__c                     = UserInfo.getTimeZone().getId(),
             TimeZoneName__c                   = UserInfo.getTimeZone().getDisplayName(),
             Topics__c                         = topics == null ? null : String.escapeSingleQuotes(String.join(topics, ',')),
-            TransactionEntryId__c             = logEntryTransactionId,
+            TransactionEntryId__c             = new Uuid().getValue(),
             TransactionId__c                  = TRANSACTION_ID,
             Type__c                           = type,
             UserLoggingLevel__c               = getUserLoggingLevel().name(),
