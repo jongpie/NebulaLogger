@@ -58,7 +58,7 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>RelatedRecordType__c</field>
+                <field>RelatedRecordSObject__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
