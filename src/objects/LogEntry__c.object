@@ -128,27 +128,34 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>LogEntryRecordPage</content>
         <formFactor>Large</formFactor>
-        <type>Default</type>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>LogEntryRecordPage</content>
         <formFactor>Small</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
-    <compactLayoutAssignment>LogEntryCompact</compactLayoutAssignment>
+    <compactLayoutAssignment>LogEntryCompactLayout</compactLayoutAssignment>
     <compactLayouts>
-        <fullName>LogEntryCompact</fullName>
+        <fullName>LogEntryCompactLayout</fullName>
         <fields>Name</fields>
         <fields>Log__c</fields>
-        <fields>Type__c</fields>
+        <fields>LoggedByUsernameLink__c</fields>
         <fields>Timestamp__c</fields>
-        <label>Log Entry Compact</label>
+        <fields>TypeImage__c</fields>
+        <label>Log Entry Compact Layout</label>
     </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
@@ -160,6 +167,32 @@
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Log Entries</relationshipLabel>
+        <relationshipName>LogEntries</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Case__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Case</label>
+        <referenceTo>Case</referenceTo>
+        <relationshipLabel>Log Entries</relationshipLabel>
+        <relationshipName>LogEntries</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
     <fields>
         <fullName>ContextIsLightningComponent__c</fullName>
         <defaultValue>false</defaultValue>
@@ -236,7 +269,7 @@
         <externalId>false</externalId>
         <label>Exception Stack Trace</label>
         <length>131072</length>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
@@ -246,7 +279,7 @@
         <externalId>false</externalId>
         <label>Exception Type</label>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -411,6 +444,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsAggregateQueries__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsAggregateQueriesUsed__c ) + &apos; / &apos; + TEXT(LimitsAggregateQueriesMax__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Aggregate Queries</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsAsyncCallsMax__c</fullName>
         <externalId>false</externalId>
         <label>Async Calls Max</label>
@@ -432,6 +476,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsAsyncCalls__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsAsyncCallsUsed__c) + &apos; / &apos; + TEXT(LimitsAsyncCallsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Async Calls</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -459,6 +514,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsCallouts__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsCalloutsUsed__c ) + &apos; / &apos; + TEXT(LimitsCalloutsMax__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Callouts</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsCpuTimeMax__c</fullName>
         <externalId>false</externalId>
         <label>CPU Time Max</label>
@@ -480,6 +546,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsCpuTime__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsCpuTimeUsed__c) + &apos; / &apos; + TEXT(LimitsCpuTimeMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CPU Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -507,6 +584,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsDmlRows__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsDmlRowsUsed__c) + &apos; / &apos; + TEXT(LimitsDmlRowsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DML Rows</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsDmlStatementsMax__c</fullName>
         <externalId>false</externalId>
         <label>DML Statements Max</label>
@@ -528,6 +616,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsDmlStatements__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsDmlStatementsUsed__c ) + &apos; / &apos; + TEXT(LimitsDmlStatementsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DML Statements</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -555,6 +654,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsEmailInvocations__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsEmailInvocationsUsed__c) + &apos; / &apos; + TEXT(LimitsEmailInvocationsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Email Invocations</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsFutureCallsMax__c</fullName>
         <externalId>false</externalId>
         <label>Future Calls Max</label>
@@ -576,6 +686,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsFutureCalls__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsFutureCallsUsed__c ) + &apos; / &apos; + TEXT(LimitsFutureCallsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Future Calls</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -603,6 +724,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsHeapSize__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsHeapSizeUsed__c) + &apos; / &apos; + TEXT(LimitsHeapSizeMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Heap Size</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsMobilePushApexCallsMax__c</fullName>
         <externalId>false</externalId>
         <label>Mobile Push Apex Calls Max</label>
@@ -624,6 +756,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsMobilePushApexCalls__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsMobilePushApexCallsUsed__c) + &apos; / &apos; + TEXT(LimitsMobilePushApexCallsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Mobile Push Apex Calls</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -651,6 +794,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsQueueableJobs__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsQueueableJobsUsed__c) + &apos; / &apos; + TEXT(LimitsQueueableJobsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Queueable Jobs</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsSoqlQueriesMax__c</fullName>
         <externalId>false</externalId>
         <label>SOQL Queries Max</label>
@@ -672,6 +826,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoqlQueries__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsSoqlQueriesUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueriesMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SOQL Queries</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -699,6 +864,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsSoqlQueryLocatorRows__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsSoqlQueryLocatorRowsUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueryLocatorRowsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SOQL Query Locator Rows</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsSoqlQueryRowsMax__c</fullName>
         <externalId>false</externalId>
         <label>SOQL Query Rows Max</label>
@@ -723,6 +899,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LimitsSoqlQueryRows__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsSoqlQueryRowsUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueryRowsMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SOQL Query Rows</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LimitsSoslSearchesMax__c</fullName>
         <externalId>false</externalId>
         <label>SOSL Searches Max</label>
@@ -744,6 +931,17 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LimitsSoslSearches__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(LimitsSoslSearchesUsed__c) + &apos; / &apos; + TEXT(LimitsSoslSearchesMax__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SOSL Searches</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -772,6 +970,17 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>LoggedByUsernameLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>Log__r.LoggedByUsernameLink__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Username</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LoggingLevelOrdinal__c</fullName>
         <externalId>false</externalId>
         <label>Logging Level Ordinal</label>
@@ -788,7 +997,7 @@
         <externalId>false</externalId>
         <label>Logging Level</label>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -802,7 +1011,7 @@
         <externalId>false</externalId>
         <inlineHelpText>Indicates if the message was truncated due to being too long to fit into the Message field</inlineHelpText>
         <label>Message Truncated</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -811,7 +1020,7 @@
         <externalId>false</externalId>
         <label>Message</label>
         <length>32768</length>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
@@ -822,7 +1031,7 @@
         <label>Origin Location</label>
         <length>255</length>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
@@ -832,7 +1041,7 @@
         <externalId>false</externalId>
         <label>Origin Type</label>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -858,11 +1067,110 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>RelatedRecordDetailedLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+    RelatedRecordId__c == null,
+    &apos;&apos;,
+    HYPERLINK(
+        &apos;/&apos; + RelatedRecordId__c,
+        TEXT(RelatedRecordSObject__c) + &apos;: &apos; + IF(
+            ISBLANK(RelatedRecordName__c),
+            RelatedRecordId__c,
+            RelatedRecordName__c
+        ),
+    &apos;_top&apos;
+    )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Related Record</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RelatedRecordId__c</fullName>
+        <externalId>false</externalId>
+        <label>Related Record ID</label>
+        <length>18</length>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RelatedRecordLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(
+    &apos;/&apos; + RelatedRecordId__c,
+    IF(
+        ISBLANK(RelatedRecordName__c),
+        RelatedRecordId__c,
+        RelatedRecordName__c
+    ),
+    &apos;_top&apos;
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Related Record</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RelatedRecordName__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(
+     TEXT(RelatedRecordSObject__c),
+     &apos;Account&apos;, Account__r.Name,
+     &apos;Case&apos;, Case__r.CaseNumber,
+     &apos;User&apos;, User__r.Username,
+     null
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Related Record Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RelatedRecordSObject__c</fullName>
+        <externalId>false</externalId>
+        <label>Related Record Object</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Account</fullName>
+                    <default>false</default>
+                    <label>Account</label>
+                </value>
+                <value>
+                    <fullName>Case</fullName>
+                    <default>false</default>
+                    <label>Case</label>
+                </value>
+                <value>
+                    <fullName>User</fullName>
+                    <default>false</default>
+                    <label>User</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
         <fullName>Timestamp__c</fullName>
         <externalId>false</externalId>
         <label>Timestamp</label>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
     </fields>
@@ -873,7 +1181,7 @@
         <label>Transaction Entry ID</label>
         <length>36</length>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>
@@ -883,11 +1191,11 @@
         <externalId>false</externalId>
         <formula>IF(
     ISPICKVAL(Type__c, &apos;Exception&apos;),
-    IMAGE(&apos;/img/samples/color_red.gif&apos;, &apos;Exception&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c),
-    IMAGE(&apos;/img/samples/color_green.gif&apos;, &apos;Debug&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c)
+    IMAGE(&apos;/img/samples/flag_red.gif&apos;, &apos;Exception&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c),
+    IMAGE(&apos;/img/samples/flag_green.gif&apos;, &apos;Debug&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Type</label>
+        <label>Entry Type</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -898,7 +1206,7 @@
         <externalId>false</externalId>
         <label>Type</label>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -920,9 +1228,21 @@
             </valueSetDefinition>
         </valueSet>
     </fields>
+    <fields>
+        <fullName>User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>LogEntries</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
     <label>Log Entry</label>
     <nameField>
-        <label>Log Entry Transaction ID</label>
+        <label>Entry ID</label>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
     </nameField>

@@ -1,6 +1,6 @@
 /*************************************************************************************************
-* This file is part of the Nebula Framework project, released under the MIT License.             *
-* See LICENSE file or go to https://github.com/jongpie/NebulaFramework for full license details. *
+* This file is part of the Nebula Logger project, released under the MIT License.                *
+* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
 *************************************************************************************************/
 public without sharing class FlowLogEntry {
 
@@ -18,13 +18,16 @@ public without sharing class FlowLogEntry {
     @InvocableVariable(required=true label='Save Log')
     public Boolean saveLog;
 
+    @InvocableVariable(label='(Optional) Record ID')
+    public Id recordId;
+
     @InvocableVariable(label='(Optional) Logging Level')
     public String loggingLevelName;
 
     @InvocableVariable(label='(Optional) Topics')
     public List<String> topics;
 
-    public DateTime timestamp;
+    public DateTime timestamp {get; private set;}
 
     public FlowLogEntry() {
         this.saveLog   = true;

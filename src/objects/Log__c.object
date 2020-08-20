@@ -128,29 +128,36 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>LogRecordPage</content>
         <formFactor>Large</formFactor>
-        <type>Default</type>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
+        <comment>Action override created by Lightning App Builder during activation.</comment>
+        <content>LogRecordPage</content>
         <formFactor>Small</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
-    <compactLayoutAssignment>LogCompact</compactLayoutAssignment>
+    <compactLayoutAssignment>LogCompactLayout</compactLayoutAssignment>
     <compactLayouts>
-        <fullName>LogCompact</fullName>
+        <fullName>LogCompactLayout</fullName>
         <fields>Name</fields>
-        <fields>LoggedBy__c</fields>
-        <fields>UserLoggingLevel__c</fields>
-        <fields>TotalDebugLogEntries__c</fields>
+        <fields>LoggedByUsernameLink__c</fields>
+        <fields>StartTime__c</fields>
+        <fields>DurationInSeconds__c</fields>
+        <fields>TotalLogEntries__c</fields>
         <fields>TotalExceptionLogEntries__c</fields>
-        <fields>ContextThemeDisplayed__c</fields>
-        <label>Log Compact</label>
+        <fields>TransactionId__c</fields>
+        <label>Log Compact Layout</label>
     </compactLayouts>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
@@ -167,7 +174,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Apex REST</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -176,7 +183,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Batch</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -185,7 +192,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Future</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -194,7 +201,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Queueable</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -203,7 +210,7 @@
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Scheduled Job</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -212,7 +219,7 @@
         <externalId>false</externalId>
         <label>Theme Displayed</label>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -263,6 +270,64 @@
         </valueSet>
     </fields>
     <fields>
+        <fullName>DurationInSeconds__c</fullName>
+        <externalId>false</externalId>
+        <formula>(TIMEVALUE(EndTime__c) - TIMEVALUE(StartTime__c)) / 1000</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Estimated duration of the transaction, measured in seconds</inlineHelpText>
+        <label>Duration (In Seconds)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EndTime__c</fullName>
+        <externalId>false</externalId>
+        <label>End Time</label>
+        <summarizedField>LogEntry__c.Timestamp__c</summarizedField>
+        <summaryForeignKey>LogEntry__c.Log__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Locale__c</fullName>
+        <externalId>false</externalId>
+        <label>Locale</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LoggedByUsernameLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(LoggedBy__c, LoggedBy__r.Username, &apos;_top&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Username</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LoggedByUsername__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>false</externalId>
+        <label>Logged By Username</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
         <fullName>LoggedBy__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -270,9 +335,100 @@
         <referenceTo>User</referenceTo>
         <relationshipName>Logs</relationshipName>
         <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>LoginDomain__c</fullName>
+        <externalId>false</externalId>
+        <label>Login Domain</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>LoginHistoryId__c</fullName>
+        <externalId>false</externalId>
+        <label>Login History ID</label>
+        <length>18</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LoginType__c</fullName>
+        <externalId>false</externalId>
+        <label>Login Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Application</fullName>
+                    <default>false</default>
+                    <label>Application</label>
+                </value>
+                <value>
+                    <fullName>Remote Access 2.0</fullName>
+                    <default>false</default>
+                    <label>Remote Access 2.0</label>
+                </value>
+                <value>
+                    <fullName>SAML Idp Initiated SSO</fullName>
+                    <default>false</default>
+                    <label>SAML Idp Initiated SSO</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>LogoutUrl__c</fullName>
+        <externalId>false</externalId>
+        <label>Logout URL</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>ProfileId__c</fullName>
+        <externalId>false</externalId>
+        <label>Profile ID</label>
+        <length>18</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProfileLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&apos;/&apos; + ProfileId__c, ProfileName__c, &apos;_top&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Profile</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProfileName__c</fullName>
+        <externalId>false</externalId>
+        <label>Profile Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>PushToLoggly__c</fullName>
@@ -329,6 +485,119 @@
         <type>DateTime</type>
     </fields>
     <fields>
+        <fullName>SessionId__c</fullName>
+        <externalId>false</externalId>
+        <label>Session ID</label>
+        <length>18</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SessionSecurityLevel__c</fullName>
+        <externalId>false</externalId>
+        <label>Session Security Level</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>LOW</fullName>
+                    <default>false</default>
+                    <label>LOW</label>
+                </value>
+                <value>
+                    <fullName>STANDARD</fullName>
+                    <default>false</default>
+                    <label>STANDARD</label>
+                </value>
+                <value>
+                    <fullName>HIGH_ASSURANCE</fullName>
+                    <default>false</default>
+                    <label>HIGH_ASSURANCE</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>SessionType__c</fullName>
+        <externalId>false</externalId>
+        <label>Session Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Oauth2</fullName>
+                    <default>false</default>
+                    <label>Oauth2</label>
+                </value>
+                <value>
+                    <fullName>UI</fullName>
+                    <default>false</default>
+                    <label>UI</label>
+                </value>
+                <value>
+                    <fullName>Visualforce</fullName>
+                    <default>false</default>
+                    <label>Visualforce</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>SourceIp__c</fullName>
+        <externalId>false</externalId>
+        <label>Source IP</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>StartTime__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Time</label>
+        <summarizedField>LogEntry__c.Timestamp__c</summarizedField>
+        <summaryForeignKey>LogEntry__c.Log__c</summaryForeignKey>
+        <summaryOperation>min</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TimeZoneId__c</fullName>
+        <externalId>false</externalId>
+        <label>Time Zone ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TimeZoneName__c</fullName>
+        <externalId>false</externalId>
+        <label>Time Zone Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>TotalDebugLogEntries__c</fullName>
         <externalId>false</externalId>
         <label>Total Debug Entries</label>
@@ -376,7 +645,7 @@
         <label>Transaction ID</label>
         <length>36</length>
         <required>true</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>
@@ -398,7 +667,7 @@
         <externalId>false</externalId>
         <label>User Logging Level</label>
         <required>true</required>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
         <valueSet>
@@ -406,14 +675,101 @@
             <valueSetName>LoggingLevel</valueSetName>
         </valueSet>
     </fields>
+    <fields>
+        <fullName>UserRoleId__c</fullName>
+        <externalId>false</externalId>
+        <label>User Role ID</label>
+        <length>18</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserRoleLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&apos;/&apos; + UserRoleId__c, UserRoleName__c, &apos;_top&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>User Role</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserRoleName__c</fullName>
+        <externalId>false</externalId>
+        <label>User Role Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UserType__c</fullName>
+        <externalId>false</externalId>
+        <label>User Type</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Standard</fullName>
+                    <default>false</default>
+                    <label>Standard</label>
+                </value>
+                <value>
+                    <fullName>PowerPartner</fullName>
+                    <default>false</default>
+                    <label>PowerPartner</label>
+                </value>
+                <value>
+                    <fullName>CSPLitePortal</fullName>
+                    <default>false</default>
+                    <label>CSPLitePortal</label>
+                </value>
+                <value>
+                    <fullName>CustomerSuccess</fullName>
+                    <default>false</default>
+                    <label>CustomerSuccess</label>
+                </value>
+                <value>
+                    <fullName>PowerCustomerSuccess</fullName>
+                    <default>false</default>
+                    <label>PowerCustomerSuccess</label>
+                </value>
+                <value>
+                    <fullName>CsnOnly</fullName>
+                    <default>false</default>
+                    <label>CsnOnly</label>
+                </value>
+                <value>
+                    <fullName>AutomatedProcess</fullName>
+                    <default>false</default>
+                    <label>AutomatedProcess</label>
+                </value>
+                <value>
+                    <fullName>Guest</fullName>
+                    <default>false</default>
+                    <label>Guest</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
     <label>Log</label>
     <listViews>
         <fullName>AllExceptionLogs</fullName>
         <columns>NAME</columns>
-        <columns>LoggedBy__c</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>LoggedByUsernameLink__c</columns>
+        <columns>StartTime__c</columns>
+        <columns>DurationInSeconds__c</columns>
         <columns>TotalLogEntries__c</columns>
-        <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
         <columns>UserLoggingLevel__c</columns>
         <columns>TransactionId__c</columns>
@@ -424,40 +780,35 @@
             <value>0</value>
         </filters>
         <label>All Exception Logs</label>
-        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>AllLogs</fullName>
         <columns>NAME</columns>
-        <columns>LoggedBy__c</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>LoggedByUsernameLink__c</columns>
+        <columns>StartTime__c</columns>
+        <columns>DurationInSeconds__c</columns>
         <columns>TotalLogEntries__c</columns>
-        <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
-        <columns>UserLoggingLevel__c</columns>
         <columns>TransactionId__c</columns>
         <filterScope>Everything</filterScope>
         <label>All Logs</label>
-        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>MyLogs</fullName>
         <columns>NAME</columns>
-        <columns>LoggedBy__c</columns>
-        <columns>CREATED_DATE</columns>
+        <columns>StartTime__c</columns>
+        <columns>DurationInSeconds__c</columns>
         <columns>TotalLogEntries__c</columns>
         <columns>TotalDebugLogEntries__c</columns>
         <columns>TotalExceptionLogEntries__c</columns>
         <columns>TransactionId__c</columns>
-        <columns>UserLoggingLevel__c</columns>
         <filterScope>Mine</filterScope>
         <label>My Logs</label>
-        <language>en_US</language>
     </listViews>
     <nameField>
         <displayFormat>Log-{000000}</displayFormat>
         <label>Log Number</label>
-        <trackFeedHistory>false</trackFeedHistory>
+        <trackFeedHistory>true</trackFeedHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Logs</pluralLabel>
@@ -470,6 +821,8 @@
         <customTabListAdditionalFields>UserLoggingLevel__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
+        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
         <lookupDialogsAdditionalFields>TransactionId__c</lookupDialogsAdditionalFields>

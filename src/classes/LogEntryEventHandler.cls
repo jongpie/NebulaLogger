@@ -6,11 +6,11 @@ public without sharing class LogEntryEventHandler {
 
     private static final Log__c LOG = new Log__c();
 
-    List<LogEntry__c> logEntries;
-    Map<LogEntry__c, List<String>> logEntryToTopics;
-    Set<String> topicNames;
-    List<Topic> topics;
-    List<TopicAssignment> topicAssignments;
+    private List<LogEntry__c> logEntries;
+    private Map<LogEntry__c, List<String>> logEntryToTopics;
+    private Set<String> topicNames;
+    private List<Topic> topics;
+    private List<TopicAssignment> topicAssignments;
 
     public LogEntryEventHandler() {
         this.logEntries       = new List<LogEntry__c>();
@@ -41,12 +41,30 @@ public without sharing class LogEntryEventHandler {
         LOG.ContextIsQueueable__c      = logEntryEvent.ContextIsQueueable__c;
         LOG.ContextIsScheduledJob__c   = logEntryEvent.ContextIsScheduledJob__c;
         LOG.ContextThemeDisplayed__c   = logEntryEvent.ContextThemeDisplayed__c;
+        LOG.Locale__c               = logEntryEvent.Locale__c;
         LOG.LoggedBy__c                = logEntryEvent.CreatedById;
+        LOG.LoginDomain__c          = logEntryEvent.LoginDomain__c;
+        LOG.LoginHistoryId__c       = logEntryEvent.LoginHistoryId__c;
+        LOG.LoginType__c            = logEntryEvent.LoginType__c;
+        LOG.LogoutUrl__c            = logEntryEvent.LogoutUrl__c;
         LOG.OwnerId                    = logEntryEvent.CreatedById;
+        LOG.ProfileId__c            = logEntryEvent.ProfileId__c;
+        LOG.ProfileName__c            = logEntryEvent.ProfileName__c;
+        LOG.SessionId__c               = logEntryEvent.SessionId__c;
+        LOG.SessionId__c            = logEntryEvent.SessionId__c;
+        LOG.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
+        LOG.SessionType__c          = logEntryEvent.SessionType__c;
+        LOG.SourceIp__c             = logEntryEvent.SourceIp__c;
+        LOG.TimeZoneId__c           = logEntryEvent.TimeZoneId__c;
+        LOG.TimeZoneName__c         = logEntryEvent.TimeZoneName__c;
         LOG.TransactionId__c           = logEntryEvent.TransactionId__c;
         LOG.UserLoggingLevel__c        = logEntryEvent.UserLoggingLevel__c;
         LOG.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
-        insert log;
+        LOG.UserRoleId__c           = logEntryEvent.UserRoleId__c;
+        LOG.UserRoleName__c           = logEntryEvent.UserRoleName__c;
+        LOG.UserType__c             = logEntryEvent.UserType__c;
+
+        upsert log TransactionId__c;
     }
 
     private void insertLogEntries() {
@@ -101,10 +119,12 @@ public without sharing class LogEntryEventHandler {
                 Name                              = logEntryEvent.TransactionEntryId__c,
                 OriginType__c                     = logEntryEvent.OriginType__c,
                 OriginLocation__c                 = logEntryEvent.OriginLocation__c,
+                RelatedRecordId__c                = logEntryEvent.RelatedRecordId__c,
                 Timestamp__c                      = logEntryEvent.Timestamp__c,
                 TransactionEntryId__c             = logEntryEvent.TransactionEntryId__c,
                 Type__c                           = logEntryEvent.Type__c
             );
+
             this.logEntries.add(logEntry);
 
             if(logEntryEvent.Topics__c != null) {
