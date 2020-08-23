@@ -1,7 +1,26 @@
-language: node_js
-install:
-    - npm install sfdx
+sudo: true
+os: trusty
+cache: false
+
+env:
+- URL=https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_b1fbf710b918_key -iv $encrypted_b1fbf710b918_iv
+  -in assets/server.key.enc -out assets/server.key -d
+- export SFDX_AUTOUPDATE_DISABLE=false
+- export SFDX_USE_GENERIC_UNIX_KEYCHAIN=true
+- export SFDX_DOMAIN_RETRY=300
+- export SFDX_DISABLE_APP_HUB=true
+- export SFDX_LOG_LEVEL=DEBUG
+- mkdir sfdx
+- wget -qO- $URL | tar xJ -C sfdx --strip-components 1
+- "./sfdx/install"
+- export PATH=./sfdx/$(pwd):$PATH
+- sfdx --version
+- sfdx plugins --core
+- $SFDX_URL > sfdx_url_file
+- sfdx force:auth:sfdxurl:store --sfdxurl sfdx_url_file --setalias nebula_ci
+
 script:
-    - $sfdxurl > sfdx_url_file
-    - sfdx force:auth:sfdxurl:store --sfdxurl sfdx_url_file --setalias nebula_ci
     - sfdx force:source:deploy --checkonly --manifest ./manifest/package.xml --targetusername nebula_ci --verbose
