@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ContextSummary__c</fullName>
+    <externalId>false</externalId>
+    <formula>Log__r.SystemModeSummary__c
++
+IF(
+    ISBLANK(TEXT(Context__c)),
+    null,
+    &apos;.&apos; + TEXT(Context__c) +
+        CASE(
+            Context__c,
+            &apos;Component&apos;, &apos;.&apos; + ContextLightningComponentName__c,
+            &apos;Flow&apos;, &apos;.&apos; + FlowName__c,
+            &apos;Trigger&apos;, &apos;.&apos; + ContextTriggerSObjectType__c  + &apos;.&apos; + ContextTriggerOperationType__c,
+            &apos;Visualforce&apos;, &apos;.&apos; + ContextVisualforcePage__c,
+            null
+        )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>System Context</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

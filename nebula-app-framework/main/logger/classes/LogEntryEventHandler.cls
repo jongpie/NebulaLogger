@@ -35,34 +35,42 @@ public without sharing class LogEntryEventHandler {
         // The first LogEntryEvent__e record is used to normalize the data
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e)Trigger.new[0];
 
-        LOG.ContextIsApexRest__c       = logEntryEvent.ContextIsApexRest__c;
-        LOG.ContextIsBatch__c          = logEntryEvent.ContextIsBatch__c;
-        LOG.ContextIsFuture__c         = logEntryEvent.ContextIsFuture__c;
-        LOG.ContextIsQueueable__c      = logEntryEvent.ContextIsQueueable__c;
-        LOG.ContextIsScheduledJob__c   = logEntryEvent.ContextIsScheduledJob__c;
-        LOG.ContextThemeDisplayed__c   = logEntryEvent.ContextThemeDisplayed__c;
-        LOG.Locale__c               = logEntryEvent.Locale__c;
-        LOG.LoggedBy__c                = logEntryEvent.CreatedById;
-        LOG.LoginDomain__c          = logEntryEvent.LoginDomain__c;
-        LOG.LoginHistoryId__c       = logEntryEvent.LoginHistoryId__c;
-        LOG.LoginType__c            = logEntryEvent.LoginType__c;
-        LOG.LogoutUrl__c            = logEntryEvent.LogoutUrl__c;
-        LOG.OwnerId                    = logEntryEvent.CreatedById;
-        LOG.ProfileId__c            = logEntryEvent.ProfileId__c;
-        LOG.ProfileName__c            = logEntryEvent.ProfileName__c;
-        LOG.SessionId__c               = logEntryEvent.SessionId__c;
-        LOG.SessionId__c            = logEntryEvent.SessionId__c;
-        LOG.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
-        LOG.SessionType__c          = logEntryEvent.SessionType__c;
-        LOG.SourceIp__c             = logEntryEvent.SourceIp__c;
-        LOG.TimeZoneId__c           = logEntryEvent.TimeZoneId__c;
-        LOG.TimeZoneName__c         = logEntryEvent.TimeZoneName__c;
-        LOG.TransactionId__c           = logEntryEvent.TransactionId__c;
-        LOG.UserLoggingLevel__c        = logEntryEvent.UserLoggingLevel__c;
-        LOG.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
-        LOG.UserRoleId__c           = logEntryEvent.UserRoleId__c;
-        LOG.UserRoleName__c           = logEntryEvent.UserRoleName__c;
-        LOG.UserType__c             = logEntryEvent.UserType__c;
+        LOG.ApiVersion__c               = logEntryEvent.ApiVersion__c;
+        LOG.ContextThemeDisplayed__c    = logEntryEvent.ContextThemeDisplayed__c;
+        LOG.Locale__c                   = logEntryEvent.Locale__c;
+        LOG.LoggedBy__c                 = logEntryEvent.CreatedById;
+        LOG.LoginDomain__c              = logEntryEvent.LoginDomain__c;
+        LOG.LoginHistoryId__c           = logEntryEvent.LoginHistoryId__c;
+        LOG.LoginType__c                = logEntryEvent.LoginType__c;
+        LOG.LogoutUrl__c                = logEntryEvent.LogoutUrl__c;
+        LOG.OwnerId                     = logEntryEvent.CreatedById;
+        LOG.ProfileId__c                = logEntryEvent.ProfileId__c;
+        LOG.ProfileName__c              = logEntryEvent.ProfileName__c;
+        LOG.SessionId__c                = logEntryEvent.SessionId__c;
+        LOG.SessionId__c                = logEntryEvent.SessionId__c;
+        LOG.SessionSecurityLevel__c     = logEntryEvent.SessionSecurityLevel__c;
+        LOG.SessionType__c              = logEntryEvent.SessionType__c;
+        LOG.SourceIp__c                 = logEntryEvent.SourceIp__c;
+        LOG.SystemModeIsApexRest__c     = logEntryEvent.SystemModeIsApexRest__c;
+        LOG.SystemModeIsBatch__c        = logEntryEvent.SystemModeIsBatch__c;
+        LOG.SystemModeIsFuture__c       = logEntryEvent.SystemModeIsFuture__c;
+        LOG.SystemModeIsQueueable__c    = logEntryEvent.SystemModeIsQueueable__c;
+        LOG.SystemModeIsScheduledJob__c = logEntryEvent.SystemModeIsScheduledJob__c;
+        LOG.TimeZoneId__c               = logEntryEvent.TimeZoneId__c;
+        LOG.TimeZoneName__c             = logEntryEvent.TimeZoneName__c;
+        LOG.TransactionId__c            = logEntryEvent.TransactionId__c;
+        LOG.UserLoggingLevel__c         = logEntryEvent.UserLoggingLevel__c;
+        LOG.UserLoggingLevelOrdinal__c  = logEntryEvent.UserLoggingLevelOrdinal__c;
+        LOG.UserRoleId__c               = logEntryEvent.UserRoleId__c;
+        LOG.UserRoleName__c             = logEntryEvent.UserRoleName__c;
+        LOG.UserType__c                 = logEntryEvent.UserType__c;
+
+        if(LOG.SystemModeIsApexRest__c)          LOG.SystemMode__c = 'REST';
+        else if(LOG.SystemModeIsBatch__c)        LOG.SystemMode__c = 'Batch';
+        else if(LOG.SystemModeIsFuture__c)       LOG.SystemMode__c = 'Future';
+        else if(LOG.SystemModeIsQueueable__c)    LOG.SystemMode__c = 'Queueable';
+        else if(LOG.SystemModeIsScheduledJob__c) LOG.SystemMode__c = 'Scheduled';
+        else                                     LOG.SystemMode__c = 'Standard';
 
         upsert log TransactionId__c;
     }
@@ -124,6 +132,11 @@ public without sharing class LogEntryEventHandler {
                 TransactionEntryId__c             = logEntryEvent.TransactionEntryId__c,
                 Type__c                           = logEntryEvent.Type__c
             );
+
+            if(logEntry.ContextLightningComponentName__c != null) logEntry.Context__c = 'Component';
+            else if(logEntry.FlowName__c != null) logEntry.Context__c = 'Flow';
+            else if(logEntry.ContextIsTriggerExecuting__c) logEntry.Context__c = 'Trigger';
+            else if(logEntry.ContextIsVisualforce__c) logEntry.Context__c = 'Visualforce';
 
             this.logEntries.add(logEntry);
 

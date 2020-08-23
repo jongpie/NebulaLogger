@@ -14,11 +14,6 @@ public without sharing virtual class LogEntryBuilder {
     public LogEntryBuilder(LoggingLevel loggingLevel) {
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c                     = API_VERSION,
-            ContextIsApexRest__c              = RestContext.request != null,
-            ContextIsBatch__c                 = System.isBatch(),
-            ContextIsFuture__c                = System.isFuture(),
-            ContextIsQueueable__c             = System.isQueueable(),
-            ContextIsScheduledJob__c          = System.isScheduled(),
             ContextIsTriggerExecuting__c      = Trigger.isExecuting,
             ContextIsVisualforce__c           = ApexPages.currentPage() != null,
             ContextThemeDisplayed__c          = UserInfo.getUiThemeDisplayed(),
@@ -44,6 +39,11 @@ public without sharing virtual class LogEntryBuilder {
             LoggingLevelOrdinal__c            = loggingLevel.ORDINAL(),
             OriginLocation__c                 = getOriginLocation(),
             OriginType__c                     = ORIGIN_TYPE_APEX,
+            SystemModeIsApexRest__c           = RestContext.request != null,
+            SystemModeIsBatch__c              = System.isBatch(),
+            SystemModeIsFuture__c             = System.isFuture(),
+            SystemModeIsQueueable__c          = System.isQueueable(),
+            SystemModeIsScheduledJob__c       = System.isScheduled(),
             Timestamp__c                      = System.now(),
             TransactionId__c                  = Logger.getTransactionId(),
             Type__c                           = ENTRY_TYPE_DIAGNOSTIC
