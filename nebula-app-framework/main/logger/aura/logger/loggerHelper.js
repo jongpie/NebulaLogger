@@ -41,7 +41,7 @@
 
         var action = component.get('c.saveLightningEntries');
         action.setParams({
-            logEntriesJson : JSON.stringify(logEntries)
+            componentLogEntries : logEntries
         });
         action.setCallback(this, function(response) {
             if(response.getState() === 'SUCCESS') {
