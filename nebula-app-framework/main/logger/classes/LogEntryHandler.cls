@@ -4,17 +4,20 @@
 *************************************************************************************************/
 public without sharing class LogEntryHandler {
 
-    private static ApexClass classDetails = [SELECT NamespacePrefix FROM ApexClass WHERE Name = :'LogEntryHandler'];
+    private static final ApexClass CLASS_DETAILS = [SELECT NamespacePrefix FROM ApexClass WHERE Name = :'LogEntryHandler'];
+    private static final String FIELD_PREFIX     = 'Related';
 
     public void execute() {
-        this.setRelatedRecordLookupFields();
-    }
-
-    private void setRelatedRecordLookupFields() {
         if(!Trigger.isBefore) return;
 
+        List<LogEntry__c> logEntries = (List<LogEntry__c>)Trigger.new;
+
+        this.setRelatedRecordLookupFields(logEntries);
+    }
+
+    private void setRelatedRecordLookupFields(List<LogEntry__c> logEntries) {
         DescribeSObjectResult sobjectDescribe = Schema.LogEntry__c.SObjectType.getDescribe();
-        for(LogEntry__c logEntry : (List<LogEntry__c>)Trigger.new) {
+        for(LogEntry__c logEntry : logEntries) {
             // Skip the log entry if there's no related record ID
             if(logEntry.RelatedRecordId__c == null) continue;
 
@@ -24,7 +27,7 @@ public without sharing class LogEntryHandler {
 
             // Based on the SObject Type, check for a matching field (based on naming convention of ObjectName == FieldName)
             String relatedRecordType = logEntry.RelatedRecordSObject__c.endsWith('__c') ? logEntry.RelatedRecordSObject__c : logEntry.RelatedRecordSObject__c + '__c';
-            String lookupFieldName = this.getNamespacePrefix() + relatedRecordType;
+            String lookupFieldName = this.getNamespacePrefix() + FIELD_PREFIX + relatedRecordType;
             Schema.SObjectField lookupField = sobjectDescribe.fields.getMap().get(lookupFieldName);
 
             // If there's a lookup field, set it
@@ -38,8 +41,8 @@ public without sharing class LogEntryHandler {
 
     private String getNamespacePrefix() {
         String namespacePrefix = '';
-        if(classDetails.NamespacePrefix != null) {
-            namespacePrefix = classDetails.NamespacePrefix + '__';
+        if(CLASS_DETAILS.NamespacePrefix != null) {
+            namespacePrefix = CLASS_DETAILS.NamespacePrefix + '__';
         }
 
         return namespacePrefix;
