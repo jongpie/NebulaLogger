@@ -1,6 +1,8 @@
 # Folders to exclude
 .settings/
 .sfdx/
+.vscode/
+*/main/default/
 
 # Files to exclude
 *.log
