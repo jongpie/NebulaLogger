@@ -1,0 +1,22 @@
+<!--**********************************************************************************************
+* This file is part of the Nebula Logger project, released under the MIT License.                *
+* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+***********************************************************************************************-->
+<aura:component controller="Logger" implements="force:hasRecordId,force:lightningQuickActionWithoutHeader">
+
+    <!-- Private Attributes -->
+    <aura:attribute access="private" type="Log__c" name="log" />
+    <aura:attribute access="private" type="String" name="logJSON" />
+
+    <!-- Handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!-- Markup-->
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading–large">{! 'JSON for ' + v.log.Name}</h4>
+    </div>
+    <div class="json-viewer">
+        <pre>{!v.logJSON}</pre>
+    </div>
+
+</aura:component>

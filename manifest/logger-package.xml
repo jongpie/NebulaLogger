@@ -31,6 +31,7 @@
     </types>
     <types>
         <members>logger</members>
+        <members>logJSONViewer</members>
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
