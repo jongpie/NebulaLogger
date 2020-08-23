@@ -19,7 +19,7 @@ before_install:
 - export PATH=./sfdx/$(pwd):$PATH
 - sfdx --version
 - sfdx plugins --core
-- $SFDX_URL > sfdx_url_file
+- echo $SFDX_URL > sfdx_url_file
 - sfdx force:auth:sfdxurl:store --sfdxurl sfdx_url_file --setalias nebula_ci
 
 script:
