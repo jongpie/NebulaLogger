@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SessionSecurityLevel__c</fullName>
+    <externalId>false</externalId>
+    <label>Session Security Level</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>LOW</fullName>
+                <default>false</default>
+                <label>LOW</label>
+            </value>
+            <value>
+                <fullName>STANDARD</fullName>
+                <default>false</default>
+                <label>STANDARD</label>
+            </value>
+            <value>
+                <fullName>HIGH_ASSURANCE</fullName>
+                <default>false</default>
+                <label>HIGH_ASSURANCE</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

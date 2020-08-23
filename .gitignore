@@ -1,12 +1,9 @@
-#Folders to exclude
+# Folders to exclude
 .settings/
-config/
-debug/
-deploy/
+.sfdx/
+.vscode/
+*/main/default/
 
-#Files to exclude
+# Files to exclude
 *.log
-*.sublime-project
-*.sublime-workspace
-*.sublime-settings
 
