@@ -26,12 +26,12 @@ public without sharing class LogPurger implements Database.Batchable<SObject>, D
 
     public void execute(Database.BatchableContext batchableContext, List<Log__c> scope) {
         List<SObject> recordsToDelete = new List<SObject>();
-        
+
         for(Log__c log : scope) {
             recordsToDelete.addAll(log.LogEntries__r);
             recordsToDelete.add(log);
         }
-        
+
         delete recordsToDelete;
         Database.emptyRecycleBin(recordsToDelete);
     }
