@@ -4,14 +4,81 @@
 *************************************************************************************************/
 public without sharing class Logger {
 
-    private static final String TRANSACTION_ID              = new Uuid().getValue();
-    private static final List<LogEntryEvent__e> LOG_ENTRIES = new List<LogEntryEvent__e>();
-    private static final User CURRENT_USER                  = [SELECT Id, Profile.Name, UserRole.Name FROM User WHERE Id = :UserInfo.getUserId()];
+    public enum SaveMethod { DML, REST_API, QUEUEABLE_JOB }
 
-    private static Boolean suspendSaving = false;
+    private static final List<LogEntryBuilder> LOG_ENTRIES = new List<LogEntryBuilder>();
+    private static final String TRANSACTION_ID             = new Uuid().getValue();
 
+    private static final LoggerSettings__c SETTINGS      = LoggerSettings__c.getInstance();
+    private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(SETTINGS.LoggingLevel__c);
+
+    private static final QueueableSaver ASYNC_SAVER_INSTANCE {
+        get {
+            if(ASYNC_SAVER_INSTANCE == null) { ASYNC_SAVER_INSTANCE = new QueueableSaver(); }
+            return ASYNC_SAVER_INSTANCE;
+        }
+        private set;
+    }
+
+    private static Boolean suspendSaving            = false;
+    private static SaveMethod transactionSaveMethod = SaveMethod.DML;
+
+    // Settings management methods
     public static String getTransactionId() {
         return TRANSACTION_ID;
+    }
+
+    public static LoggingLevel getUserLoggingLevel() {
+        return getLoggingLevel(getSettings().LoggingLevel__c);
+    }
+
+    public static Id getQueueableSaveJobId() {
+        return ASYNC_SAVER_INSTANCE.jobId;
+    }
+
+    public static Boolean isEnabled() {
+        return SETTINGS.IsEnabled__c;
+    }
+
+    public static Boolean isEnabled(LoggingLevel loggingLevel) {
+        return isEnabled() && meetsUserLoggingLevel(loggingLevel);
+    }
+
+    public static Boolean isErrorEnabled() {
+        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.ERROR);
+    }
+
+    public static Boolean isWarnEnabled() {
+        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.WARN);
+    }
+
+    public static Boolean isInfoEnabled() {
+        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.INFO);
+    }
+
+    public static Boolean isDebugEnabled() {
+        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.DEBUG);
+    }
+
+    public static Boolean isFineEnabled() {
+        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINE);
+    }
+
+    public static Boolean isFinerEnabled() {
+        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINER);
+    }
+
+    public static Boolean isFinestEnabled() {
+        return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINEST);
+    }
+
+    // Transaction control methods
+    public static void setSaveMethod(SaveMethod saveMethod) {
+        transactionSaveMethod = saveMethod;
+    }
+
+    public static Boolean isSavingSuspended() {
+        return suspendSaving;
     }
 
     public static void suspendSaving() {
@@ -22,108 +89,279 @@ public without sharing class Logger {
         suspendSaving = false;
     }
 
+    public static Integer getBufferSize() {
+        return LOG_ENTRIES.size();
+    }
+
     public static void flushBuffer() {
         LOG_ENTRIES.clear();
     }
 
-    public static String addDebugEntry(String message) {
-        return addDebugEntry(LoggingLevel.DEBUG, message);
+    // ERROR logging level methods
+    public static LogEntryBuilder error() {
+        return createLogEntryBuilder(LoggingLevel.ERROR);
     }
 
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message) {
-        return addDebugEntry(loggingLevel, message, null);
+    public static void error(String message) {
+        error().setMessage(message);
     }
 
-    public static String addDebugEntry(LoggingLevel loggingLevel, String message, List<String> topics) {
-        return addEntry(loggingLevel, null, message, null, 'Apex', getOriginLocation(), topics, null);
+    public static void error(String message, List<String> topics) {
+        error().setMessage(message).setTopics(topics);
     }
 
-    public static String addExceptionEntry(Exception ex) {
-        return addExceptionEntry(ex, null);
+    public static void error(String message, SObject record) {
+        error().setMessage(message).setRecordId(record);
     }
 
-    public static String addExceptionEntry(Exception ex, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, null, ex.getMessage(), ex, 'Apex', getOriginLocation(), topics, null);
+    public static void error(String message, SObject record, List<String> topics) {
+        error().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
-    public static String addRecordDebugEntry(SObject record, String message) {
-        return addRecordDebugEntry(LoggingLevel.DEBUG, record, message);
+    public static void error(String message, Id recordId) {
+        error().setMessage(message).setRecordId(recordId);
     }
 
-    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message) {
-        return addRecordDebugEntry(loggingLevel, record, message, null);
+    public static void error(String message, Id recordId, List<String> topics) {
+        error().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
-    public static String addRecordDebugEntry(LoggingLevel loggingLevel, SObject record, String message, List<String> topics) {
-        return addEntry(loggingLevel, record, message, null, 'Apex', getOriginLocation(), topics, null);
+    public static void error(String message, Exception apexException) {
+        error().setMessage(message).setExceptionDetails(apexException);
+        if(getSettings().AutoSaveExceptionEntries__c) saveLog();
     }
 
-    public static String addRecordExceptionEntry(SObject record, Exception ex) {
-        return addRecordExceptionEntry(record, ex, null);
+    public static void error(String message, Exception apexException, List<String> topics) {
+        error().setMessage(message).setExceptionDetails(apexException).setTopics(topics);
+        if(getSettings().AutoSaveExceptionEntries__c) saveLog();
     }
 
-    public static String addRecordExceptionEntry(SObject record, Exception ex, List<String> topics) {
-        return addEntry(LoggingLevel.ERROR, record, ex.getMessage(), ex, 'Apex', getOriginLocation(), topics, null);
+     public static void error(String message, Exception apexException, Id recordId) {
+        error().setMessage(message).setExceptionDetails(apexException).setRecordId(recordId);
+        if(getSettings().AutoSaveExceptionEntries__c) saveLog();
     }
 
-    public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
-        Boolean saveLog = false;
-        for(FlowLogEntry flowLogEntry : flowLogEntries) {
-            LoggingLevel loggingLevel;
-            if(!String.isBlank(flowLogEntry.LoggingLevelName)) loggingLevel = getLoggingLevel(flowLogEntry.LoggingLevelName);
-
-            if(flowLogEntry.saveLog) saveLog = true;
-
-            SObject record = flowLogEntry.recordId == null ? null : flowLogEntry.recordId.getSObjectType().newSObject(flowLogEntry.recordId);
-
-            addEntry(loggingLevel, record, flowLogEntry.message, null, 'Process Builder/Flow', flowLogEntry.flowName, flowLogEntry.topics, null);
-        }
-        if(saveLog) saveLog();
+    public static void error(String message, Exception apexException, Id recordId, List<String> topics) {
+        error().setMessage(message).setExceptionDetails(apexException).setRecordId(recordId).setTopics(topics);
+        if(getSettings().AutoSaveExceptionEntries__c) saveLog();
     }
 
-    @AuraEnabled
-    public static void saveLightningEntries(String logEntriesJson) {
-        List<LightningLogEntry> lightningLogEntries = (List<LightningLogEntry>)Json.deserialize(logEntriesJson, List<LightningLogEntry>.class);
-        for(LightningLogEntry logEntry : lightningLogEntries) {
-            LoggingLevel logLevel;
-            if(!String.isBlank(logEntry.loggingLevelName)) logLevel = getLoggingLevel(logEntry.loggingLevelName);
-            if(logEntry.error != null) logLevel = LoggingLevel.ERROR;
+    // WARN logging level methods
+    public static LogEntryBuilder warn() {
+        return createLogEntryBuilder(LoggingLevel.WARN);
+    }
 
-            addEntry(logLevel, null, logEntry.message, null, 'Lightning Component', logEntry.originLocation, logEntry.topics, logEntry);
-        }
-        saveLog();
+    public static void warn(String message) {
+        warn().setMessage(message);
+    }
+
+    public static void warn(String message, List<String> topics) {
+        warn().setMessage(message).setTopics(topics);
+    }
+
+    public static void warn(String message, SObject record) {
+        warn().setMessage(message).setRecordId(record);
+    }
+
+    public static void warn(String message, SObject record, List<String> topics) {
+        warn().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static void warn(String message, Id recordId) {
+        warn().setMessage(message).setRecordId(recordId);
+    }
+
+    public static void warn(String message, Id recordId, List<String> topics) {
+        warn().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    // INFO logging level methods
+    public static LogEntryBuilder info() {
+        return createLogEntryBuilder(LoggingLevel.INFO);
+    }
+
+    public static void info(String message) {
+        info().setMessage(message);
+    }
+
+    public static void info(String message, List<String> topics) {
+        info().setMessage(message).setTopics(topics);
+    }
+
+    public static void info(String message, SObject record) {
+        info().setMessage(message).setRecordId(record);
+    }
+
+    public static void info(String message, SObject record, List<String> topics) {
+        info().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static void info(String message, Id recordId) {
+        info().setMessage(message).setRecordId(recordId);
+    }
+
+    public static void info(String message, Id recordId, List<String> topics) {
+        info().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    // DEBUG log level methods
+    public static LogEntryBuilder debug() {
+        return createLogEntryBuilder(LoggingLevel.DEBUG);
+    }
+
+    public static void debug(String message) {
+        debug().setMessage(message);
+    }
+
+    public static void debug(String message, List<String> topics) {
+        debug().setMessage(message).setTopics(topics);
+    }
+
+    public static void debug(String message, SObject record) {
+        debug().setMessage(message).setRecordId(record);
+    }
+
+    public static void debug(String message, SObject record, List<String> topics) {
+        debug().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static void debug(String message, Id recordId) {
+        debug().setMessage(message).setRecordId(recordId);
+    }
+
+    public static void debug(String message, Id recordId, List<String> topics) {
+        debug().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    // FINE log level methods
+    public static LogEntryBuilder fine() {
+        return createLogEntryBuilder(LoggingLevel.FINE);
+    }
+
+    public static void fine(String message) {
+        fine().setMessage(message);
+    }
+
+    public static void fine(String message, List<String> topics) {
+        fine().setMessage(message).setTopics(topics);
+    }
+
+    public static void fine(String message, SObject record) {
+        fine().setMessage(message).setRecordId(record);
+    }
+
+    public static void fine(String message, SObject record, List<String> topics) {
+        fine().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static void fine(String message, Id recordId) {
+        fine().setMessage(message).setRecordId(recordId);
+    }
+
+    public static void fine(String message, Id recordId, List<String> topics) {
+        fine().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    // FINER log level methods
+    public static LogEntryBuilder finer() {
+        return createLogEntryBuilder(LoggingLevel.FINER);
+    }
+
+    public static void finer(String message) {
+        finer().setMessage(message);
+    }
+
+    public static void finer(String message, List<String> topics) {
+        finer().setMessage(message).setTopics(topics);
+    }
+
+    public static void finer(String message, SObject record) {
+        finer().setMessage(message).setRecordId(record);
+    }
+
+    public static void finer(String message, SObject record, List<String> topics) {
+        finer().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static void finer(String message, Id recordId) {
+        finer().setMessage(message).setRecordId(recordId);
+    }
+
+    public static void finer(String message, Id recordId, List<String> topics) {
+        finer().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    // FINEST log level methods
+    public static LogEntryBuilder finest() {
+        return createLogEntryBuilder(LoggingLevel.FINEST);
+    }
+
+    public static void finest(String message) {
+        finest().setMessage(message);
+    }
+
+    public static void finest(String message, List<String> topics) {
+        finest().setMessage(message).setTopics(topics);
+    }
+
+    public static void finest(String message, SObject record) {
+        finest().setMessage(message).setRecordId(record);
+    }
+
+    public static void finest(String message, SObject record, List<String> topics) {
+        finest().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static void finest(String message, Id recordId) {
+        finest().setMessage(message).setRecordId(recordId);
+    }
+
+    public static void finest(String message, Id recordId, List<String> topics) {
+        finest().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
     @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
     public static void saveLog() {
-        saveLog(false);
+        saveLog(transactionSaveMethod);
     }
 
-    public static String saveLog(Boolean saveLogViaRestApi) {
-        if(LOG_ENTRIES.isEmpty()) return getTransactionId();
+    public static void saveLog(SaveMethod transactionSaveMethod) {
+        if(LOG_ENTRIES.isEmpty()) return;
 
-        String originLocation = 'Logger.saveLog';
         if(suspendSaving) {
             String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
+            //finest(suspendSavingLogMessage);
 
-            addEntry(LoggingLevel.FINEST, null, suspendSavingLogMessage, null, 'Apex', originLocation, null, null);
-
-            return getTransactionId();
+            return;
         }
 
-        String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries';
-        if(saveLogViaRestApi) savingLogMessage += ' via REST API';
+        String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries via ';
+        switch on transactionSaveMethod {
+            when DML           { savingLogMessage += 'Apex DML'; }
+            when QUEUEABLE_JOB { savingLogMessage += 'Apex queueable job'; }
+            when REST_API      { savingLogMessage += 'Apex REST callout'; }
+        }
+        //finest(savingLogMessage);
 
-        addEntry(LoggingLevel.FINEST, null, savingLogMessage, null, 'Apex', originLocation, null, null);
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+        for(LogEntryBuilder logEntryGenerator : LOG_ENTRIES) {
+            LogEntryEvent__e logEntryEvent = logEntryGenerator.getLogEntryEvent();
+            System.debug('logEntryEvent=' + logEntryEvent);
+            logEntryEvents.add(logEntryEvent);
+        }
 
-        if(saveLogViaRestApi) RestApi.insertRecords(LOG_ENTRIES);
-        else EventBus.publish(LOG_ENTRIES);
+        switch on transactionSaveMethod {
+            when DML           { EventBus.publish(logEntryEvents); }
+            when QUEUEABLE_JOB { ASYNC_SAVER_INSTANCE.enqueueLogEntries(logEntryEvents); }
+            when REST_API      { RestApi.insertRecords(logEntryEvents); }
+        }
 
-        LOG_ENTRIES.clear();
+        // TODO add error handling for when event bus fails to publish
 
-        return getTransactionId();
+        flushBuffer();
     }
 
+    // Utility methods
     public static LoggingLevel getLoggingLevel(String loggingLevelName) {
         if(loggingLevelName != null) loggingLevelName = loggingLevelName.toUpperCase();
 
@@ -136,164 +374,59 @@ public without sharing class Logger {
             when 'FINE'   { return LoggingLevel.FINE;   }
             when 'FINER'  { return LoggingLevel.FINER;  }
             when 'FINEST' { return LoggingLevel.FINEST; }
-            when else     { return LoggingLevel.DEBUG;  }
+            when else     {
+                LoggingLevel fallbackLevel = LoggingLevel.DEBUG;
+                String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + fallbackLevel.Name();
+                //finest(message);
+                return LoggingLevel.DEBUG;
+            }
         }
     }
 
+    public static LogEntryBuilder createLogEntryBuilder(LoggingLevel loggingLevel) {
+        LogEntryBuilder logEntryBuilder = new LogEntryBuilder(LoggingLevel);
+        if(LoggerSettings.isEnabled(loggingLevel)) {
+            LOG_ENTRIES.add(logEntryBuilder);
+        }
+
+        return logEntryBuilder;
+    }
+
+    @AuraEnabled
+    public static Log__c getLog(Id logId) {
+        List<String> logFieldNames      = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
+        List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+
+        List<String> textReplacements = new List<String>{String.join(logFieldNames, ','), String.join(logEntryFieldNames, ',')};
+        String query = String.format('SELECT {0}, (SELECT {1} FROM LogEntries__r) FROM Log__c WHERE Id = :logId', textReplacements);
+
+        return (Log__c)Database.query(query);
+    }
+
+    // Private methods
     private static LoggerSettings__c getSettings() {
         return LoggerSettings__c.getInstance();
     }
 
-    private static String getOriginLocation() {
-        String originLocation;
-        for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
-            if(currentStackTraceLine.contains('.Logger.')) continue;
+    private static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
+        return USER_LOGGING_LEVEL.ORDINAL() <= logEntryLoggingLevel.ORDINAL();
+    }
 
-            originLocation = currentStackTraceLine.substringBefore(':');
-            if(originLocation.startsWith('Class.')) {
-                originLocation = originLocation.substringAfter('Class.');
-            }
-            break;
+    // Private inner class for saving log entries via a queuable job (using a singleton pattern)
+    private class QueueableSaver implements Queueable {
+        public Id jobId;
+
+        private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+
+        public void enqueueLogEntries(List<LogEntryEvent__e> logEntryEvents) {
+            this.logEntryEvents.addAll(logEntryEvents);
+
+            if(jobId == null) jobId = System.enqueueJob(this);
         }
 
-        return originLocation;
-    }
-
-    private static LoggingLevel getUserLoggingLevel() {
-        return getLoggingLevel(getSettings().LoggingLevel__c);
-    }
-
-    private static Boolean meetsUserLoggingLevel(LoggingLevel userLoggingLevel, LoggingLevel logEntryLoggingLevel) {
-        return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
-    }
-
-    private static String truncateFieldValue(Schema.SObjectField field, String value) {
-        Integer fieldMaxLength = field.getDescribe().getLength();
-        if(String.isEmpty(value)) return value;
-        else if(value.length() <= fieldMaxLength) return value;
-        else return value.left(fieldMaxLength);
-    }
-
-    private static String getExceptionStackTrace(Exception ex, LightningLogEntry lightningLogEntry) {
-        if(ex != null) return ex.getStackTraceString();
-        else if(lightningLogEntry != null && lightningLogEntry.error != null) return lightningLogEntry.error.stack;
-        else return null;
-    }
-
-    private static String getExceptionType(Exception ex, LightningLogEntry lightningLogEntry) {
-        if(ex != null) return ex.getTypeName();
-        else if(lightningLogEntry != null && lightningLogEntry.error != null) return 'LightningError';
-        else return null;
-    }
-
-    private static String addEntry(LoggingLevel logEntryLoggingLevel, SObject record, String message, Exception ex, String originType, String originLocation, List<String> topics, LightningLogEntry lightningLogEntry) {
-        Datetime logEntryTimestamp = lightningLogEntry == null ? System.now() : lightningLogEntry.timestamp;
-
-        if(logEntryLoggingLevel == null) logEntryLoggingLevel = LoggingLevel.DEBUG;
-        if(ex != null) message = ex.getMessage();
-        if(lightningLogEntry != null && lightningLogEntry.error != null) message = lightningLogEntry.error.message;
-
-        if(getSettings().GenerateDebugStatements__c) System.debug(logEntryLoggingLevel, message);
-        if(!meetsUserLoggingLevel(getUserLoggingLevel(), logEntryLoggingLevel)) return null;
-
-        String type = 'Debug';
-        if(ex != null) type = 'Exception';
-        if(lightningLogEntry != null && lightningLogEntry.error != null) type = 'Exception';
-
-        if(type == 'Debug' && !getSettings().StoreDebugLogEntries__c) return null;
-        if(type == 'Exception' && !getSettings().StoreExceptionLogEntries__c) return null;
-
-        String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
-        Boolean messageTruncated = message != truncatedMessage;
-
-        String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
-        if(visualforcePageName != null && visualforcePageName.contains('?')) visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
-        else if(visualforcePageName != null) visualforcePageName = visualforcePageName.substringAfter('apex/');
-
-        Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
-
-        LogEntryEvent__e platformLogEntry = new LogEntryEvent__e(
-            ContextIsApexRest__c              = RestContext.request != null,
-            ContextIsBatch__c                 = System.isBatch(),
-            ContextIsFuture__c                = System.isFuture(),
-            ContextIsLightningComponent__c    = lightningLogEntry != null,
-            ContextIsQueueable__c             = System.isQueueable(),
-            ContextIsScheduledJob__c          = System.isScheduled(),
-            ContextIsTriggerExecuting__c      = Trigger.isExecuting,
-            ContextIsVisualforce__c           = ApexPages.currentPage() != null,
-            ContextLightningComponentName__c  = lightningLogEntry == null ? null : lightningLogEntry.componentName,
-            ContextThemeDisplayed__c          = UserInfo.getUiThemeDisplayed(),
-            ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
-            ContextTriggerSObjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType()),
-            ContextVisualforcePage__c         = visualforcePageName,
-            ExceptionStackTrace__c            = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionStackTrace__c, getExceptionStackTrace(ex, lightningLogEntry)),
-            ExceptionType__c                  = truncateFieldValue(Schema.LogEntryEvent__e.ExceptionType__c, getExceptionType(ex, lightningLogEntry)),
-            LimitsAggregateQueriesMax__c      = Limits.getLimitAggregateQueries(),
-            LimitsAggregateQueriesUsed__c     = Limits.getAggregateQueries(),
-            LimitsAsyncCallsMax__c            = Limits.getLimitAsyncCalls(),
-            LimitsAsyncCallsUsed__c           = Limits.getAsyncCalls(),
-            LimitsCalloutsMax__c              = Limits.getLimitCallouts(),
-            LimitsCalloutsUsed__c             = Limits.getCallouts(),
-            LimitsCpuTimeMax__c               = Limits.getLimitCpuTime(),
-            LimitsCpuTimeUsed__c              = Limits.getCpuTime(),
-            LimitsDmlRowsMax__c               = Limits.getLimitDmlRows(),
-            LimitsDmlRowsUsed__c              = Limits.getDmlRows(),
-            LimitsDmlStatementsMax__c         = Limits.getLimitDmlStatements(),
-            LimitsDmlStatementsUsed__c        = Limits.getDmlStatements(),
-            LimitsEmailInvocationsMax__c      = Limits.getLimitEmailInvocations(),
-            LimitsEmailInvocationsUsed__c     = Limits.getEmailInvocations(),
-            LimitsFutureCallsMax__c           = Limits.getLimitFutureCalls(),
-            LimitsFutureCallsUsed__c          = Limits.getFutureCalls(),
-            LimitsHeapSizeMax__c              = Limits.getLimitHeapSize(),
-            LimitsHeapSizeUsed__c             = Limits.getHeapSize(),
-            LimitsMobilePushApexCallsMax__c   = Limits.getLimitMobilePushApexCalls(),
-            LimitsMobilePushApexCallsUsed__c  = Limits.getMobilePushApexCalls(),
-            LimitsQueueableJobsMax__c         = Limits.getLimitQueueableJobs(),
-            LimitsQueueableJobsUsed__c        = Limits.getQueueableJobs(),
-            LimitsSoqlQueriesMax__c           = Limits.getLimitQueries(),
-            LimitsSoqlQueriesUsed__c          = Limits.getQueries(),
-            LimitsSoqlQueryLocatorRowsMax__c  = Limits.getLimitQueryLocatorRows(),
-            LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows(),
-            LimitsSoqlQueryRowsMax__c         = Limits.getLimitQueryRows(),
-            LimitsSoqlQueryRowsUsed__c        = Limits.getQueryRows(),
-            LimitsSoslSearchesMax__c          = Limits.getLimitSoslQueries(),
-            LimitsSoslSearchesUsed__c         = Limits.getSoslQueries(),
-            Locale__c                         = UserInfo.getLocale(),
-            LoggingLevel__c                   = logEntryLoggingLevel.name(),
-            LoggingLevelOrdinal__c            = logEntryLoggingLevel.ordinal(),
-            LoginDomain__c                    = sessionMap == null ? null : sessionMap.get('LoginDomain'),
-            LoginHistoryId__c                 = sessionMap == null ? null : sessionMap.get('LoginHistoryId'),
-            LoginType__c                      = sessionMap == null ? null : sessionMap.get('LoginType'),
-            LogoutUrl__c                      = sessionMap == null ? null : sessionMap.get('LogoutUrl'),
-            Message__c                        = truncatedMessage == null ? null : String.escapeSingleQuotes(truncatedMessage),
-            MessageTruncated__c               = messageTruncated,
-            OriginLocation__c                 = truncateFieldValue(Schema.LogEntryEvent__e.OriginLocation__c, originLocation),
-            OriginType__c                     = originType,
-            ProfileId__c                      = UserInfo.getProfileId(),
-            ProfileName__c                    = CURRENT_USER.Profile.Name,
-            RelatedRecordId__c                = record != null && record.Id != null ? record.Id : null,
-            SessionId__c                      = sessionMap == null ? null : sessionMap.get('SessionId'),
-            SessionSecurityLevel__c           = sessionMap == null ? null : sessionMap.get('SessionSecurityLevel'),
-            SessionType__c                    = sessionMap == null ? null : sessionMap.get('SessionType'),
-            SourceIp__c                       = sessionMap == null ? null : sessionMap.get('SourceIp'),
-            Timestamp__c                      = logEntryTimestamp,
-            TimeZoneId__c                     = UserInfo.getTimeZone().getId(),
-            TimeZoneName__c                   = UserInfo.getTimeZone().getDisplayName(),
-            Topics__c                         = topics == null ? null : String.escapeSingleQuotes(String.join(topics, ',')),
-            TransactionEntryId__c             = new Uuid().getValue(),
-            TransactionId__c                  = TRANSACTION_ID,
-            Type__c                           = type,
-            UserLoggingLevel__c               = getUserLoggingLevel().name(),
-            UserLoggingLevelOrdinal__c        = getUserLoggingLevel().ordinal(),
-            UserRoleId__c                     = UserInfo.getUserRoleId(),
-            UserRoleName__c                   = CURRENT_USER.UserRole.Name,
-            UserType__c                       = UserInfo.getUserType()
-        );
-        LOG_ENTRIES.add(platformLogEntry);
-
-        if(ex != null && getSettings().AutoSaveExceptionEntries__c) saveLog();
-
-        return platformLogEntry.TransactionEntryId__c;
+        public void execute(System.QueueableContext queueableContext) {
+            EventBus.publish(this.logEntryEvents);
+        }
     }
 
 }

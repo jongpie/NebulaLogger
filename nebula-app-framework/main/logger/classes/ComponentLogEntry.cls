@@ -21,6 +21,15 @@ public without sharing class ComponentLogEntry {
 
     @AuraEnabled
     public static void saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
+        for(ComponentLogEntry componentLogEntry : componentLogEntries) {
+            LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevelName);
+
+            LogEntryBuilder logEntryBuilder = Logger.createLogEntryBuilder(loggingLevel).parseComponentLogEntry(componentLogEntry);
+            if(componentLogEntry.error != null) {
+                logEntryBuilder.setExceptionDetails('ComponentLogEntryException', componentLogEntry.error.stack);
+            }
+        }
+        Logger.saveLog();
     }
 
 }
