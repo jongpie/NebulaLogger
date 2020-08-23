@@ -78,5 +78,5 @@
         <members>Log__c</members>
         <name>TopicsForObjects</name>
     </types>
-    <version>48.0</version>
+    <version>49.0</version>
 </Package>

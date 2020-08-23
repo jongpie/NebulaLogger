@@ -5,7 +5,7 @@
 public with sharing class RestApi {
 
     private static Boolean ALL_OR_NONE_DEFAULT       = true;
-    private static String BASE_URL                   = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v48.0';
+    private static String BASE_URL                   = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v49.0';
     private static String COMPOSITE_ENDPOINT         = BASE_URL + '/composite/sobjects';
     private static String LISTVIEW_ENDPOINT          = BASE_URL + '/sobjects/{0}/listviews/{1}';
     private static String LISTVIEW_DESCRIBE_ENDPOINT = LISTVIEW_ENDPOINT + '/describe';
