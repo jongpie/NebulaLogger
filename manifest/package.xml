@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>*</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>LogEntryEvent__e</members>
+        <members>LogEntry__c</members>
+        <members>Log__c</members>
+        <members>LoggerIntegration__mdt</members>
+        <members>LoggerSettings__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Log__c</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>GlobalValueSet</name>
+    </types>
+    <types>
+        <members>LogEntry__c-Log Entry Layout</members>
+        <members>Log__c-Log Layout</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <types>
+        <members>LogEntry__c</members>
+        <members>Log__c</members>
+        <name>TopicsForObjects</name>
+    </types>
+    <version>43.0</version>
+</Package>

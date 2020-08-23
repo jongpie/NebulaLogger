@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ContextThemeDisplayed__c</fullName>
+    <externalId>false</externalId>
+    <label>Theme Displayed</label>
+    <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Theme1</fullName>
+                <default>false</default>
+                <label>Obsolete Salesforce Theme</label>
+            </value>
+            <value>
+                <fullName>Theme2</fullName>
+                <default>false</default>
+                <label>Salesforce Classic 2005</label>
+            </value>
+            <value>
+                <fullName>Theme3</fullName>
+                <default>false</default>
+                <label>Salesforce Classic</label>
+            </value>
+            <value>
+                <fullName>Theme4d</fullName>
+                <default>false</default>
+                <label>Lightning Experience</label>
+            </value>
+            <value>
+                <fullName>Theme4t</fullName>
+                <default>false</default>
+                <label>Salesforce Mobile App</label>
+            </value>
+            <value>
+                <fullName>Theme4u</fullName>
+                <default>false</default>
+                <label>Lightning Console</label>
+            </value>
+            <value>
+                <fullName>PortalDefault</fullName>
+                <default>false</default>
+                <label>Customer Portal</label>
+            </value>
+            <value>
+                <fullName>Webstore</fullName>
+                <default>false</default>
+                <label>AppExchange</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

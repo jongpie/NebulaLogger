@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LimitsAggregateQueries__c</fullName>
+    <externalId>false</externalId>
+    <formula>TEXT(LimitsAggregateQueriesUsed__c ) + &apos; / &apos; + TEXT(LimitsAggregateQueriesMax__c )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Aggregate Queries</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

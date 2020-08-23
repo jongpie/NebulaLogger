@@ -1,0 +1,11 @@
+{
+    "packageDirectories": [
+        {
+            "path": "nebula-app-framework",
+            "default": true
+        }
+    ],
+    "namespace": "Nebula",
+    "sfdcLoginUrl": "https://nebulaframework-dev.my.salesforce.com",
+    "sourceApiVersion": "49.0"
+}
