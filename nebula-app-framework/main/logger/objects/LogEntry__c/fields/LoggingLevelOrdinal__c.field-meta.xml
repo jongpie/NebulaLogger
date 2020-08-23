@@ -3,7 +3,7 @@
     <fullName>LoggingLevelOrdinal__c</fullName>
     <externalId>false</externalId>
     <label>Logging Level Ordinal</label>
-    <precision>10</precision>
+    <precision>2</precision>
     <required>false</required>
     <scale>0</scale>
     <trackFeedHistory>false</trackFeedHistory>

@@ -5,6 +5,7 @@
     <label>User Logging Level</label>
     <required>true</required>
     <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>

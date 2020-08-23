@@ -3,9 +3,9 @@
     <fullName>Message__c</fullName>
     <externalId>false</externalId>
     <label>Message</label>
-    <length>32768</length>
+    <length>131072</length>
     <trackFeedHistory>true</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
-    <visibleLines>5</visibleLines>
+    <visibleLines>10</visibleLines>
 </CustomField>

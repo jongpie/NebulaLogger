@@ -3,7 +3,7 @@
     <fullName>TransactionEntryId__c</fullName>
     <caseSensitive>false</caseSensitive>
     <externalId>true</externalId>
-    <label>Transaction Entry ID</label>
+    <label>DEPRECATED Transaction Entry ID</label>
     <length>36</length>
     <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>

@@ -171,7 +171,7 @@
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>TypeImage__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TypeWithImage__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Message__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Log__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Timestamp__c</lookupPhoneDialogsAdditionalFields>

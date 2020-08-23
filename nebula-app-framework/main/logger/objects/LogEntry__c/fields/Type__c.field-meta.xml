@@ -12,10 +12,10 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Debug</fullName>
+                <fullName>Diagnostic</fullName>
                 <color>#33FF33</color>
                 <default>false</default>
-                <label>Debug</label>
+                <label>Diagnostic</label>
             </value>
             <value>
                 <fullName>Exception</fullName>

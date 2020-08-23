@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>TypeImage__c</fullName>
+    <fullName>TypeWithImage__c</fullName>
     <externalId>false</externalId>
     <formula>IF(
     ISPICKVAL(Type__c, &apos;Exception&apos;),
-    IMAGE(&apos;/img/samples/flag_red.gif&apos;, &apos;Exception&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c),
-    IMAGE(&apos;/img/samples/flag_green.gif&apos;, &apos;Debug&apos;, 16, 16) + &apos; &apos; + TEXT(Type__c)
-)</formula>
+    IMAGE(&apos;/img/samples/flag_red.gif&apos;, &apos;Exception&apos;, 16, 16),
+    IMAGE(&apos;/img/samples/flag_green.gif&apos;, &apos;Debug&apos;, 16, 16)
+)
++ &apos; &apos; + TypeWithLoggingLevel__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Entry Type</label>
     <required>false</required>

@@ -13,18 +13,21 @@
             <sorted>false</sorted>
             <value>
                 <fullName>Apex</fullName>
+                <color>#333333</color>
                 <default>false</default>
                 <label>Apex</label>
             </value>
             <value>
-                <fullName>Process Builder/Flow</fullName>
+                <fullName>Flow</fullName>
+                <color>#FFCC33</color>
                 <default>false</default>
                 <label>Process Builder/Flow</label>
             </value>
             <value>
-                <fullName>Lightning Component</fullName>
+                <fullName>Component</fullName>
+                <color>#A845DC</color>
                 <default>false</default>
-                <label>Lightning Component</label>
+                <label>Component</label>
             </value>
         </valueSetDefinition>
     </valueSet>

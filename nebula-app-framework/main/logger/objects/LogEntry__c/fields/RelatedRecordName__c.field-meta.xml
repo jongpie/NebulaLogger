@@ -3,11 +3,12 @@
     <fullName>RelatedRecordName__c</fullName>
     <externalId>false</externalId>
     <formula>CASE(
-     TEXT(RelatedRecordSObject__c),
-     &apos;Account&apos;, Account__r.Name,
-     &apos;Case&apos;, Case__r.CaseNumber,
-     &apos;User&apos;, User__r.Username,
-     null
+    TEXT(RelatedRecordSObject__c),
+    &apos;Account&apos;, RelatedAccount__r.Name,
+    &apos;Case&apos;, RelatedCase__r.CaseNumber,
+    &apos;Lead&apos;, RelatedLead__r.FirstName + &apos; &apos; + RelatedLead__r.LastName,
+    &apos;User&apos;, RelatedUser__r.Username,
+    null
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Related Record Name</label>

@@ -152,7 +152,7 @@
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>true</enableFeeds>
-    <enableHistory>false</enableHistory>
+    <enableHistory>true</enableHistory>
     <enableLicensing>false</enableLicensing>
     <enableReports>true</enableReports>
     <enableSearch>true</enableSearch>
@@ -163,13 +163,14 @@
         <displayFormat>Log-{000000}</displayFormat>
         <label>Log Number</label>
         <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Logs</pluralLabel>
     <searchLayouts>
         <customTabListAdditionalFields>TransactionId__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalLogEntries__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>TotalDebugLogEntries__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>TotalDiagnosticLogEntries__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalExceptionLogEntries__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
         <customTabListAdditionalFields>UserLoggingLevel__c</customTabListAdditionalFields>
@@ -183,17 +184,17 @@
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>UserLoggingLevel__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TotalLogEntries__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>TotalDebugLogEntries__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TotalDiagnosticLogEntries__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TransactionId__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>OWNER.ALIAS</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>UserLoggingLevel__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>TotalDebugLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TotalDiagnosticLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <searchFilterFields>NAME</searchFilterFields>
         <searchFilterFields>LoggedBy__c</searchFilterFields>
-        <searchFilterFields>TotalDebugLogEntries__c</searchFilterFields>
+        <searchFilterFields>TotalDiagnosticLogEntries__c</searchFilterFields>
         <searchFilterFields>TotalLogEntries__c</searchFilterFields>
         <searchFilterFields>TotalExceptionLogEntries__c</searchFilterFields>
         <searchFilterFields>UserLoggingLevel__c</searchFilterFields>
@@ -202,7 +203,7 @@
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>UserLoggingLevel__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>TotalLogEntries__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>TotalDebugLogEntries__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TotalDiagnosticLogEntries__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>TotalExceptionLogEntries__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
