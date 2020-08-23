@@ -1,16 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NebulaLogger</fullName>
     <types>
-        <members>*</members>
+        <members>Callout</members>
+        <members>Callout_Tests</members>
+        <members>ComponentLogEntry</members>
+        <members>ComponentLogEntry_Tests</members>
+        <members>FlowLogEntry</members>
+        <members>FlowLogEntry_Tests</members>
+        <members>LogEntryBuilder</members>
+        <members>LogEntryBuilder_Tests</members>
+        <members>LogEntryEventHandler</members>
+        <members>LogEntryEventHandler_Tests</members>
+        <members>LogEntryHandler</members>
+        <members>LogEntryHandler_Tests</members>
+        <members>Logger</members>
+        <members>Logger_Tests</members>
+        <members>Logger_v2b</members>
+        <members>Logger_v2b_Tests</members>
+        <members>LogPurger</members>
+        <members>LogPurger_Tests</members>
+        <members>RestApi</members>
+        <members>RestApi_Tests</members>
+        <members>Uuid</members>
+        <members>Uuid_Tests</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
+        <members>LogEntry</members>
+        <members>LogEntryEvent</members>
         <name>ApexTrigger</name>
     </types>
     <types>
-        <members>*</members>
-        <name>CustomMetadata</name>
+        <members>logger</members>
+        <name>AuraDefinitionBundle</name>
     </types>
     <types>
         <members>LogEntryEvent__e</members>
@@ -25,7 +48,12 @@
         <name>CustomTab</name>
     </types>
     <types>
-        <members>*</members>
+        <members>LogEntryRecordPage</members>
+        <members>LogRecordPage</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
+        <members>LoggingLevel</members>
         <name>GlobalValueSet</name>
     </types>
     <types>
@@ -34,17 +62,15 @@
         <name>Layout</name>
     </types>
     <types>
-        <members>*</members>
+        <members>LoggerAdmin</members>
+        <members>LoggerEndUser</members>
+        <members>LoggerLogViewer</members>
         <name>PermissionSet</name>
-    </types>
-    <types>
-        <members>*</members>
-        <name>RemoteSiteSetting</name>
     </types>
     <types>
         <members>LogEntry__c</members>
         <members>Log__c</members>
         <name>TopicsForObjects</name>
     </types>
-    <version>43.0</version>
+    <version>49.0</version>
 </Package>
