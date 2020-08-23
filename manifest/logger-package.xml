@@ -18,6 +18,8 @@
         <members>Logger_Tests</members>
         <members>LogPurger</members>
         <members>LogPurger_Tests</members>
+        <members>LogPurgeScheduler</members>
+        <members>LogPurgeScheduler_Tests</members>
         <members>RestApi</members>
         <members>RestApi_Tests</members>
         <members>Uuid</members>
