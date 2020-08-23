@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <customValue>
-        <fullName>NONE</fullName>
-        <default>false</default>
-        <label>NONE</label>
-    </customValue>
-    <customValue>
         <fullName>ERROR</fullName>
         <default>false</default>
         <label>ERROR</label>
