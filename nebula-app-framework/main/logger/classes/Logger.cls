@@ -136,13 +136,23 @@ public without sharing class Logger {
         if(getSettings().AutoSaveExceptionEntries__c) saveLog();
     }
 
-     public static void error(String message, Exception apexException, Id recordId) {
-        error().setMessage(message).setExceptionDetails(apexException).setRecordId(recordId);
+    public static void error(String message, SObject record, Exception apexException) {
+        error().setMessage(message).setRecordId(record).setExceptionDetails(apexException);
         if(getSettings().AutoSaveExceptionEntries__c) saveLog();
     }
 
-    public static void error(String message, Exception apexException, Id recordId, List<String> topics) {
-        error().setMessage(message).setExceptionDetails(apexException).setRecordId(recordId).setTopics(topics);
+    public static void error(String message, SObject record, Exception apexException, List<String> topics) {
+        error().setMessage(message).setRecordId(record).setExceptionDetails(apexException).setTopics(topics);
+        if(getSettings().AutoSaveExceptionEntries__c) saveLog();
+    }
+
+    public static void error(String message, Id recordId, Exception apexException) {
+        error().setMessage(message).setRecordId(recordId).setExceptionDetails(apexException);
+        if(getSettings().AutoSaveExceptionEntries__c) saveLog();
+    }
+
+    public static void error(String message, Id recordId, Exception apexException, List<String> topics) {
+        error().setMessage(message).setRecordId(recordId).setExceptionDetails(apexException).setTopics(topics);
         if(getSettings().AutoSaveExceptionEntries__c) saveLog();
     }
 
