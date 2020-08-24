@@ -24,4 +24,4 @@ before_install:
 
 script:
     - sfdx force:config:set apiVersion=49.0
-    - sfdx force:source:deploy --checkonly --manifest ./manifest/logger-package.xml --testlevel RunLocalTests --targetusername nebula_ci --verbose
+    - sfdx force:source:deploy --checkonly --manifest ./manifest/package.xml --testlevel RunLocalTests --targetusername nebula_ci --verbose
