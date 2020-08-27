@@ -179,7 +179,7 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.UserRoleName__c                   = currentUser.UserRole == null ? null : currentUser.UserRole.Name;
         this.logEntryEvent.UserType__c                       = UserInfo.getUserType();
 
-        if(this.logEntryEvent.SessionType__c == 'UI') this.logEntryEvent.ContextThemeDisplayed__c= UserInfo.getUiThemeDisplayed();
+        if(this.logEntryEvent.SessionType__c != 'Oauth2') this.logEntryEvent.ContextThemeDisplayed__c= UserInfo.getUiThemeDisplayed();
     }
 
     // Private static methods
