@@ -1,6 +1,7 @@
 public without sharing virtual class LogEntryBuilder {
 
     private static final String API_VERSION           = getApiVersion();
+    private static final User   CURRENT_USER          = [SELECT Id, Profile.Name, UserRole.Name FROM User WHERE Id = :UserInfo.getUserId()];
     private static final String ENTRY_TYPE_DIAGNOSTIC = 'Diagnostic';
     private static final String ENTRY_TYPE_EXCEPTION  = 'Exception';
     private static final String ORIGIN_TYPE_APEX      = 'Apex';
@@ -9,16 +10,19 @@ public without sharing virtual class LogEntryBuilder {
 
     private final LogEntryEvent__e logEntryEvent;
 
+    private Boolean meetsUserLoggingLevel;
     private Boolean userSessionDetailsAreSet = false;
 
     public LogEntryBuilder(LoggingLevel loggingLevel) {
+        this.meetsUserLoggingLevel = Logger.meetsUserLoggingLevel(loggingLevel);
+
+        if(!this.meetsUserLoggingLevel) return;
+
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c                     = API_VERSION,
             ContextIsTriggerExecuting__c      = Trigger.isExecuting,
-            ContextIsVisualforce__c           = ApexPages.currentPage() != null,
             ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
             ContextTriggerSObjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType()),
-            ContextVisualforcePage__c         = getVisualforcePageName(),
             LimitsAggregateQueriesUsed__c     = Limits.getAggregateQueries(),
             LimitsAsyncCallsUsed__c           = Limits.getAsyncCalls(),
             LimitsCalloutsUsed__c             = Limits.getCallouts(),
@@ -50,6 +54,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder parseComponentLogEntry(ComponentLogEntry componentLogEntry) {
+        if(!this.meetsUserLoggingLevel) return this;
+
         this.logEntryEvent.ContextIsLightningComponent__c   = componentLogEntry.componentName != null;
         this.logEntryEvent.ContextLightningComponentName__c = componentLogEntry.componentName;
         this.logEntryEvent.OriginLocation__c                = componentLogEntry.originLocation;
@@ -60,6 +66,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder parseFlowLogEntry(FlowLogEntry flowLogEntry) {
+        if(!this.meetsUserLoggingLevel) return this;
+
         this.logEntryEvent.LoggingLevel__c    = flowLogEntry.loggingLevelName;
         this.logEntryEvent.OriginLocation__c  = flowLogEntry.flowName;
         this.logEntryEvent.OriginType__c      = ORIGIN_TYPE_FLOW;
@@ -70,6 +78,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setMessage(String message) {
+        if(!this.meetsUserLoggingLevel) return this;
+
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
 
         this.logEntryEvent.Message__c          = truncatedMessage;
@@ -79,10 +89,14 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setExceptionDetails(Exception apexException) {
+        if(!this.meetsUserLoggingLevel) return this;
+
         return this.setExceptionDetails(apexException.getTypeName(), apexException.getStackTraceString());
     }
 
     public LogEntryBuilder setExceptionDetails(String exceptionType, String exceptionStackTrace) {
+        if(!this.meetsUserLoggingLevel) return this;
+
         this.logEntryEvent.ExceptionType__c       = exceptionType;
         this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace;
         this.logEntryEvent.Type__c                = ENTRY_TYPE_EXCEPTION;
@@ -91,15 +105,21 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setRecordId(SObject record) {
+        if(!this.meetsUserLoggingLevel) return this;
+
         return this.setRecordId(record.Id);
     }
 
     public LogEntryBuilder setRecordId(Id recordId) {
+        if(!this.meetsUserLoggingLevel) return this;
+
         this.logEntryEvent.RelatedRecordId__c = recordId;
         return this;
     }
 
     public LogEntryBuilder setTopics(List<String>topics) {
+        if(!this.meetsUserLoggingLevel) return this;
+
         this.logEntryEvent.Topics__c = getTopicsString(topics);
         return this;
     }
@@ -141,10 +161,11 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     private void setUserSessionDetails() {
-        User currentUser               = [SELECT Id, Profile.Name, UserRole.Name FROM User WHERE Id = :UserInfo.getUserId()];
         Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
         LoggingLevel userLoggingLevel  = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
+        this.logEntryEvent.ContextIsVisualforce__c           = ApexPages.currentPage() != null;
+        this.logEntryEvent.ContextVisualforcePage__c         = getVisualforcePageName();
         this.logEntryEvent.LimitsAggregateQueriesMax__c      = Limits.getLimitAggregateQueries();
         this.logEntryEvent.LimitsAsyncCallsMax__c            = Limits.getLimitAsyncCalls();
         this.logEntryEvent.LimitsCalloutsMax__c              = Limits.getLimitCallouts();
@@ -166,7 +187,7 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.LoginType__c                      = sessionMap == null ? null : sessionMap.get('LoginType');
         this.logEntryEvent.LogoutUrl__c                      = sessionMap == null ? null : sessionMap.get('LogoutUrl');
         this.logEntryEvent.ProfileId__c                      = UserInfo.getProfileId();
-        this.logEntryEvent.ProfileName__c                    = currentUser.Profile.Name;
+        this.logEntryEvent.ProfileName__c                    = CURRENT_USER.Profile.Name;
         this.logEntryEvent.SessionId__c                      = sessionMap == null ? null : sessionMap.get('SessionId');
         this.logEntryEvent.SessionSecurityLevel__c           = sessionMap == null ? null : sessionMap.get('SessionSecurityLevel');
         this.logEntryEvent.SessionType__c                    = sessionMap == null ? null : sessionMap.get('SessionType');
@@ -176,7 +197,7 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.UserLoggingLevel__c               = userLoggingLevel.name();
         this.logEntryEvent.UserLoggingLevelOrdinal__c        = userLoggingLevel.ordinal();
         this.logEntryEvent.UserRoleId__c                     = UserInfo.getUserRoleId();
-        this.logEntryEvent.UserRoleName__c                   = currentUser.UserRole == null ? null : currentUser.UserRole.Name;
+        this.logEntryEvent.UserRoleName__c                   = CURRENT_USER.UserRole == null ? null : CURRENT_USER.UserRole.Name;
         this.logEntryEvent.UserType__c                       = UserInfo.getUserType();
 
         if(this.logEntryEvent.SessionType__c != 'Oauth2') this.logEntryEvent.ContextThemeDisplayed__c= UserInfo.getUiThemeDisplayed();
