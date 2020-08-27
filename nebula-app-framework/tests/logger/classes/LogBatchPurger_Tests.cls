@@ -3,7 +3,7 @@
 * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
 *************************************************************************************************/
 @isTest
-private class LogPurger_Tests {
+private class LogBatchPurger_Tests {
 
     @testSetup
     static void setupData() {
