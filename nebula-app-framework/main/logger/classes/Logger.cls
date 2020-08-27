@@ -72,6 +72,10 @@ public without sharing class Logger {
         return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINEST);
     }
 
+    public static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
+        return USER_LOGGING_LEVEL.ordinal() <= logEntryLoggingLevel.ordinal();
+    }
+
     // Transaction control methods
     public static Boolean isSavingSuspended() {
         return suspendSaving;
@@ -416,10 +420,6 @@ public without sharing class Logger {
     // Private methods
     private static LoggerSettings__c getSettings() {
         return LoggerSettings__c.getInstance();
-    }
-
-    private static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
-        return USER_LOGGING_LEVEL.ORDINAL() <= logEntryLoggingLevel.ORDINAL();
     }
 
     // Private inner class for saving log entries via a queuable job (using a singleton pattern)
