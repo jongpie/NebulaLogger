@@ -7,10 +7,20 @@ private class Logger_Tests {
 
     private class Logger_TestsException extends Exception {}
 
+    static User getCurrentUser() {
+        return new User(
+            Id = UserInfo.getUserId()
+        );
+    }
     static String getOriginLocation() {
         String originLocation;
         for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
+            if(currentStackTraceLine.contains('LogEntryBuilder.getOriginLocation')) continue;
+            if(currentStackTraceLine.contains('Logger.getOriginLocation')) continue;
             if(currentStackTraceLine.contains('Logger_Tests.getOriginLocation')) continue;
+
+            if(currentStackTraceLine.contains('.LogEntryBuilder.')) continue;
+            if(currentStackTraceLine.contains('.Logger.')) continue;
 
             originLocation = currentStackTraceLine.substringBefore(':');
             if(originLocation.startsWith('Class.')) {
@@ -43,6 +53,183 @@ private class Logger_Tests {
         String transactionId = Logger.getTransactionId();
         System.assert(!String.isBlank(transactionId));
         System.assert(Uuid.isValid(transactionId));
+    }
+
+    @isTest
+    static void it_should_return_user_logging_level() {
+        LoggingLevel expectedValue = LoggingLevel.FINE;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.LoggingLevel__c   = expectedValue.name();
+        update settings;
+
+        Test.startTest();
+        LoggingLevel returnedValue = Logger.getUserLoggingLevel();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_enabled() {
+        Boolean expectedValue = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isEnabled();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_provided_logging_level_is_enabled() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        Boolean expectedValue     = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        settings.LoggingLevel__c   = loggingLevel.name();
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isEnabled(loggingLevel);
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_error_logging_level_is_enabled() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        Boolean expectedValue     = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        settings.LoggingLevel__c   = loggingLevel.name();
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isErrorEnabled();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_warn_logging_level_is_enabled() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        Boolean expectedValue     = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        settings.LoggingLevel__c   = loggingLevel.name();
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isWarnEnabled();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_info_logging_level_is_enabled() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        Boolean expectedValue     = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        settings.LoggingLevel__c   = loggingLevel.name();
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isInfoEnabled();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_debug_logging_level_is_enabled() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        Boolean expectedValue     = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        settings.LoggingLevel__c   = loggingLevel.name();
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isDebugEnabled();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_fine_logging_level_is_enabled() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        Boolean expectedValue     = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        settings.LoggingLevel__c   = loggingLevel.name();
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isFineEnabled();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_finer_logging_level_is_enabled() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        Boolean expectedValue     = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        settings.LoggingLevel__c   = loggingLevel.name();
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isFinerEnabled();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_finest_logging_level_is_enabled() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        Boolean expectedValue     = true;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c      = expectedValue;
+        settings.LoggingLevel__c   = loggingLevel.name();
+        update settings;
+
+        Test.startTest();
+        Boolean returnedValue = Logger.isFinestEnabled();
+        Test.stopTest();
+
+        System.assertEquals(expectedValue, returnedValue);
+    }
+
+    @isTest
+    static void it_should_return_true_when_saving_is_suspended() {
+        System.assertEquals(false, Logger.isSavingSuspended());
+
+        Test.startTest();
+        Logger.suspendSaving();
+        Test.stopTest();
+
+        System.assertEquals(true, Logger.isSavingSuspended());
     }
 
     @isTest
@@ -91,6 +278,21 @@ private class Logger_Tests {
         System.assertEquals(1, Limits.getDmlStatements());
     }
 
+
+    @isTest
+    static void it_should_return_the_buffer_size() {
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        Logger.debug('test log entry');
+        Logger.warn('another test log entry');
+
+        Test.stopTest();
+
+        System.assertEquals(2, Logger.getBufferSize());
+    }
+
     @isTest
     static void it_should_flush_buffer() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -125,6 +327,81 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
     }
 
+    @isTest
+    static void it_should_log_a_warn_entry() {
+        String message = 'test message';
+
+        Test.startTest();
+
+        Logger.warn(message);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+    }
+
+// public static void warn(String message, List<String> topics) {
+//     warn().setMessage(message).setTopics(topics);
+// }
+    @isTest
+    static void it_should_log_a_warn_entry_for_record() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
+
+        Test.startTest();
+
+        Logger.warn(message, currentUser);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void warn(String message, SObject record, List<String> topics) {
+//     warn().setMessage(message).setRecordId(record).setTopics(topics);
+// }
+// public static void warn(String message, Id recordId) {
+//     warn().setMessage(message).setRecordId(recordId);
+// }
+    @isTest
+    static void it_should_log_a_warn_entry_for_record_id() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
+
+        Test.startTest();
+
+        Logger.warn(message, currentUser.Id);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void warn(String message, Id recordId, List<String> topics) {
+//     warn().setMessage(message).setRecordId(recordId).setTopics(topics);
+// }
+
+
+    /*****************************
+     *
+     *
+
+
+
+
+     * */
     // @isTest
     // static void it_should_add_a_debug_entry_with_default_logging_level() {
     //     String message = 'my test message';
