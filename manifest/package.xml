@@ -20,6 +20,7 @@
         <members>Logger_Tests</members>
         <members>RestApi</members>
         <members>RestApi_Tests</members>
+        <members>TestDataFactory</members>
         <members>Uuid</members>
         <members>Uuid_Tests</members>
         <name>ApexClass</name>
