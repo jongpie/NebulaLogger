@@ -16,7 +16,6 @@ public without sharing virtual class LogEntryBuilder {
             ApiVersion__c                     = API_VERSION,
             ContextIsTriggerExecuting__c      = Trigger.isExecuting,
             ContextIsVisualforce__c           = ApexPages.currentPage() != null,
-            ContextThemeDisplayed__c          = UserInfo.getUiThemeDisplayed(),
             ContextTriggerOperationType__c    = Trigger.operationType == null ? null : Trigger.operationType.name(),
             ContextTriggerSObjectType__c      = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType()),
             ContextVisualforcePage__c         = getVisualforcePageName(),
@@ -179,6 +178,8 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.UserRoleId__c                     = UserInfo.getUserRoleId();
         this.logEntryEvent.UserRoleName__c                   = currentUser.UserRole == null ? null : currentUser.UserRole.Name;
         this.logEntryEvent.UserType__c                       = UserInfo.getUserType();
+
+        if(this.logEntryEvent.SessionType__c == 'UI') this.logEntryEvent.ContextThemeDisplayed__c= UserInfo.getUiThemeDisplayed();
     }
 
     // Private static methods
