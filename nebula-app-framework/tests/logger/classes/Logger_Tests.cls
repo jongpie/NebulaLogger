@@ -392,329 +392,333 @@ private class Logger_Tests {
 // public static void warn(String message, Id recordId, List<String> topics) {
 //     warn().setMessage(message).setRecordId(recordId).setTopics(topics);
 // }
+    @isTest
+    static void it_should_log_a_info_entry() {
+        String message = 'test message';
 
+        Test.startTest();
 
-    /*****************************
-     *
-     *
+        Logger.info(message);
+        Logger.saveLog();
 
+        Test.stopTest();
 
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+    }
 
+// public static void info(String message, List<String> topics) {
+//     info().setMessage(message).setTopics(topics);
+// }
+    @isTest
+    static void it_should_log_a_info_entry_for_record() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
 
-     * */
-    // @isTest
-    // static void it_should_add_a_debug_entry_with_default_logging_level() {
-    //     String message = 'my test message';
+        Test.startTest();
 
-    //     Test.startTest();
-    //     String transactionEntryId = Logger.addDebugEntry(message);
-    //     Logger.saveLog();
-    //     Test.stopTest();
+        Logger.info(message, currentUser);
+        Logger.saveLog();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
-    //     System.assertEquals(message, logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    // }
+        Test.stopTest();
 
-    // @isTest
-    // static void it_should_add_a_debug_entry_with_logging_level() {
-    //     LoggingLevel logLevel = LoggingLevel.WARN;
-    //     String message = 'my test message';
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void info(String message, SObject record, List<String> topics) {
+//     info().setMessage(message).setRecordId(record).setTopics(topics);
+// }
+// public static void info(String message, Id recordId) {
+//     info().setMessage(message).setRecordId(recordId);
+// }
+    @isTest
+    static void it_should_log_a_info_entry_for_record_id() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
 
-    //     Test.startTest();
-    //     String transactionEntryId = Logger.addDebugEntry(logLevel, message);
-    //     Logger.saveLog();
-    //     Test.stopTest();
+        Test.startTest();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
-    //     System.assertEquals(message, logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    // }
+        Logger.info(message, currentUser.Id);
+        Logger.saveLog();
 
-    // @isTest
-    // static void it_should_add_a_debug_entry_and_truncate_a_long_message() {
-    //     LoggingLevel logLevel = LoggingLevel.WARN;
-    //     Integer messageMaxLength = Schema.LogEntry__c.SObjectType.Message__c.getDescribe().getLength();
-    //     String message = 'my test message string';
-    //     while(message.length() < messageMaxLength + 200) {
-    //         message += message;
-    //     }
+        Test.stopTest();
 
-    //     Test.startTest();
-    //     String transactionEntryId = Logger.addDebugEntry(logLevel, message);
-    //     Logger.saveLog();
-    //     Test.stopTest();
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void info(String message, Id recordId, List<String> topics) {
+//     info().setMessage(message).setRecordId(recordId).setTopics(topics);
+// }
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(message.left(messageMaxLength), logEntry.Message__c);
-    //     System.assertEquals(true, logEntry.MessageTruncated__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    // }
+    @isTest
+    static void it_should_log_a_debug_entry() {
+        String message = 'test message';
 
-    // @isTest
-    // static void it_should_add_a_debug_entry_with_topics() {
-    //     LoggingLevel logLevel = LoggingLevel.WARN;
-    //     String message = 'my test message';
-    //     List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
+        Test.startTest();
 
-    //     Test.startTest();
-    //     String transactionEntryId = Logger.addDebugEntry(logLevel, message, topicNames);
-    //     Logger.saveLog();
-    //     Test.stopTest();
+        Logger.debug(message);
+        Logger.saveLog();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(message, logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        Test.stopTest();
 
-    //     List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
-    //     //System.assertEquals(topicNames.size(), topicAssignments.size());
-    //     for(TopicAssignment topicAssignment : topicAssignments) {
-    //         //System.assert(new Set<String>(topicNames).contains(topicAssignment.Topic.Name));
-    //     }
-    // }
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+    }
 
-    // @isTest
-    // static void it_should_add_entry_for_an_exception() {
-    //     Exception exceptionResult;
+// public static void debug(String message, List<String> topics) {
+//     debug().setMessage(message).setTopics(topics);
+// }
+    @isTest
+    static void it_should_log_a_debug_entry_for_record() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
 
-    //     Test.startTest();
-    //     String transactionEntryId;
-    //     try {
-    //         insert new Lead();
-    //     } catch(Exception ex) {
-    //         exceptionResult = ex;
-    //         transactionEntryId = Logger.addExceptionEntry(ex);
-    //         Logger.saveLog();
-    //     }
-    //     Test.stopTest();
+        Test.startTest();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //    // System.assNotertEquals(null, logEntry.OriginLocation__c);
-    //    // System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    // }
+        Logger.debug(message, currentUser);
+        Logger.saveLog();
 
-    // @isTest
-    // static void it_should_add_entry_for_an_exception_with_topics() {
-    //     Exception exceptionResult;
-    //     List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
+        Test.stopTest();
 
-    //     Test.startTest();
-    //     String transactionEntryId;
-    //     try {
-    //         insert new Lead();
-    //     } catch(Exception ex) {
-    //         exceptionResult = ex;
-    //         transactionEntryId = Logger.addExceptionEntry(ex, topicNames);
-    //         Logger.saveLog();
-    //     }
-    //     Test.stopTest();
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void debug(String message, SObject record, List<String> topics) {
+//     debug().setMessage(message).setRecordId(record).setTopics(topics);
+// }
+// public static void debug(String message, Id recordId) {
+//     debug().setMessage(message).setRecordId(recordId);
+// }
+    @isTest
+    static void it_should_log_a_debug_entry_for_record_id() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        Test.startTest();
 
-    //     List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
-    //     //System.assertEquals(topicNames.size(), topicAssignments.size());
-    //     for(TopicAssignment topicAssignment : topicAssignments) {
-    //         //System.assert(new Set<String>(topicNames).contains(topicAssignment.Topic.Name));
-    //     }
-    // }
+        Logger.debug(message, currentUser.Id);
+        Logger.saveLog();
 
-    // @isTest
-    // static void it_should_add_a_record_debug_entry_with_default_logging_level() {
-    //     String message = 'my test message';
-    //     User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        Test.stopTest();
 
-    //     Test.startTest();
-    //     String transactionEntryId = Logger.addRecordDebugEntry(user, message);
-    //     Logger.saveLog();
-    //     Test.stopTest();
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void debug(String message, Id recordId, List<String> topics) {
+//     debug().setMessage(message).setRecordId(recordId).setTopics(topics);
+// }
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
-    //     System.assertEquals(message, logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    // }
+    @isTest
+    static void it_should_log_a_fine_entry() {
+        String message = 'test message';
 
-    // @isTest
-    // static void it_should_add_a_record_debug_entry_with_logging_level() {
-    //     LoggingLevel logLevel = LoggingLevel.WARN;
-    //     String message = 'my test message';
-    //     User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        Test.startTest();
 
-    //     Test.startTest();
-    //     String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message);
-    //     Logger.saveLog();
-    //     Test.stopTest();
+        Logger.fine(message);
+        Logger.saveLog();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(logLevel.name(), logEntry.LoggingLevel__c);
-    //     System.assertEquals(message, logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    // }
+        Test.stopTest();
 
-    // @isTest
-    // static void it_should_add_a_record_debug_entry_and_truncate_a_long_message() {
-    //     LoggingLevel logLevel = LoggingLevel.WARN;
-    //     Integer messageMaxLength = Schema.LogEntry__c.SObjectType.Message__c.getDescribe().getLength();
-    //     String message = 'my test message string';
-    //     while(message.length() < messageMaxLength + 200) {
-    //         message += message;
-    //     }
-    //     User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+    }
 
-    //     Test.startTest();
-    //     String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message);
-    //     Logger.saveLog();
-    //     Test.stopTest();
+// public static void fine(String message, List<String> topics) {
+//     fine().setMessage(message).setTopics(topics);
+// }
+    @isTest
+    static void it_should_log_a_fine_entry_for_record() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(message.left(messageMaxLength), logEntry.Message__c);
-    //     System.assertEquals(true, logEntry.MessageTruncated__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    // }
+        Test.startTest();
 
-    // @isTest
-    // static void it_should_add_a_record_debug_entry_with_topics() {
-    //     LoggingLevel logLevel = LoggingLevel.WARN;
-    //     String message = 'my test message';
-    //     List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
-    //     User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        Logger.fine(message, currentUser);
+        Logger.saveLog();
 
-    //     Test.startTest();
-    //     String transactionEntryId = Logger.addRecordDebugEntry(logLevel, user, message, topicNames);
-    //     Logger.saveLog();
-    //     Test.stopTest();
+        Test.stopTest();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(message, logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void fine(String message, SObject record, List<String> topics) {
+//     fine().setMessage(message).setRecordId(record).setTopics(topics);
+// }
+// public static void fine(String message, Id recordId) {
+//     fine().setMessage(message).setRecordId(recordId);
+// }
+    @isTest
+    static void it_should_log_a_fine_entry_for_record_id() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
 
-    //     List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
-    //     //System.assertEquals(topicNames.size(), topicAssignments.size());
-    //     for(TopicAssignment topicAssignment : topicAssignments) {
-    //         //System.assert(new Set<String>(topicNames).contains(topicAssignment.Topic.Name));
-    //     }
-    // }
+        Test.startTest();
 
-    // @isTest
-    // static void it_should_add_record_entry_for_an_exception() {
-    //     Exception exceptionResult;
-    //     User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+        Logger.fine(message, currentUser.Id);
+        Logger.saveLog();
 
-    //     Test.startTest();
-    //     String transactionEntryId;
-    //     try {
-    //         insert new Lead();
-    //     } catch(Exception ex) {
-    //         exceptionResult = ex;
-    //         transactionEntryId = Logger.error('my message', user, ex);
-    //         Logger.saveLog();
-    //     }
-    //     Test.stopTest();
+        Test.stopTest();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    // }
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void fine(String message, Id recordId, List<String> topics) {
+//     fine().setMessage(message).setRecordId(recordId).setTopics(topics);
+// }
 
-    // @isTest
-    // static void it_should_add_record_entry_for_an_exception_with_topics() {
-    //     Exception exceptionResult;
-    //     List<String> topicNames = new List<String>{'MyTopic', 'AnotherTopic'};
-    //     User user = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
+    @isTest
+    static void it_should_log_a_finer_entry() {
+        String message = 'test message';
 
-    //     Test.startTest();
-    //     String transactionEntryId;
-    //     try {
-    //         insert new Lead();
-    //     } catch(Exception ex) {
-    //         exceptionResult = ex;
-    //         transactionEntryId = Logger.error('my message', user, ex, topicNames);
-    //         Logger.saveLog();
-    //     }
-    //     Test.stopTest();
+        Test.startTest();
 
-    //     LogEntry__c logEntry = getLogEntry(transactionEntryId);
-    //     System.assertEquals(exceptionResult.getMessage(), logEntry.Message__c);
-    //     System.assertEquals('Apex', logEntry.OriginType__c);
-    //     System.assertNotEquals(null, logEntry.OriginLocation__c);
-    //     System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        Logger.finer(message);
+        Logger.saveLog();
 
-    //     List<TopicAssignment> topicAssignments = [SELECT Id, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
-    //     //System.assertEquals(topicNames.size(), topicAssignments.size());
-    //     for(TopicAssignment topicAssignment : topicAssignments) {
-    //         //System.assert(new Set<String>(topicNames).contains(topicAssignment.Topic.Name));
-    //     }
-    // }
+        Test.stopTest();
 
-    // @isTest
-    // static void it_should_add_entries_for_a_list_of_flow_messages() {
-    //     String message = 'my test message';
-    //     String flowName = 'MyFlowOrProcessBuilder';
-    //     List<FlowLogEntry> flowLogEntries = new List<FlowLogEntry>();
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+    }
 
-    //     Test.startTest();
-    //     FlowLogEntry flowEntry = new FlowLogEntry();
-    //     flowEntry.FlowName = flowName;
-    //     flowEntry.Message = message;
-    //     FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
-    //     Logger.saveLog();
-    //     Test.stopTest();
+// public static void finer(String message, List<String> topics) {
+//     finer().setMessage(message).setTopics(topics);
+// }
+    @isTest
+    static void it_should_log_a_finer_entry_for_record() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
 
-    //     LogEntry__c logEntry = [SELECT Id, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
-    //     System.assertEquals(message, logEntry.Message__c);
-    //     System.assertEquals('Process Builder/Flow', logEntry.OriginType__c);
-    //     System.assertEquals(flowName, logEntry.OriginLocation__c);
-    // }
+        Test.startTest();
 
-    // @isTest
-    // static void it_should_save_entries_for_a_list_of_lightning_messages() {
-    //     Datetime timestamp = System.now().addMinutes(-5);
-    //     List<LightningLogEntry> lightningLogEntries = new List<LightningLogEntry>();
+        Logger.finer(message, currentUser);
+        Logger.saveLog();
 
-    //     Test.startTest();
-    //     LightningLogEntry lightningLogEntry = new LightningLogEntry();
-    //     lightningLogEntry.componentName    = 'myComponent';
-    //     lightningLogEntry.loggingLevelName = 'DEBUG';
-    //     lightningLogEntry.message          = 'my test message';
-    //     lightningLogEntry.originLocation   = 'test';
-    //     lightningLogEntry.timestamp        = timestamp;
+        Test.stopTest();
 
-    //     lightningLogEntries.add(lightningLogEntry);
-    //     Logger.saveLightningEntries(Json.serialize(lightningLogEntries));
-    //     Test.stopTest();
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void finer(String message, SObject record, List<String> topics) {
+//     finer().setMessage(message).setRecordId(record).setTopics(topics);
+// }
+// public static void finer(String message, Id recordId) {
+//     finer().setMessage(message).setRecordId(recordId);
+// }
+    @isTest
+    static void it_should_log_a_finer_entry_for_record_id() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
 
-    //     LogEntry__c logEntry = [SELECT Id, ContextLightningComponentName__c, Message__c, OriginType__c, OriginLocation__c, Timestamp__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
-    //     System.assertEquals(lightningLogEntry.componentName, logEntry.ContextLightningComponentName__c);
-    //     System.assertEquals(lightningLogEntry.message, logEntry.Message__c);
-    //     System.assertEquals('Lightning Component', logEntry.OriginType__c);
-    //     System.assertEquals(lightningLogEntry.originLocation, logEntry.OriginLocation__c);
-    //     System.assertEquals(timestamp, logEntry.Timestamp__c);
-    // }
+        Test.startTest();
 
+        Logger.finer(message, currentUser.Id);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void finer(String message, Id recordId, List<String> topics) {
+//     finer().setMessage(message).setRecordId(recordId).setTopics(topics);
+// }
+
+    @isTest
+    static void it_should_log_a_finest_entry() {
+        String message = 'test message';
+
+        Test.startTest();
+
+        Logger.finest(message);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+    }
+
+// public static void finest(String message, List<String> topics) {
+//     finest().setMessage(message).setTopics(topics);
+// }
+    @isTest
+    static void it_should_log_a_finest_entry_for_record() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
+
+        Test.startTest();
+
+        Logger.finest(message, currentUser);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void finest(String message, SObject record, List<String> topics) {
+//     finest().setMessage(message).setRecordId(record).setTopics(topics);
+// }
+// public static void finest(String message, Id recordId) {
+//     finest().setMessage(message).setRecordId(recordId);
+// }
+    @isTest
+    static void it_should_log_a_finest_entry_for_record_id() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
+
+        Test.startTest();
+
+        Logger.finest(message, currentUser.Id);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void finest(String message, Id recordId, List<String> topics) {
+//     finest().setMessage(message).setRecordId(recordId).setTopics(topics);
+// }
 }
