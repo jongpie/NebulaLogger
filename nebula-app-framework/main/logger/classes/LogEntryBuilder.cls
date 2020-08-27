@@ -119,8 +119,8 @@ public without sharing virtual class LogEntryBuilder {
     private String getOriginLocation() {
         String originLocation;
         for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
-            if(currentStackTraceLine.startsWith('Class.LogEntryBuilder.')) continue;
-            if(currentStackTraceLine.startsWith('Class.Logger.')) continue;
+            if(currentStackTraceLine.contains('.LogEntryBuilder.')) continue;
+            if(currentStackTraceLine.contains('.Logger.')) continue;
 
             originLocation = currentStackTraceLine.substringBefore(':');
             if(originLocation.startsWith('Class.')) {
