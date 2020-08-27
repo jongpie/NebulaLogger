@@ -12,6 +12,11 @@
         <valueSetDefinition>
             <sorted>true</sorted>
             <value>
+                <fullName>Aura</fullName>
+                <default>false</default>
+                <label>Aura</label>
+            </value>
+            <value>
                 <fullName>Oauth2</fullName>
                 <default>false</default>
                 <label>Oauth2</label>
