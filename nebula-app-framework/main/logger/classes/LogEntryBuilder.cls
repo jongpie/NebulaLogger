@@ -49,16 +49,6 @@ public without sharing virtual class LogEntryBuilder {
         );
     }
 
-    public LogEntryBuilder parseFlowLogEntry(FlowLogEntry flowLogEntry) {
-        this.logEntryEvent.LoggingLevel__c    = flowLogEntry.loggingLevelName;
-        this.logEntryEvent.OriginLocation__c  = flowLogEntry.flowName;
-        this.logEntryEvent.OriginType__c      = ORIGIN_TYPE_FLOW;
-        this.logEntryEvent.RelatedRecordId__c = flowLogEntry.recordId;
-        this.logEntryEvent.Timestamp__c       = flowLogEntry.timestamp;
-
-        return this.setMessage(flowLogEntry.message);
-    }
-
     public LogEntryBuilder parseComponentLogEntry(ComponentLogEntry componentLogEntry) {
         this.logEntryEvent.ContextIsLightningComponent__c   = componentLogEntry.componentName != null;
         this.logEntryEvent.ContextLightningComponentName__c = componentLogEntry.componentName;
@@ -67,6 +57,16 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.Timestamp__c                     = componentLogEntry.timestamp;
 
         return this.setMessage(componentLogEntry.message).setTopics(componentLogEntry.topics);
+    }
+
+    public LogEntryBuilder parseFlowLogEntry(FlowLogEntry flowLogEntry) {
+        this.logEntryEvent.LoggingLevel__c    = flowLogEntry.loggingLevelName;
+        this.logEntryEvent.OriginLocation__c  = flowLogEntry.flowName;
+        this.logEntryEvent.OriginType__c      = ORIGIN_TYPE_FLOW;
+        this.logEntryEvent.RelatedRecordId__c = flowLogEntry.recordId;
+        this.logEntryEvent.Timestamp__c       = flowLogEntry.timestamp;
+
+        return this.setMessage(flowLogEntry.message);
     }
 
     public LogEntryBuilder setMessage(String message) {
