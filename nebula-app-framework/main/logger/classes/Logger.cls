@@ -344,7 +344,7 @@ public without sharing class Logger {
 
         if(suspendSaving) {
             String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
-            //finest(suspendSavingLogMessage);
+            finest(suspendSavingLogMessage);
 
             return;
         }
@@ -355,12 +355,16 @@ public without sharing class Logger {
             when QUEUEABLE_JOB { savingLogMessage += 'Apex queueable job'; }
             when REST_API      { savingLogMessage += 'Apex REST callout'; }
         }
-        //finest(savingLogMessage);
+        finest(savingLogMessage);
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        for(LogEntryBuilder logEntryGenerator : LOG_ENTRIES) {
-            LogEntryEvent__e logEntryEvent = logEntryGenerator.getLogEntryEvent();
-            System.debug('logEntryEvent=' + logEntryEvent);
+        Integer indexOfLastRecord = LOG_ENTRIES.size() - 1;
+        for(Integer i = 0; i < LOG_ENTRIES.size(); i++) {
+            LogEntryBuilder logEntryBuilder = LOG_ENTRIES.get(i);
+
+            if(i == indexOfLastRecord) logEntryBuilder.setUserSessionDetails();
+
+            LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
             logEntryEvents.add(logEntryEvent);
         }
 

@@ -131,36 +131,7 @@ public without sharing virtual class LogEntryBuilder {
         return this.logEntryEvent;
     }
 
-    private static String getApiVersion() {
-        String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
-    }
-
-    private String getOriginLocation() {
-        String originLocation;
-        for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
-            if(currentStackTraceLine.contains('.LogEntryBuilder.')) continue;
-            if(currentStackTraceLine.contains('.Logger.')) continue;
-
-            originLocation = currentStackTraceLine.substringBefore(':');
-            if(originLocation.startsWith('Class.')) {
-                originLocation = originLocation.substringAfter('Class.');
-            }
-            break;
-        }
-
-        return originLocation;
-    }
-
-    private static String getVisualforcePageName() {
-        String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
-        if(visualforcePageName != null && visualforcePageName.contains('?')) visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
-        else if(visualforcePageName != null) visualforcePageName = visualforcePageName.substringAfter('apex/');
-
-        return visualforcePageName;
-    }
-
-    private void setUserSessionDetails() {
+    public void setUserSessionDetails() {
         Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
         LoggingLevel userLoggingLevel  = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
@@ -201,6 +172,35 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.UserType__c                       = UserInfo.getUserType();
 
         if(this.logEntryEvent.SessionType__c != 'Oauth2') this.logEntryEvent.ContextThemeDisplayed__c= UserInfo.getUiThemeDisplayed();
+    }
+
+    private static String getApiVersion() {
+        String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
+        return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
+    }
+
+    private String getOriginLocation() {
+        String originLocation;
+        for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
+            if(currentStackTraceLine.contains('.LogEntryBuilder.')) continue;
+            if(currentStackTraceLine.contains('.Logger.')) continue;
+
+            originLocation = currentStackTraceLine.substringBefore(':');
+            if(originLocation.startsWith('Class.')) {
+                originLocation = originLocation.substringAfter('Class.');
+            }
+            break;
+        }
+
+        return originLocation;
+    }
+
+    private static String getVisualforcePageName() {
+        String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
+        if(visualforcePageName != null && visualforcePageName.contains('?')) visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
+        else if(visualforcePageName != null) visualforcePageName = visualforcePageName.substringAfter('apex/');
+
+        return visualforcePageName;
     }
 
     // Private static methods

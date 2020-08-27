@@ -3,7 +3,7 @@
     <fullName>UserLoggingLevel__c</fullName>
     <externalId>false</externalId>
     <label>User Logging Level</label>
-    <required>true</required>
+    <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
