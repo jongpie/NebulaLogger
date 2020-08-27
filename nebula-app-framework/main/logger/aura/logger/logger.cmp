@@ -5,7 +5,7 @@
 <aura:component controller="ComponentLogEntry">
 
     <!-- Private Attributes -->
-    <aura:attribute name="logEntries" type="LightningLogEntry[]" access="private" />
+    <aura:attribute name="logEntries" type="ComponentLogEntry[]" access="private" />
 
     <!-- Public Functions -->
     <aura:method name="addDebugEntry" action="{!c.addDebugEntry}">
