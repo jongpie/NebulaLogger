@@ -27,10 +27,6 @@
                 <behavior>Readonly</behavior>
                 <field>SystemModeSummary__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ContextThemeDisplayed__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -107,6 +103,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>ContextThemeDisplayed__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>SessionSecurityLevel__c</field>
             </layoutItems>
             <layoutItems>
@@ -171,7 +171,7 @@
             <sortOrder>2</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>Nebula__Log__c.ViewJSON</actionName>
+            <actionName>Log__c.ViewJSON</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>3</sortOrder>
         </platformActionListItems>
