@@ -73,10 +73,6 @@ public without sharing class Logger {
     }
 
     // Transaction control methods
-    public static void setSaveMethod(SaveMethod saveMethod) {
-        transactionSaveMethod = saveMethod;
-    }
-
     public static Boolean isSavingSuspended() {
         return suspendSaving;
     }
@@ -328,6 +324,10 @@ public without sharing class Logger {
 
     public static void finest(String message, Id recordId, List<String> topics) {
         finest().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    public static void setSaveMethod(SaveMethod saveMethod) {
+        transactionSaveMethod = saveMethod;
     }
 
     @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
