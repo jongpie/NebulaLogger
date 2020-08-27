@@ -387,7 +387,7 @@ public without sharing class Logger {
             when else     {
                 LoggingLevel fallbackLevel = LoggingLevel.DEBUG;
                 String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + fallbackLevel.Name();
-                //finest(message);
+                finest(message);
                 return LoggingLevel.DEBUG;
             }
         }
@@ -395,7 +395,7 @@ public without sharing class Logger {
 
     public static LogEntryBuilder createLogEntryBuilder(LoggingLevel loggingLevel) {
         LogEntryBuilder logEntryBuilder = new LogEntryBuilder(LoggingLevel);
-        if(LoggerSettings.isEnabled(loggingLevel)) {
+        if(isEnabled(loggingLevel)) {
             LOG_ENTRIES.add(logEntryBuilder);
         }
 
