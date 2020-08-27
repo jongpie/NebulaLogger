@@ -11,24 +11,19 @@ public without sharing class FlowLogEntry {
     public String message;
 
     @InvocableVariable(required=true label='Save Log')
-    public Boolean saveLog;
+    public Boolean saveLog = true;
 
     @InvocableVariable(label='(Optional) Record ID')
     public Id recordId;
 
     @InvocableVariable(label='(Optional) Logging Level')
-    public String loggingLevelName;
+    public String loggingLevelName = 'DEBUG';
 
     @InvocableVariable(label='(Optional) Topics')
     public List<String> topics;
 
     @InvocableVariable(label='(Optional) Timestamp')
-    public DateTime timestamp;
-
-    public FlowLogEntry() {
-        this.saveLog   = true;
-        this.timestamp = System.now();
-    }
+    public DateTime timestamp = System.now();
 
     @InvocableMethod(label='Add Log Entry' description='Creates a log entry for a process builder or flow')
     public static void addFlowEntries(List<FlowLogEntry> flowLogEntries) {
