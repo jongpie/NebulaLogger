@@ -31,7 +31,7 @@ private class LogBatchPurger_Tests {
         System.assertNotEquals(0, logEntries.size());
 
         Test.startTest();
-        Database.executeBatch(new LogPurger(5));
+        Database.executeBatch(new LogBatchPurger(5));
         Test.stopTest();
 
         logs = [SELECT Id FROM Log__c];
