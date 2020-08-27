@@ -143,7 +143,7 @@ public without sharing virtual class LogEntryBuilder {
     private void setUserSessionDetails() {
         User currentUser               = [SELECT Id, Profile.Name, UserRole.Name FROM User WHERE Id = :UserInfo.getUserId()];
         Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
-        LoggingLevel userLoggingLevel  = LoggerSettings.getUserLoggingLevel();
+        LoggingLevel userLoggingLevel  = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
         this.logEntryEvent.LimitsAggregateQueriesMax__c      = Limits.getLimitAggregateQueries();
         this.logEntryEvent.LimitsAsyncCallsMax__c            = Limits.getLimitAsyncCalls();
