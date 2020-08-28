@@ -32,13 +32,13 @@ private class Logger_Tests {
         return originLocation;
     }
 
-    static LogEntry__c getLogEntry(String transactionEntryId) {
-        List<String> fields = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
-        String query = 'SELECT ' + String.join(fields, ', ')
-            + ' FROM ' + Schema.LogEntry__c.SObjectType
-            + ' WHERE TransactionEntryId__c = :transactionEntryId';
-        return (LogEntry__c)Database.query(query);
-    }
+    // static LogEntry__c getLogEntry(String transactionEntryId) {
+    //     List<String> fields = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+    //     String query = 'SELECT ' + String.join(fields, ', ')
+    //         + ' FROM ' + Schema.LogEntry__c.SObjectType
+    //         + ' WHERE Transaction_DEPRECATED_EntryId__c = :transactionEntryId';
+    //     return (LogEntry__c)Database.query(query);
+    // }
 
     @testSetup
     static void setup() {
@@ -273,7 +273,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c WHERE TransactionEntryId__c IN :logEntryTransactionIds];
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(logEntryTransactionIds.size(), countOfLogEntries);
         System.assertEquals(1, Limits.getDmlStatements());
     }

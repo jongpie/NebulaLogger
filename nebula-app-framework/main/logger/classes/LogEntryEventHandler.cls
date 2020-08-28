@@ -124,12 +124,11 @@ public without sharing class LogEntryEventHandler {
                 LoggingLevelOrdinal__c            = logEntryEvent.LoggingLevelOrdinal__c,
                 Message__c                        = logEntryEvent.Message__c,
                 MessageTruncated__c               = logEntryEvent.MessageTruncated__c,
-                Name                              = logEntryEvent.TransactionEntryId__c,
+                Name                              = null, // Salesforce will auto-set the record ID as the name when null
                 OriginType__c                     = logEntryEvent.OriginType__c,
                 OriginLocation__c                 = logEntryEvent.OriginLocation__c,
                 RelatedRecordId__c                = logEntryEvent.RelatedRecordId__c,
                 Timestamp__c                      = logEntryEvent.Timestamp__c,
-                TransactionEntryId__c             = logEntryEvent.TransactionEntryId__c,
                 Type__c                           = logEntryEvent.Type__c
             );
 
