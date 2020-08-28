@@ -44,7 +44,6 @@ private class Logger_Tests {
     static void setup() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
         settings.IsEnabled__c    = true;
-        settings.LoggingLevel__c = 'FINEST';
         upsert settings;
     }
 
