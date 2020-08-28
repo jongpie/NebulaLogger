@@ -3,10 +3,9 @@
     <fullName>LogCompactLayout</fullName>
     <fields>Name</fields>
     <fields>LoggedByUsernameLink__c</fields>
+    <fields>UserLoggingLevel__c</fields>
+    <fields>EntriesSummary__c</fields>
     <fields>StartTime__c</fields>
-    <fields>DurationInSeconds__c</fields>
-    <fields>TotalLogEntries__c</fields>
-    <fields>TotalExceptionLogEntries__c</fields>
     <fields>TransactionId__c</fields>
     <label>Log Compact Layout</label>
 </CompactLayout>

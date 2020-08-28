@@ -71,6 +71,11 @@
         <name>QuickAction</name>
     </types>
     <types>
+        <members>LogReports/</members>
+        <members>LogReports/LogEntriesByOriginLocation</members>
+        <name>Report</name>
+    </types>
+    <types>
         <members>LogEntry__c</members>
         <members>Log__c</members>
         <name>TopicsForObjects</name>
