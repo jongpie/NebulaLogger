@@ -71,7 +71,7 @@
         <name>QuickAction</name>
     </types>
     <types>
-        <members>LogReports/</members>
+        <members>LogReports</members>
         <members>LogReports/LogEntriesByOriginLocation</members>
         <name>Report</name>
     </types>
