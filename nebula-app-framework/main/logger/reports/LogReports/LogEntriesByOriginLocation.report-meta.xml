@@ -50,16 +50,6 @@
     <columns>
         <field>LogEntry__c.LogTransactionId__c</field>
     </columns>
-    <filter>
-        <criteriaItems>
-            <column>CUST_ID</column>
-            <columnToColumn>false</columnToColumn>
-            <isUnlocked>false</isUnlocked>
-            <operator>equals</operator>
-            <value>a051v0000110tJT</value>
-        </criteriaItems>
-        <language>en_US</language>
-    </filter>
     <format>Summary</format>
     <groupingsDown>
         <dateGranularity>Day</dateGranularity>
