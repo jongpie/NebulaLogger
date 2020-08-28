@@ -435,6 +435,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.EntriesSummary__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.HasExceptionLogEntries__c</field>
         <readable>false</readable>
     </fieldPermissions>
