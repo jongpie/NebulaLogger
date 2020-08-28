@@ -20,12 +20,21 @@ public without sharing class Logger {
         private set;
     }
 
+    private static String parentLogTransactionId;
     private static Boolean suspendSaving            = false;
     private static SaveMethod transactionSaveMethod = SaveMethod.DML;
 
     // Settings management methods
     public static String getTransactionId() {
         return TRANSACTION_ID;
+    }
+
+    public static void setParentLogTransactionId(String transactionId) {
+        parentLogTransactionId = transactionId;
+    }
+
+    public static String getParentLogTransactionId() {
+        return parentLogTransactionId;
     }
 
     public static LoggingLevel getUserLoggingLevel() {

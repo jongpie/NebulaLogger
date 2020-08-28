@@ -7,5 +7,6 @@
     <fields>EntriesSummary__c</fields>
     <fields>StartTime__c</fields>
     <fields>TransactionId__c</fields>
+    <fields>ParentLog__c</fields>
     <label>Log Compact Layout</label>
 </CompactLayout>

@@ -473,6 +473,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.ParentLog__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.ProfileId__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -580,6 +585,11 @@
         <editable>false</editable>
         <field>Log__c.UserLoggingLevelOrdinal__c</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.UserLoggingLevel__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>

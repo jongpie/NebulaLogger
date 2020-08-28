@@ -40,6 +40,7 @@ public without sharing virtual class LogEntryBuilder {
             LoggingLevelOrdinal__c            = loggingLevel.ORDINAL(),
             OriginLocation__c                 = getOriginLocation(),
             OriginType__c                     = ORIGIN_TYPE_APEX,
+            ParentLogTransactionId__c         = Logger.getParentLogTransactionId(),
             SystemModeIsApexRest__c           = RestContext.request != null,
             SystemModeIsBatch__c              = System.isBatch(),
             SystemModeIsFuture__c             = System.isFuture(),

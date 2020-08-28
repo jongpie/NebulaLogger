@@ -35,15 +35,15 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalDiagnosticLogEntries__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
                 <field>TotalExceptionLogEntries__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>TotalLogEntriesWithRelatedRecordId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ParentLog__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -213,6 +213,19 @@
         <fields>CORE.USERS.FULL_NAME</fields>
         <fields>TASK.LAST_UPDATE</fields>
         <relatedList>RelatedHistoryList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>NAME</fields>
+        <fields>TransactionId__c</fields>
+        <fields>TotalLogEntries__c</fields>
+        <fields>TotalDiagnosticLogEntries__c</fields>
+        <fields>TotalExceptionLogEntries__c</fields>
+        <fields>SystemModeSummary__c</fields>
+        <fields>StartTime__c</fields>
+        <relatedList>Log__c.ParentLog__c</relatedList>
+        <sortField>StartTime__c</sortField>
+        <sortOrder>Desc</sortOrder>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

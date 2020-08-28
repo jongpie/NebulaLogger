@@ -33,7 +33,8 @@ public without sharing class LogEntryEventHandler {
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
         // The first LogEntryEvent__e record is used to normalize the data
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e)Trigger.new[0];
+        LogEntryEvent__e logEntryEvent  = (LogEntryEvent__e)Trigger.new[0];
+        Log__c parentLog                = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
 
         LOG.ApiVersion__c               = logEntryEvent.ApiVersion__c;
         LOG.ContextThemeDisplayed__c    = logEntryEvent.ContextThemeDisplayed__c;
@@ -44,6 +45,7 @@ public without sharing class LogEntryEventHandler {
         LOG.LoginType__c                = logEntryEvent.LoginType__c;
         LOG.LogoutUrl__c                = logEntryEvent.LogoutUrl__c;
         LOG.OwnerId                     = logEntryEvent.CreatedById;
+        LOG.ParentLog__r                = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
         LOG.ProfileId__c                = logEntryEvent.ProfileId__c;
         LOG.ProfileName__c              = logEntryEvent.ProfileName__c;
         LOG.SessionId__c                = logEntryEvent.SessionId__c;
