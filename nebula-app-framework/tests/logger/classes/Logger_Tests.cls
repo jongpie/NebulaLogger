@@ -12,13 +12,17 @@ private class Logger_Tests {
             Id = UserInfo.getUserId()
         );
     }
+
+    static void setUserLoggingLevel(LoggingLevel loggingLevel) {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.LoggingLevel__c = loggingLevel.name();
+        update settings;
+    }
+
     static String getOriginLocation() {
         String originLocation;
         for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
-            if(currentStackTraceLine.contains('LogEntryBuilder.getOriginLocation')) continue;
-            if(currentStackTraceLine.contains('Logger.getOriginLocation')) continue;
             if(currentStackTraceLine.contains('Logger_Tests.getOriginLocation')) continue;
-
             if(currentStackTraceLine.contains('.LogEntryBuilder.')) continue;
             if(currentStackTraceLine.contains('.Logger.')) continue;
 
@@ -32,18 +36,12 @@ private class Logger_Tests {
         return originLocation;
     }
 
-    // static LogEntry__c getLogEntry(String transactionEntryId) {
-    //     List<String> fields = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
-    //     String query = 'SELECT ' + String.join(fields, ', ')
-    //         + ' FROM ' + Schema.LogEntry__c.SObjectType
-    //         + ' WHERE Transaction_DEPRECATED_EntryId__c = :transactionEntryId';
-    //     return (LogEntry__c)Database.query(query);
-    // }
-
     @testSetup
     static void setup() {
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c    = true;
+        LoggerSettings__c settings       = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c            = true;
+        settings.EnableSystemMessages__c = false;
+        settings.LoggingLevel__c         = LoggingLevel.DEBUG.name();
         upsert settings;
     }
 
@@ -233,6 +231,8 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_suspend_saving() {
+        setUserLoggingLevel(LoggingLevel.DEBUG);
+
         Integer countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfExistingLogEntries);
 
@@ -254,14 +254,15 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
-        List<String> logEntryTransactionIds = new List<String>();
-
-        Logger.suspendSaving();
-        Logger.debug('test log entry');
-
         Test.startTest();
 
-        Logger.debug('another test log entry');
+        Integer logEntriesToCreate = 4;
+
+        Logger.suspendSaving();
+
+        for(Integer i = 0; i < logEntriesToCreate; i++) {
+            Logger.debug('test log entry #' + i);
+        }
         Logger.saveLog();
 
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -273,7 +274,7 @@ private class Logger_Tests {
         Test.stopTest();
 
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(logEntryTransactionIds.size(), countOfLogEntries);
+        System.assertEquals(logEntriesToCreate, countOfLogEntries);
         System.assertEquals(1, Limits.getDmlStatements());
     }
 
@@ -281,6 +282,8 @@ private class Logger_Tests {
     @isTest
     static void it_should_return_the_buffer_size() {
         System.assertEquals(0, Logger.getBufferSize());
+
+        setUserLoggingLevel(LoggingLevel.DEBUG);
 
         Test.startTest();
 
@@ -296,6 +299,8 @@ private class Logger_Tests {
     static void it_should_flush_buffer() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
+
+        setUserLoggingLevel(LoggingLevel.DEBUG);
 
         Test.startTest();
 
@@ -330,6 +335,8 @@ private class Logger_Tests {
     static void it_should_log_a_warn_entry() {
         String message = 'test message';
 
+        setUserLoggingLevel(LoggingLevel.WARN);
+
         Test.startTest();
 
         Logger.warn(message);
@@ -350,6 +357,8 @@ private class Logger_Tests {
     static void it_should_log_a_warn_entry_for_record() {
         String message   = 'test message';
         User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.WARN);
 
         Test.startTest();
 
@@ -375,6 +384,8 @@ private class Logger_Tests {
         String message   = 'test message';
         User currentUser = getCurrentUser();
 
+        setUserLoggingLevel(LoggingLevel.WARN);
+
         Test.startTest();
 
         Logger.warn(message, currentUser.Id);
@@ -394,6 +405,8 @@ private class Logger_Tests {
     @isTest
     static void it_should_log_a_info_entry() {
         String message = 'test message';
+
+        setUserLoggingLevel(LoggingLevel.INFO);
 
         Test.startTest();
 
@@ -415,6 +428,8 @@ private class Logger_Tests {
     static void it_should_log_a_info_entry_for_record() {
         String message   = 'test message';
         User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.INFO);
 
         Test.startTest();
 
@@ -440,6 +455,8 @@ private class Logger_Tests {
         String message   = 'test message';
         User currentUser = getCurrentUser();
 
+        setUserLoggingLevel(LoggingLevel.INFO);
+
         Test.startTest();
 
         Logger.info(message, currentUser.Id);
@@ -461,6 +478,8 @@ private class Logger_Tests {
     static void it_should_log_a_debug_entry() {
         String message = 'test message';
 
+        setUserLoggingLevel(LoggingLevel.DEBUG);
+
         Test.startTest();
 
         Logger.debug(message);
@@ -481,6 +500,8 @@ private class Logger_Tests {
     static void it_should_log_a_debug_entry_for_record() {
         String message   = 'test message';
         User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.DEBUG);
 
         Test.startTest();
 
@@ -506,6 +527,8 @@ private class Logger_Tests {
         String message   = 'test message';
         User currentUser = getCurrentUser();
 
+        setUserLoggingLevel(LoggingLevel.DEBUG);
+
         Test.startTest();
 
         Logger.debug(message, currentUser.Id);
@@ -527,6 +550,8 @@ private class Logger_Tests {
     static void it_should_log_a_fine_entry() {
         String message = 'test message';
 
+        setUserLoggingLevel(LoggingLevel.FINE);
+
         Test.startTest();
 
         Logger.fine(message);
@@ -547,6 +572,8 @@ private class Logger_Tests {
     static void it_should_log_a_fine_entry_for_record() {
         String message   = 'test message';
         User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.FINE);
 
         Test.startTest();
 
@@ -572,6 +599,8 @@ private class Logger_Tests {
         String message   = 'test message';
         User currentUser = getCurrentUser();
 
+        setUserLoggingLevel(LoggingLevel.FINE);
+
         Test.startTest();
 
         Logger.fine(message, currentUser.Id);
@@ -593,6 +622,8 @@ private class Logger_Tests {
     static void it_should_log_a_finer_entry() {
         String message = 'test message';
 
+        setUserLoggingLevel(LoggingLevel.FINER);
+
         Test.startTest();
 
         Logger.finer(message);
@@ -613,6 +644,8 @@ private class Logger_Tests {
     static void it_should_log_a_finer_entry_for_record() {
         String message   = 'test message';
         User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.FINER);
 
         Test.startTest();
 
@@ -638,6 +671,8 @@ private class Logger_Tests {
         String message   = 'test message';
         User currentUser = getCurrentUser();
 
+        setUserLoggingLevel(LoggingLevel.FINER);
+
         Test.startTest();
 
         Logger.finer(message, currentUser.Id);
@@ -659,6 +694,8 @@ private class Logger_Tests {
     static void it_should_log_a_finest_entry() {
         String message = 'test message';
 
+        setUserLoggingLevel(LoggingLevel.FINEST);
+
         Test.startTest();
 
         Logger.finest(message);
@@ -679,6 +716,8 @@ private class Logger_Tests {
     static void it_should_log_a_finest_entry_for_record() {
         String message   = 'test message';
         User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.FINEST);
 
         Test.startTest();
 
@@ -703,6 +742,8 @@ private class Logger_Tests {
     static void it_should_log_a_finest_entry_for_record_id() {
         String message   = 'test message';
         User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.FINEST);
 
         Test.startTest();
 

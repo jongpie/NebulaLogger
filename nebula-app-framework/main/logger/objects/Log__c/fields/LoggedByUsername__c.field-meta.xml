@@ -3,7 +3,7 @@
     <fullName>LoggedByUsername__c</fullName>
     <caseSensitive>false</caseSensitive>
     <externalId>false</externalId>
-    <label>Logged By Username</label>
+    <label>Username</label>
     <length>255</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>

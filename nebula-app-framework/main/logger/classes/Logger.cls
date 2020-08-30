@@ -345,20 +345,26 @@ public without sharing class Logger {
     public static void saveLog(SaveMethod transactionSaveMethod) {
         if(LOG_ENTRIES.isEmpty()) return;
 
+        Boolean systemMessagesEnabled = getSettings().EnableSystemMessages__c;
+
         if(suspendSaving) {
-            String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
-            finest(suspendSavingLogMessage);
+            if(systemMessagesEnabled) {
+                String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
+                finest(suspendSavingLogMessage);
+            }
 
             return;
         }
 
-        String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries via ';
-        switch on transactionSaveMethod {
-            when DML           { savingLogMessage += 'Apex DML'; }
-            when QUEUEABLE_JOB { savingLogMessage += 'Apex queueable job'; }
-            when REST_API      { savingLogMessage += 'Apex REST callout'; }
+        if(systemMessagesEnabled) {
+            String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries via ';
+            switch on transactionSaveMethod {
+                when DML           { savingLogMessage += 'Apex DML'; }
+                when QUEUEABLE_JOB { savingLogMessage += 'Apex queueable job'; }
+                when REST_API      { savingLogMessage += 'Apex REST callout'; }
+            }
+            finest(savingLogMessage);
         }
-        finest(savingLogMessage);
 
         // TODO cleanup
         List<LogEntryBuilder> logEntriesToSave = new List<LogEntryBuilder>();
