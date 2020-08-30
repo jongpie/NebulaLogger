@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>ERROR</fullName>
+        <default>false</default>
+        <label>ERROR</label>
+    </customValue>
+    <customValue>
+        <fullName>WARN</fullName>
+        <default>false</default>
+        <label>WARN</label>
+    </customValue>
+    <customValue>
+        <fullName>INFO</fullName>
+        <default>false</default>
+        <label>INFO</label>
+    </customValue>
+    <customValue>
+        <fullName>DEBUG</fullName>
+        <default>false</default>
+        <label>DEBUG</label>
+    </customValue>
+    <customValue>
+        <fullName>FINE</fullName>
+        <default>false</default>
+        <label>FINE</label>
+    </customValue>
+    <customValue>
+        <fullName>FINER</fullName>
+        <default>false</default>
+        <label>FINER</label>
+    </customValue>
+    <customValue>
+        <fullName>FINEST</fullName>
+        <default>false</default>
+        <label>FINEST</label>
+    </customValue>
+    <masterLabel>Logging Level</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

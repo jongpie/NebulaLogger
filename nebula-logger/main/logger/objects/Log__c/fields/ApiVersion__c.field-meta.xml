@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ApiVersion__c</fullName>
+    <externalId>false</externalId>
+    <label>API Version</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>v49.0</fullName>
+                <default>false</default>
+                <label>v49.0 - Summer &apos;20</label>
+            </value>
+            <value>
+                <fullName>v48.0</fullName>
+                <default>false</default>
+                <label>v48.0 - Spring &apos;20</label>
+            </value>
+            <value>
+                <fullName>v47.0</fullName>
+                <default>false</default>
+                <label>v47.0 - Winter &apos;20</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

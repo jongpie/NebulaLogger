@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NebulaLogger</fullName>
     <types>
         <members>Callout</members>
         <members>Callout_Tests</members>
+        <members>ComponentLogEntry</members>
+        <members>ComponentLogEntry_Tests</members>
         <members>FlowLogEntry</members>
-        <members>LightningLogEntry</members>
+        <members>FlowLogEntry_Tests</members>
+        <members>LogBatchPurger</members>
+        <members>LogBatchPurger_Tests</members>
+        <members>LogEntryBuilder</members>
+        <members>LogEntryBuilder_Tests</members>
         <members>LogEntryEventHandler</members>
+        <members>LogEntryEventHandler_Tests</members>
         <members>LogEntryHandler</members>
         <members>LogEntryHandler_Tests</members>
-        <members>LogPurger</members>
-        <members>LogPurger_Tests</members>
         <members>Logger</members>
         <members>Logger_Tests</members>
         <members>RestApi</members>
@@ -26,12 +32,8 @@
     </types>
     <types>
         <members>logger</members>
+        <members>logJSONViewer</members>
         <name>AuraDefinitionBundle</name>
-    </types>
-    <types>
-        <members>LogEntry__c.LogEntryCompactLayout</members>
-        <members>Log__c.LogCompactLayout</members>
-        <name>CompactLayout</name>
     </types>
     <types>
         <members>LogEntryEvent__e</members>
@@ -59,24 +61,24 @@
         <name>Layout</name>
     </types>
     <types>
-        <members>Log__c.AllExceptionLogs</members>
-        <members>Log__c.AllLogs</members>
-        <members>Log__c.MyLogs</members>
-        <name>ListView</name>
-    </types>
-    <types>
         <members>LoggerAdmin</members>
         <members>LoggerEndUser</members>
+        <members>LoggerLogViewer</members>
         <name>PermissionSet</name>
     </types>
     <types>
-        <members>NewTask</members>
+        <members>Log__c.ViewJSON</members>
         <name>QuickAction</name>
+    </types>
+    <types>
+        <members>LogReports</members>
+        <members>LogReports/LogEntriesByOriginLocation</members>
+        <name>Report</name>
     </types>
     <types>
         <members>LogEntry__c</members>
         <members>Log__c</members>
         <name>TopicsForObjects</name>
     </types>
-    <version>48.0</version>
+    <version>49.0</version>
 </Package>

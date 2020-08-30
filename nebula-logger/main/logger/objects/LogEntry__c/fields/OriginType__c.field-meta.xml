@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OriginType__c</fullName>
+    <externalId>false</externalId>
+    <label>Origin Type</label>
+    <required>false</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Apex</fullName>
+                <color>#333333</color>
+                <default>false</default>
+                <label>Apex</label>
+            </value>
+            <value>
+                <fullName>Flow</fullName>
+                <color>#FFCC33</color>
+                <default>false</default>
+                <label>Process Builder/Flow</label>
+            </value>
+            <value>
+                <fullName>Component</fullName>
+                <color>#A845DC</color>
+                <default>false</default>
+                <label>Component</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

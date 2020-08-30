@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HasExceptionLogEntries__c</fullName>
+    <description>Indicates if 1 or more log entries are exceptions.</description>
+    <externalId>false</externalId>
+    <formula>TotalExceptionLogEntries__c &gt; 0</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Indicates if 1 or more log entries are exceptions.</inlineHelpText>
+    <label>Has Exception Log Entries</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

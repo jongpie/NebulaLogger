@@ -23,5 +23,5 @@ before_install:
     - sfdx force:auth:sfdxurl:store --sfdxurlfile sfdx_url_file --setalias nebula_ci
 
 script:
-    - sfdx force:config:set apiVersion=48.0
+    - sfdx force:config:set apiVersion=49.0
     - sfdx force:source:deploy --checkonly --manifest ./manifest/package.xml --testlevel RunLocalTests --targetusername nebula_ci --verbose

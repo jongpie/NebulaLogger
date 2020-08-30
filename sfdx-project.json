@@ -1,11 +1,11 @@
 {
     "packageDirectories": [
         {
-            "path": "nebula-app-framework",
+            "path": "nebula-logger",
             "default": true
         }
     ],
     "namespace": "Nebula",
     "sfdcLoginUrl": "https://nebulaframework-dev.my.salesforce.com",
-    "sourceApiVersion": "48.0"
+    "sourceApiVersion": "49.0"
 }
