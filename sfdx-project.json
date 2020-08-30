@@ -1,7 +1,7 @@
 {
     "packageDirectories": [
         {
-            "path": "nebula-app-framework",
+            "path": "nebula-logger",
             "default": true
         }
     ],
