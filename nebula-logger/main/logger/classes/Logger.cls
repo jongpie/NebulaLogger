@@ -140,7 +140,7 @@ public without sharing class Logger {
     }
 
     public static LogEntryBuilder error(String message, Exception apexException, List<String> topics) {
-        return error().setMessage(message).setExceptionDetails(apexException).setTopics(topics);
+        return error().setMessage(message).setTopics(topics).setExceptionDetails(apexException);
     }
 
     public static LogEntryBuilder error(String message, SObject record, Exception apexException) {
