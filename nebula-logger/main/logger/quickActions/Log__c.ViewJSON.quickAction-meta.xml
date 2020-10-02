@@ -3,7 +3,7 @@
     <description>Shows the current log &amp; log entires in JSON format</description>
     <height>700</height>
     <label>View JSON</label>
-    <lightningComponent>Nebula__logJSONViewer</lightningComponent>
+    <lightningComponent>logJSONViewer</lightningComponent>
     <optionsCreateFeedItem>false</optionsCreateFeedItem>
     <type>LightningComponent</type>
     <width>-100</width>
