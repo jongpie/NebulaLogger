@@ -13,3 +13,4 @@ yarn.lock
 # Files to exclude
 *.log
 
+node_modules

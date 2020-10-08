@@ -12,6 +12,11 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>v50.0</fullName>
+                <default>false</default>
+                <label>v50.0 - Winter &apos;21</label>
+            </value>
+            <value>
                 <fullName>v49.0</fullName>
                 <default>false</default>
                 <label>v49.0 - Summer &apos;20</label>
