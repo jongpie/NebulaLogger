@@ -2,6 +2,9 @@
     "packageDirectories": [
         {
             "path": "nebula-logger",
+            "package": "NebulaLogger",
+            "versionName": "ver 0.1",
+            "versionNumber": "0.1.0.NEXT",
             "default": true
         }
     ],
