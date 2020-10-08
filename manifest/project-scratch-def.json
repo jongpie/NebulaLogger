@@ -1,0 +1,9 @@
+{
+    "orgName": "nebula-logger",
+    "edition": "Developer",
+    "hasSampleData": true,
+    "features": [
+        "ProcessBuilder",
+        "ForceComPlatform"
+    ]
+}

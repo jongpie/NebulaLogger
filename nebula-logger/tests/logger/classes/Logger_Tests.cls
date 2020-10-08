@@ -50,7 +50,26 @@ private class Logger_Tests {
     static void it_should_return_transaction_id() {
         String transactionId = Logger.getTransactionId();
         System.assert(!String.isBlank(transactionId));
-        System.assert(Uuid.isValid(transactionId));
+    }
+
+    @isTest
+    static void it_should_return_set_parent_transaction_id() {
+        String expectedParentTransactionId = 'imagineThisWereAGuid';
+        Logger.setParentLogTransactionId(expectedParentTransactionId);
+        System.assertEquals(expectedParentTransactionId, Logger.getParentLogTransactionId());
+    }
+
+    @isTest
+    static void it_should_return_quiddity_level() {
+        List<Quiddity> acceptableDefaultQuidditiesForTests = new List<Quiddity>{
+            Quiddity.RUNTEST_ASYNC,
+            Quiddity.RUNTEST_DEPLOY,
+            Quiddity.RUNTEST_SYNC
+        };
+        System.assertEquals(true, acceptableDefaultQuidditiesForTests.contains(Logger.getCurrentQuiddity()));
+
+        Logger.setSaveMethod(Quiddity.SYNCHRONOUS);
+        System.assertEquals(Quiddity.SYNCHRONOUS, Logger.getCurrentQuiddity());
     }
 
     @isTest
