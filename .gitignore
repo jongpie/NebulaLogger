@@ -3,6 +3,7 @@
 .sfdx/
 .vscode/
 */main/default/
+.vim-force.com
 
 # Files to exclude
 *.log

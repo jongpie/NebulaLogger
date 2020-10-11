@@ -12,13 +12,7 @@ public without sharing class Logger {
     private static final LoggerSettings__c SETTINGS      = LoggerSettings__c.getInstance();
     private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(SETTINGS.LoggingLevel__c);
 
-    private static final QueueableSaver ASYNC_SAVER_INSTANCE {
-        get {
-            if(ASYNC_SAVER_INSTANCE == null) { ASYNC_SAVER_INSTANCE = new QueueableSaver(); }
-            return ASYNC_SAVER_INSTANCE;
-        }
-        private set;
-    }
+    private static final QueueableSaver ASYNC_SAVER_INSTANCE = new QueueableSaver();
 
     private static String parentLogTransactionId;
     private static Boolean suspendSaving            = false;

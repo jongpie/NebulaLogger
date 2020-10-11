@@ -14,7 +14,8 @@ public without sharing virtual class LogEntryBuilder {
     private Boolean userSessionDetailsAreSet = false;
 
     public LogEntryBuilder(LoggingLevel loggingLevel) {
-        this.shouldSave = Logger.meetsUserLoggingLevel(loggingLevel);
+        this.shouldSave = Logger.isEnabled(loggingLevel);
+        if(!this.shouldSave) return;
 
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c                     = API_VERSION,
@@ -53,6 +54,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder parseComponentLogEntry(ComponentLogEntry componentLogEntry) {
+        if(!this.shouldSave) return this;
+
         this.logEntryEvent.ContextIsLightningComponent__c   = componentLogEntry.componentName != null;
         this.logEntryEvent.ContextLightningComponentName__c = componentLogEntry.componentName;
         this.logEntryEvent.OriginLocation__c                = componentLogEntry.originLocation;
@@ -63,6 +66,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder parseFlowLogEntry(FlowLogEntry flowLogEntry) {
+        if(!this.shouldSave) return this;
+
         this.logEntryEvent.LoggingLevel__c    = flowLogEntry.loggingLevelName;
         this.logEntryEvent.OriginLocation__c  = flowLogEntry.flowName;
         this.logEntryEvent.OriginType__c      = ORIGIN_TYPE_FLOW;
@@ -73,6 +78,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setMessage(String message) {
+        if(!this.shouldSave) return this;
+
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
 
         this.logEntryEvent.Message__c          = truncatedMessage;
@@ -82,6 +89,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setExceptionDetails(Exception apexException) {
+        if(!this.shouldSave) return this;
+
         setExceptionDetails(apexException.getTypeName(), apexException.getStackTraceString());
 
         if(LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c) Logger.saveLog();
@@ -90,6 +99,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setExceptionDetails(String exceptionType, String exceptionStackTrace) {
+        if(!this.shouldSave) return this;
+
         this.logEntryEvent.ExceptionType__c       = exceptionType;
         this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace;
         this.logEntryEvent.Type__c                = ENTRY_TYPE_EXCEPTION;
@@ -98,15 +109,21 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setRecordId(SObject record) {
+        if(!this.shouldSave) return this;
+
         return this.setRecordId(record.Id);
     }
 
     public LogEntryBuilder setRecordId(Id recordId) {
+        if(!this.shouldSave) return this;
+
         this.logEntryEvent.RelatedRecordId__c = recordId;
         return this;
     }
 
     public LogEntryBuilder setTopics(List<String>topics) {
+        if(!this.shouldSave) return this;
+
         this.logEntryEvent.Topics__c = getTopicsString(topics);
         return this;
     }
@@ -128,6 +145,8 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public void setUserSessionDetails() {
+        if(!this.shouldSave) return;
+
         Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
         LoggingLevel userLoggingLevel  = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
