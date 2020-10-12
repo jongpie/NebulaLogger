@@ -3,10 +3,8 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 public without sharing class Logger {
-
-    private static final Request REQUEST = System.Request.getCurrent();
     private static final List<LogEntryBuilder> LOG_ENTRIES = new List<LogEntryBuilder>();
-    private static final String TRANSACTION_ID             = REQUEST.getRequestId();
+    private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
 
     private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(
         LoggerSettings__c.getInstance().LoggingLevel__c
@@ -15,13 +13,8 @@ public without sharing class Logger {
     private static final QueueableSaver ASYNC_SAVER_INSTANCE = new QueueableSaver();
 
     private static String parentLogTransactionId;
-<<<<<<< HEAD
     private static Boolean suspendSaving = false;
-    private static SaveMethod transactionSaveMethod = SaveMethod.DML;
-=======
-    private static Boolean suspendSaving            = false;
-    private static Quiddity transactionSaveMethod   = REQUEST.getQuiddity();
->>>>>>> 3148ac2... Added Quiddity/Request objects, removed namespace to prep for package preparation in sfdx-project.json
+    private static Quiddity transactionSaveMethod = System.Request.getCurrent().getQuiddity();
 
     // Settings management methods
     public static String getTransactionId() {
@@ -570,18 +563,33 @@ public without sharing class Logger {
         if (systemMessagesEnabled) {
             String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries via ';
             switch on quiddity {
-                when ANONYMOUS          { savingLogMessage += 'Anonymous Apex'; }
-                when Aura, VF           { savingLogMessage += 'Aura/Lightning/VF component'; }
-                when BATCH_ACS,
-                    BATCH_APEX,
-                    BATCH_CHUNK_PARALLEL,
-                    BATCH_CHUNK_SERIAL  { savingLogMessage += 'Apex batch job'; }
-                when INVOCABLE_ACTION   { savingLogMessage += 'Flow invocation'; }
-                when QUEUEABLE          { savingLogMessage += 'Apex queueable job'; }
-                when REST               { savingLogMessage += 'Apex REST callout'; }
-                when SCHEDULED          { savingLogMessage += 'Scheduled job'; }
-                when SYNCHRONOUS        { savingLogMessage += 'Apex synchronous DML'; }
-                when else               { savingLogMessage += quiddity.name(); }
+                when ANONYMOUS {
+                    savingLogMessage += 'Anonymous Apex';
+                }
+                when Aura, VF {
+                    savingLogMessage += 'Aura/Lightning/VF component';
+                }
+                when BATCH_ACS, BATCH_APEX, BATCH_CHUNK_PARALLEL, BATCH_CHUNK_SERIAL {
+                    savingLogMessage += 'Apex batch job';
+                }
+                when INVOCABLE_ACTION {
+                    savingLogMessage += 'Flow invocation';
+                }
+                when QUEUEABLE {
+                    savingLogMessage += 'Apex queueable job';
+                }
+                when REST {
+                    savingLogMessage += 'Apex REST callout';
+                }
+                when SCHEDULED {
+                    savingLogMessage += 'Scheduled job';
+                }
+                when SYNCHRONOUS {
+                    savingLogMessage += 'Apex synchronous DML';
+                }
+                when else {
+                    savingLogMessage += quiddity.name();
+                }
             }
             finest(savingLogMessage);
         }
@@ -612,9 +620,13 @@ public without sharing class Logger {
         }
 
         switch on transactionSaveMethod {
-            when QUEUEABLE  { ASYNC_SAVER_INSTANCE.enqueueLogEntries(logEntryEvents); }
-            when REST       { RestApi.insertRecords(logEntryEvents); }
-            when else       {
+            when QUEUEABLE {
+                ASYNC_SAVER_INSTANCE.enqueueLogEntries(logEntryEvents);
+            }
+            when REST {
+                RestApi.insertRecords(logEntryEvents);
+            }
+            when else {
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
                 System.debug('saveResults =' + results);
             }
