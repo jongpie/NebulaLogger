@@ -4,37 +4,31 @@
 *************************************************************************************************/
 public without sharing virtual class LogMessage {
 
-    private String message;
+    private String unformattedMessage;
     private List<Object> messageInputs;
 
-    public LogMessage(String message) {
-        this.message = message;
-    }
-
     public LogMessage(String unformattedMessage, Object messageInput) {
-        this.message       = unformattedMessage;
-        this.messageInputs = new List<Object>{messageInput};
+        this.unformattedMessage = unformattedMessage;
+        this.messageInputs      = new List<Object>{messageInput};
     }
 
     public LogMessage(String unformattedMessage, Object messageInput1, Object messageInput2) {
-        this.message       = unformattedMessage;
-        this.messageInputs = new List<Object>{messageInput1, messageInput2};
+        this.unformattedMessage = unformattedMessage;
+        this.messageInputs      = new List<Object>{messageInput1, messageInput2};
     }
 
     public LogMessage(String unformattedMessage, Object messageInput1, Object messageInput2, Object messageInput3) {
-        this.message       = unformattedMessage;
-        this.messageInputs = new List<Object>{messageInput1, messageInput2, messageInput3};
+        this.unformattedMessage = unformattedMessage;
+        this.messageInputs      = new List<Object>{messageInput1, messageInput2, messageInput3};
     }
 
     public LogMessage(String unformattedMessage, List<Object> messageInputs) {
-        this.message       = unformattedMessage;
-        this.messageInputs = messageInputs;
+        this.unformattedMessage = unformattedMessage;
+        this.messageInputs      = messageInputs;
     }
 
     public virtual String getMessage() {
-        if(this.messageInputs == null) return this.message;
-
-        return String.format(this.message, this.messageInputs);
+        return String.format(this.unformattedMessage, this.messageInputs);
     }
 
 }

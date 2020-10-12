@@ -6,17 +6,6 @@
 private class LogMessage_Tests {
 
     @isTest
-    static void it_should_return_preformatted_message() {
-        String preformattedMessage = 'my string, this should be returned exactly as-is';
-
-        Test.startTest();
-        String returnedMessage = new LogMessage(preformattedMessage).getMessage();
-        Test.stopTest();
-
-        System.assertEquals(preformattedMessage, returnedMessage);
-    }
-
-    @isTest
     static void it_should_return_formatted_message_when_1_object_list_parameter_provided() {
         String unformattedMessage = 'my string with 1 input: {0}';
         List<Object> arguments    = new List<Object>{System.now()};
