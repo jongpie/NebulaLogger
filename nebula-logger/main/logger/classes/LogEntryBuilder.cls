@@ -88,6 +88,12 @@ public without sharing virtual class LogEntryBuilder {
         return this;
     }
 
+    public LogEntryBuilder setMessage(LogMessage logMessage) {
+        if(!this.shouldSave) return this;
+
+        return this.setMessage(logMessage.getMessage());
+    }
+
     public LogEntryBuilder setExceptionDetails(Exception apexException) {
         if(!this.shouldSave) return this;
 
