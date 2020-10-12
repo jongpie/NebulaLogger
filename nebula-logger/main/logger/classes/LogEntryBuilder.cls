@@ -163,11 +163,7 @@ public without sharing virtual class LogEntryBuilder {
             return;
         }
 
-        // TODO this will be fixed by PR 28 - https://github.com/jongpie/NebulaLogger/pull/28
-        // Calling Auth.SessionManagement.getCurrentSession() fails in several contexts & the exception cannot be caught
-        // PR 28 leverages some new Winter '21 features to prevent the issue
-        //Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
-        Map<String, String> sessionMap;
+        Map<String, String> sessionMap = this.getSessionMap();
         LoggingLevel userLoggingLevel = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
         this.logEntryEvent.ContextIsVisualforce__c = ApexPages.currentPage() != null;
@@ -188,26 +184,35 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows();
         this.logEntryEvent.LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries();
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
-        this.logEntryEvent.LoginDomain__c = sessionMap == null ? null : sessionMap.get('LoginDomain');
-        this.logEntryEvent.LoginHistoryId__c = sessionMap == null ? null : sessionMap.get('LoginHistoryId');
-        this.logEntryEvent.LoginType__c = sessionMap == null ? null : sessionMap.get('LoginType');
-        this.logEntryEvent.LogoutUrl__c = sessionMap == null ? null : sessionMap.get('LogoutUrl');
         this.logEntryEvent.NetworkId__c = Network.getNetworkId();
+        this.logEntryEvent.LoginDomain__c = sessionMap?.get('LoginDomain');
+        this.logEntryEvent.LoginHistoryId__c = sessionMap?.get('LoginHistoryId');
+        this.logEntryEvent.LoginType__c = sessionMap?.get('LoginType');
+        this.logEntryEvent.LogoutUrl__c = sessionMap?.get('LogoutUrl');
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        this.logEntryEvent.SessionId__c = sessionMap == null ? null : sessionMap.get('SessionId');
-        this.logEntryEvent.SessionSecurityLevel__c = sessionMap == null ? null : sessionMap.get('SessionSecurityLevel');
-        this.logEntryEvent.SessionType__c = sessionMap == null ? null : sessionMap.get('SessionType');
-        this.logEntryEvent.SourceIp__c = sessionMap == null ? null : sessionMap.get('SourceIp');
+        this.logEntryEvent.ProfileName__c = CURRENT_USER.Profile.Name;
+        this.logEntryEvent.SessionId__c = sessionMap?.get('SessionId');
+        this.logEntryEvent.SessionSecurityLevel__c = sessionMap?.get('SessionSecurityLevel');
+        this.logEntryEvent.SessionType__c = sessionMap?.get('SessionType');
+        this.logEntryEvent.SourceIp__c = sessionMap?.get('SourceIp');
         this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
         this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
         this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
         this.logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
         this.logEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
+        this.logEntryEvent.UserRoleName__c = CURRENT_USER.UserRole?.Name;
         this.logEntryEvent.UserType__c = UserInfo.getUserType();
 
-        if (this.logEntryEvent.SessionType__c != 'Oauth2') {
+        if (this.logEntryEvent.SessionType__c != 'Oauth2')
             this.logEntryEvent.ContextThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
+    }
+
+    private Map<String, String> getSessionMap() {
+        Quiddity currentQuiddity = Logger.getCurrentQuiddity();
+        if (Test.isRunningTest() || currentQuiddity == Quiddity.INVOCABLE_ACTION) {
+            return new Map<String, String>{ 'SessionId' => UserInfo.getSessionId() };
         }
+        return Auth.SessionManagement.getCurrentSession();
     }
 
     private static String getApiVersion() {
