@@ -331,6 +331,138 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
     }
 
+
+    @isTest
+    static void it_should_log_a_error_entry_string() {
+        String message = 'test message';
+
+        setUserLoggingLevel(LoggingLevel.ERROR);
+
+        Test.startTest();
+
+        Logger.error(message);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+    }
+
+    @isTest
+    static void it_should_log_a_error_entry_log_message() {
+        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
+
+        setUserLoggingLevel(LoggingLevel.ERROR);
+
+        Test.startTest();
+
+        Logger.error(logMessage);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+    }
+// public static void error(String message, List<String> topics) {
+//     error().setMessage(message).setTopics(topics);
+// }
+
+    @isTest
+    static void it_should_log_a_error_entry_string_for_record() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.ERROR);
+
+        Test.startTest();
+
+        Logger.error(message, currentUser);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+
+    @isTest
+    static void it_should_log_a_error_entry_logMessage_for_record() {
+        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
+        User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.ERROR);
+
+        Test.startTest();
+
+        Logger.error(logMessage, currentUser);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void error(String message, SObject record, List<String> topics) {
+//     error().setMessage(message).setRecordId(record).setTopics(topics);
+// }
+
+    @isTest
+    static void it_should_log_a_error_entry_string_for_record_id() {
+        String message   = 'test message';
+        User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.ERROR);
+
+        Test.startTest();
+
+        Logger.error(message, currentUser.Id);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(message, logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+
+    @isTest
+    static void it_should_log_a_error_entry_logMessage_for_record_id() {
+        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
+        User currentUser = getCurrentUser();
+
+        setUserLoggingLevel(LoggingLevel.ERROR);
+
+        Test.startTest();
+
+        Logger.error(logMessage, currentUser.Id);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RelatedRecordId__c FROM LogEntry__c];
+        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
+        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
+        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
+    }
+// public static void error(String message, Id recordId, List<String> topics) {
+//     error().setMessage(message).setRecordId(recordId).setTopics(topics);
+// }
+
     @isTest
     static void it_should_log_a_warn_entry_string() {
         String message = 'test message';
