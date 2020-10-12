@@ -17,6 +17,8 @@ public without sharing virtual class LogEntryBuilder {
         this.shouldSave = Logger.isEnabled(loggingLevel);
         if(!this.shouldSave) return;
 
+        DmlException stackTraceException = new DmlException();
+
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c                     = API_VERSION,
             ContextIsTriggerExecuting__c      = Trigger.isExecuting,
@@ -39,9 +41,10 @@ public without sharing virtual class LogEntryBuilder {
             LimitsSoslSearchesUsed__c         = Limits.getSoslQueries(),
             LoggingLevel__c                   = loggingLevel.NAME(),
             LoggingLevelOrdinal__c            = loggingLevel.ORDINAL(),
-            OriginLocation__c                 = getOriginLocation(),
+            OriginLocation__c                 = getOriginLocation(stackTraceException),
             OriginType__c                     = ORIGIN_TYPE_APEX,
             ParentLogTransactionId__c         = Logger.getParentLogTransactionId(),
+            StackTrace__c                     = getStackTrace(stackTraceException),
             SystemModeIsApexRest__c           = RestContext.request != null,
             SystemModeIsBatch__c              = System.isBatch(),
             SystemModeIsFuture__c             = System.isFuture(),
@@ -194,9 +197,9 @@ public without sharing virtual class LogEntryBuilder {
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
     }
 
-    private String getOriginLocation() {
+    private String getOriginLocation(DmlException stackTraceException) {
         String originLocation;
-        for(String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
+        for(String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
             if(currentStackTraceLine.contains('.LogEntryBuilder.')) continue;
             if(currentStackTraceLine.contains('.Logger.')) continue;
 
@@ -208,6 +211,20 @@ public without sharing virtual class LogEntryBuilder {
         }
 
         return originLocation;
+    }
+
+    private String getStackTrace(DmlException stackTraceException) {
+        if(!LoggerSettings__c.getInstance().StoreStackTrace__c) return null;
+
+        List<String> stackTraceLines = new List<String>();
+        for(String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
+            if(currentStackTraceLine.contains('.LogEntryBuilder.')) continue;
+            if(currentStackTraceLine.contains('.Logger.')) continue;
+
+            stackTraceLines.add(currentStackTraceLine);
+        }
+
+        return String.join(stackTraceLines, '\n');
     }
 
     private static String getVisualforcePageName() {
