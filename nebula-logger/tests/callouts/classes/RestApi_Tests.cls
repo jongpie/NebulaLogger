@@ -43,53 +43,85 @@ private class RestApi_Tests {
     static void it_should_insert_records() {
         Test.setMock(HttpCalloutMock.class, new SaveResultCalloutMock());
 
-        List<Account> accounts = new List<Account>();
-        Account account = new Account();
-        new TestDataFactory(account).populateRequiredFields();
-        accounts.add(account);
+        User user = new User(
+            FirstName = 'Test insert',
+            Id        = UserInfo.getUserId()
+        );
+        List<User> users = new List<User>{user};
 
         Test.startTest();
-        RestApi.insertRecords(accounts);
+        List<RestApi.SaveResult> saveResults = RestApi.insertRecords(users);
         Test.stopTest();
+
+        System.assertEquals(1, saveResults.size());
+
+        RestApi.SaveResult saveResult = saveResults.get(0);
+
+        System.assertEquals(UserInfo.getUserId(), saveResult.id);
+        System.assertEquals(true, saveResult.success);
+        System.assertEquals(true, saveResult.errors.isEmpty());
     }
 
     @isTest
     static void it_should_update_records() {
         Test.setMock(HttpCalloutMock.class, new SaveResultCalloutMock());
 
-        List<Account> accounts = new List<Account>();
-        Account account = new Account();
-        new TestDataFactory(account).populateRequiredFields();
-        accounts.add(account);
+        User user = new User(
+            FirstName = 'Test update',
+            Id        = UserInfo.getUserId()
+        );
+        List<User> users = new List<User>{user};
 
         Test.startTest();
-        RestApi.updateRecords(accounts);
+        List<RestApi.SaveResult> saveResults = RestApi.updateRecords(users);
         Test.stopTest();
+
+        System.assertEquals(1, saveResults.size());
+
+        RestApi.SaveResult saveResult = saveResults.get(0);
+
+        System.assertEquals(UserInfo.getUserId(), saveResult.id);
+        System.assertEquals(true, saveResult.success);
+        System.assertEquals(true, saveResult.errors.isEmpty());
     }
 
     @isTest
     static void it_should_delete_records() {
         Test.setMock(HttpCalloutMock.class, new SaveResultCalloutMock());
 
-        List<User> users = [SELECT Id FROM User LIMIT 2];
+        User user = new User(
+            FirstName = 'Test delete',
+            Id        = UserInfo.getUserId()
+        );
+        List<User> users = new List<User>{user};
 
         Test.startTest();
-        RestApi.deleteRecords(users);
+        List<RestApi.SaveResult> saveResults = RestApi.deleteRecords(users);
         Test.stopTest();
+
+        System.assertEquals(1, saveResults.size());
+
+        RestApi.SaveResult saveResult = saveResults.get(0);
+
+        System.assertEquals(UserInfo.getUserId(), saveResult.id);
+        System.assertEquals(true, saveResult.success);
+        System.assertEquals(true, saveResult.errors.isEmpty());
     }
 
     @isTest
     static void it_should_get_list_view() {
         Test.setMock(HttpCalloutMock.class, new ListViewResultCalloutMock());
 
-        List<Account> accounts = new List<Account>();
-        Account account = new Account();
-        new TestDataFactory(account).populateRequiredFields();
-        accounts.add(account);
-
         Test.startTest();
-        RestApi.getListView('Account', null);
+        RestApi.ListViewResult listViewResult = RestApi.getListView('Account', null);
         Test.stopTest();
+
+        System.assertEquals(UserInfo.getUserId(), listViewResult.id);
+        System.assertEquals('some_name', listViewResult.developerName);
+        System.assertEquals('some name', listViewResult.label);
+        System.assertEquals('Account', listViewResult.sobjectType);
+        System.assertEquals(true, listViewResult.soqlCompatible);
+        System.assertEquals('SELECT Id FROM Account', listViewResult.query);
     }
 
 }

@@ -15,7 +15,7 @@ public with sharing class RestApi {
     }
 
     public static List<RestApi.SaveResult> insertRecords(List<SObject> records, Boolean allOrNone) {
-        HttpResponse response = generateRestApiCallout(COMPOSITE_ENDPOINT)
+        HttpResponse response = getRestApiCallout(COMPOSITE_ENDPOINT)
             .post(new RestApi.SaveRequest(records, allOrNone));
 
         return getSaveResults(response);
@@ -26,7 +26,7 @@ public with sharing class RestApi {
     }
 
     public static List<RestApi.SaveResult> updateRecords(List<SObject> records, Boolean allOrNone) {
-        HttpResponse response = generateRestApiCallout(COMPOSITE_ENDPOINT)
+        HttpResponse response = getRestApiCallout(COMPOSITE_ENDPOINT)
             .setParameter('_HttpMethod', 'PATCH')
             .post(new RestApi.SaveRequest(records, allOrNone));
 
@@ -48,7 +48,7 @@ public with sharing class RestApi {
     }
 
     public static List<RestApi.SaveResult> deleteRecords(List<Id> recordIds, Boolean allOrNone) {
-        HttpResponse response = generateRestApiCallout(COMPOSITE_ENDPOINT)
+        HttpResponse response = getRestApiCallout(COMPOSITE_ENDPOINT)
             .setParameter('allOrNone', String.valueOf(allOrNone))
             .setParameter('ids', String.join(recordIds, ','))
             .del();
@@ -62,15 +62,15 @@ public with sharing class RestApi {
         List<String> endpointParameters = new List<String>{sobjectName, listViewFilterId};
 
         String listViewEndpoint       = String.format(LISTVIEW_ENDPOINT, endpointParameters);
-        HttpResponse listViewResponse = generateRestApiCallout(listViewEndpoint).get();
+        HttpResponse listViewResponse = getRestApiCallout(listViewEndpoint).get();
 
         String listViewDescribeEndpoint       = String.format(LISTVIEW_DESCRIBE_ENDPOINT, endpointParameters);
-        HttpResponse listViewDescribeResponse = generateRestApiCallout(listViewDescribeEndpoint).get();
+        HttpResponse listViewDescribeResponse = getRestApiCallout(listViewDescribeEndpoint).get();
 
         return getListViewResult(listViewResponse, listViewDescribeResponse);
     }
 
-    private static Callout generateRestApiCallout(String endpoint) {
+    public static Callout getRestApiCallout(String endpoint) {
         return new Callout(endpoint)
             .setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId())
             .setHeader('Content-Type', 'application/json');
