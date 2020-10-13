@@ -31,7 +31,7 @@ public without sharing class Logger {
     }
 
     public static LoggingLevel getUserLoggingLevel() {
-        return getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
+        return USER_LOGGING_LEVEL;
     }
 
     public static Id getQueueableSaveJobId() {
