@@ -9,8 +9,7 @@ public without sharing class Logger {
     private static final List<LogEntryBuilder> LOG_ENTRIES = new List<LogEntryBuilder>();
     private static final String TRANSACTION_ID             = new Uuid().getValue();
 
-    private static final LoggerSettings__c SETTINGS      = LoggerSettings__c.getInstance();
-    private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(SETTINGS.LoggingLevel__c);
+    private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
     private static final QueueableSaver ASYNC_SAVER_INSTANCE = new QueueableSaver();
 
@@ -32,7 +31,7 @@ public without sharing class Logger {
     }
 
     public static LoggingLevel getUserLoggingLevel() {
-        return getLoggingLevel(getSettings().LoggingLevel__c);
+        return getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
     }
 
     public static Id getQueueableSaveJobId() {
@@ -40,7 +39,7 @@ public without sharing class Logger {
     }
 
     public static Boolean isEnabled() {
-        return SETTINGS.IsEnabled__c;
+        return LoggerSettings__c.getInstance().IsEnabled__c;
     }
 
     public static Boolean isEnabled(LoggingLevel loggingLevel) {
@@ -533,7 +532,7 @@ public without sharing class Logger {
     public static void saveLog(SaveMethod transactionSaveMethod) {
         if(LOG_ENTRIES.isEmpty()) return;
 
-        Boolean systemMessagesEnabled = getSettings().EnableSystemMessages__c;
+        Boolean systemMessagesEnabled = LoggerSettings__c.getInstance().EnableSystemMessages__c;
 
         if(suspendSaving) {
             if(systemMessagesEnabled) {
@@ -629,11 +628,6 @@ public without sharing class Logger {
         String query = String.format('SELECT {0}, (SELECT {1} FROM LogEntries__r) FROM Log__c WHERE Id = :logId', textReplacements);
 
         return (Log__c)Database.query(query);
-    }
-
-    // Private methods
-    private static LoggerSettings__c getSettings() {
-        return LoggerSettings__c.getInstance();
     }
 
     // Private inner class for saving log entries via a queuable job (using a singleton pattern)

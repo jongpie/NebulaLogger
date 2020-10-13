@@ -10,12 +10,18 @@ public class Callout {
     @testVisible private HttpRequest request;
 
     public Callout(String namedCredential, String endpointPath) {
-        this('callout:' + namedCredential + endpointPath);
+        this();
+
+        this.endpoint = 'callout:' + namedCredential + endpointPath;
     }
 
     public Callout(String endpoint) {
-        this.endpoint = endpoint;
+        this();
 
+        this.endpoint = endpoint;
+    }
+
+    private Callout() {
         this.headers    = new Map<String, String>();
         this.parameters = new Map<String, String>();
         this.request    = new HttpRequest();

@@ -375,6 +375,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.RelatedRecordJson__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.RelatedRecordLink__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -391,6 +396,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.RelatedUser__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.StackTrace__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
