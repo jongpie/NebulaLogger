@@ -7,8 +7,9 @@ private class LogEntryHandler_Tests {
 
     @testSetup
     static void setupData() {
-        Log__c log = new Log__c();
-        new TestDataFactory(log).populateRequiredFields();
+        Log__c log = new Log__c(
+            TransactionId__c = '1234'
+        );
         insert log;
         Test.setCreatedDate(log.Id, System.now().addDays(-8));
     }
@@ -17,10 +18,10 @@ private class LogEntryHandler_Tests {
     static void it_should_save_log_entry_without_related_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
-        LogEntry__c logEntry = new LogEntry__c();
-        logEntry.Log__c = log.Id;
-        new TestDataFactory(log).populateRequiredFields();
-        logEntry.RelatedRecordId__c = null;
+        LogEntry__c logEntry = new LogEntry__c(
+            Log__c             = log.Id,
+            RelatedRecordId__c = null
+        );
 
         Test.startTest();
         insert logEntry;
@@ -35,10 +36,10 @@ private class LogEntryHandler_Tests {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         User currentUser = [SELECT Id, Username FROM User WHERE Id = :UserInfo.getUserId()];
 
-        LogEntry__c logEntry = new LogEntry__c();
-        logEntry.Log__c = log.Id;
-        new TestDataFactory(log).populateRequiredFields();
-        logEntry.RelatedRecordId__c = currentUser.Id;
+        LogEntry__c logEntry = new LogEntry__c(
+            Log__c             = log.Id,
+            RelatedRecordId__c = currentUser.Id
+        );
 
         Test.startTest();
         insert logEntry;
