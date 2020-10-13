@@ -7,16 +7,17 @@ private class LogBatchPurger_Tests {
 
     @testSetup
     static void setupData() {
-        Log__c log = new Log__c();
-        new TestDataFactory(log).populateRequiredFields();
+        Log__c log = new Log__c(
+            TransactionId__c = '1234'
+        );
         insert log;
         Test.setCreatedDate(log.Id, System.now().addDays(-8));
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for(Integer i = 0; i < 10; i++) {
-            LogEntry__c logEntry = new LogEntry__c();
-            logEntry.Log__c = log.Id;
-            new TestDataFactory(log).populateRequiredFields();
+            LogEntry__c logEntry = new LogEntry__c(
+                Log__c = log.Id
+            );
 
             logEntries.add(logEntry);
         }
