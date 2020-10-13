@@ -4,6 +4,7 @@
 *************************************************************************************************/
 public without sharing virtual class LogMessage {
 
+    private String formattedMessage;
     private String unformattedMessage;
     private List<Object> messageInputs;
 
@@ -28,7 +29,16 @@ public without sharing virtual class LogMessage {
     }
 
     public virtual String getMessage() {
-        return String.format(this.unformattedMessage, this.messageInputs);
+        // Just in case getMessage() is called multiple times (first by the originating code, then by Logger)
+        // ...cache the result (save CPU time from multiple calls) and discard the original parameters (reduce heap size)
+        if(this.formattedMessage == null) {
+            this.formattedMessage = String.format(this.unformattedMessage, this.messageInputs);
+
+            this.unformattedMessage = null;
+            this.messageInputs      = null;
+        }
+
+        return this.formattedMessage;
     }
 
 }
