@@ -227,8 +227,10 @@ private class LogEntryEventHandler_Tests {
         );
 
         Test.startTest();
-        EventBus.publish(logEntryEvent);
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
         Log__c log = getLog(transactionId);
         System.assertEquals(1, log.LogEntries__r.size());
