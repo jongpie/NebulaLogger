@@ -229,10 +229,11 @@ public without sharing class LogEntryEventHandler {
 
     private void setProfileDetails() {
         Id logUserId = (Id)LOG.LoggedBy__c;
-        User logUser = [SELECT Id, UserRole.Name, Profile.Name, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name FROM User WHERE Id = :logUserId];
+        User logUser = [SELECT Id, UserRole.Name, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name FROM User WHERE Id = :logUserId];
 
         LOG.ProfileName__c              = logUser.Profile.Name;
         LOG.UserLicenseDefinitionKey__c = logUser.Profile.UserLicense.LicenseDefinitionKey;
+        LOG.UserLicenseId__c            = logUser.Profile.UserLicenseId;
         LOG.UserLicenseName__c          = logUser.Profile.UserLicense.Name;
         LOG.UserRoleName__c             = logUser.UserRole == null ? null : logUser.UserRole.Name;
     }
