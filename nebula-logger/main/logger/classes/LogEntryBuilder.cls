@@ -170,6 +170,7 @@ public without sharing virtual class LogEntryBuilder {
         // Calling Auth.SessionManagement.getCurrentSession() fails in several contexts & the exception cannot be caught
         // PR 28 leverages some new Winter '21 features to prevent the issue
         //Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
+        Map<String, String> sessionMap;
         LoggingLevel userLoggingLevel  = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
         this.logEntryEvent.ContextIsVisualforce__c           = ApexPages.currentPage() != null;
