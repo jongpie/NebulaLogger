@@ -5,6 +5,11 @@
 */main/default/
 .vim-force.com
 
+# NPM
+node_modules/
+package-lock.json
+yarn.lock
+
 # Files to exclude
 *.log
 

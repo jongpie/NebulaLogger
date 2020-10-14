@@ -1,16 +1,15 @@
 /***********************************************************************************************
-* This file is part of the Apex Callouts project, released under the MIT License.              *
-* See LICENSE file or go to https://github.com/jongpie/ApexCallouts for full license details.  *
-***********************************************************************************************/
+ * This file is part of the Apex Callouts project, released under the MIT License.              *
+ * See LICENSE file or go to https://github.com/jongpie/ApexCallouts for full license details.  *
+ ***********************************************************************************************/
 @isTest
 private class RestApi_Tests {
-
     public class SaveResultCalloutMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest request) {
             RestApi.SaveResult saveResult = new RestApi.SaveResult();
-            saveResult.id      = UserInfo.getUserId();
+            saveResult.id = UserInfo.getUserId();
             saveResult.success = true;
-            saveResult.errors  = new List<RestApi.SaveError>();
+            saveResult.errors = new List<RestApi.SaveError>();
 
             List<RestApi.SaveResult> saveResults = new List<RestApi.SaveResult>();
             saveResults.add(saveResult);
@@ -25,12 +24,12 @@ private class RestApi_Tests {
     public class ListViewResultCalloutMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest request) {
             RestApi.ListViewResult listViewResult = new RestApi.ListViewResult();
-            listViewResult.id             = UserInfo.getUserId();
-            listViewResult.developerName  = 'some_name';
-            listViewResult.label          = 'some name';
-            listViewResult.sobjectType    = 'Account';
+            listViewResult.id = UserInfo.getUserId();
+            listViewResult.developerName = 'some_name';
+            listViewResult.label = 'some name';
+            listViewResult.sobjectType = 'Account';
             listViewResult.soqlCompatible = true;
-            listViewResult.query          = 'SELECT Id FROM Account';
+            listViewResult.query = 'SELECT Id FROM Account';
 
             HttpResponse response = new HttpResponse();
             response.setBody(Json.serialize(listViewResult));
@@ -43,11 +42,8 @@ private class RestApi_Tests {
     static void it_should_insert_records() {
         Test.setMock(HttpCalloutMock.class, new SaveResultCalloutMock());
 
-        User user = new User(
-            FirstName = 'Test insert',
-            Id        = UserInfo.getUserId()
-        );
-        List<User> users = new List<User>{user};
+        User user = new User(FirstName = 'Test insert', Id = UserInfo.getUserId());
+        List<User> users = new List<User>{ user };
 
         Test.startTest();
         List<RestApi.SaveResult> saveResults = RestApi.insertRecords(users);
@@ -66,11 +62,8 @@ private class RestApi_Tests {
     static void it_should_update_records() {
         Test.setMock(HttpCalloutMock.class, new SaveResultCalloutMock());
 
-        User user = new User(
-            FirstName = 'Test update',
-            Id        = UserInfo.getUserId()
-        );
-        List<User> users = new List<User>{user};
+        User user = new User(FirstName = 'Test update', Id = UserInfo.getUserId());
+        List<User> users = new List<User>{ user };
 
         Test.startTest();
         List<RestApi.SaveResult> saveResults = RestApi.updateRecords(users);
@@ -89,11 +82,8 @@ private class RestApi_Tests {
     static void it_should_delete_records() {
         Test.setMock(HttpCalloutMock.class, new SaveResultCalloutMock());
 
-        User user = new User(
-            FirstName = 'Test delete',
-            Id        = UserInfo.getUserId()
-        );
-        List<User> users = new List<User>{user};
+        User user = new User(FirstName = 'Test delete', Id = UserInfo.getUserId());
+        List<User> users = new List<User>{ user };
 
         Test.startTest();
         List<RestApi.SaveResult> saveResults = RestApi.deleteRecords(users);
@@ -123,5 +113,4 @@ private class RestApi_Tests {
         System.assertEquals(true, listViewResult.soqlCompatible);
         System.assertEquals('SELECT Id FROM Account', listViewResult.query);
     }
-
 }

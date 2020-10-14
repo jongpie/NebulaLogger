@@ -1,9 +1,8 @@
 /*************************************************************************************************
-* This file is part of the Nebula Logger project, released under the MIT License.                *
-* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
-*************************************************************************************************/
+ * This file is part of the Nebula Logger project, released under the MIT License.                *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+ *************************************************************************************************/
 public without sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
-
     private Integer daysToKeep;
 
     public LogBatchPurger() {
@@ -17,17 +16,15 @@ public without sharing class LogBatchPurger implements Database.Batchable<SObjec
     public Database.QueryLocator start(Database.BatchableContext batchableContext) {
         Date purgeDate = System.today() - daysToKeep;
 
-        return Database.getQueryLocator([
-            SELECT Id, (SELECT Id FROM LogEntries__r)
-            FROM Log__c
-            WHERE CreatedDate <= :purgeDate
-        ]);
+        return Database.getQueryLocator(
+            [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE CreatedDate <= :purgeDate]
+        );
     }
 
     public void execute(Database.BatchableContext batchableContext, List<Log__c> scope) {
         List<SObject> recordsToDelete = new List<SObject>();
 
-        for(Log__c log : scope) {
+        for (Log__c log : scope) {
             recordsToDelete.addAll(log.LogEntries__r);
             recordsToDelete.add(log);
         }
@@ -36,6 +33,6 @@ public without sharing class LogBatchPurger implements Database.Batchable<SObjec
         Database.emptyRecycleBin(recordsToDelete);
     }
 
-    public void finish(Database.BatchableContext batchableContext) { }
-
+    public void finish(Database.BatchableContext batchableContext) {
+    }
 }

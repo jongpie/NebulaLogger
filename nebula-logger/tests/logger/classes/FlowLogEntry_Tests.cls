@@ -1,15 +1,14 @@
 /*************************************************************************************************
-* This file is part of the Nebula Logger project, released under the MIT License.                *
-* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
-*************************************************************************************************/
+ * This file is part of the Nebula Logger project, released under the MIT License.                *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+ *************************************************************************************************/
 @isTest
 private class FlowLogEntry_Tests {
-
     static FlowLogEntry createFlowLogEntry() {
-        FlowLogEntry flowEntry     = new FlowLogEntry();
-        flowEntry.flowName         = 'my test message';
-        flowEntry.message          = 'MyFlowOrProcessBuilder';
-        flowEntry.saveLog          = true;
+        FlowLogEntry flowEntry = new FlowLogEntry();
+        flowEntry.flowName = 'my test message';
+        flowEntry.message = 'MyFlowOrProcessBuilder';
+        flowEntry.saveLog = true;
         flowEntry.loggingLevelName = 'DEBUG';
 
         return flowEntry;
@@ -18,29 +17,34 @@ private class FlowLogEntry_Tests {
     @testSetup
     static void setup() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c      = true;
+        settings.IsEnabled__c = true;
         upsert settings;
     }
 
     @isTest
     static void it_should_save_entry_when_logging_level_met() {
-        String userLoggingLevel      = 'FINEST';
+        String userLoggingLevel = 'FINEST';
         String flowEntryLoggingLevel = 'DEBUG';
 
         LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
-        loggerSettings.LoggingLevel__c   = userLoggingLevel;
+        loggerSettings.LoggingLevel__c = userLoggingLevel;
         update loggerSettings;
 
         Test.startTest();
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel;
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
         Logger.saveLog();
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [SELECT Id, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        LogEntry__c logEntry = [
+            SELECT Id, Message__c, OriginType__c, OriginLocation__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
         System.assertEquals(flowEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
         System.assertEquals(flowEntry.flowName, logEntry.OriginLocation__c);
@@ -48,18 +52,18 @@ private class FlowLogEntry_Tests {
 
     @isTest
     static void it_should_not_save_entry_when_logging_level_not_met() {
-        String userLoggingLevel      = 'ERROR';
+        String userLoggingLevel = 'ERROR';
         String flowEntryLoggingLevel = 'DEBUG';
 
         LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
-        loggerSettings.LoggingLevel__c   = userLoggingLevel;
+        loggerSettings.LoggingLevel__c = userLoggingLevel;
         update loggerSettings;
 
         Test.startTest();
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel;
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
         Logger.saveLog();
 
         Test.stopTest();
@@ -70,11 +74,11 @@ private class FlowLogEntry_Tests {
 
     @isTest
     static void it_should_set_related_record_id_when_id_parameter_is_used() {
-        String userLoggingLevel      = 'FINEST';
+        String userLoggingLevel = 'FINEST';
         String flowEntryLoggingLevel = 'DEBUG';
 
         LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
-        loggerSettings.LoggingLevel__c   = userLoggingLevel;
+        loggerSettings.LoggingLevel__c = userLoggingLevel;
         update loggerSettings;
 
         Test.startTest();
@@ -82,13 +86,17 @@ private class FlowLogEntry_Tests {
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel;
         flowEntry.recordId = UserInfo.getUserId();
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
         Logger.saveLog();
 
         Test.stopTest();
 
-
-        LogEntry__c logEntry = [SELECT Id, RelatedRecordId__c, RelatedRecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        LogEntry__c logEntry = [
+            SELECT Id, RelatedRecordId__c, RelatedRecordJson__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
         System.assertEquals(UserInfo.getUserId(), logEntry.RelatedRecordId__c);
         System.assertEquals(null, logEntry.RelatedRecordJson__c);
     }
@@ -101,7 +109,7 @@ private class FlowLogEntry_Tests {
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel;
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
         Logger.saveLog();
 
         Test.stopTest();
@@ -112,5 +120,4 @@ private class FlowLogEntry_Tests {
         List<Log__c> returnedLogs = FlowLogRepo.getLogIds();
         System.assertEquals(log.Id, returnedLogs[0].Id);
     }
-
 }

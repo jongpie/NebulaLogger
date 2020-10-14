@@ -1,23 +1,18 @@
 /*************************************************************************************************
-* This file is part of the Nebula Logger project, released under the MIT License.                *
-* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
-*************************************************************************************************/
+ * This file is part of the Nebula Logger project, released under the MIT License.                *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+ *************************************************************************************************/
 @isTest
 private class LogBatchPurger_Tests {
-
     @testSetup
     static void setupData() {
-        Log__c log = new Log__c(
-            TransactionId__c = '1234'
-        );
+        Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         Test.setCreatedDate(log.Id, System.now().addDays(-8));
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
-        for(Integer i = 0; i < 10; i++) {
-            LogEntry__c logEntry = new LogEntry__c(
-                Log__c = log.Id
-            );
+        for (Integer i = 0; i < 10; i++) {
+            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id);
 
             logEntries.add(logEntry);
         }
@@ -40,5 +35,4 @@ private class LogBatchPurger_Tests {
         System.assertEquals(0, logs.size(), logs);
         System.assertEquals(0, logEntries.size(), logEntries);
     }
-
 }
