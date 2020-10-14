@@ -39,8 +39,7 @@ private class LogEntryEventHandler_Tests {
                 OriginLocation__c, RelatedRecordId__c, RelatedRecordJson__c, StackTrace__c, Timestamp__c, Type__c
                 FROM LogEntries__r
             )
-            FROM Log__c
-            // WHERE TransactionId__c = :transactionId
+            FROM Log__c WHERE TransactionId__c = :transactionId
         ];
     }
 
@@ -144,7 +143,6 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.Timestamp__c, logEntry.Timestamp__c);
         System.assertEquals(logEntryEvent.Type__c, logEntry.Type__c);
     }
-
 
     @isTest
     static void it_should_normalize_event_data_into_log_and_log_entry() {
