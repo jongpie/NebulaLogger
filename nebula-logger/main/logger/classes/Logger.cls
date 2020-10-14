@@ -524,7 +524,7 @@ public without sharing class Logger {
         transactionSaveMethod = saveMethod;
     }
 
-    @InvocableMethod(label='Save Log' description='Saves any log entries that have been generated')
+    @InvocableMethod(category='Logging' label='Save Log' description='Saves any log entries that have been generated')
     public static void saveLog() {
         saveLog(transactionSaveMethod);
     }
