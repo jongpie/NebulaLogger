@@ -130,16 +130,15 @@ private class FlowLogEntry_Tests {
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel;
-        List<String> transactionId = FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
         Logger.saveLog();
 
         Test.stopTest();
 
         Log__c log = [SELECT Id, TransactionId__c FROM Log__c ORDER BY CreatedDate LIMIT 1];
-        System.assertEquals(transactionId[0], log.TransactionId__c);
         System.assertEquals(log.TransactionId__c, Logger.getTransactionId());
 
-        List<Log__c> returnedLogs = FlowLogRepo.getLogIds(new List<String>{transactionId[0]});
+        List<Log__c> returnedLogs = FlowLogRepo.getLogIds();
         System.assertEquals(log.Id, returnedLogs[0].Id);
     }
 }
