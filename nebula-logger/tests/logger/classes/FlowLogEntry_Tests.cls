@@ -70,6 +70,31 @@ private class FlowLogEntry_Tests {
         System.assertEquals(0, logEntries.size());
     }
 
+    @isTest
+    static void it_should_set_related_record_id_when_id_parameter_is_used() {
+        String userLoggingLevel      = 'FINEST';
+        String flowEntryLoggingLevel = 'DEBUG';
+
+        LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
+        loggerSettings.LoggingLevel__c   = userLoggingLevel;
+        update loggerSettings;
+
+        Test.startTest();
+
+        List<FlowLogEntry> flowLogEntries = new List<FlowLogEntry>();
+        FlowLogEntry flowEntry = createFlowLogEntry();
+        flowEntry.loggingLevelName = flowEntryLoggingLevel;
+        flowEntry.recordId = UserInfo.getUserId();
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
+        Logger.saveLog();
+
+        Test.stopTest();
+
+
+        LogEntry__c logEntry = [SELECT Id, RelatedRecordId__c, RelatedRecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        System.assertEquals(UserInfo.getUserId(), logEntry.RelatedRecordId__c);
+        System.assertEquals(null, logEntry.RelatedRecordJson__c);
+    }
 
     @isTest
     static void it_should_store_record_json_when_sobject_parameter_is_used() {
