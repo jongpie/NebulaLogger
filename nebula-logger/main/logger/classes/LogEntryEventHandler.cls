@@ -44,6 +44,7 @@ public without sharing class LogEntryEventHandler {
         LOG.LoginHistoryId__c           = logEntryEvent.LoginHistoryId__c;
         LOG.LoginType__c                = logEntryEvent.LoginType__c;
         LOG.LogoutUrl__c                = logEntryEvent.LogoutUrl__c;
+        LOG.NetworkId__c                = logEntryEvent.NetworkId__c;
         LOG.OwnerId                     = logEntryEvent.CreatedById;
         LOG.ParentLog__r                = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
         LOG.ProfileId__c                = logEntryEvent.ProfileId__c;

@@ -184,6 +184,7 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.LoginHistoryId__c                 = sessionMap == null ? null : sessionMap.get('LoginHistoryId');
         this.logEntryEvent.LoginType__c                      = sessionMap == null ? null : sessionMap.get('LoginType');
         this.logEntryEvent.LogoutUrl__c                      = sessionMap == null ? null : sessionMap.get('LogoutUrl');
+        this.logEntryEvent.NetworkId__c                      = Network.getNetworkId();
         this.logEntryEvent.ProfileId__c                      = UserInfo.getProfileId();
         this.logEntryEvent.ProfileName__c                    = CURRENT_USER.Profile.Name;
         this.logEntryEvent.SessionId__c                      = sessionMap == null ? null : sessionMap.get('SessionId');
