@@ -166,7 +166,9 @@ public without sharing virtual class LogEntryBuilder {
     public void setUserSessionDetails() {
         if(!this.shouldSave) return;
 
-        Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
+        Map<String, String> sessionMap;
+        if(UserInfo.getSessionId() != null) sessionMap = Auth.SessionManagement.getCurrentSession();
+
         LoggingLevel userLoggingLevel  = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
         this.logEntryEvent.ContextIsVisualforce__c           = ApexPages.currentPage() != null;
