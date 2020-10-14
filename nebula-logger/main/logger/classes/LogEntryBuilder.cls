@@ -166,9 +166,10 @@ public without sharing virtual class LogEntryBuilder {
     public void setUserSessionDetails() {
         if(!this.shouldSave) return;
 
-        Map<String, String> sessionMap;
-        if(UserInfo.getSessionId() != null) sessionMap = Auth.SessionManagement.getCurrentSession();
-
+        // TODO this will be fixed by PR 28 - https://github.com/jongpie/NebulaLogger/pull/28
+        // Calling Auth.SessionManagement.getCurrentSession() fails in several contexts & the exception cannot be caught
+        // PR 28 leverages some new Winter '21 features to prevent the issue
+        //Map<String, String> sessionMap = Test.isRunningTest() ? null : Auth.SessionManagement.getCurrentSession();
         LoggingLevel userLoggingLevel  = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
         this.logEntryEvent.ContextIsVisualforce__c           = ApexPages.currentPage() != null;
