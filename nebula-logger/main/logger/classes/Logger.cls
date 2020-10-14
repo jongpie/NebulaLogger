@@ -553,9 +553,11 @@ public without sharing class Logger {
 
         Boolean systemMessagesEnabled = LoggerSettings__c.getInstance().EnableSystemMessages__c;
 
-        if (suspendSaving && systemMessagesEnabled) {
-            String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
-            finest(suspendSavingLogMessage);
+        if (suspendSaving) {
+            if (systemMessagesEnabled) {
+                String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
+                finest(suspendSavingLogMessage);
+            }
 
             return;
         }
