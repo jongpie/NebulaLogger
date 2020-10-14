@@ -13,6 +13,9 @@ public without sharing class FlowLogEntry {
     @InvocableVariable(required=true label='Save Log')
     public Boolean saveLog = true;
 
+    @InvocableVariable(label='(Optional) Record')
+    public SObject record;
+
     @InvocableVariable(label='(Optional) Record ID')
     public Id recordId;
 
