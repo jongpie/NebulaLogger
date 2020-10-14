@@ -31,7 +31,7 @@ public without sharing class Logger {
     }
 
     public static LoggingLevel getUserLoggingLevel() {
-        return getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
+        return USER_LOGGING_LEVEL;
     }
 
     public static Id getQueueableSaveJobId() {
@@ -108,48 +108,96 @@ public without sharing class Logger {
         return error().setMessage(message);
     }
 
+    public static LogEntryBuilder error(LogMessage logMessage) {
+        return error().setMessage(logMessage);
+    }
+
     public static LogEntryBuilder error(String message, List<String> topics) {
         return error().setMessage(message).setTopics(topics);
+    }
+
+    public static LogEntryBuilder error(LogMessage logMessage, List<String> topics) {
+        return error().setMessage(logMessage).setTopics(topics);
     }
 
     public static LogEntryBuilder error(String message, SObject record) {
         return error().setMessage(message).setRecordId(record);
     }
 
+    public static LogEntryBuilder error(LogMessage logMessage, SObject record) {
+        return error().setMessage(logMessage).setRecordId(record);
+    }
+
     public static LogEntryBuilder error(String message, SObject record, List<String> topics) {
         return error().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static LogEntryBuilder error(LogMessage logMessage, SObject record, List<String> topics) {
+        return error().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
     public static LogEntryBuilder error(String message, Id recordId) {
         return error().setMessage(message).setRecordId(recordId);
     }
 
+    public static LogEntryBuilder error(LogMessage logMessage, Id recordId) {
+        return error().setMessage(logMessage).setRecordId(recordId);
+    }
+
     public static LogEntryBuilder error(String message, Id recordId, List<String> topics) {
         return error().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    public static LogEntryBuilder error(LogMessage logMessage, Id recordId, List<String> topics) {
+        return error().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     public static LogEntryBuilder error(String message, Exception apexException) {
         return error().setMessage(message).setExceptionDetails(apexException);
     }
 
+    public static LogEntryBuilder error(LogMessage logMessage, Exception apexException) {
+        return error().setMessage(logMessage).setExceptionDetails(apexException);
+    }
+
     public static LogEntryBuilder error(String message, Exception apexException, List<String> topics) {
         return error().setMessage(message).setTopics(topics).setExceptionDetails(apexException);
+    }
+
+    public static LogEntryBuilder error(LogMessage logMessage, Exception apexException, List<String> topics) {
+        return error().setMessage(logMessage).setTopics(topics).setExceptionDetails(apexException);
     }
 
     public static LogEntryBuilder error(String message, SObject record, Exception apexException) {
         return error().setMessage(message).setRecordId(record).setExceptionDetails(apexException);
     }
 
+    public static LogEntryBuilder error(LogMessage logMessage, SObject record, Exception apexException) {
+        return error().setMessage(logMessage).setRecordId(record).setExceptionDetails(apexException);
+    }
+
     public static LogEntryBuilder error(String message, SObject record, Exception apexException, List<String> topics) {
         return error().setMessage(message).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
+    }
+
+    public static LogEntryBuilder error(LogMessage logMessage, SObject record, Exception apexException, List<String> topics) {
+        return error().setMessage(logMessage).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
     }
 
     public static LogEntryBuilder error(String message, Id recordId, Exception apexException) {
         return error().setMessage(message).setRecordId(recordId).setExceptionDetails(apexException);
     }
 
+    public static LogEntryBuilder error(LogMessage logMessage, Id recordId, Exception apexException) {
+        return error().setMessage(logMessage).setRecordId(recordId).setExceptionDetails(apexException);
+    }
+
     public static LogEntryBuilder error(String message, Id recordId, Exception apexException, List<String> topics) {
         return error().setMessage(message).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
+    }
+
+    public static LogEntryBuilder error(LogMessage logMessage, Id recordId, Exception apexException, List<String> topics) {
+        return error().setMessage(logMessage).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
     }
 
     // WARN logging level methods
@@ -161,24 +209,48 @@ public without sharing class Logger {
         return warn().setMessage(message);
     }
 
+    public static LogEntryBuilder warn(LogMessage logMessage) {
+        return warn().setMessage(logMessage);
+    }
+
     public static LogEntryBuilder warn(String message, List<String> topics) {
         return warn().setMessage(message).setTopics(topics);
+    }
+
+    public static LogEntryBuilder warn(LogMessage logMessage, List<String> topics) {
+        return warn().setMessage(logMessage).setTopics(topics);
     }
 
     public static LogEntryBuilder warn(String message, SObject record) {
         return warn().setMessage(message).setRecordId(record);
     }
 
+    public static LogEntryBuilder warn(LogMessage logMessage, SObject record) {
+        return warn().setMessage(logMessage).setRecordId(record);
+    }
+
     public static LogEntryBuilder warn(String message, SObject record, List<String> topics) {
         return warn().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static LogEntryBuilder warn(LogMessage logMessage, SObject record, List<String> topics) {
+        return warn().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
     public static LogEntryBuilder warn(String message, Id recordId) {
         return warn().setMessage(message).setRecordId(recordId);
     }
 
+    public static LogEntryBuilder warn(LogMessage logMessage, Id recordId) {
+        return warn().setMessage(logMessage).setRecordId(recordId);
+    }
+
     public static LogEntryBuilder warn(String message, Id recordId, List<String> topics) {
         return warn().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    public static LogEntryBuilder warn(LogMessage logMessage, Id recordId, List<String> topics) {
+        return warn().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // INFO logging level methods
@@ -190,25 +262,50 @@ public without sharing class Logger {
         return info().setMessage(message);
     }
 
+    public static LogEntryBuilder info(LogMessage logMessage) {
+        return info().setMessage(logMessage);
+    }
+
     public static LogEntryBuilder info(String message, List<String> topics) {
         return info().setMessage(message).setTopics(topics);
+    }
+
+    public static LogEntryBuilder info(LogMessage logMessage, List<String> topics) {
+        return info().setMessage(logMessage).setTopics(topics);
     }
 
     public static LogEntryBuilder info(String message, SObject record) {
         return info().setMessage(message).setRecordId(record);
     }
 
+    public static LogEntryBuilder info(LogMessage logMessage, SObject record) {
+        return info().setMessage(logMessage).setRecordId(record);
+    }
+
     public static LogEntryBuilder info(String message, SObject record, List<String> topics) {
         return info().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static LogEntryBuilder info(LogMessage logMessage, SObject record, List<String> topics) {
+        return info().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
     public static LogEntryBuilder info(String message, Id recordId) {
         return info().setMessage(message).setRecordId(recordId);
     }
 
+    public static LogEntryBuilder info(LogMessage logMessage, Id recordId) {
+        return info().setMessage(logMessage).setRecordId(recordId);
+    }
+
     public static LogEntryBuilder info(String message, Id recordId, List<String> topics) {
         return info().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
+
+    public static LogEntryBuilder info(LogMessage logMessage, Id recordId, List<String> topics) {
+        return info().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
+    }
+
 
     // DEBUG log level methods
     public static LogEntryBuilder debug() {
@@ -219,24 +316,49 @@ public without sharing class Logger {
         return debug().setMessage(message);
     }
 
+    public static LogEntryBuilder debug(LogMessage logMessage) {
+        return debug().setMessage(logMessage);
+    }
+
+
     public static LogEntryBuilder debug(String message, List<String> topics) {
         return debug().setMessage(message).setTopics(topics);
+    }
+
+    public static LogEntryBuilder debug(LogMessage logMessage, List<String> topics) {
+        return debug().setMessage(logMessage).setTopics(topics);
     }
 
     public static LogEntryBuilder debug(String message, SObject record) {
         return debug().setMessage(message).setRecordId(record);
     }
 
+    public static LogEntryBuilder debug(LogMessage logMessage, SObject record) {
+        return debug().setMessage(logMessage).setRecordId(record);
+    }
+
     public static LogEntryBuilder debug(String message, SObject record, List<String> topics) {
         return debug().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static LogEntryBuilder debug(LogMessage logMessage, SObject record, List<String> topics) {
+        return debug().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
     public static LogEntryBuilder debug(String message, Id recordId) {
         return debug().setMessage(message).setRecordId(recordId);
     }
 
+    public static LogEntryBuilder debug(LogMessage logMessage, Id recordId) {
+        return debug().setMessage(logMessage).setRecordId(recordId);
+    }
+
     public static LogEntryBuilder debug(String message, Id recordId, List<String> topics) {
         return debug().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    public static LogEntryBuilder debug(LogMessage logMessage, Id recordId, List<String> topics) {
+        return debug().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // FINE log level methods
@@ -248,24 +370,48 @@ public without sharing class Logger {
         return fine().setMessage(message);
     }
 
+    public static LogEntryBuilder fine(LogMessage logMessage) {
+        return fine().setMessage(logMessage);
+    }
+
     public static LogEntryBuilder fine(String message, List<String> topics) {
         return fine().setMessage(message).setTopics(topics);
+    }
+
+    public static LogEntryBuilder fine(LogMessage logMessage, List<String> topics) {
+        return fine().setMessage(logMessage).setTopics(topics);
     }
 
     public static LogEntryBuilder fine(String message, SObject record) {
         return fine().setMessage(message).setRecordId(record);
     }
 
+    public static LogEntryBuilder fine(LogMessage logMessage, SObject record) {
+        return fine().setMessage(logMessage).setRecordId(record);
+    }
+
     public static LogEntryBuilder fine(String message, SObject record, List<String> topics) {
         return fine().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static LogEntryBuilder fine(LogMessage logMessage, SObject record, List<String> topics) {
+        return fine().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
     public static LogEntryBuilder fine(String message, Id recordId) {
         return fine().setMessage(message).setRecordId(recordId);
     }
 
+    public static LogEntryBuilder fine(LogMessage logMessage, Id recordId) {
+        return fine().setMessage(logMessage).setRecordId(recordId);
+    }
+
     public static LogEntryBuilder fine(String message, Id recordId, List<String> topics) {
         return fine().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    public static LogEntryBuilder fine(LogMessage logMessage, Id recordId, List<String> topics) {
+        return fine().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // FINER log level methods
@@ -277,24 +423,48 @@ public without sharing class Logger {
         return finer().setMessage(message);
     }
 
+    public static LogEntryBuilder finer(LogMessage logMessage) {
+        return finer().setMessage(logMessage);
+    }
+
     public static LogEntryBuilder finer(String message, List<String> topics) {
         return finer().setMessage(message).setTopics(topics);
+    }
+
+    public static LogEntryBuilder finer(LogMessage logMessage, List<String> topics) {
+        return finer().setMessage(logMessage).setTopics(topics);
     }
 
     public static LogEntryBuilder finer(String message, SObject record) {
         return finer().setMessage(message).setRecordId(record);
     }
 
+    public static LogEntryBuilder finer(LogMessage logMessage, SObject record) {
+        return finer().setMessage(logMessage).setRecordId(record);
+    }
+
     public static LogEntryBuilder finer(String message, SObject record, List<String> topics) {
         return finer().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static LogEntryBuilder finer(LogMessage logMessage, SObject record, List<String> topics) {
+        return finer().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
     public static LogEntryBuilder finer(String message, Id recordId) {
         return finer().setMessage(message).setRecordId(recordId);
     }
 
+    public static LogEntryBuilder finer(LogMessage logMessage, Id recordId) {
+        return finer().setMessage(logMessage).setRecordId(recordId);
+    }
+
     public static LogEntryBuilder finer(String message, Id recordId, List<String> topics) {
         return finer().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    public static LogEntryBuilder finer(LogMessage logMessage, Id recordId, List<String> topics) {
+        return finer().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // FINEST log level methods
@@ -306,24 +476,48 @@ public without sharing class Logger {
         return finest().setMessage(message);
     }
 
+    public static LogEntryBuilder finest(LogMessage logMessage) {
+        return finest().setMessage(logMessage);
+    }
+
     public static LogEntryBuilder finest(String message, List<String> topics) {
         return finest().setMessage(message).setTopics(topics);
+    }
+
+    public static LogEntryBuilder finest(LogMessage logMessage, List<String> topics) {
+        return finest().setMessage(logMessage).setTopics(topics);
     }
 
     public static LogEntryBuilder finest(String message, SObject record) {
         return finest().setMessage(message).setRecordId(record);
     }
 
+    public static LogEntryBuilder finest(LogMessage logMessage, SObject record) {
+        return finest().setMessage(logMessage).setRecordId(record);
+    }
+
     public static LogEntryBuilder finest(String message, SObject record, List<String> topics) {
         return finest().setMessage(message).setRecordId(record).setTopics(topics);
+    }
+
+    public static LogEntryBuilder finest(LogMessage logMessage, SObject record, List<String> topics) {
+        return finest().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
     public static LogEntryBuilder finest(String message, Id recordId) {
         return finest().setMessage(message).setRecordId(recordId);
     }
 
+    public static LogEntryBuilder finest(LogMessage logMessage, Id recordId) {
+        return finest().setMessage(logMessage).setRecordId(recordId);
+    }
+
     public static LogEntryBuilder finest(String message, Id recordId, List<String> topics) {
         return finest().setMessage(message).setRecordId(recordId).setTopics(topics);
+    }
+
+    public static LogEntryBuilder finest(LogMessage logMessage, Id recordId, List<String> topics) {
+        return finest().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     public static void setSaveMethod(SaveMethod saveMethod) {

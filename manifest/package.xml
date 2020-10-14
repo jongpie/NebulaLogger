@@ -18,6 +18,8 @@
         <members>LogEntryHandler_Tests</members>
         <members>Logger</members>
         <members>Logger_Tests</members>
+        <members>LogMessage</members>
+        <members>LogMessage_Tests</members>
         <members>RestApi</members>
         <members>RestApi_Tests</members>
         <members>Uuid</members>
