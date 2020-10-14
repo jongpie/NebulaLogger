@@ -71,7 +71,7 @@ public without sharing class LogEntryEventHandler {
         // Since the log is upserted once per transaction, we can run some queries here
         setOrganizationDetails();
         setNetworkDetails();
-        setUserLicenseDetails();
+        setProfileDetails();
         setSystemMode();
 
         upsert log TransactionId__c;
@@ -227,14 +227,14 @@ public without sharing class LogEntryEventHandler {
         LOG.NetworkUrlPathPrefix__c       = (String)matchingNetwork.get('UrlPathPrefix');
     }
 
-    private void setUserLicenseDetails() {
-        UserLicense userLicense = [
-            SELECT Id, Name, LicenseDefinitionKey FROM UserLicense
-            WHERE Id IN (SELECT UserLicenseId FROM Profile WHERE Id = :LOG.ProfileId__c)
-        ];
+    private void setProfileDetails() {
+        Id logUserId = (Id)LOG.LoggedBy__c;
+        User logUser = [SELECT Id, UserRole.Name, Profile.Name, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name FROM User WHERE Id = :logUserId];
 
-        LOG.UserLicenseDefinitionKey__c = userLicense.LicenseDefinitionKey;
-        LOG.UserLicenseName__c          = userLicense.Name;
+        LOG.ProfileName__c              = logUser.Profile.Name;
+        LOG.UserLicenseDefinitionKey__c = logUser.Profile.UserLicense.LicenseDefinitionKey;
+        LOG.UserLicenseName__c          = logUser.Profile.UserLicense.Name;
+        LOG.UserRoleName__c             = logUser.UserRole == null ? null : logUser.UserRole.Name;
     }
 
     private void setSystemMode() {
