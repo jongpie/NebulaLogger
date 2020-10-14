@@ -11,8 +11,9 @@ public without sharing class LogEntryHandler {
     private static final String FIELD_PREFIX = 'Related';
 
     public void execute() {
-        if (!Trigger.isBefore)
+        if (!Trigger.isBefore) {
             return;
+        }
 
         List<LogEntry__c> logEntries = (List<LogEntry__c>) Trigger.new;
 
@@ -23,8 +24,9 @@ public without sharing class LogEntryHandler {
         DescribeSObjectResult sobjectDescribe = Schema.LogEntry__c.SObjectType.getDescribe();
         for (LogEntry__c logEntry : logEntries) {
             // Skip the log entry if there's no related record ID
-            if (logEntry.RelatedRecordId__c == null)
+            if (logEntry.RelatedRecordId__c == null) {
                 continue;
+            }
 
             // Based on the related record ID, get the SObject Type
             Id relatedRecordId = (Id) logEntry.RelatedRecordId__c;
@@ -38,8 +40,9 @@ public without sharing class LogEntryHandler {
             Schema.SObjectField lookupField = sobjectDescribe.fields.getMap().get(lookupFieldName);
 
             // If there's a lookup field, set it
-            if (lookupField != null)
+            if (lookupField != null) {
                 logEntry.put(lookupField, relatedRecordId);
+            }
         }
     }
 

@@ -26,12 +26,15 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void insertLog() {
-        if (LOG.Id != null)
+        if (LOG.Id != null) {
             return; // Log only needs to be saved once
-        if (Trigger.new == null)
+        }
+        if (Trigger.new == null) {
             return; // This class should only be used in a trigger context...
-        if (Trigger.new.getSObjectType() != Schema.LogEntryEvent__e.SObjectType)
+        }
+        if (Trigger.new.getSObjectType() != Schema.LogEntryEvent__e.SObjectType) {
             return; //...for the LogEntryEvent__e object
+        }
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
         // The first LogEntryEvent__e record is used to normalize the data
@@ -69,25 +72,27 @@ public without sharing class LogEntryEventHandler {
         LOG.UserRoleName__c = logEntryEvent.UserRoleName__c;
         LOG.UserType__c = logEntryEvent.UserType__c;
 
-        if (LOG.SystemModeIsApexRest__c)
+        if (LOG.SystemModeIsApexRest__c) {
             LOG.SystemMode__c = 'REST';
-        else if (LOG.SystemModeIsBatch__c)
+        } else if (LOG.SystemModeIsBatch__c) {
             LOG.SystemMode__c = 'Batch';
-        else if (LOG.SystemModeIsFuture__c)
+        } else if (LOG.SystemModeIsFuture__c) {
             LOG.SystemMode__c = 'Future';
-        else if (LOG.SystemModeIsQueueable__c)
+        } else if (LOG.SystemModeIsQueueable__c) {
             LOG.SystemMode__c = 'Queueable';
-        else if (LOG.SystemModeIsScheduledJob__c)
+        } else if (LOG.SystemModeIsScheduledJob__c) {
             LOG.SystemMode__c = 'Scheduled';
-        else
+        } else {
             LOG.SystemMode__c = 'Standard';
+        }
 
         upsert log TransactionId__c;
     }
 
     private void insertLogEntries() {
-        if (LOG.Id == null)
+        if (LOG.Id == null) {
             return; // Avoid an exception - if there is no log, we can't save log entries
+        }
 
         for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) Trigger.new) {
             LogEntry__c logEntry = new LogEntry__c(
@@ -145,14 +150,15 @@ public without sharing class LogEntryEventHandler {
                 Type__c = logEntryEvent.Type__c
             );
 
-            if (logEntry.ContextLightningComponentName__c != null)
+            if (logEntry.ContextLightningComponentName__c != null) {
                 logEntry.Context__c = 'Component';
-            else if (logEntry.FlowName__c != null)
+            } else if (logEntry.FlowName__c != null) {
                 logEntry.Context__c = 'Flow';
-            else if (logEntry.ContextIsTriggerExecuting__c)
+            } else if (logEntry.ContextIsTriggerExecuting__c) {
                 logEntry.Context__c = 'Trigger';
-            else if (logEntry.ContextIsVisualforce__c)
+            } else if (logEntry.ContextIsVisualforce__c) {
                 logEntry.Context__c = 'Visualforce';
+            }
 
             this.logEntries.add(logEntry);
 
@@ -165,8 +171,9 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void insertTopics() {
-        if (this.topicNames.isEmpty())
+        if (this.topicNames.isEmpty()) {
             return;
+        }
 
         // Query for existing topics
         Map<String, Topic> topicNameToTopics = new Map<String, Topic>();
@@ -176,8 +183,9 @@ public without sharing class LogEntryEventHandler {
         // Create any new topics
         List<Topic> topicsToCreate = new List<Topic>();
         for (String topicName : this.topicNames) {
-            if (topicNameToTopics.get(topicName) != null)
+            if (topicNameToTopics.get(topicName) != null) {
                 continue;
+            }
 
             topicsToCreate.add(new Topic(Name = topicName));
         }
@@ -197,8 +205,9 @@ public without sharing class LogEntryEventHandler {
                     new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id)
                 );
 
-                if (!LoggerSettings__c.getInstance().AddLogEntryTopicsToLog__c)
+                if (!LoggerSettings__c.getInstance().AddLogEntryTopicsToLog__c) {
                     continue;
+                }
 
                 // Add all topics to the parent log when enabled
                 topicAssignments.add(

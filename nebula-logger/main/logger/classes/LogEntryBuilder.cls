@@ -18,8 +18,9 @@ public without sharing virtual class LogEntryBuilder {
 
     public LogEntryBuilder(LoggingLevel loggingLevel) {
         this.shouldSave = Logger.isEnabled(loggingLevel);
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return;
+        }
 
         DmlException stackTraceException = new DmlException();
 
@@ -61,8 +62,9 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setMessage(String message) {
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return this;
+        }
 
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
 
@@ -73,15 +75,17 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setMessage(LogMessage logMessage) {
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return this;
+        }
 
         return this.setMessage(logMessage.getMessage());
     }
 
     public LogEntryBuilder setExceptionDetails(Exception apexException) {
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return this;
+        }
 
         setExceptionDetails(apexException.getTypeName(), apexException.getStackTraceString());
 
@@ -92,8 +96,9 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setExceptionDetails(String exceptionType, String exceptionStackTrace) {
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return this;
+        }
 
         this.logEntryEvent.ExceptionType__c = exceptionType;
         this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace;
@@ -103,8 +108,9 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setRecordId(SObject record) {
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return this;
+        }
 
         if (LoggerSettings__c.getInstance().StoreRelatedRecordJson__c) {
             String truncatedRecordJson = truncateFieldValue(
@@ -118,16 +124,18 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public LogEntryBuilder setRecordId(Id recordId) {
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return this;
+        }
 
         this.logEntryEvent.RelatedRecordId__c = recordId;
         return this;
     }
 
     public LogEntryBuilder setTopics(List<String> topics) {
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return this;
+        }
 
         this.logEntryEvent.Topics__c = getTopicsString(topics);
         return this;
@@ -144,8 +152,9 @@ public without sharing virtual class LogEntryBuilder {
 
     public LogEntryEvent__e getLogEntryEvent() {
         // Lazy-loading of setting user-session details to help minimize Apex heap size usage
-        if (!this.userSessionDetailsAreSet)
+        if (!this.userSessionDetailsAreSet) {
             this.setUserSessionDetails();
+        }
 
         return this.logEntryEvent;
     }
@@ -197,8 +206,9 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.UserRoleName__c = CURRENT_USER.UserRole == null ? null : CURRENT_USER.UserRole.Name;
         this.logEntryEvent.UserType__c = UserInfo.getUserType();
 
-        if (this.logEntryEvent.SessionType__c != 'Oauth2')
+        if (this.logEntryEvent.SessionType__c != 'Oauth2') {
             this.logEntryEvent.ContextThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
+        }
     }
 
     private static String getApiVersion() {
@@ -209,10 +219,9 @@ public without sharing virtual class LogEntryBuilder {
     private String getOriginLocation(DmlException stackTraceException) {
         String originLocation;
         for (String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('.LogEntryBuilder.'))
+            if (currentStackTraceLine.contains('.LogEntryBuilder.') || currentStackTraceLine.contains('.Logger.')) {
                 continue;
-            if (currentStackTraceLine.contains('.Logger.'))
-                continue;
+            }
 
             originLocation = currentStackTraceLine.substringBefore(':');
             if (originLocation.startsWith('Class.')) {
@@ -225,15 +234,15 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     private String getStackTrace(DmlException stackTraceException) {
-        if (!LoggerSettings__c.getInstance().StoreStackTrace__c)
+        if (!LoggerSettings__c.getInstance().StoreStackTrace__c) {
             return null;
+        }
 
         List<String> stackTraceLines = new List<String>();
         for (String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('.LogEntryBuilder.'))
+            if (currentStackTraceLine.contains('.LogEntryBuilder.') || currentStackTraceLine.contains('.Logger.')) {
                 continue;
-            if (currentStackTraceLine.contains('.Logger.'))
-                continue;
+            }
 
             stackTraceLines.add(currentStackTraceLine);
         }
@@ -243,18 +252,20 @@ public without sharing virtual class LogEntryBuilder {
 
     private static String getVisualforcePageName() {
         String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
-        if (visualforcePageName != null && visualforcePageName.contains('?'))
+        if (visualforcePageName != null && visualforcePageName.contains('?')) {
             visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
-        else if (visualforcePageName != null)
+        } else if (visualforcePageName != null) {
             visualforcePageName = visualforcePageName.substringAfter('apex/');
+        }
 
         return visualforcePageName;
     }
 
     // Private static methods
     private static String getTopicsString(List<String> topics) {
-        if (topics == null || topics.isEmpty())
+        if (topics == null || topics.isEmpty()) {
             return null;
+        }
 
         String topicsString = String.escapeSingleQuotes(String.join(topics, ','));
         return truncateFieldValue(Schema.LogEntryEvent__e.Topics__c, topicsString);
@@ -262,11 +273,12 @@ public without sharing virtual class LogEntryBuilder {
 
     private static String truncateFieldValue(Schema.SObjectField field, String value) {
         Integer fieldMaxLength = field.getDescribe().getLength();
-        if (String.isEmpty(value))
+        if (String.isEmpty(value)) {
             return value;
-        else if (value.length() <= fieldMaxLength)
+        } else if (value.length() <= fieldMaxLength) {
             return value;
-        else
-            return value.left(fieldMaxLength);
+        }
+
+        return value.left(fieldMaxLength);
     }
 }

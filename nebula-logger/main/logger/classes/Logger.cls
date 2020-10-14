@@ -547,16 +547,15 @@ public without sharing class Logger {
     }
 
     public static void saveLog(SaveMethod transactionSaveMethod) {
-        if (LOG_ENTRIES.isEmpty())
+        if (LOG_ENTRIES.isEmpty()) {
             return;
+        }
 
         Boolean systemMessagesEnabled = LoggerSettings__c.getInstance().EnableSystemMessages__c;
 
-        if (suspendSaving) {
-            if (systemMessagesEnabled) {
-                String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
-                finest(suspendSavingLogMessage);
-            }
+        if (suspendSaving && systemMessagesEnabled) {
+            String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
+            finest(suspendSavingLogMessage);
 
             return;
         }
@@ -580,8 +579,9 @@ public without sharing class Logger {
         // TODO cleanup
         List<LogEntryBuilder> logEntriesToSave = new List<LogEntryBuilder>();
         for (LogEntryBuilder logEntryBuilder : LOG_ENTRIES) {
-            if (!logEntryBuilder.shouldSave())
+            if (!logEntryBuilder.shouldSave()) {
                 continue;
+            }
 
             logEntriesToSave.add(logEntryBuilder);
         }
@@ -593,8 +593,9 @@ public without sharing class Logger {
         for (Integer i = 0; i < LOG_ENTRIES.size(); i++) {
             LogEntryBuilder logEntryBuilder = LOG_ENTRIES.get(i);
 
-            if (i == indexOfLastRecord)
+            if (i == indexOfLastRecord) {
                 logEntryBuilder.setUserSessionDetails();
+            }
 
             LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
             logEntryEvents.add(logEntryEvent);
@@ -614,14 +615,14 @@ public without sharing class Logger {
         }
 
         // TODO add error handling for when event bus fails to publish
-
         flushBuffer();
     }
 
     // Utility methods
     public static LoggingLevel getLoggingLevel(String loggingLevelName) {
-        if (loggingLevelName != null)
+        if (loggingLevelName != null) {
             loggingLevelName = loggingLevelName.toUpperCase();
+        }
 
         switch on loggingLevelName {
             when 'NONE' {
@@ -698,8 +699,9 @@ public without sharing class Logger {
         public void enqueueLogEntries(List<LogEntryEvent__e> logEntryEvents) {
             this.logEntryEvents.addAll(logEntryEvents);
 
-            if (jobId == null)
+            if (jobId == null) {
                 jobId = System.enqueueJob(this);
+            }
         }
 
         public void execute(System.QueueableContext queueableContext) {
