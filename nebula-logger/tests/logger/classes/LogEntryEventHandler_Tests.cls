@@ -228,7 +228,7 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+        Test.getEventBus().deliver();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
@@ -238,6 +238,8 @@ private class LogEntryEventHandler_Tests {
 
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
+
+        Test.stopTest();
     }
 
 }
