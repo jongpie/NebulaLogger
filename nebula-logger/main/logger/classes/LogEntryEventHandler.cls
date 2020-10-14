@@ -21,12 +21,12 @@ public without sharing class LogEntryEventHandler {
     }
 
     public void execute() {
-        this.insertLog();
+        this.upsertLog();
         this.insertLogEntries();
         this.insertTopics();
     }
 
-    private void insertLog() {
+    private void upsertLog() {
         if(LOG.Id != null) return; // Log only needs to be saved once
         if(Trigger.new == null) return; // This class should only be used in a trigger context...
         if(Trigger.new.getSObjectType() != Schema.LogEntryEvent__e.SObjectType) return; //...for the LogEntryEvent__e object
@@ -68,12 +68,11 @@ public without sharing class LogEntryEventHandler {
         LOG.UserRoleName__c             = logEntryEvent.UserRoleName__c;
         LOG.UserType__c                 = logEntryEvent.UserType__c;
 
-        if(LOG.SystemModeIsApexRest__c)          LOG.SystemMode__c = 'REST';
-        else if(LOG.SystemModeIsBatch__c)        LOG.SystemMode__c = 'Batch';
-        else if(LOG.SystemModeIsFuture__c)       LOG.SystemMode__c = 'Future';
-        else if(LOG.SystemModeIsQueueable__c)    LOG.SystemMode__c = 'Queueable';
-        else if(LOG.SystemModeIsScheduledJob__c) LOG.SystemMode__c = 'Scheduled';
-        else                                     LOG.SystemMode__c = 'Standard';
+        // Since the log is upserted once per transaction, we can run some queries here
+        setOrganizationDetails();
+        setNetworkDetails();
+        setUserLicenseDetails();
+        setSystemMode();
 
         upsert log TransactionId__c;
     }
@@ -194,6 +193,57 @@ public without sharing class LogEntryEventHandler {
             }
         }
         insert new List<TopicAssignment>(topicAssignments);
+    }
+
+    private void setOrganizationDetails() {
+        Organization org = [SELECT Id, Name FROM Organization];
+
+        LOG.OrganizationId__c   = org.Id;
+        LOG.OrganizationName__c = org.Name;
+    }
+
+    private void setNetworkDetails() {
+        if(LOG.NetworkId__c == null) return;
+
+        String networkApiName = 'Network';
+        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
+        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
+
+        if(!networksEnabled) return;
+
+        Id networkId = (Id)LOG.NetworkId__c;
+
+        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
+        List<SObject> matchingNetworks = Database.query(queryString);
+
+        if(matchingNetworks.isEmpty()) return;
+
+        SObject matchingNetwork = matchingNetworks.get(0);
+
+        LOG.NetworkName__c                = (String)matchingNetwork.get('Name');
+        LOG.NetworkLoginUrl__c            = Network.getLoginUrl(networkId);
+        LOG.NetworkLoginUrl__c            = Network.getLogoutUrl(networkId);
+        LOG.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(networkId);
+        LOG.NetworkUrlPathPrefix__c       = (String)matchingNetwork.get('UrlPathPrefix');
+    }
+
+    private void setUserLicenseDetails() {
+        UserLicense userLicense = [
+            SELECT Id, Name, LicenseDefinitionKey FROM UserLicense
+            WHERE Id IN (SELECT UserLicenseId FROM Profile WHERE Id = :LOG.ProfileId__c)
+        ];
+
+        LOG.UserLicenseDefinitionKey__c = userLicense.LicenseDefinitionKey;
+        LOG.UserLicenseName__c          = userLicense.Name;
+    }
+
+    private void setSystemMode() {
+        if(LOG.SystemModeIsApexRest__c)          LOG.SystemMode__c = 'REST';
+        else if(LOG.SystemModeIsBatch__c)        LOG.SystemMode__c = 'Batch';
+        else if(LOG.SystemModeIsFuture__c)       LOG.SystemMode__c = 'Future';
+        else if(LOG.SystemModeIsQueueable__c)    LOG.SystemMode__c = 'Queueable';
+        else if(LOG.SystemModeIsScheduledJob__c) LOG.SystemMode__c = 'Scheduled';
+        else                                     LOG.SystemMode__c = 'Standard';
     }
 
 }
