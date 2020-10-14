@@ -142,6 +142,22 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.Type__c, logEntry.Type__c);
     }
 
+    @testSetup
+    static void setup() {
+        PermissionSet permissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'LoggerAdmin'];
+
+        List<permissionSetAssignment> existingAssignments = [
+            SELECT Id
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :UserInfo.getUserId()
+            AND PermissionSetId = :permissionSet.Id
+        ];
+
+        if(!existingAssignments.isEmpty()) return;
+
+        insert new PermissionSetAssignment(AssigneeId = UserInfo.getUserId(), PermissionSetId = permissionSet.Id);
+    }
+
     @isTest
     static void it_should_normalize_event_data_into_log_and_log_entry() {
         User currentUser          = getCurrentUser();
