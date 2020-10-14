@@ -22,6 +22,7 @@ private class LogEntryEventHandler_Tests {
             SystemModeIsBatch__c, SystemModeIsFuture__c, SystemModeIsQueueable__c,
             SystemModeIsScheduledJob__c, TimeZoneId__c, TimeZoneName__c, TransactionId__c,
             UserLoggingLevel__c, UserLoggingLevelOrdinal__c, UserRoleId__c, UserRoleName__c, UserType__c,
+            OrganizationId__c, OrganizationName__c, UserLicenseDefinitionKey__c, UserLicenseId__c, UserLicenseName__c,
             (
                 SELECT ContextIsLightningComponent__c, ContextIsTriggerExecuting__c,
                 ContextIsVisualforce__c, ContextLightningComponentName__c, ContextTriggerOperationType__c,
@@ -50,15 +51,14 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c);
         System.assertEquals(logEntryEvent.ContextThemeDisplayed__c, log.ContextThemeDisplayed__c);
         System.assertEquals(logEntryEvent.Locale__c, log.Locale__c);
-        System.assertEquals(logEntryEvent.CreatedById, log.LoggedBy__c);
+        System.assertEquals(UserInfo.getUserId(), log.LoggedBy__c);
         System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c);
         System.assertEquals(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c);
         System.assertEquals(logEntryEvent.LoginType__c, log.LoginType__c);
         System.assertEquals(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c);
         System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c);
-        System.assertEquals(logEntryEvent.CreatedById, log.OwnerId);
+        System.assertEquals(UserInfo.getUserId(), log.OwnerId);
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c);
-        System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
         System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c);
@@ -74,8 +74,8 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         System.assertEquals(logEntryEvent.UserLoggingLevel__c, log.UserLoggingLevel__c);
         System.assertEquals(logEntryEvent.UserLoggingLevelOrdinal__c, log.UserLoggingLevelOrdinal__c);
-        System.assertEquals(logEntryEvent.UserRoleId__c, log.UserRoleId__c);
-        System.assertEquals(logEntryEvent.UserRoleName__c, log.UserRoleName__c);
+        System.assertEquals(currentUser.UserRoleId, log.UserRoleId__c);
+        System.assertEquals(currentUser.UserRoleId == null ? null : currentUser.UserRole.Name, log.UserRoleName__c);
         System.assertEquals(logEntryEvent.UserType__c, log.UserType__c);
 
         // Org fields
@@ -83,11 +83,9 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(org.Name, log.OrganizationName__c);
 
         // Profile fields
-        System.assertEquals(currentUser.Profile.Name, log.ProfileName__c);
         System.assertEquals(currentUser.Profile.UserLicense.LicenseDefinitionKey, log.UserLicenseDefinitionKey__c);
         System.assertEquals(currentUser.Profile.UserLicenseId, log.UserLicenseId__c);
         System.assertEquals(currentUser.Profile.UserLicense.Name, log.UserLicenseName__c);
-        System.assertEquals(currentUser.UserRole == null ? null : currentUser.UserRole.Name, log.UserRoleName__c);
     }
 
     static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
@@ -193,7 +191,7 @@ private class LogEntryEventHandler_Tests {
             LimitsSoslSearchesMax__c          = 987,
             LimitsSoslSearchesUsed__c         = 123,
             Locale__c                         = 'es-ES',
-            LoggingLevel__c                   = 'SOMETHING',
+            LoggingLevel__c                   = 'DEBUG',
             LoggingLevelOrdinal__c            = 9,
             LoginDomain__c                    = 'https://fake.my.salesforce.com',
             LoginHistoryId__c                 = '255.255.255.255',
