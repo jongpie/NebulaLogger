@@ -215,6 +215,14 @@ public without sharing virtual class LogEntryBuilder {
         return Auth.SessionManagement.getCurrentSession();
     }
 
+    private Map<String, String> getSessionMap() {
+        Quiddity currentQuiddity = Logger.getCurrentQuiddity();
+        if (Test.isRunningTest() || currentQuiddity == Quiddity.INVOCABLE_ACTION) {
+            return new Map<String, String>{ 'SessionId' => UserInfo.getSessionId() };
+        }
+        return Auth.SessionManagement.getCurrentSession();
+    }
+
     private static String getApiVersion() {
         String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
