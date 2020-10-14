@@ -77,8 +77,13 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.LoggingLevel__c    = flowLogEntry.loggingLevelName;
         this.logEntryEvent.OriginLocation__c  = flowLogEntry.flowName;
         this.logEntryEvent.OriginType__c      = ORIGIN_TYPE_FLOW;
-        this.logEntryEvent.RelatedRecordId__c = flowLogEntry.recordId;
         this.logEntryEvent.Timestamp__c       = flowLogEntry.timestamp;
+
+        if(flowLogEntry.record != null) {
+            this.setRecordId(flowLogEntry.record);
+        } else if(flowLogEntry.recordId != null) {
+            this.setRecordId(flowLogEntry.recordId);
+        }
 
         return this.setMessage(flowLogEntry.message);
     }
