@@ -13,7 +13,7 @@ private class LogEntryEventHandler_Tests {
         ];
     }
 
-    static Log__c getLog(String transactionId) {
+    static Log__c getLog() {
         return [
             SELECT ApiVersion__c, ContextThemeDisplayed__c, Id, Locale__c, LoggedBy__c,
             LoginDomain__c, LoginHistoryId__c, LoginType__c, LogoutUrl__c, NetworkId__c,
@@ -40,7 +40,7 @@ private class LogEntryEventHandler_Tests {
                 OriginLocation__c, RelatedRecordId__c, RelatedRecordJson__c, StackTrace__c, Timestamp__c, Type__c
                 FROM LogEntries__r
             )
-            FROM Log__c WHERE TransactionId__c = :transactionId
+            FROM Log__c
         ];
     }
 
@@ -142,6 +142,22 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.Type__c, logEntry.Type__c);
     }
 
+    @testSetup
+    static void setup() {
+        PermissionSet permissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'LoggerAdmin'];
+
+        List<permissionSetAssignment> existingAssignments = [
+            SELECT Id
+            FROM PermissionSetAssignment
+            WHERE AssigneeId = :UserInfo.getUserId()
+            AND PermissionSetId = :permissionSet.Id
+        ];
+
+        if(!existingAssignments.isEmpty()) return;
+
+        insert new PermissionSetAssignment(AssigneeId = UserInfo.getUserId(), PermissionSetId = permissionSet.Id);
+    }
+
     @isTest
     static void it_should_normalize_event_data_into_log_and_log_entry() {
         User currentUser          = getCurrentUser();
@@ -233,7 +249,7 @@ private class LogEntryEventHandler_Tests {
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
-        Log__c log = getLog(transactionId);
+        Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
 
