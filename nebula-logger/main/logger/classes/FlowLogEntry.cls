@@ -4,29 +4,28 @@
 *************************************************************************************************/
 public without sharing class FlowLogEntry {
 
-    @InvocableVariable(required=true label='Process Builder/Flow Name')
+    @InvocableVariable(required=true label='Flow or Process Builder Name')
     public String flowName;
 
     @InvocableVariable(required=true label='Log Entry Message')
     public String message;
 
-    @InvocableVariable(required=true label='Save Log')
+    @InvocableVariable(required=false label='(Optional) Save Log')
     public Boolean saveLog = true;
 
-
-    @InvocableVariable(label='(Optional) Record ID')
+    @InvocableVariable(required=false label='(Optional) Record ID')
     public Id recordId;
 
-    @InvocableVariable(label='(Optional) Logging Level')
+    @InvocableVariable(required=false label='(Optional) Logging Level')
     public String loggingLevelName = 'DEBUG';
 
-    @InvocableVariable(label='(Optional) Topics')
+    @InvocableVariable(required=false label='(Optional) Topics')
     public List<String> topics;
 
-    @InvocableVariable(label='(Optional) Timestamp')
+    @InvocableVariable(required=false label='(Optional) Timestamp')
     public DateTime timestamp = System.now();
 
-    @InvocableMethod(category='Logging' label='Add Log Entry' description='Creates a log entry for a process builder or flow')
+    @InvocableMethod(category='Logging' label='Add Log Entry' description='Creates a log entry for a flow or process builder')
     public static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         Boolean saveLog = false;
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
