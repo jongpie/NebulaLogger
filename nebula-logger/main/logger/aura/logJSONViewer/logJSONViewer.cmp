@@ -7,16 +7,55 @@
     <!-- Private Attributes -->
     <aura:attribute access="private" type="Log__c" name="log" />
     <aura:attribute access="private" type="String" name="logJSON" />
+    <aura:attribute access="private" type="Boolean" name="jsonCopied" default="false" />
 
     <!-- Handlers -->
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
 
+    <!-- Make the quick action modal wider for desktop -->
+    <aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+        <aura:html tag="style">
+            .slds-modal__container {
+                max-width : 85rem !important;
+                width     : 85% !important;
+            }
+        </aura:html>
+    </aura:if>
+
+    <!-- Styles for modal header & footer-->
+    <aura:html tag="style">
+        .cuf-content {
+            padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+            padding: 0rem !important;
+        }
+        .slds-modal__content {
+            overflow-y: hidden !important;
+            height: unset !important;
+            max-height: unset !important;
+        }
+    </aura:html>
+
     <!-- Markup-->
-    <div class="modal-header slds-modal__header slds-size_1-of-1">
-        <h4 class="title slds-text-heading–large">{! 'JSON for ' + v.log.Name}</h4>
+    <div class="slds-col modal-header slds-modal__header">
+        <h2 class="title slds-text-heading--medium">{! 'JSON for ' + v.log.Name}</h2>
     </div>
-    <div class="json-viewer">
+
+    <div class="slds-col modal-body scrollable slds-p-around--medium">
         <pre>{!v.logJSON}</pre>
+    </div>
+
+    <div class="slds-col modal-footer slds-modal__footer">
+        <lightning:buttonStateful
+            labelWhenOff="Copy JSON to Clipboard"
+            labelWhenOn="JSON Copied to Clipboard"
+            iconNameWhenOff="utility:copy_to_clipboard"
+            iconNameWhenOn="utility:check"
+            state="{!v.jsonCopied}"
+            onclick="{!c.copyToClipboard}"
+            variant="{!if(v.jsonCopied, 'success', 'brand')}"
+        />
     </div>
 
 </aura:component>
