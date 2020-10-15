@@ -94,35 +94,6 @@ private class FlowLogEntry_Tests {
     }
 
     @isTest
-    static void it_should_store_record_json_when_sobject_parameter_is_used() {
-        String userLoggingLevel      = 'FINEST';
-        String flowEntryLoggingLevel = 'DEBUG';
-
-        LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
-        loggerSettings.LoggingLevel__c   = userLoggingLevel;
-        loggerSettings.StoreRelatedRecordJson__c = true;
-        update loggerSettings;
-
-        Test.startTest();
-
-        User currentUser = [SELECT Id, Name, Username FROM User WHERE Id = :UserInfo.getUserId()];
-
-        FlowLogEntry flowEntry = createFlowLogEntry();
-        flowEntry.loggingLevelName = flowEntryLoggingLevel;
-        flowEntry.record = currentUser;
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{flowEntry});
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        String expectedUserJson = Json.serializePretty(currentUser);
-
-        LogEntry__c logEntry = [SELECT Id, RelatedRecordId__c, RelatedRecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
-        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
-        System.assertEquals(expectedUserJson, logEntry.RelatedRecordJson__c);
-    }
-
-    @isTest
     static void it_should_allow_the_flow_to_retrieve_latest_log() {
         String flowEntryLoggingLevel = 'DEBUG';
 
@@ -141,4 +112,5 @@ private class FlowLogEntry_Tests {
         List<Log__c> returnedLogs = FlowLogRepo.getLogIds();
         System.assertEquals(log.Id, returnedLogs[0].Id);
     }
+
 }
