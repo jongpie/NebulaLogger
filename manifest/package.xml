@@ -10,6 +10,8 @@
         <members>FlowLogEntry_Tests</members>
         <members>FlowLogRepo</members>
         <members>FlowLogRepo_Tests</members>
+        <members>FlowRecordLogEntry</members>
+        <members>FlowRecordLogEntry_Tests</members>
         <members>LogBatchPurger</members>
         <members>LogBatchPurger_Tests</members>
         <members>LogEntryBuilder</members>
