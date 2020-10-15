@@ -11,6 +11,16 @@
     <!-- Handlers -->
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
 
+    <!-- Make the quick action modal wider for desktop -->
+    <aura:if isTrue="{!$Browser.formFactor == 'DESKTOP'}">
+        <aura:html tag="style">
+            .slds-modal__container {
+                max-width : 85rem !important;
+                width: 85% !important;
+            }
+        </aura:html>
+    </aura:if>
+
     <!-- Markup-->
     <div class="modal-header slds-modal__header slds-size_1-of-1">
         <h4 class="title slds-text-heading–large">{! 'JSON for ' + v.log.Name}</h4>
