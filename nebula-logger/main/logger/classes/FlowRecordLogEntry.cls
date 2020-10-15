@@ -25,7 +25,7 @@ public without sharing class FlowRecordLogEntry {
     @InvocableVariable(required=false label='(Optional) Timestamp')
     public DateTime timestamp = System.now();
 
-    @InvocableMethod(category='Logging' label='Add Log Entry for an SObject record' description='Creates a log entry a flow or process builder and stores the record as JSON')
+    @InvocableMethod(category='Logging' label='Add Log Entry for an SObject Record' description='Creates a log entry a flow or process builder and stores the record as JSON')
     public static List<String> addFlowRecordEntries(List<FlowRecordLogEntry> flowRecordLogEntries) {
         Boolean saveLog = false;
         for(FlowRecordLogEntry flowRecordLogEntry : flowRecordLogEntries) {

@@ -11,7 +11,7 @@ public without sharing class FlowLogRepo {
      * @param  `List<String>` - should be populated with the single Transaction Id for the Log you'd like to retrieve the Id for
      * @return `List<Log__c>` - due to current Flow limitations, we return a list, but it will only ever have one Log__c entry in it
      */
-    @InvocableMethod(category='Logging' label='Retrieve current Log ID' description='Returns the created log to aid in record redirects if desired.')
+    @InvocableMethod(category='Logging' label='Retrieve Current Log ID' description='Returns the created log to aid in record redirects if desired.')
     public static List<Log__c> getLogIds() {
         List<Log__c> logs = [SELECT Id FROM Log__c WHERE TransactionId__c = :Logger.getTransactionId() LIMIT 1];
         return logs.isEmpty() ? null : logs;
