@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "format": "prettier --write nebula-logger",
-    "pretest": "node findTests.js",
-    "test": "sh ./test.sh",
-    "posttest": "node findTestsCleanup.js"
+    "pretest": "node ./scripts/findTests.js",
+    "test": "sh ./scripts/test.sh",
+    "posttest": "node scripts/findTestsCleanup.js"
   },
   "repository": {
     "type": "git",
