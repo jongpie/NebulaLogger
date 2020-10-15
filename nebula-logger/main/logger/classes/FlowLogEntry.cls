@@ -31,11 +31,31 @@ public without sharing class FlowLogEntry {
         for(FlowLogEntry flowLogEntry : flowLogEntries) {
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowLogEntry.loggingLevelName);
 
-            Logger.createLogEntryBuilder(loggingLevel).parseFlowLogEntry(flowLogEntry);
+            LogEntryBuilder logEntryBuilder = Logger.createLogEntryBuilder(loggingLevel)
+                .setMessage(flowLogEntry.message)
+                .setRecordId(flowLogEntry.recordId)
+                .setTopics(flowLogEntry.topics);
 
-            if(flowLogEntry.saveLog) saveLog = flowLogEntry.saveLog;
+            LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
+
+            if(logEntryEvent == null) {
+                continue;
+            }
+
+            logEntryEvent.LoggingLevel__c    = flowLogEntry.loggingLevelName;
+            logEntryEvent.OriginLocation__c  = flowLogEntry.flowName;
+            logEntryEvent.OriginType__c      = 'Flow';
+            logEntryEvent.Timestamp__c       = flowLogEntry.timestamp;
+
+            if(flowLogEntry.saveLog) {
+                saveLog = flowLogEntry.saveLog;
+            }
         }
-        if(saveLog) Logger.saveLog();
+
+        if(saveLog) {
+            Logger.saveLog();
+        }
+
         return new List<String>{ Logger.getTransactionId() };
     }
 

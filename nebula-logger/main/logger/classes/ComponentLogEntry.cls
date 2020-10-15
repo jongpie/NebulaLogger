@@ -24,11 +24,28 @@ public without sharing class ComponentLogEntry {
         for(ComponentLogEntry componentLogEntry : componentLogEntries) {
             LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevelName);
 
-            LogEntryBuilder logEntryBuilder = Logger.createLogEntryBuilder(loggingLevel).parseComponentLogEntry(componentLogEntry);
+            LogEntryBuilder logEntryBuilder = Logger.createLogEntryBuilder(loggingLevel)
+                .setMessage(componentLogEntry.message)
+                .setTopics(componentLogEntry.topics);
+
             if(componentLogEntry.error != null) {
                 logEntryBuilder.setExceptionDetails('ComponentLogEntryException', componentLogEntry.error.stack);
             }
+
+            LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
+
+            if(logEntryEvent == null) {
+                continue;
+            }
+
+            logEntryEvent.ContextIsLightningComponent__c   = componentLogEntry.componentName != null;
+            logEntryEvent.ContextLightningComponentName__c = componentLogEntry.componentName;
+            logEntryEvent.LoggingLevel__c                  = componentLogEntry.loggingLevelName;
+            logEntryEvent.OriginLocation__c                = componentLogEntry.originLocation;
+            logEntryEvent.OriginType__c                    = 'Component';
+            logEntryEvent.Timestamp__c                     = componentLogEntry.timestamp;
         }
+
         Logger.saveLog();
     }
 

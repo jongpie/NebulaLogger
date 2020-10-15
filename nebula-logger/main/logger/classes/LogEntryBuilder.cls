@@ -56,40 +56,6 @@ public without sharing virtual class LogEntryBuilder {
         );
     }
 
-    public LogEntryBuilder parseComponentLogEntry(ComponentLogEntry componentLogEntry) {
-        if(!this.shouldSave) return this;
-
-        this.logEntryEvent.ContextIsLightningComponent__c   = componentLogEntry.componentName != null;
-        this.logEntryEvent.ContextLightningComponentName__c = componentLogEntry.componentName;
-        this.logEntryEvent.OriginLocation__c                = componentLogEntry.originLocation;
-        this.logEntryEvent.OriginType__c                    = ORIGIN_TYPE_COMPONENT;
-        this.logEntryEvent.Timestamp__c                     = componentLogEntry.timestamp;
-
-        return this.setMessage(componentLogEntry.message).setTopics(componentLogEntry.topics);
-    }
-
-    public LogEntryBuilder parseFlowLogEntry(FlowLogEntry flowLogEntry) {
-        if(!this.shouldSave) return this;
-
-        this.logEntryEvent.LoggingLevel__c    = flowLogEntry.loggingLevelName;
-        this.logEntryEvent.OriginLocation__c  = flowLogEntry.flowName;
-        this.logEntryEvent.OriginType__c      = ORIGIN_TYPE_FLOW;
-        this.logEntryEvent.Timestamp__c       = flowLogEntry.timestamp;
-
-        return this.setMessage(flowLogEntry.message).setRecordId(flowLogEntry.recordId);
-    }
-
-    public LogEntryBuilder parseFlowRecordLogEntry(FlowRecordLogEntry flowRecordLogEntry) {
-        if(!this.shouldSave) return this;
-
-        this.logEntryEvent.LoggingLevel__c    = flowRecordLogEntry.loggingLevelName;
-        this.logEntryEvent.OriginLocation__c  = flowRecordLogEntry.flowName;
-        this.logEntryEvent.OriginType__c      = ORIGIN_TYPE_FLOW;
-        this.logEntryEvent.Timestamp__c       = flowRecordLogEntry.timestamp;
-
-        return this.setMessage(flowRecordLogEntry.message).setRecordId(flowRecordLogEntry.record);
-    }
-
     public LogEntryBuilder setMessage(String message) {
         if(!this.shouldSave) return this;
 

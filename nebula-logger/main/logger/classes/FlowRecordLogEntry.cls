@@ -31,7 +31,21 @@ public without sharing class FlowRecordLogEntry {
         for(FlowRecordLogEntry flowRecordLogEntry : flowRecordLogEntries) {
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowRecordLogEntry.loggingLevelName);
 
-            Logger.createLogEntryBuilder(loggingLevel).parseFlowRecordLogEntry(flowRecordLogEntry);
+            LogEntryBuilder logEntryBuilder = Logger.createLogEntryBuilder(loggingLevel)
+                .setMessage(flowRecordLogEntry.message)
+                .setRecordId(flowRecordLogEntry.record)
+                .setTopics(flowRecordLogEntry.topics);
+
+            LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
+
+            if(logEntryEvent == null) {
+                continue;
+            }
+
+            logEntryEvent.LoggingLevel__c    = flowRecordLogEntry.loggingLevelName;
+            logEntryEvent.OriginLocation__c  = flowRecordLogEntry.flowName;
+            logEntryEvent.OriginType__c      = 'Flow';
+            logEntryEvent.Timestamp__c       = flowRecordLogEntry.timestamp;
 
             if(flowRecordLogEntry.saveLog) saveLog = flowRecordLogEntry.saveLog;
         }
