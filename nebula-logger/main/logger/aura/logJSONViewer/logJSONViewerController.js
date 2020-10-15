@@ -21,7 +21,7 @@
 
         // Update the button to show that the JSON has been copied
         event.getSource().set('v.iconName' , 'utility:check');
-        event.getSource().set('v.label', 'JSON Copied');
+        event.getSource().set('v.label', 'JSON Copied to Clipboard');
         event.getSource().set('v.variant', 'success');
     }
 })
