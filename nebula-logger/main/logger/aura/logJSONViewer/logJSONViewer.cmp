@@ -23,6 +23,9 @@
 
     <!-- Styles for modal header & footer-->
     <aura:html tag="style">
+        .cuf-content {
+            padding: 0 0rem !important;
+        }
         .slds-p-around--medium {
             padding: 0rem !important;
         }
