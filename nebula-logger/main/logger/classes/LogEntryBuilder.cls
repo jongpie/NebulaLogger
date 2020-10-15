@@ -160,8 +160,9 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     public void setUserSessionDetails() {
-        if (!this.shouldSave)
+        if (!this.shouldSave) {
             return;
+        }
 
         // TODO this will be fixed by PR 28 - https://github.com/jongpie/NebulaLogger/pull/28
         // Calling Auth.SessionManagement.getCurrentSession() fails in several contexts & the exception cannot be caught
