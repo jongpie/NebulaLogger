@@ -79,6 +79,15 @@ public without sharing virtual class LogEntryBuilder {
         return this.setMessage(flowLogEntry.message).setRecordId(flowLogEntry.recordId);
     }
 
+    public LogEntryBuilder parseFlowRecordLogEntry(FlowRecordLogEntry flowRecordLogEntry) {
+        if(!this.shouldSave) return this;
+
+        this.logEntryEvent.LoggingLevel__c    = flowRecordLogEntry.loggingLevelName;
+        this.logEntryEvent.OriginLocation__c  = flowRecordLogEntry.flowName;
+        this.logEntryEvent.OriginType__c      = ORIGIN_TYPE_FLOW;
+        this.logEntryEvent.Timestamp__c       = flowRecordLogEntry.timestamp;
+
+        return this.setMessage(flowRecordLogEntry.message).setRecordId(flowRecordLogEntry.record);
     }
 
     public LogEntryBuilder setMessage(String message) {
