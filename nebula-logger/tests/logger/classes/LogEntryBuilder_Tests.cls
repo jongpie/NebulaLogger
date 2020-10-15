@@ -14,14 +14,6 @@ private class LogEntryBuilder_Tests {
         LogEntryBuilder builder = new LogEntryBuilder(LoggingLevel.DEBUG);
 
         System.assertEquals(null, builder.getLogEntryEvent());
-        System.assertEquals(
-            null,
-            builder.parseComponentLogEntry(new ComponentLogEntry()).getLogEntryEvent()
-        );
-        System.assertEquals(
-            null,
-            builder.parseFlowLogEntry(new FlowLogEntry()).getLogEntryEvent()
-        );
         System.assertEquals(null, builder.setMessage('test').getLogEntryEvent());
         System.assertEquals(
             null,
