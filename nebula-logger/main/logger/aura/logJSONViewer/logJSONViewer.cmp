@@ -16,17 +16,39 @@
         <aura:html tag="style">
             .slds-modal__container {
                 max-width : 85rem !important;
-                width: 85% !important;
+                width     : 85% !important;
             }
         </aura:html>
     </aura:if>
 
+    <!-- Styles for modal header & footer-->
+    <aura:html tag="style">
+        .slds-p-around--medium {
+            padding: 0rem !important;
+        }
+        .slds-modal__content {
+            overflow-y: hidden !important;
+            height: unset !important;
+            max-height: unset !important;
+        }
+    </aura:html>
+
     <!-- Markup-->
-    <div class="modal-header slds-modal__header slds-size_1-of-1">
-        <h4 class="title slds-text-heading–large">{! 'JSON for ' + v.log.Name}</h4>
+    <div class="slds-col modal-header slds-modal__header">
+        <h2 class="title slds-text-heading--medium">{! 'JSON for ' + v.log.Name}</h2>
     </div>
-    <div class="json-viewer">
+
+    <div class="slds-col modal-body scrollable slds-p-around--medium">
         <pre>{!v.logJSON}</pre>
+    </div>
+
+    <div class="slds-col modal-footer slds-modal__footer">
+        <lightning:button
+            iconName = "utility:copy_to_clipboard"
+            label    = "Copy JSON to Clipboard"
+            onclick  = "{!c.copyToClipboard}"
+            variant  = "brand"
+        />
     </div>
 
 </aura:component>
