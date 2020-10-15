@@ -25,7 +25,7 @@
         });
         $A.enqueueAction(action);
     },
-    copyValueToClipboard : function(value) {
+    copyValueToClipboard: function (value) {
         // Add a hidden input to store the JSON
         var hiddenJSONInput = document.createElement('input');
         hiddenJSONInput.setAttribute('value', value);

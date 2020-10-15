@@ -134,8 +134,9 @@ public class Callout {
     }
 
     private void setRequestBody(Object requestBody) {
-        if (requestBody == null)
+        if (requestBody == null) {
             return;
+        }
 
         // Determine if the content type has already been set
         // If it's null, then it will be automatically set based on the request body
@@ -143,16 +144,19 @@ public class Callout {
 
         if (requestBody instanceof Blob) {
             this.request.setBodyAsBlob((Blob) requestBody);
-            if (contentTypeNotSet)
+            if (contentTypeNotSet) {
                 this.setHeader('Content-Type', 'multipart/form-data; charset=utf-8');
+            }
         } else if (requestBody instanceof Dom.Document) {
             this.request.setBodyDocument((Dom.Document) requestBody);
-            if (contentTypeNotSet)
+            if (contentTypeNotSet) {
                 this.setHeader('Content-Type', 'text/xml; charset=utf-8');
+            }
         } else {
             this.request.setBody(Json.serialize(requestBody));
-            if (contentTypeNotSet)
+            if (contentTypeNotSet) {
                 this.setHeader('Content-Type', 'application/json; charset=utf-8');
+            }
         }
     }
 

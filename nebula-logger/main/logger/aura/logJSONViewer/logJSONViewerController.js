@@ -6,7 +6,7 @@
     doInit: function (component, event, helper) {
         helper.queryLog(component, event);
     },
-    copyToClipboard : function(component, event, helper) {
+    copyToClipboard: function (component, event, helper) {
         var logJSON = component.get('v.logJSON');
 
         helper.copyValueToClipboard(logJSON);
