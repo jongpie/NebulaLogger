@@ -7,6 +7,7 @@
     <!-- Private Attributes -->
     <aura:attribute access="private" type="Log__c" name="log" />
     <aura:attribute access="private" type="String" name="logJSON" />
+    <aura:attribute access="private" type="Boolean" name="jsonCopied" default="false" />
 
     <!-- Handlers -->
     <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
@@ -46,11 +47,14 @@
     </div>
 
     <div class="slds-col modal-footer slds-modal__footer">
-        <lightning:button
-            iconName = "utility:copy_to_clipboard"
-            label    = "Copy JSON to Clipboard"
-            onclick  = "{!c.copyToClipboard}"
-            variant  = "brand"
+        <lightning:buttonStateful
+            labelWhenOff="Copy JSON to Clipboard"
+            labelWhenOn="JSON Copied to Clipboard"
+            iconNameWhenOff="utility:copy_to_clipboard"
+            iconNameWhenOn="utility:check"
+            state="{!v.jsonCopied}"
+            onclick="{!c.copyToClipboard}"
+            variant="{!if(v.jsonCopied, 'success', 'brand')}"
         />
     </div>
 
