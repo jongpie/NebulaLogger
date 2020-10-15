@@ -61,6 +61,11 @@
         <field>LogEntry__c.FlowName__c</field>
         <readable>true</readable>
     </fieldPermissions>
+        <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasException__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HasRelatedRecordId__c</field>
