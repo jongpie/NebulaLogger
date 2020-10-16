@@ -83,8 +83,9 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void insertLogEntries() {
-        if (LOG.Id == null)
+        if (LOG.Id == null) {
             return; // Avoid an exception - if there is no log, we can't save log entries
+        }
 
         for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) Trigger.new) {
             LogEntry__c logEntry = new LogEntry__c(
@@ -151,6 +152,7 @@ public without sharing class LogEntryEventHandler {
             } else if (logEntry.ContextIsVisualforce__c) {
                 logEntry.Context__c = 'Visualforce';
             }
+
             this.logEntries.add(logEntry);
 
             if (logEntryEvent.Topics__c != null) {
