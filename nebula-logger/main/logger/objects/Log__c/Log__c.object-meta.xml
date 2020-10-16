@@ -193,6 +193,7 @@
         <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalDiagnosticLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <massQuickActions>ChangeLogRetentionDate</massQuickActions>
         <searchFilterFields>NAME</searchFilterFields>
         <searchFilterFields>LoggedBy__c</searchFilterFields>
         <searchFilterFields>TotalDiagnosticLogEntries__c</searchFilterFields>
