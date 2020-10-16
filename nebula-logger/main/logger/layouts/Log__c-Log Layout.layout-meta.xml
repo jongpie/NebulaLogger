@@ -28,8 +28,8 @@
                 <field>SystemModeSummary__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Organization__c</field>
+                <behavior>Edit</behavior>
+                <field>LogRetentionDate__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -111,6 +111,14 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>OrganizationId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>OrganizationName__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>SessionId__c</field>
             </layoutItems>
             <layoutItems>
@@ -119,18 +127,18 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>ContextThemeDisplayed__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>SessionSecurityLevel__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>SourceIp__c</field>
+                <field>ContextThemeDisplayed__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>SourceIp__c</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>LoginHistoryId__c</field>
