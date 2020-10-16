@@ -222,10 +222,34 @@ private class LogEntryEventHandler_Tests {
     }
 
     @isTest
-    static void it_should_normalize_event_data_into_log_and_log_entry() {
+    static void it_should_normalize_simple_event_data_into_log_and_log_entry() {
+        String transactionId = '123-456-789-0';
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            TransactionId__c = transactionId
+        );
+
+        Test.startTest();
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        Log__c log = getLog();
+        System.assertEquals(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+
+        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    @isTest
+    static void it_should_normalize_complex_event_data_into_log_and_log_entry() {
+        String transactionId = '123-456-789-0';
         User currentUser = getCurrentUser();
         DmlException dmlException = new DmlException();
-        String transactionId = '123-456-789-0';
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = '99.0',
