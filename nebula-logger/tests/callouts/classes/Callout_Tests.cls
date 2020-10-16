@@ -1,10 +1,9 @@
 /***********************************************************************************************
-* This file is part of the Apex Callouts project, released under the MIT License.              *
-* See LICENSE file or go to https://github.com/jongpie/ApexCallouts for full license details.  *
-***********************************************************************************************/
+ * This file is part of the Apex Callouts project, released under the MIT License.              *
+ * See LICENSE file or go to https://github.com/jongpie/ApexCallouts for full license details.  *
+ ***********************************************************************************************/
 @isTest
 private class Callout_Tests {
-
     public class SuccessCalloutMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest request) {
             HttpResponse response = new HttpResponse();
@@ -193,14 +192,14 @@ private class Callout_Tests {
     static void it_should_return_patch_for_sobject_for_named_credential_endpoint() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
 
-        HttpResponse response = new Callout('myNamedCredential', '/test').patch(new Account(Name='Test'));
+        HttpResponse response = new Callout('myNamedCredential', '/test').patch(new Account(Name = 'Test'));
     }
 
     @isTest
     static void it_should_return_patch_for_sobject_for_full_endpoint() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
 
-        HttpResponse response = new Callout('https://example.com').patch(new Account(Name='Test'));
+        HttpResponse response = new Callout('https://example.com').patch(new Account(Name = 'Test'));
     }
 
     @isTest
@@ -223,7 +222,7 @@ private class Callout_Tests {
     static void it_should_return_post_for_dom_document_for_named_credential_endpoint() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
 
-        HttpResponse response = new Callout('myNamedCredential', '/test').post(new Account(Name='Test'));
+        HttpResponse response = new Callout('myNamedCredential', '/test').post(new Account(Name = 'Test'));
     }
 
     @isTest
@@ -248,7 +247,7 @@ private class Callout_Tests {
     static void it_should_return_post_for_sobject_for_full_endpoint() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
 
-        HttpResponse response = new Callout('https://example.com').post(new Account(Name='Test'));
+        HttpResponse response = new Callout('https://example.com').post(new Account(Name = 'Test'));
     }
 
     @isTest
@@ -289,14 +288,14 @@ private class Callout_Tests {
     static void it_should_return_put_for_sobject_for_named_credential_endpoint() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
 
-        HttpResponse response = new Callout('myNamedCredential', '/test').put(new Account(Name='Test'));
+        HttpResponse response = new Callout('myNamedCredential', '/test').put(new Account(Name = 'Test'));
     }
 
     @isTest
     static void it_should_return_put_for_sobject_for_full_endpoint() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
 
-        HttpResponse response = new Callout('https://example.com').put(new Account(Name='Test'));
+        HttpResponse response = new Callout('https://example.com').put(new Account(Name = 'Test'));
     }
 
     @isTest
@@ -320,7 +319,7 @@ private class Callout_Tests {
         try {
             HttpResponse response = new Callout('myNamedCredential', '/test').get();
             System.assert(false, 'Exception expected here');
-        } catch(Callout.HttpResponseException e) {
+        } catch (Callout.HttpResponseException e) {
             System.assert(e.getMessage().startsWith('Callout failed'));
         }
     }
@@ -332,9 +331,8 @@ private class Callout_Tests {
         try {
             HttpResponse response = new Callout('https://example.com').get();
             System.assert(false, 'Exception expected here');
-        } catch(Callout.HttpResponseException e) {
+        } catch (Callout.HttpResponseException e) {
             System.assert(e.getMessage().startsWith('Callout failed'));
         }
     }
-
 }

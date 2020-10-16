@@ -1,7 +1,7 @@
 /*************************************************************************************************
-* This file is part of the Nebula Logger project, released under the MIT License.                *
-* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
-*************************************************************************************************/
+ * This file is part of the Nebula Logger project, released under the MIT License.                *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+ *************************************************************************************************/
 @isTest
 private class LogEntryBuilder_Tests {
     @TestSetup
@@ -14,25 +14,11 @@ private class LogEntryBuilder_Tests {
         LogEntryBuilder builder = new LogEntryBuilder(LoggingLevel.DEBUG);
 
         System.assertEquals(null, builder.getLogEntryEvent());
-        System.assertEquals(
-            null,
-            builder.parseComponentLogEntry(new ComponentLogEntry()).getLogEntryEvent()
-        );
-        System.assertEquals(
-            null,
-            builder.parseFlowLogEntry(new FlowLogEntry()).getLogEntryEvent()
-        );
         System.assertEquals(null, builder.setMessage('test').getLogEntryEvent());
-        System.assertEquals(
-            null,
-            builder.setExceptionDetails(new IllegalArgumentException('test')).getLogEntryEvent()
-        );
+        System.assertEquals(null, builder.setExceptionDetails(new IllegalArgumentException('test')).getLogEntryEvent());
         System.assertEquals(null, builder.setRecordId(new Account()).getLogEntryEvent());
         System.assertEquals(null, builder.setRecordId('005000000000001').getLogEntryEvent());
-        System.assertEquals(
-            null,
-            builder.setTopics(new List<String>{ '', ' ' }).getLogEntryEvent()
-        );
+        System.assertEquals(null, builder.setTopics(new List<String>{ '', ' ' }).getLogEntryEvent());
     }
 
     @isTest

@@ -2,18 +2,18 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-public without sharing class FlowLogEntry {
+public without sharing class FlowRecordLogEntry {
     @InvocableVariable(required=true label='Flow or Process Builder Name')
     public String flowName;
 
     @InvocableVariable(required=true label='Log Entry Message')
     public String message;
 
+    @InvocableVariable(required=true label='Record')
+    public SObject record;
+
     @InvocableVariable(required=false label='(Optional) Save Log')
     public Boolean saveLog = true;
-
-    @InvocableVariable(required=false label='(Optional) Record ID')
-    public Id recordId;
 
     @InvocableVariable(required=false label='(Optional) Logging Level')
     public String loggingLevelName = 'DEBUG';
@@ -26,18 +26,18 @@ public without sharing class FlowLogEntry {
 
     @InvocableMethod(
         category='Logging'
-        label='Add Log Entry'
-        description='Creates a log entry for a flow or process builder'
+        label='Add Log Entry for an SObject Record'
+        description='Creates a log entry for a flow or process builder and stores the record as JSON'
     )
-    public static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
+    public static List<String> addFlowRecordEntries(List<FlowRecordLogEntry> flowRecordLogEntries) {
         Boolean saveLog = false;
-        for (FlowLogEntry flowLogEntry : flowLogEntries) {
-            LoggingLevel loggingLevel = Logger.getLoggingLevel(flowLogEntry.loggingLevelName);
+        for (FlowRecordLogEntry flowRecordLogEntry : flowRecordLogEntries) {
+            LoggingLevel loggingLevel = Logger.getLoggingLevel(flowRecordLogEntry.loggingLevelName);
 
             LogEntryBuilder logEntryBuilder = Logger.createLogEntryBuilder(loggingLevel)
-                .setMessage(flowLogEntry.message)
-                .setRecordId(flowLogEntry.recordId)
-                .setTopics(flowLogEntry.topics);
+                .setMessage(flowRecordLogEntry.message)
+                .setRecordId(flowRecordLogEntry.record)
+                .setTopics(flowRecordLogEntry.topics);
 
             LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
 
@@ -45,20 +45,18 @@ public without sharing class FlowLogEntry {
                 continue;
             }
 
-            logEntryEvent.LoggingLevel__c = flowLogEntry.loggingLevelName;
-            logEntryEvent.OriginLocation__c = flowLogEntry.flowName;
+            logEntryEvent.LoggingLevel__c = flowRecordLogEntry.loggingLevelName;
+            logEntryEvent.OriginLocation__c = flowRecordLogEntry.flowName;
             logEntryEvent.OriginType__c = 'Flow';
-            logEntryEvent.Timestamp__c = flowLogEntry.timestamp;
+            logEntryEvent.Timestamp__c = flowRecordLogEntry.timestamp;
 
-            if (flowLogEntry.saveLog) {
-                saveLog = flowLogEntry.saveLog;
+            if (flowRecordLogEntry.saveLog) {
+                saveLog = flowRecordLogEntry.saveLog;
             }
         }
-
         if (saveLog) {
             Logger.saveLog();
         }
-
         return new List<String>{ Logger.getTransactionId() };
     }
 }
