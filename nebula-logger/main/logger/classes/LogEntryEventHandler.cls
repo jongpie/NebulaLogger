@@ -20,12 +20,12 @@ public without sharing class LogEntryEventHandler {
     }
 
     public void execute() {
-        this.insertLog();
+        this.upsertLog();
         this.insertLogEntries();
         this.insertTopics();
     }
 
-    private void insertLog() {
+    private void upsertLog() {
         if (LOG.Id != null) {
             return; // Log only needs to be saved once
         }
@@ -49,6 +49,7 @@ public without sharing class LogEntryEventHandler {
         LOG.LoginHistoryId__c = logEntryEvent.LoginHistoryId__c;
         LOG.LoginType__c = logEntryEvent.LoginType__c;
         LOG.LogoutUrl__c = logEntryEvent.LogoutUrl__c;
+        LOG.NetworkId__c = logEntryEvent.NetworkId__c;
         LOG.OwnerId = logEntryEvent.CreatedById;
         LOG.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
         LOG.ProfileId__c = logEntryEvent.ProfileId__c;
@@ -72,19 +73,11 @@ public without sharing class LogEntryEventHandler {
         LOG.UserRoleName__c = logEntryEvent.UserRoleName__c;
         LOG.UserType__c = logEntryEvent.UserType__c;
 
-        if (LOG.SystemModeIsApexRest__c) {
-            LOG.SystemMode__c = 'REST';
-        } else if (LOG.SystemModeIsBatch__c) {
-            LOG.SystemMode__c = 'Batch';
-        } else if (LOG.SystemModeIsFuture__c) {
-            LOG.SystemMode__c = 'Future';
-        } else if (LOG.SystemModeIsQueueable__c) {
-            LOG.SystemMode__c = 'Queueable';
-        } else if (LOG.SystemModeIsScheduledJob__c) {
-            LOG.SystemMode__c = 'Scheduled';
-        } else {
-            LOG.SystemMode__c = 'Standard';
-        }
+        // Since the log is upserted once per transaction, we can run some queries here
+        setOrganizationDetails();
+        setNetworkDetails();
+        setProfileDetails();
+        setSystemMode();
 
         upsert log TransactionId__c;
     }
@@ -216,5 +209,78 @@ public without sharing class LogEntryEventHandler {
             }
         }
         insert new List<TopicAssignment>(topicAssignments);
+    }
+
+    private void setOrganizationDetails() {
+        Organization org = [SELECT Id, Name FROM Organization];
+
+        LOG.OrganizationId__c = org.Id;
+        LOG.OrganizationName__c = org.Name;
+    }
+
+    private void setNetworkDetails() {
+        if (LOG.NetworkId__c == null) {
+            return;
+        }
+
+        String networkApiName = 'Network';
+        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
+        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
+
+        if (!networksEnabled) {
+            return;
+        }
+
+        String networkId = LOG.NetworkId__c;
+        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
+        List<SObject> matchingNetworks = Database.query(queryString);
+
+        if (matchingNetworks.isEmpty()) {
+            return;
+        }
+
+        SObject matchingNetwork = matchingNetworks.get(0);
+
+        LOG.NetworkName__c = (String) matchingNetwork.get('Name');
+        LOG.NetworkLoginUrl__c = Network.getLoginUrl(networkId);
+        LOG.NetworkLoginUrl__c = Network.getLogoutUrl(networkId);
+        LOG.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(networkId);
+        LOG.NetworkUrlPathPrefix__c = (String) matchingNetwork.get('UrlPathPrefix');
+    }
+
+    private void setProfileDetails() {
+        User logUser = [
+            SELECT
+                Id,
+                UserRole.Name,
+                Profile.Name,
+                Profile.UserLicenseId,
+                Profile.UserLicense.LicenseDefinitionKey,
+                Profile.UserLicense.Name
+            FROM User
+            WHERE Id = :LOG.LoggedBy__c
+        ];
+
+        LOG.ProfileName__c = logUser.Profile.Name;
+        LOG.UserLicenseDefinitionKey__c = logUser.Profile.UserLicense.LicenseDefinitionKey;
+        LOG.UserLicenseId__c = logUser.Profile.UserLicenseId;
+        LOG.UserLicenseName__c = logUser.Profile.UserLicense.Name;
+        LOG.UserRoleName__c = logUser.UserRole == null ? null : logUser.UserRole.Name;
+    }
+
+    private void setSystemMode() {
+        if (LOG.SystemModeIsApexRest__c) {
+            LOG.SystemMode__c = 'REST';
+        } else if (LOG.SystemModeIsBatch__c) {
+            LOG.SystemMode__c = 'Batch';
+        } else if (LOG.SystemModeIsFuture__c) {
+            LOG.SystemMode__c = 'Future';
+        } else if (LOG.SystemModeIsQueueable__c) {
+            LOG.SystemMode__c = 'Queueable';
+        } else if (LOG.SystemModeIsScheduledJob__c) {
+            LOG.SystemMode__c = 'Scheduled';
+        } else {
+            LOG.SystemMode__c = 'Standard';
+        }
     }
 }

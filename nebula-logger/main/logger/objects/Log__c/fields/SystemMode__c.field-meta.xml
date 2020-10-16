@@ -36,6 +36,11 @@
                 <default>false</default>
                 <label>Scheduled</label>
             </value>
+            <value>
+                <fullName>Standard</fullName>
+                <default>false</default>
+                <label>Standard</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
