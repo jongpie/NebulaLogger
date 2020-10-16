@@ -39,7 +39,7 @@ public without sharing class LogBatchPurger implements Database.Batchable<SObjec
             delete recordsToDelete;
             Database.emptyRecycleBin(recordsToDelete);
         } catch (Exception apexException) {
-            Logger.error('Error deleting logs').setExceptionDetails(apexException);
+            Logger.error('Error deleting logs', apexException);
         } finally {
             Logger.saveLog();
         }
