@@ -1,10 +1,9 @@
+/*************************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.                *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+ *************************************************************************************************/
 public without sharing virtual class LogEntryBuilder {
     private static final String API_VERSION = getApiVersion();
-    private static final User CURRENT_USER = [
-        SELECT Id, Profile.Name, UserRole.Name
-        FROM User
-        WHERE Id = :UserInfo.getUserId()
-    ];
     private static final String ENTRY_TYPE_DIAGNOSTIC = 'Diagnostic';
     private static final String ENTRY_TYPE_EXCEPTION = 'Exception';
     private static final String ORIGIN_TYPE_APEX = 'Apex';
@@ -193,8 +192,8 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.LoginHistoryId__c = sessionMap == null ? null : sessionMap.get('LoginHistoryId');
         this.logEntryEvent.LoginType__c = sessionMap == null ? null : sessionMap.get('LoginType');
         this.logEntryEvent.LogoutUrl__c = sessionMap == null ? null : sessionMap.get('LogoutUrl');
+        this.logEntryEvent.NetworkId__c = Network.getNetworkId();
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        this.logEntryEvent.ProfileName__c = CURRENT_USER.Profile.Name;
         this.logEntryEvent.SessionId__c = sessionMap == null ? null : sessionMap.get('SessionId');
         this.logEntryEvent.SessionSecurityLevel__c = sessionMap == null ? null : sessionMap.get('SessionSecurityLevel');
         this.logEntryEvent.SessionType__c = sessionMap == null ? null : sessionMap.get('SessionType');
@@ -204,7 +203,6 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
         this.logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
         this.logEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
-        this.logEntryEvent.UserRoleName__c = CURRENT_USER.UserRole == null ? null : CURRENT_USER.UserRole.Name;
         this.logEntryEvent.UserType__c = UserInfo.getUserType();
 
         if (this.logEntryEvent.SessionType__c != 'Oauth2') {

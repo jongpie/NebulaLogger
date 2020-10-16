@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UserLicenseName__c</fullName>
+    <externalId>false</externalId>
+    <label>User License Name</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>Analytics Cloud Integration User</fullName>
+                <default>false</default>
+                <label>Analytics Cloud Integration User</label>
+            </value>
+            <value>
+                <fullName>Authenticated Website</fullName>
+                <default>false</default>
+                <label>Authenticated Website</label>
+            </value>
+            <value>
+                <fullName>Chatter External</fullName>
+                <default>false</default>
+                <label>Chatter External</label>
+            </value>
+            <value>
+                <fullName>Chatter Free</fullName>
+                <default>false</default>
+                <label>Chatter Free</label>
+            </value>
+            <value>
+                <fullName>Cloud Integration User</fullName>
+                <default>false</default>
+                <label>Cloud Integration User</label>
+            </value>
+            <value>
+                <fullName>Customer Community</fullName>
+                <default>false</default>
+                <label>Customer Community</label>
+            </value>
+            <value>
+                <fullName>Customer Community Login</fullName>
+                <default>false</default>
+                <label>Customer Community Login</label>
+            </value>
+            <value>
+                <fullName>Customer Community Plus</fullName>
+                <default>false</default>
+                <label>Customer Community Plus</label>
+            </value>
+            <value>
+                <fullName>Customer Community Plus Login</fullName>
+                <default>false</default>
+                <label>Customer Community Plus Login</label>
+            </value>
+            <value>
+                <fullName>Customer Portal Manager Custom</fullName>
+                <default>false</default>
+                <label>Customer Portal Manager Custom</label>
+            </value>
+            <value>
+                <fullName>Customer Portal Manager Standard</fullName>
+                <default>false</default>
+                <label>Customer Portal Manager Standard</label>
+            </value>
+            <value>
+                <fullName>External Identity</fullName>
+                <default>false</default>
+                <label>External Identity</label>
+            </value>
+            <value>
+                <fullName>Force.com - App Subscription</fullName>
+                <default>false</default>
+                <label>Force.com - App Subscription</label>
+            </value>
+            <value>
+                <fullName>Force.com - Free</fullName>
+                <default>false</default>
+                <label>Force.com - Free</label>
+            </value>
+            <value>
+                <fullName>Gold Partner</fullName>
+                <default>false</default>
+                <label>Gold Partner</label>
+            </value>
+            <value>
+                <fullName>High Volume Customer Portal</fullName>
+                <default>false</default>
+                <label>High Volume Customer Portal</label>
+            </value>
+            <value>
+                <fullName>Identity</fullName>
+                <default>false</default>
+                <label>Identity</label>
+            </value>
+            <value>
+                <fullName>Partner App Subscription</fullName>
+                <default>false</default>
+                <label>Partner App Subscription</label>
+            </value>
+            <value>
+                <fullName>Partner Community</fullName>
+                <default>false</default>
+                <label>Partner Community</label>
+            </value>
+            <value>
+                <fullName>Partner Community Login</fullName>
+                <default>false</default>
+                <label>Partner Community Login</label>
+            </value>
+            <value>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+                <label>Salesforce</label>
+            </value>
+            <value>
+                <fullName>Salesforce Platform</fullName>
+                <default>false</default>
+                <label>Salesforce Platform</label>
+            </value>
+            <value>
+                <fullName>Silver Partner</fullName>
+                <default>false</default>
+                <label>Silver Partner</label>
+            </value>
+            <value>
+                <fullName>Work.com Only</fullName>
+                <default>false</default>
+                <label>Work.com Only</label>
+            </value>
+            <value>
+                <fullName>XOrg Proxy User</fullName>
+                <default>false</default>
+                <label>XOrg Proxy User</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
