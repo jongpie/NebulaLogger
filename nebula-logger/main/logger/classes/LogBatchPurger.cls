@@ -47,7 +47,7 @@ public without sharing class LogBatchPurger implements Database.Batchable<SObjec
 
     public void finish(Database.BatchableContext batchableContext) {
         Logger.setParentLogTransactionId(this.originalTransactionId);
-        Logger.info(new LogMessage('Starting deletion of {0} records', this.totalProcessedRecords));
+        Logger.info(new LogMessage('Finished LogBatchPurger job, {0} total log records processed', this.totalProcessedRecords));
         Logger.saveLog();
     }
 }

@@ -8,7 +8,9 @@ private class LogBatchPurger_Tests {
 
     @testSetup
     static void setupData() {
-        insert LoggerSettings__c().getInstance();
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c = false;
+        upsert settings;
 
         Date scheduledDeletionDate = System.today().addDays(-7);
 
