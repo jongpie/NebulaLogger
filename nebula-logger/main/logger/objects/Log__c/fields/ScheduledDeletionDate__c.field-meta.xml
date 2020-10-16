@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ScheduledDeletionDate__c</fullName>
+    <defaultValue>TODAY() + 7</defaultValue>
+    <description>The date that this log will be automatically deleted by the batch job LogBatchPurger. 
+
+It defaults to TODAY + 7, but the date can be set manually or via automation if certain logs need to be kept longer/indefinitely.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The date that this log will be automatically deleted by the batch job LogBatchPurger.</inlineHelpText>
+    <label>Scheduled Deletion Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>
