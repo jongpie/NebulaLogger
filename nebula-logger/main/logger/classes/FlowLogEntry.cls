@@ -1,9 +1,8 @@
 /*************************************************************************************************
-* This file is part of the Nebula Logger project, released under the MIT License.                *
-* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
-*************************************************************************************************/
+ * This file is part of the Nebula Logger project, released under the MIT License.                *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+ *************************************************************************************************/
 public without sharing class FlowLogEntry {
-
     @InvocableVariable(required=true label='Flow or Process Builder Name')
     public String flowName;
 
@@ -25,10 +24,14 @@ public without sharing class FlowLogEntry {
     @InvocableVariable(required=false label='(Optional) Timestamp')
     public DateTime timestamp = System.now();
 
-    @InvocableMethod(category='Logging' label='Add Log Entry' description='Creates a log entry for a flow or process builder')
+    @InvocableMethod(
+        category='Logging'
+        label='Add Log Entry'
+        description='Creates a log entry for a flow or process builder'
+    )
     public static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         Boolean saveLog = false;
-        for(FlowLogEntry flowLogEntry : flowLogEntries) {
+        for (FlowLogEntry flowLogEntry : flowLogEntries) {
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowLogEntry.loggingLevelName);
 
             LogEntryBuilder logEntryBuilder = Logger.createLogEntryBuilder(loggingLevel)
@@ -38,25 +41,24 @@ public without sharing class FlowLogEntry {
 
             LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
 
-            if(logEntryEvent == null) {
+            if (logEntryEvent == null) {
                 continue;
             }
 
-            logEntryEvent.LoggingLevel__c    = flowLogEntry.loggingLevelName;
-            logEntryEvent.OriginLocation__c  = flowLogEntry.flowName;
-            logEntryEvent.OriginType__c      = 'Flow';
-            logEntryEvent.Timestamp__c       = flowLogEntry.timestamp;
+            logEntryEvent.LoggingLevel__c = flowLogEntry.loggingLevelName;
+            logEntryEvent.OriginLocation__c = flowLogEntry.flowName;
+            logEntryEvent.OriginType__c = 'Flow';
+            logEntryEvent.Timestamp__c = flowLogEntry.timestamp;
 
-            if(flowLogEntry.saveLog) {
+            if (flowLogEntry.saveLog) {
                 saveLog = flowLogEntry.saveLog;
             }
         }
 
-        if(saveLog) {
+        if (saveLog) {
             Logger.saveLog();
         }
 
         return new List<String>{ Logger.getTransactionId() };
     }
-
 }

@@ -1,10 +1,9 @@
 /******************************************************************************************
-* This file is part of the Apex UUID project, released under the MIT License.             *
-* See LICENSE file or go to https://github.com/jongpie/ApexUuid for full license details. *
-******************************************************************************************/
+ * This file is part of the Apex UUID project, released under the MIT License.             *
+ * See LICENSE file or go to https://github.com/jongpie/ApexUuid for full license details. *
+ ******************************************************************************************/
 @isTest
 private class Uuid_Tests {
-
     @isTest
     static void it_should_create_several_valid_uuids() {
         String generatedUuid = new Uuid().getValue();
@@ -12,7 +11,7 @@ private class Uuid_Tests {
 
         Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
 
-        for(Integer i = 0; i < 10; i++) {
+        for (Integer i = 0; i < 10; i++) {
             Uuid uuid = new Uuid();
             Matcher matcher = pattern.matcher(uuid.getValue());
             System.assert(matcher.matches(), 'Generated UUID=' + uuid.getValue());
@@ -24,7 +23,7 @@ private class Uuid_Tests {
         Uuid uuid = new Uuid();
         String originalValue = uuid.getValue();
 
-        for(Integer i = 0; i < 5; i++) {
+        for (Integer i = 0; i < 5; i++) {
             System.assertEquals(originalValue, uuid.getValue());
         }
     }
@@ -76,11 +75,10 @@ private class Uuid_Tests {
         try {
             Uuid convertedUuid = Uuid.valueOf(invalidUuidValue);
             System.assert(false, 'Error expected here');
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             String expectedError = invalidUuidValue + ' is not a valid UUID';
             System.assert(ex.getMessage().contains(expectedError));
         }
         Test.stopTest();
     }
-
 }
