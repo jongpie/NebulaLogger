@@ -8,7 +8,7 @@
             <quickActionLayoutItems>
                 <emptySpace>false</emptySpace>
                 <field>LogRetentionDate__c</field>
-                <uiBehavior>Required</uiBehavior>
+                <uiBehavior>Edit</uiBehavior>
             </quickActionLayoutItems>
         </quickActionLayoutColumns>
         <quickActionLayoutColumns/>
