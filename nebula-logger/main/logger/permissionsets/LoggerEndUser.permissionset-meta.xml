@@ -515,7 +515,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.ScheduledDeletionDate__c</field>
+        <field>Log__c.LogRetentionDate__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
