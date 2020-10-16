@@ -231,7 +231,8 @@ public without sharing class LogEntryEventHandler {
             return;
         }
 
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :LOG.NetworkId__c';
+        String networkId = LOG.NetworkId__c;
+        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
         List<SObject> matchingNetworks = Database.query(queryString);
 
         if (matchingNetworks.isEmpty()) {
