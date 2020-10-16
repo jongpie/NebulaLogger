@@ -302,7 +302,7 @@ private class LogEntryEventHandler_Tests {
             LogoutUrl__c = null,
             Message__c = 'My message',
             MessageTruncated__c = false,
-            //NetworkId__c = 'Fake-ID',
+            NetworkId__c = 'Fake-ID',
             OriginLocation__c = 'right here',
             OriginType__c = 'Apex',
             ProfileId__c = currentUser.ProfileId,
