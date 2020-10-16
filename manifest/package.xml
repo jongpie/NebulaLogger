@@ -72,6 +72,7 @@
         <name>PermissionSet</name>
     </types>
     <types>
+        <members>Log__c.ChangeLogRetentionDate</members>
         <members>Log__c.ViewJSON</members>
         <name>QuickAction</name>
     </types>

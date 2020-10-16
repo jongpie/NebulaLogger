@@ -27,8 +27,16 @@
                 <behavior>Readonly</behavior>
                 <field>SystemModeSummary__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>LogRetentionDate__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ParentLog__c</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>TotalLogEntries__c</field>
@@ -40,10 +48,6 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>TotalLogEntriesWithRelatedRecordId__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ParentLog__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -171,7 +175,7 @@
             <sortOrder>2</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>Log__c.Change_Deletion_Date</actionName>
+            <actionName>Log__c.ChangeLogRetentionDate</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>3</sortOrder>
         </platformActionListItems>
