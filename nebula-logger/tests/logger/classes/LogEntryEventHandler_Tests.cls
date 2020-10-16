@@ -1,45 +1,121 @@
 /*************************************************************************************************
-* This file is part of the Nebula Logger project, released under the MIT License.                *
-* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
-*************************************************************************************************/
+ * This file is part of the Nebula Logger project, released under the MIT License.                *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+ *************************************************************************************************/
 @isTest
 private class LogEntryEventHandler_Tests {
-
     static User getCurrentUser() {
         return [
-            SELECT Id, UserRoleId, UserRole.Name, ProfileId, Profile.Name, Profile.UserLicenseId,
-                Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name
-            FROM User WHERE Id = :UserInfo.getUserId()
+            SELECT
+                Id,
+                UserRoleId,
+                UserRole.Name,
+                ProfileId,
+                Profile.Name,
+                Profile.UserLicenseId,
+                Profile.UserLicense.LicenseDefinitionKey,
+                Profile.UserLicense.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
         ];
     }
 
     static Log__c getLog() {
         return [
-            SELECT ApiVersion__c, ContextThemeDisplayed__c, Id, Locale__c, LoggedBy__c,
-            LoginDomain__c, LoginHistoryId__c, LoginType__c, LogoutUrl__c, NetworkId__c,
-            OwnerId, ParentLog__c, ProfileId__c, ProfileName__c, SessionId__c,
-            SessionSecurityLevel__c, SessionType__c, SourceIp__c, SystemModeIsApexRest__c,
-            SystemModeIsBatch__c, SystemModeIsFuture__c, SystemModeIsQueueable__c,
-            SystemModeIsScheduledJob__c, TimeZoneId__c, TimeZoneName__c, TransactionId__c,
-            UserLoggingLevel__c, UserLoggingLevelOrdinal__c, UserRoleId__c, UserRoleName__c, UserType__c,
-            OrganizationId__c, OrganizationName__c, UserLicenseDefinitionKey__c, UserLicenseId__c, UserLicenseName__c,
-            (
-                SELECT ContextIsLightningComponent__c, ContextIsTriggerExecuting__c,
-                ContextIsVisualforce__c, ContextLightningComponentName__c, ContextTriggerOperationType__c,
-                ContextTriggerSObjectType__c, ContextVisualforcePage__c, ExceptionStackTrace__c, ExceptionType__c,
-                LimitsAggregateQueriesMax__c, LimitsAggregateQueriesUsed__c, LimitsAsyncCallsMax__c,
-                LimitsAsyncCallsUsed__c, LimitsCalloutsMax__c, LimitsCalloutsUsed__c, LimitsCpuTimeMax__c,
-                LimitsCpuTimeUsed__c, LimitsDmlRowsMax__c, LimitsDmlRowsUsed__c, LimitsDmlStatementsMax__c,
-                LimitsDmlStatementsUsed__c, LimitsEmailInvocationsMax__c, LimitsEmailInvocationsUsed__c,
-                LimitsFutureCallsMax__c, LimitsFutureCallsUsed__c, LimitsHeapSizeMax__c, LimitsHeapSizeUsed__c,
-                LimitsMobilePushApexCallsMax__c, LimitsMobilePushApexCallsUsed__c, LimitsQueueableJobsMax__c,
-                LimitsQueueableJobsUsed__c, LimitsSoqlQueriesMax__c, LimitsSoqlQueriesUsed__c,
-                LimitsSoqlQueryLocatorRowsMax__c, LimitsSoqlQueryLocatorRowsUsed__c, LimitsSoqlQueryRowsMax__c,
-                LimitsSoqlQueryRowsUsed__c, LimitsSoslSearchesUsed__c, LimitsSoslSearchesMax__c, Log__c,
-                LoggingLevel__c, LoggingLevelOrdinal__c, Message__c, MessageTruncated__c, Id, Name, OriginType__c,
-                OriginLocation__c, RelatedRecordId__c, RelatedRecordJson__c, StackTrace__c, Timestamp__c, Type__c
-                FROM LogEntries__r
-            )
+            SELECT
+                ApiVersion__c,
+                ContextThemeDisplayed__c,
+                Id,
+                Locale__c,
+                LoggedBy__c,
+                LoginDomain__c,
+                LoginHistoryId__c,
+                LoginType__c,
+                LogoutUrl__c,
+                NetworkId__c,
+                OwnerId,
+                ParentLog__c,
+                ProfileId__c,
+                ProfileName__c,
+                SessionId__c,
+                SessionSecurityLevel__c,
+                SessionType__c,
+                SourceIp__c,
+                SystemModeIsApexRest__c,
+                SystemModeIsBatch__c,
+                SystemModeIsFuture__c,
+                SystemModeIsQueueable__c,
+                SystemModeIsScheduledJob__c,
+                TimeZoneId__c,
+                TimeZoneName__c,
+                TransactionId__c,
+                UserLoggingLevel__c,
+                UserLoggingLevelOrdinal__c,
+                UserRoleId__c,
+                UserRoleName__c,
+                UserType__c,
+                OrganizationId__c,
+                OrganizationName__c,
+                UserLicenseDefinitionKey__c,
+                UserLicenseId__c,
+                UserLicenseName__c,
+                (
+                    SELECT
+                        ContextIsLightningComponent__c,
+                        ContextIsTriggerExecuting__c,
+                        ContextIsVisualforce__c,
+                        ContextLightningComponentName__c,
+                        ContextTriggerOperationType__c,
+                        ContextTriggerSObjectType__c,
+                        ContextVisualforcePage__c,
+                        ExceptionStackTrace__c,
+                        ExceptionType__c,
+                        LimitsAggregateQueriesMax__c,
+                        LimitsAggregateQueriesUsed__c,
+                        LimitsAsyncCallsMax__c,
+                        LimitsAsyncCallsUsed__c,
+                        LimitsCalloutsMax__c,
+                        LimitsCalloutsUsed__c,
+                        LimitsCpuTimeMax__c,
+                        LimitsCpuTimeUsed__c,
+                        LimitsDmlRowsMax__c,
+                        LimitsDmlRowsUsed__c,
+                        LimitsDmlStatementsMax__c,
+                        LimitsDmlStatementsUsed__c,
+                        LimitsEmailInvocationsMax__c,
+                        LimitsEmailInvocationsUsed__c,
+                        LimitsFutureCallsMax__c,
+                        LimitsFutureCallsUsed__c,
+                        LimitsHeapSizeMax__c,
+                        LimitsHeapSizeUsed__c,
+                        LimitsMobilePushApexCallsMax__c,
+                        LimitsMobilePushApexCallsUsed__c,
+                        LimitsQueueableJobsMax__c,
+                        LimitsQueueableJobsUsed__c,
+                        LimitsSoqlQueriesMax__c,
+                        LimitsSoqlQueriesUsed__c,
+                        LimitsSoqlQueryLocatorRowsMax__c,
+                        LimitsSoqlQueryLocatorRowsUsed__c,
+                        LimitsSoqlQueryRowsMax__c,
+                        LimitsSoqlQueryRowsUsed__c,
+                        LimitsSoslSearchesUsed__c,
+                        LimitsSoslSearchesMax__c,
+                        Log__c,
+                        LoggingLevel__c,
+                        LoggingLevelOrdinal__c,
+                        Message__c,
+                        MessageTruncated__c,
+                        Id,
+                        Name,
+                        OriginType__c,
+                        OriginLocation__c,
+                        RelatedRecordId__c,
+                        RelatedRecordJson__c,
+                        StackTrace__c,
+                        Timestamp__c,
+                        Type__c
+                    FROM LogEntries__r
+                )
             FROM Log__c
         ];
     }
@@ -123,7 +199,10 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.LimitsSoqlQueriesMax__c, logEntry.LimitsSoqlQueriesMax__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueriesUsed__c, logEntry.LimitsSoqlQueriesUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c, logEntry.LimitsSoqlQueryLocatorRowsMax__c);
-        System.assertEquals(logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c, logEntry.LimitsSoqlQueryLocatorRowsUsed__c);
+        System.assertEquals(
+            logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c,
+            logEntry.LimitsSoqlQueryLocatorRowsUsed__c
+        );
         System.assertEquals(logEntryEvent.LimitsSoqlQueryRowsMax__c, logEntry.LimitsSoqlQueryRowsMax__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueryRowsUsed__c, logEntry.LimitsSoqlQueryRowsUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoslSearchesUsed__c, logEntry.LimitsSoslSearchesUsed__c);
@@ -144,86 +223,86 @@ private class LogEntryEventHandler_Tests {
 
     @isTest
     static void it_should_normalize_event_data_into_log_and_log_entry() {
-        User currentUser          = getCurrentUser();
+        User currentUser = getCurrentUser();
         DmlException dmlException = new DmlException();
-        String transactionId      = '123-456-789-0';
+        String transactionId = '123-456-789-0';
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            ApiVersion__c                     = '99.0',
-            ContextIsLightningComponent__c    = false,
-            ContextIsTriggerExecuting__c      = false,
-            ContextIsVisualforce__c           = false,
-            ContextLightningComponentName__c  = 'myComponent',
-            ContextThemeDisplayed__c          = 'SomeTheme',
-            ContextTriggerOperationType__c    = 'SomeOperation',
-            ContextTriggerSObjectType__c      = 'Account',
-            ContextVisualforcePage__c         = 'MyPage',
-            ExceptionStackTrace__c            = dmlException.getStackTraceString(),
-            ExceptionType__c                  = dmlException.getTypeName(),
-            LimitsAggregateQueriesMax__c      = 987,
-            LimitsAggregateQueriesUsed__c     = 123,
-            LimitsAsyncCallsMax__c            = 987,
-            LimitsAsyncCallsUsed__c           = 123,
-            LimitsCalloutsMax__c              = 987,
-            LimitsCalloutsUsed__c             = 123,
-            LimitsCpuTimeMax__c               = 987,
-            LimitsCpuTimeUsed__c              = 123,
-            LimitsDmlRowsMax__c               = 987,
-            LimitsDmlRowsUsed__c              = 123,
-            LimitsDmlStatementsMax__c         = 987,
-            LimitsDmlStatementsUsed__c        = 123,
-            LimitsEmailInvocationsMax__c      = 987,
-            LimitsEmailInvocationsUsed__c     = 123,
-            LimitsFutureCallsMax__c           = 987,
-            LimitsFutureCallsUsed__c          = 123,
-            LimitsHeapSizeMax__c              = 987,
-            LimitsHeapSizeUsed__c             = 123,
-            LimitsMobilePushApexCallsMax__c   = 987,
-            LimitsMobilePushApexCallsUsed__c  = 123,
-            LimitsQueueableJobsMax__c         = 987,
-            LimitsQueueableJobsUsed__c        = 123,
-            LimitsSoqlQueriesMax__c           = 987,
-            LimitsSoqlQueriesUsed__c          = 123,
-            LimitsSoqlQueryLocatorRowsMax__c  = 987,
+            ApiVersion__c = '99.0',
+            ContextIsLightningComponent__c = false,
+            ContextIsTriggerExecuting__c = false,
+            ContextIsVisualforce__c = false,
+            ContextLightningComponentName__c = 'myComponent',
+            ContextThemeDisplayed__c = 'SomeTheme',
+            ContextTriggerOperationType__c = 'SomeOperation',
+            ContextTriggerSObjectType__c = 'Account',
+            ContextVisualforcePage__c = 'MyPage',
+            ExceptionStackTrace__c = dmlException.getStackTraceString(),
+            ExceptionType__c = dmlException.getTypeName(),
+            LimitsAggregateQueriesMax__c = 987,
+            LimitsAggregateQueriesUsed__c = 123,
+            LimitsAsyncCallsMax__c = 987,
+            LimitsAsyncCallsUsed__c = 123,
+            LimitsCalloutsMax__c = 987,
+            LimitsCalloutsUsed__c = 123,
+            LimitsCpuTimeMax__c = 987,
+            LimitsCpuTimeUsed__c = 123,
+            LimitsDmlRowsMax__c = 987,
+            LimitsDmlRowsUsed__c = 123,
+            LimitsDmlStatementsMax__c = 987,
+            LimitsDmlStatementsUsed__c = 123,
+            LimitsEmailInvocationsMax__c = 987,
+            LimitsEmailInvocationsUsed__c = 123,
+            LimitsFutureCallsMax__c = 987,
+            LimitsFutureCallsUsed__c = 123,
+            LimitsHeapSizeMax__c = 987,
+            LimitsHeapSizeUsed__c = 123,
+            LimitsMobilePushApexCallsMax__c = 987,
+            LimitsMobilePushApexCallsUsed__c = 123,
+            LimitsQueueableJobsMax__c = 987,
+            LimitsQueueableJobsUsed__c = 123,
+            LimitsSoqlQueriesMax__c = 987,
+            LimitsSoqlQueriesUsed__c = 123,
+            LimitsSoqlQueryLocatorRowsMax__c = 987,
             LimitsSoqlQueryLocatorRowsUsed__c = 123,
-            LimitsSoqlQueryRowsMax__c         = 987,
-            LimitsSoqlQueryRowsUsed__c        = 123,
-            LimitsSoslSearchesMax__c          = 987,
-            LimitsSoslSearchesUsed__c         = 123,
-            Locale__c                         = 'es-ES',
-            LoggingLevel__c                   = 'DEBUG',
-            LoggingLevelOrdinal__c            = 9,
-            LoginDomain__c                    = 'https://fake.my.salesforce.com',
-            LoginHistoryId__c                 = '255.255.255.255',
-            LoginType__c                      = null,
-            LogoutUrl__c                      = null,
-            Message__c                        = 'My message',
-            MessageTruncated__c               = false,
-            NetworkId__c                      = 'Fake-ID',
-            OriginLocation__c                 = 'right here',
-            OriginType__c                     = 'Apex',
-            ProfileId__c                      = currentUser.ProfileId,
-            RelatedRecordId__c                = currentUser.Id,
-            RelatedRecordJson__c              = Json.serializePretty(currentUser),
-            SessionId__c                      = null,
-            SessionSecurityLevel__c           = null,
-            SessionType__c                    = null,
-            SourceIp__c                       = null,
-            StackTrace__c                     = 'I started here \nand then went there',
-            SystemModeIsApexRest__c           = false,
-            SystemModeIsBatch__c              = false,
-            SystemModeIsFuture__c             = false,
-            SystemModeIsQueueable__c          = false,
-            SystemModeIsScheduledJob__c       = false,
-            Timestamp__c                      = System.now(),
-            TimeZoneId__c                     = 'fake-id',
-            TimeZoneName__c                   = 'My time zone name',
-            TransactionId__c                  = transactionId,
-            Type__c                           = 'Diagnostic',
-            UserLoggingLevel__c               = 'DEBUG',
-            UserLoggingLevelOrdinal__c        = 9,
-            UserRoleId__c                     = currentUser.UserRoleId,
-            UserType__c                       = null
+            LimitsSoqlQueryRowsMax__c = 987,
+            LimitsSoqlQueryRowsUsed__c = 123,
+            LimitsSoslSearchesMax__c = 987,
+            LimitsSoslSearchesUsed__c = 123,
+            Locale__c = 'es-ES',
+            LoggingLevel__c = 'DEBUG',
+            LoggingLevelOrdinal__c = 9,
+            LoginDomain__c = 'https://fake.my.salesforce.com',
+            LoginHistoryId__c = '255.255.255.255',
+            LoginType__c = null,
+            LogoutUrl__c = null,
+            Message__c = 'My message',
+            MessageTruncated__c = false,
+            NetworkId__c = 'Fake-ID',
+            OriginLocation__c = 'right here',
+            OriginType__c = 'Apex',
+            ProfileId__c = currentUser.ProfileId,
+            RelatedRecordId__c = currentUser.Id,
+            RelatedRecordJson__c = Json.serializePretty(currentUser),
+            SessionId__c = null,
+            SessionSecurityLevel__c = null,
+            SessionType__c = null,
+            SourceIp__c = null,
+            StackTrace__c = 'I started here \nand then went there',
+            SystemModeIsApexRest__c = false,
+            SystemModeIsBatch__c = false,
+            SystemModeIsFuture__c = false,
+            SystemModeIsQueueable__c = false,
+            SystemModeIsScheduledJob__c = false,
+            Timestamp__c = System.now(),
+            TimeZoneId__c = 'fake-id',
+            TimeZoneName__c = 'My time zone name',
+            TransactionId__c = transactionId,
+            Type__c = 'Diagnostic',
+            UserLoggingLevel__c = 'DEBUG',
+            UserLoggingLevelOrdinal__c = 9,
+            UserRoleId__c = currentUser.UserRoleId,
+            UserType__c = null
         );
 
         Test.startTest();
@@ -241,5 +320,4 @@ private class LogEntryEventHandler_Tests {
 
         Test.stopTest();
     }
-
 }
