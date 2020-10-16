@@ -3,36 +3,51 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 public without sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
-    private Integer daysToKeep;
-
-    public LogBatchPurger() {
-        this(7);
-    }
-
-    public LogBatchPurger(Integer daysToKeep) {
-        this.daysToKeep = Math.abs(daysToKeep);
-    }
+    private String originalTransactionId;
+    private Integer totalProcessedRecords = 0;
 
     public Database.QueryLocator start(Database.BatchableContext batchableContext) {
-        Date purgeDate = System.today() - daysToKeep;
+        // Each batchable method runs in a separate transaction
+        // ...so store the first transaction ID to later relate the other transactions
+        this.originalTransactionId = Logger.getTransactionId();
+
+        Logger.info('Starting LogBatchPurger job');
+        Logger.saveLog();
 
         return Database.getQueryLocator(
-            [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE CreatedDate <= :purgeDate]
+            [
+                SELECT Id, (SELECT Id FROM LogEntries__r)
+                FROM Log__c
+                WHERE LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL
+            ]
         );
     }
 
     public void execute(Database.BatchableContext batchableContext, List<Log__c> scope) {
-        List<SObject> recordsToDelete = new List<SObject>();
+        this.totalProcessedRecords += scope.size();
 
-        for (Log__c log : scope) {
-            recordsToDelete.addAll(log.LogEntries__r);
-            recordsToDelete.add(log);
+        try {
+            Logger.setParentLogTransactionId(this.originalTransactionId);
+            Logger.info(new LogMessage('Starting deletion of {0} records', scope.size()));
+
+            List<SObject> recordsToDelete = new List<SObject>();
+            for (Log__c log : scope) {
+                recordsToDelete.addAll(log.LogEntries__r);
+                recordsToDelete.add(log);
+            }
+
+            delete recordsToDelete;
+            Database.emptyRecycleBin(recordsToDelete);
+        } catch (Exception apexException) {
+            Logger.error('Error deleting logs').setExceptionDetails(apexException);
+        } finally {
+            Logger.saveLog();
         }
-
-        delete recordsToDelete;
-        Database.emptyRecycleBin(recordsToDelete);
     }
 
     public void finish(Database.BatchableContext batchableContext) {
+        Logger.setParentLogTransactionId(this.originalTransactionId);
+        Logger.info(new LogMessage('Starting deletion of {0} records', this.totalProcessedRecords));
+        Logger.saveLog();
     }
 }
