@@ -465,6 +465,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.LogRetentionDate__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.LoggedByUsernameLink__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -556,11 +561,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.ProfileName__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Log__c.LogRetentionDate__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
