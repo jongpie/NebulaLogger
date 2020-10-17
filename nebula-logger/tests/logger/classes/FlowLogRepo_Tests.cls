@@ -13,6 +13,7 @@ private class FlowLogRepo_Tests {
     static void it_should_return_most_recent_log_in_flow_compatible_list() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
         settings.IsEnabled__c = true;
+        settings.EnableSystemMessages__c = false;
         upsert settings;
 
         Test.startTest();

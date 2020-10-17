@@ -18,6 +18,7 @@ private class FlowRecordLogEntry_Tests {
     static void setup() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
         settings.IsEnabled__c = true;
+        settings.EnableSystemMessages__c = false;
         upsert settings;
     }
 
