@@ -117,7 +117,7 @@
         <field>LogEntry__c.FlowName__c</field>
         <readable>true</readable>
     </fieldPermissions>
-        <fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HasException__c</field>
         <readable>true</readable>
@@ -508,6 +508,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.LogRetentionDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.LoggedByUsernameLink__c</field>
         <readable>true</readable>
@@ -600,11 +605,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.ProfileName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Log__c.LogRetentionDate__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
