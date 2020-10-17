@@ -544,7 +544,7 @@ public without sharing class Logger {
         saveLog(transactionSaveMethod);
     }
 
-    public static void saveLog(SaveMethod transactionSaveMethod) {
+    public static void saveLog(Quiddity quiddity) {
         if (LOG_ENTRIES.isEmpty()) {
             return;
         }
@@ -619,7 +619,7 @@ public without sharing class Logger {
             logEntryEvents.add(logEntryEvent);
         }
 
-        switch on transactionSaveMethod {
+        switch on quiddity {
             when QUEUEABLE {
                 ASYNC_SAVER_INSTANCE.enqueueLogEntries(logEntryEvents);
             }

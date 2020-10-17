@@ -25,8 +25,7 @@ public with sharing class RestApi {
 
     public static List<RestApi.SaveResult> updateRecords(List<SObject> records, Boolean allOrNone) {
         HttpResponse response = getRestApiCallout(COMPOSITE_ENDPOINT)
-            .setParameter('_HttpMethod', 'PATCH')
-            .post(new RestApi.SaveRequest(records, allOrNone));
+            .patch(new RestApi.SaveRequest(records, allOrNone));
 
         return getSaveResults(response);
     }
