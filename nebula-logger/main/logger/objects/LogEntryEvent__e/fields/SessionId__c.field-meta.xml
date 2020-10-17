@@ -6,7 +6,7 @@
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
     <label>SessionId</label>
-    <length>18</length>
+    <length>120</length>
     <required>false</required>
     <type>Text</type>
     <unique>false</unique>

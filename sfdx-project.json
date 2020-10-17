@@ -5,7 +5,7 @@
             "default": true
         }
     ],
-    "namespace": "Nebula",
+    "namespace": "",
     "sfdcLoginUrl": "https://nebulaframework-dev.my.salesforce.com",
-    "sourceApiVersion": "49.0"
+    "sourceApiVersion": "50.0"
 }

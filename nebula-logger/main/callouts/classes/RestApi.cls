@@ -4,7 +4,7 @@
  ***********************************************************************************************/
 public with sharing class RestApi {
     private static Boolean ALL_OR_NONE_DEFAULT = true;
-    private static String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v49.0';
+    private static final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v50.0';
     private static String COMPOSITE_ENDPOINT = BASE_URL + '/composite/sobjects';
     private static String LISTVIEW_ENDPOINT = BASE_URL + '/sobjects/{0}/listviews/{1}';
     private static String LISTVIEW_DESCRIBE_ENDPOINT = LISTVIEW_ENDPOINT + '/describe';
@@ -25,8 +25,7 @@ public with sharing class RestApi {
 
     public static List<RestApi.SaveResult> updateRecords(List<SObject> records, Boolean allOrNone) {
         HttpResponse response = getRestApiCallout(COMPOSITE_ENDPOINT)
-            .setParameter('_HttpMethod', 'PATCH')
-            .post(new RestApi.SaveRequest(records, allOrNone));
+            .patch(new RestApi.SaveRequest(records, allOrNone));
 
         return getSaveResults(response);
     }

@@ -26,8 +26,6 @@
         <members>LogMessage_Tests</members>
         <members>RestApi</members>
         <members>RestApi_Tests</members>
-        <members>Uuid</members>
-        <members>Uuid_Tests</members>
         <name>ApexClass</name>
     </types>
     <types>
@@ -81,5 +79,5 @@
         <members>Log__c</members>
         <name>TopicsForObjects</name>
     </types>
-    <version>49.0</version>
+    <version>50.0</version>
 </Package>
