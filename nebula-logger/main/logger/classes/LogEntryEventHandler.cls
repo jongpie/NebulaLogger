@@ -53,7 +53,6 @@ public without sharing class LogEntryEventHandler {
         LOG.OwnerId = logEntryEvent.CreatedById;
         LOG.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
         LOG.ProfileId__c = logEntryEvent.ProfileId__c;
-        LOG.ProfileName__c = logEntryEvent.ProfileName__c;
         LOG.SessionId__c = logEntryEvent.SessionId__c;
         LOG.SessionId__c = logEntryEvent.SessionId__c;
         LOG.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
@@ -70,7 +69,6 @@ public without sharing class LogEntryEventHandler {
         LOG.UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c;
         LOG.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
         LOG.UserRoleId__c = logEntryEvent.UserRoleId__c;
-        LOG.UserRoleName__c = logEntryEvent.UserRoleName__c;
         LOG.UserType__c = logEntryEvent.UserType__c;
 
         // Since the log is upserted once per transaction, we can run some queries here
