@@ -21,8 +21,7 @@ global without sharing class FlowRecordLogEntry {
     @InvocableVariable(required=false label='(Optional) Topics')
     global List<String> topics;
 
-    @InvocableVariable(required=false label='(Optional) Timestamp')
-    global DateTime timestamp = System.now();
+    private DateTime timestamp = System.now();
 
     @InvocableMethod(
         category='Logging'
