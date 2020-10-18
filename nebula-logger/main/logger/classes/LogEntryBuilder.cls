@@ -208,8 +208,18 @@ global without sharing virtual class LogEntryBuilder {
     }
 
     private Map<String, String> getSessionMap() {
-        Quiddity currentQuiddity = Logger.getCurrentQuiddity();
-        if (Test.isRunningTest() || currentQuiddity == Quiddity.INVOCABLE_ACTION) {
+        // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
+        // run by the Automated Process user - attempting to access Auth.SessionManagement
+        // methods as that user throws an UNCATCHABLE error. Let's sidestep that.
+        if (
+            Test.isRunningTest() ||
+            // no System class method for this one, Winter '21 to the rescue!
+            Logger.getCurrentQuiddity() == Quiddity.INVOCABLE_ACTION ||
+            System.isBatch() ||
+            System.isQueueable() ||
+            System.isScheduled() ||
+            System.isFuture()
+        ) {
             return new Map<String, String>{ 'SessionId' => UserInfo.getSessionId() };
         }
         return Auth.SessionManagement.getCurrentSession();
