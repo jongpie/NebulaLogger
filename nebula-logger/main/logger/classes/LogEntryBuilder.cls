@@ -88,8 +88,9 @@ global without sharing virtual class LogEntryBuilder {
 
         setExceptionDetails(apexException.getTypeName(), apexException.getStackTraceString());
 
-        if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c)
+        if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c) {
             Logger.saveLog();
+        }
 
         return this;
     }
@@ -201,8 +202,9 @@ global without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
         this.logEntryEvent.UserType__c = UserInfo.getUserType();
 
-        if (this.logEntryEvent.SessionType__c != 'Oauth2')
+        if (this.logEntryEvent.SessionType__c != 'Oauth2') {
             this.logEntryEvent.ContextThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
+        }
     }
 
     private Map<String, String> getSessionMap() {
