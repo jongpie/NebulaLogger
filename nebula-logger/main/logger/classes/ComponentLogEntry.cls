@@ -2,35 +2,35 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-global without sharing class ComponentLogEntry {
+public without sharing class ComponentLogEntry {
     @AuraEnabled
-    global String componentName { get; set; }
+    public String componentName { get; set; }
     @AuraEnabled
-    global String loggingLevelName { get; set; }
+    public String loggingLevelName { get; set; }
     @AuraEnabled
-    global String message { get; set; }
+    public String message { get; set; }
     @AuraEnabled
-    global Error error { get; set; }
+    public Error error { get; set; }
     @AuraEnabled
-    global String originLocation { get; set; }
+    public String originLocation { get; set; }
     @AuraEnabled
-    global Datetime timestamp { get; set; }
+    public Datetime timestamp { get; set; }
     @AuraEnabled
-    global List<String> topics { get; set; }
+    public List<String> topics { get; set; }
 
-    global class Error {
+    public class Error {
         @AuraEnabled
-        global Integer columnNumber { get; set; }
+        public Integer columnNumber { get; set; }
         @AuraEnabled
-        global Integer lineNumber { get; set; }
+        public Integer lineNumber { get; set; }
         @AuraEnabled
-        global String message { get; set; }
+        public String message { get; set; }
         @AuraEnabled
-        global String stack { get; set; }
+        public String stack { get; set; }
     }
 
     @AuraEnabled
-    global static void saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
+    public static void saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
         for (ComponentLogEntry componentLogEntry : componentLogEntries) {
             LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevelName);
 
