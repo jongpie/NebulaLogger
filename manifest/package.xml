@@ -5,8 +5,6 @@
     <types>
         <members>Callout</members>
         <members>Callout_Tests</members>
-        <members>ComponentLogEntry</members>
-        <members>ComponentLogEntry_Tests</members>
         <members>FlowLogEntry</members>
         <members>FlowLogEntry_Tests</members>
         <members>FlowLogRepo</members>
@@ -35,7 +33,6 @@
         <name>ApexTrigger</name>
     </types>
     <types>
-        <members>logger</members>
         <members>logJSONViewer</members>
         <name>AuraDefinitionBundle</name>
     </types>
