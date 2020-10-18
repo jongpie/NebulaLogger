@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OrganizationType__c</fullName>
+    <externalId>false</externalId>
+    <label>Organization Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Team Edition</fullName>
+                <default>false</default>
+                <label>Team Edition</label>
+            </value>
+            <value>
+                <fullName>Professional Edition</fullName>
+                <default>false</default>
+                <label>Professional Edition</label>
+            </value>
+            <value>
+                <fullName>Enterprise Edition</fullName>
+                <default>false</default>
+                <label>Enterprise Edition</label>
+            </value>
+            <value>
+                <fullName>Developer Edition</fullName>
+                <default>false</default>
+                <label>Developer Edition</label>
+            </value>
+            <value>
+                <fullName>Personal Edition</fullName>
+                <default>false</default>
+                <label>Personal Edition</label>
+            </value>
+            <value>
+                <fullName>Unlimited Edition</fullName>
+                <default>false</default>
+                <label>Unlimited Edition</label>
+            </value>
+            <value>
+                <fullName>Contact Manager Edition</fullName>
+                <default>false</default>
+                <label>Contact Manager Edition</label>
+            </value>
+            <value>
+                <fullName>Base Edition</fullName>
+                <default>false</default>
+                <label>Base Edition</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
