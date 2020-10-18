@@ -54,8 +54,13 @@ private class LogEntryEventHandler_Tests {
                 UserRoleId__c,
                 UserRoleName__c,
                 UserType__c,
+                OrganizationDomainUrl__c,
                 OrganizationId__c,
+                OrganizationInstanceName__c,
+                OrganizationIsSandbox__c,
                 OrganizationName__c,
+                OrganizationNamespacePrefix__c,
+                OrganizationType__c,
                 UserLicenseDefinitionKey__c,
                 UserLicenseId__c,
                 UserLicenseName__c,
@@ -121,7 +126,10 @@ private class LogEntryEventHandler_Tests {
     }
 
     static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
-        Organization org = [SELECT Id, Name FROM Organization];
+        Organization org = [
+            SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType
+            FROM Organization
+        ];
         User currentUser = getCurrentUser();
 
         System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c);
@@ -155,8 +163,13 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.UserType__c, log.UserType__c);
 
         // Org fields
-        System.assertEquals(org.Id, log.OrganizationId__c);
-        System.assertEquals(org.Name, log.OrganizationName__c);
+        System.assertEquals(Url.getOrgDomainUrl().toExternalForm(), LOG.OrganizationDomainUrl__c);
+        System.assertEquals(org.Id, LOG.OrganizationId__c);
+        System.assertEquals(org.InstanceName, LOG.OrganizationInstanceName__c);
+        System.assertEquals(org.IsSandbox, LOG.OrganizationIsSandbox__c);
+        System.assertEquals(org.Name, LOG.OrganizationName__c);
+        System.assertEquals(org.NamespacePrefix, LOG.OrganizationNamespacePrefix__c);
+        System.assertEquals(org.OrganizationType, LOG.OrganizationType__c);
 
         // Profile fields
         System.assertEquals(currentUser.Profile.UserLicense.LicenseDefinitionKey, log.UserLicenseDefinitionKey__c);

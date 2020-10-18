@@ -210,10 +210,18 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void setOrganizationDetails() {
-        Organization org = [SELECT Id, Name FROM Organization];
+        Organization org = [
+            SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType
+            FROM Organization
+        ];
 
+        LOG.OrganizationDomainUrl__c = Url.getOrgDomainUrl().toExternalForm();
         LOG.OrganizationId__c = org.Id;
+        LOG.OrganizationInstanceName__c = org.InstanceName;
+        LOG.OrganizationIsSandbox__c = org.IsSandbox;
         LOG.OrganizationName__c = org.Name;
+        LOG.OrganizationNamespacePrefix__c = org.NamespacePrefix;
+        LOG.OrganizationType__c = org.OrganizationType;
     }
 
     private void setNetworkDetails() {
