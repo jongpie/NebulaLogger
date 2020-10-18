@@ -2,11 +2,11 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-public without sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
+global without sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
     private String originalTransactionId;
     private Integer totalProcessedRecords = 0;
 
-    public Database.QueryLocator start(Database.BatchableContext batchableContext) {
+    global Database.QueryLocator start(Database.BatchableContext batchableContext) {
         // Each batchable method runs in a separate transaction
         // ...so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
@@ -23,7 +23,7 @@ public without sharing class LogBatchPurger implements Database.Batchable<SObjec
         );
     }
 
-    public void execute(Database.BatchableContext batchableContext, List<Log__c> scope) {
+    global void execute(Database.BatchableContext batchableContext, List<Log__c> scope) {
         this.totalProcessedRecords += scope.size();
 
         try {
@@ -45,7 +45,7 @@ public without sharing class LogBatchPurger implements Database.Batchable<SObjec
         }
     }
 
-    public void finish(Database.BatchableContext batchableContext) {
+    global void finish(Database.BatchableContext batchableContext) {
         Logger.setParentLogTransactionId(this.originalTransactionId);
         Logger.info(
             new LogMessage('Finished LogBatchPurger job, {0} total log records processed', this.totalProcessedRecords)
