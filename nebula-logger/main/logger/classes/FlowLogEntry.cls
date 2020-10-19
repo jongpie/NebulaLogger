@@ -2,34 +2,33 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-public without sharing class FlowLogEntry {
+global without sharing class FlowLogEntry {
     @InvocableVariable(required=true label='Flow or Process Builder Name')
-    public String flowName;
+    global String flowName;
 
     @InvocableVariable(required=true label='Log Entry Message')
-    public String message;
+    global String message;
 
     @InvocableVariable(required=false label='(Optional) Save Log')
-    public Boolean saveLog = true;
+    global Boolean saveLog = true;
 
     @InvocableVariable(required=false label='(Optional) Record ID')
-    public Id recordId;
+    global Id recordId;
 
     @InvocableVariable(required=false label='(Optional) Logging Level')
-    public String loggingLevelName = 'DEBUG';
+    global String loggingLevelName = 'DEBUG';
 
     @InvocableVariable(required=false label='(Optional) Topics')
-    public List<String> topics;
+    global List<String> topics;
 
-    @InvocableVariable(required=false label='(Optional) Timestamp')
-    public DateTime timestamp = System.now();
+    private DateTime timestamp = System.now();
 
     @InvocableMethod(
         category='Logging'
         label='Add Log Entry'
         description='Creates a log entry for a flow or process builder'
     )
-    public static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
+    global static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         Boolean saveLog = false;
         for (FlowLogEntry flowLogEntry : flowLogEntries) {
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowLogEntry.loggingLevelName);
