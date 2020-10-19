@@ -16,6 +16,14 @@ global without sharing class Logger {
     private static Boolean suspendSaving = false;
     private static Quiddity transactionSaveMethod = System.Request.getCurrent().getQuiddity();
 
+    static {
+        // If settings have not been configured, then insert the org defaults
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        if (orgDefaults.Id == null) {
+            insert orgDefaults;
+        }
+    }
+
     // Settings management methods
     global static String getTransactionId() {
         return TRANSACTION_ID;
