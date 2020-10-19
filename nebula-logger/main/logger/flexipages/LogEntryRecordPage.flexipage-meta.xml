@@ -186,6 +186,28 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.ExceptionType__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ExceptionStackTrace__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-2459e7ac-69ae-42c7-a640-3fd29367e57b</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.RelatedRecordId__c</fieldItem>
             </fieldInstance>
         </itemInstances>
@@ -221,28 +243,6 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ExceptionType__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ExceptionStackTrace__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-2459e7ac-69ae-42c7-a640-3fd29367e57b</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
