@@ -3,25 +3,27 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 public without sharing class LogEntryHandler {
-    private static final ApexClass CLASS_DETAILS = [
-        SELECT NamespacePrefix
-        FROM ApexClass
-        WHERE Name = :'LogEntryHandler'
-    ];
-    private static final String FIELD_PREFIX = 'Related';
-
     public void execute() {
-        if (!Trigger.isBefore) {
+        if (Trigger.operationType != TriggerOperation.BEFORE_INSERT) {
             return;
         }
 
         List<LogEntry__c> logEntries = (List<LogEntry__c>) Trigger.new;
-
-        this.setRelatedRecordLookupFields(logEntries);
+        this.setHasStackTrace(logEntries);
+        this.setRelatedRecordNames(logEntries);
     }
 
-    private void setRelatedRecordLookupFields(List<LogEntry__c> logEntries) {
-        DescribeSObjectResult sobjectDescribe = Schema.LogEntry__c.SObjectType.getDescribe();
+    private void setHasStackTrace(List<LogEntry__c> logEntries) {
+        // A formula field cannot be used here since LogEntry__c.StackTrace__c is a long textarea field
+        // So, this code handles maintaing LogEntry__c.HasStackTrace__c
+        for (LogEntry__c logEntry : logEntries) {
+            logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
+        }
+    }
+
+    private void setRelatedRecordNames(List<LogEntry__c> logEntries) {
+        // 1. Figure out which SObjects & record IDs to query
+        Map<Schema.SObjectType, List<Id>> sobjectTypeToRecords = new Map<Schema.SObjectType, List<Id>>();
         for (LogEntry__c logEntry : logEntries) {
             // Skip the log entry if there's no related record ID
             if (logEntry.RelatedRecordId__c == null) {
@@ -30,32 +32,94 @@ public without sharing class LogEntryHandler {
 
             // Based on the related record ID, get the SObject Type
             Id relatedRecordId = (Id) logEntry.RelatedRecordId__c;
-            logEntry.RelatedRecordSObject__c = String.valueOf(relatedRecordId.getSObjectType());
+            Schema.SObjectType sobjectType = relatedRecordId.getSObjectType();
 
-            // Based on the SObject Type, check for a matching field (based on naming convention of ObjectName == FieldName)
-            String relatedRecordType = logEntry.RelatedRecordSObject__c.endsWith('__c')
-                ? logEntry.RelatedRecordSObject__c
-                : logEntry.RelatedRecordSObject__c + '__c';
-            String lookupFieldName = this.getNamespacePrefix() + FIELD_PREFIX + relatedRecordType;
-            Schema.SObjectField lookupField = sobjectDescribe.fields.getMap().get(lookupFieldName);
+            List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
+            if (sobjectTypeRecordIds == null) {
+                sobjectTypeRecordIds = new List<Id>();
+            }
+            sobjectTypeRecordIds.add(relatedRecordId);
+            sobjectTypeToRecords.put(sobjectType, sobjectTypeRecordIds);
+        }
 
-            // If there's a lookup field, set it
-            if (lookupField != null) {
-                logEntry.put(lookupField, relatedRecordId);
+        // 2. Run the queries and store the results
+        Map<Id, SObject> recordIdToRecord = new Map<Id, SObject>();
+        for (Schema.SObjectType sobjectType : sobjectTypeToRecords.keySet()) {
+            // Stop if we've used up all the queries
+            if (Limits.getQueries() == Limits.getLimitQueries()) {
+                return;
+            }
+            List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
+            String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
+            String query = String.format(
+                'SELECT Id, {0} FROM {1} WHERE Id IN :sobjectTypeRecordIds',
+                new List<Object>{ sobjectDisplayFieldName, sobjectType, sobjectTypeRecordIds }
+            );
+
+            System.debug('sobjectTypeRecordIds==' + sobjectTypeRecordIds);
+            System.debug('query==' + query);
+            List<SObject> results = Database.query(query);
+            System.debug('results==' + results);
+            recordIdToRecord.putAll(results);
+        }
+
+        // 3. Finally, store the record name on the log entry
+        for (LogEntry__c logEntry : logEntries) {
+            // Skip the log entry if there's no related record ID
+            if (logEntry.RelatedRecordId__c == null) {
+                continue;
+            }
+
+            Id relatedRecordId = (Id) logEntry.RelatedRecordId__c;
+            Schema.SObjectType sobjectType = relatedRecordId.getSObjectType();
+
+            String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
+            String recordName = (String) recordIdToRecord.get(logEntry.RelatedRecordId__c).get(sobjectDisplayFieldName);
+            logEntry.RelatedRecordName__c = recordName;
+            logEntry.RelatedRecordSObject__c = String.valueOf(sobjectType);
+        }
+    }
+
+    private String getDisplayFieldApiName(Schema.SObjectType sobjectType) {
+        // There are several commonly used names for the display field name - typically, Name
+        // Check the common names first before resorting to looping through all Sobject fields
+        // The order of the field names has been sorted based on number of objects in a dev org with that field
+        List<String> educatedGuesses = new List<String>{
+            'Name',
+            'DeveloperName',
+            'ApiName',
+            'Title',
+            'Subject',
+            'AssetRelationshipNumber',
+            'CaseNumber',
+            'ContractNumber',
+            'Domain',
+            'FriendlyName',
+            'FunctionName',
+            'Label',
+            'LocalPart',
+            'OrderItemNumber',
+            'OrderNumber',
+            'SolutionName',
+            'TestSuiteName'
+        };
+
+        String displayFieldApiName;
+        for (String fieldName : educatedGuesses) {
+            Schema.SobjectField field = sobjectType.getDescribe().fields.getMap().get(fieldName);
+
+            if (field == null) {
+                continue;
+            }
+
+            Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+
+            if (fieldDescribe.isNameField()) {
+                displayFieldApiName = fieldDescribe.getName();
+                break;
             }
         }
-    }
 
-    private String getClassName() {
-        return String.valueOf(this).split(':')[0];
-    }
-
-    private String getNamespacePrefix() {
-        String namespacePrefix = '';
-        if (CLASS_DETAILS.NamespacePrefix != null) {
-            namespacePrefix = CLASS_DETAILS.NamespacePrefix + '__';
-        }
-
-        return namespacePrefix;
+        return displayFieldApiName;
     }
 }
