@@ -343,21 +343,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RelatedAccount__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.RelatedCase__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.RelatedLead__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntry__c.RelatedRecordDetailedLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -384,11 +369,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.RelatedRecordSObject__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.RelatedUser__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
