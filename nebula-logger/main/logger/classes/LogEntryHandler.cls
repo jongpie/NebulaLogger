@@ -83,7 +83,6 @@ public without sharing class LogEntryHandler {
         }
 
         // There are several commonly used names for the display field name - typically, Name
-        // Check the common names first before resorting to looping through all Sobject fields
         // The order of the field names has been sorted based on number of objects in a dev org with that field
         List<String> educatedGuesses = new List<String>{
             'Name',
