@@ -4,7 +4,10 @@
  *************************************************************************************************/
 public without sharing class LogEntryHandler {
     public void execute() {
-        if (Trigger.operationType != TriggerOperation.BEFORE_INSERT) {
+        if (
+            Trigger.operationType != TriggerOperation.BEFORE_INSERT &&
+            Trigger.operationType != TriggerOperation.BEFORE_UPDATE
+        ) {
             return;
         }
 
