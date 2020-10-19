@@ -111,13 +111,11 @@ public without sharing virtual class LogEntryBuilder {
             return this;
         }
 
-        if (LoggerSettings__c.getInstance().StoreRelatedRecordJson__c) {
-            String truncatedRecordJson = truncateFieldValue(
-                Schema.LogEntryEvent__e.RelatedRecordJson__c,
-                Json.serializePretty(record)
-            );
-            this.logEntryEvent.RelatedRecordJson__c = truncatedRecordJson;
-        }
+        String truncatedRecordJson = truncateFieldValue(
+            Schema.LogEntryEvent__e.RelatedRecordJson__c,
+            Json.serializePretty(record)
+        );
+        this.logEntryEvent.RelatedRecordJson__c = truncatedRecordJson;
 
         return this.setRecordId(record.Id);
     }
@@ -246,10 +244,6 @@ public without sharing virtual class LogEntryBuilder {
     }
 
     private String getStackTrace(DmlException stackTraceException) {
-        if (!LoggerSettings__c.getInstance().StoreStackTrace__c) {
-            return null;
-        }
-
         List<String> stackTraceLines = new List<String>();
         for (String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
             if (currentStackTraceLine.contains('.LogEntryBuilder.') || currentStackTraceLine.contains('.Logger.')) {
