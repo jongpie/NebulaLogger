@@ -21,10 +21,10 @@
         <members>LogEntryEventHandler_Tests</members>
         <members>LogEntryHandler</members>
         <members>LogEntryHandler_Tests</members>
-        <members>Logger</members>
-        <members>Logger_Tests</members>
         <members>LogMessage</members>
         <members>LogMessage_Tests</members>
+        <members>Logger</members>
+        <members>Logger_Tests</members>
         <members>RestApi</members>
         <members>RestApi_Tests</members>
         <name>ApexClass</name>
@@ -143,6 +143,7 @@
         <members>LogEntry__c.FlowName__c</members>
         <members>LogEntry__c.HasException__c</members>
         <members>LogEntry__c.HasRelatedRecordId__c</members>
+        <members>LogEntry__c.HasStackTrace__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesMax__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesUsed__c</members>
         <members>LogEntry__c.LimitsAggregateQueries__c</members>
