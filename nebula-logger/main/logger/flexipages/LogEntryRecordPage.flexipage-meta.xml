@@ -110,22 +110,6 @@
                 <fieldItem>Record.ContextSummary__c</fieldItem>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.RelatedRecordDetailedLink__c</fieldItem>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HasRelatedRecordId__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-3c239c0f-eea9-4d54-a5fb-e540e0281d62</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -196,6 +180,24 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RelatedRecordId__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RelatedRecordDetailedLink__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -456,7 +458,7 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>Related Record JSON</value>
+                    <value>Related Record</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <visibilityRule>
