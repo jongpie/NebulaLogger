@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Nebula Logger</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
     <description>Designed for Salesforce admins &amp; developers. A robust logger for Salesforce Apex, Process Builder &amp; Flow that&apos;s simple to implement &amp; configurable at the org, profile &amp; user level.</description>
+    <namespacePrefix>Nebula</namespacePrefix>
     <types>
         <members>Callout</members>
         <members>Callout_Tests</members>
