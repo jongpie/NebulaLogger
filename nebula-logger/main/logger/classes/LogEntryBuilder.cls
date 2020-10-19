@@ -2,7 +2,7 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-public without sharing virtual class LogEntryBuilder {
+global without sharing virtual class LogEntryBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final String ENTRY_TYPE_DIAGNOSTIC = 'Diagnostic';
     private static final String ENTRY_TYPE_EXCEPTION = 'Exception';
@@ -19,7 +19,7 @@ public without sharing virtual class LogEntryBuilder {
     private Boolean shouldSave;
     private Boolean userSessionDetailsAreSet = false;
 
-    public LogEntryBuilder(LoggingLevel loggingLevel) {
+    global LogEntryBuilder(LoggingLevel loggingLevel) {
         this.shouldSave = Logger.isEnabled(loggingLevel);
         if (!this.shouldSave) {
             return;
@@ -68,7 +68,7 @@ public without sharing virtual class LogEntryBuilder {
         // Empty private constructor, used as a way to internally detect if there is a namespace
     }
 
-    public LogEntryBuilder setMessage(String message) {
+    global LogEntryBuilder setMessage(String message) {
         if (!this.shouldSave) {
             return this;
         }
@@ -81,7 +81,7 @@ public without sharing virtual class LogEntryBuilder {
         return this;
     }
 
-    public LogEntryBuilder setMessage(LogMessage logMessage) {
+    global LogEntryBuilder setMessage(LogMessage logMessage) {
         if (!this.shouldSave) {
             return this;
         }
@@ -89,20 +89,21 @@ public without sharing virtual class LogEntryBuilder {
         return this.setMessage(logMessage.getMessage());
     }
 
-    public LogEntryBuilder setExceptionDetails(Exception apexException) {
+    global LogEntryBuilder setExceptionDetails(Exception apexException) {
         if (!this.shouldSave) {
             return this;
         }
 
         setExceptionDetails(apexException.getTypeName(), apexException.getStackTraceString());
 
-        if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c)
+        if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c) {
             Logger.saveLog();
+        }
 
         return this;
     }
 
-    public LogEntryBuilder setExceptionDetails(String exceptionType, String exceptionStackTrace) {
+    global LogEntryBuilder setExceptionDetails(String exceptionType, String exceptionStackTrace) {
         if (!this.shouldSave) {
             return this;
         }
@@ -114,7 +115,7 @@ public without sharing virtual class LogEntryBuilder {
         return this;
     }
 
-    public LogEntryBuilder setRecordId(SObject record) {
+    global LogEntryBuilder setRecordId(SObject record) {
         if (!this.shouldSave) {
             return this;
         }
@@ -128,7 +129,7 @@ public without sharing virtual class LogEntryBuilder {
         return this.setRecordId(record.Id);
     }
 
-    public LogEntryBuilder setRecordId(Id recordId) {
+    global LogEntryBuilder setRecordId(Id recordId) {
         if (!this.shouldSave) {
             return this;
         }
@@ -137,7 +138,7 @@ public without sharing virtual class LogEntryBuilder {
         return this;
     }
 
-    public LogEntryBuilder setTopics(List<String> topics) {
+    global LogEntryBuilder setTopics(List<String> topics) {
         if (!this.shouldSave) {
             return this;
         }
@@ -184,16 +185,16 @@ public without sharing virtual class LogEntryBuilder {
         return this;
     }
 
-    public LogEntryBuilder alwaysSave() {
+    global LogEntryBuilder alwaysSave() {
         this.shouldSave = true;
         return this;
     }
 
-    public Boolean shouldSave() {
+    global Boolean shouldSave() {
         return this.shouldSave;
     }
 
-    public LogEntryEvent__e getLogEntryEvent() {
+    global LogEntryEvent__e getLogEntryEvent() {
         // Lazy-loading of setting user-session details to help minimize Apex heap size usage
         if (!this.userSessionDetailsAreSet) {
             this.setUserSessionDetails();
@@ -202,7 +203,7 @@ public without sharing virtual class LogEntryBuilder {
         return this.logEntryEvent;
     }
 
-    public void setUserSessionDetails() {
+    global void setUserSessionDetails() {
         if (!this.shouldSave) {
             return;
         }
@@ -245,8 +246,9 @@ public without sharing virtual class LogEntryBuilder {
         this.logEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
         this.logEntryEvent.UserType__c = UserInfo.getUserType();
 
-        if (this.logEntryEvent.SessionType__c != 'Oauth2')
+        if (this.logEntryEvent.SessionType__c != 'Oauth2') {
             this.logEntryEvent.ContextThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
+        }
     }
 
     private Map<String, String> getSessionMap() {

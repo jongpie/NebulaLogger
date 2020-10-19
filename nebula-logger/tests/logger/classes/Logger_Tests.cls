@@ -47,6 +47,23 @@ private class Logger_Tests {
     }
 
     @isTest
+    static void it_should_auto_create_org_default_settings_when_not_configured() {
+        delete [SELECT Id FROM LoggerSettings__c];
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.assertEquals(0, existingSettings.size());
+
+        Test.startTest();
+        Logger.isEnabled();
+        Test.stopTest();
+
+        existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.assertEquals(1, existingSettings.size());
+
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        System.assertEquals(orgDefaults.Id, existingSettings.get(0).Id);
+    }
+
+    @isTest
     static void it_should_return_transaction_id() {
         String transactionId = Logger.getTransactionId();
         System.assert(!String.isBlank(transactionId));
