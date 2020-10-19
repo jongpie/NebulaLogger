@@ -42,6 +42,11 @@ public without sharing class LogEntryHandler {
             }
             List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
+
+            if (sobjectDisplayFieldName == null) {
+                continue;
+            }
+
             String query = String.format(
                 'SELECT Id, {0} FROM {1} WHERE Id IN :sobjectTypeRecordIds',
                 new List<Object>{ sobjectDisplayFieldName, sobjectType, sobjectTypeRecordIds }
