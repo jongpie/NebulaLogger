@@ -10,6 +10,10 @@ public without sharing virtual class LogEntryBuilder {
     private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     private static final String ORIGIN_TYPE_FLOW = 'Flow';
 
+    // Constants used for unmanaged project vs managed package
+    private static final Boolean IS_MANAGED_PACKAGE = NAMESPACE_PREFIX.contains('__');
+    private static final String NAMESPACE_PREFIX = String.valueOf(new LogEntryBuilder()).substringBefore(':');
+
     private final LogEntryEvent__e logEntryEvent;
 
     private Boolean shouldSave;
@@ -45,10 +49,8 @@ public without sharing virtual class LogEntryBuilder {
             LimitsSoslSearchesUsed__c = Limits.getSoslQueries(),
             LoggingLevel__c = loggingLevel.NAME(),
             LoggingLevelOrdinal__c = loggingLevel.ORDINAL(),
-            OriginLocation__c = getOriginLocation(stackTraceException),
             OriginType__c = ORIGIN_TYPE_APEX,
             ParentLogTransactionId__c = Logger.getParentLogTransactionId(),
-            StackTrace__c = getStackTrace(stackTraceException),
             SystemModeIsApexRest__c = RestContext.request != null,
             SystemModeIsBatch__c = System.isBatch(),
             SystemModeIsFuture__c = System.isFuture(),
@@ -58,6 +60,12 @@ public without sharing virtual class LogEntryBuilder {
             TransactionId__c = Logger.getTransactionId(),
             Type__c = ENTRY_TYPE_DIAGNOSTIC
         );
+
+        this.parseStackTrace(stackTraceException.getStackTraceString());
+    }
+
+    private LogEntryBuilder() {
+        // Empty private constructor, used as a way to internally detect if there is a namespace
     }
 
     public LogEntryBuilder setMessage(String message) {
@@ -135,6 +143,44 @@ public without sharing virtual class LogEntryBuilder {
         }
 
         this.logEntryEvent.Topics__c = getTopicsString(topics);
+        return this;
+    }
+
+    global LogEntryBuilder parseStackTrace(String stackTraceString) {
+        if (!this.shouldSave) {
+            return this;
+        }
+
+        if (String.isEmpty(stackTraceString) || stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+            return this;
+        }
+
+        List<String> stackTraceLines = new List<String>();
+        String originLocation;
+        for (String currentStackTraceLine : stackTraceString.split('\n')) {
+            // Don't include the logging system's classes in the stack trace
+            List<String> ignoredClasses = new List<String>{
+                Logger.class.getName(),
+                LogMessage.class.getName(),
+                LogEntryBuilder.class.getName()
+            };
+            for (String ignoredClass : ignoredClasses) {
+                if (currentStackTraceLine.contains('.' + ignoredClass + '.')) {
+                    continue;
+                }
+            }
+
+            // Set the stack trace & origin location
+            stackTraceLines.add(currentStackTraceLine);
+            originLocation = currentStackTraceLine.substringBefore(':');
+            if (originLocation.startsWith('Class.')) {
+                originLocation = originLocation.substringAfter('Class.');
+            }
+        }
+
+        this.logEntryEvent.OriginLocation__c = originLocation;
+        this.logEntryEvent.StackTrace__c = String.join(stackTraceLines, '\n');
+
         return this;
     }
 
@@ -224,36 +270,6 @@ public without sharing virtual class LogEntryBuilder {
     private static String getApiVersion() {
         String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
-    }
-
-    private String getOriginLocation(DmlException stackTraceException) {
-        String originLocation;
-        for (String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('.LogEntryBuilder.') || currentStackTraceLine.contains('.Logger.')) {
-                continue;
-            }
-
-            originLocation = currentStackTraceLine.substringBefore(':');
-            if (originLocation.startsWith('Class.')) {
-                originLocation = originLocation.substringAfter('Class.');
-            }
-            break;
-        }
-
-        return originLocation;
-    }
-
-    private String getStackTrace(DmlException stackTraceException) {
-        List<String> stackTraceLines = new List<String>();
-        for (String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('.LogEntryBuilder.') || currentStackTraceLine.contains('.Logger.')) {
-                continue;
-            }
-
-            stackTraceLines.add(currentStackTraceLine);
-        }
-
-        return String.join(stackTraceLines, '\n');
     }
 
     private static String getVisualforcePageName() {
