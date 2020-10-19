@@ -52,10 +52,7 @@ public without sharing class LogEntryHandler {
                 new List<Object>{ sobjectDisplayFieldName, sobjectType, sobjectTypeRecordIds }
             );
 
-            System.debug('sobjectTypeRecordIds==' + sobjectTypeRecordIds);
-            System.debug('query==' + query);
             List<SObject> results = Database.query(query);
-            System.debug('results==' + results);
             recordIdToRecord.putAll(results);
         }
 
