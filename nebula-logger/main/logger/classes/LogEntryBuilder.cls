@@ -6,13 +6,20 @@ global without sharing virtual class LogEntryBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final String ENTRY_TYPE_DIAGNOSTIC = 'Diagnostic';
     private static final String ENTRY_TYPE_EXCEPTION = 'Exception';
+    private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
     private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     private static final String ORIGIN_TYPE_FLOW = 'Flow';
 
-    // Constants used for unmanaged project vs managed package
-    private static final Boolean IS_MANAGED_PACKAGE = NAMESPACE_PREFIX.contains('__');
-    private static final String NAMESPACE_PREFIX = String.valueOf(new LogEntryBuilder()).substringBefore(':');
+    private static String getNamespacePrefix() {
+        String namespacePrefix = '';
+
+        String className = String.valueOf(new LogEntryBuilder()).substringBefore(':');
+        if (className.contains('__')) {
+            namespacePrefix = className.substringBefore('__');
+        }
+        return namespacePrefix;
+    }
 
     private final LogEntryEvent__e logEntryEvent;
 
