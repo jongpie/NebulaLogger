@@ -161,6 +161,13 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.StackTrace__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasStackTrace__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-30caba7c-11da-4321-bccd-e97e901d03f4</name>
@@ -196,6 +203,13 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ExceptionStackTrace__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasExceptionStackTrace__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-2459e7ac-69ae-42c7-a640-3fd29367e57b</name>
@@ -240,6 +254,13 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RelatedRecordJson__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasRelatedRecordJson__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-1da92bf7-f9ed-4842-b880-7625370f3c70</name>
