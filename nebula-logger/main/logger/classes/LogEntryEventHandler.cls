@@ -94,6 +94,7 @@ public without sharing class LogEntryEventHandler {
                 ContextTriggerOperationType__c = logEntryEvent.ContextTriggerOperationType__c,
                 ContextTriggerSObjectType__c = logEntryEvent.ContextTriggerSObjectType__c,
                 ContextVisualforcePage__c = logEntryEvent.ContextVisualforcePage__c,
+                ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,
                 LimitsAggregateQueriesMax__c = logEntryEvent.LimitsAggregateQueriesMax__c,

@@ -101,23 +101,14 @@ global without sharing class LogEntryBuilder {
             return this;
         }
 
-        setExceptionDetails(apexException.getTypeName(), apexException.getStackTraceString());
+        this.logEntryEvent.ExceptionMessage__c = apexException.getMessage();
+        this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
+        this.logEntryEvent.ExceptionType__c = apexException.getTypeName();
+        this.logEntryEvent.Type__c = ENTRY_TYPE_EXCEPTION;
 
         if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c) {
             Logger.saveLog();
         }
-
-        return this;
-    }
-
-    global LogEntryBuilder setExceptionDetails(String exceptionType, String exceptionStackTrace) {
-        if (!this.shouldSave) {
-            return this;
-        }
-
-        this.logEntryEvent.ExceptionType__c = exceptionType;
-        this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace;
-        this.logEntryEvent.Type__c = ENTRY_TYPE_EXCEPTION;
 
         return this;
     }
