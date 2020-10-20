@@ -13,6 +13,9 @@ public without sharing class LogEntryHandler {
     }
 
     private void setRelatedRecordNames(List<LogEntry__c> logEntries) {
+        // Assumption - only valid record IDs will be populated in LogEntry__c.RelatedRecordId__c
+        // If that changes, then extra checks may be needed before casting to Id, using getSObjectType(), etc.
+
         // 1. Figure out which SObjects & record IDs to query
         Map<Schema.SObjectType, List<Id>> sobjectTypeToRecords = new Map<Schema.SObjectType, List<Id>>();
         for (LogEntry__c logEntry : logEntries) {
@@ -33,7 +36,7 @@ public without sharing class LogEntryHandler {
             sobjectTypeToRecords.put(sobjectType, sobjectTypeRecordIds);
         }
 
-        // 2. Run the queries and store the results
+        // 2. Run the queries and store the results in the map
         Map<Id, SObject> recordIdToRecord = new Map<Id, SObject>();
         for (Schema.SObjectType sobjectType : sobjectTypeToRecords.keySet()) {
             // Stop if we've used up all the queries
@@ -56,7 +59,7 @@ public without sharing class LogEntryHandler {
             recordIdToRecord.putAll(results);
         }
 
-        // 3. Finally, store the record name on the log entry
+        // 3. Finally, save the record name on the log entry
         for (LogEntry__c logEntry : logEntries) {
             // Skip the log entry if there's no related record ID
             if (logEntry.RelatedRecordId__c == null) {
