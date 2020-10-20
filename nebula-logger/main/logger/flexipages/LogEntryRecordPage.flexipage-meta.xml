@@ -161,13 +161,6 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.StackTrace__c</fieldItem>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HasStackTrace__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <name>Facet-30caba7c-11da-4321-bccd-e97e901d03f4</name>
@@ -184,41 +177,6 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-3a75f17f-589a-49f4-bdec-38f730e94676</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.RelatedRecordDetailedLink__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.RelatedRecordJson__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-1da92bf7-f9ed-4842-b880-7625370f3c70</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-1da92bf7-f9ed-4842-b880-7625370f3c70</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -254,6 +212,50 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-2a15cd64-78af-4727-8c6d-2913cb00a278</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RelatedRecordId__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RelatedRecordDetailedLink__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RelatedRecordJson__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-1da92bf7-f9ed-4842-b880-7625370f3c70</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-1da92bf7-f9ed-4842-b880-7625370f3c70</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -452,26 +454,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
-                    <value>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Related Record</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HasRelatedRecordId__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
                     <value>Facet-2a15cd64-78af-4727-8c6d-2913cb00a278</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -482,6 +464,26 @@
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasException__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Related Record</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasRelatedRecordId__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
