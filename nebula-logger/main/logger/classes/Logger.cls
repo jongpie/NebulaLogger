@@ -45,10 +45,6 @@ global without sharing class Logger {
         return transactionSaveMethod;
     }
 
-    global static Id getQueueableSaveJobId() {
-        return ASYNC_SAVER_INSTANCE.jobId;
-    }
-
     global static Boolean isEnabled() {
         return LoggerSettings__c.getInstance().IsEnabled__c;
     }
