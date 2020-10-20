@@ -154,10 +154,17 @@ global without sharing class LogEntryBuilder {
                 LogMessage.class.getName(),
                 LogEntryBuilder.class.getName()
             };
+
+            Boolean ignoreLine = false;
             for (String ignoredClass : ignoredClasses) {
                 if (currentStackTraceLine.contains('.' + ignoredClass + '.')) {
+                    ignoreLine = true;
                     continue;
                 }
+            }
+
+            if(ignoreLine) {
+                continue;
             }
 
             // Set the stack trace & origin location
