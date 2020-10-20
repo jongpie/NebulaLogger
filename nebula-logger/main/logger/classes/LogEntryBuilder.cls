@@ -11,16 +11,6 @@ global without sharing class LogEntryBuilder {
     private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     private static final String ORIGIN_TYPE_FLOW = 'Flow';
 
-    private static String getNamespacePrefix() {
-        String namespacePrefix = '';
-
-        String className = String.valueOf(new LogEntryBuilder()).substringBefore(':');
-        if (className.contains('__')) {
-            namespacePrefix = className.substringBefore('__');
-        }
-        return namespacePrefix;
-    }
-
     private final LogEntryEvent__e logEntryEvent;
 
     private Boolean shouldSave;
@@ -71,10 +61,6 @@ global without sharing class LogEntryBuilder {
         this.parseStackTrace(stackTraceException.getStackTraceString());
     }
 
-    private LogEntryBuilder() {
-        // Empty private constructor, used as a way to internally detect if there is a namespace
-    }
-
     global LogEntryBuilder setMessage(String message) {
         if (!this.shouldSave) {
             return this;
@@ -102,9 +88,12 @@ global without sharing class LogEntryBuilder {
         }
 
         this.logEntryEvent.ExceptionMessage__c = apexException.getMessage();
-        this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
         this.logEntryEvent.ExceptionType__c = apexException.getTypeName();
         this.logEntryEvent.Type__c = ENTRY_TYPE_EXCEPTION;
+
+        if (isValidStackTraceString(apexException.getStackTraceString())) {
+            this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
+        }
 
         if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c) {
             Logger.saveLog();
@@ -150,7 +139,7 @@ global without sharing class LogEntryBuilder {
             return this;
         }
 
-        if (String.isEmpty(stackTraceString) || stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+        if (!isValidStackTraceString(stackTraceString)) {
             return this;
         }
 
@@ -284,6 +273,30 @@ global without sharing class LogEntryBuilder {
     }
 
     // Private static methods
+    private static String getNamespacePrefix() {
+        String namespacePrefix = '';
+
+        String className = LogEntryBuilder.class.getName().substringBefore(':');
+        if (className.contains('.')) {
+            namespacePrefix = className.substringBefore('.');
+        }
+        return namespacePrefix;
+    }
+
+    private static Boolean isValidStackTraceString(String stackTraceString) {
+        if (String.isEmpty(stackTraceString)) {
+            return false;
+        }
+        if (stackTraceString == '()') {
+            return false;
+        }
+        if (stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+            return false;
+        }
+
+        return true;
+    }
+
     private static String getTopicsString(List<String> topics) {
         if (topics == null || topics.isEmpty()) {
             return null;
