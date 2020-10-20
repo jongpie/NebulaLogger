@@ -92,7 +92,7 @@ global without sharing class LogEntryBuilder {
         this.logEntryEvent.Type__c = ENTRY_TYPE_EXCEPTION;
 
         // Stack traces are not returned for managed packages
-        if (NAMESPACE_PREFIX == null) {
+        if (isValidStackTrace(apexException.getStackTraceString())) {
             this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
         }
 
@@ -141,7 +141,7 @@ global without sharing class LogEntryBuilder {
         }
 
         // Stack traces are not returned for managed packages
-        if (NAMESPACE_PREFIX != null && !Test.isRunningTest()) {
+        if (!isValidStackTrace(stackTraceString)) {
             return this;
         }
 
@@ -283,6 +283,20 @@ global without sharing class LogEntryBuilder {
             namespacePrefix = className.substringBefore('.');
         }
         return namespacePrefix;
+    }
+
+    private static Boolean isValidStackTrace(String stackTraceString) {
+        if (String.isEmpty(stackTraceString)) {
+            return false;
+        }
+        if (stackTraceString == '()') {
+            return false;
+        }
+        if (stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+            return false;
+        }
+
+        return true;
     }
 
     private static String getTopicsString(List<String> topics) {
