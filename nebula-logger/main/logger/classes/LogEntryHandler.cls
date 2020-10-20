@@ -9,14 +9,15 @@ public without sharing class LogEntryHandler {
         }
 
         List<LogEntry__c> logEntries = (List<LogEntry__c>) Trigger.new;
-        this.setHasStackTrace(logEntries);
+        this.setHasStackTraceFields(logEntries);
         this.setRelatedRecordNames(logEntries);
     }
 
-    private void setHasStackTrace(List<LogEntry__c> logEntries) {
+    private void setHasStackTraceFields(List<LogEntry__c> logEntries) {
         // A formula field cannot be used here since LogEntry__c.StackTrace__c is a long textarea field
         // So, this code handles maintaing LogEntry__c.HasStackTrace__c
         for (LogEntry__c logEntry : logEntries) {
+            logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
             logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
         }
     }
