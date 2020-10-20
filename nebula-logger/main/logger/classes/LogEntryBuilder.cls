@@ -92,7 +92,7 @@ global without sharing class LogEntryBuilder {
         this.logEntryEvent.Type__c = ENTRY_TYPE_EXCEPTION;
 
         // Stack traces are not returned for managed packages
-        if (getNamespacePrefix() == null) {
+        if (NAMESPACE_PREFIX == null) {
             this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
         }
 
@@ -141,7 +141,7 @@ global without sharing class LogEntryBuilder {
         }
 
         // Stack traces are not returned for managed packages
-        if (getNamespacePrefix() != null) {
+        if (NAMESPACE_PREFIX != null && !Test.isRunningTest()) {
             return this;
         }
 
