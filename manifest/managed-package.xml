@@ -56,6 +56,7 @@
         <members>LogEntryEvent__e.ContextTriggerOperationType__c</members>
         <members>LogEntryEvent__e.ContextTriggerSObjectType__c</members>
         <members>LogEntryEvent__e.ContextVisualforcePage__c</members>
+        <members>LogEntryEvent__e.ExceptionMessage__c</members>
         <members>LogEntryEvent__e.ExceptionStackTrace__c</members>
         <members>LogEntryEvent__e.ExceptionType__c</members>
         <members>LogEntryEvent__e.LimitsAggregateQueriesMax__c</members>
@@ -138,11 +139,14 @@
         <members>LogEntry__c.ContextTriggerSObjectType__c</members>
         <members>LogEntry__c.ContextVisualforcePage__c</members>
         <members>LogEntry__c.Context__c</members>
+        <members>LogEntry__c.ExceptionMessage__c</members>
         <members>LogEntry__c.ExceptionStackTrace__c</members>
         <members>LogEntry__c.ExceptionType__c</members>
         <members>LogEntry__c.FlowName__c</members>
+        <members>LogEntry__c.HasExceptionStackTrace__c</members>
         <members>LogEntry__c.HasException__c</members>
         <members>LogEntry__c.HasRelatedRecordId__c</members>
+        <members>LogEntry__c.HasRelatedRecordJson__c</members>
         <members>LogEntry__c.HasStackTrace__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesMax__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesUsed__c</members>
@@ -199,16 +203,12 @@
         <members>LogEntry__c.OriginLocation__c</members>
         <members>LogEntry__c.OriginType__c</members>
         <members>LogEntry__c.Origin__c</members>
-        <members>LogEntry__c.RelatedAccount__c</members>
-        <members>LogEntry__c.RelatedCase__c</members>
-        <members>LogEntry__c.RelatedLead__c</members>
         <members>LogEntry__c.RelatedRecordDetailedLink__c</members>
         <members>LogEntry__c.RelatedRecordId__c</members>
         <members>LogEntry__c.RelatedRecordJson__c</members>
         <members>LogEntry__c.RelatedRecordLink__c</members>
         <members>LogEntry__c.RelatedRecordName__c</members>
         <members>LogEntry__c.RelatedRecordSObject__c</members>
-        <members>LogEntry__c.RelatedUser__c</members>
         <members>LogEntry__c.StackTrace__c</members>
         <members>LogEntry__c.Timestamp__c</members>
         <members>LogEntry__c.TypeWithImage__c</members>
