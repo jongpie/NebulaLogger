@@ -78,10 +78,6 @@
         <label>Related Record</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>RelatedRecordDetailedLink__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>RelatedRecordId__c</field>
             </layoutItems>
