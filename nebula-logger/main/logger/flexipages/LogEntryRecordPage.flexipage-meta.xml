@@ -70,15 +70,6 @@
                 <fieldItem>Record.LoggedByUsernameLink__c</fieldItem>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Timestamp__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-7f7fbd23-d9c3-45a7-9966-5b53ef6c3760</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -96,9 +87,9 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>readonly</value>
+                    <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Origin__c</fieldItem>
+                <fieldItem>Record.Timestamp__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -142,7 +133,7 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.MessageTruncated__c</fieldItem>
+                <fieldItem>Record.Message__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -151,7 +142,14 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Message__c</fieldItem>
+                <fieldItem>Record.MessageTruncated__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.MessageTruncated__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
