@@ -15,8 +15,8 @@
         <members>FlowRecordLogEntry_Tests</members>
         <members>LogBatchPurger</members>
         <members>LogBatchPurger_Tests</members>
-        <members>LogEntryBuilder</members>
-        <members>LogEntryBuilder_Tests</members>
+        <members>LogEntryEventBuilder</members>
+        <members>LogEntryEventBuilder_Tests</members>
         <members>LogEntryEventHandler</members>
         <members>LogEntryEventHandler_Tests</members>
         <members>LogEntryHandler</members>

@@ -2,7 +2,7 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-global without sharing class LogEntryBuilder {
+global without sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final String ENTRY_TYPE_DIAGNOSTIC = 'Diagnostic';
     private static final String ENTRY_TYPE_EXCEPTION = 'Exception';
@@ -16,7 +16,7 @@ global without sharing class LogEntryBuilder {
     private Boolean shouldSave;
     private Boolean userSessionDetailsAreSet = false;
 
-    global LogEntryBuilder(LoggingLevel loggingLevel) {
+    global LogEntryEventBuilder(LoggingLevel loggingLevel) {
         this.shouldSave = Logger.isEnabled(loggingLevel);
         if (!this.shouldSave) {
             return;
@@ -61,7 +61,7 @@ global without sharing class LogEntryBuilder {
         this.parseStackTrace(stackTraceException.getStackTraceString());
     }
 
-    global LogEntryBuilder setMessage(String message) {
+    global LogEntryEventBuilder setMessage(String message) {
         if (!this.shouldSave) {
             return this;
         }
@@ -74,7 +74,7 @@ global without sharing class LogEntryBuilder {
         return this;
     }
 
-    global LogEntryBuilder setMessage(LogMessage logMessage) {
+    global LogEntryEventBuilder setMessage(LogMessage logMessage) {
         if (!this.shouldSave) {
             return this;
         }
@@ -82,7 +82,7 @@ global without sharing class LogEntryBuilder {
         return this.setMessage(logMessage.getMessage());
     }
 
-    global LogEntryBuilder setExceptionDetails(Exception apexException) {
+    global LogEntryEventBuilder setExceptionDetails(Exception apexException) {
         if (!this.shouldSave) {
             return this;
         }
@@ -103,7 +103,7 @@ global without sharing class LogEntryBuilder {
         return this;
     }
 
-    global LogEntryBuilder setRecordId(SObject record) {
+    global LogEntryEventBuilder setRecordId(SObject record) {
         if (!this.shouldSave) {
             return this;
         }
@@ -117,7 +117,7 @@ global without sharing class LogEntryBuilder {
         return this.setRecordId(record.Id);
     }
 
-    global LogEntryBuilder setRecordId(Id recordId) {
+    global LogEntryEventBuilder setRecordId(Id recordId) {
         if (!this.shouldSave) {
             return this;
         }
@@ -126,7 +126,7 @@ global without sharing class LogEntryBuilder {
         return this;
     }
 
-    global LogEntryBuilder setTopics(List<String> topics) {
+    global LogEntryEventBuilder setTopics(List<String> topics) {
         if (!this.shouldSave) {
             return this;
         }
@@ -135,7 +135,7 @@ global without sharing class LogEntryBuilder {
         return this;
     }
 
-    global LogEntryBuilder parseStackTrace(String stackTraceString) {
+    global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (!this.shouldSave) {
             return this;
         }
@@ -151,7 +151,7 @@ global without sharing class LogEntryBuilder {
             List<String> ignoredClasses = new List<String>{
                 Logger.class.getName(),
                 LogMessage.class.getName(),
-                LogEntryBuilder.class.getName()
+                LogEntryEventBuilder.class.getName()
             };
 
             Boolean ignoreLine = false;
@@ -187,7 +187,7 @@ global without sharing class LogEntryBuilder {
         return this;
     }
 
-    global LogEntryBuilder alwaysSave() {
+    global LogEntryEventBuilder alwaysSave() {
         this.shouldSave = true;
         return this;
     }
@@ -291,7 +291,7 @@ global without sharing class LogEntryBuilder {
     private static String getNamespacePrefix() {
         String namespacePrefix = null;
 
-        String className = LogEntryBuilder.class.getName().substringBefore(':');
+        String className = LogEntryEventBuilder.class.getName().substringBefore(':');
         if (className.contains('.')) {
             namespacePrefix = className.substringBefore('.');
         }

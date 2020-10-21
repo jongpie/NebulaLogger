@@ -3,7 +3,7 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 @isTest
-private class LogEntryBuilder_Tests {
+private class LogEntryEventBuilder_Tests {
     @TestSetup
     static void setup() {
         insert new LoggerSettings__c(IsEnabled__c = false, LoggingLevel__c = 'DEBUG', Name = 'Test Settings');
@@ -11,7 +11,7 @@ private class LogEntryBuilder_Tests {
 
     @isTest
     static void it_should_short_circuit_when_logging_is_not_enabled() {
-        LogEntryBuilder builder = new LogEntryBuilder(LoggingLevel.DEBUG);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG);
 
         System.assertEquals(null, builder.getLogEntryEvent());
         System.assertEquals(null, builder.setMessage('test').getLogEntryEvent());
@@ -27,7 +27,7 @@ private class LogEntryBuilder_Tests {
         settings.IsEnabled__c = true;
         update settings;
 
-        LogEntryBuilder builder = new LogEntryBuilder(LoggingLevel.FINE);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE);
 
         System.assertEquals(null, builder.getLogEntryEvent());
     }
@@ -39,7 +39,7 @@ private class LogEntryBuilder_Tests {
         settings.LoggingLevel__c = 'FINE';
         update settings;
 
-        LogEntryBuilder builder = new LogEntryBuilder(LoggingLevel.FINE);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE);
 
         System.assertNotEquals(null, builder.getLogEntryEvent());
     }
@@ -53,7 +53,7 @@ private class LogEntryBuilder_Tests {
 
         DmlException stackTraceHandler = new DmlException();
 
-        LogEntryBuilder builder = new LogEntryBuilder(LoggingLevel.FINE);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE);
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
 

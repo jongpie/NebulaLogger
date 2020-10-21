@@ -3,7 +3,7 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 global without sharing class Logger {
-    private static final List<LogEntryBuilder> LOG_ENTRIES = new List<LogEntryBuilder>();
+    private static final List<LogEntryEventBuilder> LOG_ENTRIES = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
 
     private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(
@@ -107,87 +107,92 @@ global without sharing class Logger {
     }
 
     // ERROR logging level methods
-    global static LogEntryBuilder error() {
-        return createLogEntryBuilder(LoggingLevel.ERROR);
+    global static LogEntryEventBuilder error() {
+        return createLogEntryEventBuilder(LoggingLevel.ERROR);
     }
 
-    global static LogEntryBuilder error(String message) {
+    global static LogEntryEventBuilder error(String message) {
         return error().setMessage(message);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage) {
+    global static LogEntryEventBuilder error(LogMessage logMessage) {
         return error().setMessage(logMessage);
     }
 
-    global static LogEntryBuilder error(String message, List<String> topics) {
+    global static LogEntryEventBuilder error(String message, List<String> topics) {
         return error().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, List<String> topics) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<String> topics) {
         return error().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryBuilder error(String message, SObject record) {
+    global static LogEntryEventBuilder error(String message, SObject record) {
         return error().setMessage(message).setRecordId(record);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, SObject record) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record) {
         return error().setMessage(logMessage).setRecordId(record);
     }
 
-    global static LogEntryBuilder error(String message, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder error(String message, SObject record, List<String> topics) {
         return error().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, List<String> topics) {
         return error().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder error(String message, Id recordId) {
+    global static LogEntryEventBuilder error(String message, Id recordId) {
         return error().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, Id recordId) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId) {
         return error().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder error(String message, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder error(String message, Id recordId, List<String> topics) {
         return error().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, List<String> topics) {
         return error().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
-    global static LogEntryBuilder error(String message, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, Exception apexException) {
         return error().setMessage(message).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException) {
         return error().setMessage(logMessage).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(String message, Exception apexException, List<String> topics) {
+    global static LogEntryEventBuilder error(String message, Exception apexException, List<String> topics) {
         return error().setMessage(message).setTopics(topics).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, Exception apexException, List<String> topics) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException, List<String> topics) {
         return error().setMessage(logMessage).setTopics(topics).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(String message, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, SObject record, Exception apexException) {
         return error().setMessage(message).setRecordId(record).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, SObject record, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, Exception apexException) {
         return error().setMessage(logMessage).setRecordId(record).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(String message, SObject record, Exception apexException, List<String> topics) {
+    global static LogEntryEventBuilder error(
+        String message,
+        SObject record,
+        Exception apexException,
+        List<String> topics
+    ) {
         return error().setMessage(message).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(
+    global static LogEntryEventBuilder error(
         LogMessage logMessage,
         SObject record,
         Exception apexException,
@@ -196,19 +201,24 @@ global without sharing class Logger {
         return error().setMessage(logMessage).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(String message, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder error(String message, Id recordId, Exception apexException) {
         return error().setMessage(message).setRecordId(recordId).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(LogMessage logMessage, Id recordId, Exception apexException) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException) {
         return error().setMessage(logMessage).setRecordId(recordId).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(String message, Id recordId, Exception apexException, List<String> topics) {
+    global static LogEntryEventBuilder error(
+        String message,
+        Id recordId,
+        Exception apexException,
+        List<String> topics
+    ) {
         return error().setMessage(message).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
     }
 
-    global static LogEntryBuilder error(
+    global static LogEntryEventBuilder error(
         LogMessage logMessage,
         Id recordId,
         Exception apexException,
@@ -222,320 +232,320 @@ global without sharing class Logger {
     }
 
     // WARN logging level methods
-    global static LogEntryBuilder warn() {
-        return createLogEntryBuilder(LoggingLevel.WARN);
+    global static LogEntryEventBuilder warn() {
+        return createLogEntryEventBuilder(LoggingLevel.WARN);
     }
 
-    global static LogEntryBuilder warn(String message) {
+    global static LogEntryEventBuilder warn(String message) {
         return warn().setMessage(message);
     }
 
-    global static LogEntryBuilder warn(LogMessage logMessage) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage) {
         return warn().setMessage(logMessage);
     }
 
-    global static LogEntryBuilder warn(String message, List<String> topics) {
+    global static LogEntryEventBuilder warn(String message, List<String> topics) {
         return warn().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryBuilder warn(LogMessage logMessage, List<String> topics) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<String> topics) {
         return warn().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryBuilder warn(String message, SObject record) {
+    global static LogEntryEventBuilder warn(String message, SObject record) {
         return warn().setMessage(message).setRecordId(record);
     }
 
-    global static LogEntryBuilder warn(LogMessage logMessage, SObject record) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, SObject record) {
         return warn().setMessage(logMessage).setRecordId(record);
     }
 
-    global static LogEntryBuilder warn(String message, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder warn(String message, SObject record, List<String> topics) {
         return warn().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder warn(LogMessage logMessage, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, List<String> topics) {
         return warn().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder warn(String message, Id recordId) {
+    global static LogEntryEventBuilder warn(String message, Id recordId) {
         return warn().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder warn(LogMessage logMessage, Id recordId) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId) {
         return warn().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder warn(String message, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder warn(String message, Id recordId, List<String> topics) {
         return warn().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
-    global static LogEntryBuilder warn(LogMessage logMessage, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, List<String> topics) {
         return warn().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // INFO logging level methods
-    global static LogEntryBuilder info() {
-        return createLogEntryBuilder(LoggingLevel.INFO);
+    global static LogEntryEventBuilder info() {
+        return createLogEntryEventBuilder(LoggingLevel.INFO);
     }
 
-    global static LogEntryBuilder info(String message) {
+    global static LogEntryEventBuilder info(String message) {
         return info().setMessage(message);
     }
 
-    global static LogEntryBuilder info(LogMessage logMessage) {
+    global static LogEntryEventBuilder info(LogMessage logMessage) {
         return info().setMessage(logMessage);
     }
 
-    global static LogEntryBuilder info(String message, List<String> topics) {
+    global static LogEntryEventBuilder info(String message, List<String> topics) {
         return info().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryBuilder info(LogMessage logMessage, List<String> topics) {
+    global static LogEntryEventBuilder info(LogMessage logMessage, List<String> topics) {
         return info().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryBuilder info(String message, SObject record) {
+    global static LogEntryEventBuilder info(String message, SObject record) {
         return info().setMessage(message).setRecordId(record);
     }
 
-    global static LogEntryBuilder info(LogMessage logMessage, SObject record) {
+    global static LogEntryEventBuilder info(LogMessage logMessage, SObject record) {
         return info().setMessage(logMessage).setRecordId(record);
     }
 
-    global static LogEntryBuilder info(String message, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder info(String message, SObject record, List<String> topics) {
         return info().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder info(LogMessage logMessage, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder info(LogMessage logMessage, SObject record, List<String> topics) {
         return info().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder info(String message, Id recordId) {
+    global static LogEntryEventBuilder info(String message, Id recordId) {
         return info().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder info(LogMessage logMessage, Id recordId) {
+    global static LogEntryEventBuilder info(LogMessage logMessage, Id recordId) {
         return info().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder info(String message, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder info(String message, Id recordId, List<String> topics) {
         return info().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
-    global static LogEntryBuilder info(LogMessage logMessage, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder info(LogMessage logMessage, Id recordId, List<String> topics) {
         return info().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // DEBUG log level methods
-    global static LogEntryBuilder debug() {
-        return createLogEntryBuilder(LoggingLevel.DEBUG);
+    global static LogEntryEventBuilder debug() {
+        return createLogEntryEventBuilder(LoggingLevel.DEBUG);
     }
 
-    global static LogEntryBuilder debug(String message) {
+    global static LogEntryEventBuilder debug(String message) {
         return debug().setMessage(message);
     }
 
-    global static LogEntryBuilder debug(LogMessage logMessage) {
+    global static LogEntryEventBuilder debug(LogMessage logMessage) {
         return debug().setMessage(logMessage);
     }
 
-    global static LogEntryBuilder debug(String message, List<String> topics) {
+    global static LogEntryEventBuilder debug(String message, List<String> topics) {
         return debug().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryBuilder debug(LogMessage logMessage, List<String> topics) {
+    global static LogEntryEventBuilder debug(LogMessage logMessage, List<String> topics) {
         return debug().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryBuilder debug(String message, SObject record) {
+    global static LogEntryEventBuilder debug(String message, SObject record) {
         return debug().setMessage(message).setRecordId(record);
     }
 
-    global static LogEntryBuilder debug(LogMessage logMessage, SObject record) {
+    global static LogEntryEventBuilder debug(LogMessage logMessage, SObject record) {
         return debug().setMessage(logMessage).setRecordId(record);
     }
 
-    global static LogEntryBuilder debug(String message, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder debug(String message, SObject record, List<String> topics) {
         return debug().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder debug(LogMessage logMessage, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder debug(LogMessage logMessage, SObject record, List<String> topics) {
         return debug().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder debug(String message, Id recordId) {
+    global static LogEntryEventBuilder debug(String message, Id recordId) {
         return debug().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder debug(LogMessage logMessage, Id recordId) {
+    global static LogEntryEventBuilder debug(LogMessage logMessage, Id recordId) {
         return debug().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder debug(String message, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder debug(String message, Id recordId, List<String> topics) {
         return debug().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
-    global static LogEntryBuilder debug(LogMessage logMessage, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder debug(LogMessage logMessage, Id recordId, List<String> topics) {
         return debug().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // FINE log level methods
-    global static LogEntryBuilder fine() {
-        return createLogEntryBuilder(LoggingLevel.FINE);
+    global static LogEntryEventBuilder fine() {
+        return createLogEntryEventBuilder(LoggingLevel.FINE);
     }
 
-    global static LogEntryBuilder fine(String message) {
+    global static LogEntryEventBuilder fine(String message) {
         return fine().setMessage(message);
     }
 
-    global static LogEntryBuilder fine(LogMessage logMessage) {
+    global static LogEntryEventBuilder fine(LogMessage logMessage) {
         return fine().setMessage(logMessage);
     }
 
-    global static LogEntryBuilder fine(String message, List<String> topics) {
+    global static LogEntryEventBuilder fine(String message, List<String> topics) {
         return fine().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryBuilder fine(LogMessage logMessage, List<String> topics) {
+    global static LogEntryEventBuilder fine(LogMessage logMessage, List<String> topics) {
         return fine().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryBuilder fine(String message, SObject record) {
+    global static LogEntryEventBuilder fine(String message, SObject record) {
         return fine().setMessage(message).setRecordId(record);
     }
 
-    global static LogEntryBuilder fine(LogMessage logMessage, SObject record) {
+    global static LogEntryEventBuilder fine(LogMessage logMessage, SObject record) {
         return fine().setMessage(logMessage).setRecordId(record);
     }
 
-    global static LogEntryBuilder fine(String message, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder fine(String message, SObject record, List<String> topics) {
         return fine().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder fine(LogMessage logMessage, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder fine(LogMessage logMessage, SObject record, List<String> topics) {
         return fine().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder fine(String message, Id recordId) {
+    global static LogEntryEventBuilder fine(String message, Id recordId) {
         return fine().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder fine(LogMessage logMessage, Id recordId) {
+    global static LogEntryEventBuilder fine(LogMessage logMessage, Id recordId) {
         return fine().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder fine(String message, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder fine(String message, Id recordId, List<String> topics) {
         return fine().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
-    global static LogEntryBuilder fine(LogMessage logMessage, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder fine(LogMessage logMessage, Id recordId, List<String> topics) {
         return fine().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // FINER log level methods
-    global static LogEntryBuilder finer() {
-        return createLogEntryBuilder(LoggingLevel.FINER);
+    global static LogEntryEventBuilder finer() {
+        return createLogEntryEventBuilder(LoggingLevel.FINER);
     }
 
-    global static LogEntryBuilder finer(String message) {
+    global static LogEntryEventBuilder finer(String message) {
         return finer().setMessage(message);
     }
 
-    global static LogEntryBuilder finer(LogMessage logMessage) {
+    global static LogEntryEventBuilder finer(LogMessage logMessage) {
         return finer().setMessage(logMessage);
     }
 
-    global static LogEntryBuilder finer(String message, List<String> topics) {
+    global static LogEntryEventBuilder finer(String message, List<String> topics) {
         return finer().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryBuilder finer(LogMessage logMessage, List<String> topics) {
+    global static LogEntryEventBuilder finer(LogMessage logMessage, List<String> topics) {
         return finer().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryBuilder finer(String message, SObject record) {
+    global static LogEntryEventBuilder finer(String message, SObject record) {
         return finer().setMessage(message).setRecordId(record);
     }
 
-    global static LogEntryBuilder finer(LogMessage logMessage, SObject record) {
+    global static LogEntryEventBuilder finer(LogMessage logMessage, SObject record) {
         return finer().setMessage(logMessage).setRecordId(record);
     }
 
-    global static LogEntryBuilder finer(String message, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder finer(String message, SObject record, List<String> topics) {
         return finer().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder finer(LogMessage logMessage, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder finer(LogMessage logMessage, SObject record, List<String> topics) {
         return finer().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder finer(String message, Id recordId) {
+    global static LogEntryEventBuilder finer(String message, Id recordId) {
         return finer().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder finer(LogMessage logMessage, Id recordId) {
+    global static LogEntryEventBuilder finer(LogMessage logMessage, Id recordId) {
         return finer().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder finer(String message, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder finer(String message, Id recordId, List<String> topics) {
         return finer().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
-    global static LogEntryBuilder finer(LogMessage logMessage, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder finer(LogMessage logMessage, Id recordId, List<String> topics) {
         return finer().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
     // FINEST log level methods
-    global static LogEntryBuilder finest() {
-        return createLogEntryBuilder(LoggingLevel.FINEST);
+    global static LogEntryEventBuilder finest() {
+        return createLogEntryEventBuilder(LoggingLevel.FINEST);
     }
 
-    global static LogEntryBuilder finest(String message) {
+    global static LogEntryEventBuilder finest(String message) {
         return finest().setMessage(message);
     }
 
-    global static LogEntryBuilder finest(LogMessage logMessage) {
+    global static LogEntryEventBuilder finest(LogMessage logMessage) {
         return finest().setMessage(logMessage);
     }
 
-    global static LogEntryBuilder finest(String message, List<String> topics) {
+    global static LogEntryEventBuilder finest(String message, List<String> topics) {
         return finest().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryBuilder finest(LogMessage logMessage, List<String> topics) {
+    global static LogEntryEventBuilder finest(LogMessage logMessage, List<String> topics) {
         return finest().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryBuilder finest(String message, SObject record) {
+    global static LogEntryEventBuilder finest(String message, SObject record) {
         return finest().setMessage(message).setRecordId(record);
     }
 
-    global static LogEntryBuilder finest(LogMessage logMessage, SObject record) {
+    global static LogEntryEventBuilder finest(LogMessage logMessage, SObject record) {
         return finest().setMessage(logMessage).setRecordId(record);
     }
 
-    global static LogEntryBuilder finest(String message, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder finest(String message, SObject record, List<String> topics) {
         return finest().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder finest(LogMessage logMessage, SObject record, List<String> topics) {
+    global static LogEntryEventBuilder finest(LogMessage logMessage, SObject record, List<String> topics) {
         return finest().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
-    global static LogEntryBuilder finest(String message, Id recordId) {
+    global static LogEntryEventBuilder finest(String message, Id recordId) {
         return finest().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder finest(LogMessage logMessage, Id recordId) {
+    global static LogEntryEventBuilder finest(LogMessage logMessage, Id recordId) {
         return finest().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryBuilder finest(String message, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder finest(String message, Id recordId, List<String> topics) {
         return finest().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
-    global static LogEntryBuilder finest(LogMessage logMessage, Id recordId, List<String> topics) {
+    global static LogEntryEventBuilder finest(LogMessage logMessage, Id recordId, List<String> topics) {
         return finest().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
@@ -599,8 +609,8 @@ global without sharing class Logger {
         }
 
         // TODO cleanup
-        List<LogEntryBuilder> logEntriesToSave = new List<LogEntryBuilder>();
-        for (LogEntryBuilder logEntryBuilder : LOG_ENTRIES) {
+        List<LogEntryEventBuilder> logEntriesToSave = new List<LogEntryEventBuilder>();
+        for (LogEntryEventBuilder logEntryBuilder : LOG_ENTRIES) {
             if (!logEntryBuilder.shouldSave()) {
                 continue;
             }
@@ -613,7 +623,7 @@ global without sharing class Logger {
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         Integer indexOfLastRecord = LOG_ENTRIES.size() - 1;
         for (Integer i = 0; i < LOG_ENTRIES.size(); i++) {
-            LogEntryBuilder logEntryBuilder = LOG_ENTRIES.get(i);
+            LogEntryEventBuilder logEntryBuilder = LOG_ENTRIES.get(i);
 
             if (i == indexOfLastRecord) {
                 logEntryBuilder.setUserSessionDetails();
@@ -684,8 +694,8 @@ global without sharing class Logger {
         }
     }
 
-    global static LogEntryBuilder createLogEntryBuilder(LoggingLevel loggingLevel) {
-        LogEntryBuilder logEntryBuilder = new LogEntryBuilder(LoggingLevel);
+    global static LogEntryEventBuilder createLogEntryEventBuilder(LoggingLevel loggingLevel) {
+        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel);
         LOG_ENTRIES.add(logEntryBuilder);
 
         return logEntryBuilder;
