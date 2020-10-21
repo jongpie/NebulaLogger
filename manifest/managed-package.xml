@@ -2,7 +2,7 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Nebula Logger</fullName>
     <apiAccessLevel>Unrestricted</apiAccessLevel>
-    <description>Designed for Salesforce admins &amp; developers. A robust logger for Salesforce Apex, Process Builder &amp; Flow that&apos;s simple to implement &amp; configurable at the org, profile &amp; user level.</description>
+    <description>Designed for Salesforce admins &amp; developers. A robust logger for Salesforce Apex, Flow and Process Builder that&apos;s simple to implement &amp; configurable at the org, profile &amp; user level.</description>
     <namespacePrefix>Nebula</namespacePrefix>
     <types>
         <members>Callout</members>
@@ -15,8 +15,8 @@
         <members>FlowRecordLogEntry_Tests</members>
         <members>LogBatchPurger</members>
         <members>LogBatchPurger_Tests</members>
-        <members>LogEntryBuilder</members>
-        <members>LogEntryBuilder_Tests</members>
+        <members>LogEntryEventBuilder</members>
+        <members>LogEntryEventBuilder_Tests</members>
         <members>LogEntryEventHandler</members>
         <members>LogEntryEventHandler_Tests</members>
         <members>LogEntryHandler</members>

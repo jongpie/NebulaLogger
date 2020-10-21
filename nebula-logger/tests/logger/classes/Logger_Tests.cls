@@ -22,7 +22,7 @@ private class Logger_Tests {
         for (String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
             if (currentStackTraceLine.contains('Logger_Tests.getOriginLocation'))
                 continue;
-            if (currentStackTraceLine.contains('.LogEntryBuilder.'))
+            if (currentStackTraceLine.contains('.LogEntryEventBuilder.'))
                 continue;
             if (currentStackTraceLine.contains('.Logger.'))
                 continue;
