@@ -722,7 +722,7 @@ global without sharing class Logger {
 
     // Inner class for saving log entries via a queuable job (using a singleton pattern)
     global class QueueableSaver implements Queueable {
-        global Id jobId;
+        private Id jobId;
 
         private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
