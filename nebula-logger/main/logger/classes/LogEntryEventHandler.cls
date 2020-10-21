@@ -59,11 +59,6 @@ public without sharing class LogEntryEventHandler {
         LOG.SessionType__c = logEntryEvent.SessionType__c;
         LOG.SourceIp__c = logEntryEvent.SourceIp__c;
         LOG.SystemMode__c = logEntryEvent.SystemMode__c;
-        LOG.SystemModeIsApexRest__c = logEntryEvent.SystemModeIsApexRest__c;
-        LOG.SystemModeIsBatch__c = logEntryEvent.SystemModeIsBatch__c;
-        LOG.SystemModeIsFuture__c = logEntryEvent.SystemModeIsFuture__c;
-        LOG.SystemModeIsQueueable__c = logEntryEvent.SystemModeIsQueueable__c;
-        LOG.SystemModeIsScheduledJob__c = logEntryEvent.SystemModeIsScheduledJob__c;
         LOG.TimeZoneId__c = logEntryEvent.TimeZoneId__c;
         LOG.TimeZoneName__c = logEntryEvent.TimeZoneName__c;
         LOG.TransactionId__c = logEntryEvent.TransactionId__c;

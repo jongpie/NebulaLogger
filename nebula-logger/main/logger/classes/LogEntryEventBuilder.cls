@@ -47,11 +47,6 @@ global without sharing class LogEntryEventBuilder {
             LoggingLevel__c = loggingLevel.NAME(),
             LoggingLevelOrdinal__c = loggingLevel.ORDINAL(),
             OriginType__c = ORIGIN_TYPE_APEX,
-            SystemModeIsApexRest__c = RestContext.request != null,
-            SystemModeIsBatch__c = System.isBatch(),
-            SystemModeIsFuture__c = System.isFuture(),
-            SystemModeIsQueueable__c = System.isQueueable(),
-            SystemModeIsScheduledJob__c = System.isScheduled(),
             Timestamp__c = System.now(),
             Type__c = ENTRY_TYPE_DIAGNOSTIC
         );
