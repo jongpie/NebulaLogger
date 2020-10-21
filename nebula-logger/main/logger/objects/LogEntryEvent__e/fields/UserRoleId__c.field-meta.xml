@@ -5,7 +5,7 @@
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>UserRoleId</label>
+    <label>User Role ID</label>
     <length>18</length>
     <required>false</required>
     <type>Text</type>
