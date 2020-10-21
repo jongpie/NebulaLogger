@@ -4,13 +4,26 @@
  *************************************************************************************************/
 public without sharing class LogEntryHandler {
     public void execute() {
-        if (Trigger.operationType != TriggerOperation.BEFORE_INSERT) {
+        // Only run on BEFORE_INSERT & BEFORE_UPDATE
+        if (
+            Trigger.operationType != TriggerOperation.BEFORE_INSERT &&
+            Trigger.operationType != TriggerOperation.BEFORE_UPDATE
+        ) {
             return;
         }
 
         List<LogEntry__c> logEntries = (List<LogEntry__c>) Trigger.new;
+
+        if (Trigger.operationType == TriggerOperation.BEFORE_INSERT) {
+            // Only set the record names on initial insert - the RelatedRecordName__c field is then...
+            // a snapshot of the record's name at the time that the log entry was created
+            this.setRelatedRecordNames(logEntries);
+        }
+
+        // Maintain the checkbox fields on insert & update
+        // Some admins & devs might decide to update/append data in some of the fields...
+        // ...and it conceptually feels weird for these fields to not always be accurate, so keep them up to date
         this.setBooleanCheckFields(logEntries);
-        this.setRelatedRecordNames(logEntries);
     }
 
     private void setBooleanCheckFields(List<LogEntry__c> logEntries) {
