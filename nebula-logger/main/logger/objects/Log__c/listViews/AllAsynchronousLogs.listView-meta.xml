@@ -12,7 +12,7 @@
     <filters>
         <field>SystemMode__c</field>
         <operation>equals</operation>
-        <value>Batch,Future,Queueable,Scheduled</value>
+        <value>BATCH_ACS,BATCH_APEX,BATCH_CHUNK_PARALLEL,BATCH_CHUNK_SERIAL,BULK_API,FUTURE,QUEUEABLE,SCHEDULED</value>
     </filters>
     <label>All Asynchronous Logs</label>
 </ListView>

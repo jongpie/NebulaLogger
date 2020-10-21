@@ -630,6 +630,9 @@ global without sharing class Logger {
             }
 
             LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
+            logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
+            logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
+            logEntryEvent.TransactionId__c = getTransactionId();
             logEntryEvents.add(logEntryEvent);
         }
 
