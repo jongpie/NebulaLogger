@@ -41,11 +41,7 @@ private class LogEntryEventHandler_Tests {
                 SessionSecurityLevel__c,
                 SessionType__c,
                 SourceIp__c,
-                SystemModeIsApexRest__c,
-                SystemModeIsBatch__c,
-                SystemModeIsFuture__c,
-                SystemModeIsQueueable__c,
-                SystemModeIsScheduledJob__c,
+                SystemMode__c,
                 TimeZoneId__c,
                 TimeZoneName__c,
                 TransactionId__c,
@@ -148,11 +144,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c);
         System.assertEquals(logEntryEvent.SessionType__c, log.SessionType__c);
         System.assertEquals(logEntryEvent.SourceIp__c, log.SourceIp__c);
-        System.assertEquals(logEntryEvent.SystemModeIsApexRest__c, log.SystemModeIsApexRest__c);
-        System.assertEquals(logEntryEvent.SystemModeIsBatch__c, log.SystemModeIsBatch__c);
-        System.assertEquals(logEntryEvent.SystemModeIsFuture__c, log.SystemModeIsFuture__c);
-        System.assertEquals(logEntryEvent.SystemModeIsQueueable__c, log.SystemModeIsQueueable__c);
-        System.assertEquals(logEntryEvent.SystemModeIsScheduledJob__c, log.SystemModeIsScheduledJob__c);
+        System.assertEquals(logEntryEvent.SystemMode__c, log.SystemMode__c);
         System.assertEquals(logEntryEvent.TimeZoneId__c, log.TimeZoneId__c);
         System.assertEquals(logEntryEvent.TimeZoneName__c, log.TimeZoneName__c);
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
@@ -326,11 +318,7 @@ private class LogEntryEventHandler_Tests {
             SessionType__c = null,
             SourceIp__c = null,
             StackTrace__c = 'I started here \nand then went there',
-            SystemModeIsApexRest__c = false,
-            SystemModeIsBatch__c = false,
-            SystemModeIsFuture__c = false,
-            SystemModeIsQueueable__c = false,
-            SystemModeIsScheduledJob__c = false,
+            SystemMode__c = System.Quiddity.SYNCHRONOUS.name(),
             Timestamp__c = System.now(),
             TimeZoneId__c = 'fake-id',
             TimeZoneName__c = 'My time zone name',

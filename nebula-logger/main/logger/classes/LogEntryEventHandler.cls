@@ -58,11 +58,7 @@ public without sharing class LogEntryEventHandler {
         LOG.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
         LOG.SessionType__c = logEntryEvent.SessionType__c;
         LOG.SourceIp__c = logEntryEvent.SourceIp__c;
-        LOG.SystemModeIsApexRest__c = logEntryEvent.SystemModeIsApexRest__c;
-        LOG.SystemModeIsBatch__c = logEntryEvent.SystemModeIsBatch__c;
-        LOG.SystemModeIsFuture__c = logEntryEvent.SystemModeIsFuture__c;
-        LOG.SystemModeIsQueueable__c = logEntryEvent.SystemModeIsQueueable__c;
-        LOG.SystemModeIsScheduledJob__c = logEntryEvent.SystemModeIsScheduledJob__c;
+        LOG.SystemMode__c = logEntryEvent.SystemMode__c;
         LOG.TimeZoneId__c = logEntryEvent.TimeZoneId__c;
         LOG.TimeZoneName__c = logEntryEvent.TimeZoneName__c;
         LOG.TransactionId__c = logEntryEvent.TransactionId__c;
@@ -74,8 +70,7 @@ public without sharing class LogEntryEventHandler {
         // Since the log is upserted once per transaction, we can run some queries here
         setOrganizationDetails();
         setNetworkDetails();
-        setProfileDetails();
-        setSystemMode();
+        setUserDetails();
 
         upsert log TransactionId__c;
     }
@@ -255,7 +250,7 @@ public without sharing class LogEntryEventHandler {
         LOG.NetworkUrlPathPrefix__c = (String) matchingNetwork.get('UrlPathPrefix');
     }
 
-    private void setProfileDetails() {
+    private void setUserDetails() {
         User logUser = [
             SELECT
                 Id,
@@ -273,21 +268,5 @@ public without sharing class LogEntryEventHandler {
         LOG.UserLicenseId__c = logUser.Profile.UserLicenseId;
         LOG.UserLicenseName__c = logUser.Profile.UserLicense.Name;
         LOG.UserRoleName__c = logUser.UserRole == null ? null : logUser.UserRole.Name;
-    }
-
-    private void setSystemMode() {
-        if (LOG.SystemModeIsApexRest__c) {
-            LOG.SystemMode__c = 'REST';
-        } else if (LOG.SystemModeIsBatch__c) {
-            LOG.SystemMode__c = 'Batch';
-        } else if (LOG.SystemModeIsFuture__c) {
-            LOG.SystemMode__c = 'Future';
-        } else if (LOG.SystemModeIsQueueable__c) {
-            LOG.SystemMode__c = 'Queueable';
-        } else if (LOG.SystemModeIsScheduledJob__c) {
-            LOG.SystemMode__c = 'Scheduled';
-        } else {
-            LOG.SystemMode__c = 'Standard';
-        }
     }
 }

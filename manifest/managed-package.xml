@@ -112,12 +112,7 @@
         <members>LogEntryEvent__e.SessionType__c</members>
         <members>LogEntryEvent__e.SourceIp__c</members>
         <members>LogEntryEvent__e.StackTrace__c</members>
-        <members>LogEntryEvent__e.SystemModeIsApexRest__c</members>
-        <members>LogEntryEvent__e.SystemModeIsBatch__c</members>
-        <members>LogEntryEvent__e.SystemModeIsFuture__c</members>
-        <members>LogEntryEvent__e.SystemModeIsQueueable__c</members>
-        <members>LogEntryEvent__e.SystemModeIsScheduledJob__c</members>
-        <members>LogEntryEvent__e.SystemModeIsScheduled__c</members>
+        <members>LogEntryEvent__e.SystemMode__c</members>
         <members>LogEntryEvent__e.TimeZoneId__c</members>
         <members>LogEntryEvent__e.TimeZoneName__c</members>
         <members>LogEntryEvent__e.Timestamp__c</members>
@@ -251,13 +246,8 @@
         <members>Log__c.SessionType__c</members>
         <members>Log__c.SourceIp__c</members>
         <members>Log__c.StartTime__c</members>
-        <members>Log__c.SystemModeIsApexRest__c</members>
-        <members>Log__c.SystemModeIsBatch__c</members>
-        <members>Log__c.SystemModeIsFuture__c</members>
-        <members>Log__c.SystemModeIsQueueable__c</members>
-        <members>Log__c.SystemModeIsScheduledJob__c</members>
-        <members>Log__c.SystemModeSummary__c</members>
         <members>Log__c.SystemMode__c</members>
+        <members>Log__c.SystemModeSummary__c</members>
         <members>Log__c.TimeZoneId__c</members>
         <members>Log__c.TimeZoneName__c</members>
         <members>Log__c.TotalDiagnosticLogEntries__c</members>

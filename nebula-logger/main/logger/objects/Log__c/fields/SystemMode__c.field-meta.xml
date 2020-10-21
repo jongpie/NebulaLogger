@@ -10,21 +10,91 @@
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
             <value>
-                <fullName>Batch</fullName>
+                <fullName>ANONYMOUS</fullName>
                 <default>false</default>
-                <label>Batch</label>
+                <label>ANONYMOUS</label>
             </value>
             <value>
-                <fullName>Future</fullName>
+                <fullName>AURA</fullName>
                 <default>false</default>
-                <label>Future</label>
+                <label>AURA</label>
             </value>
             <value>
-                <fullName>Queueable</fullName>
+                <fullName>BATCH_ACS</fullName>
                 <default>false</default>
-                <label>Queueable</label>
+                <label>BATCH_ACS</label>
+            </value>
+            <value>
+                <fullName>BATCH_APEX</fullName>
+                <default>false</default>
+                <label>BATCH_APEX</label>
+            </value>
+            <value>
+                <fullName>BATCH_CHUNK_PARALLEL</fullName>
+                <default>false</default>
+                <label>BATCH_CHUNK_PARALLEL</label>
+            </value>
+            <value>
+                <fullName>BATCH_CHUNK_SERIAL</fullName>
+                <default>false</default>
+                <label>BATCH_CHUNK_SERIAL</label>
+            </value>
+            <value>
+                <fullName>BULK_API</fullName>
+                <default>false</default>
+                <label>BULK_API</label>
+            </value>
+            <value>
+                <fullName>COMMERCE_INTEGRATION</fullName>
+                <default>false</default>
+                <label>COMMERCE_INTEGRATION</label>
+            </value>
+            <value>
+                <fullName>DISCOVERABLE_LOGIN</fullName>
+                <default>false</default>
+                <label>DISCOVERABLE_LOGIN</label>
+            </value>
+            <value>
+                <fullName>FUNCTION_CALLBACK</fullName>
+                <default>false</default>
+                <label>FUNCTION_CALLBACK</label>
+            </value>
+            <value>
+                <fullName>FUTURE</fullName>
+                <default>false</default>
+                <label>FUTURE</label>
+            </value>
+            <value>
+                <fullName>INBOUND_EMAIL_SERVIC</fullName>
+                <default>false</default>
+                <label>INBOUND_EMAIL_SERVIC</label>
+            </value>
+            <value>
+                <fullName>INVOCABLE_ACTION</fullName>
+                <default>false</default>
+                <label>INVOCABLE_ACTION</label>
+            </value>
+            <value>
+                <fullName>IOT</fullName>
+                <default>false</default>
+                <label>IOT</label>
+            </value>
+            <value>
+                <fullName>QUEUEABLE</fullName>
+                <default>false</default>
+                <label>QUEUEABLE</label>
+            </value>
+            <value>
+                <fullName>QUICK_ACTION</fullName>
+                <default>false</default>
+                <label>QUICK_ACTION</label>
+            </value>
+            <value>
+                <fullName>REMOTE_ACTION</fullName>
+                <default>false</default>
+                <label>REMOTE_ACTION</label>
             </value>
             <value>
                 <fullName>REST</fullName>
@@ -32,14 +102,44 @@
                 <label>REST</label>
             </value>
             <value>
-                <fullName>Scheduled</fullName>
+                <fullName>RUNTEST_ASYNC</fullName>
                 <default>false</default>
-                <label>Scheduled</label>
+                <label>RUNTEST_ASYNC</label>
             </value>
             <value>
-                <fullName>Standard</fullName>
+                <fullName>RUNTEST_DEPLOY</fullName>
                 <default>false</default>
-                <label>Standard</label>
+                <label>RUNTEST_DEPLOY</label>
+            </value>
+            <value>
+                <fullName>RUNTEST_SYNC</fullName>
+                <default>false</default>
+                <label>RUNTEST_SYNC</label>
+            </value>
+            <value>
+                <fullName>SCHEDULED</fullName>
+                <default>false</default>
+                <label>SCHEDULED</label>
+            </value>
+            <value>
+                <fullName>SOAP</fullName>
+                <default>false</default>
+                <label>SOAP</label>
+            </value>
+            <value>
+                <fullName>SYNCHRONOUS</fullName>
+                <default>false</default>
+                <label>SYNCHRONOUS</label>
+            </value>
+            <value>
+                <fullName>TRANSACTION_FINALIZE</fullName>
+                <default>false</default>
+                <label>TRANSACTION_FINALIZE</label>
+            </value>
+            <value>
+                <fullName>VF</fullName>
+                <default>false</default>
+                <label>VF</label>
             </value>
         </valueSetDefinition>
     </valueSet>
