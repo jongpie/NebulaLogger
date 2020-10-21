@@ -43,4 +43,34 @@ private class LogEntryBuilder_Tests {
 
         System.assertNotEquals(null, builder.getLogEntryEvent());
     }
+
+    @isTest
+    static void it_should_set_stack_trace_and_origin_location_for_stack_trace_string() {
+        LoggerSettings__c settings = [SELECT Id, IsEnabled__c FROM LoggerSettings__c];
+        settings.IsEnabled__c = true;
+        settings.LoggingLevel__c = 'FINE';
+        update settings;
+
+        DmlException stackTraceHandler = new DmlException();
+
+        LogEntryBuilder builder = new LogEntryBuilder(LoggingLevel.FINE);
+        builder.getLogEntryEvent().OriginLocation__c = null;
+        builder.getLogEntryEvent().StackTrace__c = null;
+
+        Test.startTest();
+        builder.parseStackTrace(stackTraceHandler.getStackTraceString());
+        Test.stopTest();
+
+        String expectedOriginLocation = stackTraceHandler.getStackTraceString()
+            .split('\n')
+            .get(0)
+            .substringBefore(':')
+            .substringAfter('Class.');
+        String expectedStackTrace = stackTraceHandler.getStackTraceString();
+
+        System.assertNotEquals(null, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertEquals(expectedOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertNotEquals(null, builder.getLogEntryEvent().StackTrace__c);
+        System.assertEquals(expectedStackTrace, builder.getLogEntryEvent().StackTrace__c);
+    }
 }

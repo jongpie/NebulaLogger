@@ -45,4 +45,35 @@ private class LogEntryHandler_Tests {
         System.assertEquals(currentUser.Username, logEntry.RelatedRecordName__c);
         System.assertEquals('User', logEntry.RelatedRecordSObject__c);
     }
+
+    @isTest
+    static void it_should_set_hasStackTrace_to_true_when_populated() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+
+        String stackTrace = 'something';
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, StackTrace__c = stackTrace);
+
+        Test.startTest();
+        insert logEntry;
+        Test.stopTest();
+
+        logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assert(logEntry.HasStackTrace__c);
+        System.assertEquals(stackTrace, logEntry.StackTrace__c);
+    }
+
+    @isTest
+    static void it_should_set_hasStackTrace_to_false_when_null() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, StackTrace__c = null);
+
+        Test.startTest();
+        insert logEntry;
+        Test.stopTest();
+
+        logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assert(!logEntry.HasStackTrace__c);
+        System.assertEquals(null, logEntry.StackTrace__c);
+    }
 }

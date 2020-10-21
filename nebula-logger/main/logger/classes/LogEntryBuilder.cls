@@ -6,6 +6,7 @@ global without sharing class LogEntryBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final String ENTRY_TYPE_DIAGNOSTIC = 'Diagnostic';
     private static final String ENTRY_TYPE_EXCEPTION = 'Exception';
+    private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
     private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     private static final String ORIGIN_TYPE_FLOW = 'Flow';
@@ -45,10 +46,8 @@ global without sharing class LogEntryBuilder {
             LimitsSoslSearchesUsed__c = Limits.getSoslQueries(),
             LoggingLevel__c = loggingLevel.NAME(),
             LoggingLevelOrdinal__c = loggingLevel.ORDINAL(),
-            OriginLocation__c = getOriginLocation(stackTraceException),
             OriginType__c = ORIGIN_TYPE_APEX,
             ParentLogTransactionId__c = Logger.getParentLogTransactionId(),
-            StackTrace__c = getStackTrace(stackTraceException),
             SystemModeIsApexRest__c = RestContext.request != null,
             SystemModeIsBatch__c = System.isBatch(),
             SystemModeIsFuture__c = System.isFuture(),
@@ -58,6 +57,8 @@ global without sharing class LogEntryBuilder {
             TransactionId__c = Logger.getTransactionId(),
             Type__c = ENTRY_TYPE_DIAGNOSTIC
         );
+
+        this.parseStackTrace(stackTraceException.getStackTraceString());
     }
 
     global LogEntryBuilder setMessage(String message) {
@@ -86,23 +87,18 @@ global without sharing class LogEntryBuilder {
             return this;
         }
 
-        setExceptionDetails(apexException.getTypeName(), apexException.getStackTraceString());
+        this.logEntryEvent.ExceptionMessage__c = apexException.getMessage();
+        this.logEntryEvent.ExceptionType__c = apexException.getTypeName();
+        this.logEntryEvent.Type__c = ENTRY_TYPE_EXCEPTION;
+
+        // Stack traces are not returned for managed packages
+        if (isValidStackTrace(apexException.getStackTraceString())) {
+            this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
+        }
 
         if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c) {
             Logger.saveLog();
         }
-
-        return this;
-    }
-
-    global LogEntryBuilder setExceptionDetails(String exceptionType, String exceptionStackTrace) {
-        if (!this.shouldSave) {
-            return this;
-        }
-
-        this.logEntryEvent.ExceptionType__c = exceptionType;
-        this.logEntryEvent.ExceptionStackTrace__c = exceptionStackTrace;
-        this.logEntryEvent.Type__c = ENTRY_TYPE_EXCEPTION;
 
         return this;
     }
@@ -112,13 +108,11 @@ global without sharing class LogEntryBuilder {
             return this;
         }
 
-        if (LoggerSettings__c.getInstance().StoreRelatedRecordJson__c) {
-            String truncatedRecordJson = truncateFieldValue(
-                Schema.LogEntryEvent__e.RelatedRecordJson__c,
-                Json.serializePretty(record)
-            );
-            this.logEntryEvent.RelatedRecordJson__c = truncatedRecordJson;
-        }
+        String truncatedRecordJson = truncateFieldValue(
+            Schema.LogEntryEvent__e.RelatedRecordJson__c,
+            Json.serializePretty(record)
+        );
+        this.logEntryEvent.RelatedRecordJson__c = truncatedRecordJson;
 
         return this.setRecordId(record.Id);
     }
@@ -138,6 +132,58 @@ global without sharing class LogEntryBuilder {
         }
 
         this.logEntryEvent.Topics__c = getTopicsString(topics);
+        return this;
+    }
+
+    global LogEntryBuilder parseStackTrace(String stackTraceString) {
+        if (!this.shouldSave) {
+            return this;
+        }
+
+        // Stack traces are not returned for managed packages
+        if (!isValidStackTrace(stackTraceString)) {
+            return this;
+        }
+
+        List<String> stackTraceLines = new List<String>();
+        for (String currentStackTraceLine : stackTraceString.split('\n')) {
+            // Don't include the logging system's classes in the stack trace
+            List<String> ignoredClasses = new List<String>{
+                Logger.class.getName(),
+                LogMessage.class.getName(),
+                LogEntryBuilder.class.getName()
+            };
+
+            Boolean ignoreLine = false;
+            for (String ignoredClass : ignoredClasses) {
+                if (currentStackTraceLine.contains('.' + ignoredClass + '.')) {
+                    ignoreLine = true;
+                    continue;
+                }
+            }
+
+            if (ignoreLine) {
+                continue;
+            }
+
+            stackTraceLines.add(currentStackTraceLine);
+        }
+
+        // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
+        stackTraceString = String.join(stackTraceLines, '\n');
+        if (isValidStackTrace(stackTraceString)) {
+            String originLocation = stackTraceLines.get(0);
+            if (originLocation.contains(':')) {
+                originLocation = originLocation.substringBefore(':');
+            }
+            if (originLocation.startsWith('Class.')) {
+                originLocation = originLocation.substringAfter('Class.');
+            }
+
+            this.logEntryEvent.OriginLocation__c = originLocation;
+            this.logEntryEvent.StackTrace__c = stackTraceString;
+        }
+
         return this;
     }
 
@@ -230,40 +276,6 @@ global without sharing class LogEntryBuilder {
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
     }
 
-    private String getOriginLocation(DmlException stackTraceException) {
-        String originLocation;
-        for (String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('.LogEntryBuilder.') || currentStackTraceLine.contains('.Logger.')) {
-                continue;
-            }
-
-            originLocation = currentStackTraceLine.substringBefore(':');
-            if (originLocation.startsWith('Class.')) {
-                originLocation = originLocation.substringAfter('Class.');
-            }
-            break;
-        }
-
-        return originLocation;
-    }
-
-    private String getStackTrace(DmlException stackTraceException) {
-        if (!LoggerSettings__c.getInstance().StoreStackTrace__c) {
-            return null;
-        }
-
-        List<String> stackTraceLines = new List<String>();
-        for (String currentStackTraceLine : stackTraceException.getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('.LogEntryBuilder.') || currentStackTraceLine.contains('.Logger.')) {
-                continue;
-            }
-
-            stackTraceLines.add(currentStackTraceLine);
-        }
-
-        return String.join(stackTraceLines, '\n');
-    }
-
     private static String getVisualforcePageName() {
         String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
         if (visualforcePageName != null && visualforcePageName.contains('?')) {
@@ -276,6 +288,30 @@ global without sharing class LogEntryBuilder {
     }
 
     // Private static methods
+    private static String getNamespacePrefix() {
+        String namespacePrefix = null;
+
+        String className = LogEntryBuilder.class.getName().substringBefore(':');
+        if (className.contains('.')) {
+            namespacePrefix = className.substringBefore('.');
+        }
+        return namespacePrefix;
+    }
+
+    private static Boolean isValidStackTrace(String stackTraceString) {
+        if (String.isEmpty(stackTraceString)) {
+            return false;
+        }
+        if (stackTraceString == '()') {
+            return false;
+        }
+        if (stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+            return false;
+        }
+
+        return true;
+    }
+
     private static String getTopicsString(List<String> topics) {
         if (topics == null || topics.isEmpty()) {
             return null;

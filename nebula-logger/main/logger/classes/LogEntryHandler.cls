@@ -4,12 +4,36 @@
  *************************************************************************************************/
 public without sharing class LogEntryHandler {
     public void execute() {
-        if (Trigger.operationType != TriggerOperation.BEFORE_INSERT) {
+        // Only run on BEFORE_INSERT & BEFORE_UPDATE
+        if (
+            Trigger.operationType != TriggerOperation.BEFORE_INSERT &&
+            Trigger.operationType != TriggerOperation.BEFORE_UPDATE
+        ) {
             return;
         }
 
         List<LogEntry__c> logEntries = (List<LogEntry__c>) Trigger.new;
-        this.setRelatedRecordNames(logEntries);
+
+        if (Trigger.operationType == TriggerOperation.BEFORE_INSERT) {
+            // Only set the record names on initial insert - the RelatedRecordName__c field is then...
+            // a snapshot of the record's name at the time that the log entry was created
+            this.setRelatedRecordNames(logEntries);
+        }
+
+        // Maintain the checkbox fields on insert & update
+        // Some admins & devs might decide to update/append data in some of the fields...
+        // ...and it conceptually feels weird for these fields to not always be accurate, so keep them up to date
+        this.setBooleanCheckFields(logEntries);
+    }
+
+    private void setBooleanCheckFields(List<LogEntry__c> logEntries) {
+        // A formula field can't be used for checking if a long text area field is set/null
+        // So, this code handles maintaing some checkbox fields via Apex instead
+        for (LogEntry__c logEntry : logEntries) {
+            logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
+            logEntry.HasRelatedRecordJson__c = logEntry.RelatedRecordJson__c != null;
+            logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
+        }
     }
 
     private void setRelatedRecordNames(List<LogEntry__c> logEntries) {

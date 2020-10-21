@@ -11,11 +11,6 @@
         <valueSetDefinition>
             <sorted>true</sorted>
             <value>
-                <fullName>LightningError</fullName>
-                <default>false</default>
-                <label>LightningError</label>
-            </value>
-            <value>
                 <fullName>System.AsyncException</fullName>
                 <default>false</default>
                 <label>System.AsyncException</label>

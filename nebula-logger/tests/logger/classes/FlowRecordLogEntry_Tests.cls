@@ -30,7 +30,6 @@ private class FlowRecordLogEntry_Tests {
 
         LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
         loggerSettings.LoggingLevel__c = userLoggingLevel;
-        loggerSettings.StoreRelatedRecordJson__c = true;
         update loggerSettings;
 
         Test.startTest();
