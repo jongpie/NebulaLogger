@@ -70,7 +70,7 @@ public without sharing class LogEntryEventHandler {
         // Since the log is upserted once per transaction, we can run some queries here
         setOrganizationDetails();
         setNetworkDetails();
-        setProfileDetails();
+        setUserDetails();
 
         upsert log TransactionId__c;
     }
@@ -250,7 +250,7 @@ public without sharing class LogEntryEventHandler {
         LOG.NetworkUrlPathPrefix__c = (String) matchingNetwork.get('UrlPathPrefix');
     }
 
-    private void setProfileDetails() {
+    private void setUserDetails() {
         User logUser = [
             SELECT
                 Id,
