@@ -146,7 +146,6 @@ global without sharing class LogEntryBuilder {
         }
 
         List<String> stackTraceLines = new List<String>();
-        String originLocation;
         for (String currentStackTraceLine : stackTraceString.split('\n')) {
             // Don't include the logging system's classes in the stack trace
             List<String> ignoredClasses = new List<String>{
@@ -163,20 +162,27 @@ global without sharing class LogEntryBuilder {
                 }
             }
 
-            if(ignoreLine) {
+            if (ignoreLine) {
                 continue;
             }
 
-            // Set the stack trace & origin location
             stackTraceLines.add(currentStackTraceLine);
-            originLocation = currentStackTraceLine.substringBefore(':');
+        }
+
+        // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
+        stackTraceString = String.join(stackTraceLines, '\n');
+        if (isValidStackTrace(stackTraceString)) {
+            String originLocation = stackTraceLines.get(0);
+            if (originLocation.contains(':')) {
+                originLocation = originLocation.substringBefore(':');
+            }
             if (originLocation.startsWith('Class.')) {
                 originLocation = originLocation.substringAfter('Class.');
             }
-        }
 
-        this.logEntryEvent.OriginLocation__c = originLocation;
-        this.logEntryEvent.StackTrace__c = String.join(stackTraceLines, '\n');
+            this.logEntryEvent.OriginLocation__c = originLocation;
+            this.logEntryEvent.StackTrace__c = stackTraceString;
+        }
 
         return this;
     }
