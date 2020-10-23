@@ -93,7 +93,7 @@ public without sharing class LogEntryHandler {
             Id recordId = (Id) logEntry.RecordId__c;
             Schema.SObjectType sobjectType = recordId.getSObjectType();
 
-            logEntry.RecordSObject__c = String.valueOf(sobjectType);
+            logEntry.RecordSObjectType__c = String.valueOf(sobjectType);
 
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
 

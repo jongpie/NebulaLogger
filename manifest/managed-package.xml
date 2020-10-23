@@ -203,7 +203,7 @@
         <members>LogEntry__c.RecordJson__c</members>
         <members>LogEntry__c.RecordLink__c</members>
         <members>LogEntry__c.RecordName__c</members>
-        <members>LogEntry__c.RecordSObject__c</members>
+        <members>LogEntry__c.RecordSObjectType__c</members>
         <members>LogEntry__c.StackTrace__c</members>
         <members>LogEntry__c.Timestamp__c</members>
         <members>LogEntry__c.TypeWithImage__c</members>

@@ -396,7 +396,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordSObject__c</field>
+        <field>LogEntry__c.RecordSObjectType__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

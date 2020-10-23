@@ -7,7 +7,7 @@
     &apos;&apos;,
     HYPERLINK(
         &apos;/&apos; + RecordId__c,
-        TEXT(RecordSObject__c) + &apos;: &apos; + IF(
+        TEXT(RecordSObjectType__c) + &apos;: &apos; + IF(
             ISBLANK(RecordName__c),
             RecordId__c,
             RecordName__c
