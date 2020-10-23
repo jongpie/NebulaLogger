@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>TotalLogEntriesWithRelatedRecordId__c</fullName>
+    <fullName>TotalLogEntriesWithRecordId__c</fullName>
     <description>The total number of log entries that are associated to a related record.</description>
     <externalId>false</externalId>
     <label>Total Entries with Related Records</label>
     <summaryFilterItems>
-        <field>LogEntry__c.HasRelatedRecordId__c</field>
+        <field>LogEntry__c.HasRecordId__c</field>
         <operation>equals</operation>
         <value>True</value>
     </summaryFilterItems>

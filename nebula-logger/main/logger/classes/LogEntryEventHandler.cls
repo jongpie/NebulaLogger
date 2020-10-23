@@ -130,8 +130,8 @@ public without sharing class LogEntryEventHandler {
                 Name = null, // Salesforce will auto-set the record ID as the name when null
                 OriginType__c = logEntryEvent.OriginType__c,
                 OriginLocation__c = logEntryEvent.OriginLocation__c,
-                RelatedRecordId__c = logEntryEvent.RelatedRecordId__c,
-                RelatedRecordJson__c = logEntryEvent.RelatedRecordJson__c,
+                RecordId__c = logEntryEvent.RecordId__c,
+                RecordJson__c = logEntryEvent.RecordJson__c,
                 StackTrace__c = logEntryEvent.StackTrace__c,
                 Timestamp__c = logEntryEvent.Timestamp__c,
                 Type__c = logEntryEvent.Type__c

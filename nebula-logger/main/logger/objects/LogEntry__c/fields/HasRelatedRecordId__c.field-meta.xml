@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>HasRelatedRecordId__c</fullName>
+    <fullName>HasRecordId__c</fullName>
     <externalId>false</externalId>
-    <formula>RelatedRecordId__c != null</formula>
+    <formula>RecordId__c != null</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Has Related Record</label>
     <trackTrending>false</trackTrending>
