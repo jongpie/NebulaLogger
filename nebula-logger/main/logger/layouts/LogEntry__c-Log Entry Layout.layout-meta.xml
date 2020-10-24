@@ -96,15 +96,15 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>RelatedRecordId__c</field>
+                <field>RecordId__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>RelatedRecordDetailedLink__c</field>
+                <field>RecordDetailedLink__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>RelatedRecordJson__c</field>
+                <field>RecordJson__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

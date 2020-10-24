@@ -15,14 +15,14 @@ private class LogEntryHandler_Tests {
     static void it_should_save_log_entry_without_related_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RelatedRecordId__c = null);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = null);
 
         Test.startTest();
         insert logEntry;
         Test.stopTest();
 
-        logEntry = [SELECT Id, RelatedRecordId__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(null, logEntry.RelatedRecordId__c);
+        logEntry = [SELECT Id, RecordId__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assertEquals(null, logEntry.RecordId__c);
     }
 
     @isTest
@@ -30,20 +30,20 @@ private class LogEntryHandler_Tests {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         User currentUser = [SELECT Id, Username FROM User WHERE Id = :UserInfo.getUserId()];
 
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RelatedRecordId__c = currentUser.Id);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = currentUser.Id);
 
         Test.startTest();
         insert logEntry;
         Test.stopTest();
 
         logEntry = [
-            SELECT Id, RelatedRecordId__c, RelatedRecordName__c, RelatedRecordSObject__c
+            SELECT Id, RecordId__c, RecordName__c, RecordSObjectType__c
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
-        System.assertEquals(currentUser.Id, logEntry.RelatedRecordId__c);
-        System.assertEquals(currentUser.Username, logEntry.RelatedRecordName__c);
-        System.assertEquals('User', logEntry.RelatedRecordSObject__c);
+        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
+        System.assertEquals(currentUser.Username, logEntry.RecordName__c);
+        System.assertEquals('User', logEntry.RecordSObjectType__c);
     }
 
     @isTest

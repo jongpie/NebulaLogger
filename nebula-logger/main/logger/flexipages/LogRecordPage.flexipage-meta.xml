@@ -148,7 +148,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.TotalLogEntriesWithRelatedRecordId__c</fieldItem>
+                <fieldItem>Record.TotalLogEntriesWithRecordId__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

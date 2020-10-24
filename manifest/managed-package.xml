@@ -104,9 +104,8 @@
         <members>LogEntryEvent__e.OriginType__c</members>
         <members>LogEntryEvent__e.ParentLogTransactionId__c</members>
         <members>LogEntryEvent__e.ProfileId__c</members>
-        <members>LogEntryEvent__e.ProfileName__c</members>
-        <members>LogEntryEvent__e.RelatedRecordId__c</members>
-        <members>LogEntryEvent__e.RelatedRecordJson__c</members>
+        <members>LogEntryEvent__e.RecordId__c</members>
+        <members>LogEntryEvent__e.RecordJson__c</members>
         <members>LogEntryEvent__e.SessionId__c</members>
         <members>LogEntryEvent__e.SessionSecurityLevel__c</members>
         <members>LogEntryEvent__e.SessionType__c</members>
@@ -123,7 +122,6 @@
         <members>LogEntryEvent__e.UserLoggingLevelOrdinal__c</members>
         <members>LogEntryEvent__e.UserLoggingLevel__c</members>
         <members>LogEntryEvent__e.UserRoleId__c</members>
-        <members>LogEntryEvent__e.UserRoleName__c</members>
         <members>LogEntryEvent__e.UserType__c</members>
         <members>LogEntry__c.ContextIsLightningComponent__c</members>
         <members>LogEntry__c.ContextIsTriggerExecuting__c</members>
@@ -140,8 +138,8 @@
         <members>LogEntry__c.FlowName__c</members>
         <members>LogEntry__c.HasExceptionStackTrace__c</members>
         <members>LogEntry__c.HasException__c</members>
-        <members>LogEntry__c.HasRelatedRecordId__c</members>
-        <members>LogEntry__c.HasRelatedRecordJson__c</members>
+        <members>LogEntry__c.HasRecordId__c</members>
+        <members>LogEntry__c.HasRecordJson__c</members>
         <members>LogEntry__c.HasStackTrace__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesMax__c</members>
         <members>LogEntry__c.LimitsAggregateQueriesUsed__c</members>
@@ -198,12 +196,12 @@
         <members>LogEntry__c.OriginLocation__c</members>
         <members>LogEntry__c.OriginType__c</members>
         <members>LogEntry__c.Origin__c</members>
-        <members>LogEntry__c.RelatedRecordDetailedLink__c</members>
-        <members>LogEntry__c.RelatedRecordId__c</members>
-        <members>LogEntry__c.RelatedRecordJson__c</members>
-        <members>LogEntry__c.RelatedRecordLink__c</members>
-        <members>LogEntry__c.RelatedRecordName__c</members>
-        <members>LogEntry__c.RelatedRecordSObject__c</members>
+        <members>LogEntry__c.RecordDetailedLink__c</members>
+        <members>LogEntry__c.RecordId__c</members>
+        <members>LogEntry__c.RecordJson__c</members>
+        <members>LogEntry__c.RecordLink__c</members>
+        <members>LogEntry__c.RecordName__c</members>
+        <members>LogEntry__c.RecordSObjectType__c</members>
         <members>LogEntry__c.StackTrace__c</members>
         <members>LogEntry__c.Timestamp__c</members>
         <members>LogEntry__c.TypeWithImage__c</members>
@@ -246,13 +244,13 @@
         <members>Log__c.SessionType__c</members>
         <members>Log__c.SourceIp__c</members>
         <members>Log__c.StartTime__c</members>
-        <members>Log__c.SystemMode__c</members>
         <members>Log__c.SystemModeSummary__c</members>
+        <members>Log__c.SystemMode__c</members>
         <members>Log__c.TimeZoneId__c</members>
         <members>Log__c.TimeZoneName__c</members>
         <members>Log__c.TotalDiagnosticLogEntries__c</members>
         <members>Log__c.TotalExceptionLogEntries__c</members>
-        <members>Log__c.TotalLogEntriesWithRelatedRecordId__c</members>
+        <members>Log__c.TotalLogEntriesWithRecordId__c</members>
         <members>Log__c.TotalLogEntries__c</members>
         <members>Log__c.TransactionId__c</members>
         <members>Log__c.UserLicenseDefinitionKey__c</members>
@@ -268,11 +266,8 @@
         <members>LoggerSettings__c.AddLogEntryTopicsToLog__c</members>
         <members>LoggerSettings__c.AutoSaveExceptionEntries__c</members>
         <members>LoggerSettings__c.EnableSystemMessages__c</members>
-        <members>LoggerSettings__c.GenerateDebugStatements__c</members>
         <members>LoggerSettings__c.IsEnabled__c</members>
         <members>LoggerSettings__c.LoggingLevel__c</members>
-        <members>LoggerSettings__c.StoreRelatedRecordJson__c</members>
-        <members>LoggerSettings__c.StoreStackTrace__c</members>
         <name>CustomField</name>
     </types>
     <types>

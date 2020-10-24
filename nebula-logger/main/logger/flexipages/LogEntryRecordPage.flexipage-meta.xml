@@ -251,7 +251,7 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.RelatedRecordId__c</fieldItem>
+                <fieldItem>Record.RecordId__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -260,7 +260,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.RelatedRecordDetailedLink__c</fieldItem>
+                <fieldItem>Record.RecordDetailedLink__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -269,10 +269,10 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.RelatedRecordJson__c</fieldItem>
+                <fieldItem>Record.RecordJson__c</fieldItem>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.HasRelatedRecordJson__c}</leftValue>
+                        <leftValue>{!Record.HasRecordJson__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
@@ -520,7 +520,7 @@
                 <componentName>flexipage:fieldSection</componentName>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.HasRelatedRecordId__c}</leftValue>
+                        <leftValue>{!Record.HasRecordId__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>

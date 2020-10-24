@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TypeWithLoggingLevel__c</fullName>
     <externalId>false</externalId>
-    <formula>TEXT(Type__c) + &apos;.&apos; + TEXT(LoggingLevel__c)</formula>
+    <formula>TEXT(LoggingLevel__c) + &apos;.&apos; + TEXT(Type__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Type</label>
     <required>false</required>

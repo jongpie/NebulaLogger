@@ -43,7 +43,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithRelatedRecordId__c</field>
+                <field>TotalLogEntriesWithRecordId__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -286,7 +286,7 @@
         <fields>NAME</fields>
         <fields>Origin__c</fields>
         <fields>Message__c</fields>
-        <fields>RelatedRecordDetailedLink__c</fields>
+        <fields>RecordDetailedLink__c</fields>
         <fields>TypeWithImage__c</fields>
         <fields>Timestamp__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>

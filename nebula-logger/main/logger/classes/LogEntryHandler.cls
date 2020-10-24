@@ -15,9 +15,9 @@ public without sharing class LogEntryHandler {
         List<LogEntry__c> logEntries = (List<LogEntry__c>) Trigger.new;
 
         if (Trigger.operationType == TriggerOperation.BEFORE_INSERT) {
-            // Only set the record names on initial insert - the RelatedRecordName__c field is then...
+            // Only set the record names on initial insert - the RecordName__c field is then...
             // a snapshot of the record's name at the time that the log entry was created
-            this.setRelatedRecordNames(logEntries);
+            this.setRecordNames(logEntries);
         }
 
         // Maintain the checkbox fields on insert & update
@@ -31,32 +31,32 @@ public without sharing class LogEntryHandler {
         // So, this code handles maintaing some checkbox fields via Apex instead
         for (LogEntry__c logEntry : logEntries) {
             logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
-            logEntry.HasRelatedRecordJson__c = logEntry.RelatedRecordJson__c != null;
+            logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
             logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
         }
     }
 
-    private void setRelatedRecordNames(List<LogEntry__c> logEntries) {
-        // Assumption - only valid record IDs will be populated in LogEntry__c.RelatedRecordId__c
+    private void setRecordNames(List<LogEntry__c> logEntries) {
+        // Assumption - only valid record IDs will be populated in LogEntry__c.RecordId__c
         // If that changes, then extra checks may be needed before casting to Id, using getSObjectType(), etc.
 
         // 1. Figure out which SObjects & record IDs to query
         Map<Schema.SObjectType, List<Id>> sobjectTypeToRecords = new Map<Schema.SObjectType, List<Id>>();
         for (LogEntry__c logEntry : logEntries) {
             // Skip the log entry if there's no related record ID
-            if (logEntry.RelatedRecordId__c == null) {
+            if (logEntry.RecordId__c == null) {
                 continue;
             }
 
             // Based on the related record ID, get the SObject Type
-            Id relatedRecordId = (Id) logEntry.RelatedRecordId__c;
-            Schema.SObjectType sobjectType = relatedRecordId.getSObjectType();
+            Id recordId = (Id) logEntry.RecordId__c;
+            Schema.SObjectType sobjectType = recordId.getSObjectType();
 
             List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
             if (sobjectTypeRecordIds == null) {
                 sobjectTypeRecordIds = new List<Id>();
             }
-            sobjectTypeRecordIds.add(relatedRecordId);
+            sobjectTypeRecordIds.add(recordId);
             sobjectTypeToRecords.put(sobjectType, sobjectTypeRecordIds);
         }
 
@@ -86,14 +86,14 @@ public without sharing class LogEntryHandler {
         // 3. Finally, save the record name on the log entry
         for (LogEntry__c logEntry : logEntries) {
             // Skip the log entry if there's no related record ID
-            if (logEntry.RelatedRecordId__c == null) {
+            if (logEntry.RecordId__c == null) {
                 continue;
             }
 
-            Id relatedRecordId = (Id) logEntry.RelatedRecordId__c;
-            Schema.SObjectType sobjectType = relatedRecordId.getSObjectType();
+            Id recordId = (Id) logEntry.RecordId__c;
+            Schema.SObjectType sobjectType = recordId.getSObjectType();
 
-            logEntry.RelatedRecordSObject__c = String.valueOf(sobjectType);
+            logEntry.RecordSObjectType__c = String.valueOf(sobjectType);
 
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
 
@@ -101,8 +101,8 @@ public without sharing class LogEntryHandler {
                 continue;
             }
 
-            String recordName = (String) recordIdToRecord.get(logEntry.RelatedRecordId__c).get(sobjectDisplayFieldName);
-            logEntry.RelatedRecordName__c = recordName;
+            String recordName = (String) recordIdToRecord.get(logEntry.RecordId__c).get(sobjectDisplayFieldName);
+            logEntry.RecordName__c = recordName;
         }
     }
 

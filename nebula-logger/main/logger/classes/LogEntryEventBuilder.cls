@@ -102,10 +102,10 @@ global without sharing class LogEntryEventBuilder {
         }
 
         String truncatedRecordJson = truncateFieldValue(
-            Schema.LogEntryEvent__e.RelatedRecordJson__c,
+            Schema.LogEntryEvent__e.RecordJson__c,
             Json.serializePretty(record)
         );
-        this.logEntryEvent.RelatedRecordJson__c = truncatedRecordJson;
+        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
         return this.setRecordId(record.Id);
     }
@@ -115,7 +115,7 @@ global without sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.RelatedRecordId__c = recordId;
+        this.logEntryEvent.RecordId__c = recordId;
         return this;
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>RelatedRecordName__c</fullName>
+    <fullName>RecordName__c</fullName>
     <externalId>false</externalId>
     <label>Related Record Name</label>
     <length>255</length>
