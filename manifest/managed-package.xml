@@ -104,7 +104,6 @@
         <members>LogEntryEvent__e.OriginType__c</members>
         <members>LogEntryEvent__e.ParentLogTransactionId__c</members>
         <members>LogEntryEvent__e.ProfileId__c</members>
-        <members>LogEntryEvent__e.ProfileName__c</members>
         <members>LogEntryEvent__e.RecordId__c</members>
         <members>LogEntryEvent__e.RecordJson__c</members>
         <members>LogEntryEvent__e.SessionId__c</members>
@@ -123,7 +122,6 @@
         <members>LogEntryEvent__e.UserLoggingLevelOrdinal__c</members>
         <members>LogEntryEvent__e.UserLoggingLevel__c</members>
         <members>LogEntryEvent__e.UserRoleId__c</members>
-        <members>LogEntryEvent__e.UserRoleName__c</members>
         <members>LogEntryEvent__e.UserType__c</members>
         <members>LogEntry__c.ContextIsLightningComponent__c</members>
         <members>LogEntry__c.ContextIsTriggerExecuting__c</members>
@@ -246,8 +244,8 @@
         <members>Log__c.SessionType__c</members>
         <members>Log__c.SourceIp__c</members>
         <members>Log__c.StartTime__c</members>
-        <members>Log__c.SystemMode__c</members>
         <members>Log__c.SystemModeSummary__c</members>
+        <members>Log__c.SystemMode__c</members>
         <members>Log__c.TimeZoneId__c</members>
         <members>Log__c.TimeZoneName__c</members>
         <members>Log__c.TotalDiagnosticLogEntries__c</members>
@@ -268,11 +266,8 @@
         <members>LoggerSettings__c.AddLogEntryTopicsToLog__c</members>
         <members>LoggerSettings__c.AutoSaveExceptionEntries__c</members>
         <members>LoggerSettings__c.EnableSystemMessages__c</members>
-        <members>LoggerSettings__c.GenerateDebugStatements__c</members>
         <members>LoggerSettings__c.IsEnabled__c</members>
         <members>LoggerSettings__c.LoggingLevel__c</members>
-        <members>LoggerSettings__c.StoreRecordJson__c</members>
-        <members>LoggerSettings__c.StoreStackTrace__c</members>
         <name>CustomField</name>
     </types>
     <types>
