@@ -628,11 +628,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithRecordId__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Log__c.TotalLogEntriesWithWARNLoggingLevel__c</field>
         <readable>true</readable>
     </fieldPermissions>
