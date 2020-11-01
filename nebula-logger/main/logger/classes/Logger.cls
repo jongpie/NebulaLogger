@@ -697,7 +697,7 @@ global without sharing class Logger {
         }
     }
 
-    global static LogEntryEventBuilder createLogEntryEventBuilder(LoggingLevel loggingLevel) {
+    public static LogEntryEventBuilder createLogEntryEventBuilder(LoggingLevel loggingLevel) {
         LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel);
         LOG_ENTRIES.add(logEntryBuilder);
 
@@ -705,7 +705,7 @@ global without sharing class Logger {
     }
 
     @AuraEnabled
-    global static Log__c getLog(Id logId) {
+    public static Log__c getLog(Id logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
         List<String> logEntryFieldNames = new List<String>(
             Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet()
