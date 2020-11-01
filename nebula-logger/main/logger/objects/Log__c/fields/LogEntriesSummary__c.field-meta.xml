@@ -7,6 +7,11 @@
     TotalLogEntriesWithERRORLoggingLevel__c = 0,
     &apos;&apos;,
     &apos;, &apos; + TEXT(TotalLogEntriesWithERRORLoggingLevel__c) + &apos; error(s)&apos;
+)
++ IF(
+    TotalLogEntriesWithWARNLoggingLevel__c = 0,
+    &apos;&apos;,
+    &apos;, &apos; + TEXT(TotalLogEntriesWithWARNLoggingLevel__c) + &apos; warning(s)&apos;
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Summary</label>
