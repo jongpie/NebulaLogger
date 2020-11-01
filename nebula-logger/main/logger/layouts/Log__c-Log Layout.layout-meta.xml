@@ -31,6 +31,10 @@
                 <behavior>Edit</behavior>
                 <field>LogRetentionDate__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ParentLog__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -39,15 +43,31 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalExceptionLogEntries__c</field>
+                <field>TotalLogEntriesWithERRORLoggingLevel__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithRecordId__c</field>
+                <field>TotalLogEntriesWithWARNLoggingLevel__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ParentLog__c</field>
+                <behavior>Readonly</behavior>
+                <field>TotalLogEntriesWithINFOLoggingLevel__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>TotalLogEntriesWithDEBUGLoggingLevel__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>TotalLogEntriesWithFINELoggingLevel__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>TotalLogEntriesWithFINERLoggingLevel__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>TotalLogEntriesWithFINESTLoggingLevel__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -176,7 +196,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>ContextThemeDisplayed__c</field>
+                <field>ThemeDisplayed__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -250,11 +270,6 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
-            <actionName>FeedItem.TextPost</actionName>
-            <actionType>QuickAction</actionType>
-            <sortOrder>5</sortOrder>
-        </platformActionListItems>
-        <platformActionListItems>
             <actionName>Log__c.ViewJSON</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>0</sortOrder>
@@ -279,6 +294,11 @@
             <actionType>StandardButton</actionType>
             <sortOrder>4</sortOrder>
         </platformActionListItems>
+        <platformActionListItems>
+            <actionName>FeedItem.TextPost</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>5</sortOrder>
+        </platformActionListItems>
     </platformActionList>
     <relatedLists>
         <excludeButtons>MassChangeOwner</excludeButtons>
@@ -287,7 +307,7 @@
         <fields>Origin__c</fields>
         <fields>Message__c</fields>
         <fields>RecordDetailedLink__c</fields>
-        <fields>TypeWithImage__c</fields>
+        <fields>LoggingLevelWithImage__c</fields>
         <fields>Timestamp__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
         <sortField>Timestamp__c</sortField>
@@ -318,8 +338,6 @@
         <fields>NAME</fields>
         <fields>TransactionId__c</fields>
         <fields>TotalLogEntries__c</fields>
-        <fields>TotalDiagnosticLogEntries__c</fields>
-        <fields>TotalExceptionLogEntries__c</fields>
         <fields>SystemModeSummary__c</fields>
         <fields>StartTime__c</fields>
         <relatedList>Log__c.ParentLog__c</relatedList>

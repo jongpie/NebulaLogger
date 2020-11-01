@@ -6,7 +6,7 @@
 + IF(
     TotalLogEntriesWithERRORLoggingLevel__c = 0,
     &apos;&apos;,
-    &apos;, &apos; + TEXT(TotalLogEntriesWithERRORLoggingLevel__c) + &apos; exception(s)&apos;
+    &apos;, &apos; + TEXT(TotalLogEntriesWithERRORLoggingLevel__c) + &apos; error(s)&apos;
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Summary</label>

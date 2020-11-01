@@ -167,8 +167,8 @@
     <pluralLabel>Log Entries</pluralLabel>
     <searchLayouts>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
         <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>LoggingLevelWithImage__c</lookupDialogsAdditionalFields>
