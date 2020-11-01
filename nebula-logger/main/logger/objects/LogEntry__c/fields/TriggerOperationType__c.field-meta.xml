@@ -3,10 +3,48 @@
     <fullName>TriggerOperationType__c</fullName>
     <externalId>false</externalId>
     <label>Trigger Operation Type</label>
-    <length>255</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
-    <type>Text</type>
-    <unique>false</unique>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>AFTER_DELETE</fullName>
+                <default>false</default>
+                <label>AFTER_DELETE</label>
+            </value>
+            <value>
+                <fullName>AFTER_INSERT</fullName>
+                <default>false</default>
+                <label>AFTER_INSERT</label>
+            </value>
+            <value>
+                <fullName>AFTER_UNDELETE</fullName>
+                <default>false</default>
+                <label>AFTER_UNDELETE</label>
+            </value>
+            <value>
+                <fullName>AFTER_UPDATE</fullName>
+                <default>false</default>
+                <label>AFTER_UPDATE</label>
+            </value>
+            <value>
+                <fullName>BEFORE_DELETE</fullName>
+                <default>false</default>
+                <label>BEFORE_DELETE</label>
+            </value>
+            <value>
+                <fullName>BEFORE_INSERT</fullName>
+                <default>false</default>
+                <label>BEFORE_INSERT</label>
+            </value>
+            <value>
+                <fullName>BEFORE_UPDATE</fullName>
+                <default>false</default>
+                <label>BEFORE_UPDATE</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
 </CustomField>
