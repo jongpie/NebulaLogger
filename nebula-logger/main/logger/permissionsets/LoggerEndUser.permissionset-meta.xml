@@ -19,16 +19,6 @@
     <description>Provides access for users to add log entries via process builder, flow and lightning components</description>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.DmlResultErrors__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.DmlResultType__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntry__c.ExceptionMessage__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -640,11 +630,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.TotalLogEntriesWithINFOLoggingLevel__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithRecordId__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
