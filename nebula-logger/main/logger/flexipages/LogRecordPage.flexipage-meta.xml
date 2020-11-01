@@ -139,7 +139,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.TotalExceptionLogEntries__c</fieldItem>
+                <fieldItem>Record.TotalLogEntriesWithERRORLoggingLevel__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -148,7 +148,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.TotalLogEntriesWithRecordId__c</fieldItem>
+                <fieldItem>Record.TotalLogEntriesWithWARNLoggingLevel__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -463,7 +463,7 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ContextThemeDisplayed__c</fieldItem>
+                <fieldItem>Record.ThemeDisplayed__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

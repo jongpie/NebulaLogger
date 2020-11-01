@@ -56,15 +56,6 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>required</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Name</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoggedByUsernameLink__c</fieldItem>
@@ -74,12 +65,12 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Timestamp__c</fieldItem>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-7f7fbd23-d9c3-45a7-9966-5b53ef6c3760</name>
+        <name>Facet-cb40f95d-9915-4ba5-815c-f3e53bcc4001</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -89,16 +80,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.TypeWithImage__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ContextSummary__c</fieldItem>
+                <fieldItem>Record.LoggingLevelWithImage__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -110,7 +92,23 @@
                 <fieldItem>Record.Origin__c</fieldItem>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-3c239c0f-eea9-4d54-a5fb-e540e0281d62</name>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Trigger__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.TriggerIsExecuting__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-f419a303-8d53-44e5-8647-63a464804568</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -118,7 +116,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-7f7fbd23-d9c3-45a7-9966-5b53ef6c3760</value>
+                    <value>Facet-cb40f95d-9915-4ba5-815c-f3e53bcc4001</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
             </componentInstance>
@@ -127,12 +125,12 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-3c239c0f-eea9-4d54-a5fb-e540e0281d62</value>
+                    <value>Facet-f419a303-8d53-44e5-8647-63a464804568</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
             </componentInstance>
         </itemInstances>
-        <name>Facet-e0deee5b-d3a2-4f94-8203-70a62738a906</name>
+        <name>Facet-506803d6-0468-4ac1-a044-ede56cf84c05</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -200,57 +198,6 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ExceptionType__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ExceptionMessage__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.ExceptionStackTrace__c</fieldItem>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HasExceptionStackTrace__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-2459e7ac-69ae-42c7-a640-3fd29367e57b</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-2459e7ac-69ae-42c7-a640-3fd29367e57b</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-2a15cd64-78af-4727-8c6d-2913cb00a278</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.RecordId__c</fieldItem>
             </fieldInstance>
         </itemInstances>
@@ -293,6 +240,57 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ExceptionType__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ExceptionMessage__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ExceptionStackTrace__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasExceptionStackTrace__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-2459e7ac-69ae-42c7-a640-3fd29367e57b</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-2459e7ac-69ae-42c7-a640-3fd29367e57b</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-2a15cd64-78af-4727-8c6d-2913cb00a278</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -465,7 +463,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
-                    <value>Facet-e0deee5b-d3a2-4f94-8203-70a62738a906</value>
+                    <value>Facet-506803d6-0468-4ac1-a044-ede56cf84c05</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
@@ -491,26 +489,6 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
-                    <value>Facet-2a15cd64-78af-4727-8c6d-2913cb00a278</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Exception Information</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-                <visibilityRule>
-                    <criteria>
-                        <leftValue>{!Record.HasException__c}</leftValue>
-                        <operator>EQUAL</operator>
-                        <rightValue>true</rightValue>
-                    </criteria>
-                </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
                     <value>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -521,6 +499,26 @@
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasRecordId__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-2a15cd64-78af-4727-8c6d-2913cb00a278</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Exception Information</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasException__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
