@@ -2,11 +2,34 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TriggerSObjectType__c</fullName>
     <externalId>false</externalId>
-    <label>Trigger SObject Type</label>
-    <length>255</length>
+    <label>Trigger Object</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
-    <type>Text</type>
-    <unique>false</unique>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>Account</fullName>
+                <default>false</default>
+                <label>Account</label>
+            </value>
+            <value>
+                <fullName>Case</fullName>
+                <default>false</default>
+                <label>Case</label>
+            </value>
+            <value>
+                <fullName>Lead</fullName>
+                <default>false</default>
+                <label>Lead</label>
+            </value>
+            <value>
+                <fullName>User</fullName>
+                <default>false</default>
+                <label>User</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
 </CustomField>

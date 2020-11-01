@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <formula>IF(
     TriggerIsExecuting__c,
-    TriggerSObjectType__c + &apos;.&apos; +  TriggerOperationType__c
+    TEXT(TriggerSObjectType__c) + &apos;.&apos; +  TriggerOperationType__c
     ,null
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
