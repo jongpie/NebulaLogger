@@ -51,47 +51,12 @@
     <description>Provides access to manage logs</description>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.ContextIsLightningComponent__c</field>
+        <field>LogEntry__c.DmlResultErrors__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.ContextIsTriggerExecuting__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.ContextIsVisualforce__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.ContextLightningComponentName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.ContextSummary__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.ContextTriggerOperationType__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.ContextTriggerSObjectType__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.ContextVisualforcePage__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.Context__c</field>
+        <field>LogEntry__c.DmlResultType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -112,6 +77,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.FlowName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HasDmlResult__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -381,6 +351,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.LoggingLevelWithImage__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.LoggingLevel__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -451,27 +426,27 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.TypeWithImage__c</field>
+        <field>LogEntry__c.TriggerIsExecuting__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.TypeWithLoggingLevel__c</field>
+        <field>LogEntry__c.TriggerOperationType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.Type__c</field>
+        <field>LogEntry__c.TriggerSObjectType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.Trigger__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.ApiVersion__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Log__c.ContextThemeDisplayed__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -487,11 +462,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.EntriesSummary__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Log__c.HasExceptionLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -661,6 +631,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.ThemeDisplayed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.TimeZoneId__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -671,17 +646,42 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalDiagnosticLogEntries__c</field>
+        <field>Log__c.TotalLogEntriesWithDEBUGLoggingLevel__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalExceptionLogEntries__c</field>
+        <field>Log__c.TotalLogEntriesWithERRORLoggingLevel__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TotalLogEntriesWithFINELoggingLevel__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TotalLogEntriesWithFINERLoggingLevel__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TotalLogEntriesWithFINESTLoggingLevel__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TotalLogEntriesWithINFOLoggingLevel__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.TotalLogEntriesWithRecordId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TotalLogEntriesWithWARNLoggingLevel__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
