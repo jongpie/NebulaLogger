@@ -66,11 +66,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.FlowName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntry__c.HasExceptionStackTrace__c</field>
         <readable>true</readable>
     </fieldPermissions>
