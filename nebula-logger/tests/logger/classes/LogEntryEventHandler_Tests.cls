@@ -24,7 +24,6 @@ private class LogEntryEventHandler_Tests {
         return [
             SELECT
                 ApiVersion__c,
-                ContextThemeDisplayed__c,
                 Id,
                 Locale__c,
                 LoggedBy__c,
@@ -33,6 +32,13 @@ private class LogEntryEventHandler_Tests {
                 LoginType__c,
                 LogoutUrl__c,
                 NetworkId__c,
+                OrganizationDomainUrl__c,
+                OrganizationId__c,
+                OrganizationInstanceName__c,
+                OrganizationIsSandbox__c,
+                OrganizationName__c,
+                OrganizationNamespacePrefix__c,
+                OrganizationType__c,
                 OwnerId,
                 ParentLog__c,
                 ProfileId__c,
@@ -42,33 +48,20 @@ private class LogEntryEventHandler_Tests {
                 SessionType__c,
                 SourceIp__c,
                 SystemMode__c,
+                ThemeDisplayed__c,
                 TimeZoneId__c,
                 TimeZoneName__c,
                 TransactionId__c,
+                UserLicenseDefinitionKey__c,
+                UserLicenseId__c,
+                UserLicenseName__c,
                 UserLoggingLevel__c,
                 UserLoggingLevelOrdinal__c,
                 UserRoleId__c,
                 UserRoleName__c,
                 UserType__c,
-                OrganizationDomainUrl__c,
-                OrganizationId__c,
-                OrganizationInstanceName__c,
-                OrganizationIsSandbox__c,
-                OrganizationName__c,
-                OrganizationNamespacePrefix__c,
-                OrganizationType__c,
-                UserLicenseDefinitionKey__c,
-                UserLicenseId__c,
-                UserLicenseName__c,
                 (
                     SELECT
-                        ContextIsLightningComponent__c,
-                        ContextIsTriggerExecuting__c,
-                        ContextIsVisualforce__c,
-                        ContextLightningComponentName__c,
-                        ContextTriggerOperationType__c,
-                        ContextTriggerSObjectType__c,
-                        ContextVisualforcePage__c,
                         ExceptionStackTrace__c,
                         ExceptionType__c,
                         LimitsAggregateQueriesMax__c,
@@ -114,7 +107,9 @@ private class LogEntryEventHandler_Tests {
                         RecordJson__c,
                         StackTrace__c,
                         Timestamp__c,
-                        Type__c
+                        TriggerIsExecuting__c,
+                        TriggerOperationType__c,
+                        TriggerSObjectType__c
                     FROM LogEntries__r
                 )
             FROM Log__c
@@ -129,7 +124,6 @@ private class LogEntryEventHandler_Tests {
         User currentUser = getCurrentUser();
 
         System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c);
-        System.assertEquals(logEntryEvent.ContextThemeDisplayed__c, log.ContextThemeDisplayed__c);
         System.assertEquals(logEntryEvent.Locale__c, log.Locale__c);
         System.assertEquals(UserInfo.getUserId(), log.LoggedBy__c);
         System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c);
@@ -145,6 +139,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.SessionType__c, log.SessionType__c);
         System.assertEquals(logEntryEvent.SourceIp__c, log.SourceIp__c);
         System.assertEquals(logEntryEvent.SystemMode__c, log.SystemMode__c);
+        System.assertEquals(logEntryEvent.ThemeDisplayed__c, log.ThemeDisplayed__c);
         System.assertEquals(logEntryEvent.TimeZoneId__c, log.TimeZoneId__c);
         System.assertEquals(logEntryEvent.TimeZoneName__c, log.TimeZoneName__c);
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
@@ -155,13 +150,13 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.UserType__c, log.UserType__c);
 
         // Org fields
-        System.assertEquals(Url.getOrgDomainUrl().toExternalForm(), LOG.OrganizationDomainUrl__c);
-        System.assertEquals(org.Id, LOG.OrganizationId__c);
-        System.assertEquals(org.InstanceName, LOG.OrganizationInstanceName__c);
-        System.assertEquals(org.IsSandbox, LOG.OrganizationIsSandbox__c);
-        System.assertEquals(org.Name, LOG.OrganizationName__c);
-        System.assertEquals(org.NamespacePrefix, LOG.OrganizationNamespacePrefix__c);
-        System.assertEquals(org.OrganizationType, LOG.OrganizationType__c);
+        System.assertEquals(Url.getOrgDomainUrl().toExternalForm(), log.OrganizationDomainUrl__c);
+        System.assertEquals(org.Id, log.OrganizationId__c);
+        System.assertEquals(org.InstanceName, log.OrganizationInstanceName__c);
+        System.assertEquals(org.IsSandbox, log.OrganizationIsSandbox__c);
+        System.assertEquals(org.Name, log.OrganizationName__c);
+        System.assertEquals(org.NamespacePrefix, log.OrganizationNamespacePrefix__c);
+        System.assertEquals(org.OrganizationType, log.OrganizationType__c);
 
         // Profile fields
         System.assertEquals(currentUser.Profile.UserLicense.LicenseDefinitionKey, log.UserLicenseDefinitionKey__c);
@@ -170,13 +165,6 @@ private class LogEntryEventHandler_Tests {
     }
 
     static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
-        System.assertEquals(logEntryEvent.ContextIsLightningComponent__c, logEntry.ContextIsLightningComponent__c);
-        System.assertEquals(logEntryEvent.ContextIsTriggerExecuting__c, logEntry.ContextIsTriggerExecuting__c);
-        System.assertEquals(logEntryEvent.ContextIsVisualforce__c, logEntry.ContextIsVisualforce__c);
-        System.assertEquals(logEntryEvent.ContextLightningComponentName__c, logEntry.ContextLightningComponentName__c);
-        System.assertEquals(logEntryEvent.ContextTriggerOperationType__c, logEntry.ContextTriggerOperationType__c);
-        System.assertEquals(logEntryEvent.ContextTriggerSObjectType__c, logEntry.ContextTriggerSObjectType__c);
-        System.assertEquals(logEntryEvent.ContextVisualforcePage__c, logEntry.ContextVisualforcePage__c);
         System.assertEquals(logEntryEvent.ExceptionStackTrace__c, logEntry.ExceptionStackTrace__c);
         System.assertEquals(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c);
         System.assertEquals(logEntryEvent.LimitsAggregateQueriesMax__c, logEntry.LimitsAggregateQueriesMax__c);
@@ -223,7 +211,9 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c);
         System.assertEquals(logEntryEvent.StackTrace__c, logEntry.StackTrace__c);
         System.assertEquals(logEntryEvent.Timestamp__c, logEntry.Timestamp__c);
-        System.assertEquals(logEntryEvent.Type__c, logEntry.Type__c);
+        System.assertEquals(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c);
+        System.assertEquals(logEntryEvent.TriggerOperationType__c, logEntry.TriggerOperationType__c);
+        System.assertEquals(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c);
     }
 
     @isTest
@@ -258,14 +248,6 @@ private class LogEntryEventHandler_Tests {
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = '99.0',
-            ContextIsLightningComponent__c = false,
-            ContextIsTriggerExecuting__c = false,
-            ContextIsVisualforce__c = false,
-            ContextLightningComponentName__c = 'myComponent',
-            ContextThemeDisplayed__c = 'SomeTheme',
-            ContextTriggerOperationType__c = 'SomeOperation',
-            ContextTriggerSObjectType__c = 'Account',
-            ContextVisualforcePage__c = 'MyPage',
             ExceptionStackTrace__c = dmlException.getStackTraceString(),
             ExceptionType__c = dmlException.getTypeName(),
             LimitsAggregateQueriesMax__c = 987,
@@ -319,11 +301,14 @@ private class LogEntryEventHandler_Tests {
             SourceIp__c = null,
             StackTrace__c = 'I started here \nand then went there',
             SystemMode__c = System.Quiddity.SYNCHRONOUS.name(),
+            ThemeDisplayed__c = 'SomeTheme',
             Timestamp__c = System.now(),
             TimeZoneId__c = 'fake-id',
             TimeZoneName__c = 'My time zone name',
             TransactionId__c = transactionId,
-            Type__c = 'Diagnostic',
+            TriggerIsExecuting__c = false,
+            TriggerOperationType__c = 'SomeOperation',
+            TriggerSObjectType__c = 'Account',
             UserLoggingLevel__c = 'DEBUG',
             UserLoggingLevelOrdinal__c = 9,
             UserRoleId__c = currentUser.UserRoleId,

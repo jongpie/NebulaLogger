@@ -2,7 +2,13 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TotalLogEntries__c</fullName>
     <externalId>false</externalId>
-    <formula>TotalDiagnosticLogEntries__c + TotalExceptionLogEntries__c</formula>
+    <formula>TotalLogEntriesWithERRORLoggingLevel__c
++ TotalLogEntriesWithWARNLoggingLevel__c
++ TotalLogEntriesWithINFOLoggingLevel__c
++ TotalLogEntriesWithDEBUGLoggingLevel__c
++ TotalLogEntriesWithFINELoggingLevel__c
++ TotalLogEntriesWithFINERLoggingLevel__c
++ TotalLogEntriesWithFINESTLoggingLevel__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Total Entries</label>
     <precision>18</precision>

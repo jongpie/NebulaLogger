@@ -6,7 +6,7 @@
     <columns>StartTime__c</columns>
     <columns>DurationInSeconds__c</columns>
     <columns>TotalLogEntries__c</columns>
-    <columns>TotalExceptionLogEntries__c</columns>
+    <columns>TotalLogEntriesWithERRORLoggingLevel__c</columns>
     <columns>TransactionId__c</columns>
     <filterScope>Everything</filterScope>
     <label>All Logs</label>

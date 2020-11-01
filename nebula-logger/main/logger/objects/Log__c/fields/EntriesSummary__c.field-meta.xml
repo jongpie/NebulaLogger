@@ -4,9 +4,9 @@
     <externalId>false</externalId>
     <formula>TEXT(TotalLogEntries__c) + &apos; total entries&apos;
 + IF(
-    TotalExceptionLogEntries__c = 0,
+    TotalLogEntriesWithERRORLoggingLevel__c = 0,
     &apos;&apos;,
-    &apos;, &apos; + TEXT(TotalExceptionLogEntries__c) + &apos; exception(s)&apos;
+    &apos;, &apos; + TEXT(TotalLogEntriesWithERRORLoggingLevel__c) + &apos; exception(s)&apos;
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Summary</label>

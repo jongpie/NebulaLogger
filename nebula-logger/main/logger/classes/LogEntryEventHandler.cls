@@ -42,7 +42,6 @@ public without sharing class LogEntryEventHandler {
         Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
 
         LOG.ApiVersion__c = logEntryEvent.ApiVersion__c;
-        LOG.ContextThemeDisplayed__c = logEntryEvent.ContextThemeDisplayed__c;
         LOG.Locale__c = logEntryEvent.Locale__c;
         LOG.LoggedBy__c = logEntryEvent.CreatedById;
         LOG.LoginDomain__c = logEntryEvent.LoginDomain__c;
@@ -59,6 +58,7 @@ public without sharing class LogEntryEventHandler {
         LOG.SessionType__c = logEntryEvent.SessionType__c;
         LOG.SourceIp__c = logEntryEvent.SourceIp__c;
         LOG.SystemMode__c = logEntryEvent.SystemMode__c;
+        LOG.ThemeDisplayed__c = logEntryEvent.ThemeDisplayed__c;
         LOG.TimeZoneId__c = logEntryEvent.TimeZoneId__c;
         LOG.TimeZoneName__c = logEntryEvent.TimeZoneName__c;
         LOG.TransactionId__c = logEntryEvent.TransactionId__c;
@@ -82,13 +82,6 @@ public without sharing class LogEntryEventHandler {
 
         for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) Trigger.new) {
             LogEntry__c logEntry = new LogEntry__c(
-                ContextIsLightningComponent__c = logEntryEvent.ContextIsLightningComponent__c,
-                ContextIsTriggerExecuting__c = logEntryEvent.ContextIsTriggerExecuting__c,
-                ContextIsVisualforce__c = logEntryEvent.ContextIsVisualforce__c,
-                ContextLightningComponentName__c = logEntryEvent.ContextLightningComponentName__c,
-                ContextTriggerOperationType__c = logEntryEvent.ContextTriggerOperationType__c,
-                ContextTriggerSObjectType__c = logEntryEvent.ContextTriggerSObjectType__c,
-                ContextVisualforcePage__c = logEntryEvent.ContextVisualforcePage__c,
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,
@@ -134,18 +127,10 @@ public without sharing class LogEntryEventHandler {
                 RecordJson__c = logEntryEvent.RecordJson__c,
                 StackTrace__c = logEntryEvent.StackTrace__c,
                 Timestamp__c = logEntryEvent.Timestamp__c,
-                Type__c = logEntryEvent.Type__c
+                TriggerIsExecuting__c = logEntryEvent.TriggerIsExecuting__c,
+                TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,
+                TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
             );
-
-            if (logEntry.ContextLightningComponentName__c != null) {
-                logEntry.Context__c = 'Component';
-            } else if (logEntry.FlowName__c != null) {
-                logEntry.Context__c = 'Flow';
-            } else if (logEntry.ContextIsTriggerExecuting__c) {
-                logEntry.Context__c = 'Trigger';
-            } else if (logEntry.ContextIsVisualforce__c) {
-                logEntry.Context__c = 'Visualforce';
-            }
 
             this.logEntries.add(logEntry);
 
