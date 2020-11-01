@@ -11,11 +11,14 @@ global without sharing class LogEntryEventBuilder {
 
     private final LogEntryEvent__e logEntryEvent;
 
+    private LoggingLevel loggingLevel;
     private Boolean shouldSave;
     private Boolean userSessionDetailsAreSet = false;
 
     global LogEntryEventBuilder(LoggingLevel loggingLevel) {
+        this.loggingLevel = loggingLevel;
         this.shouldSave = Logger.isEnabled(loggingLevel);
+
         if (!this.shouldSave) {
             return;
         }
@@ -54,6 +57,12 @@ global without sharing class LogEntryEventBuilder {
     global LogEntryEventBuilder setMessage(String message) {
         if (!this.shouldSave) {
             return this;
+        }
+
+        // When running as unmanaged code, auto-call System.debug
+        // System.debug is useless in managed packages, so don't bother when namespaced
+        if (NAMESPACE_PREFIX == null) {
+            System.debug(this.loggingLevel, message);
         }
 
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
