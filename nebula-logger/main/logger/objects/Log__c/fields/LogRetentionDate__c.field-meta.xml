@@ -9,7 +9,7 @@ It defaults to 1 week after creation (TODAY + 7), but the date can be set manual
     <inlineHelpText>The date that this log can be automatically deleted by the batch job LogBatchPurger.</inlineHelpText>
     <label>Log Retention Date</label>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
+    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Date</type>

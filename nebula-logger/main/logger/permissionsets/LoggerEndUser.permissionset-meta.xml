@@ -409,12 +409,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.EntriesSummary__c</field>
+        <field>Log__c.Locale__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.Locale__c</field>
+        <field>Log__c.LogEntriesSummary__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
