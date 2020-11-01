@@ -25,11 +25,15 @@
                 <behavior>Readonly</behavior>
                 <field>LoggedByUsernameLink__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Timestamp__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>Timestamp__c</field>
+                <field>LoggingLevelWithImage__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -48,10 +52,6 @@
         <editHeading>true</editHeading>
         <label>Message Information</label>
         <layoutColumns>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>LoggingLevelWithImage__c</field>
-            </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Message__c</field>
