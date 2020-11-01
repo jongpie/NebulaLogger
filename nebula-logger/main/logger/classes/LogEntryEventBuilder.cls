@@ -85,10 +85,6 @@ global without sharing class LogEntryEventBuilder {
             this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
         }
 
-        if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c) {
-            Logger.saveLog();
-        }
-
         return this;
     }
 
