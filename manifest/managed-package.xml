@@ -107,7 +107,6 @@
         <members>LogEntry__c.ExceptionMessage__c</members>
         <members>LogEntry__c.ExceptionStackTrace__c</members>
         <members>LogEntry__c.ExceptionType__c</members>
-        <members>LogEntry__c.FlowName__c</members>
         <members>LogEntry__c.HasException__c</members>
         <members>LogEntry__c.HasExceptionStackTrace__c</members>
         <members>LogEntry__c.HasRecordId__c</members>
@@ -246,7 +245,6 @@
         <members>LogEntryEvent__e.TriggerOperationType__c</members>
         <members>LogEntryEvent__e.TriggerOperationType__c</members>
         <members>LogEntryEvent__e.TriggerSObjectType__c</members>
-        <members>LogEntryEvent__e.Type__c</members>
         <members>LogEntryEvent__e.UserLoggingLevel__c</members>
         <members>LogEntryEvent__e.UserLoggingLevelOrdinal__c</members>
         <members>LogEntryEvent__e.UserRoleId__c</members>
