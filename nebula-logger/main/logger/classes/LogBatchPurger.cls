@@ -11,8 +11,10 @@ global without sharing class LogBatchPurger implements Database.Batchable<SObjec
         // ...so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
 
-        Logger.info('Starting LogBatchPurger job');
-        Logger.saveLog();
+        if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+            Logger.info('Starting LogBatchPurger job');
+            Logger.saveLog();
+        }
 
         return Database.getQueryLocator(
             [
@@ -27,8 +29,10 @@ global without sharing class LogBatchPurger implements Database.Batchable<SObjec
         this.totalProcessedRecords += scope.size();
 
         try {
-            Logger.setParentLogTransactionId(this.originalTransactionId);
-            Logger.info(new LogMessage('Starting deletion of {0} records', scope.size()));
+            if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+                Logger.setParentLogTransactionId(this.originalTransactionId);
+                Logger.info(new LogMessage('Starting deletion of {0} records', scope.size()));
+            }
 
             List<SObject> recordsToDelete = new List<SObject>();
             for (Log__c log : scope) {
@@ -39,17 +43,26 @@ global without sharing class LogBatchPurger implements Database.Batchable<SObjec
             delete recordsToDelete;
             Database.emptyRecycleBin(recordsToDelete);
         } catch (Exception apexException) {
-            Logger.error('Error deleting logs', apexException);
+            if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+                Logger.error('Error deleting logs', apexException);
+            }
         } finally {
-            Logger.saveLog();
+            if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+                Logger.saveLog();
+            }
         }
     }
 
     global void finish(Database.BatchableContext batchableContext) {
-        Logger.setParentLogTransactionId(this.originalTransactionId);
-        Logger.info(
-            new LogMessage('Finished LogBatchPurger job, {0} total log records processed', this.totalProcessedRecords)
-        );
-        Logger.saveLog();
+        if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+            Logger.setParentLogTransactionId(this.originalTransactionId);
+            Logger.info(
+                new LogMessage(
+                    'Finished LogBatchPurger job, {0} total log records processed',
+                    this.totalProcessedRecords
+                )
+            );
+            Logger.saveLog();
+        }
     }
 }
