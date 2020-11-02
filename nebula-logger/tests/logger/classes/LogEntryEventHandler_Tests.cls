@@ -28,6 +28,7 @@ private class LogEntryEventHandler_Tests {
                 Id,
                 Locale__c,
                 LoggedBy__c,
+                LoggedByUsername__c,
                 LoginDomain__c,
                 LoginHistoryId__c,
                 LoginType__c,
