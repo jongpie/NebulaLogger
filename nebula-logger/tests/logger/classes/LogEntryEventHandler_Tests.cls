@@ -14,7 +14,8 @@ private class LogEntryEventHandler_Tests {
                 Profile.Name,
                 Profile.UserLicenseId,
                 Profile.UserLicense.LicenseDefinitionKey,
-                Profile.UserLicense.Name
+                Profile.UserLicense.Name,
+                Username
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
@@ -108,7 +109,7 @@ private class LogEntryEventHandler_Tests {
                         StackTrace__c,
                         Timestamp__c,
                         TriggerIsExecuting__c,
-                        TriggerOperationType__c,
+                        //TriggerOperationType__c,
                         TriggerSObjectType__c
                     FROM LogEntries__r
                 )
@@ -145,6 +146,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         System.assertEquals(logEntryEvent.UserLoggingLevel__c, log.UserLoggingLevel__c);
         System.assertEquals(logEntryEvent.UserLoggingLevelOrdinal__c, log.UserLoggingLevelOrdinal__c);
+        System.assertEquals(currentUser.Username, log.LoggedByUsername__c);
         System.assertEquals(currentUser.UserRoleId, log.UserRoleId__c);
         System.assertEquals(currentUser.UserRoleId == null ? null : currentUser.UserRole.Name, log.UserRoleName__c);
         System.assertEquals(logEntryEvent.UserType__c, log.UserType__c);

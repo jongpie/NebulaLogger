@@ -243,11 +243,13 @@ public without sharing class LogEntryEventHandler {
                 Profile.Name,
                 Profile.UserLicenseId,
                 Profile.UserLicense.LicenseDefinitionKey,
-                Profile.UserLicense.Name
+                Profile.UserLicense.Name,
+                Username
             FROM User
             WHERE Id = :LOG.LoggedBy__c
         ];
 
+        LOG.LoggedByUsername__c = logUser.Username;
         LOG.ProfileName__c = logUser.Profile.Name;
         LOG.UserLicenseDefinitionKey__c = logUser.Profile.UserLicense.LicenseDefinitionKey;
         LOG.UserLicenseId__c = logUser.Profile.UserLicenseId;
