@@ -110,7 +110,7 @@ private class LogEntryEventHandler_Tests {
                         StackTrace__c,
                         Timestamp__c,
                         TriggerIsExecuting__c,
-                        //TriggerOperationType__c,
+                        TriggerOperationType__c,
                         TriggerSObjectType__c
                     FROM LogEntries__r
                 )
