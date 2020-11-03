@@ -230,14 +230,14 @@
         <members>Log__c.ThemeDisplayed__c</members>
         <members>Log__c.TimeZoneId__c</members>
         <members>Log__c.TimeZoneName__c</members>
-        <members>Log__c.TotalLogEntriesWithDEBUGLoggingLevel__c</members>
-        <members>Log__c.TotalLogEntriesWithERRORLoggingLevel__c</members>
-        <members>Log__c.TotalLogEntriesWithFINELoggingLevel__c</members>
-        <members>Log__c.TotalLogEntriesWithFINERLoggingLevel__c</members>
-        <members>Log__c.TotalLogEntriesWithFINESTLoggingLevel__c</members>
-        <members>Log__c.TotalLogEntriesWithINFOLoggingLevel__c</members>
-        <members>Log__c.TotalLogEntriesWithWARNLoggingLevel__c</members>
+        <members>Log__c.TotalDEBUGLogEntries__c</members>
+        <members>Log__c.TotalERRORLogEntries__c</members>
+        <members>Log__c.TotalFINELogEntries__c</members>
+        <members>Log__c.TotalFINERLogEntries__c</members>
+        <members>Log__c.TotalFINESTLogEntries__c</members>
+        <members>Log__c.TotalINFOLogEntries__c</members>
         <members>Log__c.TotalLogEntries__c</members>
+        <members>Log__c.TotalWARNLogEntries__c</members>
         <members>Log__c.TransactionId__c</members>
         <members>Log__c.UserLicenseDefinitionKey__c</members>
         <members>Log__c.UserLicenseId__c</members>

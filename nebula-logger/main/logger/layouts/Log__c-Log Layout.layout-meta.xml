@@ -31,10 +31,6 @@
                 <behavior>Edit</behavior>
                 <field>LogRetentionDate__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ParentLog__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -43,31 +39,15 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithERRORLoggingLevel__c</field>
+                <field>TotalERRORLogEntries__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithWARNLoggingLevel__c</field>
+                <field>TotalWARNLogEntries__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithINFOLoggingLevel__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithDEBUGLoggingLevel__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithFINELoggingLevel__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithFINERLoggingLevel__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>TotalLogEntriesWithFINESTLoggingLevel__c</field>
+                <behavior>Edit</behavior>
+                <field>ParentLog__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>

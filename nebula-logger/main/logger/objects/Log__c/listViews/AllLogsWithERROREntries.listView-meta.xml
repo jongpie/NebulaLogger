@@ -6,12 +6,12 @@
     <columns>StartTime__c</columns>
     <columns>DurationInSeconds__c</columns>
     <columns>TotalLogEntries__c</columns>
-    <columns>TotalLogEntriesWithERRORLoggingLevel__c</columns>
+    <columns>TotalERRORLogEntries__c</columns>
     <columns>UserLoggingLevel__c</columns>
     <columns>TransactionId__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
-        <field>TotalLogEntriesWithERRORLoggingLevel__c</field>
+        <field>TotalERRORLogEntries__c</field>
         <operation>greaterThan</operation>
         <value>0</value>
     </filters>

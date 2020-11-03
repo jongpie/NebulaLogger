@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>AllLogsWithERRORorWARNEntries</fullName>
     <booleanFilter>1 OR 2</booleanFilter>
@@ -7,18 +7,18 @@
     <columns>StartTime__c</columns>
     <columns>DurationInSeconds__c</columns>
     <columns>TotalLogEntries__c</columns>
-    <columns>TotalLogEntriesWithERRORLoggingLevel__c</columns>
-    <columns>TotalLogEntriesWithWARNLoggingLevel__c</columns>
+    <columns>TotalERRORLogEntries__c</columns>
+    <columns>TotalWARNLogEntries__c</columns>
     <columns>UserLoggingLevel__c</columns>
     <columns>TransactionId__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
-        <field>TotalLogEntriesWithERRORLoggingLevel__c</field>
+        <field>TotalERRORLogEntries__c</field>
         <operation>greaterThan</operation>
         <value>0</value>
     </filters>
     <filters>
-        <field>TotalLogEntriesWithWARNLoggingLevel__c</field>
+        <field>TotalWARNLogEntries__c</field>
         <operation>greaterThan</operation>
         <value>0</value>
     </filters>

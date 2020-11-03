@@ -170,7 +170,7 @@
     <searchLayouts>
         <customTabListAdditionalFields>TransactionId__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalLogEntries__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>TotalLogEntriesWithERRORLoggingLevel__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>TotalERRORLogEntries__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
         <customTabListAdditionalFields>UserLoggingLevel__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
@@ -184,24 +184,24 @@
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>UserLoggingLevel__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TotalLogEntries__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>TotalLogEntriesWithERRORLoggingLevel__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TotalERRORLogEntries__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TransactionId__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>OWNER.ALIAS</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>UserLoggingLevel__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>TotalLogEntriesWithERRORLoggingLevel__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TotalERRORLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <massQuickActions>ChangeLogRetentionDate</massQuickActions>
         <searchFilterFields>NAME</searchFilterFields>
         <searchFilterFields>LoggedBy__c</searchFilterFields>
         <searchFilterFields>TotalLogEntries__c</searchFilterFields>
-        <searchFilterFields>TotalLogEntriesWithERRORLoggingLevel__c</searchFilterFields>
+        <searchFilterFields>TotalERRORLogEntries__c</searchFilterFields>
         <searchFilterFields>UserLoggingLevel__c</searchFilterFields>
         <searchFilterFields>CREATED_DATE</searchFilterFields>
         <searchResultsAdditionalFields>TransactionId__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>UserLoggingLevel__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>TotalLogEntries__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>TotalLogEntriesWithERRORLoggingLevel__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TotalERRORLogEntries__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>

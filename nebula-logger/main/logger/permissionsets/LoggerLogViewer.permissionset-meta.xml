@@ -578,42 +578,42 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithDEBUGLoggingLevel__c</field>
+        <field>Log__c.TotalDEBUGLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithERRORLoggingLevel__c</field>
+        <field>Log__c.TotalERRORLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithFINELoggingLevel__c</field>
+        <field>Log__c.TotalFINELogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithFINERLoggingLevel__c</field>
+        <field>Log__c.TotalFINERLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithFINESTLoggingLevel__c</field>
+        <field>Log__c.TotalFINESTLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithINFOLoggingLevel__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Log__c.TotalLogEntriesWithWARNLoggingLevel__c</field>
+        <field>Log__c.TotalINFOLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.TotalLogEntries__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TotalWARNLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

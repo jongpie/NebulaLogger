@@ -4,14 +4,14 @@
     <externalId>false</externalId>
     <formula>TEXT(TotalLogEntries__c) + &apos; total entries&apos;
 + IF(
-    TotalLogEntriesWithERRORLoggingLevel__c = 0,
+    TotalERRORLogEntries__c = 0,
     &apos;&apos;,
-    &apos;, &apos; + TEXT(TotalLogEntriesWithERRORLoggingLevel__c) + &apos; error(s)&apos;
+    &apos;, &apos; + TEXT(TotalERRORLogEntries__c) + &apos; error(s)&apos;
 )
 + IF(
-    TotalLogEntriesWithWARNLoggingLevel__c = 0,
+    TotalWARNLogEntries__c = 0,
     &apos;&apos;,
-    &apos;, &apos; + TEXT(TotalLogEntriesWithWARNLoggingLevel__c) + &apos; warning(s)&apos;
+    &apos;, &apos; + TEXT(TotalWARNLogEntries__c) + &apos; warning(s)&apos;
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Summary</label>
