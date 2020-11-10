@@ -4,8 +4,6 @@
  *************************************************************************************************/
 global without sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
-    private static final String ENTRY_TYPE_DIAGNOSTIC = 'Diagnostic';
-    private static final String ENTRY_TYPE_EXCEPTION = 'Exception';
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
     private static final String ORIGIN_TYPE_COMPONENT = 'Component';
@@ -13,11 +11,14 @@ global without sharing class LogEntryEventBuilder {
 
     private final LogEntryEvent__e logEntryEvent;
 
+    private LoggingLevel loggingLevel;
     private Boolean shouldSave;
     private Boolean userSessionDetailsAreSet = false;
 
     global LogEntryEventBuilder(LoggingLevel loggingLevel) {
+        this.loggingLevel = loggingLevel;
         this.shouldSave = Logger.isEnabled(loggingLevel);
+
         if (!this.shouldSave) {
             return;
         }
@@ -26,9 +27,6 @@ global without sharing class LogEntryEventBuilder {
 
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = API_VERSION,
-            ContextIsTriggerExecuting__c = Trigger.isExecuting,
-            ContextTriggerOperationType__c = Trigger.operationType == null ? null : Trigger.operationType.name(),
-            ContextTriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType()),
             LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries(),
             LimitsAsyncCallsUsed__c = Limits.getAsyncCalls(),
             LimitsCalloutsUsed__c = Limits.getCallouts(),
@@ -48,7 +46,9 @@ global without sharing class LogEntryEventBuilder {
             LoggingLevelOrdinal__c = loggingLevel.ORDINAL(),
             OriginType__c = ORIGIN_TYPE_APEX,
             Timestamp__c = System.now(),
-            Type__c = ENTRY_TYPE_DIAGNOSTIC
+            TriggerIsExecuting__c = Trigger.isExecuting,
+            TriggerOperationType__c = Trigger.operationType == null ? null : Trigger.operationType.name(),
+            TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
         );
 
         this.parseStackTrace(stackTraceException.getStackTraceString());
@@ -57,6 +57,12 @@ global without sharing class LogEntryEventBuilder {
     global LogEntryEventBuilder setMessage(String message) {
         if (!this.shouldSave) {
             return this;
+        }
+
+        // When running as unmanaged code, auto-call System.debug
+        // System.debug is useless in managed packages, so don't bother when namespaced
+        if (NAMESPACE_PREFIX == null) {
+            System.debug(this.loggingLevel, message);
         }
 
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
@@ -82,15 +88,10 @@ global without sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.ExceptionMessage__c = apexException.getMessage();
         this.logEntryEvent.ExceptionType__c = apexException.getTypeName();
-        this.logEntryEvent.Type__c = ENTRY_TYPE_EXCEPTION;
 
         // Stack traces are not returned for managed packages
         if (isValidStackTrace(apexException.getStackTraceString())) {
             this.logEntryEvent.ExceptionStackTrace__c = apexException.getStackTraceString();
-        }
-
-        if (LoggerSettings__c.getInstance().AutoSaveExceptionEntries__c) {
-            Logger.saveLog();
         }
 
         return this;
@@ -206,8 +207,6 @@ global without sharing class LogEntryEventBuilder {
         Map<String, String> sessionMap = this.getSessionMap();
         LoggingLevel userLoggingLevel = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
-        this.logEntryEvent.ContextIsVisualforce__c = ApexPages.currentPage() != null;
-        this.logEntryEvent.ContextVisualforcePage__c = getVisualforcePageName();
         this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
         this.logEntryEvent.LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls();
         this.logEntryEvent.LimitsCalloutsMax__c = Limits.getLimitCallouts();
@@ -242,7 +241,7 @@ global without sharing class LogEntryEventBuilder {
         this.logEntryEvent.UserType__c = UserInfo.getUserType();
 
         if (this.logEntryEvent.SessionType__c != 'Oauth2') {
-            this.logEntryEvent.ContextThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
+            this.logEntryEvent.ThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
         }
     }
 

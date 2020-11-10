@@ -3,7 +3,7 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 
-global without sharing class FlowLogRepo {
+public without sharing class FlowLogRepo {
     /**
      * Returns the current Log created to the Flow so that you can redirect a user to the Log record when required
      *
@@ -15,7 +15,7 @@ global without sharing class FlowLogRepo {
         label='Retrieve Current Log ID'
         description='Returns the created log to aid in record redirects if desired.'
     )
-    global static List<Log__c> getLogIds() {
+    public static List<Log__c> getLogIds() {
         List<Log__c> logs = [SELECT Id FROM Log__c WHERE TransactionId__c = :Logger.getTransactionId() LIMIT 1];
         return logs.isEmpty() ? null : logs;
     }

@@ -5,6 +5,6 @@
     <fields>Log__c</fields>
     <fields>LoggedByUsernameLink__c</fields>
     <fields>Timestamp__c</fields>
-    <fields>TypeWithImage__c</fields>
+    <fields>LoggingLevelWithImage__c</fields>
     <label>Log Entry Compact Layout</label>
 </CompactLayout>

@@ -167,15 +167,15 @@
     <pluralLabel>Log Entries</pluralLabel>
     <searchLayouts>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
         <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>TypeWithImage__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>LoggingLevelWithImage__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Message__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Log__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Timestamp__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Type__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>LoggingLevelWithImage__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Message__c</lookupPhoneDialogsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>

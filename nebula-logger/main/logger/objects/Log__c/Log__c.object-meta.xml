@@ -170,43 +170,38 @@
     <searchLayouts>
         <customTabListAdditionalFields>TransactionId__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalLogEntries__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>TotalDiagnosticLogEntries__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>TotalExceptionLogEntries__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>TotalERRORLogEntries__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
         <customTabListAdditionalFields>UserLoggingLevel__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
         <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
-        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
-        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
         <lookupDialogsAdditionalFields>TransactionId__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>UserLoggingLevel__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TotalLogEntries__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>TotalDiagnosticLogEntries__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TotalERRORLogEntries__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TransactionId__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>OWNER.ALIAS</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>UserLoggingLevel__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>TotalDiagnosticLogEntries__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>TotalExceptionLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TotalERRORLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <massQuickActions>ChangeLogRetentionDate</massQuickActions>
         <searchFilterFields>NAME</searchFilterFields>
         <searchFilterFields>LoggedBy__c</searchFilterFields>
-        <searchFilterFields>TotalDiagnosticLogEntries__c</searchFilterFields>
         <searchFilterFields>TotalLogEntries__c</searchFilterFields>
-        <searchFilterFields>TotalExceptionLogEntries__c</searchFilterFields>
+        <searchFilterFields>TotalERRORLogEntries__c</searchFilterFields>
         <searchFilterFields>UserLoggingLevel__c</searchFilterFields>
         <searchFilterFields>CREATED_DATE</searchFilterFields>
         <searchResultsAdditionalFields>TransactionId__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>UserLoggingLevel__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>TotalLogEntries__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>TotalDiagnosticLogEntries__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>TotalExceptionLogEntries__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TotalERRORLogEntries__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>

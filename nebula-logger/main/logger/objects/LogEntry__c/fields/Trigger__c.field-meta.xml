@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ContextTriggerSObjectType__c</fullName>
+    <fullName>Trigger__c</fullName>
     <externalId>false</externalId>
-    <label>Trigger SObject Type</label>
-    <length>255</length>
+    <formula>IF(
+    TriggerIsExecuting__c,
+    TEXT(TriggerSObjectType__c) + &apos;.&apos; + TEXT(TriggerOperationType__c),
+    null
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Trigger</label>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>

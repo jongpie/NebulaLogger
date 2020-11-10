@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>EntriesSummary__c</fullName>
+    <fullName>LogEntriesSummary__c</fullName>
     <externalId>false</externalId>
     <formula>TEXT(TotalLogEntries__c) + &apos; total entries&apos;
 + IF(
-    TotalExceptionLogEntries__c = 0,
+    TotalERRORLogEntries__c = 0,
     &apos;&apos;,
-    &apos;, &apos; + TEXT(TotalExceptionLogEntries__c) + &apos; exception(s)&apos;
+    &apos;, &apos; + TEXT(TotalERRORLogEntries__c) + &apos; error(s)&apos;
+)
++ IF(
+    TotalWARNLogEntries__c = 0,
+    &apos;&apos;,
+    &apos;, &apos; + TEXT(TotalWARNLogEntries__c) + &apos; warning(s)&apos;
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Summary</label>

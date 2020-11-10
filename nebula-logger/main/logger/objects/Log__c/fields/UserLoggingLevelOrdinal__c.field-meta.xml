@@ -3,7 +3,7 @@
     <fullName>UserLoggingLevelOrdinal__c</fullName>
     <externalId>false</externalId>
     <label>User Logging Level Ordinal</label>
-    <precision>3</precision>
+    <precision>2</precision>
     <required>false</required>
     <scale>0</scale>
     <trackFeedHistory>false</trackFeedHistory>

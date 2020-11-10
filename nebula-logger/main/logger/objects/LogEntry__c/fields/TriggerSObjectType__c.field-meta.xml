@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Context__c</fullName>
+    <fullName>TriggerSObjectType__c</fullName>
     <externalId>false</externalId>
-    <label>Context</label>
+    <label>Trigger Object</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
             <value>
-                <fullName>Component</fullName>
+                <fullName>Account</fullName>
                 <default>false</default>
-                <label>Component</label>
+                <label>Account</label>
             </value>
             <value>
-                <fullName>Flow</fullName>
+                <fullName>Case</fullName>
                 <default>false</default>
-                <label>Flow</label>
+                <label>Case</label>
             </value>
             <value>
-                <fullName>Trigger</fullName>
+                <fullName>Lead</fullName>
                 <default>false</default>
-                <label>Trigger</label>
+                <label>Lead</label>
             </value>
             <value>
-                <fullName>Visualforce</fullName>
+                <fullName>User</fullName>
                 <default>false</default>
-                <label>Visualforce</label>
+                <label>User</label>
             </value>
         </valueSetDefinition>
     </valueSet>
