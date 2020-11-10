@@ -285,6 +285,7 @@
         <members>Log__c.AllBatchLogs</members>
         <members>Log__c.AllLogs</members>
         <members>Log__c.AllLogsWithERROREntries</members>
+        <members>Log__c.AllLogsWithERRORorWARNEntries</members>
         <members>Log__c.AllRESTLogs</members>
         <members>Log__c.MyAssignedLogs</members>
         <members>Log__c.MyGeneratedLogs</members>
