@@ -249,17 +249,11 @@ global without sharing class LogEntryEventBuilder {
         // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
         // run by the Automated Process user - attempting to access Auth.SessionManagement
         // methods as that user throws an UNCATCHABLE error. Let's sidestep that.
-        if (
-            Test.isRunningTest() ||
-            // no System class method for this one, Winter '21 to the rescue!
-            Logger.getCurrentQuiddity() == Quiddity.INVOCABLE_ACTION ||
-            System.isBatch() ||
-            System.isQueueable() ||
-            System.isScheduled() ||
-            System.isFuture()
-        ) {
-            return new Map<String, String>{ 'SessionId' => UserInfo.getSessionId() };
+        String potentialSession = UserInfo.getSessionId();
+        if (String.isBlank(potentialSession) || Test.isRunningTest()) {
+            return new Map<String, String>{ 'SessionId' => potentialSession };
         }
+
         return Auth.SessionManagement.getCurrentSession();
     }
 
