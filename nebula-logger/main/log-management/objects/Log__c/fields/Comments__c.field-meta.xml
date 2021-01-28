@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Comments</label>
     <length>4000</length>
-    <trackFeedHistory>false</trackFeedHistory>
+    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
