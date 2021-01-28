@@ -21,15 +21,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>DurationInSeconds__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
                 <field>SystemModeSummary__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>LogRetentionDate__c</field>
+                <behavior>Readonly</behavior>
+                <field>TotalLimitsCpuTimeUsed__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
