@@ -3,7 +3,6 @@
     <fullName>MyGeneratedLogs</fullName>
     <columns>NAME</columns>
     <columns>StartTime__c</columns>
-    <columns>TotalLimitsCpuTimeUsed__c</columns>
     <columns>TotalLogEntries__c</columns>
     <columns>TotalERRORLogEntries__c</columns>
     <columns>TransactionId__c</columns>

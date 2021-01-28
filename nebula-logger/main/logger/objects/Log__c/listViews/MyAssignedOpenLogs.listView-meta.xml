@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>MyAssignedLogs</fullName>
+    <fullName>MyAssignedOpenLogs</fullName>
     <columns>NAME</columns>
     <columns>LoggedByUsernameLink__c</columns>
     <columns>StartTime__c</columns>
@@ -11,5 +11,10 @@
     <columns>Priority__c</columns>
     <columns>TransactionId__c</columns>
     <filterScope>Mine</filterScope>
-    <label>My Assigned Logs</label>
+    <filters>
+        <field>IsClosed__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <label>My Assigned Open Logs</label>
 </ListView>
