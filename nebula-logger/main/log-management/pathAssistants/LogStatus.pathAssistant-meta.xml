@@ -3,7 +3,7 @@
     <active>true</active>
     <entityName>Log__c</entityName>
     <fieldName>Status__c</fieldName>
-    <masterLabel>Log</masterLabel>
+    <masterLabel>Log Status</masterLabel>
     <pathAssistantSteps>
         <picklistValueName>Done</picklistValueName>
     </pathAssistantSteps>
