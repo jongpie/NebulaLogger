@@ -4,7 +4,7 @@
     <description>The Network ID of the Community user&apos;s site. Set with Network.getNetworkId()</description>
     <externalId>true</externalId>
     <inlineHelpText>The Network ID of the user&apos;s Community site.</inlineHelpText>
-    <label>Community Network ID</label>
+    <label>Site Network ID</label>
     <length>18</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>

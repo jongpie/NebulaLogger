@@ -4,7 +4,7 @@
     <description>The UrlPathPrefix is a unique string at the end of the URL for this community. For example, in the community URL CommunitiesSubdomainName.force.com/customers, customers is the UrlPathPrefix.</description>
     <externalId>false</externalId>
     <inlineHelpText>The UrlPathPrefix is a unique string at the end of the URL for this community. For example, in the community URL CommunitiesSubdomainName.force.com/customers, customers is the UrlPathPrefix.</inlineHelpText>
-    <label>Community URL Path Prefix</label>
+    <label>Site URL Path Prefix</label>
     <length>255</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
