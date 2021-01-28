@@ -13,12 +13,6 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Critical</fullName>
-                <color>#000000</color>
-                <default>false</default>
-                <label>Critical</label>
-            </value>
-            <value>
                 <fullName>High</fullName>
                 <color>#FF0000</color>
                 <default>false</default>
@@ -27,13 +21,13 @@
             <value>
                 <fullName>Medium</fullName>
                 <color>#FFCC33</color>
-                <default>true</default>
+                <default>false</default>
                 <label>Medium</label>
             </value>
             <value>
                 <fullName>Low</fullName>
                 <color>#33CC00</color>
-                <default>false</default>
+                <default>true</default>
                 <label>Low</label>
             </value>
         </valueSetDefinition>
