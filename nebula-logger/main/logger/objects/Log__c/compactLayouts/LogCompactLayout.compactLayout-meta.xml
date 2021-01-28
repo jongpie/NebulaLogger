@@ -3,10 +3,11 @@
     <fullName>LogCompactLayout</fullName>
     <fields>Name</fields>
     <fields>LoggedByUsernameLink__c</fields>
-    <fields>UserLoggingLevel__c</fields>
-    <fields>LogEntriesSummary__c</fields>
     <fields>StartTime__c</fields>
-    <fields>TransactionId__c</fields>
+    <fields>LogEntriesSummary__c</fields>
+    <fields>OwnerId</fields>
+    <fields>Status__c</fields>
+    <fields>Priority__c</fields>
     <fields>ParentLog__c</fields>
     <label>Log Compact Layout</label>
 </CompactLayout>

@@ -175,11 +175,9 @@
         <customTabListAdditionalFields>UserLoggingLevel__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
-        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
-        <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
         <lookupDialogsAdditionalFields>TransactionId__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>UserLoggingLevel__c</lookupDialogsAdditionalFields>
@@ -190,7 +188,7 @@
         <lookupPhoneDialogsAdditionalFields>UserLoggingLevel__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalERRORLogEntries__c</lookupPhoneDialogsAdditionalFields>
-        <massQuickActions>ChangeLogRetentionDate</massQuickActions>
+        <massQuickActions>Manage</massQuickActions>
         <searchFilterFields>NAME</searchFilterFields>
         <searchFilterFields>LoggedBy__c</searchFilterFields>
         <searchFilterFields>TotalLogEntries__c</searchFilterFields>
