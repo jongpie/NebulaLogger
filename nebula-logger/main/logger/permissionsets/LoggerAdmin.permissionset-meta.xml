@@ -431,12 +431,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.DurationInSeconds__c</field>
+        <field>Log__c.ClosedDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.Comments__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.EndTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.IsClosed__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -560,6 +570,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.Priority__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.ProfileId__c</field>
         <readable>true</readable>
@@ -597,6 +612,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.StartTime__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.Status__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -652,6 +672,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.TotalINFOLogEntries__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TotalLimitsCpuTimeUsed__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -736,10 +761,10 @@
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
-        <allowDelete>false</allowDelete>
-        <allowEdit>false</allowEdit>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>Log__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>

@@ -399,12 +399,22 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.DurationInSeconds__c</field>
+        <field>Log__c.ClosedDate__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.Comments__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.EndTime__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.IsClosed__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -529,6 +539,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.Priority__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.ProfileId__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -565,6 +580,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.StartTime__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.Status__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -620,6 +640,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.TotalINFOLogEntries__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TotalLimitsCpuTimeUsed__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
