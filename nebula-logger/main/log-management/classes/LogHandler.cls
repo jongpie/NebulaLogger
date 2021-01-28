@@ -7,9 +7,15 @@ public without sharing class LogHandler {
 
     private static Map<String, LogStatus__mdt> getLogStatuses() {
         Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
-        for (LogStatus__mdt logStatus : [SELECT Id, MasterLabel, IsClosed__c FROM LogStatus__mdt]) {
+
+        for (LogStatus__mdt logStatus : [
+            SELECT Id, MasterLabel, IsClosed__c
+            FROM LogStatus__mdt
+            WHERE IsActive__c = TRUE
+        ]) {
             logStatusByName.put(logStatus.MasterLabel, logStatus);
         }
+
         return logStatusByName;
     }
 

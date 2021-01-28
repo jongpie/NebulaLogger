@@ -3,7 +3,10 @@
     <fullName>All</fullName>
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
+    <columns>IsActive__c</columns>
     <columns>IsClosed__c</columns>
+    <columns>NamespacePrefix</columns>
+    <columns>IsProtected</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
     <language>en_US</language>
