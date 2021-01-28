@@ -15,7 +15,7 @@
     <filters>
         <field>IsClosed__c</field>
         <operation>equals</operation>
-        <value>0</value>
+        <value>1</value>
     </filters>
     <label>All Closed Logs</label>
 </ListView>
