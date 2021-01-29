@@ -9,7 +9,7 @@ public without sharing class LogHandler {
         Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
 
         for (LogStatus__mdt logStatus : [
-            SELECT Id, MasterLabel, IsClosed__c
+            SELECT MasterLabel, IsClosed__c
             FROM LogStatus__mdt
             WHERE IsActive__c = TRUE
         ]) {
@@ -53,8 +53,10 @@ public without sharing class LogHandler {
             Log__c oldLog = oldLogsById.get(log.Id);
 
             if (log.IsClosed__c == false) {
+                log.ClosedBy__c = null;
                 log.ClosedDate__c = null;
             } else if (log.IsClosed__c && oldLog.IsClosed__c == false) {
+                log.ClosedBy__c = UserInfo.getUserId();
                 log.ClosedDate__c = System.now();
             }
         }
