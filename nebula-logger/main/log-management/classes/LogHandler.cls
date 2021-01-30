@@ -3,61 +3,51 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 public without sharing class LogHandler {
-    private static Map<String, LogStatus__mdt> logStatusByName = getLogStatuses();
+    private static final Map<String, LogStatus__mdt> LOG_STATUS_BY_NAME;
 
-    private static Map<String, LogStatus__mdt> getLogStatuses() {
-        Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
+    static {
+        LOG_STATUS_BY_NAME = new Map<String, LogStatus__mdt>();
 
         for (LogStatus__mdt logStatus : [
             SELECT MasterLabel, IsClosed__c
             FROM LogStatus__mdt
             WHERE IsActive__c = TRUE
         ]) {
-            logStatusByName.put(logStatus.MasterLabel, logStatus);
+            LOG_STATUS_BY_NAME.put(logStatus.MasterLabel, logStatus);
         }
-
-        return logStatusByName;
     }
 
     public void execute() {
         List<Log__c> logs = (List<Log__c>) Trigger.new;
         Map<Id, Log__c> oldLogsById = (Map<Id, Log__c>) Trigger.oldMap;
 
-        if (
-            Trigger.operationType == TriggerOperation.BEFORE_INSERT ||
-            Trigger.operationType == TriggerOperation.BEFORE_UPDATE
-        ) {
-            this.setIsClosed(logs);
-        }
-
-        if (Trigger.operationType == TriggerOperation.BEFORE_UPDATE) {
-            this.setClosedDate(logs, oldLogsById);
-            this.setPriority(logs, oldLogsById);
+        switch on Trigger.operationType {
+            when BEFORE_INSERT {
+                this.setClosedStatusFields(logs);
+            }
+            when BEFORE_UPDATE {
+                this.setClosedStatusFields(logs);
+                // Priority logic relies on roll-up fields, so only run on update (after log entries are inserted)
+                this.setPriority(logs, oldLogsById);
+            }
         }
     }
 
-    private void setIsClosed(List<Log__c> logs) {
+    private void setClosedStatusFields(List<Log__c> logs) {
         for (Log__c log : logs) {
-            LogStatus__mdt logStatus = logStatusByName.get(log.Status__c);
-
-            if (logStatus == null) {
-                continue;
+            // Determine if the status is considered closed
+            LogStatus__mdt logStatus = LOG_STATUS_BY_NAME.get(log.Status__c);
+            if (logStatus != null) {
+                log.IsClosed__c = logStatus.IsClosed__c;
             }
 
-            log.IsClosed__c = logStatus.IsClosed__c;
-        }
-    }
-
-    private void setClosedDate(List<Log__c> logs, Map<Id, Log__c> oldLogsById) {
-        for (Log__c log : logs) {
-            Log__c oldLog = oldLogsById.get(log.Id);
-
+            // Now set the Closed By & Date fields based on IsClosed
             if (log.IsClosed__c == false) {
                 log.ClosedBy__c = null;
                 log.ClosedDate__c = null;
-            } else if (log.IsClosed__c && oldLog.IsClosed__c == false) {
-                log.ClosedBy__c = UserInfo.getUserId();
-                log.ClosedDate__c = System.now();
+            } else {
+                log.ClosedBy__c = log.ClosedBy__c == null ? UserInfo.getUserId() : log.ClosedBy__c;
+                log.ClosedDate__c = log.ClosedDate__c == null ? System.now() : log.ClosedDate__c;
             }
         }
     }
