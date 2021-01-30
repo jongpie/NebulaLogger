@@ -4,29 +4,27 @@
  *************************************************************************************************/
 public without sharing class LogEntryHandler {
     public void execute() {
-        // Only run on BEFORE_INSERT & BEFORE_UPDATE
-        if (
-            Trigger.operationType != TriggerOperation.BEFORE_INSERT &&
-            Trigger.operationType != TriggerOperation.BEFORE_UPDATE
-        ) {
-            return;
-        }
-
         List<LogEntry__c> logEntries = (List<LogEntry__c>) Trigger.new;
 
-        if (Trigger.operationType == TriggerOperation.BEFORE_INSERT) {
-            // Only set the record names on initial insert - the RecordName__c field is then...
-            // a snapshot of the record's name at the time that the log entry was created
-            this.setRecordNames(logEntries);
-        }
+        switch on Trigger.operationType {
+            when BEFORE_INSERT {
+                this.setBooleanCheckFields(logEntries);
 
-        // Maintain the checkbox fields on insert & update
-        // Some admins & devs might decide to update/append data in some of the fields...
-        // ...and it conceptually feels weird for these fields to not always be accurate, so keep them up to date
-        this.setBooleanCheckFields(logEntries);
+                // Only set the record names on initial insert - the RecordName__c field is then...
+                // a snapshot of the record's name at the time that the log entry was created
+                this.setRecordNames(logEntries);
+            }
+            when BEFORE_UPDATE {
+                this.setBooleanCheckFields(logEntries);
+            }
+        }
     }
 
     private void setBooleanCheckFields(List<LogEntry__c> logEntries) {
+        // Maintain the checkbox fields on insert & update
+        // Some admins & devs might decide to update/append data in some of the fields...
+        // ...and it conceptually feels weird for these fields to not always be accurate, so keep them up to date
+
         // A formula field can't be used for checking if a long text area field is set/null
         // So, this code handles maintaing some checkbox fields via Apex instead
         for (LogEntry__c logEntry : logEntries) {
