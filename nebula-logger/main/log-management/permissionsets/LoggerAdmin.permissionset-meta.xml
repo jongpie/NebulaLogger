@@ -48,6 +48,14 @@
         <apexClass>Logger_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <customMetadataTypeAccesses>
+        <enabled>true</enabled>
+        <name>LogStatus__mdt</name>
+    </customMetadataTypeAccesses>
+    <customSettingAccesses>
+        <enabled>true</enabled>
+        <name>LoggerSettings__c</name>
+    </customSettingAccesses>
     <description>Provides access to manage logs</description>
     <fieldPermissions>
         <editable>false</editable>
