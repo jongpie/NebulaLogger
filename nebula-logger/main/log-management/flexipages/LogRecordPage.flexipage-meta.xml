@@ -202,7 +202,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Status__c</fieldItem>
+                <fieldItem>Record.Priority__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -211,13 +211,45 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Priority__c</fieldItem>
+                <fieldItem>Record.Status__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-44ddae03-3128-4562-8ce7-349ab68a9570</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ClosedBy__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.IsClosed__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ClosedDate__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.IsClosed__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>

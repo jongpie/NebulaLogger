@@ -5,8 +5,8 @@
     <columns>NAME</columns>
     <columns>LoggedByUsernameLink__c</columns>
     <columns>StartTime__c</columns>
-    <columns>Priority__c</columns>
     <columns>OWNER.ALIAS</columns>
+    <columns>Priority__c</columns>
     <columns>Status__c</columns>
     <columns>TransactionId__c</columns>
     <columns>TotalLimitsCpuTimeUsed__c</columns>

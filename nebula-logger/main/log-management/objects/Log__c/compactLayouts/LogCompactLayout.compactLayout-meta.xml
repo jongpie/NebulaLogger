@@ -4,8 +4,8 @@
     <fields>Name</fields>
     <fields>LoggedByUsernameLink__c</fields>
     <fields>StartTime__c</fields>
-    <fields>Priority__c</fields>
     <fields>OwnerId</fields>
+    <fields>Priority__c</fields>
     <fields>Status__c</fields>
     <fields>LogEntriesSummary__c</fields>
     <fields>ParentLog__c</fields>
