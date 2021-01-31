@@ -28,6 +28,11 @@
                 <label>Data Issue</label>
             </value>
             <value>
+                <fullName>Integration Issue</fullName>
+                <default>false</default>
+                <label>Integration Issue</label>
+            </value>
+            <value>
                 <fullName>No Issue</fullName>
                 <default>false</default>
                 <label>No Issue</label>
