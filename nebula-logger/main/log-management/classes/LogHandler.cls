@@ -3,17 +3,18 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 public without sharing class LogHandler {
-    private static final Map<String, LogStatus__mdt> LOG_STATUS_BY_NAME;
+    @testVisible
+    private static Map<String, LogStatus__mdt> logStatusByName;
 
     static {
-        LOG_STATUS_BY_NAME = new Map<String, LogStatus__mdt>();
+        logStatusByName = new Map<String, LogStatus__mdt>();
 
         for (LogStatus__mdt logStatus : [
             SELECT MasterLabel, IsClosed__c
             FROM LogStatus__mdt
             WHERE IsActive__c = TRUE
         ]) {
-            LOG_STATUS_BY_NAME.put(logStatus.MasterLabel, logStatus);
+            logStatusByName.put(logStatus.MasterLabel, logStatus);
         }
     }
 
@@ -36,7 +37,7 @@ public without sharing class LogHandler {
     private void setClosedStatusFields(List<Log__c> logs) {
         for (Log__c log : logs) {
             // Determine if the status is considered closed
-            LogStatus__mdt logStatus = LOG_STATUS_BY_NAME.get(log.Status__c);
+            LogStatus__mdt logStatus = logStatusByName.get(log.Status__c);
             if (logStatus != null) {
                 log.IsClosed__c = logStatus.IsClosed__c;
             }
