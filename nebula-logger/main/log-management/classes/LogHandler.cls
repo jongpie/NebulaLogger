@@ -10,7 +10,7 @@ public without sharing class LogHandler {
         logStatusByName = new Map<String, LogStatus__mdt>();
 
         for (LogStatus__mdt logStatus : [
-            SELECT MasterLabel, IsClosed__c
+            SELECT MasterLabel, IsClosed__c, IsResolved__c
             FROM LogStatus__mdt
             WHERE IsActive__c = TRUE
         ]) {
@@ -40,6 +40,7 @@ public without sharing class LogHandler {
             LogStatus__mdt logStatus = logStatusByName.get(log.Status__c);
             if (logStatus != null) {
                 log.IsClosed__c = logStatus.IsClosed__c;
+                log.IsResolved__c = logStatus.IsResolved__c;
             }
 
             // Now set the Closed By & Date fields based on IsClosed

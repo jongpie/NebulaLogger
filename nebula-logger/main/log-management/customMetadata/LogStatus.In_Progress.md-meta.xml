@@ -10,4 +10,8 @@
         <field>IsClosed__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
+    <values>
+        <field>IsResolved__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
 </CustomMetadata>

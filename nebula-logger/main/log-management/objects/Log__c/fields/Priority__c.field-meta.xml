@@ -16,19 +16,19 @@
                 <fullName>High</fullName>
                 <color>#FF6666</color>
                 <default>false</default>
-                <label>High</label>
+                <label>🔴 High</label>
             </value>
             <value>
                 <fullName>Medium</fullName>
                 <color>#FFCC66</color>
                 <default>false</default>
-                <label>Medium</label>
+                <label>🟡 Medium</label>
             </value>
             <value>
                 <fullName>Low</fullName>
                 <color>#66FF99</color>
                 <default>true</default>
-                <label>Low</label>
+                <label>🟢 Low</label>
             </value>
         </valueSetDefinition>
     </valueSet>

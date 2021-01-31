@@ -5,6 +5,7 @@
     <columns>DeveloperName</columns>
     <columns>IsActive__c</columns>
     <columns>IsClosed__c</columns>
+    <columns>IsResolved__c</columns>
     <columns>NamespacePrefix</columns>
     <columns>IsProtected</columns>
     <filterScope>Everything</filterScope>

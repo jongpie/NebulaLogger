@@ -223,6 +223,15 @@
                 <fieldItem>Record.Issue__c</fieldItem>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Comments__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-5847b03d-2740-46a4-81cd-e39ffebaf306</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -234,6 +243,15 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.IsClosed__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.IsResolved__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -286,32 +304,6 @@
             </componentInstance>
         </itemInstances>
         <name>Facet-45c75e70-6963-46be-859e-c1df0d4b5c08</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Comments__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <name>Facet-c2747abe-350d-4037-9f32-cd7f6a1309ed</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>body</name>
-                    <value>Facet-c2747abe-350d-4037-9f32-cd7f6a1309ed</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:column</componentName>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-aac010f8-a6b0-4380-b1e6-7f6981c65cc5</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -754,19 +746,6 @@
                 <componentInstanceProperties>
                     <name>label</name>
                     <value>Log Management</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-aac010f8-a6b0-4380-b1e6-7f6981c65cc5</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Comments</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
             </componentInstance>

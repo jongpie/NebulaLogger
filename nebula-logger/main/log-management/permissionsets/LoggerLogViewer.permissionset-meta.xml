@@ -408,6 +408,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.IsResolved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.Issue__c</field>
         <readable>true</readable>
     </fieldPermissions>

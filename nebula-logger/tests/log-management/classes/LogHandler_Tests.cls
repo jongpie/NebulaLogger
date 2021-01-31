@@ -32,14 +32,16 @@ private class LogHandler_Tests {
         LogStatus__mdt openStatus = new LogStatus__mdt(
             IsActive__c = true,
             MasterLabel = FIRST_STATUS,
-            IsClosed__c = false
+            IsClosed__c = false,
+            IsResolved__c = false
         );
         logStatusByName.put(openStatus.MasterLabel, openStatus);
 
         LogStatus__mdt closedStatus = new LogStatus__mdt(
             IsActive__c = true,
             MasterLabel = SECOND_STATUS,
-            IsClosed__c = true
+            IsClosed__c = true,
+            IsResolved__c = true
         );
         logStatusByName.put(closedStatus.MasterLabel, closedStatus);
 
@@ -52,6 +54,7 @@ private class LogHandler_Tests {
             ClosedBy__c = UserInfo.getUserId(),
             ClosedDate__c = System.now(),
             IsClosed__c = true,
+            IsResolved__c = true,
             Status__c = FIRST_STATUS,
             TransactionId__c = '1234'
         );
@@ -60,10 +63,15 @@ private class LogHandler_Tests {
         insert log;
         Test.stopTest();
 
-        log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, Status__c FROM Log__c WHERE Id = :log.Id];
+        log = [
+            SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c
+            FROM Log__c
+            WHERE Id = :log.Id
+        ];
         System.assertEquals(null, log.ClosedBy__c);
         System.assertEquals(null, log.ClosedDate__c);
         System.assertEquals(false, log.IsClosed__c);
+        System.assertEquals(false, log.IsResolved__c);
     }
 
     @isTest
@@ -80,10 +88,15 @@ private class LogHandler_Tests {
         insert log;
         Test.stopTest();
 
-        log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, Status__c FROM Log__c WHERE Id = :log.Id];
+        log = [
+            SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c
+            FROM Log__c
+            WHERE Id = :log.Id
+        ];
         System.assertEquals(UserInfo.getUserId(), log.ClosedBy__c);
         System.assertEquals(System.today(), log.ClosedDate__c.date());
         System.assertEquals(true, log.IsClosed__c);
+        System.assertEquals(true, log.IsResolved__c);
     }
 
     @isTest
