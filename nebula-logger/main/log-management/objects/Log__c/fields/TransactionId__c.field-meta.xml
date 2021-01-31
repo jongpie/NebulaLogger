@@ -5,7 +5,7 @@
     <externalId>true</externalId>
     <label>Transaction ID</label>
     <length>36</length>
-    <required>true</required>
+    <required>false</required>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

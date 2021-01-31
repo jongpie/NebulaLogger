@@ -7,7 +7,7 @@
     <referenceTo>User</referenceTo>
     <relationshipName>ClosedLogs</relationshipName>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
+    <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>

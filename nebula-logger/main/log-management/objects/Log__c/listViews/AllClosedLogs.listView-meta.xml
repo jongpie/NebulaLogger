@@ -9,9 +9,9 @@
     <columns>Status__c</columns>
     <columns>ClosedBy__c</columns>
     <columns>ClosedDate__c</columns>
+    <columns>Issue__c</columns>
+    <columns>Comments__c</columns>
     <columns>TransactionId__c</columns>
-    <columns>TotalLimitsCpuTimeUsed__c</columns>
-    <columns>TotalLogEntries__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>IsClosed__c</field>

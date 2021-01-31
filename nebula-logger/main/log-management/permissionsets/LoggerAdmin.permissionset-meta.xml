@@ -463,6 +463,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.Issue__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.Locale__c</field>
         <readable>true</readable>
@@ -700,6 +705,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.TotalWARNLogEntries__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.TransactionId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
