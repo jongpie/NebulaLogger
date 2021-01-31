@@ -80,6 +80,7 @@ private class LogHandler_Tests {
             ClosedBy__c = null,
             ClosedDate__c = null,
             IsClosed__c = false,
+            IsResolved__c = false,
             Status__c = SECOND_STATUS,
             TransactionId__c = '1234'
         );
@@ -96,7 +97,6 @@ private class LogHandler_Tests {
         System.assertEquals(UserInfo.getUserId(), log.ClosedBy__c);
         System.assertEquals(System.today(), log.ClosedDate__c.date());
         System.assertEquals(true, log.IsClosed__c);
-        System.assertEquals(true, log.IsResolved__c);
     }
 
     @isTest
