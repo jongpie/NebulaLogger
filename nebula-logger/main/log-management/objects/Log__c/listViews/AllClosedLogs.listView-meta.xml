@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllClosedLogs</fullName>
+    <columns>NAME</columns>
+    <columns>LoggedByUsernameLink__c</columns>
+    <columns>StartTime__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>Priority__c</columns>
+    <columns>Status__c</columns>
+    <columns>ClosedBy__c</columns>
+    <columns>ClosedDate__c</columns>
+    <columns>Issue__c</columns>
+    <columns>Comments__c</columns>
+    <columns>TransactionId__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>IsClosed__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>All Closed Logs</label>
+</ListView>

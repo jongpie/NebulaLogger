@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Only_closed_can_be_resolved</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    IsClosed__c = false,
+    IsResolved__c = true
+)</errorConditionFormula>
+    <errorDisplayField>IsResolved__c</errorDisplayField>
+    <errorMessage>Is Resolved cannot be set to true unless Is Closed is true</errorMessage>
+</ValidationRule>

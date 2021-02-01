@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MyGeneratedLogs</fullName>
+    <columns>NAME</columns>
+    <columns>StartTime__c</columns>
+    <columns>Priority__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>Status__c</columns>
+    <columns>TransactionId__c</columns>
+    <columns>TotalLimitsCpuTimeUsed__c</columns>
+    <columns>TotalLogEntries__c</columns>
+    <columns>TotalERRORLogEntries__c</columns>
+    <columns>TotalWARNLogEntries__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>WasLoggedByCurrentUser__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>My Generated Logs</label>
+</ListView>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>FlowLogEntry</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FlowLogRepo</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FlowRecordLogEntry</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Logger</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Provides access for users to add log entries via process builder, flow and lightning components</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Logger: End User</label>
+</PermissionSet>
