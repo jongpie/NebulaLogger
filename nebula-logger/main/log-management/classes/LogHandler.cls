@@ -25,6 +25,8 @@ public without sharing class LogHandler {
         switch on Trigger.operationType {
             when BEFORE_INSERT {
                 this.setClosedStatusFields(logs);
+                // The log retention date field should support being manually changed, so only auto-set it on insert
+                this.setLogRetentionDate(logs);
             }
             when BEFORE_UPDATE {
                 this.setClosedStatusFields(logs);
@@ -51,6 +53,22 @@ public without sharing class LogHandler {
                 log.ClosedBy__c = log.ClosedBy__c == null ? UserInfo.getUserId() : log.ClosedBy__c;
                 log.ClosedDate__c = log.ClosedDate__c == null ? System.now() : log.ClosedDate__c;
             }
+        }
+    }
+
+    private void setLogRetentionDate(List<Log__c> logs) {
+        for (Log__c log : logs) {
+            // If the retention date has already been populated, leave it as-is
+            if (log.LogRetentionDate__c != null) {
+                continue;
+            }
+
+            LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance(log.LoggedBy__c);
+            Integer daysToRetainLog = Integer.valueOf(loggerSettings.DefaultNumberOfDaysToRetainLogs__c);
+
+            // When loggerSettings.DefaultNumberOfDaysToRetainLogs__c is null, assume that the log should be kept forever,
+            // ...and set the retention date to null so that LogBatchPurger filters out/ignores the record
+            log.LogRetentionDate__c = daysToRetainLog == null ? null : System.today().addDays(daysToRetainLog);
         }
     }
 
