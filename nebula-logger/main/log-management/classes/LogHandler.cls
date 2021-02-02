@@ -58,6 +58,7 @@ public without sharing class LogHandler {
 
     private void setLogRetentionDate(List<Log__c> logs) {
         for (Log__c log : logs) {
+            // If the retention date has already been populated, leave it as-is
             if (log.LogRetentionDate__c != null) {
                 continue;
             }
@@ -65,6 +66,8 @@ public without sharing class LogHandler {
             LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance(log.LoggedBy__c);
             Integer daysToRetainLog = Integer.valueOf(loggerSettings.DefaultNumberOfDaysToRetainLogs__c);
 
+            // When loggerSettings.DefaultNumberOfDaysToRetainLogs__c is null, assume that the log should be kept forever,
+            // ...and set the retention date to null so that LogBatchPurger filters out/ignores the record
             log.LogRetentionDate__c = daysToRetainLog == null ? null : System.today().addDays(daysToRetainLog);
         }
     }
