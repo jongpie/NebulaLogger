@@ -21,7 +21,7 @@ private class LogBatchPurgeScheduler_Tests {
         CronTrigger cronTrigger = [
             SELECT Id, CronExpression, TimesTriggered, NextFireTime
             FROM CronTrigger
-            WHERE id = :jobId
+            WHERE Id = :jobId
         ];
         System.assertEquals(TEST_CRON_EXPRESSION, cronTrigger.CronExpression);
         System.assertEquals(0, cronTrigger.TimesTriggered);
