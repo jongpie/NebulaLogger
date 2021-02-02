@@ -100,6 +100,69 @@ private class LogHandler_Tests {
     }
 
     @isTest
+    static void it_should_keep_existing_retention_date_when_populated() {
+        Integer defaultDaysToRetainLog = 10;
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
+        upsert settings;
+
+        Test.startTest();
+
+        Integer specifiedDaysToRetainLog = 50;
+        Date retentionDate = System.today().addDays(specifiedDaysToRetainLog);
+        Log__c log = new Log__c(
+            LoggedBy__c = UserInfo.getUserId(),
+            LogRetentionDate__c = retentionDate,
+            TransactionId__c = '1234'
+        );
+        insert log;
+
+        Test.stopTest();
+
+        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertNotEquals(defaultDaysToRetainLog, specifiedDaysToRetainLog);
+        System.assertEquals(retentionDate, log.LogRetentionDate__c);
+    }
+
+    @isTest
+    static void it_should_set_retention_date_when_configured() {
+        Integer daysToRetainLog = 90;
+        Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
+        upsert settings;
+
+        Test.startTest();
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        insert log;
+
+        Test.stopTest();
+
+        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
+    }
+
+    @isTest
+    static void it_should_have_null_retention_date_when_no_retention_configured() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.DefaultNumberOfDaysToRetainLogs__c = null;
+        upsert settings;
+
+        Test.startTest();
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        insert log;
+
+        Test.stopTest();
+
+        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(null, log.LogRetentionDate__c);
+    }
+
+    @isTest
     static void it_should_set_priority_to_high_when_there_are_errors() {
         Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
         insert log;
