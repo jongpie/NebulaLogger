@@ -1,32 +1,58 @@
-# Nebula Logger for Salesforce Apex, Lightning Components, Process Builder & Flow
-
+# Nebula Logger for Salesforce
 [![Travis CI](https://img.shields.io/travis/jongpie/NebulaLogger/master.svg)](https://travis-ci.org/jongpie/NebulaLogger)
 
 <a href="https://githubsfdeploy.herokuapp.com" target="_blank">
     <img alt="Deploy to Salesforce" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-Designed for Salesforce admins & developers.
+Designed for Salesforce admins, developers & architects. A robust logger for Salesforce that's simple to implement & configurable at the org, profile & user level.
 
 ## Features
+1. Easily add log entries via Apex, Flow & Process Builder
+2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
+3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
+4. Easily enable logging & change the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
 
-A robust logger for Salesforce that's simple to implement & configurable at the org, profile & user level.
 
-1. Generates 1 log per transaction that can be permanently stored in Salesforce
-2. Supports adding log entries via Apex, Process Builder & Flow
-3. Supports adding both debug & exception log entries to the log
-4. Supports adding log entries as debug statements in Salesforce's [Debug Log](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_debugging_debug_log.htm)
-5. Supports specifying a logging level for each log entry
-6. Allows logging to be enabled/disabled for different users & profiles
-7. Allows logging level to be configured for each user/profile
-8. Allows different debug & exception log entries to be disabled/ignored without making code changes
+## Getting Started
+After deploying Nebula Logger to your org, it can be used immediately by admins without any additional configuration. But you may still want to...
+* Assign the permission set `LoggerEndUser` to any end users that will generate logs via Apex, Flow or Process Builder
+* Assign the permission sets `LoggerLogAdmin` or `LoggerLogViewer` to power users
+* Customize the default settings in `LoggerSettings__c`
 
-## Contributing / Development
+## Logger for Apex: Quick Start
+For Apex developers, the `Logger` class has several methods that can be used as replacements for `System.debug()`.
 
-Contributions to Nebula Logger are welcome, however we ask that Apex Prettier be run on prior to any pull requests being submitted to this repo.
+```java
+// This will generate a debug statement within developer console
+System.debug('Debug statement using native Apex');
 
-When developing, to get started:
+// This will create a new `Log__c` record with multiple related `LogEntry__c` records
+Logger.error('Add log entry using Nebula Logger with loging level == ERROR');
+Logger.warn('Add log entry using Nebula Logger with loging level == WARN');
+Logger.info('Add log entry using Nebula Logger with loging level == INFO');
+Logger.debug('Add log entry using Nebula Logger with loging level == DEBUG');
+logger.fine('Add log entry using Nebula Logger with loging level == FINE');
+logger.finer('Add log entry using Nebula Logger with loging level == FINER');
+logger.finest('Add log entry using Nebula Logger with loging level == FINEST');
+Logger.saveLog();
+```
 
--   run `npm -i` or `npm install` or `yarn` to grab the latest version of our dependencies
--   when using VS Code: ensure that your "Format On Save" editor option is set to `true` (in `settings.json`: `"editor.formatOnSave": true`)
--   all unit tests should be run and passing prior to submitting a PR. We understand that you may be developing on a sandbox / Developer Edition org, and that you may have test classes other than the ones included with Nebula Logger on your org. You can use `npm run test` or `yarn test` to run _only_ the unit tests associated with Nebula Logger in your org
+## Logger for Flow & Process Builder: Quick Start
+// TODO
+
+## Labeling/tagging Logs with Salesforce Topics
+// TODO
+
+## Managing Logs
+To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
+* All editable fields on `Log__c` can be updated via the 'Manage Log' quick action
+* Additional fields, such as `Log__c.IsClosed__c`, `Log__c.ClosedBy__c` and `Log__c.ClosedDate__c`, are automatically set based on changes to `Log__c.Status__c`.
+* To customize the statuses provided, simply update the picklist values for `Log__c.Status__c` and create/update corresponding records in the custom metadata type `LogStatus__mdt`. This custom metadata type controls which statuses are considerd closed and resolved.
+
+## Deleting Old Logs
+Two Apex classes are provided out-of-the-box to handle automatically deleting old logs
+1. `LogBatchPurger` - this batch Apex class will delete any `Log__c` records with `Log__c.LogRetentionDate__c <= System.today()`.
+   * By default, this field is populated with "TODAY + 14 DAYS" - the number of days to retain a log can be customized in `LoggerSettings__c`.
+   * Users can also manually edit this field to change the retention date - or set it to null to prevent the log from being automatically deleted
+2. `LogBatchPurgeScheduler` - this schedulable Apex class can be schedule to run `LogBatchPurger` on a daily or weekly basis
