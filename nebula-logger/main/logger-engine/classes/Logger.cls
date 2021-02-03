@@ -621,7 +621,6 @@ global without sharing class Logger {
         LOG_ENTRIES.addAll(logEntriesToSave);
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        Integer indexOfLastRecord = LOG_ENTRIES.size() - 1;
         for (Integer i = 0; i < LOG_ENTRIES.size(); i++) {
             LogEntryEventBuilder logEntryBuilder = LOG_ENTRIES.get(i);
 
