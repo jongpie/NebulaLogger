@@ -199,7 +199,7 @@ global without sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
-    global void setUserSessionDetails() {
+    private void setUserSessionDetails() {
         if (!this.shouldSave) {
             return;
         }
@@ -257,6 +257,7 @@ global without sharing class LogEntryEventBuilder {
         return Auth.SessionManagement.getCurrentSession();
     }
 
+    // Private static methods
     private static String getApiVersion() {
         String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
@@ -273,7 +274,6 @@ global without sharing class LogEntryEventBuilder {
         return visualforcePageName;
     }
 
-    // Private static methods
     private static String getNamespacePrefix() {
         String namespacePrefix = null;
 
