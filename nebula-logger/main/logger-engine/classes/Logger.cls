@@ -625,10 +625,6 @@ global without sharing class Logger {
         for (Integer i = 0; i < LOG_ENTRIES.size(); i++) {
             LogEntryEventBuilder logEntryBuilder = LOG_ENTRIES.get(i);
 
-            if (i == indexOfLastRecord) {
-                logEntryBuilder.setUserSessionDetails();
-            }
-
             LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
             logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
             logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
