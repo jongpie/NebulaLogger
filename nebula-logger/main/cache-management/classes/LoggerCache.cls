@@ -101,7 +101,7 @@ public without sharing class LoggerCache {
 
     private static Map<Id, UserLicense> cacheUserLicenses() {
         Map<Id, UserLicense> userLicensesById = new Map<Id, UserLicense>();
-        for (UserLicense userLicense : [SELECT Id, Name FROM UserLicense]) {
+        for (UserLicense userLicense : [SELECT Id, Name, LicenseDefinitionKey FROM UserLicense]) {
             ORG_PARTITION.put(userLicense.Id, userLicense, CACHE_TTL_SECS, CACHE_VISIBILITY, CACHE_IS_IMMUTABLE);
             userLicensesById.put(userLicense.Id, userLicense);
         }
@@ -132,9 +132,20 @@ public without sharing class LoggerCache {
 
         Map<Id, User> usersById = new Map<Id, User>();
         for (User user : [
-            SELECT Id, Name, ProfileId, UserRoleId, IsActive
+            SELECT
+                Id,
+                Name,
+                Username,
+                IsActive,
+                ProfileId,
+                UserRoleId,
+                UserRole.Name,
+                Profile.Name,
+                Profile.UserLicenseId,
+                Profile.UserLicense.LicenseDefinitionKey,
+                Profile.UserLicense.Name
             FROM User
-            WHERE LastLoginDate >= :recentLoginDate
+            WHERE IsActive = TRUE AND LastLoginDate >= :recentLoginDate
             ORDER BY LastLoginDate DESC
             LIMIT 1000
         ]) {
