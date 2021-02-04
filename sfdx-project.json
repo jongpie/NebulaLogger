@@ -9,7 +9,6 @@
             "default": true,
             "definitionFile": "config/logger-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "uninstallScript": "LoggerUninstallHandler",
             "versionName": "Managed Package Release",
             "versionNumber": "1.3.0.NEXT",
             "versionDescription": "Initial release of the new 2GP managed package",
