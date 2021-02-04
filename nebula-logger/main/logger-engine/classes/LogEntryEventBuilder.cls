@@ -4,7 +4,6 @@
  *************************************************************************************************/
 global without sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
-    private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
     private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     private static final String ORIGIN_TYPE_FLOW = 'Flow';
@@ -61,7 +60,7 @@ global without sharing class LogEntryEventBuilder {
 
         // When running as unmanaged code, auto-call System.debug
         // System.debug is useless in managed packages, so don't bother when namespaced
-        if (NAMESPACE_PREFIX == null) {
+        if (Namespace.getPrefix() == null) {
             System.debug(this.loggingLevel, message);
         }
 
@@ -274,16 +273,6 @@ global without sharing class LogEntryEventBuilder {
         return visualforcePageName;
     }
 
-    private static String getNamespacePrefix() {
-        String namespacePrefix = null;
-
-        String className = LogEntryEventBuilder.class.getName().substringBefore(':');
-        if (className.contains('.')) {
-            namespacePrefix = className.substringBefore('.');
-        }
-        return namespacePrefix;
-    }
-
     private static Boolean isValidStackTrace(String stackTraceString) {
         if (String.isEmpty(stackTraceString)) {
             return false;
@@ -291,7 +280,7 @@ global without sharing class LogEntryEventBuilder {
         if (stackTraceString == '()') {
             return false;
         }
-        if (stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+        if (stackTraceString == '(' + Namespace.getPrefix() + ')') {
             return false;
         }
 
