@@ -60,7 +60,7 @@ global without sharing class LogEntryEventBuilder {
 
         // When running as unmanaged code, auto-call System.debug
         // System.debug is useless in managed packages, so don't bother when namespaced
-        if (Namespace.getPrefix() == null) {
+        if (Namespace.hasNamespace()) {
             System.debug(this.loggingLevel, message);
         }
 

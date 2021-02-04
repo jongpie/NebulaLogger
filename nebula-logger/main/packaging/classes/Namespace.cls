@@ -1,9 +1,9 @@
 public without sharing class Namespace {
     private static String namespacePrefix;
 
-    // public static Boolean hasNamespace() {
-    //     return !String.isBlank(getNamespace());
-    // }
+    public static Boolean hasNamespace() {
+        return !String.isBlank(getPrefix());
+    }
 
     public static String getPrefix() {
         if (namespacePrefix == null) {
@@ -14,7 +14,7 @@ public without sharing class Namespace {
         return namespacePrefix;
     }
 
-    public static String getPrefixWithDotNotation() {
-        return String.isBlank(getPrefix()) ? '' : getPrefix() + '.';
+    public static String getPrefixWithDelimiter(String delimiter) {
+        return String.isBlank(getPrefix()) ? '' : getPrefix() + delimiter;
     }
 }
