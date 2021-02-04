@@ -3,11 +3,11 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 global without sharing class LoggerInstallHandler implements InstallHandler {
-    private static final PermissionSet LOGGER_END_USER_PERMISSION_SET = [
-        SELECT Id
-        FROM PermissionSet
-        WHERE NamespacePrefix = :Namespace.getPrefix() AND Name = 'LoggerEndUser'
-    ];
+    // private static final PermissionSet LOGGER_END_USER_PERMISSION_SET = [
+    //     SELECT Id
+    //     FROM PermissionSet
+    //     WHERE NamespacePrefix = :Namespace.getPrefix() AND Name = 'LoggerEndUser'
+    // ];
 
     /***
      * @description Runs on package installation.
@@ -15,6 +15,10 @@ global without sharing class LoggerInstallHandler implements InstallHandler {
      * @return void
      */
     global void onInstall(System.InstallContext installContext) {
+        if (installContext == null) {
+            return;
+        }
+
         //LoggerCache.initializeOrgCache();
 
         if (installContext.previousVersion() == null) {
@@ -37,26 +41,4 @@ global without sharing class LoggerInstallHandler implements InstallHandler {
 
     //     Database.insert(permissionSetAssignments, false);
     // }
-
-    /*******************************************************************************************************
-     * @description Sends an email to the user installing the package notifying them about failed installation steps.
-     * @return void
-     */
-    /* private void sendInstallNotificationEmail() {
-        try {
-            Messaging.SingleEmailMessage emailMessage = new Messaging.SingleEmailMessage();
-            emailMessage.setUseSignature(false);
-            emailMessage.setReplyTo('no.reply@salesforce.com');
-            emailMessage.setSenderDisplayName('Nebula Logger Managed Package Success Pack');
-            emailMessage.setSubject('NPSP Install Errors');
-
-            emailMessage.setPlainTextBody(buildEmailBody());
-
-            emailMessage.setToAddresses(new List<String>{ 'errors@salesforce.org', getUserEmail() });
-
-            Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
-        } catch (Exception e) {
-            //Nothing to do here, as we don't want the install script to fail because emails could not be sent.
-        }
-    } */
 }
