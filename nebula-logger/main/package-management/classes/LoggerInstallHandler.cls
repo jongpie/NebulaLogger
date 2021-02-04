@@ -2,7 +2,7 @@ global without sharing class LoggerInstallHandler implements InstallHandler {
     private static final PermissionSet LOGGER_END_USER_PERMISSION_SET = [
         SELECT Id
         FROM PermissionSet
-        WHERE NamespacePrefix = :Namespace.getNamespace() AND Name = 'LoggerEndUser'
+        WHERE NamespacePrefix = :Namespace.getPrefix() AND Name = 'LoggerEndUser'
     ];
 
     /***
