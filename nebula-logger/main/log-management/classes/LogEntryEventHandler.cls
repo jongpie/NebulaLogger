@@ -191,18 +191,15 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void setOrganizationDetails() {
-        Organization org = [
-            SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType
-            FROM Organization
-        ];
+        Organization organization = LoggerCache.getOrganization();
 
         LOG.OrganizationDomainUrl__c = Url.getOrgDomainUrl().toExternalForm();
-        LOG.OrganizationId__c = org.Id;
-        LOG.OrganizationInstanceName__c = org.InstanceName;
-        LOG.OrganizationIsSandbox__c = org.IsSandbox;
-        LOG.OrganizationName__c = org.Name;
-        LOG.OrganizationNamespacePrefix__c = org.NamespacePrefix;
-        LOG.OrganizationType__c = org.OrganizationType;
+        LOG.OrganizationId__c = organization.Id;
+        LOG.OrganizationInstanceName__c = organization.InstanceName;
+        LOG.OrganizationIsSandbox__c = organization.IsSandbox;
+        LOG.OrganizationName__c = organization.Name;
+        LOG.OrganizationNamespacePrefix__c = organization.NamespacePrefix;
+        LOG.OrganizationType__c = organization.OrganizationType;
     }
 
     private void setNetworkDetails() {
@@ -210,50 +207,25 @@ public without sharing class LogEntryEventHandler {
             return;
         }
 
-        String networkApiName = 'Network';
-        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
-        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
-
-        if (!networksEnabled) {
-            return;
-        }
-
-        String networkId = LOG.NetworkId__c;
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
-        List<SObject> matchingNetworks = Database.query(queryString);
-
-        if (matchingNetworks.isEmpty()) {
-            return;
-        }
-
-        SObject matchingNetwork = matchingNetworks.get(0);
+        SObject matchingNetwork = LoggerCache.getNetwork(LOG.NetworkId__c);
 
         LOG.NetworkName__c = (String) matchingNetwork.get('Name');
-        LOG.NetworkLoginUrl__c = Network.getLoginUrl(networkId);
-        LOG.NetworkLoginUrl__c = Network.getLogoutUrl(networkId);
-        LOG.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(networkId);
+        LOG.NetworkLoginUrl__c = Network.getLoginUrl(LOG.NetworkId__c);
+        LOG.NetworkLoginUrl__c = Network.getLogoutUrl(LOG.NetworkId__c);
+        LOG.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(LOG.NetworkId__c);
         LOG.NetworkUrlPathPrefix__c = (String) matchingNetwork.get('UrlPathPrefix');
     }
 
     private void setUserDetails() {
-        User logUser = [
-            SELECT
-                Id,
-                UserRole.Name,
-                Profile.Name,
-                Profile.UserLicenseId,
-                Profile.UserLicense.LicenseDefinitionKey,
-                Profile.UserLicense.Name,
-                Username
-            FROM User
-            WHERE Id = :LOG.LoggedBy__c
-        ];
+        User logUser = LoggerCache.getUser(LOG.LoggedBy__c);
+        Profile profile = LoggerCache.getProfile(logUser.ProfileId);
+        UserLicense userLicense = LoggerCache.getUserLicense(profile.UserLicenseId);
 
         LOG.LoggedByUsername__c = logUser.Username;
-        LOG.ProfileName__c = logUser.Profile.Name;
-        LOG.UserLicenseDefinitionKey__c = logUser.Profile.UserLicense.LicenseDefinitionKey;
-        LOG.UserLicenseId__c = logUser.Profile.UserLicenseId;
-        LOG.UserLicenseName__c = logUser.Profile.UserLicense.Name;
+        LOG.ProfileName__c = profile.Name;
+        LOG.UserLicenseDefinitionKey__c = userLicense.LicenseDefinitionKey;
+        LOG.UserLicenseId__c = userLicense.Id;
+        LOG.UserLicenseName__c = userLicense.Name;
         LOG.UserRoleName__c = logUser.UserRole == null ? null : logUser.UserRole.Name;
     }
 }
