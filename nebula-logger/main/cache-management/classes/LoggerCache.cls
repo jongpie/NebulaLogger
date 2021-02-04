@@ -1,9 +1,9 @@
 public without sharing class LoggerCache {
     private static final String LOGGER_CACHE_PARTITION_NAME = Namespace.getNamespaceWithDotNotation() + 'LoggerCache';
     private static final Cache.OrgPartition ORG_PARTITION = Cache.Org.getPartition(LOGGER_CACHE_PARTITION_NAME);
-    private static final Cache.SessionPartition SESSION_PARTITION = Cache.Session.getPartition(
-        LOGGER_CACHE_PARTITION_NAME
-    );
+    // private static final Cache.SessionPartition SESSION_PARTITION = Cache.Session.getPartition(
+    //     LOGGER_CACHE_PARTITION_NAME
+    // );
 
     private static final Boolean CACHE_IS_IMMUTABLE = true;
     private static final Integer CACHE_TTL_SECS = 86400; // 86,400 seconds == 24 hours
@@ -110,7 +110,7 @@ public without sharing class LoggerCache {
 
     private static Map<Id, Profile> cacheProfiles() {
         Map<Id, Profile> profilesById = new Map<Id, Profile>();
-        for (Profile profile : [SELECT Id, Name FROM Profile]) {
+        for (Profile profile : [SELECT Id, Name, UserLicenseId FROM Profile]) {
             ORG_PARTITION.put(profile.Id, profile, CACHE_TTL_SECS, CACHE_VISIBILITY, CACHE_IS_IMMUTABLE);
             profilesById.put(profile.Id, profile);
         }
