@@ -6,7 +6,7 @@ public without sharing class LoggerCache {
     );
 
     private static final Boolean CACHE_IS_IMMUTABLE = true;
-    private static final Integer CACHE_TTL_SECS = 3600;
+    private static final Integer CACHE_TTL_SECS = 86400; // 86,400 seconds == 24 hours
     private static final Cache.Visibility CACHE_VISIBILITY = Cache.Visibility.ALL;
 
     // Public static methods
@@ -15,6 +15,8 @@ public without sharing class LoggerCache {
         cacheNetworks();
         cacheUserLicenses();
         cacheProfiles();
+        cacheUserRoles();
+        cacheUsers();
     }
 
     public static Organization getOrganization() {
@@ -51,6 +53,22 @@ public without sharing class LoggerCache {
         }
     }
 
+    public static UserRole getUserRole(Id userRoleId) {
+        if (ORG_PARTITION.contains(userRoleId)) {
+            return (UserRole) ORG_PARTITION.get(userRoleId);
+        } else {
+            return cacheUserRoles().get(userRoleId);
+        }
+    }
+
+    public static User getUser(Id userId) {
+        if (ORG_PARTITION.contains(userId)) {
+            return (User) ORG_PARTITION.get(userId);
+        } else {
+            return cacheUsers().get(userId);
+        }
+    }
+
     // Private static methods
     private static Organization cacheOrganization() {
         Organization organization = [
@@ -66,7 +84,7 @@ public without sharing class LoggerCache {
         return Schema.getGlobalDescribe().containsKey('Network');
     }
 
-    public static Map<Id, SObject> cacheNetworks() {
+    private static Map<Id, SObject> cacheNetworks() {
         // Networks (experience sites/communities) may not be enabled in the org (no Network object), so run everything dynamically
         if (!networksEnabled()) {
             return null;
@@ -82,10 +100,8 @@ public without sharing class LoggerCache {
     }
 
     private static Map<Id, UserLicense> cacheUserLicenses() {
-        Database.QueryLocator userLicenseQuery = Database.getQueryLocator([SELECT Id, Name FROM UserLicense]);
-
         Map<Id, UserLicense> userLicensesById = new Map<Id, UserLicense>();
-        for (UserLicense userLicense : Database.query(userLicenseQuery.getQuery())) {
+        for (UserLicense userLicense : [SELECT Id, Name FROM UserLicense]) {
             ORG_PARTITION.put(userLicense.Id, userLicense, CACHE_TTL_SECS, CACHE_VISIBILITY, CACHE_IS_IMMUTABLE);
             userLicensesById.put(userLicense.Id, userLicense);
         }
@@ -93,13 +109,38 @@ public without sharing class LoggerCache {
     }
 
     private static Map<Id, Profile> cacheProfiles() {
-        Database.QueryLocator profileQuery = Database.getQueryLocator([SELECT Id, Name FROM Profile]);
-
         Map<Id, Profile> profilesById = new Map<Id, Profile>();
-        for (Profile profile : Database.query(profileQuery.getQuery())) {
+        for (Profile profile : [SELECT Id, Name FROM Profile]) {
             ORG_PARTITION.put(profile.Id, profile, CACHE_TTL_SECS, CACHE_VISIBILITY, CACHE_IS_IMMUTABLE);
             profilesById.put(profile.Id, profile);
         }
         return profilesById;
+    }
+
+    private static Map<Id, UserRole> cacheUserRoles() {
+        Map<Id, UserRole> userRolesById = new Map<Id, UserRole>();
+        for (UserRole userRole : [SELECT Id, Name FROM UserRole]) {
+            ORG_PARTITION.put(userRole.Id, userRole, CACHE_TTL_SECS, CACHE_VISIBILITY, CACHE_IS_IMMUTABLE);
+            userRolesById.put(userRole.Id, userRole);
+        }
+        return userRolesById;
+    }
+
+    private static Map<Id, User> cacheUsers() {
+        // Since some orgs may have thousands of users, only cache users that have recently logged in (max 1,000)
+        Date recentLoginDate = System.today().addDays(-2);
+
+        Map<Id, User> usersById = new Map<Id, User>();
+        for (User user : [
+            SELECT Id, Name, ProfileId, UserRoleId, IsActive
+            FROM User
+            WHERE LastLoginDate >= :recentLoginDate
+            ORDER BY LastLoginDate DESC
+            LIMIT 1000
+        ]) {
+            ORG_PARTITION.put(user.Id, user, CACHE_TTL_SECS, CACHE_VISIBILITY, CACHE_IS_IMMUTABLE);
+            usersById.put(user.Id, user);
+        }
+        return usersById;
     }
 }
