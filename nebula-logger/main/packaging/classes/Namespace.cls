@@ -1,11 +1,15 @@
+/*************************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.                *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+ *************************************************************************************************/
 public without sharing class Namespace {
     private static String namespacePrefix;
 
-    // public static Boolean hasNamespace() {
-    //     return !String.isBlank(getNamespace());
-    // }
+    public static Boolean hasPrefix() {
+        return String.isNotBlank(getPrefix());
+    }
 
-    public static String getNamespace() {
+    public static String getPrefix() {
         if (namespacePrefix == null) {
             String className = Namespace.class.getName();
             namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
@@ -14,7 +18,7 @@ public without sharing class Namespace {
         return namespacePrefix;
     }
 
-    public static String getNamespaceWithDotNotation() {
-        return String.isBlank(getNamespace()) ? '' : getNamespace() + '.';
+    public static String getPrefixWithDelimiter(String delimiter) {
+        return String.isBlank(getPrefix()) ? '' : getPrefix() + delimiter;
     }
 }

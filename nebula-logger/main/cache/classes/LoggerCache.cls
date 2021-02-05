@@ -1,9 +1,6 @@
 public without sharing class LoggerCache {
-    private static final String LOGGER_CACHE_PARTITION_NAME = Namespace.getNamespaceWithDotNotation() + 'LoggerCache';
+    private static final String LOGGER_CACHE_PARTITION_NAME = Namespace.getPrefixWithDelimiter('.') + 'LoggerCache';
     private static final Cache.OrgPartition ORG_PARTITION = Cache.Org.getPartition(LOGGER_CACHE_PARTITION_NAME);
-    // private static final Cache.SessionPartition SESSION_PARTITION = Cache.Session.getPartition(
-    //     LOGGER_CACHE_PARTITION_NAME
-    // );
 
     private static final Boolean CACHE_IS_IMMUTABLE = true;
     private static final Integer CACHE_TTL_SECS = 86400; // 86,400 seconds == 24 hours
