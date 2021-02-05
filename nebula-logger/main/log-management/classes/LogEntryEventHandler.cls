@@ -177,10 +177,6 @@ public without sharing class LogEntryEventHandler {
                     new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id)
                 );
 
-                if (!LoggerSettings__c.getInstance().AddLogEntryTopicsToLog__c) {
-                    continue;
-                }
-
                 // Add all topics to the parent log when enabled
                 topicAssignments.add(
                     new TopicAssignment(EntityId = LOG.Id, TopicId = topicNameToTopics.get(topicName).Id)
