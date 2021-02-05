@@ -5,7 +5,7 @@
     <img alt="Deploy to Salesforce" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-Designed for Salesforce admins, developers & architects. A robust logger for Salesforce that's simple to implement & configurable at the org, profile & user level.
+A robust logger for Apex, Flow and Process Builder. Designed for Salesforce admins, developers & architects.
 
 ## Features
 1. Easily add log entries via Apex, Flow & Process Builder
