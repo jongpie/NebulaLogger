@@ -4,9 +4,14 @@
  *************************************************************************************************/
 global without sharing class LoggerInstallHandler implements InstallHandler {
     global void onInstall(System.InstallContext installContext) {
-        insert LoggerSettings__c.getOrgDefaults();
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        upsert orgDefaults;
 
-        // if (installContext.previousVersion() == null) {}
-        // else if (installContext.isUpgrade() || installContext.isPush()) { }
+        if (loggerSettings__c.getInstance().EnableSystemMessages__c) {
+            LogMessage logMessage = new logMessage('Upserting Org Defaults: {0}', orgDefaults);
+            List<String> logTopics = new List<String>{ 'Logger-Installation' };
+            Logger.info(logMessage, logTopics);
+            Logger.saveLog();
+        }
     }
 }
