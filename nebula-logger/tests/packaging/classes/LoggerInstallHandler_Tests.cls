@@ -10,14 +10,15 @@ private class LoggerInstallHandler_Tests {
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
         System.assertEquals(0, existingSettings.size());
 
-        // Currently, there's no logic in LoggerInstallerHandler that checks for a specific version number,
-        // so null is fine for this test
+        // Currently, there's no logic in LoggerInstallerHandler that checks for a specific version number or upgrades...
+        // so null/false are fine for this test right now
         // TODO update this if/when version-specific logic is added in future releases
         Version version = null;
+        Boolean isUpgrade = false;
 
         Test.startTest();
         LoggerInstallHandler installHandler = new LoggerInstallHandler();
-        Test.testInstall(installHandler, version, true);
+        Test.testInstall(installHandler, version, isUpgrade);
         Test.stopTest();
 
         // Verify that we now have 1 record...
