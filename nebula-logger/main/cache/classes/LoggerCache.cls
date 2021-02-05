@@ -7,7 +7,7 @@ public without sharing class LoggerCache {
     private static final Cache.Visibility CACHE_VISIBILITY = Cache.Visibility.ALL;
 
     // Public static methods
-    public static void initializeOrgCache() {
+    public static void initialize() {
         cacheOrganization();
         cacheNetworks();
         cacheUserLicenses();
@@ -135,12 +135,12 @@ public without sharing class LoggerCache {
                 Username,
                 IsActive,
                 ProfileId,
-                UserRoleId,
-                UserRole.Name,
                 Profile.Name,
                 Profile.UserLicenseId,
                 Profile.UserLicense.LicenseDefinitionKey,
-                Profile.UserLicense.Name
+                Profile.UserLicense.Name,
+                UserRoleId,
+                UserRole.Name
             FROM User
             WHERE IsActive = TRUE AND LastLoginDate >= :recentLoginDate
             ORDER BY LastLoginDate DESC
