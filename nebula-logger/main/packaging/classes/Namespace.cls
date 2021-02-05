@@ -6,7 +6,7 @@ public without sharing class Namespace {
     private static String namespacePrefix;
 
     public static Boolean hasPrefix() {
-        return !String.isBlank(getPrefix());
+        return String.isNotBlank(getPrefix());
     }
 
     public static String getPrefix() {
