@@ -16,7 +16,16 @@
         <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Provides access for users to add log entries via process builder, flow and lightning components</description>
+    <description>Provides access for users to generate log entries via Apex, Flow and Process Builder</description>
     <hasActivationRequired>false</hasActivationRequired>
-    <label>Logger: End User</label>
+    <label>Logger: Log Creator</label>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>LogEntryEvent__e</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
 </PermissionSet>
