@@ -6,7 +6,14 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     private String originalTransactionId;
     private Integer totalProcessedRecords = 0;
 
+    private class LogBatchPurgerException extends Exception {
+    }
+
     global Database.QueryLocator start(Database.BatchableContext batchableContext) {
+        if (!Schema.Log__c.SObjectType.getDescribe().isDeletable()) {
+            throw new LogBatchPurgerException('User does not have access to delete logs');
+        }
+
         // Each batchable method runs in a separate transaction
         // ...so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();

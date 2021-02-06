@@ -16,7 +16,10 @@ global without sharing class LogEntryEventBuilder {
 
     global LogEntryEventBuilder(LoggingLevel loggingLevel) {
         this.loggingLevel = loggingLevel;
-        this.shouldSave = Logger.isEnabled(loggingLevel);
+
+        // Verify that the user has create access & has logging enabled
+        Boolean userCanCreateEntries = Schema.LogEntryEvent__e.SObjectType.getDescribe().isCreateable();
+        this.shouldSave = userCanCreateEntries && Logger.isEnabled(loggingLevel);
 
         if (!this.shouldSave) {
             return;

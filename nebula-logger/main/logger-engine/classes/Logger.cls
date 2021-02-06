@@ -559,6 +559,11 @@ global without sharing class Logger {
     }
 
     global static void saveLog(Quiddity quiddity) {
+        // Verify that the user has create access
+        if (!Schema.LogEntryEvent__e.SObjectType.getDescribe().isCreateable()) {
+            return;
+        }
+
         if (LOG_ENTRIES.isEmpty()) {
             return;
         }
