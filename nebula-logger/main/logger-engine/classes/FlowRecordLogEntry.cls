@@ -33,7 +33,7 @@ global without sharing class FlowRecordLogEntry {
         for (FlowRecordLogEntry flowRecordLogEntry : flowRecordLogEntries) {
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowRecordLogEntry.loggingLevelName);
 
-            LogEntryEventBuilder logEntryBuilder = Logger.createLogEntryEventBuilder(loggingLevel)
+            LogEntryEventBuilder logEntryBuilder = Logger.newEntry(loggingLevel)
                 .setMessage(flowRecordLogEntry.message)
                 .setRecordId(flowRecordLogEntry.record)
                 .setTopics(flowRecordLogEntry.topics);

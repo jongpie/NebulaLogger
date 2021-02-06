@@ -108,7 +108,7 @@ global without sharing class Logger {
 
     // ERROR logging level methods
     global static LogEntryEventBuilder error() {
-        return createLogEntryEventBuilder(LoggingLevel.ERROR);
+        return newEntry(LoggingLevel.ERROR);
     }
 
     global static LogEntryEventBuilder error(String message) {
@@ -233,7 +233,7 @@ global without sharing class Logger {
 
     // WARN logging level methods
     global static LogEntryEventBuilder warn() {
-        return createLogEntryEventBuilder(LoggingLevel.WARN);
+        return newEntry(LoggingLevel.WARN);
     }
 
     global static LogEntryEventBuilder warn(String message) {
@@ -286,7 +286,7 @@ global without sharing class Logger {
 
     // INFO logging level methods
     global static LogEntryEventBuilder info() {
-        return createLogEntryEventBuilder(LoggingLevel.INFO);
+        return newEntry(LoggingLevel.INFO);
     }
 
     global static LogEntryEventBuilder info(String message) {
@@ -339,7 +339,7 @@ global without sharing class Logger {
 
     // DEBUG log level methods
     global static LogEntryEventBuilder debug() {
-        return createLogEntryEventBuilder(LoggingLevel.DEBUG);
+        return newEntry(LoggingLevel.DEBUG);
     }
 
     global static LogEntryEventBuilder debug(String message) {
@@ -392,7 +392,7 @@ global without sharing class Logger {
 
     // FINE log level methods
     global static LogEntryEventBuilder fine() {
-        return createLogEntryEventBuilder(LoggingLevel.FINE);
+        return newEntry(LoggingLevel.FINE);
     }
 
     global static LogEntryEventBuilder fine(String message) {
@@ -445,7 +445,7 @@ global without sharing class Logger {
 
     // FINER log level methods
     global static LogEntryEventBuilder finer() {
-        return createLogEntryEventBuilder(LoggingLevel.FINER);
+        return newEntry(LoggingLevel.FINER);
     }
 
     global static LogEntryEventBuilder finer(String message) {
@@ -498,7 +498,7 @@ global without sharing class Logger {
 
     // FINEST log level methods
     global static LogEntryEventBuilder finest() {
-        return createLogEntryEventBuilder(LoggingLevel.FINEST);
+        return newEntry(LoggingLevel.FINEST);
     }
 
     global static LogEntryEventBuilder finest(String message) {
@@ -547,6 +547,13 @@ global without sharing class Logger {
 
     global static LogEntryEventBuilder finest(LogMessage logMessage, Id recordId, List<String> topics) {
         return finest().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
+    }
+
+    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel) {
+        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel);
+        LOG_ENTRIES.add(logEntryBuilder);
+
+        return logEntryBuilder;
     }
 
     global static void setSaveMethod(Quiddity quiddity) {
@@ -695,13 +702,6 @@ global without sharing class Logger {
                 return LoggingLevel.DEBUG;
             }
         }
-    }
-
-    public static LogEntryEventBuilder createLogEntryEventBuilder(LoggingLevel loggingLevel) {
-        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel);
-        LOG_ENTRIES.add(logEntryBuilder);
-
-        return logEntryBuilder;
     }
 
     // For orgs that already have the aura cmp + quickAction deployed, this method is still needed (otherwise, deployment errors will occur)
