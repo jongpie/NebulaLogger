@@ -3,7 +3,7 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 
-public without sharing class FlowLogRepo {
+public inherited sharing class FlowLogRepo {
     /**
      * Returns the current Log created to the Flow so that you can redirect a user to the Log record when required
      *
