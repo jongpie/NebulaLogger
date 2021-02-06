@@ -699,6 +699,27 @@ global without sharing class Logger {
         return logEntryBuilder;
     }
 
+    // For orgs that already have the aura cmp + quickAction deployed, this method is still needed (otherwise, deployment errors will occur)
+    // TODO consider removing this method after converting aura cmp to lwc (and presumably create a dedicated Apex ctrl w/ this method)
+    @AuraEnabled
+    public static Log__c getLog(Id logId) {
+        List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
+        List<String> logEntryFieldNames = new List<String>(
+            Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet()
+        );
+
+        List<String> textReplacements = new List<String>{
+            String.join(logFieldNames, ','),
+            String.join(logEntryFieldNames, ',')
+        };
+        String query = String.format(
+            'SELECT {0}, (SELECT {1} FROM LogEntries__r) FROM Log__c WHERE Id = :logId',
+            textReplacements
+        );
+
+        return (Log__c) Database.query(query);
+    }
+
     // Inner class for saving log entries via a queuable job (using a singleton pattern)
     global class QueueableSaver implements Queueable {
         private Id jobId;
