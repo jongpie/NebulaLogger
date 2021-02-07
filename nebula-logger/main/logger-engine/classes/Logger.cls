@@ -11,8 +11,6 @@ global with sharing class Logger {
         LoggerSettings__c.getInstance().LoggingLevel__c
     );
 
-    private static final QueueableSaver ASYNC_SAVER_INSTANCE = new QueueableSaver();
-
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
     private static SaveMethod transactionSaveMethod = SaveMethod.DML;
@@ -624,6 +622,7 @@ global with sharing class Logger {
                     savingLogMessage += getCurrentQuiddity().name();
                 }
             }
+            savingLogMessage += ', save method is ' + saveMethod.name();
             finest(savingLogMessage);
         }
 
@@ -656,7 +655,7 @@ global with sharing class Logger {
                 System.debug('saveResults =' + results);
             }
             when QUEUEABLE {
-                ASYNC_SAVER_INSTANCE.enqueueLogEntries(logEntryEvents);
+                System.enqueueJob(new QueueableSaver(logEntryEvents));
             }
             when REST {
                 RestApi.insertRecords(logEntryEvents);
@@ -745,12 +744,8 @@ global with sharing class Logger {
 
         private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
-        global void enqueueLogEntries(List<LogEntryEvent__e> logEntryEvents) {
-            this.logEntryEvents.addAll(logEntryEvents);
-
-            if (jobId == null) {
-                jobId = System.enqueueJob(this);
-            }
+        private QueueableSaver(List<LogEntryEvent__e> logEntryEvents) {
+            this.logEntryEvents = logEntryEvents;
         }
 
         global void execute(System.QueueableContext queueableContext) {
