@@ -20,7 +20,7 @@ before_install:
     - sfdx --version
     - sfdx plugins --core
     - echo $SFDX_URL > sfdx_url_file
-    - sfdx force:auth:sfdxurl:store --sfdxurlfile sfdx_url_file --setalias nebula_ci
+    - sfdx auth:sfdxurl:store --sfdxurlfile sfdx_url_file --setalias nebula_ci
 
 script:
     - sfdx force:config:set apiVersion=50.0
