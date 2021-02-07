@@ -2,7 +2,7 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-global without sharing class Logger {
+global with sharing class Logger {
     private static final List<LogEntryEventBuilder> LOG_ENTRIES = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
 
@@ -565,7 +565,7 @@ global without sharing class Logger {
         saveLog(transactionSaveMethod);
     }
 
-    global static void saveLog(Quiddity quiddity) {
+    public static void saveLog(Quiddity quiddity) {
         // Verify that the user has create access
         if (!Schema.LogEntryEvent__e.SObjectType.getDescribe().isCreateable()) {
             return;

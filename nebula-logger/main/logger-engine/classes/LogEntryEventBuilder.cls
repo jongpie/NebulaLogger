@@ -2,11 +2,12 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-global without sharing class LogEntryEventBuilder {
+global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
     private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     private static final String ORIGIN_TYPE_FLOW = 'Flow';
+    private static final Boolean USER_CAN_CREATE_ENTRIES = SObjectType.LogEntryEvent__e.isCreateable();
 
     private final LogEntryEvent__e logEntryEvent;
 
@@ -18,8 +19,7 @@ global without sharing class LogEntryEventBuilder {
         this.loggingLevel = loggingLevel;
 
         // Verify that the user has create access & has logging enabled
-        Boolean userCanCreateEntries = Schema.LogEntryEvent__e.SObjectType.getDescribe().isCreateable();
-        this.shouldSave = userCanCreateEntries && Logger.isEnabled(loggingLevel);
+        this.shouldSave = USER_CAN_CREATE_ENTRIES && Logger.isEnabled(loggingLevel);
 
         if (!this.shouldSave) {
             return;
