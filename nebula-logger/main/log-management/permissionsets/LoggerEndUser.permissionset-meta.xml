@@ -16,7 +16,7 @@
         <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Provides access for users to:
+    <description>Provides access to:
   - Generate log entries via Apex, Flow and Process Builder.
   - View shared logs &amp; log entries</description>
     <fieldPermissions>
