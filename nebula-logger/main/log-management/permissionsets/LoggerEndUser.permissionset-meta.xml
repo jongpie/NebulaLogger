@@ -26,11 +26,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.ExceptionStackTrace__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntry__c.ExceptionType__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -346,11 +341,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordJson__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntry__c.RecordLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -362,11 +352,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.RecordSObjectType__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.StackTrace__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
