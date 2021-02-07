@@ -2,7 +2,7 @@
  * This file is part of the Nebula Logger project, released under the MIT License.                *
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
-global without sharing virtual class LogMessage {
+global inherited sharing virtual class LogMessage {
     private String formattedMessage;
     private String unformattedMessage;
     private List<Object> messageInputs;
