@@ -5,6 +5,7 @@
 global with sharing class Logger {
     private static final List<LogEntryEventBuilder> LOG_ENTRIES = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
+    private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
 
     private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(
         LoggerSettings__c.getInstance().LoggingLevel__c
@@ -14,7 +15,7 @@ global with sharing class Logger {
 
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
-    private static Quiddity transactionSaveMethod = System.Request.getCurrent().getQuiddity();
+    private static SaveMethod transactionSaveMethod = SaveMethod.DML;
 
     static {
         // If settings have not been configured, then insert the org defaults
@@ -22,6 +23,12 @@ global with sharing class Logger {
         if (orgDefaults.Id == null) {
             insert orgDefaults;
         }
+    }
+
+    global enum SaveMethod {
+        DML,
+        QUEUEABLE,
+        REST
     }
 
     // Settings management methods
@@ -42,7 +49,7 @@ global with sharing class Logger {
     }
 
     global static Quiddity getCurrentQuiddity() {
-        return transactionSaveMethod;
+        return TRANSACTION_QUIDDITY;
     }
 
     global static Boolean isEnabled() {
@@ -556,8 +563,8 @@ global with sharing class Logger {
         return logEntryBuilder;
     }
 
-    global static void setSaveMethod(Quiddity quiddity) {
-        transactionSaveMethod = quiddity;
+    global static void setSaveMethod(SaveMethod saveMethod) {
+        transactionSaveMethod = saveMethod;
     }
 
     @InvocableMethod(category='Logging' label='Save Log' description='Saves any log entries that have been generated')
@@ -565,7 +572,7 @@ global with sharing class Logger {
         saveLog(transactionSaveMethod);
     }
 
-    public static void saveLog(Quiddity quiddity) {
+    global static void saveLog(SaveMethod saveMethod) {
         // Verify that the user has create access
         if (!Schema.LogEntryEvent__e.SObjectType.getDescribe().isCreateable()) {
             return;
@@ -588,7 +595,7 @@ global with sharing class Logger {
 
         if (systemMessagesEnabled) {
             String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries via ';
-            switch on quiddity {
+            switch on getCurrentQuiddity() {
                 when ANONYMOUS {
                     savingLogMessage += 'Anonymous Apex';
                 }
@@ -614,7 +621,7 @@ global with sharing class Logger {
                     savingLogMessage += 'Apex synchronous DML';
                 }
                 when else {
-                    savingLogMessage += quiddity.name();
+                    savingLogMessage += getCurrentQuiddity().name();
                 }
             }
             finest(savingLogMessage);
@@ -643,16 +650,16 @@ global with sharing class Logger {
             logEntryEvents.add(logEntryEvent);
         }
 
-        switch on quiddity {
+        switch on transactionSaveMethod {
+            when DML {
+                List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
+                System.debug('saveResults =' + results);
+            }
             when QUEUEABLE {
                 ASYNC_SAVER_INSTANCE.enqueueLogEntries(logEntryEvents);
             }
             when REST {
                 RestApi.insertRecords(logEntryEvents);
-            }
-            when else {
-                List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
-                System.debug('saveResults =' + results);
             }
         }
 
