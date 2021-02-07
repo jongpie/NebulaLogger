@@ -722,7 +722,13 @@ global with sharing class Logger {
             textReplacements
         );
 
-        return (Log__c) Database.query(query);
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(query));
+
+        if (securityDecision.getRecords().isEmpty()) {
+            return null;
+        } else {
+            return (Log__c) securityDecision.getRecords().get(0);
+        }
     }
 
     // Inner class for saving log entries via a queuable job (using a singleton pattern)
