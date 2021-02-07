@@ -85,8 +85,7 @@ private class Logger_Tests {
         };
         System.assertEquals(true, acceptableDefaultQuidditiesForTests.contains(Logger.getCurrentQuiddity()));
 
-        Logger.setSaveMethod(Quiddity.SYNCHRONOUS);
-        System.assertEquals(Quiddity.SYNCHRONOUS, Logger.getCurrentQuiddity());
+        System.assertEquals(System.Request.getCurrent().getQuiddity(), Logger.getCurrentQuiddity());
     }
 
     @isTest
