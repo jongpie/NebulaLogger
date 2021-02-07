@@ -33,6 +33,10 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     }
 
     global void execute(Database.BatchableContext batchableContext, List<Log__c> scope) {
+        if (!Schema.Log__c.SObjectType.getDescribe().isDeletable()) {
+            throw new LogBatchPurgerException('User does not have access to delete logs');
+        }
+
         this.totalProcessedRecords += scope.size();
 
         try {
