@@ -1367,4 +1367,28 @@ private class Logger_Tests {
     // public static void finest(String message, Id recordId, List<String> topics) {
     //     finest().setMessage(message).setRecordId(recordId).setTopics(topics);
     // }
+
+    @isTest
+    static void it_should_return_log_when_id_provided() {
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+
+        Test.startTest();
+        Log__c returnedLog = Logger.getLog(log.Id);
+        Test.stopTest();
+
+        System.assertEquals(log.Id, returnedLog.Id);
+    }
+
+    @isTest
+    static void it_should_return_log_when_transaction_id_provided() {
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+
+        Test.startTest();
+        Log__c returnedLog = Logger.getLog(log.TransactionId__c);
+        Test.stopTest();
+
+        System.assertEquals(log.Id, returnedLog.Id);
+    }
 }

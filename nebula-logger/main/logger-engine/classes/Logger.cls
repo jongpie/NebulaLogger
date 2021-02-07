@@ -706,8 +706,9 @@ global with sharing class Logger {
 
     // For orgs that already have the aura cmp + quickAction deployed, this method is still needed (otherwise, deployment errors will occur)
     // TODO consider removing this method after converting aura cmp to lwc (and presumably create a dedicated Apex ctrl w/ this method)
+    // But the safe choice is to just keep it now/forever
     @AuraEnabled
-    public static Log__c getLog(Id logId) {
+    public static Log__c getLog(String logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
         List<String> logEntryFieldNames = new List<String>(
             Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet()
@@ -718,7 +719,7 @@ global with sharing class Logger {
             String.join(logEntryFieldNames, ',')
         };
         String query = String.format(
-            'SELECT {0}, (SELECT {1} FROM LogEntries__r) FROM Log__c WHERE Id = :logId',
+            'SELECT {0}, (SELECT {1} FROM LogEntries__r) FROM Log__c WHERE Id = :logId OR TransactionId__c = :logId',
             textReplacements
         );
 
