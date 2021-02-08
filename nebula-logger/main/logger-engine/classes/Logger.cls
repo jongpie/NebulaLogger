@@ -713,7 +713,7 @@ global with sharing class Logger {
     // For orgs that already have the aura cmp + quickAction deployed, this method is still needed (otherwise, deployment errors will occur)
     // TODO consider removing this method after converting aura cmp to lwc (and presumably create a dedicated Apex ctrl w/ this method)
     // But the safe choice is to just keep it now/forever
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Log__c getLog(String logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
         List<String> logEntryFieldNames = new List<String>(
