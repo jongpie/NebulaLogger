@@ -29,9 +29,24 @@ export default class LogJSONViewer extends LightningElement {
 
     copyToClipboard() {
         const value = this.template.querySelector('pre').textContent;
+
+        const textArea = document.createElement('textarea');
+        textArea.value = value;
+        // Avoid scrolling to bottom
+        textArea.style.top = '0';
+        textArea.style.left = '0';
+        textArea.style.position = 'fixed';
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
         // I figure it might be nice to also include the parsed JSON in the console
+        console.log('Log data successfully copied to clipboard:');
         console.log(JSON.parse(value));
-        document.execCommand('copy', value);
+
         this.jsonCopied = true;
     }
 }
