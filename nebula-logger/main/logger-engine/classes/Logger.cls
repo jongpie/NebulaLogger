@@ -704,7 +704,7 @@ global without sharing class Logger {
         return logEntryBuilder;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Log__c getLog(Id logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
         List<String> logEntryFieldNames = new List<String>(
