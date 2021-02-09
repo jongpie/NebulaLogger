@@ -7,7 +7,7 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 1. Easily add log entries via Apex, Flow & Process Builder
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
-4. Easily enable logging & change the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
+4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
 
 
 ## Installing
