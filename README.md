@@ -38,9 +38,9 @@ Logger.error('Add log entry using Nebula Logger with loging level == ERROR');
 Logger.warn('Add log entry using Nebula Logger with loging level == WARN');
 Logger.info('Add log entry using Nebula Logger with loging level == INFO');
 Logger.debug('Add log entry using Nebula Logger with loging level == DEBUG');
-logger.fine('Add log entry using Nebula Logger with loging level == FINE');
-logger.finer('Add log entry using Nebula Logger with loging level == FINER');
-logger.finest('Add log entry using Nebula Logger with loging level == FINEST');
+Logger.fine('Add log entry using Nebula Logger with loging level == FINE');
+Logger.finer('Add log entry using Nebula Logger with loging level == FINER');
+Logger.finest('Add log entry using Nebula Logger with loging level == FINEST');
 Logger.saveLog();
 ```
 
@@ -63,7 +63,7 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 ![Flow Log Results](./content/flow-log.png)
 
 ## All Together: Apex & Flow in 1 Log
-After incorporating Logger into your Apex code (including controllers, trigger framework, etc.) and Flows, you'll have a unified log of all you declarative & custom code automations.
+After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all you declarative & custom code automations.
 
 ```java
 Case currentCase = [SELECT Id, CaseNumber, Type, Status, IsClosed FROM Case LIMIT 1];
