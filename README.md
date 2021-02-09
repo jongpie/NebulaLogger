@@ -48,7 +48,7 @@ Within Flow & Process Builder, you can select 1 of the several Logging actions
 
 ![Flow Logger Actions](./content/flow-logger-actions.png)
 
-In this simple example, a Flow is configured after-insert and after-update to log a Case record (using the Add Log Entry for an SObject record)
+In this simple example, a Flow is configured after-insert and after-update to log a Case record (using the action 'Add Log Entry for an SObject Record')
 
 ![Flow Builder: Log Case](./content/flow-builder-log-case.png)
 
