@@ -16,9 +16,10 @@ You can either deploy the metadata from this repo to your org, or install the ma
 |             | Unpackaged Metadata | 2nd Gen Managed Package |
 | ----------- | ------------------- | ----------------------- |
 | Namespace   | none                | `Nebula`                |
+| Future Releases        | New enhancements & bugfixes will be immediately available in GitHub | Slower release cycle: new package versions will only be released once new enhancements & bugfixes have been tested and code is stabilized |
+| Public Apex Methods        | Any `public` Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to `public` methods are not backwards-compatible | Only `global` methods are available in managed packages - any `global` Apex methods available in the managed package will be supported for the foreseeable future |
 | Apex Stack Traces        | Automatically stored in `LogEntry__c.StackTrace__c` | Requires calling `parseStackTrace()` due to Salesforce limitations with managed packages |
-| Installing  | [Deploy Unpackaged Metadata](https://githubsfdeploy.herokuapp.com) | [Install Managed Package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000lsfpAAA)             |
-
+| Installing  | <a href="https://githubsfdeploy.herokuapp.com"><img alt="Deploy Unpackaged Metadata" src="./content/btn-deploy-unmanaged-metadata.png"></a> | <a href="https://login.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000lsfpAAA"><img alt="Install Managed Package" src="./content/btn-install-managed-package.png"></a>
 
 ## Getting Started
 After deploying Nebula Logger to your org, it can be used immediately by admins without any additional configuration. But you may still want to...
