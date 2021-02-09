@@ -1,10 +1,6 @@
 # Nebula Logger for Salesforce
 [![Travis CI](https://img.shields.io/travis/jongpie/NebulaLogger/master.svg)](https://travis-ci.org/jongpie/NebulaLogger)
 
-<a href="https://githubsfdeploy.herokuapp.com" target="_blank">
-    <img alt="Deploy to Salesforce" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
-</a>
-
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
 ## Features
@@ -14,9 +10,19 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 4. Easily enable logging & change the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
 
 
+## Installing
+You can either deploy the metadata from this repo to your org, or install the managed package. The metadata is the same, but there are some differences in using the 2 versions
+
+|             | Unpackaged Metadata | 2nd Gen Managed Package |
+| ----------- | ------------------- | ----------------------- |
+| Namespace   | none                | `Nebula`                |
+| Apex Stack Traces        | Automatically stored in `LogEntry__c.StackTrace__c` | Requires calling `parseStackTrace()` due to Salesforce limitations with managed packages |
+| Installing  | [Deploy Unpackaged Metadata](https://githubsfdeploy.herokuapp.com) | [Install Managed Package](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000lsfpAAA)             |
+
+
 ## Getting Started
 After deploying Nebula Logger to your org, it can be used immediately by admins without any additional configuration. But you may still want to...
-* Assign the permission set `LoggerEndUser` to any end users that will generate logs via Apex, Flow or Process Builder
+* Assign the permission set `LoggerLogCreator` or `LoggerEndUser` to any users that will generate logs via Apex, Flow or Process Builder. `LoggerEndUser` also provides read access to any `Log__c` records shared with the user.
 * Assign the permission sets `LoggerLogAdmin` or `LoggerLogViewer` to power users
 * Customize the default settings in `LoggerSettings__c`
 
@@ -63,11 +69,11 @@ After incorporating Logger into your Apex code (including controllers, trigger f
 Case currentCase = [SELECT Id, CaseNumber, Type, Status, IsClosed FROM Case LIMIT 1];
 
 Logger.info('First, log the case through Apex', currentCase);
-Logger.debug('Now, we update the case in Apex to trigger our record-triggered Flow', currentCase);
 
+Logger.debug('Now, we update the case in Apex to cause our record-triggered Flow to run');
 update currentCase;
 
-Logger.info('Now, save our log');
+Logger.info('Last, save our log');
 Logger.saveLog();
 ```
 
