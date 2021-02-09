@@ -38,11 +38,42 @@ logger.finest('Add log entry using Nebula Logger with loging level == FINEST');
 Logger.saveLog();
 ```
 
-## Logger for Flow & Process Builder: Quick Start
-// TODO
 
-## Labeling/tagging Logs with Salesforce Topics
-// TODO
+This results in 1 `Log__c` record with several related `LogEntry__c` records.
+
+![Apex Log Results](./content/apex-log.png)
+
+## Logger for Flow & Process Builder: Quick Start
+Within Flow & Process Builder, you can select 1 of the several Logging actions
+
+![Flow Logger Actions](./content/flow-logger-actions.png)
+
+In this simple example, a Flow is configured after-insert and after-update to log a Case record (using the Add Log Entry for an SObject record)
+
+![Flow Builder: Log Case](./content/flow-builder-log-case.png)
+
+This results in a `Log__c` record with related `LogEntry__c` records.
+
+![Flow Log Results](./content/flow-log.png)
+
+## All Together: Apex & Flow in 1 Log
+After incorporating Logger into your Apex code (including controllers, trigger framework, etc.) and Flows, you'll have a unified log of all you declarative & custom code automations.
+
+```java
+Case currentCase = [SELECT Id, CaseNumber, Type, Status, IsClosed FROM Case LIMIT 1];
+
+Logger.info('First, log the case through Apex', currentCase);
+Logger.debug('Now, we update the case in Apex to trigger our record-triggered Flow', currentCase);
+
+update currentCase;
+
+Logger.info('Now, save our log');
+Logger.saveLog();
+```
+
+This generates 1 consolidated `Log__c`, containing `LogEntry__c` records from both Apex and Flow
+
+![Flow Log Results](./content/combined-apex-flow-log.png)
 
 ## Managing Logs
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
