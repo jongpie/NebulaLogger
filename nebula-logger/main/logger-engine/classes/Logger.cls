@@ -13,7 +13,7 @@ global with sharing class Logger {
 
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
-    private static SaveMethod transactionSaveMethod = SaveMethod.DML;
+    private static SaveMethod transactionSaveMethod = SaveMethod.EVENT_BUS;
 
     static {
         // If settings have not been configured, then insert the org defaults
@@ -24,7 +24,7 @@ global with sharing class Logger {
     }
 
     global enum SaveMethod {
-        DML,
+        EVENT_BUS,
         QUEUEABLE,
         REST
     }
@@ -650,7 +650,7 @@ global with sharing class Logger {
         }
 
         switch on transactionSaveMethod {
-            when DML {
+            when EVENT_BUS {
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
                 System.debug('saveResults =' + results);
             }
