@@ -5,7 +5,7 @@
     <img alt="Deploy to Salesforce" src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-A robust logger for Apex, Flow and Process Builder. Designed for Salesforce admins, developers & architects.
+Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
 ## Features
 1. Easily add log entries via Apex, Flow & Process Builder
@@ -74,6 +74,9 @@ Logger.saveLog();
 This generates 1 consolidated `Log__c`, containing `LogEntry__c` records from both Apex and Flow
 
 ![Flow Log Results](./content/combined-apex-flow-log.png)
+
+## Event-Driven Integrations with Platform Events
+Logger is built using Salesforce's [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
 
 ## Managing Logs
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
