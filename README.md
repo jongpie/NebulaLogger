@@ -3,12 +3,8 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
-<a href="https://login.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000lsfpAAA">
-    <img alt="Install Managed Package" src="./content/btn-install-managed-package.png">
-</a>
-<a href="https://githubsfdeploy.herokuapp.com">
-    <img alt="Deploy Unpackaged Metadata" src="./content/btn-deploy-unmanaged-metadata.png">
-</a>
+[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000lsfpAAA)
+[![Deploy Unpackaged Metadata](./content/btn-deploy-unmanaged-metadata.png)](https://githubsfdeploy.herokuapp.com)
 
 ## Features
 1. Easily add log entries via Apex, Flow & Process Builder
