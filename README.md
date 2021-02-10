@@ -101,9 +101,11 @@ Logger is built using Salesforce's [Platform Events](https://developer.salesforc
 
 ## Managing Logs
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Nebula__Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
-* All editable fields on `Nebula__Log__c` can be updated via the 'Manage Log' quick action
+* All editable fields on `Nebula__Log__c` can be updated via the 'Manage Log' quick action (shown below)
 * Additional fields, such as `Nebula__Log__c.Nebula__IsClosed__c`, `Nebula__Log__c.Nebula__IsResolved__c`, `Nebula__Log__c.Nebula__ClosedBy__c` and `Nebula__Log__c.Nebula__ClosedDate__c`, are automatically set based on changes to `Nebula__Log__c.Nebula__Status__c`.
 * To customize the statuses provided, simply update the picklist values for `Nebula__Log__c.Status__c` and create/update corresponding records in the custom metadata type `Nebula__LogStatus__mdt`. This custom metadata type controls which statuses are considerd closed and resolved.
+
+![Manage Log QuickAction](./content/manage-log-quickaction.png)
 
 ## Deleting Old Logs
 Two Apex classes are provided out-of-the-box to handle automatically deleting old logs
