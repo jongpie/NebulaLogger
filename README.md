@@ -78,7 +78,7 @@ This results in a `Nebula__Log__c` record with related `Nebula__LogEntry__c` rec
 ![Flow Log Results](./content/flow-log.png)
 
 ## All Together: Apex & Flow in One Log
-After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all you declarative & custom code automations.
+After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.
 
 ```java
 Case currentCase = [SELECT Id, CaseNumber, Type, Status, IsClosed FROM Case LIMIT 1];
