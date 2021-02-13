@@ -27,6 +27,10 @@ global inherited sharing virtual class LogMessage {
         this.messageInputs = messageInputs;
     }
 
+    // Parameterless constructor that can be used by subclasses when extending LogMessage
+    protected LogMessage() {
+    }
+
     global virtual String getMessage() {
         // Just in case getMessage() is called multiple times (first by the originating code, then by Logger)
         // ...cache the result (save CPU time from multiple calls) and discard the original parameters (reduce heap size)
