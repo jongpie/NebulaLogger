@@ -4,14 +4,15 @@
  *************************************************************************************************/
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
+    private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
     private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     private static final String ORIGIN_TYPE_FLOW = 'Flow';
-    private static final Boolean USER_CAN_CREATE_ENTRIES = SObjectType.LogEntryEvent__e.isCreateable();
+    private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
 
     private final LogEntryEvent__e logEntryEvent;
+    private final LoggingLevel loggingLevel;
 
-    private LoggingLevel loggingLevel;
     private Boolean shouldSave;
     private Boolean userSessionDetailsAreSet = false;
 
@@ -19,13 +20,11 @@ global with sharing class LogEntryEventBuilder {
         this.loggingLevel = loggingLevel;
 
         // Verify that the user has create access & has logging enabled
-        this.shouldSave = USER_CAN_CREATE_ENTRIES && Logger.isEnabled(loggingLevel);
+        this.shouldSave = USER_CAN_CREATE_LOG_ENTRY_EVENTS && Logger.isEnabled(loggingLevel);
 
         if (!this.shouldSave) {
             return;
         }
-
-        DmlException stackTraceException = new DmlException();
 
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = API_VERSION,
@@ -53,7 +52,10 @@ global with sharing class LogEntryEventBuilder {
             TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
         );
 
-        this.parseStackTrace(stackTraceException.getStackTraceString());
+        if (!hasNamespacePrefix()) {
+            DmlException stackTraceException = new DmlException();
+            this.parseStackTrace(stackTraceException.getStackTraceString());
+        }
     }
 
     global LogEntryEventBuilder setMessage(String message) {
@@ -63,7 +65,7 @@ global with sharing class LogEntryEventBuilder {
 
         // When running as unmanaged code, auto-call System.debug
         // System.debug is useless in managed packages, so don't bother when namespaced
-        if (Namespace.hasPrefix()) {
+        if (!hasNamespacePrefix()) {
             System.debug(this.loggingLevel, message);
         }
 
@@ -183,16 +185,16 @@ global with sharing class LogEntryEventBuilder {
         return this;
     }
 
-    global LogEntryEventBuilder alwaysSave() {
+    public Boolean shouldSave() {
+        return this.shouldSave;
+    }
+
+    public LogEntryEventBuilder alwaysSave() {
         this.shouldSave = true;
         return this;
     }
 
-    global Boolean shouldSave() {
-        return this.shouldSave;
-    }
-
-    global LogEntryEvent__e getLogEntryEvent() {
+    public LogEntryEvent__e getLogEntryEvent() {
         // Lazy-loading of setting user-session details to help minimize Apex heap size usage
         if (!this.userSessionDetailsAreSet) {
             this.setUserSessionDetails();
@@ -265,6 +267,22 @@ global with sharing class LogEntryEventBuilder {
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
     }
 
+    // TODO move namespace methods to separate Namespace class (again) if other classes end up needing this info
+    private static Boolean hasNamespacePrefix() {
+        return String.isNotBlank(NAMESPACE_PREFIX);
+    }
+
+    private static String getNamespacePrefix() {
+        String className = LogEntryEventBuilder.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
+    }
+
+    // private static String getPrefixWithDelimiter(String delimiter) {
+    //     return String.isBlank(getPrefix()) ? '' : getPrefix() + delimiter;
+    // }
+
     private static String getVisualforcePageName() {
         String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
         if (visualforcePageName != null && visualforcePageName.contains('?')) {
@@ -283,7 +301,7 @@ global with sharing class LogEntryEventBuilder {
         if (stackTraceString == '()') {
             return false;
         }
-        if (stackTraceString == '(' + Namespace.getPrefix() + ')') {
+        if (stackTraceString == '(' + getNamespacePrefix() + ')') {
             return false;
         }
 
