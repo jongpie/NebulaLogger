@@ -738,7 +738,7 @@ global with sharing class Logger {
         }
     }
 
-    // Inner class for saving log entries via a queuable job (using a singleton pattern)
+    // Inner class for saving log entries via a queuable job
     global class QueueableSaver implements Queueable {
         private Id jobId;
 
@@ -753,6 +753,7 @@ global with sharing class Logger {
         }
     }
 
+    // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
         private final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v50.0';
         private final String COMPOSITE_ENDPOINT = BASE_URL + '/composite/sobjects';
@@ -790,6 +791,7 @@ global with sharing class Logger {
     private class RestResponseException extends Exception {
     }
 
+    // Inner class that matches the format expected by the REST API for saving SObjects
     private class RestSaveRequest {
         public Boolean allOrNone { get; set; }
         public List<SObject> records { get; set; }
