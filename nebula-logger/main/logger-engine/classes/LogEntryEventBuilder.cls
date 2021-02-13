@@ -52,10 +52,11 @@ global with sharing class LogEntryEventBuilder {
             TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
         );
 
-        if (!hasNamespacePrefix()) {
-            DmlException stackTraceException = new DmlException();
-            this.parseStackTrace(stackTraceException.getStackTraceString());
-        }
+        // TODO add check to see if the class's namespace == the org's namespace
+        //if (!hasNamespacePrefix()) {
+        DmlException stackTraceException = new DmlException();
+        this.parseStackTrace(stackTraceException.getStackTraceString());
+        //}
     }
 
     global LogEntryEventBuilder setMessage(String message) {
@@ -65,9 +66,10 @@ global with sharing class LogEntryEventBuilder {
 
         // When running as unmanaged code, auto-call System.debug
         // System.debug is useless in managed packages, so don't bother when namespaced
-        if (!hasNamespacePrefix()) {
-            System.debug(this.loggingLevel, message);
-        }
+        // TODO add check to see if the class's namespace == the org's namespace
+        // if (!hasNamespacePrefix()) {
+        System.debug(this.loggingLevel, message);
+        // }
 
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
 

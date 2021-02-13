@@ -331,6 +331,75 @@ private class Logger_Tests {
     }
 
     @isTest
+    static void it_should_save_via_event_bus() {
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+
+        setUserLoggingLevel(LoggingLevel.DEBUG);
+
+        Logger.debug('test log entry');
+        Logger.debug('another test log entry');
+
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+
+        Test.startTest();
+
+        Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
+        System.assertEquals(1, Limits.getPublishImmediateDml());
+
+        Test.stopTest();
+
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(2, countOfLogEntries);
+    }
+
+    @isTest
+    static void it_should_save_via_queueable() {
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+
+        setUserLoggingLevel(LoggingLevel.DEBUG);
+
+        Logger.debug('test log entry');
+        Logger.debug('another test log entry');
+
+        System.assertEquals(0, Limits.getQueueableJobs());
+
+        Test.startTest();
+
+        Logger.saveLog(Logger.SaveMethod.QUEUEABLE);
+
+        Test.stopTest();
+
+        // TODO figure out why this Limits method seems to always return 0
+        // System.assertEquals(1, Limits.getQueueableJobs());
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(2, countOfLogEntries);
+    }
+
+    @isTest
+    static void it_should_save_via_rest_api() {
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+
+        setUserLoggingLevel(LoggingLevel.DEBUG);
+
+        Logger.debug('test log entry');
+        Logger.debug('another test log entry');
+
+        System.assertEquals(0, Limits.getCallouts());
+
+        Test.startTest();
+
+        Logger.saveLog(Logger.SaveMethod.REST);
+
+        Test.stopTest();
+
+        // TODO figure out why this Limits method seems to always return 0
+        // System.assertEquals(1, Limits.getCallouts());
+    }
+
+    @isTest
     static void it_should_flush_buffer() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
