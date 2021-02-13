@@ -9,6 +9,7 @@ public without sharing class LogHandler {
     static {
         logStatusByName = new Map<String, LogStatus__mdt>();
 
+        // TODO replace query with new Spring '21 method getAll()
         for (LogStatus__mdt logStatus : [
             SELECT MasterLabel, IsClosed__c, IsResolved__c
             FROM LogStatus__mdt
