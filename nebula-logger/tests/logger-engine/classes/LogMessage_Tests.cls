@@ -4,6 +4,30 @@
  *************************************************************************************************/
 @isTest
 private class LogMessage_Tests {
+    public class CustomLogMessage extends LogMessage {
+        private CustomLogMessage() {
+        }
+        public override String getMessage() {
+            return 'any string you want';
+        }
+    }
+
+    @isTest
+    static void it_should_support_extending_LogMessage_class() {
+        CustomLogMessage customLogMessage = new CustomLogMessage();
+        String expectedMessage = customLogMessage.getMessage();
+
+        Test.startTest();
+
+        Logger.debug(customLogMessage);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, Message__c FROM LogEntry__c];
+        System.assertEquals(expectedMessage, logEntry.Message__c);
+    }
+
     @isTest
     static void it_should_return_formatted_message_when_1_object_list_parameter_provided() {
         String unformattedMessage = 'my string with 1 input: {0}';

@@ -7,6 +7,24 @@ private class Logger_Tests {
     private class Logger_TestsException extends Exception {
     }
 
+    private class SuccessCalloutMock implements HttpCalloutMock {
+        public HttpResponse respond(HttpRequest request) {
+            HttpResponse response = new HttpResponse();
+            response.setBody(request.getBody());
+            response.setStatusCode(200);
+            return response;
+        }
+    }
+
+    private class FailureCalloutMock implements HttpCalloutMock {
+        public HttpResponse respond(HttpRequest request) {
+            HttpResponse response = new HttpResponse();
+            response.setBody(request.getBody());
+            response.setStatusCode(400);
+            return response;
+        }
+    }
+
     static User getCurrentUser() {
         return new User(Id = UserInfo.getUserId());
     }
@@ -346,6 +364,8 @@ private class Logger_Tests {
 
         Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
         System.assertEquals(1, Limits.getPublishImmediateDml());
+        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, Limits.getCallouts());
 
         Test.stopTest();
 
@@ -368,17 +388,20 @@ private class Logger_Tests {
         Test.startTest();
 
         Logger.saveLog(Logger.SaveMethod.QUEUEABLE);
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(1, Limits.getQueueableJobs());
+        System.assertEquals(0, Limits.getCallouts());
 
         Test.stopTest();
 
-        // TODO figure out why this Limits method seems to always return 0
-        // System.assertEquals(1, Limits.getQueueableJobs());
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(2, countOfLogEntries);
     }
 
     @isTest
     static void it_should_save_via_rest_api() {
+        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -392,11 +415,39 @@ private class Logger_Tests {
         Test.startTest();
 
         Logger.saveLog(Logger.SaveMethod.REST);
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(1, Limits.getCallouts());
 
         Test.stopTest();
+    }
 
-        // TODO figure out why this Limits method seems to always return 0
-        // System.assertEquals(1, Limits.getCallouts());
+    @isTest
+    static void it_should_throw_exception_when_save_via_rest_api_fails() {
+        Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
+
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+
+        setUserLoggingLevel(LoggingLevel.DEBUG);
+
+        Logger.debug('test log entry');
+        Logger.debug('another test log entry');
+
+        System.assertEquals(0, Limits.getCallouts());
+
+        Test.startTest();
+
+        try {
+            Logger.saveLog(Logger.SaveMethod.REST);
+        } catch (Exception ex) {
+            System.assertEquals(ex.getTypeName(), Logger.RestResponseException.class.getName());
+        }
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(1, Limits.getCallouts());
+
+        Test.stopTest();
     }
 
     @isTest

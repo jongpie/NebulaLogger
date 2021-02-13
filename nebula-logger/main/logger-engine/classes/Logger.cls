@@ -649,7 +649,7 @@ global with sharing class Logger {
             logEntryEvents.add(logEntryEvent);
         }
 
-        switch on transactionSaveMethod {
+        switch on saveMethod {
             when EVENT_BUS {
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
                 System.debug('saveResults =' + results);
@@ -788,6 +788,7 @@ global with sharing class Logger {
         }
     }
 
+    @testVisible
     private class RestResponseException extends Exception {
     }
 
