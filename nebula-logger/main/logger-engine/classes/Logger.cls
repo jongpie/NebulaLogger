@@ -658,7 +658,7 @@ global with sharing class Logger {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));
             }
             when REST {
-                RestApi.insertRecords(logEntryEvents);
+                new RestApiSaver().insertRecords(logEntryEvents);
             }
         }
 
@@ -750,6 +750,53 @@ global with sharing class Logger {
 
         global void execute(System.QueueableContext queueableContext) {
             EventBus.publish(this.logEntryEvents);
+        }
+    }
+
+    private class RestApiSaver {
+        private final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v50.0';
+        private final String COMPOSITE_ENDPOINT = BASE_URL + '/composite/sobjects';
+
+        private RestApiSaver() {
+        }
+
+        public void insertRecords(List<SObject> records) {
+            HttpRequest request = new HttpRequest();
+            request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
+            request.setHeader('Content-Type', 'application/json; charset=utf-8');
+            request.setEndpoint(BASE_URL + COMPOSITE_ENDPOINT);
+
+            Boolean allOrNone = true;
+            RestSaveRequest saveRequest = new RestSaveRequest(records, allOrNone);
+            request.setBody(Json.serialize(saveRequest));
+
+            HttpResponse response = new Http().send(request);
+            this.validateResponse(response);
+        }
+
+        private void validateResponse(Httpresponse response) {
+            Integer statusCode = response.getStatusCode();
+            if (statusCode >= 400) {
+                String errorMessage =
+                    'Saving via REST API failed. Received request status code ' +
+                    statusCode +
+                    ', status message: ' +
+                    response.getStatus();
+                throw new RestResponseException(errorMessage);
+            }
+        }
+    }
+
+    private class RestResponseException extends Exception {
+    }
+
+    private class RestSaveRequest {
+        public Boolean allOrNone { get; set; }
+        public List<SObject> records { get; set; }
+
+        private RestSaveRequest(List<SObject> records, Boolean allOrNone) {
+            this.allOrNone = allOrNone;
+            this.records = records;
         }
     }
 }
