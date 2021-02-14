@@ -36,11 +36,7 @@ private class LogEntryHandler_Tests {
         insert logEntry;
         Test.stopTest();
 
-        logEntry = [
-            SELECT Id, RecordId__c, RecordName__c, RecordSObjectType__c
-            FROM LogEntry__c
-            WHERE Id = :logEntry.Id
-        ];
+        logEntry = [SELECT Id, RecordId__c, RecordName__c, RecordSObjectType__c FROM LogEntry__c WHERE Id = :logEntry.Id];
         System.assertEquals(currentUser.Id, logEntry.RecordId__c);
         System.assertEquals(currentUser.Username, logEntry.RecordName__c);
         System.assertEquals('User', logEntry.RecordSObjectType__c);

@@ -10,19 +10,11 @@ private class LogBatchPurgeScheduler_Tests {
     static void it_should_schedule_job() {
         Test.startTest();
 
-        Id jobId = System.schedule(
-            'Test schedule of LogBatchPurgeScheduler',
-            TEST_CRON_EXPRESSION,
-            new LogBatchPurgeScheduler()
-        );
+        Id jobId = System.schedule('Test schedule of LogBatchPurgeScheduler', TEST_CRON_EXPRESSION, new LogBatchPurgeScheduler());
 
         Test.stopTest();
 
-        CronTrigger cronTrigger = [
-            SELECT Id, CronExpression, TimesTriggered, NextFireTime
-            FROM CronTrigger
-            WHERE Id = :jobId
-        ];
+        CronTrigger cronTrigger = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE Id = :jobId];
         System.assertEquals(TEST_CRON_EXPRESSION, cronTrigger.CronExpression);
         System.assertEquals(0, cronTrigger.TimesTriggered);
     }

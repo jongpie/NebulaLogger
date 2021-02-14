@@ -111,10 +111,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        String truncatedRecordJson = truncateFieldValue(
-            Schema.LogEntryEvent__e.RecordJson__c,
-            Json.serializePretty(record)
-        );
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, Json.serializePretty(record));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
         return this.setRecordId(record.Id);
@@ -151,11 +148,7 @@ global with sharing class LogEntryEventBuilder {
         List<String> stackTraceLines = new List<String>();
         for (String currentStackTraceLine : stackTraceString.split('\n')) {
             // Don't include the logging system's classes in the stack trace
-            List<String> ignoredClasses = new List<String>{
-                Logger.class.getName(),
-                LogMessage.class.getName(),
-                LogEntryEventBuilder.class.getName()
-            };
+            List<String> ignoredClasses = new List<String>{ Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
 
             Boolean ignoreLine = false;
             for (String ignoredClass : ignoredClasses) {

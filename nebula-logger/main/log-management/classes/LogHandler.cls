@@ -10,11 +10,7 @@ public without sharing class LogHandler {
         logStatusByName = new Map<String, LogStatus__mdt>();
 
         // TODO replace query with new Spring '21 method getAll()
-        for (LogStatus__mdt logStatus : [
-            SELECT MasterLabel, IsClosed__c, IsResolved__c
-            FROM LogStatus__mdt
-            WHERE IsActive__c = TRUE
-        ]) {
+        for (LogStatus__mdt logStatus : [SELECT MasterLabel, IsClosed__c, IsResolved__c FROM LogStatus__mdt WHERE IsActive__c = TRUE]) {
             logStatusByName.put(logStatus.MasterLabel, logStatus);
         }
     }

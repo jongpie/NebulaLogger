@@ -65,11 +65,7 @@ private class LogEntryEventBuilder_Tests {
         builder.parseStackTrace(stackTraceHandler.getStackTraceString());
         Test.stopTest();
 
-        String expectedOriginLocation = stackTraceHandler.getStackTraceString()
-            .split('\n')
-            .get(0)
-            .substringBefore(':')
-            .substringAfter('Class.');
+        String expectedOriginLocation = stackTraceHandler.getStackTraceString().split('\n').get(0).substringBefore(':').substringAfter('Class.');
         String expectedStackTrace = stackTraceHandler.getStackTraceString();
 
         System.assertNotEquals(null, builder.getLogEntryEvent().OriginLocation__c);

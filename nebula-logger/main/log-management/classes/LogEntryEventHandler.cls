@@ -173,24 +173,17 @@ public without sharing class LogEntryEventHandler {
         for (LogEntry__c logEntry : logEntryToTopics.keySet()) {
             for (String topicName : logEntryToTopics.get(logEntry)) {
                 // Add log entry-specific topics
-                topicAssignments.add(
-                    new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id)
-                );
+                topicAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id));
 
                 // Add all topics to the parent log when enabled
-                topicAssignments.add(
-                    new TopicAssignment(EntityId = LOG.Id, TopicId = topicNameToTopics.get(topicName).Id)
-                );
+                topicAssignments.add(new TopicAssignment(EntityId = LOG.Id, TopicId = topicNameToTopics.get(topicName).Id));
             }
         }
         insert new List<TopicAssignment>(topicAssignments);
     }
 
     private void setOrganizationDetails() {
-        Organization org = [
-            SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType
-            FROM Organization
-        ];
+        Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType FROM Organization];
 
         LOG.OrganizationDomainUrl__c = Url.getOrgDomainUrl().toExternalForm();
         LOG.OrganizationId__c = org.Id;
@@ -233,14 +226,7 @@ public without sharing class LogEntryEventHandler {
 
     private void setUserDetails() {
         User logUser = [
-            SELECT
-                Id,
-                UserRole.Name,
-                Profile.Name,
-                Profile.UserLicenseId,
-                Profile.UserLicense.LicenseDefinitionKey,
-                Profile.UserLicense.Name,
-                Username
+            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
             FROM User
             WHERE Id = :LOG.LoggedBy__c
         ];

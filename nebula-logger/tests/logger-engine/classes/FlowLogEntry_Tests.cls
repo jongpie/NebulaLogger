@@ -40,12 +40,7 @@ private class FlowLogEntry_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, Message__c, OriginType__c, OriginLocation__c
-            FROM LogEntry__c
-            ORDER BY CreatedDate
-            LIMIT 1
-        ];
+        LogEntry__c logEntry = [SELECT Id, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
         System.assertEquals(flowEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
         System.assertEquals(flowEntry.flowName, logEntry.OriginLocation__c);

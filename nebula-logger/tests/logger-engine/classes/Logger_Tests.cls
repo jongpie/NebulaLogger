@@ -96,11 +96,7 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_return_quiddity_level() {
-        List<Quiddity> acceptableDefaultQuidditiesForTests = new List<Quiddity>{
-            Quiddity.RUNTEST_ASYNC,
-            Quiddity.RUNTEST_DEPLOY,
-            Quiddity.RUNTEST_SYNC
-        };
+        List<Quiddity> acceptableDefaultQuidditiesForTests = new List<Quiddity>{ Quiddity.RUNTEST_ASYNC, Quiddity.RUNTEST_DEPLOY, Quiddity.RUNTEST_SYNC };
         System.assertEquals(true, acceptableDefaultQuidditiesForTests.contains(Logger.getCurrentQuiddity()));
 
         System.assertEquals(System.Request.getCurrent().getQuiddity(), Logger.getCurrentQuiddity());
@@ -541,10 +537,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -565,10 +558,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -592,10 +582,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -616,10 +603,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -684,10 +668,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -708,10 +689,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -735,10 +713,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -759,10 +734,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -827,10 +799,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -851,10 +820,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -878,10 +844,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -902,10 +865,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -970,10 +930,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -994,10 +951,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1021,10 +975,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1045,10 +996,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1113,10 +1061,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1137,10 +1082,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1164,10 +1106,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1188,10 +1127,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1256,10 +1192,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1280,10 +1213,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1307,10 +1237,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1331,10 +1258,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1399,10 +1323,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1423,10 +1344,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1450,10 +1368,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
         System.assertEquals(message, logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
@@ -1474,10 +1389,7 @@ private class Logger_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c
-            FROM LogEntry__c
-        ];
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
         System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
         System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);

@@ -6,10 +6,7 @@ global with sharing class Logger {
     private static final List<LogEntryEventBuilder> LOG_ENTRIES = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
     private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
-
-    private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(
-        LoggerSettings__c.getInstance().LoggingLevel__c
-    );
+    private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
@@ -34,6 +31,10 @@ global with sharing class Logger {
         return TRANSACTION_ID;
     }
 
+    global static Quiddity getCurrentQuiddity() {
+        return TRANSACTION_QUIDDITY;
+    }
+
     global static void setParentLogTransactionId(String transactionId) {
         parentLogTransactionId = transactionId;
     }
@@ -44,10 +45,6 @@ global with sharing class Logger {
 
     global static LoggingLevel getUserLoggingLevel() {
         return USER_LOGGING_LEVEL;
-    }
-
-    global static Quiddity getCurrentQuiddity() {
-        return TRANSACTION_QUIDDITY;
     }
 
     global static Boolean isEnabled() {
@@ -124,17 +121,8 @@ global with sharing class Logger {
         return error().setMessage(logMessage).setExceptionDetails(apexException);
     }
 
-    global static LogEntryEventBuilder error(
-        LogMessage logMessage,
-        Id recordId,
-        Exception apexException,
-        List<String> topics
-    ) {
-        return error()
-            .setMessage(logMessage)
-            .setRecordId(recordId)
-            .setTopics(topics)
-            .setExceptionDetails(apexException);
+    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException, List<String> topics) {
+        return error().setMessage(logMessage).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
     }
 
     global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException) {
@@ -153,12 +141,7 @@ global with sharing class Logger {
         return error().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder error(
-        LogMessage logMessage,
-        SObject record,
-        Exception apexException,
-        List<String> topics
-    ) {
+    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, Exception apexException, List<String> topics) {
         return error().setMessage(logMessage).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -186,12 +169,7 @@ global with sharing class Logger {
         return error().setMessage(message).setExceptionDetails(apexException);
     }
 
-    global static LogEntryEventBuilder error(
-        String message,
-        Id recordId,
-        Exception apexException,
-        List<String> topics
-    ) {
+    global static LogEntryEventBuilder error(String message, Id recordId, Exception apexException, List<String> topics) {
         return error().setMessage(message).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -211,12 +189,7 @@ global with sharing class Logger {
         return error().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder error(
-        String message,
-        SObject record,
-        Exception apexException,
-        List<String> topics
-    ) {
+    global static LogEntryEventBuilder error(String message, SObject record, Exception apexException, List<String> topics) {
         return error().setMessage(message).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -703,11 +676,7 @@ global with sharing class Logger {
             }
             when else {
                 LoggingLevel fallbackLevel = LoggingLevel.DEBUG;
-                String message =
-                    'Unknown logging level ' +
-                    loggingLevelName +
-                    'specified, using ' +
-                    fallbackLevel.Name();
+                String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + fallbackLevel.Name();
                 finest(message);
                 return LoggingLevel.DEBUG;
             }
@@ -720,14 +689,9 @@ global with sharing class Logger {
     @AuraEnabled(cacheable=true)
     public static Log__c getLog(String logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
-        List<String> logEntryFieldNames = new List<String>(
-            Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet()
-        );
+        List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
 
-        List<String> textReplacements = new List<String>{
-            String.join(logFieldNames, ','),
-            String.join(logEntryFieldNames, ',')
-        };
+        List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), String.join(logEntryFieldNames, ',') };
         String query = String.format(
             'SELECT {0}, (SELECT {1} FROM LogEntries__r) FROM Log__c WHERE Id = :logId OR TransactionId__c = :logId',
             textReplacements
@@ -780,11 +744,7 @@ global with sharing class Logger {
         private void validateResponse(Httpresponse response) {
             Integer statusCode = response.getStatusCode();
             if (statusCode >= 400) {
-                String errorMessage =
-                    'Saving via REST API failed. Received request status code ' +
-                    statusCode +
-                    ', status message: ' +
-                    response.getStatus();
+                String errorMessage = 'Saving via REST API failed. Received request status code ' + statusCode + ', status message: ' + response.getStatus();
                 throw new RestResponseException(errorMessage);
             }
         }

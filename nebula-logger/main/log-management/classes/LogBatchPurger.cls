@@ -24,11 +24,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
 
         return Database.getQueryLocator(
-            [
-                SELECT Id, (SELECT Id FROM LogEntries__r)
-                FROM Log__c
-                WHERE LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL
-            ]
+            [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL]
         );
     }
 
@@ -67,12 +63,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     global void finish(Database.BatchableContext batchableContext) {
         if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
             Logger.setParentLogTransactionId(this.originalTransactionId);
-            Logger.info(
-                new LogMessage(
-                    'Finished LogBatchPurger job, {0} total log records processed',
-                    this.totalProcessedRecords
-                )
-            );
+            Logger.info(new LogMessage('Finished LogBatchPurger job, {0} total log records processed', this.totalProcessedRecords));
             Logger.saveLog();
         }
     }

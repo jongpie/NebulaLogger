@@ -119,10 +119,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
-        Organization org = [
-            SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType
-            FROM Organization
-        ];
+        Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType FROM Organization];
         User currentUser = getCurrentUser();
 
         System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c);
@@ -195,10 +192,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.LimitsSoqlQueriesMax__c, logEntry.LimitsSoqlQueriesMax__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueriesUsed__c, logEntry.LimitsSoqlQueriesUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c, logEntry.LimitsSoqlQueryLocatorRowsMax__c);
-        System.assertEquals(
-            logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c,
-            logEntry.LimitsSoqlQueryLocatorRowsUsed__c
-        );
+        System.assertEquals(logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c, logEntry.LimitsSoqlQueryLocatorRowsUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueryRowsMax__c, logEntry.LimitsSoqlQueryRowsMax__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueryRowsUsed__c, logEntry.LimitsSoqlQueryRowsUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoslSearchesUsed__c, logEntry.LimitsSoslSearchesUsed__c);
@@ -223,11 +217,7 @@ private class LogEntryEventHandler_Tests {
     static void it_should_normalize_simple_event_data_into_log_and_log_entry() {
         String transactionId = '123-456-789-0';
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionId__c = transactionId
-        );
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
