@@ -49,8 +49,8 @@ global with sharing class Logger {
      * This is useful for relating multiple asynchronous operations together, such as batch & queueable jobs.
      * @param  parentLogTransactionId - The transaction ID of the original parent transaction
      */
-    global static void setParentLogTransactionId(String parentLogTransactionId) {
-        parentLogTransactionId = parentLogTransactionId;
+    global static void setParentLogTransactionId(String parentTransactionId) {
+        this.parentLogTransactionId = parentTransactionId;
     }
 
     /**
