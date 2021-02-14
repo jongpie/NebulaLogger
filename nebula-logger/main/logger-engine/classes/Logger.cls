@@ -47,10 +47,10 @@ global with sharing class Logger {
     /**
      * Relates the current transaction's log to a parent log via the field Log__c.ParentLog__c
      * This is useful for relating multiple asynchronous operations together, such as batch & queueable jobs.
-     * @param  parentLogTransactionId - The transaction ID of the original parent transaction
+     * @param  parentTransactionId - The transaction ID of the original parent transaction
      */
     global static void setParentLogTransactionId(String parentTransactionId) {
-        this.parentLogTransactionId = parentTransactionId;
+        parentLogTransactionId = parentTransactionId;
     }
 
     /**
