@@ -62,14 +62,6 @@ global with sharing class Logger {
     }
 
     /**
-     * Returns the logging level for the current user, based on the custom setting LoggerSettings__c
-     * @return LoggingLevel - The matching instance of LoggingLevel
-     */
-    global static LoggingLevel getUserLoggingLevel() {
-        return USER_LOGGING_LEVEL;
-    }
-
-    /**
      * Indicates if logging has been enabled for the current user, based on the custom setting LoggerSettings__c
      * @return Boolean
      */
@@ -148,6 +140,14 @@ global with sharing class Logger {
      */
     global static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
         return USER_LOGGING_LEVEL.ordinal() <= logEntryLoggingLevel.ordinal();
+    }
+
+    /**
+     * Returns the logging level for the current user, based on the custom setting LoggerSettings__c
+     * @return LoggingLevel - The matching instance of LoggingLevel
+     */
+    global static LoggingLevel getUserLoggingLevel() {
+        return USER_LOGGING_LEVEL;
     }
 
     // Transaction control methods
