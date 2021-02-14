@@ -72,26 +72,4 @@ private class FlowRecordLogEntry_Tests {
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
         System.assertEquals(0, logEntries.size());
     }
-
-    @isTest
-    static void it_should_allow_the_flow_to_retrieve_latest_log() {
-        User currentUser = new User(Id = UserInfo.getUserId());
-        String flowRecordEntryLoggingLevel = 'DEBUG';
-
-        Test.startTest();
-
-        FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
-        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel;
-        flowRecordEntry.record = currentUser;
-        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        Log__c log = [SELECT Id, TransactionId__c FROM Log__c ORDER BY CreatedDate LIMIT 1];
-        System.assertEquals(log.TransactionId__c, Logger.getTransactionId());
-
-        List<Log__c> returnedLogs = FlowLogRepo.getLogIds();
-        System.assertEquals(log.Id, returnedLogs[0].Id);
-    }
 }
