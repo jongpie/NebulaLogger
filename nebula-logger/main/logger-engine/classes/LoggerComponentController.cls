@@ -17,7 +17,7 @@ public inherited sharing class LoggerComponentController {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
 
-                LogEntryEventBuilder logEntryBuilder = Logger.newEntry(loggingLevel)
+                LogEntryEventBuilder logEntryBuilder = Logger.createLogEntryEventBuilder(loggingLevel)
                     .setMessage(componentLogEntry.message)
                     .setRecordId(componentLogEntry.recordId)
                     .setRecordId(componentLogEntry.record)
@@ -56,7 +56,7 @@ public inherited sharing class LoggerComponentController {
         public String userLoggingLevel { get; set; }
         @AuraEnabled
         public List<String> enabledLoggingLevels { get; set; }
-        @AuraEnabled
+
         private LoggerSettings() {
             this.isEnabled = Logger.isEnabled();
             this.enabledLoggingLevels = getEnabledLoggingLevels();
@@ -70,6 +70,7 @@ public inherited sharing class LoggerComponentController {
                     enabledLevels.add(loggingLevel.name());
                 }
             }
+            return enabledLevels;
         }
     }
 
