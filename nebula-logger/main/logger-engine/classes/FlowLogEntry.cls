@@ -44,7 +44,6 @@ global inherited sharing class FlowLogEntry {
                 continue;
             }
 
-            logEntryEvent.LoggingLevel__c = flowLogEntry.loggingLevelName;
             logEntryEvent.OriginLocation__c = flowLogEntry.flowName;
             logEntryEvent.OriginType__c = 'Flow';
             logEntryEvent.Timestamp__c = flowLogEntry.timestamp;
