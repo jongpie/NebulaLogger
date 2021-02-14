@@ -19,16 +19,13 @@ global with sharing class LogEntryEventBuilder {
     public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
         this.loggingLevel = loggingLevel;
 
-        // Verify that the user has create access & has logging enabled
+        // Verify that the user has create access
         this.shouldSave = USER_CAN_CREATE_LOG_ENTRY_EVENTS && shouldSave;
 
         if (this.shouldSave == false) {
             return;
         }
 
-        // TODO alwaysSave() will not have these fields populated due to guard clause above
-        // Need to move LogEntryEvent__e to a private method & have another variable (isInitialized?) to track
-        // The Limits methods still need to be called ASAP for accuracy (not last-minute like user sessions)
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = API_VERSION,
             LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries(),
