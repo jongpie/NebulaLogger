@@ -16,13 +16,13 @@ global with sharing class LogEntryEventBuilder {
     private Boolean shouldSave;
     private Boolean userSessionDetailsAreSet = false;
 
-    global LogEntryEventBuilder(LoggingLevel loggingLevel) {
+    public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
         this.loggingLevel = loggingLevel;
 
         // Verify that the user has create access & has logging enabled
-        this.shouldSave = USER_CAN_CREATE_LOG_ENTRY_EVENTS && Logger.isEnabled(loggingLevel);
+        this.shouldSave = USER_CAN_CREATE_LOG_ENTRY_EVENTS && shouldSave;
 
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return;
         }
 
@@ -192,11 +192,6 @@ global with sharing class LogEntryEventBuilder {
 
     public Boolean shouldSave() {
         return this.shouldSave;
-    }
-
-    public LogEntryEventBuilder alwaysSave() {
-        this.shouldSave = true;
-        return this;
     }
 
     public LogEntryEvent__e getLogEntryEvent() {

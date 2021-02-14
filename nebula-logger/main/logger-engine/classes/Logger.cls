@@ -555,7 +555,11 @@ global with sharing class Logger {
     }
 
     global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel) {
-        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel);
+        return newEntry(loggingLevel, isEnabled(loggingLevel));
+    }
+
+    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean alwaysSave) {
+        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
         LOG_ENTRIES.add(logEntryBuilder);
 
         return logEntryBuilder;

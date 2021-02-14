@@ -11,7 +11,8 @@ private class LogEntryEventBuilder_Tests {
 
     @isTest
     static void it_should_short_circuit_when_logging_is_not_enabled() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG);
+        Boolean shouldSave = Logger.isEnabled(LoggingLevel.DEBUG);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG, shouldSave);
 
         System.assertEquals(null, builder.getLogEntryEvent());
         System.assertEquals(null, builder.setMessage('test').getLogEntryEvent());
@@ -27,7 +28,8 @@ private class LogEntryEventBuilder_Tests {
         settings.IsEnabled__c = true;
         update settings;
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE);
+        Boolean shouldSave = Logger.isEnabled(LoggingLevel.FINE);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
 
         System.assertEquals(null, builder.getLogEntryEvent());
     }
@@ -39,7 +41,8 @@ private class LogEntryEventBuilder_Tests {
         settings.LoggingLevel__c = 'FINE';
         update settings;
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE);
+        Boolean shouldSave = Logger.isEnabled(LoggingLevel.FINE);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
 
         System.assertNotEquals(null, builder.getLogEntryEvent());
     }
@@ -53,7 +56,8 @@ private class LogEntryEventBuilder_Tests {
 
         DmlException stackTraceHandler = new DmlException();
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE);
+        Boolean shouldSave = Logger.isEnabled(LoggingLevel.FINE);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
 
