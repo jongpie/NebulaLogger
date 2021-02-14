@@ -27,83 +27,166 @@ global with sharing class Logger {
     }
 
     // Settings management methods
+
+    /**
+     * Returns the unique ID for a particular transaction, stored in Log__c.TransactionId__c
+     * @return String - The value of System.Request.getCurrent().getRequestId()
+     */
     global static String getTransactionId() {
         return TRANSACTION_ID;
     }
 
+    /**
+     * Returns the Quiddity context of the current transaction.
+     * @return Quiddity - The value of System.Request.getCurrent().getQuiddity()
+     */
     global static Quiddity getCurrentQuiddity() {
         return TRANSACTION_QUIDDITY;
     }
 
-    global static void setParentLogTransactionId(String transactionId) {
-        parentLogTransactionId = transactionId;
+    /**
+     * Relates the current transaction's log to a parent log via the field Log__c.ParentLog__c
+     * This is useful for relating multiple asynchronous operations together, such as batch & queueable jobs.
+     * @param  parentLogTransactionId - The transaction ID of the original parent transaction
+     */
+    global static void setParentLogTransactionId(String parentLogTransactionId) {
+        parentLogTransactionId = parentLogTransactionId;
     }
 
+    /**
+     * Returns the transaction ID value that will be used to relate the current transaction's log to a parent log
+     * @return String - The parent log's transaction ID. This must be explicitly set by calling setParentLogTransactionId(String)
+     */
     global static String getParentLogTransactionId() {
         return parentLogTransactionId;
     }
 
+    /**
+     * Returns the logging level for the current user, based on the custom setting LoggerSettings__c
+     * @return LoggingLevel - The matching instance of LoggingLevel
+     */
     global static LoggingLevel getUserLoggingLevel() {
         return USER_LOGGING_LEVEL;
     }
 
+    /**
+     * Indicates if logging has been enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean isEnabled() {
         return LoggerSettings__c.getInstance().IsEnabled__c;
     }
 
+    /**
+     * Indicates if logging for the specified logging level is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @param  loggingLevel - The logging level to check
+     * @return Boolean
+     */
     global static Boolean isEnabled(LoggingLevel loggingLevel) {
         return isEnabled() && meetsUserLoggingLevel(loggingLevel);
     }
 
+    /**
+     * Indicates if logging level 'ERROR' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean isErrorEnabled() {
         return isEnabled() && meetsUserLoggingLevel(LoggingLevel.ERROR);
     }
 
+    /**
+     * Indicates if logging level 'WARN' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean isWarnEnabled() {
         return isEnabled() && meetsUserLoggingLevel(LoggingLevel.WARN);
     }
 
+    /**
+     * Indicates if logging level 'INFO' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean isInfoEnabled() {
         return isEnabled() && meetsUserLoggingLevel(LoggingLevel.INFO);
     }
 
+    /**
+     * Indicates if logging level 'DEBUG' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean isDebugEnabled() {
         return isEnabled() && meetsUserLoggingLevel(LoggingLevel.DEBUG);
     }
 
+    /**
+     * Indicates if logging level 'FINE' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean isFineEnabled() {
         return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINE);
     }
 
+    /**
+     * Indicates if logging level 'FINER' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean isFinerEnabled() {
         return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINER);
     }
 
+    /**
+     * Indicates if logging level 'FINEST' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean isFinestEnabled() {
         return isEnabled() && meetsUserLoggingLevel(LoggingLevel.FINEST);
     }
 
+    /**
+     * Indicates if logging level '(' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @return Boolean
+     */
     global static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
         return USER_LOGGING_LEVEL.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
     // Transaction control methods
+
+    /**
+     * Indicates if saving has been temporarily suspended for the current transaction
+     * @return Boolean
+     */
     global static Boolean isSavingSuspended() {
         return suspendSaving;
     }
 
+    /**
+     * Pauses saving for the current transaction.
+     * Any calls to saveLog() are ignored until saving is resumed.
+     */
     global static void suspendSaving() {
         suspendSaving = true;
     }
 
+    /**
+     * Resumes saving for the current transaction, used to reverse suspendSaving().
+     * Any calls to saveLog() are ignored until saving is resumed.
+     */
     global static void resumeSaving() {
         suspendSaving = false;
     }
 
+    /**
+     * Returns the number of entries that have been generated but not yet saved
+     * @return Integer
+     */
     global static Integer getBufferSize() {
         return LOG_ENTRIES.size();
     }
 
+    /**
+     * Discards any entries that have been generated but not yet saved
+     */
     global static void flushBuffer() {
         LOG_ENTRIES.clear();
     }
@@ -527,10 +610,23 @@ global with sharing class Logger {
         return finest().setMessage(message);
     }
 
+    /**
+     * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if it meets the user's logging level
+     *
+     * @param  LoggingLevel loggingLevel - the logging level of the new entry
+     * @return LogEntryEventBuilder - returns the instance of LogEntryEventBuilder for the new entry
+     */
     global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel) {
         return newEntry(loggingLevel, isEnabled(loggingLevel));
     }
 
+    /**
+     * Adds a new instance of LogEntryEventBuilder to Logger's buffer
+     *
+     * @param  LoggingLevel loggingLevel - the logging level of the new entry
+     * @param  Boolean alwaysSave - controls if the entry should be saved, even if it does not meet the user's logging level
+     * @return LogEntryEventBuilder - returns the instance of LogEntryEventBuilder for the new entry
+     */
     global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean alwaysSave) {
         LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
         LOG_ENTRIES.add(logEntryBuilder);
@@ -538,15 +634,27 @@ global with sharing class Logger {
         return logEntryBuilder;
     }
 
+    /**
+     * Sets the default save method used when calling saveLog() - any subsequent calls to saveLog() will use the specified save method
+     * @param  saveMethod - The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
+     */
     global static void setSaveMethod(SaveMethod saveMethod) {
         transactionSaveMethod = saveMethod;
     }
 
+    /**
+     * Saves any entries in Logger's buffer. By default, entries are saved via Apex's EventBus and can be overridden with setSaveMethod(SaveMethod saveMethod)
+     */
     @InvocableMethod(category='Logging' label='Save Log' description='Saves any log entries that have been generated')
     global static void saveLog() {
         saveLog(transactionSaveMethod);
     }
 
+    /**
+     * Saves any entries in Logger's buffer, using the specified save method for only this call.
+     * All subsequent calls to saveLog() will use the transaction save method.
+     * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
+     */
     global static void saveLog(SaveMethod saveMethod) {
         // Verify that the user has create access
         if (!Schema.LogEntryEvent__e.SObjectType.getDescribe().isCreateable()) {
@@ -644,6 +752,12 @@ global with sharing class Logger {
     }
 
     // Utility methods
+
+    /**
+     * Converts a String to an instance of LoggingLevel
+     * @param  String loggingLevelName - The string name of an Apex logging level
+     * @return LoggingLevel - The matching instance of LoggingLevel (or a default value if a match is not found)
+     */
     global static LoggingLevel getLoggingLevel(String loggingLevelName) {
         if (loggingLevelName != null) {
             loggingLevelName = loggingLevelName.toUpperCase();
@@ -686,6 +800,11 @@ global with sharing class Logger {
     // For orgs that already have the aura cmp + quickAction deployed, this method is still needed (otherwise, deployment errors will occur)
     // TODO consider removing this method after converting aura cmp to lwc (and presumably create a dedicated Apex ctrl w/ this method)
     // But the safe choice is to just keep it now/forever
+    /**
+     * Returns a Log__c record from the database
+     * @param  logId - The Salesforce ID or TransactionId__c of the Log__c
+     * @return Log__c - The matching record, with all fields that the current user can access
+     */
     @AuraEnabled(cacheable=true)
     public static Log__c getLog(String logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
