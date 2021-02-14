@@ -760,16 +760,14 @@ global with sharing class Logger {
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
         private final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v50.0';
-        private final String COMPOSITE_ENDPOINT = BASE_URL + '/composite/sobjects';
-
-        private RestApiSaver() {
-        }
+        private final String COMPOSITE_ENDPOINT = '/composite/sobjects';
 
         public void insertRecords(List<SObject> records) {
             HttpRequest request = new HttpRequest();
+            request.setEndpoint(BASE_URL + COMPOSITE_ENDPOINT);
             request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
             request.setHeader('Content-Type', 'application/json; charset=utf-8');
-            request.setEndpoint(BASE_URL + COMPOSITE_ENDPOINT);
+            request.setMethod('POST');
 
             Boolean allOrNone = true;
             RestSaveRequest saveRequest = new RestSaveRequest(records, allOrNone);
