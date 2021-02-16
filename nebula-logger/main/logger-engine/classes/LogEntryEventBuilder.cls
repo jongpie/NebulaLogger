@@ -59,6 +59,24 @@ global with sharing class LogEntryEventBuilder {
         //}
     }
 
+    /**
+     * Sets the log entry event's message field
+     * @param  logMessage The instance of LogMessage to use - LogMessage.getMessage() will be used
+     * @return            The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
+    global LogEntryEventBuilder setMessage(LogMessage logMessage) {
+        if (!this.shouldSave) {
+            return this;
+        }
+
+        return this.setMessage(logMessage.getMessage());
+    }
+
+    /**
+     * Sets the log entry event's message field
+     * @param  message The instance of LogMessage to use - LogMessage.getMessage() will be used
+     * @return         The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setMessage(String message) {
         if (!this.shouldSave) {
             return this;
@@ -79,14 +97,11 @@ global with sharing class LogEntryEventBuilder {
         return this;
     }
 
-    global LogEntryEventBuilder setMessage(LogMessage logMessage) {
-        if (!this.shouldSave) {
-            return this;
-        }
-
-        return this.setMessage(logMessage.getMessage());
-    }
-
+    /**
+     * Sets the log entry event's exception fields
+     * @param  apexException The instance of an Exception to use.
+     * @return               The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setExceptionDetails(Exception apexException) {
         if (!this.shouldSave) {
             return this;
@@ -103,6 +118,11 @@ global with sharing class LogEntryEventBuilder {
         return this;
     }
 
+    /**
+     * Sets the log entry event's record fields
+     * @param  record The SObject record related to the entry. The JSON of the record is automatically added to the entry
+     * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setRecordId(SObject record) {
         if (!this.shouldSave) {
             return this;
@@ -114,6 +134,11 @@ global with sharing class LogEntryEventBuilder {
         return this.setRecordId(record.Id);
     }
 
+    /**
+     * Sets the log entry event's record fields
+     * @param  recordId The ID of the SObject record related to the entry
+     * @return          The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setRecordId(Id recordId) {
         if (!this.shouldSave) {
             return this;
@@ -123,6 +148,11 @@ global with sharing class LogEntryEventBuilder {
         return this;
     }
 
+    /**
+     * Sets a comma-separate list of strings on the LogEntryEvent__e, which ultimately becomes Topic & TopicAssignment records on Log__c and LogEntry__c
+     * @param  topics The list of strings to use as topics for the current entry
+     * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setTopics(List<String> topics) {
         if (!this.shouldSave) {
             return this;
@@ -132,6 +162,11 @@ global with sharing class LogEntryEventBuilder {
         return this;
     }
 
+    /**
+     * Parses the provided stack trace and sets the log entry's origin & stack trace fields
+     * @param  stackTraceString The Apex stack trace string to parse
+     * @return                  The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (!this.shouldSave) {
             return this;
@@ -180,10 +215,18 @@ global with sharing class LogEntryEventBuilder {
         return this;
     }
 
+    /**
+     * Determines if this instance of LogEntryEventBuilder should be saved the next time that Logger.saveLog() is called
+     * @return   Boolean
+     */
     public Boolean shouldSave() {
         return this.shouldSave;
     }
 
+    /**
+     * Returns the LogEntryEvent__e record for this instance of LogEntryEventBuilder
+     * @return   The LogEntryEvent__e record
+     */
     public LogEntryEvent__e getLogEntryEvent() {
         // Lazy-loading of setting user-session details to help minimize Apex heap size usage
         if (!this.userSessionDetailsAreSet) {

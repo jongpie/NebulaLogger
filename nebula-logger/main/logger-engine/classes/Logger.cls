@@ -596,7 +596,7 @@ global with sharing class Logger {
      * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if alwaysSave == true
      * @param  loggingLevel The logging level enum for the new entry
      * @param  logMessage   The instance of LogMessage to use as the entry's message
-     * @param  alwaysSave   Controls if the new entry will be saved, even if the entry's logging level does not meet the user's logging level
+     * @param  alwaysSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
      * @return              The new entry's instance of LogEntryEventBuilder
      */
     global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, LogMessage logMessage, Boolean alwaysSave) {
@@ -620,7 +620,7 @@ global with sharing class Logger {
      * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if it meets the user's logging level
      * @param  loggingLevel The logging level enum for the new entry
      * @param  message      The string to use as the entry's message
-     * @param  alwaysSave   Controls if the new entry will be saved, even if the entry's logging level does not meet the user's logging level
+     * @param  alwaysSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
      * @return              The new entry's instance of LogEntryEventBuilder
      */
     global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message, Boolean alwaysSave) {
@@ -629,6 +629,8 @@ global with sharing class Logger {
 
         return logEntryBuilder.setMessage(message);
     }
+
+    // Save control methods
 
     /**
      * Sets the default save method used when calling saveLog() - any subsequent calls to saveLog() will use the specified save method
@@ -786,7 +788,7 @@ global with sharing class Logger {
             }
             when else {
                 LoggingLevel fallbackLevel = LoggingLevel.DEBUG;
-                String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + fallbackLevel.Name();
+                String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + fallbackLevel.name();
                 finest(message);
                 return LoggingLevel.DEBUG;
             }
