@@ -1,3 +1,6 @@
+---
+layout: default
+---
 ## LoggerInstallHandler class
 
 Automatically enables org default settings when installing the managed package

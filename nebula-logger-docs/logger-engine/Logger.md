@@ -1,13 +1,16 @@
+---
+layout: default
+---
 ## Logger class
 
 The core class for logging
 
 ### Related
 
-[LogEntryEventBuilder](/logger-engine/LogEntryEventBuilder.md)
+[LogEntryEventBuilder](nebula-logger-docs/logger-engine/LogEntryEventBuilder.md)
 
 
-[LogMessage](/logger-engine/LogMessage.md)
+[LogMessage](nebula-logger-docs/logger-engine/LogMessage.md)
 
 ---
 ### Enums

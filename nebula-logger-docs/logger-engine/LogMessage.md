@@ -1,13 +1,16 @@
+---
+layout: default
+---
 ## LogMessage class
 
 Provides the ability to generate string messages on demand, using String.format()
 
 ### Related
 
-[Logger](/logger-engine/Logger.md)
+[Logger](nebula-logger-docs/logger-engine/Logger.md)
 
 
-[LogEntryEventBuilder](/logger-engine/LogEntryEventBuilder.md)
+[LogEntryEventBuilder](nebula-logger-docs/logger-engine/LogEntryEventBuilder.md)
 
 ---
 ### Constructors

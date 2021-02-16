@@ -1,10 +1,13 @@
+---
+layout: default
+---
 ## LogEntryEventBuilder class
 
 Builder class that generates each LogEntryEvent__c record
 
 ### Related
 
-[Logger](/logger-engine/Logger.md)
+[Logger](nebula-logger-docs/logger-engine/Logger.md)
 
 ---
 ### Constructors

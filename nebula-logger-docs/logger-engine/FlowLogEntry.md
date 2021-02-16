@@ -1,13 +1,16 @@
+---
+layout: default
+---
 ## FlowLogEntry class
 
 Handles adding new log entryies in Flow
 
 ### Related
 
-[FlowRecordLogEntry](/logger-engine/FlowRecordLogEntry.md)
+[FlowRecordLogEntry](nebula-logger-docs/logger-engine/FlowRecordLogEntry.md)
 
 
-[Logger](/logger-engine/Logger.md)
+[Logger](nebula-logger-docs/logger-engine/Logger.md)
 
 
 LogEntryBuilder
