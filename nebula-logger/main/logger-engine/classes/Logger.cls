@@ -3,6 +3,7 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
  *************************************************************************************************/
 global with sharing class Logger {
+    private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES = new List<LogEntryEventBuilder>();
     private static final Boolean SYSTEM_MESSAGES_ENABLED = LoggerSettings__c.getInstance().EnableSystemMessages__c;
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
@@ -741,10 +742,11 @@ global with sharing class Logger {
                 return LoggingLevel.FINEST;
             }
             when else {
-                LoggingLevel fallbackLevel = LoggingLevel.DEBUG;
-                String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + fallbackLevel.name();
-                finest(message);
-                return LoggingLevel.DEBUG;
+                if (SYSTEM_MESSAGES_ENABLED) {
+                    String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
+                    finest(message);
+                }
+                return DEFAULT_LOGGING_LEVEL;
             }
         }
     }
