@@ -4,6 +4,7 @@
  *************************************************************************************************/
 @isTest
 private class Logger_Tests {
+    // Helper classes
     private class Logger_TestsException extends Exception {
     }
 
@@ -25,6 +26,7 @@ private class Logger_Tests {
         }
     }
 
+    // Helper methods
     static User getCurrentUser() {
         return new User(Id = UserInfo.getUserId());
     }
@@ -33,6 +35,31 @@ private class Logger_Tests {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
         settings.LoggingLevel__c = loggingLevel.name();
         update settings;
+    }
+
+    static String getMessage() {
+        return 'Hello, world';
+    }
+
+    static LogMessage getLogMessage() {
+        return new LogMessage('The current user is {0}', getRecord());
+    }
+
+    static SObject getRecord() {
+        return new User(
+            Id = UserInfo.getUserId(),
+            ProfileId = UserInfo.getProfileId(),
+            Username = UserInfo.getUserName(),
+            UserRoleId = UserInfo.getUserRoleId()
+        );
+    }
+
+    static Exception getException() {
+        return new DmlException('Example DML Exception');
+    }
+
+    static List<String> getTopics() {
+        return new List<String>{ 'some topic', 'another topic', 'yet another one' };
     }
 
     static String getOriginLocation() {
@@ -469,8 +496,2234 @@ private class Logger_Tests {
         System.assertEquals(1, countOfLogEntries);
     }
 
+    // Start ERROR methods for LogMessage
     @isTest
-    static void it_should_return_logging_level() {
+    static void it_should_add_an_error_entry_for_logMessage_with_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_recordId_and_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getRecord().Id, getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_recordId_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getRecord().Id, getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_record_and_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getRecord(), getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_record_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getRecord(), getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End ERROR methods for LogMessage
+
+    // Start ERROR methods for String
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_recordId_and_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getRecord().Id, getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_recordId_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getRecord().Id, getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_record_and_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getRecord(), getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_record_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getRecord(), getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    // Start WARN methods for LogMessage
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    // Start WARN methods for String
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    // End WARN methods for String
+
+    // Start INFO methods for LogMessage
+    @isTest
+    static void it_should_add_an_info_entry_for_logMessage_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_logMessage_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_logMessage_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_logMessage_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_logMessage_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_logMessage() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End INFO methods for LogMessage
+
+    // Start INFO methods for String
+    @isTest
+    static void it_should_add_an_info_entry_for_string_message_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_string_message_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_string_message_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_string_message_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_string_message_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_info_entry_for_string_message() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.info(getMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End INFO methods for String
+
+    // Start DEBUG methods for LogMessage
+    @isTest
+    static void it_should_add_an_debug_entry_for_logMessage_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_logMessage_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_logMessage_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_logMessage_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_logMessage_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_logMessage() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End DEBUG methods for LogMessage
+
+    // Start DEBUG methods for String
+    @isTest
+    static void it_should_add_an_debug_entry_for_string_message_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_string_message_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_string_message_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_string_message_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_string_message_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_debug_entry_for_string_message() {
+        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.debug(getMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End DEBUG methods for String
+
+    // Start FINE methods for LogMessage
+    @isTest
+    static void it_should_add_an_fine_entry_for_logMessage_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_logMessage_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_logMessage_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_logMessage_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_logMessage_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_logMessage() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End FINE methods for LogMessage
+
+    // Start FINE methods for String
+    @isTest
+    static void it_should_add_an_fine_entry_for_string_message_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_string_message_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_string_message_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_string_message_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_string_message_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_fine_entry_for_string_message() {
+        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.fine(getMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End FINE methods for String
+
+    // Start FINER methods for LogMessage
+    @isTest
+    static void it_should_add_an_finer_entry_for_logMessage_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_logMessage_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_logMessage_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_logMessage_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_logMessage_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_logMessage() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End FINER methods for LogMessage
+
+    // Start FINER methods for String
+    @isTest
+    static void it_should_add_an_finer_entry_for_string_message_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_string_message_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_string_message_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_string_message_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_string_message_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finer_entry_for_string_message() {
+        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finer(getMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End FINER methods for String
+
+    // Start FINEST methods for LogMessage
+    @isTest
+    static void it_should_add_an_finest_entry_for_logMessage_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_logMessage_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_logMessage_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_logMessage_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_logMessage_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_logMessage() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End FINEST methods for LogMessage
+
+    // Start FINEST methods for String
+    @isTest
+    static void it_should_add_an_finest_entry_for_string_message_with_recordId_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getMessage(), getRecord().Id, getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_string_message_with_recordId() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getMessage(), getRecord().Id);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_string_message_with_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getMessage(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_string_message_with_record_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getMessage(), getRecord(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_string_message_with_record() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getMessage(), getRecord());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_finest_entry_for_string_message() {
+        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.finest(getMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End FINEST methods for String
+
+    // Start newEntry for LogMessage test methods
+    @isTest
+    static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldSave_override() {
+        LoggingLevel userLoggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(userLoggingLevel);
+        LoggingLevel logEntryLoggingLevel = LoggingLevel.FINEST;
+        System.assertEquals(false, Logger.meetsUserLoggingLevel(logEntryLoggingLevel));
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        Boolean shouldSave = true;
+        LogEntryEventBuilder entryBuilder = Logger.newEntry(logEntryLoggingLevel, getLogMessage(), shouldSave);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(shouldSave, entryBuilder.shouldSave());
+        System.assertEquals(logEntryLoggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_not_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldNotSave_override() {
+        LoggingLevel userLoggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(userLoggingLevel);
+        LoggingLevel logEntryLoggingLevel = LoggingLevel.FINEST;
+        System.assertEquals(false, Logger.meetsUserLoggingLevel(logEntryLoggingLevel));
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        Boolean shouldSave = false;
+        LogEntryEventBuilder entryBuilder = Logger.newEntry(logEntryLoggingLevel, getLogMessage(), shouldSave);
+
+        Test.stopTest();
+
+        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(shouldSave, entryBuilder.shouldSave());
+        System.assertEquals(null, entryBuilder.getLogEntryEvent());
+    }
+
+    @isTest
+    static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.newEntry(loggingLevel, getLogMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(true, entryBuilder.shouldSave());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End newEntry for LogMessage test methods
+
+    // Start newEntry for String test methods
+    @isTest
+    static void it_should_add_a_new_entry_for_loggingLevel_with_string_and_shouldSave_override() {
+        LoggingLevel userLoggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(userLoggingLevel);
+        LoggingLevel logEntryLoggingLevel = LoggingLevel.FINEST;
+        System.assertEquals(false, Logger.meetsUserLoggingLevel(logEntryLoggingLevel));
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        Boolean shouldSave = true;
+        LogEntryEventBuilder entryBuilder = Logger.newEntry(logEntryLoggingLevel, getMessage(), shouldSave);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(shouldSave, entryBuilder.shouldSave());
+        System.assertEquals(logEntryLoggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_not_add_a_new_entry_for_loggingLevel_with_string_and_shouldNotSave_override() {
+        LoggingLevel userLoggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(userLoggingLevel);
+        LoggingLevel logEntryLoggingLevel = LoggingLevel.FINEST;
+        System.assertEquals(false, Logger.meetsUserLoggingLevel(logEntryLoggingLevel));
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        Boolean shouldSave = false;
+        LogEntryEventBuilder entryBuilder = Logger.newEntry(logEntryLoggingLevel, getMessage(), shouldSave);
+
+        Test.stopTest();
+
+        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(shouldSave, entryBuilder.shouldSave());
+        System.assertEquals(null, entryBuilder.getLogEntryEvent());
+    }
+
+    @isTest
+    static void it_should_add_a_new_entry_for_loggingLevel_with_string() {
+        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.newEntry(loggingLevel, getMessage());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(true, entryBuilder.shouldSave());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+    // End newEntry for String test methods
+
+    // Start tests for utility methods
+    @isTest
+    static void it_should_return_logging_levels_for_string_names() {
         System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
         System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
         System.assertEquals(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
@@ -481,923 +2734,6 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
         System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
     }
-
-    @isTest
-    static void it_should_log_a_error_entry_string() {
-        String message = 'test message';
-
-        setUserLoggingLevel(LoggingLevel.ERROR);
-
-        Test.startTest();
-
-        Logger.error(message);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-
-    @isTest
-    static void it_should_log_a_error_entry_log_message() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-
-        setUserLoggingLevel(LoggingLevel.ERROR);
-
-        Test.startTest();
-
-        Logger.error(logMessage);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-    // public static void error(String message, List<String> topics) {
-    //     error().setMessage(message).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_error_entry_string_for_record() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.ERROR);
-
-        Test.startTest();
-
-        Logger.error(message, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_error_entry_logMessage_for_record() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.ERROR);
-
-        Test.startTest();
-
-        Logger.error(logMessage, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void error(String message, SObject record, List<String> topics) {
-    //     error().setMessage(message).setRecordId(record).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_error_entry_string_for_record_id() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.ERROR);
-
-        Test.startTest();
-
-        Logger.error(message, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_error_entry_logMessage_for_record_id() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.ERROR);
-
-        Test.startTest();
-
-        Logger.error(logMessage, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.ERROR.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void error(String message, Id recordId, List<String> topics) {
-    //     error().setMessage(message).setRecordId(recordId).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_warn_entry_string() {
-        String message = 'test message';
-
-        setUserLoggingLevel(LoggingLevel.WARN);
-
-        Test.startTest();
-
-        Logger.warn(message);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-
-    @isTest
-    static void it_should_log_a_warn_entry_log_message() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-
-        setUserLoggingLevel(LoggingLevel.WARN);
-
-        Test.startTest();
-
-        Logger.warn(logMessage);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-    // public static void warn(String message, List<String> topics) {
-    //     warn().setMessage(message).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_warn_entry_string_for_record() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.WARN);
-
-        Test.startTest();
-
-        Logger.warn(message, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_warn_entry_logMessage_for_record() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.WARN);
-
-        Test.startTest();
-
-        Logger.warn(logMessage, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void warn(String message, SObject record, List<String> topics) {
-    //     warn().setMessage(message).setRecordId(record).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_warn_entry_string_for_record_id() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.WARN);
-
-        Test.startTest();
-
-        Logger.warn(message, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_warn_entry_logMessage_for_record_id() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.WARN);
-
-        Test.startTest();
-
-        Logger.warn(logMessage, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.WARN.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void warn(String message, Id recordId, List<String> topics) {
-    //     warn().setMessage(message).setRecordId(recordId).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_info_entry_string() {
-        String message = 'test message';
-
-        setUserLoggingLevel(LoggingLevel.INFO);
-
-        Test.startTest();
-
-        Logger.info(message);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-
-    @isTest
-    static void it_should_log_a_info_entry_logMessage() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-
-        setUserLoggingLevel(LoggingLevel.INFO);
-
-        Test.startTest();
-
-        Logger.info(logMessage);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-    // public static void info(String message, List<String> topics) {
-    //     info().setMessage(message).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_info_entry_string_for_record() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.INFO);
-
-        Test.startTest();
-
-        Logger.info(message, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_info_entry_logMessage_for_record() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.INFO);
-
-        Test.startTest();
-
-        Logger.info(logMessage, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void info(String message, SObject record, List<String> topics) {
-    //     info().setMessage(message).setRecordId(record).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_info_entry_string_for_record_id() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.INFO);
-
-        Test.startTest();
-
-        Logger.info(message, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_info_entry_logMessage_for_record_id() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.INFO);
-
-        Test.startTest();
-
-        Logger.info(logMessage, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.INFO.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void info(String message, Id recordId, List<String> topics) {
-    //     info().setMessage(message).setRecordId(recordId).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_debug_entry_string() {
-        String message = 'test message';
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Test.startTest();
-
-        Logger.debug(message);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-
-    @isTest
-    static void it_should_log_a_debug_entry_logMessage() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Test.startTest();
-
-        Logger.debug(logMessage);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-    // public static void debug(String message, List<String> topics) {
-    //     debug().setMessage(message).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_debug_entry_string_for_record() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Test.startTest();
-
-        Logger.debug(message, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_debug_entry_logMessage_for_record() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Test.startTest();
-
-        Logger.debug(logMessage, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void debug(String message, SObject record, List<String> topics) {
-    //     debug().setMessage(message).setRecordId(record).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_debug_entry_string_for_record_id() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Test.startTest();
-
-        Logger.debug(message, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_debug_entry_logMessage_for_record_id() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Test.startTest();
-
-        Logger.debug(logMessage, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.DEBUG.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void debug(String message, Id recordId, List<String> topics) {
-    //     debug().setMessage(message).setRecordId(recordId).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_fine_entry_string() {
-        String message = 'test message';
-
-        setUserLoggingLevel(LoggingLevel.FINE);
-
-        Test.startTest();
-
-        Logger.fine(message);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-
-    @isTest
-    static void it_should_log_a_fine_entry_logMessage() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-
-        setUserLoggingLevel(LoggingLevel.FINE);
-
-        Test.startTest();
-
-        Logger.fine(logMessage);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-    // public static void fine(String message, List<String> topics) {
-    //     fine().setMessage(message).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_fine_entry_string_for_record() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINE);
-
-        Test.startTest();
-
-        Logger.fine(message, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_fine_entry_logMessage_for_record() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINE);
-
-        Test.startTest();
-
-        Logger.fine(logMessage, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void fine(String message, SObject record, List<String> topics) {
-    //     fine().setMessage(message).setRecordId(record).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_fine_entry_string_for_record_id() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINE);
-
-        Test.startTest();
-
-        Logger.fine(message, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_fine_entry_logMessage_for_record_id() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINE);
-
-        Test.startTest();
-
-        Logger.fine(logMessage, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINE.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void fine(String message, Id recordId, List<String> topics) {
-    //     fine().setMessage(message).setRecordId(recordId).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_finer_entry_string() {
-        String message = 'test message';
-
-        setUserLoggingLevel(LoggingLevel.FINER);
-
-        Test.startTest();
-
-        Logger.finer(message);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-
-    @isTest
-    static void it_should_log_a_finer_entry_logMessage() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-
-        setUserLoggingLevel(LoggingLevel.FINER);
-
-        Test.startTest();
-
-        Logger.finer(logMessage);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-    // public static void finer(String message, List<String> topics) {
-    //     finer().setMessage(message).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_finer_entry_string_for_record() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINER);
-
-        Test.startTest();
-
-        Logger.finer(message, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_finer_entry_logMessage_for_record() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINER);
-
-        Test.startTest();
-
-        Logger.finer(logMessage, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void finer(String message, SObject record, List<String> topics) {
-    //     finer().setMessage(message).setRecordId(record).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_finer_entry_string_for_record_id() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINER);
-
-        Test.startTest();
-
-        Logger.finer(message, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_finer_entry_logMessage_for_record_id() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINER);
-
-        Test.startTest();
-
-        Logger.finer(logMessage, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void finer(String message, Id recordId, List<String> topics) {
-    //     finer().setMessage(message).setRecordId(recordId).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_finest_entry_string() {
-        String message = 'test message';
-
-        setUserLoggingLevel(LoggingLevel.FINEST);
-
-        Test.startTest();
-
-        Logger.finest(message);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-
-    @isTest
-    static void it_should_log_a_finest_entry_logMessage() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-
-        setUserLoggingLevel(LoggingLevel.FINEST);
-
-        Test.startTest();
-
-        Logger.finest(logMessage);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-    }
-    // public static void finest(String message, List<String> topics) {
-    //     finest().setMessage(message).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_finest_entry_string_for_record() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINEST);
-
-        Test.startTest();
-
-        Logger.finest(message, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_finest_entry_logMessage_for_record() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINEST);
-
-        Test.startTest();
-
-        Logger.finest(logMessage, currentUser);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void finest(String message, SObject record, List<String> topics) {
-    //     finest().setMessage(message).setRecordId(record).setTopics(topics);
-    // }
-
-    @isTest
-    static void it_should_log_a_finest_entry_string_for_record_id() {
-        String message = 'test message';
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINEST);
-
-        Test.startTest();
-
-        Logger.finest(message, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(message, logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-
-    @isTest
-    static void it_should_log_a_finest_entry_logMessage_for_record_id() {
-        LogMessage logMessage = new LogMessage('test message, {0} is the input', System.now());
-        User currentUser = getCurrentUser();
-
-        setUserLoggingLevel(LoggingLevel.FINEST);
-
-        Test.startTest();
-
-        Logger.finest(logMessage, currentUser.Id);
-        Logger.saveLog();
-
-        Test.stopTest();
-
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginLocation__c, RecordId__c FROM LogEntry__c];
-        System.assertEquals(LoggingLevel.FINEST.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(logMessage.getMessage(), logEntry.Message__c);
-        System.assertEquals(getOriginLocation(), logEntry.OriginLocation__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-    }
-    // public static void finest(String message, Id recordId, List<String> topics) {
-    //     finest().setMessage(message).setRecordId(recordId).setTopics(topics);
-    // }
 
     @isTest
     static void it_should_return_log_when_id_provided() {
@@ -1422,4 +2758,5 @@ private class Logger_Tests {
 
         System.assertEquals(log.Id, returnedLog.Id);
     }
+    // End tests for utility methods
 }

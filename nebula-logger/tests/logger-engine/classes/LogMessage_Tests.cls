@@ -5,27 +5,27 @@
 @isTest
 private class LogMessage_Tests {
     public class CustomLogMessage extends LogMessage {
-        private CustomLogMessage() {
+        private String inputString;
+        public CustomLogMessage(String inputString) {
+            this.inputString = inputString;
         }
         public override String getMessage() {
-            return 'any string you want';
+            return inputString;
         }
     }
 
     @isTest
     static void it_should_support_extending_LogMessage_class() {
-        CustomLogMessage customLogMessage = new CustomLogMessage();
-        String expectedMessage = customLogMessage.getMessage();
+        String expectedMessage = 'The current time is: ' + System.now();
 
         Test.startTest();
 
-        Logger.debug(customLogMessage);
-        Logger.saveLog();
+        CustomLogMessage customLogMessage = new CustomLogMessage(expectedMessage);
+        String returnedMessage = customLogMessage.getMessage();
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [SELECT Id, Message__c FROM LogEntry__c];
-        System.assertEquals(expectedMessage, logEntry.Message__c);
+        System.assertEquals(expectedMessage, returnedMessage);
     }
 
     @isTest
