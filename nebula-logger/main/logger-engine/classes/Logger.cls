@@ -4,8 +4,10 @@
  *************************************************************************************************/
 global with sharing class Logger {
     private static final List<LogEntryEventBuilder> LOG_ENTRIES = new List<LogEntryEventBuilder>();
+    private static final Boolean SYSTEM_MESSAGES_ENABLED = LoggerSettings__c.getInstance().EnableSystemMessages__c;
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
     private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
+    private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
     private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
     private static String parentLogTransactionId;
@@ -20,6 +22,9 @@ global with sharing class Logger {
         }
     }
 
+    /**
+     * Enum used to control how LogEntryEvent__e records are inserted
+     */
     global enum SaveMethod {
         EVENT_BUS,
         QUEUEABLE,
@@ -649,7 +654,7 @@ global with sharing class Logger {
      */
     global static void saveLog(SaveMethod saveMethod) {
         // Verify that the user has create access
-        if (!Schema.LogEntryEvent__e.SObjectType.getDescribe().isCreateable()) {
+        if (USER_CAN_CREATE_LOG_ENTRY_EVENTS == false) {
             return;
         }
 
@@ -657,77 +662,33 @@ global with sharing class Logger {
             return;
         }
 
-        Boolean systemMessagesEnabled = LoggerSettings__c.getInstance().EnableSystemMessages__c;
-
         if (suspendSaving) {
-            if (systemMessagesEnabled) {
-                String suspendSavingLogMessage = 'Logging suspended, ignoring call to saveLog()';
-                finest(suspendSavingLogMessage);
+            if (SYSTEM_MESSAGES_ENABLED) {
+                finest(getSuspendSavingLogSystemMessage());
             }
 
             return;
         }
 
-        if (systemMessagesEnabled) {
-            String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries via ';
-            switch on getCurrentQuiddity() {
-                when ANONYMOUS {
-                    savingLogMessage += 'Anonymous Apex';
-                }
-                when Aura, VF {
-                    savingLogMessage += 'Aura/Lightning/VF component';
-                }
-                when BATCH_ACS, BATCH_APEX, BATCH_CHUNK_PARALLEL, BATCH_CHUNK_SERIAL {
-                    savingLogMessage += 'Apex batch job';
-                }
-                when INVOCABLE_ACTION {
-                    savingLogMessage += 'Flow invocation';
-                }
-                when QUEUEABLE {
-                    savingLogMessage += 'Apex queueable job';
-                }
-                when REST {
-                    savingLogMessage += 'Apex REST callout';
-                }
-                when SCHEDULED {
-                    savingLogMessage += 'Scheduled job';
-                }
-                when SYNCHRONOUS {
-                    savingLogMessage += 'Apex synchronous DML';
-                }
-                when else {
-                    savingLogMessage += getCurrentQuiddity().name();
-                }
-            }
-            savingLogMessage += ', save method is ' + saveMethod.name();
-            finest(savingLogMessage);
+        if (SYSTEM_MESSAGES_ENABLED) {
+            finest(getSavingLogSystemMessage(saveMethod));
         }
-
-        // TODO cleanup
-        List<LogEntryEventBuilder> logEntriesToSave = new List<LogEntryEventBuilder>();
-        for (LogEntryEventBuilder logEntryBuilder : LOG_ENTRIES) {
-            if (!logEntryBuilder.shouldSave()) {
-                continue;
-            }
-
-            logEntriesToSave.add(logEntryBuilder);
-        }
-        flushBuffer();
-        LOG_ENTRIES.addAll(logEntriesToSave);
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        for (Integer i = 0; i < LOG_ENTRIES.size(); i++) {
-            LogEntryEventBuilder logEntryBuilder = LOG_ENTRIES.get(i);
+        for (LogEntryEventBuilder logEntryBuilder : LOG_ENTRIES) {
+            if (logEntryBuilder.shouldSave()) {
+                LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
+                logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
+                logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
+                logEntryEvent.TransactionId__c = getTransactionId();
 
-            LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
-            logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
-            logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
-            logEntryEvent.TransactionId__c = getTransactionId();
-            logEntryEvents.add(logEntryEvent);
+                logEntryEvents.add(logEntryEvent);
+            }
         }
 
         switch on saveMethod {
             when EVENT_BUS {
+                // TODO add error handling for when event bus fails to publish
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
                 System.debug('saveResults =' + results);
             }
@@ -739,7 +700,6 @@ global with sharing class Logger {
             }
         }
 
-        // TODO add error handling for when event bus fails to publish
         flushBuffer();
     }
 
@@ -855,6 +815,46 @@ global with sharing class Logger {
         LOG_ENTRIES.add(logEntryBuilder);
 
         return logEntryBuilder;
+    }
+
+    private static String getSuspendSavingLogSystemMessage() {
+        return 'Logging suspended, ignoring call to saveLog()';
+    }
+
+    private static String getSavingLogSystemMessage(SaveMethod saveMethod) {
+        String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries via ';
+        switch on getCurrentQuiddity() {
+            when ANONYMOUS {
+                savingLogMessage += 'Anonymous Apex';
+            }
+            when Aura, VF {
+                savingLogMessage += 'Aura/Lightning/VF component';
+            }
+            when BATCH_ACS, BATCH_APEX, BATCH_CHUNK_PARALLEL, BATCH_CHUNK_SERIAL {
+                savingLogMessage += 'Apex batch job';
+            }
+            when INVOCABLE_ACTION {
+                savingLogMessage += 'Flow invocation';
+            }
+            when QUEUEABLE {
+                savingLogMessage += 'Apex queueable job';
+            }
+            when REST {
+                savingLogMessage += 'Apex REST callout';
+            }
+            when SCHEDULED {
+                savingLogMessage += 'Scheduled job';
+            }
+            when SYNCHRONOUS {
+                savingLogMessage += 'Apex synchronous DML';
+            }
+            when else {
+                savingLogMessage += getCurrentQuiddity().name();
+            }
+        }
+        savingLogMessage += ', save method is ' + saveMethod.name();
+
+        return savingLogMessage;
     }
 
     // Inner class for saving log entries via a queuable job
