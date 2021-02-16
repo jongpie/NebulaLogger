@@ -600,10 +600,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of LogEntryEventBuilder
      */
     global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, LogMessage logMessage, Boolean alwaysSave) {
-        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
-        LOG_ENTRIES.add(logEntryBuilder);
-
-        return logEntryBuilder.setMessage(logMessage);
+        return newEntry(loggingLevel, alwaysSave).setMessage(logMessage);
     }
 
     /**
@@ -624,10 +621,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of LogEntryEventBuilder
      */
     global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message, Boolean alwaysSave) {
-        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
-        LOG_ENTRIES.add(logEntryBuilder);
-
-        return logEntryBuilder.setMessage(message);
+        return newEntry(loggingLevel, alwaysSave).setMessage(message);
     }
 
     // Save control methods
@@ -858,6 +852,7 @@ global with sharing class Logger {
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean alwaysSave) {
         LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
+        LOG_ENTRIES.add(logEntryBuilder);
 
         return logEntryBuilder;
     }

@@ -33,8 +33,7 @@ global inherited sharing class FlowRecordLogEntry {
         for (FlowRecordLogEntry flowRecordLogEntry : flowRecordLogEntries) {
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowRecordLogEntry.loggingLevelName);
 
-            LogEntryEventBuilder logEntryBuilder = Logger.newEntry(loggingLevel)
-                .setMessage(flowRecordLogEntry.message)
+            LogEntryEventBuilder logEntryBuilder = Logger.newEntry(loggingLevel, flowRecordLogEntry.message)
                 .setRecordId(flowRecordLogEntry.record)
                 .setTopics(flowRecordLogEntry.topics);
 
