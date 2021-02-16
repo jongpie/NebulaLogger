@@ -815,7 +815,9 @@ global with sharing class Logger {
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
-        LOG_ENTRIES_BUFFER.add(logEntryBuilder);
+        if (logEntryBuilder.shouldSave()) {
+            LOG_ENTRIES_BUFFER.add(logEntryBuilder);
+        }
 
         return logEntryBuilder;
     }
