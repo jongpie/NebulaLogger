@@ -1,34 +1,34 @@
 {
-  "name": "nebulalogger",
-  "version": "1.0.0",
-  "description": "Fine-tune your logging in Apex, Flow, and Process Builder",
-  "main": "index.js",
-  "scripts": {
-    "format": "prettier --write nebula-logger",
-    "pretest": "node ./scripts/findTests.js",
-    "test": "sh ./scripts/test.sh",
-    "posttest": "node scripts/findTestsCleanup.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jongpie/NebulaLogger.git"
-  },
-  "keywords": [
-    "apex",
-    "logging",
-    "logging-library",
-    "salesforce",
-    "salesforce-lightning",
-    "salesforce-apex"
-  ],
-  "author": "Jonathan Gillespie",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/jongpie/NebulaLogger/issues"
-  },
-  "homepage": "https://github.com/jongpie/NebulaLogger#readme",
-  "devDependencies": {
-    "prettier": "^2.1.2",
-    "prettier-plugin-apex": "^1.7.0"
-  }
+    "name": "nebulalogger",
+    "version": "1.0.0",
+    "description": "Fine-tune your logging in Apex, Flow, and Process Builder",
+    "main": "index.js",
+    "scripts": {
+        "format": "prettier --write nebula-logger",
+        "pretest": "node ./scripts/findTests.js",
+        "test": "sh ./scripts/test.sh",
+        "posttest": "node scripts/findTestsCleanup.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jongpie/NebulaLogger.git"
+    },
+    "keywords": [
+        "apex",
+        "logging",
+        "logging-library",
+        "salesforce",
+        "salesforce-lightning",
+        "salesforce-apex"
+    ],
+    "author": "Jonathan Gillespie",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jongpie/NebulaLogger/issues"
+    },
+    "homepage": "https://github.com/jongpie/NebulaLogger#readme",
+    "devDependencies": {
+        "prettier": "^2.2.1",
+        "prettier-plugin-apex": "^1.8.0"
+    }
 }
