@@ -9,6 +9,7 @@ global with sharing class Logger {
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
     private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
     private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
+    private static final Boolean USER_HAS_LOGGING_ENABLED = LoggerSettings__c.getInstance().IsEnabled__c;
     private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
     private static String parentLogTransactionId;
@@ -72,7 +73,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isEnabled() {
-        return LoggerSettings__c.getInstance().IsEnabled__c;
+        return USER_HAS_LOGGING_ENABLED;
     }
 
     /**
