@@ -1,6 +1,3 @@
----
-layout: default
----
 ## Logger class
 
 The core class for logging

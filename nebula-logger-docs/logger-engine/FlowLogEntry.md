@@ -1,6 +1,3 @@
----
-layout: default
----
 ## FlowLogEntry class
 
 Handles adding new log entryies in Flow

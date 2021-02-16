@@ -1,6 +1,3 @@
----
-layout: default
----
 ## LogBatchPurgeScheduler class
 
 Schedulable class used schedule the batch job LogBatchPurger

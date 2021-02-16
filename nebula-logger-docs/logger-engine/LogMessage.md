@@ -1,6 +1,3 @@
----
-layout: default
----
 ## LogMessage class
 
 Provides the ability to generate string messages on demand, using String.format()
