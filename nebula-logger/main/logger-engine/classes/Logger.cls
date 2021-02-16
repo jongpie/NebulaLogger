@@ -684,9 +684,9 @@ global with sharing class Logger {
         }
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        for (LogEntryEventBuilder logEntryBuilder : LOG_ENTRIES_BUFFER) {
-            if (logEntryBuilder.shouldSave()) {
-                LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
+        for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
+            if (logEntryEventBuilder.shouldSave()) {
+                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
                 logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
                 logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
                 logEntryEvent.TransactionId__c = getTransactionId();
@@ -821,12 +821,12 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
-        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
-        if (logEntryBuilder.shouldSave()) {
-            LOG_ENTRIES_BUFFER.add(logEntryBuilder);
+        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
+        if (logEntryEventBuilder.shouldSave()) {
+            LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 
-        return logEntryBuilder;
+        return logEntryEventBuilder;
     }
 
     private static String getSuspendSavingLogSystemMessage() {
