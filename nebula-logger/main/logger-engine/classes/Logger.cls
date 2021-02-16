@@ -4,7 +4,7 @@
  *************************************************************************************************/
 global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
-    private static final List<LogEntryEventBuilder> LOG_ENTRIES = new List<LogEntryEventBuilder>();
+    private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Boolean SYSTEM_MESSAGES_ENABLED = LoggerSettings__c.getInstance().EnableSystemMessages__c;
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
     private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
@@ -187,14 +187,14 @@ global with sharing class Logger {
      * @return Integer
      */
     global static Integer getBufferSize() {
-        return LOG_ENTRIES.size();
+        return LOG_ENTRIES_BUFFER.size();
     }
 
     /**
      * Discards any entries that have been generated but not yet saved
      */
     global static void flushBuffer() {
-        LOG_ENTRIES.clear();
+        LOG_ENTRIES_BUFFER.clear();
     }
 
     // ERROR logging level methods
@@ -659,7 +659,7 @@ global with sharing class Logger {
             return;
         }
 
-        if (LOG_ENTRIES.isEmpty()) {
+        if (LOG_ENTRIES_BUFFER.isEmpty()) {
             return;
         }
 
@@ -676,7 +676,7 @@ global with sharing class Logger {
         }
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        for (LogEntryEventBuilder logEntryBuilder : LOG_ENTRIES) {
+        for (LogEntryEventBuilder logEntryBuilder : LOG_ENTRIES_BUFFER) {
             if (logEntryBuilder.shouldSave()) {
                 LogEntryEvent__e logEntryEvent = logEntryBuilder.getLogEntryEvent();
                 logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
@@ -814,7 +814,7 @@ global with sharing class Logger {
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
-        LOG_ENTRIES.add(logEntryBuilder);
+        LOG_ENTRIES_BUFFER.add(logEntryBuilder);
 
         return logEntryBuilder;
     }
@@ -824,7 +824,7 @@ global with sharing class Logger {
     }
 
     private static String getSavingLogSystemMessage(SaveMethod saveMethod) {
-        String savingLogMessage = 'Saving ' + LOG_ENTRIES.size() + ' log entries via ';
+        String savingLogMessage = 'Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
         switch on getCurrentQuiddity() {
             when ANONYMOUS {
                 savingLogMessage += 'Anonymous Apex';
