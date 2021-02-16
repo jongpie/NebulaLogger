@@ -588,6 +588,17 @@ global with sharing class Logger {
     }
 
     /**
+     * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if shouldSave == true
+     * @param  loggingLevel The logging level enum for the new entry
+     * @param  logMessage   The instance of LogMessage to use as the entry's message
+     * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
+     * @return              The new entry's instance of LogEntryEventBuilder
+     */
+    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, LogMessage logMessage, Boolean shouldSave) {
+        return newEntry(loggingLevel, shouldSave).setMessage(logMessage);
+    }
+
+    /**
      * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if it meets the user's logging level
      * @param  loggingLevel The logging level enum for the new entry
      * @param  logMessage   The instance of LogMessage to use as the entry's message
@@ -598,14 +609,14 @@ global with sharing class Logger {
     }
 
     /**
-     * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if alwaysSave == true
+     * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if it meets the user's logging level
      * @param  loggingLevel The logging level enum for the new entry
-     * @param  logMessage   The instance of LogMessage to use as the entry's message
-     * @param  alwaysSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
+     * @param  message      The string to use as the entry's message
+     * @param  shouldSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
      * @return              The new entry's instance of LogEntryEventBuilder
      */
-    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, LogMessage logMessage, Boolean alwaysSave) {
-        return newEntry(loggingLevel, alwaysSave).setMessage(logMessage);
+    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message, Boolean shouldSave) {
+        return newEntry(loggingLevel, shouldSave).setMessage(message);
     }
 
     /**
@@ -616,17 +627,6 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message) {
         return newEntry(loggingLevel).setMessage(message);
-    }
-
-    /**
-     * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if it meets the user's logging level
-     * @param  loggingLevel The logging level enum for the new entry
-     * @param  message      The string to use as the entry's message
-     * @param  alwaysSave   Controls if the new entry will be saved. This can be used to save entries, even if the entry's logging level does not meet the user's logging level
-     * @return              The new entry's instance of LogEntryEventBuilder
-     */
-    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message, Boolean alwaysSave) {
-        return newEntry(loggingLevel, alwaysSave).setMessage(message);
     }
 
     // Save control methods
@@ -810,8 +810,8 @@ global with sharing class Logger {
         return newEntry(loggingLevel, isEnabled(loggingLevel));
     }
 
-    private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean alwaysSave) {
-        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
+    private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
+        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
         LOG_ENTRIES.add(logEntryBuilder);
 
         return logEntryBuilder;
