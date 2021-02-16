@@ -8,7 +8,7 @@
  * @description Handles adding new log entryies in Flow for a particular SObject record
  * @see FlowLogEntry
  * @see Logger
- * @see LogEntryBuilder
+ * @see LogEntryEventBuilder
  */
 global inherited sharing class FlowRecordLogEntry {
     /**

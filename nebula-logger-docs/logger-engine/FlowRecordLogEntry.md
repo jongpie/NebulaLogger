@@ -10,7 +10,7 @@ Handles adding new log entryies in Flow for a particular SObject record
 [Logger](nebula-logger-docs/logger-engine/Logger.md)
 
 
-LogEntryBuilder
+LogEntryEventBuilder
 
 ---
 ### Properties
