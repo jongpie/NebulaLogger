@@ -301,9 +301,9 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // TODO move namespace methods to separate Namespace class (again) if other classes end up needing this info
-    private static Boolean hasNamespacePrefix() {
+    /* private static Boolean hasNamespacePrefix() {
         return String.isNotBlank(NAMESPACE_PREFIX);
-    }
+    } */
 
     private static String getNamespacePrefix() {
         String className = LogEntryEventBuilder.class.getName();
@@ -316,7 +316,8 @@ global with sharing class LogEntryEventBuilder {
     //     return String.isBlank(getPrefix()) ? '' : getPrefix() + delimiter;
     // }
 
-    private static String getVisualforcePageName() {
+    // TODO need to revisit Visualforce logic, re-add fields to either Log__c or LogEntry__c, etc.
+    /* private static String getVisualforcePageName() {
         String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
         if (visualforcePageName != null && visualforcePageName.contains('?')) {
             visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
@@ -325,7 +326,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         return visualforcePageName;
-    }
+    } */
 
     private static Boolean isValidStackTrace(String stackTraceString) {
         if (String.isEmpty(stackTraceString)) {
@@ -345,6 +346,9 @@ global with sharing class LogEntryEventBuilder {
         if (topics == null || topics.isEmpty()) {
             return null;
         }
+
+        // De-duplicate the list of topics
+        topics = new List<String>(new Set<String>(topics));
 
         String topicsString = String.escapeSingleQuotes(String.join(topics, ','));
         return truncateFieldValue(Schema.LogEntryEvent__e.Topics__c, topicsString);
