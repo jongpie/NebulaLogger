@@ -1,6 +1,3 @@
----
-layout: default
----
 # Nebula Logger: Documentation
 # Classes
 ## logger-engine
