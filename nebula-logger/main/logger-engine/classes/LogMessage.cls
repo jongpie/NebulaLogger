@@ -1,7 +1,14 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group logger-engine
+ * @description Provides the ability to generate string messages on demand, using String.format()
+ * @see Logger
+ * @see LogEntryEventBuilder
+ */
 global inherited sharing virtual class LogMessage {
     private String formattedMessage;
     private String unformattedMessage;

@@ -1,7 +1,13 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group logger-engine
+ * @description Builder class that generates each LogEntryEvent__c record
+ * @see Logger
+ */
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();

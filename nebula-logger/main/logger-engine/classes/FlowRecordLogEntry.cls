@@ -1,28 +1,60 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group logger-engine
+ * @description Handles adding new log entryies in Flow for a particular SObject record
+ * @see FlowLogEntry
+ * @see Logger
+ * @see LogEntryBuilder
+ */
 global inherited sharing class FlowRecordLogEntry {
+    /**
+     * @description The name of the Flow creating the log entry.
+     * Due to Salesforce limitations, this cannot be automatically determined.
+     */
     @InvocableVariable(required=true label='Flow or Process Builder Name')
     global String flowName;
 
+    /**
+     * @description The message to log.
+     */
     @InvocableVariable(required=true label='Log Entry Message')
     global String message;
 
+    /**
+     * @description The record to relate to this log entry. The record's JSON will be automatically added to the entry.
+     */
     @InvocableVariable(required=true label='Record')
     global SObject record;
 
+    /**
+     * @description Optionally choose to save any pending log entries.
+     */
     @InvocableVariable(required=false label='(Optional) Save Log')
     global Boolean saveLog = true;
 
+    /**
+     * @description Optionally specify a logging level. The default is 'DEBUG'
+     */
     @InvocableVariable(required=false label='(Optional) Logging Level')
     global String loggingLevelName = 'DEBUG';
 
+    /**
+     * @description Optionally provide a list of topics to dynamically assign to the log entry.
+     */
     @InvocableVariable(required=false label='(Optional) Topics')
     global List<String> topics;
 
     private DateTime timestamp = System.now();
 
+    /**
+     * addFlowRecordEntries description
+     * @param  flowRecordLogEntries The list of FlowRecordLogEntry instances to save
+     * @return                The current transaction's ID (based on Logger.getTransactionId())
+     */
     @InvocableMethod(
         category='Logging'
         label='Add Log Entry for an SObject Record'

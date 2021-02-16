@@ -1,7 +1,12 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group log-management
+ * @description Subscribes to LogEntryEvent__e platform events and normalizes the data into Log__c and LogEntry__c records
+ */
 public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
 

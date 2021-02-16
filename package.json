@@ -30,5 +30,8 @@
     "devDependencies": {
         "prettier": "^2.2.1",
         "prettier-plugin-apex": "^1.8.0"
+    },
+    "dependencies": {
+        "@cparra/apexdocs": "^1.11.0"
     }
 }
