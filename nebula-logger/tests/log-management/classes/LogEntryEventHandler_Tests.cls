@@ -8,14 +8,14 @@ private class LogEntryEventHandler_Tests {
         return [
             SELECT
                 Id,
-                UserRoleId,
-                UserRole.Name,
                 ProfileId,
                 Profile.Name,
                 Profile.UserLicenseId,
                 Profile.UserLicense.LicenseDefinitionKey,
                 Profile.UserLicense.Name,
-                Username
+                Username,
+                UserRoleId,
+                UserRole.Name
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
@@ -230,6 +230,7 @@ private class LogEntryEventHandler_Tests {
         LogEntry__c logEntry = log.LogEntries__r.get(0);
 
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
@@ -320,5 +321,38 @@ private class LogEntryEventHandler_Tests {
 
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    @isTest
+    static void it_should_create_topic_and_topicAssignment_records() {
+        String transactionId = '123-456-789-0';
+
+        List<String> topics = new List<String>{ 'test-topic-1', 'test-topic-2' };
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            Topics__c = String.join(topics, ','),
+            TransactionId__c = transactionId
+        );
+
+        Test.startTest();
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        Log__c log = getLog();
+        System.assertEquals(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+
+        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        validateLogFields(logEntryEvent, log);
+        validateLogEntryFields(logEntryEvent, logEntry);
+
+        Set<String> topicsSet = new Set<String>(topics);
+        List<TopicAssignment> topicAssignments = [SELECT Id, EntityId, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
+        for(TopicAssignment topicAssignment : topicAssignments) {
+            System.assert(topicsSet.contains(topicAssignment.Topic.Name));
+        }
     }
 }
