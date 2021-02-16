@@ -192,10 +192,6 @@ global with sharing class Logger {
     }
 
     // ERROR logging level methods
-    global static LogEntryEventBuilder error() {
-        return newEntry(LoggingLevel.ERROR);
-    }
-
     global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException, List<String> topics) {
         return error().setMessage(logMessage).setTopics(topics).setExceptionDetails(apexException);
     }
@@ -293,10 +289,6 @@ global with sharing class Logger {
     }
 
     // WARN logging level methods
-    global static LogEntryEventBuilder warn() {
-        return newEntry(LoggingLevel.WARN);
-    }
-
     global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, List<String> topics) {
         return warn().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
@@ -346,10 +338,6 @@ global with sharing class Logger {
     }
 
     // INFO logging level methods
-    global static LogEntryEventBuilder info() {
-        return newEntry(LoggingLevel.INFO);
-    }
-
     global static LogEntryEventBuilder info(LogMessage logMessage, Id recordId, List<String> topics) {
         return info().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
@@ -399,10 +387,6 @@ global with sharing class Logger {
     }
 
     // DEBUG log level methods
-    global static LogEntryEventBuilder debug() {
-        return newEntry(LoggingLevel.DEBUG);
-    }
-
     global static LogEntryEventBuilder debug(LogMessage logMessage, Id recordId, List<String> topics) {
         return debug().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
@@ -452,10 +436,6 @@ global with sharing class Logger {
     }
 
     // FINE log level methods
-    global static LogEntryEventBuilder fine() {
-        return newEntry(LoggingLevel.FINE);
-    }
-
     global static LogEntryEventBuilder fine(LogMessage logMessage, Id recordId, List<String> topics) {
         return fine().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
@@ -505,10 +485,6 @@ global with sharing class Logger {
     }
 
     // FINER log level methods
-    global static LogEntryEventBuilder finer() {
-        return newEntry(LoggingLevel.FINER);
-    }
-
     global static LogEntryEventBuilder finer(LogMessage logMessage, Id recordId, List<String> topics) {
         return finer().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
@@ -558,10 +534,6 @@ global with sharing class Logger {
     }
 
     // FINEST log level methods
-    global static LogEntryEventBuilder finest() {
-        return newEntry(LoggingLevel.FINEST);
-    }
-
     global static LogEntryEventBuilder finest(LogMessage logMessage, Id recordId, List<String> topics) {
         return finest().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
@@ -612,26 +584,50 @@ global with sharing class Logger {
 
     /**
      * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if it meets the user's logging level
-     *
-     * @param  LoggingLevel loggingLevel - the logging level of the new entry
-     * @return LogEntryEventBuilder - returns the instance of LogEntryEventBuilder for the new entry
+     * @param  loggingLevel The logging level enum for the new entry
+     * @param  logMessage   The instance of LogMessage to use as the entry's message
+     * @return              The new entry's instance of LogEntryEventBuilder
      */
-    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel) {
-        return newEntry(loggingLevel, isEnabled(loggingLevel));
+    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, LogMessage logMessage) {
+        return newEntry(loggingLevel).setMessage(logMessage);
     }
 
     /**
-     * Adds a new instance of LogEntryEventBuilder to Logger's buffer
-     *
-     * @param  LoggingLevel loggingLevel - the logging level of the new entry
-     * @param  Boolean alwaysSave - controls if the entry should be saved, even if it does not meet the user's logging level
-     * @return LogEntryEventBuilder - returns the instance of LogEntryEventBuilder for the new entry
+     * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if alwaysSave == true
+     * @param  loggingLevel The logging level enum for the new entry
+     * @param  logMessage   The instance of LogMessage to use as the entry's message
+     * @param  alwaysSave   Controls if the new entry will be saved, even if the entry's logging level does not meet the user's logging level
+     * @return              The new entry's instance of LogEntryEventBuilder
      */
-    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean alwaysSave) {
+    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, LogMessage logMessage, Boolean alwaysSave) {
         LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
         LOG_ENTRIES.add(logEntryBuilder);
 
-        return logEntryBuilder;
+        return logEntryBuilder.setMessage(logMessage);
+    }
+
+    /**
+     * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if it meets the user's logging level
+     * @param  loggingLevel The logging level enum for the new entry
+     * @param  message      The string to use as the entry's message
+     * @return              The new entry's instance of LogEntryEventBuilder
+     */
+    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message) {
+        return newEntry(loggingLevel).setMessage(message);
+    }
+
+    /**
+     * Adds a new instance of LogEntryEventBuilder to Logger's buffer, if it meets the user's logging level
+     * @param  loggingLevel The logging level enum for the new entry
+     * @param  message      The string to use as the entry's message
+     * @param  alwaysSave   Controls if the new entry will be saved, even if the entry's logging level does not meet the user's logging level
+     * @return              The new entry's instance of LogEntryEventBuilder
+     */
+    global static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, String message, Boolean alwaysSave) {
+        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
+        LOG_ENTRIES.add(logEntryBuilder);
+
+        return logEntryBuilder.setMessage(message);
     }
 
     /**
@@ -823,6 +819,45 @@ global with sharing class Logger {
         } else {
             return (Log__c) securityDecision.getRecords().get(0);
         }
+    }
+
+    // Private logging level methods to keep global methods simpler/cleaner
+    private static LogEntryEventBuilder error() {
+        return newEntry(LoggingLevel.ERROR);
+    }
+
+    private static LogEntryEventBuilder warn() {
+        return newEntry(LoggingLevel.WARN);
+    }
+
+    private static LogEntryEventBuilder info() {
+        return newEntry(LoggingLevel.INFO);
+    }
+
+    private static LogEntryEventBuilder debug() {
+        return newEntry(LoggingLevel.DEBUG);
+    }
+
+    private static LogEntryEventBuilder fine() {
+        return newEntry(LoggingLevel.FINE);
+    }
+
+    private static LogEntryEventBuilder finer() {
+        return newEntry(LoggingLevel.FINER);
+    }
+
+    private static LogEntryEventBuilder finest() {
+        return newEntry(LoggingLevel.FINEST);
+    }
+
+    private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel) {
+        return newEntry(loggingLevel, isEnabled(loggingLevel));
+    }
+
+    private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean alwaysSave) {
+        LogEntryEventBuilder logEntryBuilder = new LogEntryEventBuilder(LoggingLevel, alwaysSave);
+
+        return logEntryBuilder;
     }
 
     // Inner class for saving log entries via a queuable job
