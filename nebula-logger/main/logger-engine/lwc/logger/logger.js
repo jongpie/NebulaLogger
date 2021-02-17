@@ -111,7 +111,7 @@ const isRequired = () => {
     throw new Error('Parameter is required');
 };
 
-const getStackTrace = () => {
+const getStack = () => {
     // TODO consider adding parsing/cleanup for stack traces
     let err = new Error();
     //return err.stack.replace('@', '<br>');
@@ -133,7 +133,7 @@ const logNewEntry = (loggingLevel, message, logEntryOptions) => {
         message: message,
         recordId: logEntryOptions.recordId,
         record: logEntryOptions.record,
-        stackTrace: getStackTrace(),
+        stack: getStack(),
         timestamp: new Date().toISOString(),
         topics: logEntryOptions.topics
     };
