@@ -44,6 +44,10 @@ const getDefaultLogEntryOptions = () => {
 };
 
 const newEntry = (loggingLevel = isRequired(), message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
+    if(loggingLevel) {
+        loggingLevel = loggingLevel.toUpperCase();
+    }
+
     switch(loggingLevel) {
         case 'ERROR':
             error(message, logEntryOptions);
