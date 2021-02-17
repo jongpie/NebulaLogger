@@ -8,31 +8,33 @@ import { getLoggingLevels, getDefaultLogEntryOptions, newEntry, error, warn, inf
 
 export default class LoggerDemo extends LightningElement {
     message = 'Hello, world!';
+    topicsString = 'Topic-one, Another topic here';
 
     messageChange(event) {
         this.message = event.target.value;
     }
 
+    topicsStringChange(event) {
+        this.topicsString = event.target.value;
+    }
+
     logError() {
-        error(this.message);
+        error(this.message, { recordId: '001zzzzzzz', topics: this.topicsString.split(',') });
     }
 
     logWarn() {
-        warn(this.message);
+        warn(this.message, { topics: this.topicsString.split(',') });
     }
 
     logInfo() {
-        info(this.message);
+        info(this.message, { topics: this.topicsString.split(',') });
     }
 
     logDebug() {
-        debug(this.message);
+        debug(this.message, { topics: this.topicsString.split(',') });
     }
 
     saveLog() {
         saveLog();
     }
-
 }
-
-

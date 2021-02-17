@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-// import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 // import addComponentLogEntries from '@salesforce/apex/ComponentLogController.addComponentLogEntries';
 export { getLoggingLevels, getDefaultLogEntryOptions, newEntry, error, warn, info, debug, saveLog };
 export default class ApexWireMethodWithParams extends LightningElement {
@@ -104,18 +104,28 @@ const getStackTrace = () => {
 const logNewEntry = (loggingLevel, message, logEntryOptions) => {
     // TODO add checks to make sure logEntryOptions exists & has all the keys/properties
 
+    if (typeof logEntryOptions == 'undefined') {
+        logEntryOptions = getDefaultLogEntryOptions();
+    }
+    logEntryOptions = Object.assign(getDefaultLogEntryOptions(), logEntryOptions);
+
     let entry = {
         exception : null, // TODO create object for JS errors & SF-specific errors
         loggingLevel: loggingLevel,
         message: message,
-        recordId: null, // TODO logEntryOptions.recordId,
-        record: null, // TODO logEntryOptions.record,
+        recordId: logEntryOptions.recordId,
+        record: logEntryOptions.record,
         stackTrace: getStackTrace(),
         timestamp: new Date().toISOString(),
-        topics: [] //TODO logEntryOptions.topics
+        topics: logEntryOptions.topics
     };
     //entries.push(entry); // TODO store entries somewhere until saved
 
-    alert(loggingLevel + ' Message\n' + message);
+    let formattedMessage = loggingLevel + ' Message\n\n' + message;
+    // if(topics && topics.length > 0) {
+    //     formattedMessage += '\nTopics: ' + topics.join(', ');
+    // }
+    alert(formattedMessage);
+
     return entry;
 };
