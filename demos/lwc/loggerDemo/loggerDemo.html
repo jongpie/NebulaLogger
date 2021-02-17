@@ -1,0 +1,41 @@
+<!--
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+-->
+
+<template>
+    <lightning-card title="Nebula Logger for Lightning Components" icon-name="custom:custom19">
+        <div class="slds-var-m-around_medium">
+            <lightning-input
+                label="Example Log Message"
+                value={message}
+                onchange={messageChange}
+            ></lightning-input>
+            <div class="slds-button-group" role="group">
+                <lightning-button
+                    label="Log ERROR"
+                    onclick={logError}
+                ></lightning-button>
+                <lightning-button
+                    label="Log WARN"
+                    onclick={logWarn}
+                ></lightning-button>
+                <lightning-button
+                    label="Log INFO"
+                    onclick={logInfo}
+                ></lightning-button>
+                <lightning-button
+                    label="Log DEBUG"
+                    onclick={logDebug}
+                ></lightning-button>
+            </div>
+            <lightning-button
+                label="Save Log"
+                variant="brand"
+                onclick={saveLog}
+            ></lightning-button>
+        </div>
+    </lightning-card>
+</template>
