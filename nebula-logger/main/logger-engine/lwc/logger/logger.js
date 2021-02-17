@@ -5,7 +5,7 @@
 
 import { LightningElement, wire } from 'lwc';
 // import addComponentLogEntries from '@salesforce/apex/ComponentLogController.addComponentLogEntries';
-export { getLoggingLevels, getDefaultLogEntryOptions, newEntry, error, warn, info, debug, saveLog };
+export { getLoggingLevels, getDefaultLogEntryOptions, newEntry, error, warn, info, debug, fine, finer, finest, saveLog };
 export default class ApexWireMethodWithParams extends LightningElement {
     componentLogEntries = [];
     // saveResponse;
@@ -80,6 +80,21 @@ const info = (message = isRequired(), logEntryOptions = getDefaultLogEntryOption
 
 const debug = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
     let logEntry = logNewEntry('DEBUG', message, logEntryOptions);
+    console.debug(logEntry);
+};
+
+const fine = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
+    let logEntry = logNewEntry('FINE', message, logEntryOptions);
+    console.debug(logEntry);
+};
+
+const finer = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
+    let logEntry = logNewEntry('FINER', message, logEntryOptions);
+    console.debug(logEntry);
+};
+
+const finest = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
+    let logEntry = logNewEntry('FINEST', message, logEntryOptions);
     console.debug(logEntry);
 };
 

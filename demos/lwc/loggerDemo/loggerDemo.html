@@ -36,11 +36,26 @@
                     onclick={logDebug}
                 ></lightning-button>
             </div>
-            <lightning-button
-                label="Save Log"
-                variant="brand"
-                onclick={saveLog}
-            ></lightning-button>
+            <br>
+            <div class="slds-button-group" role="group">
+                <lightning-button
+                    label="Log FINE"
+                    onclick={logFine}
+                ></lightning-button>
+                <lightning-button
+                    label="Log FINER"
+                    onclick={logFiner}
+                ></lightning-button>
+                <lightning-button
+                    label="Log FINER"
+                    onclick={logFiner}
+                ></lightning-button>
+                <lightning-button
+                    label="Save Log"
+                    variant="brand"
+                    onclick={saveLog}
+                ></lightning-button>
+            </div>
         </div>
     </lightning-card>
 </template>

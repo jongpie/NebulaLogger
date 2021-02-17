@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement } from 'lwc';
-import { getLoggingLevels, getDefaultLogEntryOptions, newEntry, error, warn, info, debug, saveLog } from 'c/logger';
+import { getLoggingLevels, getDefaultLogEntryOptions, newEntry, error, warn, info, debug, fine, finer, finest, saveLog } from 'c/logger';
 
 export default class LoggerDemo extends LightningElement {
     message = 'Hello, world!';
@@ -32,6 +32,18 @@ export default class LoggerDemo extends LightningElement {
 
     logDebug() {
         debug(this.message, { topics: this.topicsString.split(',') });
+    }
+
+    logFine() {
+        fine(this.message, { topics: this.topicsString.split(',') });
+    }
+
+    logFiner() {
+        finer(this.message, { topics: this.topicsString.split(',') });
+    }
+
+    logFinest() {
+        finest(this.message);
     }
 
     saveLog() {
