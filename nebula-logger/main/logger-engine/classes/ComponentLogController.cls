@@ -11,13 +11,26 @@ public inherited sharing class ComponentLogController {
         @AuraEnabled
         public SObject record { get; set; }
         @AuraEnabled
-        public String stackTrace { get; set; }
+        public String stack { get; set; }
         @AuraEnabled
         public Datetime timestamp { get; set; }
+        @AuraEnabled
+        public ComponentError componentError { get; set; }
         @AuraEnabled
         public List<String> topics { get; set; }
 
         private ComponentLogEntry() {
+        }
+    }
+
+    public class ComponentError {
+        public Integer columnNumber;
+        public Integer fileName;
+        public Integer lineNumber;
+        public Integer message;
+        public Integer stack;
+
+        private ComponentError() {
         }
     }
 
@@ -27,11 +40,11 @@ public inherited sharing class ComponentLogController {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
 
-                LogEntryEventBuilder logEntryEventBuilder =Logger.createLogEntryEventBuilder(loggingLevel)
+                LogEntryEventBuilder logEntryEventBuilder = Logger.createLogEntryEventBuilder(loggingLevel)
                     .setMessage(componentLogEntry.message)
                     .setRecordId(componentLogEntry.recordId)
                     .setRecordId(componentLogEntry.record)
-                    .parseStackTrace(componentLogEntry.stackTrace)
+                    .parseStackTrace(componentLogEntry.stack)
                     .setTopics(componentLogEntry.topics);
 
                 if (logEntryEventBuilder.shouldSave()) {

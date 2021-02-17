@@ -19,7 +19,7 @@ export default class LoggerDemo extends LightningElement {
     }
 
     logError() {
-        error(this.message, { recordId: '001zzzzzzz', topics: this.topicsString.split(',') });
+        error(this.message, { exception: new Error('boo it broke'), recordId: '001zzzzzzz', topics: this.topicsString.split(',') });
     }
 
     logWarn() {

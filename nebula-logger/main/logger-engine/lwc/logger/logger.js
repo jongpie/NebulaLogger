@@ -35,6 +35,7 @@ const getLoggingLevels = () => {
 
 const getDefaultLogEntryOptions = () => {
     return {
+        componentName : null,
         exception: null,
         recordId : null,
         record: null,
@@ -98,6 +99,7 @@ const isRequired = () => {
 const getStackTrace = () => {
     // TODO consider adding parsing/cleanup for stack traces
     let err = new Error();
+    //return err.stack.replace('@', '<br>');
     return err.stack;
 };
 
@@ -109,8 +111,9 @@ const logNewEntry = (loggingLevel, message, logEntryOptions) => {
     }
     logEntryOptions = Object.assign(getDefaultLogEntryOptions(), logEntryOptions);
 
-    let entry = {
-        exception : null, // TODO create object for JS errors & SF-specific errors
+    let componentLogEntry = {
+        componentLogName : logEntryOptions.componentLogName,
+        componentError : logEntryOptions.exception, // TODO create object for JS errors & SF-specific errors
         loggingLevel: loggingLevel,
         message: message,
         recordId: logEntryOptions.recordId,
@@ -127,5 +130,5 @@ const logNewEntry = (loggingLevel, message, logEntryOptions) => {
     // }
     alert(formattedMessage);
 
-    return entry;
+    return componentLogEntry;
 };
