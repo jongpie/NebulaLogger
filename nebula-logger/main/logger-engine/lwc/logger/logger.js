@@ -64,37 +64,37 @@ const newEntry = (loggingLevel = isRequired(), message = isRequired(), logEntryO
 }
 
 const error = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
-    let logEntry = logNewEntry('ERROR', message, logEntryOptions);
+    let logEntry = createNewComponentLogEntry('ERROR', message, logEntryOptions);
     console.error(logEntry);
 };
 
 const warn = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
-    let logEntry = logNewEntry('WARN', message, logEntryOptions);
+    let logEntry = createNewComponentLogEntry('WARN', message, logEntryOptions);
     console.warn(logEntry);
 };
 
 const info = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
-    let logEntry = logNewEntry('INFO', message, logEntryOptions);
+    let logEntry = createNewComponentLogEntry('INFO', message, logEntryOptions);
     console.info(logEntry);
 };
 
 const debug = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
-    let logEntry = logNewEntry('DEBUG', message, logEntryOptions);
+    let logEntry = createNewComponentLogEntry('DEBUG', message, logEntryOptions);
     console.debug(logEntry);
 };
 
 const fine = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
-    let logEntry = logNewEntry('FINE', message, logEntryOptions);
+    let logEntry = createNewComponentLogEntry('FINE', message, logEntryOptions);
     console.debug(logEntry);
 };
 
 const finer = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
-    let logEntry = logNewEntry('FINER', message, logEntryOptions);
+    let logEntry = createNewComponentLogEntry('FINER', message, logEntryOptions);
     console.debug(logEntry);
 };
 
 const finest = (message = isRequired(), logEntryOptions = getDefaultLogEntryOptions()) => {
-    let logEntry = logNewEntry('FINEST', message, logEntryOptions);
+    let logEntry = createNewComponentLogEntry('FINEST', message, logEntryOptions);
     console.debug(logEntry);
 };
 
@@ -118,7 +118,7 @@ const getStack = () => {
     return err.stack;
 };
 
-const logNewEntry = (loggingLevel, message, logEntryOptions) => {
+const createNewComponentLogEntry = (loggingLevel, message, logEntryOptions) => {
     // TODO add checks to make sure logEntryOptions exists & has all the keys/properties
 
     if (typeof logEntryOptions == 'undefined') {
