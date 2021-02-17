@@ -35,7 +35,7 @@ public inherited sharing class ComponentLogController {
     }
 
     @AuraEnabled
-    public static String addComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
+    public static String saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
         try {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);

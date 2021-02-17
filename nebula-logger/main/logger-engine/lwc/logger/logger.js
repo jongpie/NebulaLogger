@@ -4,14 +4,14 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement, wire } from 'lwc';
-// import addComponentLogEntries from '@salesforce/apex/ComponentLogController.addComponentLogEntries';
+// import saveComponentLogEntries from '@salesforce/apex/ComponentLogController.saveComponentLogEntries';
 export { getLoggingLevels, getDefaultLogEntryOptions, newEntry, error, warn, info, debug, fine, finer, finest, saveLog };
 export default class ApexWireMethodWithParams extends LightningElement {
     componentLogEntries = [];
     // saveResponse;
     // saveError;
 
-    // @wire(addComponentLogEntries, { componentLogEntries: '$componentLogEntries' })
+    // @wire(saveComponentLogEntries, { componentLogEntries: '$componentLogEntries' })
     // wiredSaveResponse({ error, data }) {
     //     if (data) {
     //         this.saveResponse = data;
