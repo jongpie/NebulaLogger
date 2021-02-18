@@ -114,6 +114,17 @@ export default class Logger extends LightningElement {
 
     @api
     saveLog() {
+        if(this.getBufferSize() == 0) {
+            // No need to call Apex if there aren't any entries to save
+            const noEntriesToastEvent = new ShowToastEvent({
+                title: 'Saving Skipped',
+                message: 'No entries logged, ignoring call to saveLog()',
+                variant: 'info',
+            });
+            this.dispatchEvent(noEntriesToastEvent);
+
+            return;
+        }
         saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
             .then((result) => {
                 // TODO cleanup
