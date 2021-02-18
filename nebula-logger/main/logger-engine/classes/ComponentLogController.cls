@@ -77,13 +77,20 @@ public inherited sharing class ComponentLogController {
 
                 LogEntryEventBuilder logEntryEventBuilder = Logger.createLogEntryEventBuilder(loggingLevel)
                     .setMessage(componentLogEntry.message);
-                    // .setRecordId(componentLogEntry.recordId)
-                    // .setRecordId(componentLogEntry.record)
-                    //.setTopics(componentLogEntry.topics);
 
                 if (logEntryEventBuilder.shouldSave()) {
+                    if (componentLogEntry.recordId != null) {
+                        logEntryEventBuilder.setRecordId(componentLogEntry.recordId);
+                    }
+                    if (componentLogEntry.record != null) {
+                        logEntryEventBuilder.setRecordId(componentLogEntry.record);
+                    }
+                    if (componentLogEntry.topics != null) {
+                        logEntryEventBuilder.setTopics(componentLogEntry.topics);
+                    }
+
                     logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
-                    //logEntryEventBuilder.parseStackTrace(componentLogEntry.stack);
+                    logEntryEventBuilder.parseStackTrace(componentLogEntry.stack);
                     logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
                 }
             }

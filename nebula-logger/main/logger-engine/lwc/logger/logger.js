@@ -116,13 +116,13 @@ export default class Logger extends LightningElement {
             .then((result) => {
                 // this.message = result;
                 // this.error = undefined;
-                alert('saved ' + this.componentLogEntries.length + ' entries');
-                // const evt = new ShowToastEvent({
-                //     title: 'Success',
-                //     message: 'Saved ' + this.componentLogEntries.length + ' log entries',
-                //     variant: 'success',
-                // });
-                // this.dispatchEvent(evt);
+                //alert('saved ' + this.componentLogEntries.length + ' entries');
+                const evt = new ShowToastEvent({
+                    title: 'Success',
+                    message: 'Saved ' + this.componentLogEntries.length + ' log entries',
+                    variant: 'success',
+                });
+                this.dispatchEvent(evt);
                 this.componentLogEntries = [];
             })
             .catch((error) => {
