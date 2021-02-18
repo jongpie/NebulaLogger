@@ -1,5 +1,9 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
 public inherited sharing class ComponentLogController {
-    // TODO cleanup this class & inner classes, it's a mess
     public class ComponentLoggerSettings {
         @AuraEnabled
         public Boolean isEnabled { get; set; }
