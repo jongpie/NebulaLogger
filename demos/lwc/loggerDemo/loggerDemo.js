@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement } from 'lwc';
-import { getLoggingLevels, getDefaultLogEntryOptions, newEntry, error, warn, info, debug, fine, finer, finest, saveLog } from 'c/logger';
+import { getDefaultLogEntryOptions, error, warn, info, debug, fine, finer, finest, saveLog } from 'c/logger';
 
 export default class LoggerDemo extends LightningElement {
     message = 'Hello, world!';
