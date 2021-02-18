@@ -87,8 +87,7 @@ public inherited sharing class ComponentLogController {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
 
-                LogEntryEventBuilder logEntryEventBuilder = Logger.createLogEntryEventBuilder(loggingLevel)
-                    .setMessage(componentLogEntry.message);
+                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, componentLogEntry.message);
 
                 if (logEntryEventBuilder.shouldSave()) {
                     if (componentLogEntry.recordId != null) {
