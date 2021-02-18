@@ -148,12 +148,12 @@ export default class Logger extends LightningElement {
         // console.log('running createNewComponentLogEntry');
 
         if(this.settings.isEnabled == false) {
-            return undefined;
+            return null;
         }
 
         if(this.meetsUserLoggingLevel(loggingLevel) == false) {
             // console.log('this.meetsUserLoggingLevel(loggingLevel)==' + this.meetsUserLoggingLevel(loggingLevel));
-            return undefined;
+            return null;
         }
 
         if (typeof logEntryOptions == 'undefined') {
