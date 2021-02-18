@@ -129,12 +129,17 @@ export default class Logger extends LightningElement {
     // Private functions
     meetsUserLoggingLevel(logEntryLoggingLevel) {
         //FIXME logEntryLoggingLevel is a string, not an object, so there's currently not an ordinal
-        return this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevel.ordinal;
+        //return this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevel.ordinal;
+        return true;
     }
 
     createNewComponentLogEntry(loggingLevel, message, logEntryOptions) {
         if(this.settings.isEnabled == false) {
-            return null;
+            return undefined;
+        }
+
+        if(this.meetsUserLoggingLevel(logEntryLoggingLevel)) {
+            return undefined;
         }
 
         if (typeof logEntryOptions == 'undefined') {
