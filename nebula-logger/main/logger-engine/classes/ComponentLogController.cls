@@ -1,26 +1,14 @@
 public inherited sharing class ComponentLogController {
     // TODO cleanup this class & inner classes, it's a mess
-    public class LoggingLevelDto {
-        @AuraEnabled
-        public String name { get; set; }
-        @AuraEnabled
-        public Integer ordinal { get; set; }
-
-        private LoggingLevelDto(LoggingLevel loggingLevel) {
-            this.name = loggingLevel.name();
-            this.ordinal = loggingLevel.ordinal();
-        }
-    }
-
-    public class LoggerSettingsDto {
+    public class ComponentLoggerSettings {
         @AuraEnabled
         public Boolean isEnabled { get; set; }
         @AuraEnabled
         public Map<String, Integer> supportedLoggingLevels { get; set; }
         @AuraEnabled
-        public LoggingLevelDto userLoggingLevel { get; set; }
+        public ComponentLoggingLevel userLoggingLevel { get; set; }
 
-        private LoggerSettingsDto() {
+        private ComponentLoggerSettings() {
             this.isEnabled = Logger.isEnabled();
             this.supportedLoggingLevels = getSupportedLoggingLevels();
             this.userLoggingLevel = getUserLoggingLevel();
@@ -38,11 +26,20 @@ public inherited sharing class ComponentLogController {
             };
         }
 
-        private LoggingLevelDto getUserLoggingLevel() {
-            // return new Map<String, Integer>{
-            //     Logger.getUserLoggingLevel().name() => Logger.getUserLoggingLevel().ordinal()
-            // };
-            return new LoggingLevelDto(Logger.getUserLoggingLevel());
+        private ComponentLoggingLevel getUserLoggingLevel() {
+            return new ComponentLoggingLevel(Logger.getUserLoggingLevel());
+        }
+    }
+
+    public class ComponentLoggingLevel {
+        @AuraEnabled
+        public String name { get; set; }
+        @AuraEnabled
+        public Integer ordinal { get; set; }
+
+        private ComponentLoggingLevel(LoggingLevel loggingLevel) {
+            this.name = loggingLevel.name();
+            this.ordinal = loggingLevel.ordinal();
         }
     }
 
@@ -74,9 +71,9 @@ public inherited sharing class ComponentLogController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static LoggerSettingsDto getSettings() {
+    public static ComponentLoggerSettings getSettings() {
         try {
-            return new LoggerSettingsDto();
+            return new ComponentLoggerSettings();
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
