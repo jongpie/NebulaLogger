@@ -103,6 +103,16 @@ export default class Logger extends LightningElement {
     };
 
     @api
+    getBufferSize() {
+        return this.componentLogEntries.length;
+    }
+
+    @api
+    flushBuffer() {
+        this.componentLogEntries = [];
+    }
+
+    @api
     saveLog() {
         saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
             .then((result) => {
@@ -111,11 +121,11 @@ export default class Logger extends LightningElement {
                 // this.error = undefined;
                 const saveEntriesToastEvent = new ShowToastEvent({
                     title: 'Success',
-                    message: 'Saved ' + this.componentLogEntries.length + ' log entries',
+                    message: 'Saved ' + this.getBufferSize() + ' log entries',
                     variant: 'success',
                 });
                 this.dispatchEvent(saveEntriesToastEvent);
-                this.componentLogEntries = [];
+                this.flushBuffer();
             })
             .catch((error) => {
                 alert('error' + JSON.stringify(error));
