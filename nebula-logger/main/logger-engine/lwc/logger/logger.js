@@ -9,7 +9,6 @@ import getSettings from '@salesforce/apex/ComponentLogController.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogController.saveComponentLogEntries';
 
 export default class Logger extends LightningElement {
-    //@wire(getSettings) settings;
     componentLogEntries = [];
     settings;
     settingsError;
@@ -105,18 +104,11 @@ export default class Logger extends LightningElement {
 
     @api
     saveLog() {
-        // TODO add saving via Apex controller
-        //alert('TODO - saving is a WIP yet, ' + this.componentLogEntries.length + ' entries pending save');
-        // alert('settings==' + JSON.stringify(this.settings));
-        // Calling the imperative Apex method with the JSON
-        // object as parameter.
-        console.info('this.componentLogEntries');
-        console.info(this.componentLogEntries);
         saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
             .then((result) => {
+                // TODO cleanup
                 // this.message = result;
                 // this.error = undefined;
-                //alert('saved ' + this.componentLogEntries.length + ' entries');
                 const evt = new ShowToastEvent({
                     title: 'Success',
                     message: 'Saved ' + this.componentLogEntries.length + ' log entries',
@@ -128,14 +120,16 @@ export default class Logger extends LightningElement {
             .catch((error) => {
                 alert('error' + JSON.stringify(error));
                 console.error(error);
+                // TODO cleanup
                 // this.message = undefined;
                 // this.error = error;
             });
     };
 
     // Private functions
-    meetsUserLoggingLevel(userLoggingLevel, logEntryLoggingLevel) {
-        return userLoggingLevel.ordinal <= logEntryLoggingLevel.ordinal;
+    meetsUserLoggingLevel(logEntryLoggingLevel) {
+        //FIXME logEntryLoggingLevel is a string, not an object, so there's currently not an ordinal
+        return this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevel.ordinal;
     }
 
     createNewComponentLogEntry(loggingLevel, message, logEntryOptions) {
@@ -158,14 +152,8 @@ export default class Logger extends LightningElement {
             timestamp: new Date().toISOString(),
             topics: [] //logEntryOptions.topics
         };
-        //console.log(componentLogEntry);
 
-        // FIXME store entries somewhere until saved
         this.componentLogEntries.push(componentLogEntry);
-
-        // TODO remove
-        console.log('this.componentLogEntries.length==' + this.componentLogEntries.length);
-
         return componentLogEntry;
     }
 
