@@ -16,7 +16,7 @@ export default class Logger extends LightningElement {
     @wire(getSettings)
     wiredSettings({ error, data }) {
         if (data) {
-            console.log('loading settings');
+            console.log('Loaded logger settings');
             console.log(data);
 
             this.settings = data;
@@ -109,12 +109,12 @@ export default class Logger extends LightningElement {
                 // TODO cleanup
                 // this.message = result;
                 // this.error = undefined;
-                const evt = new ShowToastEvent({
+                const saveEntriesToastEvent = new ShowToastEvent({
                     title: 'Success',
                     message: 'Saved ' + this.componentLogEntries.length + ' log entries',
                     variant: 'success',
                 });
-                this.dispatchEvent(evt);
+                this.dispatchEvent(saveEntriesToastEvent);
                 this.componentLogEntries = [];
             })
             .catch((error) => {
@@ -128,17 +128,21 @@ export default class Logger extends LightningElement {
 
     // Private functions
     meetsUserLoggingLevel(logEntryLoggingLevel) {
-        //FIXME logEntryLoggingLevel is a string, not an object, so there's currently not an ordinal
-        //return this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevel.ordinal;
-        return true;
+        // console.info('entry level name is ' + logEntryLoggingLevel);
+        let logEntryLoggingLevelOrdinal = this.settings.supportedLoggingLevels[logEntryLoggingLevel];
+        // console.info('entry level ordinal is ' + logEntryLoggingLevelOrdinal);
+        return this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
     }
 
     createNewComponentLogEntry(loggingLevel, message, logEntryOptions) {
+        // console.log('running createNewComponentLogEntry');
+
         if(this.settings.isEnabled == false) {
             return undefined;
         }
 
-        if(this.meetsUserLoggingLevel(logEntryLoggingLevel)) {
+        if(this.meetsUserLoggingLevel(loggingLevel) == false) {
+            // console.log('this.meetsUserLoggingLevel(loggingLevel)==' + this.meetsUserLoggingLevel(loggingLevel));
             return undefined;
         }
 
@@ -157,6 +161,22 @@ export default class Logger extends LightningElement {
             timestamp: new Date().toISOString(),
             topics: [] //logEntryOptions.topics
         };
+
+        // TODO remove this toast before finishing (or make it configurable?)
+        let variant;
+        if(componentLogEntry.loggingLevel == 'ERROR') {
+            variant = 'error';
+        } else if (componentLogEntry.loggingLevel == 'WARN') {
+            variant = 'warning';
+        } else {
+            variant = 'success';
+        }
+        const newEntryEvent = new ShowToastEvent({
+            title: componentLogEntry.loggingLevel,
+            message: componentLogEntry.message,
+            variant: variant,
+        });
+        this.dispatchEvent(newEntryEvent);
 
         this.componentLogEntries.push(componentLogEntry);
         return componentLogEntry;

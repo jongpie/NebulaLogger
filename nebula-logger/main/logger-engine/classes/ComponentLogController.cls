@@ -16,11 +16,26 @@ public inherited sharing class ComponentLogController {
         @AuraEnabled
         public Boolean isEnabled { get; set; }
         @AuraEnabled
+        public Map<String, Integer> supportedLoggingLevels { get; set; }
+        @AuraEnabled
         public LoggingLevelDto userLoggingLevel { get; set; }
 
         private LoggerSettingsDto() {
             this.isEnabled = Logger.isEnabled();
+            this.supportedLoggingLevels = getSupportedLoggingLevels();
             this.userLoggingLevel = getUserLoggingLevel();
+        }
+
+        private Map<String, Integer> getSupportedLoggingLevels() {
+            return new Map<String, Integer>{
+                LoggingLevel.ERROR.name() => LoggingLevel.ERROR.ordinal(),
+                LoggingLevel.WARN.name() => LoggingLevel.WARN.ordinal(),
+                LoggingLevel.INFO.name() => LoggingLevel.INFO.ordinal(),
+                LoggingLevel.DEBUG.name() => LoggingLevel.DEBUG.ordinal(),
+                LoggingLevel.FINE.name() => LoggingLevel.FINE.ordinal(),
+                LoggingLevel.FINER.name() => LoggingLevel.FINER.ordinal(),
+                LoggingLevel.FINEST.name() => LoggingLevel.FINEST.ordinal()
+            };
         }
 
         private LoggingLevelDto getUserLoggingLevel() {
