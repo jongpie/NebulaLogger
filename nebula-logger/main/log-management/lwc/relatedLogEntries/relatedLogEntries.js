@@ -5,7 +5,7 @@ import timestampField from '@salesforce/schema/LogEntry__c.Timestamp__c';
 export default class RelatedLogEntries extends LightningElement {
     @api recordId;
     @api fieldSetName;
-    @api sortBy = timestampField;
+    @api sortBy = 'Timestamp__c';
     @api sortDirection = 'DESC';
     @api rowLimit;
 
