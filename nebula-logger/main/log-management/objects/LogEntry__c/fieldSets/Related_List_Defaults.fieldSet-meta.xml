@@ -3,6 +3,11 @@
     <fullName>Related_List_Defaults</fullName>
     <description>Used by the &apos;Related Log Entries&apos; component as the default fields displayed</description>
     <displayedFields>
+        <field>Name</field>
+        <isFieldManaged>false</isFieldManaged>
+        <isRequired>false</isRequired>
+    </displayedFields>
+    <displayedFields>
         <field>LogTransactionId__c</field>
         <isFieldManaged>false</isFieldManaged>
         <isRequired>false</isRequired>
