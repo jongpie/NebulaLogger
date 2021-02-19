@@ -1,9 +1,19 @@
 <template>
     <div>
+        [sortBy: {sortBy}]
+        [sortDirection: {sortDirection}]
+    </div>
+    <div>
         <lightning-datatable
             key-field="id"
+            show-row-number-column="true"
             data={tableData}
-            columns={tableColumns}>
+            columns={tableColumns}
+            onsort={handleSort}
+            sorted-by={sortBy}
+            sorted-direction={sortDirection}
+            default-sort-direction={sortDirection}
+        >
         </lightning-datatable>
     </div>
 </template>

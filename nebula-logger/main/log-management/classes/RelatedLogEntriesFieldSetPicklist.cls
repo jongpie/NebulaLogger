@@ -12,19 +12,19 @@ public without sharing class RelatedLogEntriesFieldSetPicklist extends VisualEdi
     }
 
     public override VisualEditor.DynamicPickListRows getValues() {
-        VisualEditor.DynamicPickListRows rows = new VisualEditor.DynamicPickListRows();
+        VisualEditor.DynamicPickListRows picklistRows = new VisualEditor.DynamicPickListRows();
 
         Map<String, FieldSet> fieldSetNameToFieldSet = LOG_ENTRY_SOJECT_TYPE.getDescribe().fieldSets.getMap();
         for (FieldSet fieldSet : fieldSetNameToFieldSet.values()) {
             String namespacePrefix = String.isEmpty(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
 
-            VisualEditor.DataRow row = new VisualEditor.DataRow(
+            VisualEditor.DataRow picklistRow = new VisualEditor.DataRow(
                 fieldSet.getLabel(),
                 namespacePrefix + fieldSet.getName()
             );
-            rows.addRow(row);
+            picklistRows.addRow(picklistRow);
         }
 
-        return rows;
+        return picklistRows;
     }
 }
