@@ -13,7 +13,7 @@
                 name="fieldSetName"
                 label="Log Entry Field Set"
                 type="String"
-                datasource="apex://RelatedLogEntriesFieldSetPicklist"
+                datasource="apex://LogEntryFieldSetPicklist"
             />
             <property
                 name="rowLimit"

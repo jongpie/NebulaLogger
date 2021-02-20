@@ -1,9 +1,9 @@
-public without sharing class RelatedLogEntriesFieldSetPicklist extends VisualEditor.DynamicPickList {
+public without sharing class LogEntryFieldSetPicklist extends VisualEditor.DynamicPickList {
     private static final SObjectType LOG_ENTRY_SOJECT_TYPE = Schema.LogEntry__c.SObjectType;
 
     private VisualEditor.DesignTimePageContext context;
 
-    public RelatedLogEntriesFieldSetPicklist(VisualEditor.DesignTimePageContext context) {
+    public LogEntryFieldSetPicklist(VisualEditor.DesignTimePageContext context) {
         this.context = context;
     }
 
