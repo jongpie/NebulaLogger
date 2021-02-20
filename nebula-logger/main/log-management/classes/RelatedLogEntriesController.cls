@@ -31,6 +31,11 @@ public with sharing class RelatedLogEntriesController {
         List<String> fieldNames = new List<String>();
         for (FieldMetadata fieldMetadata : fieldSetMetdata.fields) {
             fieldNames.add(fieldMetadata.fieldName);
+
+            // For lookups, also include the display name of parent object
+            if(fieldMetadata.displayFieldName != null) {
+                fieldNames.add(fieldMetadata.displayFieldName);
+            }
         }
 
         // Handle null parameter values
@@ -102,16 +107,73 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String fieldName { get; set; }
         @AuraEnabled
+        public String displayFieldName { get; set; }
+        @AuraEnabled
         public Boolean sortable { get; set; }
         @AuraEnabled
         public String type { get; set; }
 
         public FieldMetadata(FieldSetMember fieldSetMember) {
-            this.isNameField = fieldSetMember.getSObjectField().getDescribe().isNameField();
+            Schema.DescribeFieldResult fieldDescribe = fieldSetMember.getSObjectField().getDescribe();
+
+            this.isNameField = fieldDescribe.isNameField();
             this.label = fieldSetMember.getLabel();
             this.fieldName = fieldSetMember.getFieldPath();
-            this.sortable = fieldSetMember.getSObjectField().getDescribe().isSortable();
-            this.type = fieldSetMember.getSObjectField().getDescribe().getType().name();
+            this.sortable = fieldDescribe.isSortable();
+            this.type = fieldDescribe.getType().name().toLowerCase();
+
+            if(fieldDescribe.getReferenceTo().size() == 1) {
+                this.displayFieldName = getDisplayFieldApiName(fieldDescribe.getReferenceTo().get(0));
+            }
         }
+    }
+
+    // Private static helper methods
+    private static String getDisplayFieldApiName(Schema.SObjectType sobjectType) {
+        // Use username instead of name for user
+        if (sobjectType == Schema.User.SObjectType) {
+            return Schema.User.Username.getDescribe().getName();
+        }
+
+        // There are several commonly used names for the display field name - typically, Name
+        // The order of the field names has been sorted based on number of objects in a dev org with that field
+        List<String> educatedGuesses = new List<String>{
+            'Name',
+            'DeveloperName',
+            'ApiName',
+            'Title',
+            'Subject',
+            'AssetRelationshipNumber',
+            'CaseNumber',
+            'ContractNumber',
+            'Domain',
+            'FriendlyName',
+            'FunctionName',
+            'Label',
+            'LocalPart',
+            'OrderItemNumber',
+            'OrderNumber',
+            'SolutionName',
+            'TestSuiteName'
+        };
+
+        String displayFieldApiName;
+        for (String fieldName : educatedGuesses) {
+            Schema.SObjectField field = sobjectType.getDescribe().fields.getMap().get(fieldName);
+
+            if (field == null) {
+                continue;
+            }
+
+            Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+
+            if (fieldDescribe.isNameField()) {
+                displayFieldApiName = fieldDescribe.getName();
+                break;
+            }
+        }
+
+        String relationshipName = sobjectType.getDescribe().getName().replace('__c', '__r');
+        return relationshipName + '.' + displayFieldApiName;
     }
 }
