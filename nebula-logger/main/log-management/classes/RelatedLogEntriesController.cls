@@ -1,24 +1,43 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group log-management
+ * @description Controller class for the component RelatedLogEntries
+ */
 public with sharing class RelatedLogEntriesController {
     private static final SObjectType LOG_ENTRY_SOBJECT_TYPE = Schema.LogEntry__c.SObjectType;
 
-    @AuraEnabled(cacheable=true)
-    public static FieldSetMetadata getFieldSetMetadata(String fieldSetName) {
-        return new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
-    }
+    // @AuraEnabled(cacheable=true)
+    // public static FieldSetMetadata getMetadata(String fieldSetName) {
+    //     return new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
+    // }
 
-    @AuraEnabled(cacheable=true)
-    public static List<LogEntry__c> getRelatedLogEntries(
+    @AuraEnabled(cacheable=true) //FIXME don't cache this, but need to change lwc call
+    public static LogEntryResult getRelatedLogEntries(
         Id recordId,
         String fieldSetName,
+        Integer rowLimit,
         String sortByFieldName,
         String sortDirection,
-        Integer rowLimit
+        String searchTerm
     ) {
+        //System.assert(false, 'expected failure');
+        System.debug('searchTerm==' + searchTerm);
+
         FieldSetMetadata fieldSetMetdata = new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
         List<String> fieldNames = new List<String>();
         for (FieldMetadata fieldMetadata : fieldSetMetdata.fields) {
             fieldNames.add(fieldMetadata.fieldName);
         }
+
+        // Handle null parameter values
+        sortByFieldName = String.isNotBlank(sortByFieldName)
+            ? sortByFieldName
+            : String.valueOf(Schema.LogEntry__c.Timestamp__c);
+        sortDirection = String.isNotBlank(sortDirection) ? sortDirection : 'DESC';
 
         List<Object> queryTextReplacements = new List<Object>{
             String.join(fieldNames, ','),
@@ -33,11 +52,29 @@ public with sharing class RelatedLogEntriesController {
         logEntryQuery = String.escapeSingleQuotes(String.format(logEntryQuery, queryTextReplacements));
         System.debug('logEntryQuery==' + logEntryQuery);
 
+        // Somewhat redudant security check for FLS (but extra security > less security)
         SObjectAccessDecision securityDecision = Security.stripInaccessible(
             AccessType.READABLE,
             Database.query(logEntryQuery)
         );
-        return (List<LogEntry__c>) securityDecision.getRecords();
+        List<LogEntry__c> records = (List<LogEntry__c>) securityDecision.getRecords();
+
+        return new LogEntryResult(fieldSetMetdata, records);
+    }
+
+    public class LogEntryResult {
+        @AuraEnabled
+        public FieldSetMetadata fieldSet { get; set; }
+        @AuraEnabled
+        public List<LogEntry__c> records { get; set; }
+        @AuraEnabled
+        public Boolean sobjectIsAccessible { get; set; }
+
+        private LogEntryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records) {
+            this.fieldSet = fieldSetMetadata;
+            this.records = records;
+            this.sobjectIsAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
+        }
     }
 
     public class FieldSetMetadata {
@@ -49,12 +86,17 @@ public with sharing class RelatedLogEntriesController {
 
             Schema.FieldSet fieldSet = sobjectType.getDescribe().fieldSets.getMap().get(fieldSetName);
             for (FieldSetMember fieldSetMember : fieldSet.getFields()) {
-                this.fields.add(new FieldMetadata(fieldSetMember));
+                // Enforce field-level security (FLS)
+                if (fieldSetMember.getSObjectField().getDescribe().isAccessible()) {
+                    this.fields.add(new FieldMetadata(fieldSetMember));
+                }
             }
         }
     }
 
     public class FieldMetadata {
+        @AuraEnabled
+        public Boolean isNameField { get; set; }
         @AuraEnabled
         public String label { get; set; }
         @AuraEnabled
@@ -63,39 +105,13 @@ public with sharing class RelatedLogEntriesController {
         public Boolean sortable { get; set; }
         @AuraEnabled
         public String type { get; set; }
-        @AuraEnabled
-        public Map<String, String> typeAttributes { get; set; }
-
-        private FieldSetMember fieldSetMember;
 
         public FieldMetadata(FieldSetMember fieldSetMember) {
-            this.fieldSetMember = fieldSetMember;
-
-            // TODO add support for display types (especially to handle lookup fields & html formula fields)
+            this.isNameField = fieldSetMember.getSObjectField().getDescribe().isNameField();
             this.label = fieldSetMember.getLabel();
             this.fieldName = fieldSetMember.getFieldPath();
-            this.sortable = fieldSetMember.getSObjectField()?.getDescribe().isSortable(); // FIXME make this more intelligent, some fields can't be sorted
-            this.typeAttributes = new Map<String, String>();
-
-            setTypeDetails();
-        }
-
-        private void setTypeDetails() {
-            String currentType = fieldSetMember.getSObjectField()?.getDescribe().getType().name().toLowerCase();
-            switch on currentType {
-                when 'datetime' {
-                    this.type = 'date';
-                    this.typeAttributes.put('month', '2-digit');
-                    this.typeAttributes.put('day', '2-digit');
-                    this.typeAttributes.put('year', 'numeric');
-                    this.typeAttributes.put('hour', '2-digit');
-                    this.typeAttributes.put('minute', '2-digit');
-                }
-                when 'id' {
-                    // FIXME need to make the ID field a clickable link
-                    this.type = 'url';
-                }
-            }
+            this.sortable = fieldSetMember.getSObjectField().getDescribe().isSortable();
+            this.type = fieldSetMember.getSObjectField().getDescribe().getType().name();
         }
     }
 }

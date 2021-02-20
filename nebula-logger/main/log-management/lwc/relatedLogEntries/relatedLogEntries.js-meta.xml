@@ -17,7 +17,7 @@
             />
             <property
                 name="rowLimit"
-                label="Max Number of Entries"
+                label="Max Number of Log Entries to Display"
                 type="Integer"
                 default="30"
             />

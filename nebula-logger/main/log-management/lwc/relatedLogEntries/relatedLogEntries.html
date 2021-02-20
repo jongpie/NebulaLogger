@@ -1,19 +1,31 @@
 <template>
+    <!-- TODO Add check for object permission on LogEntry__c (and hide component if not accessible)-->
     <div>
         [sortBy: {sortBy}]
         [sortDirection: {sortDirection}]
     </div>
-    <div>
+    <lightning-card title="TODO Log Entries label (x+)" icon-name="standard:opportunity">
+        <h1 slot="title">Hello title</h1>
+        <p class="slds-p-horizontal_small">This is body. You can have your content here</p>
+        <div slot="actions">
+            <lightning-button label="New" slot="actions"></lightning-button>
+            <lightning-input
+                name="enter-search"
+                label="Search when user hits the 'enter' key"
+                type="search"
+                value={searchTerm}
+            ></lightning-input>
+        </div>
         <lightning-datatable
             key-field="id"
             show-row-number-column="true"
-            data={tableData}
-            columns={tableColumns}
+            data={logEntryData}
+            columns={logEntryColumns}
             onsort={handleSort}
             sorted-by={sortBy}
             sorted-direction={sortDirection}
             default-sort-direction={sortDirection}
         >
         </lightning-datatable>
-    </div>
+    </lightning-card>
 </template>
