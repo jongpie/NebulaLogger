@@ -69,11 +69,13 @@ export default class RelatedLogEntries extends LightningElement {
                 }
             } else if(field.type == 'reference') {
                 let originalFieldName = field.fieldName;
-                let displayFieldName = field.lookupDisplayFieldName.replace('.', '');
-console.info('originalFieldName==' + originalFieldName);
-console.info('displayFieldName==' + displayFieldName);
+                let displayFieldName = field.lookupDisplayFieldName.replace('.', '') + 'Display';
+//console.info('originalFieldName==' + originalFieldName);
+console.info('displayFieldName==' + field.lookupDisplayFieldName);
+console.info('field.fieldName==' + field.fieldName);
                 // Add URL formatting to the field
-                field.fieldName = field.fieldName + 'Link';
+                //field.fieldName = field.fieldName + 'Link';
+                //field.fieldName = displayFieldName;
                 field.type = 'url';
                 field.typeAttributes = {
                     label: {fieldName: displayFieldName},
@@ -84,7 +86,7 @@ console.info('displayFieldName==' + displayFieldName);
                 // Add the link to each log entry record
                 for (var j = 0; j < records.length; j++) {
                     let record = Object.assign({}, records[j]); //cloning object
-                    record[field.fieldName] = '/' + record[originalFieldName];
+                    //record[displayFieldName] = '/' + record[field.fieldName];
 
                     let parentObject = record[field.relationshipName];
                     console.info('parentObject');
@@ -94,13 +96,13 @@ console.info('displayFieldName==' + displayFieldName);
                     records[j] = record;
                 }
             } else if(field.isNameField) {
-                let originalFieldName = field.fieldName;
+                let displayFieldName = field.fieldName + 'Display';
+
 
                 // Add URL formatting to the field
-                field.fieldName = field.fieldName + 'Link';
                 field.type = 'url';
                 field.typeAttributes = {
-                    label: {fieldName: originalFieldName},
+                    label: {fieldName: displayFieldName},
                     name: {fieldName: 'Id'},
                     target: '_self'
                 };
@@ -108,6 +110,7 @@ console.info('displayFieldName==' + displayFieldName);
                 // Add the link to each log entry record
                 for (var j = 0; j < records.length; j++) {
                     let record = Object.assign({}, records[j]); //cloning object
+                    record[displayFieldName] = record[field.fieldName];
                     record[field.fieldName] = '/' + record.Id;
 
                     records[j] = record;
