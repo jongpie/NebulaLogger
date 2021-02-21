@@ -51,9 +51,9 @@ public with sharing class RelatedLogEntriesController {
         SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records);
         records = securityDecision.getRecords();
 
-        Integer totalEntriesCountForRecordId = [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
+        Integer totalLogEntriesCount = [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
 
-        return new LogEntryResult(fieldSetMetdata, records, totalEntriesCountForRecordId);
+        return new LogEntryResult(fieldSetMetdata, records, totalLogEntriesCount);
     }
 
     private static List<LogEntry__c> search(
@@ -107,12 +107,12 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String tabIcon { get; set; }
         @AuraEnabled
-        public Integer totalEntries { get; set; }
+        public Integer totalLogEntriesCount { get; set; }
 
         private LogEntryResult(
             FieldSetMetadata fieldSetMetadata,
             List<LogEntry__c> records,
-            Integer totalEntriesCountForRecordId
+            Integer totalLogEntriesCount
         ) {
             this.fieldSet = fieldSetMetadata;
             this.records = records;
@@ -120,7 +120,7 @@ public with sharing class RelatedLogEntriesController {
             this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
             this.labelPlural = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabelPlural();
             this.tabIcon = getTabIcon(LOG_SOBJECT_TYPE);
-            this.totalEntries = totalEntriesCountForRecordId;
+            this.totalLogEntriesCount = totalLogEntriesCount;
         }
     }
 
@@ -153,6 +153,8 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public Boolean sortable { get; set; }
         @AuraEnabled
+        public String relationshipName { get; set; }
+        @AuraEnabled
         public String type { get; set; }
 
         public FieldMetadata(FieldSetMember fieldSetMember) {
@@ -161,9 +163,9 @@ public with sharing class RelatedLogEntriesController {
             this.isNameField = fieldDescribe.isNameField();
             this.label = fieldSetMember.getLabel();
             this.fieldName = fieldSetMember.getFieldPath();
+            this.relationshipName = fieldDescribe.getRelationshipName();
             this.sortable = fieldDescribe.isSortable();
             this.type = fieldDescribe.getType().name().toLowerCase();
-
             if (fieldDescribe.getReferenceTo().size() == 1) {
                 // Handle single-object (normal) lookups
                 this.lookupDisplayFieldName = getDisplayFieldApiName(fieldDescribe.getReferenceTo().get(0));

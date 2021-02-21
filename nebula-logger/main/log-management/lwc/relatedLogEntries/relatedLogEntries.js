@@ -33,7 +33,7 @@ export default class RelatedLogEntries extends LightningElement {
 
             this.logEntryResult = logEntryResult;
             this.showComponent = logEntryResult.isAccessible;
-            this.title = logEntryResult.labelPlural + ' (' + logEntryResult.totalEntries + ' Total)'
+            this.title = logEntryResult.labelPlural + ' (' + logEntryResult.totalLogEntriesCount + ' Total)'
         } else if (result.error) {
             this.logEntryData = undefined;
             this.logEntryColumns = undefined;
@@ -46,15 +46,14 @@ export default class RelatedLogEntries extends LightningElement {
             return;
         }
 
-        logEntryResult = Object.assign({}, logEntryResult); // clone fieldSet
+        logEntryResult = Object.assign({}, logEntryResult); // clone logEntryResult
 
-        //var updatedFields = [];
         let fieldSet = Object.assign({}, logEntryResult.fieldSet); // clone fieldSet
-        let fields = [];
-        let records = [];//Object.assign({}, logEntryResult.records); // clone records
+        let fields = [].concat(logEntryResult.fieldSet.fields); // clone fields
+        let records = [].concat(logEntryResult.records); // clone records
         console.info('cloned records');
         console.info(records);
-        //let records = Object.assign({}, logEntryResult.records); // clone records
+
         for(let i = 0; i < fieldSet.fields.length; i++) {
             let field = Object.assign({}, fieldSet.fields[i]); // clone field
 
@@ -69,69 +68,53 @@ export default class RelatedLogEntries extends LightningElement {
                     minute: '2-digit'
                 }
             } else if(field.type == 'reference') {
-                // TODO implement typeAttributes for lookup fields
-                // let originalFieldName = field.fieldName;
-
-                // field.fieldName = field.fieldName + 'Link';
-                // field.type = 'url';
-                // // TODO make sure this works
-                // var updatedRecords = [];
-                // for (var j = 0; j < logEntryResult.records.length; j++) {
-                //     let tempRecord = Object.assign({}, logEntryResult.records[j]); //cloning object
-                //     tempRecord[field.fieldName] = "/" + tempRecord[originalFieldName];
-
-                //     updatedRecords.push(tempRecord);
-                // }
-                // console.log('updatedRecords');
-                // console.log(updatedRecords);
-                // // FIXME multiple loops on records loses previous loop's changes
-                // //records = updatedRecords;
-
-                // let typeAttributes = {};
-
-                // let labelAttributes = {fieldName: field.lookupDisplayFieldName};
-                // typeAttributes.label = labelAttributes;
-
-                // let nameAttributes = {fieldName: field.fieldName};
-                // typeAttributes.name = nameAttributes;
-
-                // //this.typeAttributes.put('label', 'Name');
-                // typeAttributes.target = '_self';
-
-                // field.typeAttributes = typeAttributes;
-            } else if(field.isNameField) {
+                let originalFieldName = field.fieldName;
+                let displayFieldName = field.lookupDisplayFieldName.replace('.', '');
+console.info('originalFieldName==' + originalFieldName);
+console.info('displayFieldName==' + displayFieldName);
+                // Add URL formatting to the field
                 field.fieldName = field.fieldName + 'Link';
                 field.type = 'url';
-
-                let labelAttributes = {fieldName: 'Name'};
-                let nameAttributes = {fieldName: 'Id'};
                 field.typeAttributes = {
-                    label: labelAttributes,
-                    name: nameAttributes,
+                    label: {fieldName: displayFieldName},
+                    name: {fieldName: originalFieldName},
                     target: '_self'
-                };;
+                };
 
+                // Add the link to each log entry record
+                for (var j = 0; j < records.length; j++) {
+                    let record = Object.assign({}, records[j]); //cloning object
+                    record[field.fieldName] = '/' + record[originalFieldName];
 
+                    let parentObject = record[field.relationshipName];
+                    console.info('parentObject');
+                    console.info(parentObject);
+                    record[displayFieldName] = parentObject[field.lookupDisplayFieldName.split('.').splice(1)];
 
-                // TODO make sure this works
-                var updatedRecords = [];
-                for (var j = 0; j < logEntryResult.records.length; j++) {
-                    let tempRecord = Object.assign({}, logEntryResult.records[j]); //cloning object
-                    tempRecord[field.fieldName] = "/" + tempRecord.Id;
-
-                    //records[j] = tempRecord;
-                    updatedRecords.push(tempRecord);
+                    records[j] = record;
                 }
-                // console.log('updatedRecords');
-                // console.log(updatedRecords);
-                records = updatedRecords;
+            } else if(field.isNameField) {
+                let originalFieldName = field.fieldName;
 
+                // Add URL formatting to the field
+                field.fieldName = field.fieldName + 'Link';
+                field.type = 'url';
+                field.typeAttributes = {
+                    label: {fieldName: originalFieldName},
+                    name: {fieldName: 'Id'},
+                    target: '_self'
+                };
 
+                // Add the link to each log entry record
+                for (var j = 0; j < records.length; j++) {
+                    let record = Object.assign({}, records[j]); //cloning object
+                    record[field.fieldName] = '/' + record.Id;
 
-
+                    records[j] = record;
+                }
             }
 
-            fields.push(field);
+            fields[i] = field;
         }
 
         fieldSet.fields = fields;
