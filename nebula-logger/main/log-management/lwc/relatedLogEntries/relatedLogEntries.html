@@ -1,6 +1,5 @@
 <template>
     <template if:true={showComponent}>
-        <!-- TODO Add check for object permission on LogEntry__c (and hide component if not accessible)-->
         <lightning-card title={logEntryResult.labelPlural} icon-name={logEntryResult.tabIcon}>
             <div slot="actions">
                 <lightning-input
