@@ -127,6 +127,10 @@ public with sharing class RelatedLogEntriesController {
     public class FieldSetMetadata {
         @AuraEnabled
         public List<FieldMetadata> fields { get; set; }
+        @AuraEnabled
+        public String label { get; set; }
+        @AuraEnabled
+        public String name { get; set; }
 
         public FieldSetMetadata(SObjectType sobjectType, String fieldSetName) {
             this.fields = new List<FieldMetadata>();
@@ -138,6 +142,11 @@ public with sharing class RelatedLogEntriesController {
                     this.fields.add(new FieldMetadata(fieldSetMember));
                 }
             }
+
+            String namespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
+
+            this.label = fieldSet.getLabel();
+            this.name = namespacePrefix + fieldSet.getName();
         }
     }
 
