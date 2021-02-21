@@ -168,16 +168,19 @@ public with sharing class RelatedLogEntriesController {
             this.type = fieldDescribe.getType().name().toLowerCase();
             if (fieldDescribe.getReferenceTo().size() == 1) {
                 // Handle single-object (normal) lookups
-                this.lookupDisplayFieldName = getDisplayFieldApiName(fieldDescribe.getReferenceTo().get(0));
+                this.lookupDisplayFieldName = getDisplayFieldApiName(fieldDescribe);
             }
         }
     }
 
     // Private static helper methods
-    private static String getDisplayFieldApiName(Schema.SObjectType sobjectType) {
+    private static String getDisplayFieldApiName(Schema.DescribeFieldResult lookupFieldDescribe) {
+        String relationshipName = lookupFieldDescribe.getRelationshipName();
+        SObjectType lookupSObjectType = lookupFieldDescribe.getReferenceTo().get(0);
+
         // Use username instead of name for user
-        if (sobjectType == Schema.User.SObjectType) {
-            return Schema.User.Username.getDescribe().getName();
+        if (lookupSObjectType == Schema.User.SObjectType) {
+            return relationshipName + '.' + Schema.User.Username.getDescribe().getName();
         }
 
         // There are several commonly used names for the display field name - typically, Name, but check for others
@@ -203,7 +206,7 @@ public with sharing class RelatedLogEntriesController {
 
         String displayFieldApiName;
         for (String fieldName : educatedGuesses) {
-            Schema.SObjectField field = sobjectType.getDescribe().fields.getMap().get(fieldName);
+            Schema.SObjectField field = lookupSObjectType.getDescribe().fields.getMap().get(fieldName);
 
             if (field == null) {
                 continue;
@@ -217,7 +220,6 @@ public with sharing class RelatedLogEntriesController {
             }
         }
 
-        String relationshipName = sobjectType.getDescribe().getName().replace('__c', '__r');
         return relationshipName + '.' + displayFieldApiName;
     }
 
