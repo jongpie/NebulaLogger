@@ -3,8 +3,8 @@ import getRelatedLogEntries from '@salesforce/apex/RelatedLogEntriesController.g
 export default class RelatedLogEntries extends LightningElement {
     @api recordId;
     @api fieldSetName;
-    @api sortBy = 'Timestamp__c';
-    @api sortDirection = 'DESC';
+    @api sortBy = '';
+    @api sortDirection = '';
     @api rowLimit;
     @api search = '';
 
@@ -33,7 +33,7 @@ export default class RelatedLogEntries extends LightningElement {
 
             this.logEntryResult = logEntryResult;
             this.showComponent = logEntryResult.isAccessible;
-            this.title = logEntryResult.labelPlural + ' (' + logEntryResult.totalEntries + ' Total for This Record)'
+            this.title = logEntryResult.labelPlural + ' (' + logEntryResult.totalEntries + ' Total)'
         } else if (result.error) {
             this.logEntryData = undefined;
             this.logEntryColumns = undefined;
@@ -52,9 +52,11 @@ export default class RelatedLogEntries extends LightningElement {
         let fieldSet = Object.assign({}, logEntryResult.fieldSet); // clone fieldSet
         let fields = [];
         let records = [];//Object.assign({}, logEntryResult.records); // clone records
+        console.info('cloned records');
+        console.info(records);
         //let records = Object.assign({}, logEntryResult.records); // clone records
-        for(let i = 0; i < logEntryResult.fieldSet.fields.length; i++) {
-            let field = Object.assign({}, logEntryResult.fieldSet.fields[i]); // clone field
+        for(let i = 0; i < fieldSet.fields.length; i++) {
+            let field = Object.assign({}, fieldSet.fields[i]); // clone field
 
             if(field.type == 'datetime') {
                 field.type = 'date';
@@ -87,7 +89,7 @@ export default class RelatedLogEntries extends LightningElement {
 
                 // let typeAttributes = {};
 
-                // let labelAttributes = {fieldName: field.displayFieldName};
+                // let labelAttributes = {fieldName: field.lookupDisplayFieldName};
                 // typeAttributes.label = labelAttributes;
 
                 // let nameAttributes = {fieldName: field.fieldName};
@@ -97,38 +99,34 @@ export default class RelatedLogEntries extends LightningElement {
                 // typeAttributes.target = '_self';
 
                 // field.typeAttributes = typeAttributes;
-            }
-
-
-            // FIXME convert apex to js
-            if(field.isNameField) {
-                //this.fieldName = 'Id';
-                field.fieldName = 'recordLink';
+            } else if(field.isNameField) {
+                field.fieldName = field.fieldName + 'Link';
                 field.type = 'url';
+
+                let labelAttributes = {fieldName: 'Name'};
+                let nameAttributes = {fieldName: 'Id'};
+                field.typeAttributes = {
+                    label: labelAttributes,
+                    name: nameAttributes,
+                    target: '_self'
+                };;
+
+
+
                 // TODO make sure this works
                 var updatedRecords = [];
                 for (var j = 0; j < logEntryResult.records.length; j++) {
                     let tempRecord = Object.assign({}, logEntryResult.records[j]); //cloning object
-                    tempRecord.recordLink = "/" + tempRecord.Id;
+                    tempRecord[field.fieldName] = "/" + tempRecord.Id;
 
+                    //records[j] = tempRecord;
                     updatedRecords.push(tempRecord);
                 }
-                console.log('updatedRecords');
-                console.log(updatedRecords);
+                // console.log('updatedRecords');
+                // console.log(updatedRecords);
                 records = updatedRecords;
 
-                let typeAttributes = {};
 
-                let labelAttributes = {fieldName: 'Name'};
-                typeAttributes.label = labelAttributes;
-
-                let nameAttributes = {fieldName: 'Id'};
-                typeAttributes.name = nameAttributes;
-
-                //this.typeAttributes.put('label', 'Name');
-                typeAttributes.target = '_self';
-
-                field.typeAttributes = typeAttributes;
 
 
             }
@@ -137,9 +135,6 @@ export default class RelatedLogEntries extends LightningElement {
         }
 
         fieldSet.fields = fields;
-
-        console.info('final version of fieldSetMetadata');
-        console.info(fieldSet);
 
         logEntryResult.fieldSet = fieldSet;
         logEntryResult.records = records;
