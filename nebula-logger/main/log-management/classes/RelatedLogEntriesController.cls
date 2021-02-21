@@ -10,6 +10,8 @@
 public with sharing class RelatedLogEntriesController {
     private static final SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;
     private static final SObjectType LOG_ENTRY_SOBJECT_TYPE = Schema.LogEntry__c.SObjectType;
+    private static final String DEFAULT_SORT_FIELD_NAME = String.valueOf(Schema.LogEntry__c.Timestamp__c);
+    private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
     @AuraEnabled(cacheable=true) //FIXME don't cache this, but need to change lwc call
     public static LogEntryResult getRelatedLogEntries(
@@ -26,40 +28,44 @@ public with sharing class RelatedLogEntriesController {
             fieldNames.add(fieldMetadata.fieldName);
 
             // For lookups, also include the display name of parent object
-            if(fieldMetadata.displayFieldName != null) {
+            if (fieldMetadata.displayFieldName != null) {
                 fieldNames.add(fieldMetadata.displayFieldName);
             }
         }
 
         // Handle null parameter values
-        sortByFieldName = String.isNotBlank(sortByFieldName)
-            ? sortByFieldName
-            : String.valueOf(Schema.LogEntry__c.Timestamp__c);
-        sortDirection = String.isNotBlank(sortDirection) ? sortDirection : 'DESC';
-
+        sortByFieldName = String.isNotBlank(sortByFieldName) ? sortByFieldName : DEFAULT_SORT_FIELD_NAME;
+        sortDirection = String.isNotBlank(sortDirection) ? sortDirection : DEFAULT_SORT_DIRECTION;
 
         String fieldsClause = String.join(fieldNames, ',');
-        String whereClause = String.valueOf(Schema.LogEntry__c.RecordId__c) + ' = :recordId';
         String orderByClause = sortByFieldName + ' ' + sortDirection;
 
         List<LogEntry__c> records;
-        if(String.isNotBlank(search) && search.length() > 3) {
+        if (String.isNotBlank(search) && search.length() >= 3) {
             records = search(recordId, search, fieldsClause, orderByClause, rowLimit);
         } else {
             records = query(recordId, fieldsClause, orderByClause, rowLimit);
         }
+
+        // Somewhat redundant security check for FLS (but extra security > less security)
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records);
+        records = securityDecision.getRecords();
 
         Integer totalEntriesCountForRecordId = [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
 
         return new LogEntryResult(fieldSetMetdata, records, totalEntriesCountForRecordId);
     }
 
-
-    private static List<LogEntry__c> search(Id recordId, String searchTerm, String fieldsClause, String orderByClause, Integer rowLimit) {
-        searchTerm = String.escapeSingleQuotes(searchTerm);
+    private static List<LogEntry__c> search(
+        Id recordId,
+        String searchTerm,
+        String fieldsClause,
+        String orderByClause,
+        Integer rowLimit
+    ) {
+        searchTerm = String.escapeSingleQuotes('\'*' + searchTerm + '*\'');
 
         List<Object> searchTextReplacements = new List<Object>{
-            '\'*' + searchTerm + '*\'',
             String.valueOf(Schema.LogEntry__c.SObjectType),
             fieldsClause,
             String.valueOf(Schema.LogEntry__c.RecordId__c),
@@ -68,13 +74,8 @@ public with sharing class RelatedLogEntriesController {
         };
         String logEntrySearch = 'FIND {0} IN ALL FIELDS RETURNING {1}({2} WHERE {3} = :recordId ORDER BY {4} LIMIT {5})';
         logEntrySearch = String.format(logEntrySearch, searchTextReplacements);
-        System.debug('logEntrySearch==' + logEntrySearch);
 
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(
-            AccessType.READABLE,
-            Search.query(logEntrySearch).get(0)
-        );
-        return (List<LogEntry__c>) securityDecision.getRecords();
+        return (List<LogEntry__c>) Search.query(logEntrySearch).get(0);
     }
 
     private static List<LogEntry__c> query(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
@@ -86,15 +87,9 @@ public with sharing class RelatedLogEntriesController {
             rowLimit
         };
         String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
-        logEntryQuery = String.escapeSingleQuotes(String.format(logEntryQuery, queryTextReplacements));
-        System.debug('logEntryQuery==' + logEntryQuery);
+        logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
 
-        // Somewhat redudant security check for FLS (but extra security > less security)
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(
-            AccessType.READABLE,
-            Database.query(logEntryQuery)
-        );
-        return (List<LogEntry__c>) securityDecision.getRecords();
+        return (List<LogEntry__c>) Database.query(logEntryQuery);
     }
 
     public class LogEntryResult {
@@ -113,7 +108,11 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public Integer totalEntries { get; set; }
 
-        private LogEntryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records, Integer totalEntriesCountForRecordId) {
+        private LogEntryResult(
+            FieldSetMetadata fieldSetMetadata,
+            List<LogEntry__c> records,
+            Integer totalEntriesCountForRecordId
+        ) {
             this.fieldSet = fieldSetMetadata;
             this.records = records;
             this.isAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
@@ -164,7 +163,7 @@ public with sharing class RelatedLogEntriesController {
             this.sortable = fieldDescribe.isSortable();
             this.type = fieldDescribe.getType().name().toLowerCase();
 
-            if(fieldDescribe.getReferenceTo().size() == 1) {
+            if (fieldDescribe.getReferenceTo().size() == 1) {
                 this.displayFieldName = getDisplayFieldApiName(fieldDescribe.getReferenceTo().get(0));
             }
         }
@@ -177,24 +176,23 @@ public with sharing class RelatedLogEntriesController {
             return Schema.User.Username.getDescribe().getName();
         }
 
-        // There are several commonly used names for the display field name - typically, Name
-        // The order of the field names has been sorted based on number of objects in a dev org with that field
+        // There are several commonly used names for the display field name - typically, Name, but check for others
         List<String> educatedGuesses = new List<String>{
             'Name',
-            'DeveloperName',
-            'ApiName',
             'Title',
             'Subject',
             'AssetRelationshipNumber',
             'CaseNumber',
             'ContractNumber',
+            'OrderItemNumber',
+            'OrderNumber',
+            'DeveloperName',
+            'ApiName',
             'Domain',
             'FriendlyName',
             'FunctionName',
             'Label',
             'LocalPart',
-            'OrderItemNumber',
-            'OrderNumber',
             'SolutionName',
             'TestSuiteName'
         };
@@ -223,17 +221,25 @@ public with sharing class RelatedLogEntriesController {
         String sobjectName = sobjectType.getDescribe().getName();
 
         String tabIcon;
-        for(Schema.DescribeTabSetResult tabSetResult : Schema.describeTabs()) {
-            if(tabIcon != null) break;
+        for (Schema.DescribeTabSetResult tabSetResult : Schema.describeTabs()) {
+            if (tabIcon != null) {
+                break;
+            }
 
-            for(Schema.DescribeTabResult tabResult : tabSetResult.getTabs()) {
-                if(tabIcon != null) break;
-                if(tabResult.getSObjectName() != sobjectName) continue;
+            for (Schema.DescribeTabResult tabResult : tabSetResult.getTabs()) {
+                if (tabIcon != null) {
+                    break;
+                }
+                if (tabResult.getSObjectName() != sobjectName) {
+                    continue;
+                }
 
                 String iconType = tabResult.isCustom() ? 'custom' : 'standard';
                 String svgIconName;
-                for(Schema.DescribeIconResult icon : tabResult.getIcons()) {
-                    if(icon.getContentType() != 'image/svg+xml') continue;
+                for (Schema.DescribeIconResult icon : tabResult.getIcons()) {
+                    if (icon.getContentType() != 'image/svg+xml') {
+                        continue;
+                    }
 
                     svgIconName = icon.getUrl().substringAfterLast('/').replace('.svg', '');
                     tabIcon = iconType + ':' + svgIconName;
@@ -242,8 +248,11 @@ public with sharing class RelatedLogEntriesController {
             }
         }
         // Hardcoded exceptions - Salesforce doesn't return SVGs for these objects, so hardcoding is necessary
-        if(tabIcon == null && sobjectName == 'Asset') tabIcon = 'standard:maintenance_asset';
-        if(tabIcon == null && sobjectName == 'AssetRelationship') tabIcon = 'standard:asset_relationship';
+        if (tabIcon == null && sobjectName == 'Asset') {
+            tabIcon = 'standard:maintenance_asset';
+        } else if (tabIcon == null && sobjectName == 'AssetRelationship') {
+            tabIcon = 'standard:asset_relationship';
+        }
 
         return tabIcon;
     }
