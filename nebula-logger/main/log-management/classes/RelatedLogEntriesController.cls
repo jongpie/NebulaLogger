@@ -63,9 +63,10 @@ public with sharing class RelatedLogEntriesController {
         String orderByClause,
         Integer rowLimit
     ) {
-        searchTerm = String.escapeSingleQuotes('\'*' + searchTerm + '*\'');
+        searchTerm = '\'*' + String.escapeSingleQuotes(searchTerm) + '*\'';
 
         List<Object> searchTextReplacements = new List<Object>{
+            searchTerm,
             String.valueOf(Schema.LogEntry__c.SObjectType),
             fieldsClause,
             String.valueOf(Schema.LogEntry__c.RecordId__c),
