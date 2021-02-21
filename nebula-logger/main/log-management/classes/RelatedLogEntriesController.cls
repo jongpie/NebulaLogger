@@ -13,7 +13,7 @@ public with sharing class RelatedLogEntriesController {
     private static final String DEFAULT_SORT_FIELD_NAME = String.valueOf(Schema.LogEntry__c.Timestamp__c);
     private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
-    @AuraEnabled(cacheable=true) //FIXME don't cache this, but need to change lwc call
+    @AuraEnabled(cacheable=true)
     public static LogEntryResult getRelatedLogEntries(
         Id recordId,
         String fieldSetName,
@@ -23,22 +23,9 @@ public with sharing class RelatedLogEntriesController {
         String search
     ) {
         FieldSetMetadata fieldSetMetdata = new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
-        List<String> fieldNames = new List<String>();
-        for (FieldMetadata fieldMetadata : fieldSetMetdata.fields) {
-            fieldNames.add(fieldMetadata.fieldName);
 
-            // For lookups, also include the display name of parent object
-            if (fieldMetadata.lookupDisplayFieldName != null) {
-                fieldNames.add(fieldMetadata.lookupDisplayFieldName);
-            }
-        }
-
-        // Handle null parameter values
-        sortByFieldName = String.isNotBlank(sortByFieldName) ? sortByFieldName : DEFAULT_SORT_FIELD_NAME;
-        sortDirection = String.isNotBlank(sortDirection) ? sortDirection : DEFAULT_SORT_DIRECTION;
-
-        String fieldsClause = String.join(fieldNames, ',');
-        String orderByClause = sortByFieldName + ' ' + sortDirection;
+        String fieldsClause = getFieldsClause(fieldSetMetdata.fields);
+        String orderByClause = getOrderByClause(sortByFieldName, sortDirection);
 
         List<LogEntry__c> records;
         if (String.isNotBlank(search) && search.length() >= 3) {
@@ -97,13 +84,13 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public FieldSetMetadata fieldSet { get; set; }
         @AuraEnabled
-        public List<LogEntry__c> records { get; set; }
-        @AuraEnabled
         public Boolean isAccessible { get; set; }
         @AuraEnabled
         public String label { get; set; }
         @AuraEnabled
         public String labelPlural { get; set; }
+        @AuraEnabled
+        public List<LogEntry__c> records { get; set; }
         @AuraEnabled
         public String tabIcon { get; set; }
         @AuraEnabled
@@ -152,11 +139,11 @@ public with sharing class RelatedLogEntriesController {
 
     public class FieldMetadata {
         @AuraEnabled
+        public String fieldName { get; set; }
+        @AuraEnabled
         public Boolean isNameField { get; set; }
         @AuraEnabled
         public String label { get; set; }
-        @AuraEnabled
-        public String fieldName { get; set; }
         @AuraEnabled
         public String lookupDisplayFieldName { get; set; }
         @AuraEnabled
@@ -169,9 +156,9 @@ public with sharing class RelatedLogEntriesController {
         public FieldMetadata(FieldSetMember fieldSetMember) {
             Schema.DescribeFieldResult fieldDescribe = fieldSetMember.getSObjectField().getDescribe();
 
+            this.fieldName = fieldSetMember.getFieldPath();
             this.isNameField = fieldDescribe.isNameField();
             this.label = fieldSetMember.getLabel();
-            this.fieldName = fieldSetMember.getFieldPath();
             this.relationshipName = fieldDescribe.getRelationshipName();
             this.sortable = fieldDescribe.isSortable();
             this.type = fieldDescribe.getType().name().toLowerCase();
@@ -183,6 +170,32 @@ public with sharing class RelatedLogEntriesController {
     }
 
     // Private static helper methods
+    private static String getFieldsClause(List<FieldMetadata> fields) {
+        List<String> fieldNames = new List<String>();
+        for (FieldMetadata fieldMetadata : fields) {
+            fieldNames.add(fieldMetadata.fieldName);
+
+            // For lookups, also include the display name of parent object
+            if (fieldMetadata.lookupDisplayFieldName != null) {
+                fieldNames.add(fieldMetadata.lookupDisplayFieldName);
+            }
+        }
+
+        return String.join(fieldNames, ',');
+    }
+
+    private static String getOrderByClause(String sortByFieldName, String sortDirection) {
+        sortByFieldName = String.isNotBlank(sortByFieldName) ? sortByFieldName : DEFAULT_SORT_FIELD_NAME;
+        sortDirection = String.isNotBlank(sortDirection) ? sortDirection : DEFAULT_SORT_DIRECTION;
+
+        Schema.SObjectfield field = LOG_ENTRY_SOBJECT_TYPE.getDescribe().fields.getMap().get(sortByFieldName);
+        // For lookups, sort by the parent record's display field name (Name, CaseNumber, Subject, etc.)
+        if(field.getDescribe().getType() == Schema.DisplayType.REFERENCE) {
+            sortByFieldName = getDisplayFieldApiName(field.getDescribe());
+        }
+
+        return sortByFieldName + ' ' + sortDirection;
+    }
     private static String getDisplayFieldApiName(Schema.DescribeFieldResult lookupFieldDescribe) {
         String relationshipName = lookupFieldDescribe.getRelationshipName();
         SObjectType lookupSObjectType = lookupFieldDescribe.getReferenceTo().get(0);
