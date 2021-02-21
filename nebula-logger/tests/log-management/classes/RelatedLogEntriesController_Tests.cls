@@ -45,7 +45,7 @@ private class RelatedLogEntriesController_Tests {
 
         Test.startTest();
 
-        RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getRelatedLogEntries(
+        RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getQueryResult(
             recordId,
             fieldSetName,
             rowLimit,
@@ -92,7 +92,7 @@ private class RelatedLogEntriesController_Tests {
 
         Test.startTest();
 
-        RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getRelatedLogEntries(
+        RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getQueryResult(
             recordId,
             fieldSetName,
             rowLimit,

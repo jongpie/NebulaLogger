@@ -1,5 +1,5 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import getRelatedLogEntries from '@salesforce/apex/RelatedLogEntriesController.getRelatedLogEntries';
+import getQueryResult from '@salesforce/apex/RelatedLogEntriesController.getQueryResult';
 export default class RelatedLogEntries extends LightningElement {
     @api recordId;
     @api fieldSetName;
@@ -23,7 +23,7 @@ export default class RelatedLogEntries extends LightningElement {
         this.search = event.target.value;
     }
 
-    @wire(getRelatedLogEntries, {
+    @wire(getQueryResult, {
         recordId: '$recordId',
         fieldSetName: '$fieldSetName',
         rowLimit: '$rowLimit',
@@ -32,7 +32,7 @@ export default class RelatedLogEntries extends LightningElement {
         search: '$search'
     })
     wiredLogEntries(result) {
-        console.info('result of getRelatedLogEntries');
+        console.info('result of getQueryResult');
         console.info(result);
 
         if (result.data) {

@@ -18,7 +18,7 @@ public with sharing class RelatedLogEntriesController {
      * @return   The instance of LogEntryQueryResult, containing matching records and metadata
      */
     @AuraEnabled(cacheable=true)
-    public static LogEntryQueryResult getRelatedLogEntries(
+    public static LogEntryQueryResult getQueryResult(
         Id recordId,
         String fieldSetName,
         Integer rowLimit,
