@@ -8,12 +8,8 @@
  * @description Controller class for the component RelatedLogEntries
  */
 public with sharing class RelatedLogEntriesController {
+    private static final SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;
     private static final SObjectType LOG_ENTRY_SOBJECT_TYPE = Schema.LogEntry__c.SObjectType;
-
-    // @AuraEnabled(cacheable=true)
-    // public static FieldSetMetadata getMetadata(String fieldSetName) {
-    //     return new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
-    // }
 
     @AuraEnabled(cacheable=true) //FIXME don't cache this, but need to change lwc call
     public static LogEntryResult getRelatedLogEntries(
@@ -22,11 +18,8 @@ public with sharing class RelatedLogEntriesController {
         Integer rowLimit,
         String sortByFieldName,
         String sortDirection,
-        String searchTerm
+        String search
     ) {
-        //System.assert(false, 'expected failure');
-        System.debug('searchTerm==' + searchTerm);
-
         FieldSetMetadata fieldSetMetdata = new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
         List<String> fieldNames = new List<String>();
         for (FieldMetadata fieldMetadata : fieldSetMetdata.fields) {
@@ -44,16 +37,53 @@ public with sharing class RelatedLogEntriesController {
             : String.valueOf(Schema.LogEntry__c.Timestamp__c);
         sortDirection = String.isNotBlank(sortDirection) ? sortDirection : 'DESC';
 
-        List<Object> queryTextReplacements = new List<Object>{
-            String.join(fieldNames, ','),
+
+        String fieldsClause = String.join(fieldNames, ',');
+        String whereClause = String.valueOf(Schema.LogEntry__c.RecordId__c) + ' = :recordId';
+        String orderByClause = sortByFieldName + ' ' + sortDirection;
+
+        List<LogEntry__c> records;
+        if(String.isNotBlank(search) && search.length() > 3) {
+            records = search(recordId, search, fieldsClause, orderByClause, rowLimit);
+        } else {
+            records = query(recordId, fieldsClause, orderByClause, rowLimit);
+        }
+
+        return new LogEntryResult(fieldSetMetdata, records);
+    }
+
+
+    private static List<LogEntry__c> search(Id recordId, String searchTerm, String fieldsClause, String orderByClause, Integer rowLimit) {
+        searchTerm = String.escapeSingleQuotes(searchTerm);
+
+        List<Object> searchTextReplacements = new List<Object>{
+            '\'*' + searchTerm + '*\'',
             String.valueOf(Schema.LogEntry__c.SObjectType),
+            fieldsClause,
             String.valueOf(Schema.LogEntry__c.RecordId__c),
-            sortByFieldName,
-            sortDirection,
+            orderByClause,
             rowLimit
         };
+        String logEntrySearch = 'FIND {0} IN ALL FIELDS RETURNING {1}({2} WHERE {3} = :recordId ORDER BY {4} LIMIT {5})';
+        logEntrySearch = String.format(logEntrySearch, searchTextReplacements);
+        System.debug('logEntrySearch==' + logEntrySearch);
 
-        String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} {4} LIMIT {5}';
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(
+            AccessType.READABLE,
+            Search.query(logEntrySearch).get(0)
+        );
+        return (List<LogEntry__c>) securityDecision.getRecords();
+    }
+
+    private static List<LogEntry__c> query(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
+        List<Object> queryTextReplacements = new List<Object>{
+            fieldsClause,
+            String.valueOf(Schema.LogEntry__c.SObjectType),
+            String.valueOf(Schema.LogEntry__c.RecordId__c),
+            orderByClause,
+            rowLimit
+        };
+        String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
         logEntryQuery = String.escapeSingleQuotes(String.format(logEntryQuery, queryTextReplacements));
         System.debug('logEntryQuery==' + logEntryQuery);
 
@@ -62,9 +92,7 @@ public with sharing class RelatedLogEntriesController {
             AccessType.READABLE,
             Database.query(logEntryQuery)
         );
-        List<LogEntry__c> records = (List<LogEntry__c>) securityDecision.getRecords();
-
-        return new LogEntryResult(fieldSetMetdata, records);
+        return (List<LogEntry__c>) securityDecision.getRecords();
     }
 
     public class LogEntryResult {
@@ -73,12 +101,21 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public List<LogEntry__c> records { get; set; }
         @AuraEnabled
-        public Boolean sobjectIsAccessible { get; set; }
+        public Boolean isAccessible { get; set; }
+        @AuraEnabled
+        public String label { get; set; }
+        @AuraEnabled
+        public String labelPlural { get; set; }
+        @AuraEnabled
+        public String tabIcon { get; set; }
 
         private LogEntryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records) {
             this.fieldSet = fieldSetMetadata;
             this.records = records;
-            this.sobjectIsAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
+            this.isAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
+            this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
+            this.labelPlural = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabelPlural();
+            this.tabIcon = getTabIcon(LOG_SOBJECT_TYPE);
         }
     }
 
@@ -175,5 +212,34 @@ public with sharing class RelatedLogEntriesController {
 
         String relationshipName = sobjectType.getDescribe().getName().replace('__c', '__r');
         return relationshipName + '.' + displayFieldApiName;
+    }
+
+    private static String getTabIcon(Schema.SObjectType sobjectType) {
+        String sobjectName = sobjectType.getDescribe().getName();
+
+        String tabIcon;
+        for(Schema.DescribeTabSetResult tabSetResult : Schema.describeTabs()) {
+            if(tabIcon != null) break;
+
+            for(Schema.DescribeTabResult tabResult : tabSetResult.getTabs()) {
+                if(tabIcon != null) break;
+                if(tabResult.getSObjectName() != sobjectName) continue;
+
+                String iconType = tabResult.isCustom() ? 'custom' : 'standard';
+                String svgIconName;
+                for(Schema.DescribeIconResult icon : tabResult.getIcons()) {
+                    if(icon.getContentType() != 'image/svg+xml') continue;
+
+                    svgIconName = icon.getUrl().substringAfterLast('/').replace('.svg', '');
+                    tabIcon = iconType + ':' + svgIconName;
+                    break;
+                }
+            }
+        }
+        // Hardcoded exceptions - Salesforce doesn't return SVGs for these objects, so hardcoding is necessary
+        if(tabIcon == null && sobjectName == 'Asset') tabIcon = 'standard:maintenance_asset';
+        if(tabIcon == null && sobjectName == 'AssetRelationship') tabIcon = 'standard:asset_relationship';
+
+        return tabIcon;
     }
 }
