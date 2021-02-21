@@ -9,6 +9,7 @@ export default class RelatedLogEntries extends LightningElement {
     @api search = '';
 
     @track showComponent = false;
+    @track title;
     @track logEntryResult;
 
     @api
@@ -32,6 +33,7 @@ export default class RelatedLogEntries extends LightningElement {
 
             this.logEntryResult = logEntryResult;
             this.showComponent = logEntryResult.isAccessible;
+            this.title = logEntryResult.labelPlural + ' (' + logEntryResult.totalEntries + ' Total for This Record)'
         } else if (result.error) {
             this.logEntryData = undefined;
             this.logEntryColumns = undefined;

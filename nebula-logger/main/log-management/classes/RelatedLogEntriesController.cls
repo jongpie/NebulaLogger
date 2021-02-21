@@ -49,7 +49,9 @@ public with sharing class RelatedLogEntriesController {
             records = query(recordId, fieldsClause, orderByClause, rowLimit);
         }
 
-        return new LogEntryResult(fieldSetMetdata, records);
+        Integer totalEntriesCountForRecordId = [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
+
+        return new LogEntryResult(fieldSetMetdata, records, totalEntriesCountForRecordId);
     }
 
 
@@ -108,14 +110,17 @@ public with sharing class RelatedLogEntriesController {
         public String labelPlural { get; set; }
         @AuraEnabled
         public String tabIcon { get; set; }
+        @AuraEnabled
+        public Integer totalEntries { get; set; }
 
-        private LogEntryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records) {
+        private LogEntryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records, Integer totalEntriesCountForRecordId) {
             this.fieldSet = fieldSetMetadata;
             this.records = records;
             this.isAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
             this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
             this.labelPlural = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabelPlural();
             this.tabIcon = getTabIcon(LOG_SOBJECT_TYPE);
+            this.totalEntries = totalEntriesCountForRecordId;
         }
     }
 
