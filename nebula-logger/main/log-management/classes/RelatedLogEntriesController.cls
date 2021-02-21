@@ -28,8 +28,8 @@ public with sharing class RelatedLogEntriesController {
             fieldNames.add(fieldMetadata.fieldName);
 
             // For lookups, also include the display name of parent object
-            if (fieldMetadata.displayFieldName != null) {
-                fieldNames.add(fieldMetadata.displayFieldName);
+            if (fieldMetadata.lookupDisplayFieldName != null) {
+                fieldNames.add(fieldMetadata.lookupDisplayFieldName);
             }
         }
 
@@ -148,7 +148,7 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String fieldName { get; set; }
         @AuraEnabled
-        public String displayFieldName { get; set; }
+        public String lookupDisplayFieldName { get; set; }
         @AuraEnabled
         public Boolean sortable { get; set; }
         @AuraEnabled
@@ -164,7 +164,8 @@ public with sharing class RelatedLogEntriesController {
             this.type = fieldDescribe.getType().name().toLowerCase();
 
             if (fieldDescribe.getReferenceTo().size() == 1) {
-                this.displayFieldName = getDisplayFieldApiName(fieldDescribe.getReferenceTo().get(0));
+                // Handle single-object (normal) lookups
+                this.lookupDisplayFieldName = getDisplayFieldApiName(fieldDescribe.getReferenceTo().get(0));
             }
         }
     }
