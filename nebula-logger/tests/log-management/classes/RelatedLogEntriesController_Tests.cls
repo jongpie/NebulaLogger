@@ -1,0 +1,112 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+@isTest
+private class RelatedLogEntriesController_Tests {
+    private static final Integer TOTAL_LOG_ENTRIES = 10;
+    private static final Integer TOTAL_RELATED_LOG_ENTRIES = 7;
+
+    static String getFieldSetName() {
+        Schema.FieldSet fieldSet = Schema.SObjectType.LogEntry__c.fieldSets.getMap().values().get(0);
+        String fieldSetNamespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
+        String fieldSetName = fieldSetNamespacePrefix + fieldSet.getName();
+
+        return fieldSetName;
+    }
+
+    @testSetup
+    static void setupData() {
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+
+        List<LogEntry__c> logEntries = new List<LogEntry__c>();
+        for(Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
+            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'test ' + i);
+
+            if(i <= TOTAL_RELATED_LOG_ENTRIES) {
+                logEntry.RecordId__c = UserInfo.getUserId();
+            }
+
+            logEntries.add(logEntry);
+        }
+        insert logEntries;
+    }
+
+    @isTest
+    static void it_should_return_matching_logEntryQueryResult() {
+        Id recordId = UserInfo.getUserId();
+        String fieldSetName = getFieldSetName();
+        Integer rowLimit = 10;
+        String sortByFieldName = 'Name';
+        String sortDirection = 'ASC';
+        String search = null;
+
+        Test.startTest();
+
+        RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getRelatedLogEntries(
+            recordId,
+            fieldSetName,
+            rowLimit,
+            sortByFieldName,
+            sortDirection,
+            search
+        );
+        Test.stopTest();
+
+        System.assertEquals(fieldSetName, result.fieldSet.name);
+
+        // Requery the log entries so we can check additional fields that may not be in the field set
+        List<LogEntry__c> logEntries = [SELECT Id, RecordId__c FROM LogEntry__c WHERE Id IN :result.records];
+        for(LogEntry__c logEntry : logEntries) {
+            System.assertEquals(recordId, logEntry.RecordId__c);
+        }
+    }
+
+    @isTest
+    static void it_should_return_matching_logEntryQueryResult_when_search_provided() {
+        Id recordId = UserInfo.getUserId();
+        String fieldSetName = getFieldSetName();
+        Integer rowLimit = 10;
+        String sortByFieldName = 'Name';
+        String sortDirection = 'ASC';
+        String search = 'my search term';
+
+        Log__c log = [SELECT Id FROM Log__c];
+        LogEntry__c logEntryWithSearchTerm = new LogEntry__c(Log__c = log.Id, Message__c = search);
+        insert logEntryWithSearchTerm;
+        System.assert(logEntryWithSearchTerm.Message__c.contains(search));
+
+        // Quick sanity check on test data setup to make sure that only 1 log entry matches the search term
+        List<LogEntry__c> logEntries = [SELECT Id, Message__c, RecordId__c FROM LogEntry__c];
+        System.assertEquals(TOTAL_LOG_ENTRIES + 1, logEntries.size());
+        Integer countOfMatches = 0;
+        for(LogEntry__c logEntry : logEntries) {
+            System.debug('checking logEntry: ' + logEntry);
+            if(logEntry.Message__c.contains(search)) {
+                countOfMatches = countOfMatches + 1;
+            }
+        }
+        System.assertEquals(1, countOfMatches, logEntries);
+
+        Test.startTest();
+
+        RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getRelatedLogEntries(
+            recordId,
+            fieldSetName,
+            rowLimit,
+            sortByFieldName,
+            sortDirection,
+            search
+        );
+        Test.stopTest();
+
+        System.assertEquals(fieldSetName, result.fieldSet.name);
+        // FIXME
+        // System.assertEquals(1, result.records.size());
+        // for(LogEntry__c logEntry : result.records) {
+        //     System.assertEquals(recordId, logEntry.RecordId__c);
+        // }
+    }
+}
