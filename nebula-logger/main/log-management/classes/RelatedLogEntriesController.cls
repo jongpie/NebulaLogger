@@ -14,7 +14,7 @@ public with sharing class RelatedLogEntriesController {
     private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
     @AuraEnabled(cacheable=true)
-    public static LogEntryResult getRelatedLogEntries(
+    public static LogEntryQueryResult getRelatedLogEntries(
         Id recordId,
         String fieldSetName,
         Integer rowLimit,
@@ -40,9 +40,10 @@ public with sharing class RelatedLogEntriesController {
 
         Integer totalLogEntriesCount = [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
 
-        return new LogEntryResult(fieldSetMetdata, records, totalLogEntriesCount);
+        return new LogEntryQueryResult(fieldSetMetdata, records, totalLogEntriesCount);
     }
 
+    // Private static helper methods
     private static List<LogEntry__c> search(
         Id recordId,
         String searchTerm,
@@ -80,96 +81,6 @@ public with sharing class RelatedLogEntriesController {
         return (List<LogEntry__c>) Database.query(logEntryQuery);
     }
 
-    public class LogEntryResult {
-        @AuraEnabled
-        public FieldSetMetadata fieldSet { get; set; }
-        @AuraEnabled
-        public Boolean isAccessible { get; set; }
-        @AuraEnabled
-        public String label { get; set; }
-        @AuraEnabled
-        public String labelPlural { get; set; }
-        @AuraEnabled
-        public List<LogEntry__c> records { get; set; }
-        @AuraEnabled
-        public String tabIcon { get; set; }
-        @AuraEnabled
-        public Integer totalLogEntriesCount { get; set; }
-
-        private LogEntryResult(
-            FieldSetMetadata fieldSetMetadata,
-            List<LogEntry__c> records,
-            Integer totalLogEntriesCount
-        ) {
-            this.fieldSet = fieldSetMetadata;
-            this.records = records;
-            this.isAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
-            this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
-            this.labelPlural = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabelPlural();
-            this.tabIcon = getTabIcon(LOG_SOBJECT_TYPE);
-            this.totalLogEntriesCount = totalLogEntriesCount;
-        }
-    }
-
-    public class FieldSetMetadata {
-        @AuraEnabled
-        public List<FieldMetadata> fields { get; set; }
-        @AuraEnabled
-        public String label { get; set; }
-        @AuraEnabled
-        public String name { get; set; }
-
-        public FieldSetMetadata(SObjectType sobjectType, String fieldSetName) {
-            this.fields = new List<FieldMetadata>();
-
-            Schema.FieldSet fieldSet = sobjectType.getDescribe().fieldSets.getMap().get(fieldSetName);
-            for (FieldSetMember fieldSetMember : fieldSet.getFields()) {
-                // Enforce field-level security (FLS)
-                if (fieldSetMember.getSObjectField().getDescribe().isAccessible()) {
-                    this.fields.add(new FieldMetadata(fieldSetMember));
-                }
-            }
-
-            String namespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
-
-            this.label = fieldSet.getLabel();
-            this.name = namespacePrefix + fieldSet.getName();
-        }
-    }
-
-    public class FieldMetadata {
-        @AuraEnabled
-        public String fieldName { get; set; }
-        @AuraEnabled
-        public Boolean isNameField { get; set; }
-        @AuraEnabled
-        public String label { get; set; }
-        @AuraEnabled
-        public String lookupDisplayFieldName { get; set; }
-        @AuraEnabled
-        public Boolean sortable { get; set; }
-        @AuraEnabled
-        public String relationshipName { get; set; }
-        @AuraEnabled
-        public String type { get; set; }
-
-        public FieldMetadata(FieldSetMember fieldSetMember) {
-            Schema.DescribeFieldResult fieldDescribe = fieldSetMember.getSObjectField().getDescribe();
-
-            this.fieldName = fieldSetMember.getFieldPath();
-            this.isNameField = fieldDescribe.isNameField();
-            this.label = fieldSetMember.getLabel();
-            this.relationshipName = fieldDescribe.getRelationshipName();
-            this.sortable = fieldDescribe.isSortable();
-            this.type = fieldDescribe.getType().name().toLowerCase();
-            if (fieldDescribe.getReferenceTo().size() == 1) {
-                // Handle single-object (normal) lookups
-                this.lookupDisplayFieldName = getDisplayFieldApiName(fieldDescribe);
-            }
-        }
-    }
-
-    // Private static helper methods
     private static String getFieldsClause(List<FieldMetadata> fields) {
         List<String> fieldNames = new List<String>();
         for (FieldMetadata fieldMetadata : fields) {
@@ -190,7 +101,7 @@ public with sharing class RelatedLogEntriesController {
 
         Schema.SObjectfield field = LOG_ENTRY_SOBJECT_TYPE.getDescribe().fields.getMap().get(sortByFieldName);
         // For lookups, sort by the parent record's display field name (Name, CaseNumber, Subject, etc.)
-        if(field.getDescribe().getType() == Schema.DisplayType.REFERENCE) {
+        if (field.getDescribe().getType() == Schema.DisplayType.REFERENCE) {
             sortByFieldName = getDisplayFieldApiName(field.getDescribe());
         }
 
@@ -283,5 +194,95 @@ public with sharing class RelatedLogEntriesController {
         }
 
         return tabIcon;
+    }
+
+    // Inner classes
+    public class LogEntryQueryResult {
+        @AuraEnabled
+        public FieldSetMetadata fieldSet { get; set; }
+        @AuraEnabled
+        public Boolean isAccessible { get; set; }
+        @AuraEnabled
+        public String label { get; set; }
+        @AuraEnabled
+        public String labelPlural { get; set; }
+        @AuraEnabled
+        public List<LogEntry__c> records { get; set; }
+        @AuraEnabled
+        public String tabIcon { get; set; }
+        @AuraEnabled
+        public Integer totalLogEntriesCount { get; set; }
+
+        private LogEntryQueryResult(
+            FieldSetMetadata fieldSetMetadata,
+            List<LogEntry__c> records,
+            Integer totalLogEntriesCount
+        ) {
+            this.fieldSet = fieldSetMetadata;
+            this.records = records;
+            this.isAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
+            this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
+            this.labelPlural = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabelPlural();
+            this.tabIcon = getTabIcon(LOG_SOBJECT_TYPE);
+            this.totalLogEntriesCount = totalLogEntriesCount;
+        }
+    }
+
+    public class FieldSetMetadata {
+        @AuraEnabled
+        public List<FieldMetadata> fields { get; set; }
+        @AuraEnabled
+        public String label { get; set; }
+        @AuraEnabled
+        public String name { get; set; }
+
+        public FieldSetMetadata(SObjectType sobjectType, String fieldSetName) {
+            this.fields = new List<FieldMetadata>();
+
+            Schema.FieldSet fieldSet = sobjectType.getDescribe().fieldSets.getMap().get(fieldSetName);
+            for (FieldSetMember fieldSetMember : fieldSet.getFields()) {
+                // Enforce field-level security (FLS)
+                if (fieldSetMember.getSObjectField().getDescribe().isAccessible()) {
+                    this.fields.add(new FieldMetadata(fieldSetMember));
+                }
+            }
+
+            String namespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
+
+            this.label = fieldSet.getLabel();
+            this.name = namespacePrefix + fieldSet.getName();
+        }
+    }
+
+    public class FieldMetadata {
+        @AuraEnabled
+        public String fieldName { get; set; }
+        @AuraEnabled
+        public Boolean isNameField { get; set; }
+        @AuraEnabled
+        public String label { get; set; }
+        @AuraEnabled
+        public String lookupDisplayFieldName { get; set; }
+        @AuraEnabled
+        public Boolean sortable { get; set; }
+        @AuraEnabled
+        public String relationshipName { get; set; }
+        @AuraEnabled
+        public String type { get; set; }
+
+        public FieldMetadata(FieldSetMember fieldSetMember) {
+            Schema.DescribeFieldResult fieldDescribe = fieldSetMember.getSObjectField().getDescribe();
+
+            this.fieldName = fieldSetMember.getFieldPath();
+            this.isNameField = fieldDescribe.isNameField();
+            this.label = fieldSetMember.getLabel();
+            this.relationshipName = fieldDescribe.getRelationshipName();
+            this.sortable = fieldDescribe.isSortable();
+            this.type = fieldDescribe.getType().name().toLowerCase();
+            if (fieldDescribe.getReferenceTo().size() == 1) {
+                // Handle single-object (normal) lookups
+                this.lookupDisplayFieldName = getDisplayFieldApiName(fieldDescribe);
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <template if:true={showComponent}>
-        <lightning-card title={title} icon-name={logEntryResult.tabIcon}>
+        <lightning-card title={title} icon-name={queryResult.tabIcon}>
             <div slot="actions">
                 <lightning-input
                     name="enter-search"
@@ -13,8 +13,8 @@
             <lightning-datatable
                 key-field="id"
                 show-row-number-column="true"
-                data={logEntryResult.records}
-                columns={logEntryResult.fieldSet.fields}
+                data={queryResult.records}
+                columns={queryResult.fieldSet.fields}
                 onsort={handleSort}
                 sorted-by={sortBy}
                 sorted-direction={sortDirection}

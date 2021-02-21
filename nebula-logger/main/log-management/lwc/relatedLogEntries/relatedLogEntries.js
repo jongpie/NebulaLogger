@@ -10,7 +10,7 @@ export default class RelatedLogEntries extends LightningElement {
 
     @track showComponent = false;
     @track title;
-    @track logEntryResult;
+    @track queryResult;
 
     @api
     handleSort(event) {
@@ -23,17 +23,24 @@ export default class RelatedLogEntries extends LightningElement {
         this.search = event.target.value;
     }
 
-    @wire(getRelatedLogEntries, { recordId: '$recordId', fieldSetName: '$fieldSetName', rowLimit: '$rowLimit', sortByFieldName: '$sortBy', sortDirection: '$sortDirection', search: '$search'})
+    @wire(getRelatedLogEntries, {
+        recordId: '$recordId',
+        fieldSetName: '$fieldSetName',
+        rowLimit: '$rowLimit',
+        sortByFieldName: '$sortBy',
+        sortDirection: '$sortDirection',
+        search: '$search'
+    })
     wiredLogEntries(result) {
         console.info('result of getRelatedLogEntries');
         console.info(result);
 
         if (result.data) {
-            let logEntryResult = this.processResult(result.data);
+            let queryResult = this.processResult(result.data);
 
-            this.logEntryResult = logEntryResult;
-            this.showComponent = logEntryResult.isAccessible;
-            this.title = logEntryResult.labelPlural + ' (' + logEntryResult.totalLogEntriesCount + ' Total)'
+            this.queryResult = queryResult;
+            this.showComponent = queryResult.isAccessible;
+            this.title = queryResult.labelPlural + ' (' + queryResult.totalLogEntriesCount + ' Total)';
         } else if (result.error) {
             this.logEntryData = undefined;
             this.logEntryColumns = undefined;
@@ -41,23 +48,22 @@ export default class RelatedLogEntries extends LightningElement {
         }
     }
 
-    processResult(logEntryResult) {
-        if(logEntryResult.fieldSet == undefined) {
+    // Parse the Apex results & add any UI-specific attributes based on field metadata
+    processResult(queryResult) {
+        if (queryResult.fieldSet == undefined) {
             return;
         }
 
-        logEntryResult = Object.assign({}, logEntryResult); // clone logEntryResult
+        queryResult = Object.assign({}, queryResult); // clone queryResult
 
-        let fieldSet = Object.assign({}, logEntryResult.fieldSet); // clone fieldSet
-        let fields = [].concat(logEntryResult.fieldSet.fields); // clone fields
-        let records = [].concat(logEntryResult.records); // clone records
-        console.info('cloned records');
-        console.info(records);
+        let fieldSet = Object.assign({}, queryResult.fieldSet); // clone fieldSet
+        let fields = [].concat(queryResult.fieldSet.fields); // clone fields
+        let records = [].concat(queryResult.records); // clone records
 
-        for(let i = 0; i < fieldSet.fields.length; i++) {
+        for (let i = 0; i < fieldSet.fields.length; i++) {
             let field = Object.assign({}, fieldSet.fields[i]); // clone field
 
-            if(field.type == 'datetime') {
+            if (field.type == 'datetime') {
                 field.type = 'date';
                 // FIXME and make dynamic based on user prefences for datetimes
                 let typeAttributes = {
@@ -66,44 +72,38 @@ export default class RelatedLogEntries extends LightningElement {
                     year: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit'
-                }
-            } else if(field.type == 'reference') {
-                let originalFieldName = field.fieldName;
+                };
+            } else if (field.type == 'reference') {
                 let displayFieldName = field.lookupDisplayFieldName.replace('.', '') + 'Display';
-//console.info('originalFieldName==' + originalFieldName);
-console.info('displayFieldName==' + field.lookupDisplayFieldName);
-console.info('field.fieldName==' + field.fieldName);
+                let looupFieldName = field.fieldName;
+
                 // Add URL formatting to the field
-                //field.fieldName = field.fieldName + 'Link';
-                //field.fieldName = displayFieldName;
                 field.type = 'url';
                 field.typeAttributes = {
-                    label: {fieldName: displayFieldName},
-                    name: {fieldName: originalFieldName},
+                    label: { fieldName: displayFieldName },
+                    name: { fieldName: looupFieldName },
                     target: '_self'
                 };
 
                 // Add the link to each log entry record
                 for (var j = 0; j < records.length; j++) {
                     let record = Object.assign({}, records[j]); //cloning object
-                    //record[displayFieldName] = '/' + record[field.fieldName];
 
                     let parentObject = record[field.relationshipName];
-                    console.info('parentObject');
-                    console.info(parentObject);
                     record[displayFieldName] = parentObject[field.lookupDisplayFieldName.split('.').splice(1)];
+                    record[field.fieldName] = '/' + record[looupFieldName];
 
                     records[j] = record;
                 }
-            } else if(field.isNameField) {
+            } else if (field.isNameField) {
+                // Make the record's Name field a clickable link to the record
                 let displayFieldName = field.fieldName + 'Display';
-
 
                 // Add URL formatting to the field
                 field.type = 'url';
                 field.typeAttributes = {
-                    label: {fieldName: displayFieldName},
-                    name: {fieldName: 'Id'},
+                    label: { fieldName: displayFieldName },
+                    name: { fieldName: 'Id' },
                     target: '_self'
                 };
 
@@ -120,14 +120,13 @@ console.info('field.fieldName==' + field.fieldName);
             fields[i] = field;
         }
 
-        fieldSet.fields = fields;
+        queryResult.fieldSet = fieldSet;
+        queryResult.fieldSet.fields = fields;
+        queryResult.records = records;
 
-        logEntryResult.fieldSet = fieldSet;
-        logEntryResult.records = records;
+        console.info('final version of queryResult');
+        console.info(queryResult);
 
-        console.info('final version of logEntryResult');
-        console.info(logEntryResult);
-
-        return logEntryResult;
+        return queryResult;
     }
 }
