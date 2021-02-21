@@ -32,9 +32,6 @@ export default class RelatedLogEntries extends LightningElement {
         search: '$search'
     })
     wiredLogEntries(result) {
-        console.info('result of getQueryResult');
-        console.info(result);
-
         if (result.data) {
             let queryResult = this.processResult(result.data);
 
@@ -125,9 +122,6 @@ export default class RelatedLogEntries extends LightningElement {
         queryResult.fieldSet = fieldSet;
         queryResult.fieldSet.fields = fields;
         queryResult.records = records;
-
-        console.info('final version of queryResult');
-        console.info(queryResult);
 
         return queryResult;
     }
