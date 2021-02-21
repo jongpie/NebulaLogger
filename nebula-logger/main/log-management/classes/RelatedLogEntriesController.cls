@@ -107,6 +107,7 @@ public with sharing class RelatedLogEntriesController {
 
         return sortByFieldName + ' ' + sortDirection;
     }
+
     private static String getDisplayFieldApiName(Schema.DescribeFieldResult lookupFieldDescribe) {
         String relationshipName = lookupFieldDescribe.getRelationshipName();
         SObjectType lookupSObjectType = lookupFieldDescribe.getReferenceTo().get(0);
