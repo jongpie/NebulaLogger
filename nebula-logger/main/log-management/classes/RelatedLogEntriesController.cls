@@ -13,6 +13,10 @@ public with sharing class RelatedLogEntriesController {
     private static final String DEFAULT_SORT_FIELD_NAME = String.valueOf(Schema.LogEntry__c.Timestamp__c);
     private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
+    /**
+     * Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
+     * @return   The instance of LogEntryQueryResult, containing matching records and metadata
+     */
     @AuraEnabled(cacheable=true)
     public static LogEntryQueryResult getRelatedLogEntries(
         Id recordId,
@@ -220,10 +224,10 @@ public with sharing class RelatedLogEntriesController {
             Integer totalLogEntriesCount
         ) {
             this.fieldSet = fieldSetMetadata;
-            this.records = records;
             this.isAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
             this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
             this.labelPlural = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabelPlural();
+            this.records = records;
             this.tabIcon = getTabIcon(LOG_SOBJECT_TYPE);
             this.totalLogEntriesCount = totalLogEntriesCount;
         }
