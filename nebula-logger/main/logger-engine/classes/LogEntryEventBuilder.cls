@@ -196,6 +196,11 @@ global without sharing class LogEntryEventBuilder {
             this.setUserSessionDetails();
         }
 
+        // Set string value of timestamp as a workaround
+        // Salesforce does not provide precise datetimes in Apex triggers for platform events
+        // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
+        this.logEntryEvent.TimestampString__c = String.valueOf(this.logEntryEvent.Timestamp__c);
+
         return this.logEntryEvent;
     }
 

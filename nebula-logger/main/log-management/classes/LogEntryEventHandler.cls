@@ -126,7 +126,7 @@ public without sharing class LogEntryEventHandler {
                 RecordId__c = logEntryEvent.RecordId__c,
                 RecordJson__c = logEntryEvent.RecordJson__c,
                 StackTrace__c = logEntryEvent.StackTrace__c,
-                Timestamp__c = logEntryEvent.Timestamp__c,
+                Timestamp__c = Datetime.valueOf(logEntryEvent.TimestampString__c), // Workaround field for platform issue w/ accurate datetimes
                 TriggerIsExecuting__c = logEntryEvent.TriggerIsExecuting__c,
                 TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,
                 TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
