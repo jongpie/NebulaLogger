@@ -12,6 +12,10 @@
         <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>RelatedLogEntriesController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <description>Provides access to:
   - Generate log entries via Apex, Flow and Process Builder.
   - View shared logs &amp; log entries</description>
