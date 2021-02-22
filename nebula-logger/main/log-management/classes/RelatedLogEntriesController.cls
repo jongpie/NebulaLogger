@@ -250,7 +250,7 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String name { get; set; }
 
-        public FieldSetMetadata(SObjectType sobjectType, String fieldSetName) {
+        private FieldSetMetadata(SObjectType sobjectType, String fieldSetName) {
             this.fields = new List<FieldMetadata>();
 
             Schema.FieldSet fieldSet = sobjectType.getDescribe().fieldSets.getMap().get(fieldSetName);
@@ -284,7 +284,7 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String type { get; set; }
 
-        public FieldMetadata(FieldSetMember fieldSetMember) {
+        private FieldMetadata(FieldSetMember fieldSetMember) {
             Schema.DescribeFieldResult fieldDescribe = fieldSetMember.getSObjectField().getDescribe();
 
             this.fieldName = fieldSetMember.getFieldPath();
