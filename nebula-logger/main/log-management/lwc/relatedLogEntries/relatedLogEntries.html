@@ -1,0 +1,30 @@
+<!--**********************************************************************************************
+* This file is part of the Nebula Logger project, released under the MIT License.                *
+* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
+***********************************************************************************************-->
+
+<template>
+    <template if:true={showComponent}>
+        <lightning-card title={title} icon-name={queryResult.tabIcon} class="log-entry-card">
+            <div slot="actions">
+                <lightning-input
+                    name="enter-search"
+                    placeholder="Search"
+                    type="search"
+                    value={search}
+                    onchange={handleSearchChange}
+                ></lightning-input>
+            </div>
+            <lightning-datatable
+                key-field="id"
+                show-row-number-column="true"
+                data={queryResult.records}
+                columns={queryResult.fieldSet.fields}
+                onsort={handleSort}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                default-sort-direction={sortDirection}
+            ></lightning-datatable>
+        </lightning-card>
+    </template>
+</template>
