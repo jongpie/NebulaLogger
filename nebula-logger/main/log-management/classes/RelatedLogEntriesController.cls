@@ -14,8 +14,15 @@ public with sharing class RelatedLogEntriesController {
     private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
     /**
-     * Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
-     * @return   The instance of LogEntryQueryResult, containing matching records and metadata
+    * Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
+     * @param  recordId        Used to filter LogEntry__c records where RecordId__c == recordId
+     * @param  fieldSetName    The API/developer name of the field set
+     * @param  rowLimit        The max number of rows to query
+     * @param  rowOffset       Reserved for future use
+     * @param  sortByFieldName The field to sort by
+     * @param  sortDirection   The direction to sort by (asc or desc))
+     * @param  search          An optional search term to filter by
+     * @return                 The instance of LogEntryQueryResult, containing matching records and metadata
      */
     @AuraEnabled(cacheable=true)
     public static LogEntryQueryResult getQueryResult(
