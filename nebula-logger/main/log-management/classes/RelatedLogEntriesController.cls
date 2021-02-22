@@ -22,10 +22,12 @@ public with sharing class RelatedLogEntriesController {
         Id recordId,
         String fieldSetName,
         Integer rowLimit,
+        Integer rowOffset,
         String sortByFieldName,
         String sortDirection,
         String search
     ) {
+        // TODO use rowOffset to implement infinite-loading
         FieldSetMetadata fieldSetMetdata = new FieldSetMetadata(LOG_ENTRY_SOBJECT_TYPE, fieldSetName);
 
         String fieldsClause = getFieldsClause(fieldSetMetdata.fields);

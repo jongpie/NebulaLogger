@@ -39,6 +39,7 @@ private class RelatedLogEntriesController_Tests {
         Id recordId = UserInfo.getUserId();
         String fieldSetName = getFieldSetName();
         Integer rowLimit = 10;
+        Integer rowOffset = 0;
         String sortByFieldName = 'Name';
         String sortDirection = 'ASC';
         String search = null;
@@ -49,6 +50,7 @@ private class RelatedLogEntriesController_Tests {
             recordId,
             fieldSetName,
             rowLimit,
+            rowOffset,
             sortByFieldName,
             sortDirection,
             search
@@ -69,6 +71,7 @@ private class RelatedLogEntriesController_Tests {
         Id recordId = UserInfo.getUserId();
         String fieldSetName = getFieldSetName();
         Integer rowLimit = 10;
+        Integer rowOffset = 0;
         String sortByFieldName = 'Name';
         String sortDirection = 'ASC';
         String search = 'my search term';
@@ -96,6 +99,7 @@ private class RelatedLogEntriesController_Tests {
             recordId,
             fieldSetName,
             rowLimit,
+            rowOffset,
             sortByFieldName,
             sortDirection,
             search
