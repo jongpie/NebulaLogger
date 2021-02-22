@@ -86,6 +86,11 @@ public without sharing class LogEntryEventHandler {
         }
 
         for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) Trigger.new) {
+            // Workaround field for platform issue w/ accurate datetimes
+            Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
+                ? Datetime.valueOf(logEntryEvent.TimestampString__c)
+                : logEntryEvent.Timestamp__c;
+
             LogEntry__c logEntry = new LogEntry__c(
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
@@ -131,7 +136,7 @@ public without sharing class LogEntryEventHandler {
                 RecordId__c = logEntryEvent.RecordId__c,
                 RecordJson__c = logEntryEvent.RecordJson__c,
                 StackTrace__c = logEntryEvent.StackTrace__c,
-                Timestamp__c = logEntryEvent.Timestamp__c,
+                Timestamp__c = timestamp,
                 TriggerIsExecuting__c = logEntryEvent.TriggerIsExecuting__c,
                 TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,
                 TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
