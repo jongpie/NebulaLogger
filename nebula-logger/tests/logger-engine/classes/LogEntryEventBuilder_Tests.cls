@@ -4,14 +4,9 @@
 //------------------------------------------------------------------------------------------------//
 @isTest
 private class LogEntryEventBuilder_Tests {
-    @TestSetup
-    static void setup() {
-        insert new LoggerSettings__c(IsEnabled__c = false, LoggingLevel__c = 'DEBUG', Name = 'Test Settings');
-    }
-
     @isTest
-    static void it_should_short_circuit_when_logging_is_not_enabled() {
-        Boolean shouldSave = Logger.isEnabled(LoggingLevel.DEBUG);
+    static void it_should_short_circuit_when_not_enabled() {
+        Boolean shouldSave = false;
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG, shouldSave);
 
         System.assertEquals(null, builder.getLogEntryEvent());
@@ -24,24 +19,15 @@ private class LogEntryEventBuilder_Tests {
 
     @isTest
     static void it_should_short_circuit_when_enabled_logging_level_above_called_level() {
-        LoggerSettings__c settings = [SELECT Id, IsEnabled__c FROM LoggerSettings__c];
-        settings.IsEnabled__c = true;
-        update settings;
-
         Boolean shouldSave = Logger.isEnabled(LoggingLevel.FINE);
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, false);
 
         System.assertEquals(null, builder.getLogEntryEvent());
     }
 
     @isTest
-    static void it_should_not_short_circuit_when_enabled_logging_level_meets_called_level() {
-        LoggerSettings__c settings = [SELECT Id, IsEnabled__c FROM LoggerSettings__c];
-        settings.IsEnabled__c = true;
-        settings.LoggingLevel__c = 'FINE';
-        update settings;
-
-        Boolean shouldSave = Logger.isEnabled(LoggingLevel.FINE);
+    static void it_should_not_short_circuit_when_enabledl() {
+        Boolean shouldSave = true;
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
 
         System.assertNotEquals(null, builder.getLogEntryEvent());
@@ -91,7 +77,7 @@ private class LogEntryEventBuilder_Tests {
 
         String randomMessage = 'The time is ' + String.valueOf(System.now());
         String longMessage = '';
-        while(longMessage.length() <= messageFieldMaxLength) {
+        while (longMessage.length() <= messageFieldMaxLength) {
             longMessage += randomMessage;
         }
         System.assert(longMessage.length() > messageFieldMaxLength);
@@ -165,7 +151,7 @@ private class LogEntryEventBuilder_Tests {
 
         Test.startTest();
 
-        List<String> topics = new List<String>{'some-topic', 'another One', 'here\'s one more!'};
+        List<String> topics = new List<String>{ 'some-topic', 'another One', 'here\'s one more!' };
         builder.setTopics(topics);
 
         Test.stopTest();
@@ -181,7 +167,7 @@ private class LogEntryEventBuilder_Tests {
 
         Test.startTest();
 
-        List<String> topics = new List<String>{'duplicate-topic', 'duplicate-topic', 'another One'};
+        List<String> topics = new List<String>{ 'duplicate-topic', 'duplicate-topic', 'another One' };
         builder.setTopics(topics);
 
         Test.stopTest();
@@ -192,14 +178,9 @@ private class LogEntryEventBuilder_Tests {
 
     @isTest
     static void it_should_set_stack_trace_and_origin_location_for_stack_trace_string() {
-        LoggerSettings__c settings = [SELECT Id, IsEnabled__c FROM LoggerSettings__c];
-        settings.IsEnabled__c = true;
-        settings.LoggingLevel__c = 'FINE';
-        update settings;
-
         DmlException stackTraceHandler = new DmlException();
 
-        Boolean shouldSave = Logger.isEnabled(LoggingLevel.FINE);
+        Boolean shouldSave = true;
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
