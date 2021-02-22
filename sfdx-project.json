@@ -17,6 +17,7 @@
     ],
     "packageAliases": {
         "Nebula Logger": "0Ho5Y000000XZCDSA4",
-        "Nebula Logger@4.0.0-1": "04t5Y000001L87XQAS"
+        "Nebula Logger@4.0.0-1-beta": "04t5Y000001L87XQAS",
+        "Nebula Logger@4.0.0-2-beta": "04t5Y000001L8BkQAK"
     }
 }
