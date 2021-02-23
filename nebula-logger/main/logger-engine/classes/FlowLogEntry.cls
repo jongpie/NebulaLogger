@@ -5,7 +5,7 @@
 
 /**
  * @group logger-engine
- * @description Handles adding new log entryies in Flow
+ * @description Handles adding new log entries in Flow
  * @see FlowRecordLogEntry
  * @see Logger
  * @see LogEntryEventBuilder
