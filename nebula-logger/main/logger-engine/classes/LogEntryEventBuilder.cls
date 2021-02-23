@@ -10,10 +10,12 @@
  */
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
+    private static final List<String> IGNORED_CLASSES = getIgnoredClasses():
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
-    private static final String ORIGIN_TYPE_COMPONENT = 'Component';
-    private static final String ORIGIN_TYPE_FLOW = 'Flow';
+    // TODO future enhancement: consider converting strings to enum and add overload for `parseStackTrace(OriginType, String)
+    // private static final String ORIGIN_TYPE_COMPONENT = 'Component';
+    // private static final String ORIGIN_TYPE_FLOW = 'Flow';
     private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
 
     private final LogEntryEvent__e logEntryEvent;
@@ -186,10 +188,9 @@ global with sharing class LogEntryEventBuilder {
         List<String> stackTraceLines = new List<String>();
         for (String currentStackTraceLine : stackTraceString.split('\n')) {
             // Don't include the logging system's classes in the stack trace
-            List<String> ignoredClasses = new List<String>{ Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
 
             Boolean ignoreLine = false;
-            for (String ignoredClass : ignoredClasses) {
+            for (String ignoredClass : IGNORED_CLASSES) {
                 if (currentStackTraceLine.contains('.' + ignoredClass + '.')) {
                     ignoreLine = true;
                     continue;
@@ -311,6 +312,14 @@ global with sharing class LogEntryEventBuilder {
     private static String getApiVersion() {
         String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
+    }
+
+    private static List<String> getignoredClasses() {
+        return new List<String>{
+            Logger.class.getName(),
+            LogMessage.class.getName(),
+            LogEntryEventBuilder.class.getName()
+        };
     }
 
     // TODO move namespace methods to separate Namespace class (again) if other classes end up needing this info
