@@ -149,7 +149,7 @@ global with sharing class Logger {
     }
 
     /**
-     * Indicates if logging level '(' is enabled for the current user, based on the custom setting LoggerSettings__c
+     * Indicates if the specified logging level is enabled for the current user, based on the custom setting LoggerSettings__c
      * @return Boolean
      */
     global static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
@@ -705,7 +705,13 @@ global with sharing class Logger {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));
             }
             when REST {
-                new RestApiSaver().insertRecords(logEntryEvents);
+                // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
+                // To avoid that, use the EventBus instead (even though REST was specified)
+                if(String.isBlank(UserInfo.getUserId())) {
+                    saveLog(Logger.SaveMethod.EVENT_BUS);
+                } else {
+                    new RestApiSaver().insertRecords(logEntryEvents);
+                }
             }
         }
 
