@@ -98,14 +98,28 @@ Logger is built using Salesforce's [Platform Events](https://developer.salesforc
 ## Managing Logs
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Nebula__Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
 * All editable fields on `Nebula__Log__c` can be updated via the 'Manage Log' quick action (shown below)
-* Additional fields, such as `Nebula__Log__c.Nebula__IsClosed__c`, `Nebula__Log__c.Nebula__IsResolved__c`, `Nebula__Log__c.Nebula__ClosedBy__c` and `Nebula__Log__c.Nebula__ClosedDate__c`, are automatically set based on changes to `Nebula__Log__c.Nebula__Status__c`.
+
+  ![Manage Log QuickAction](./content/manage-log-quickaction.png)
+* Additional fields are automatically set based on changes to `Nebula__Log__c.Nebula__Status__c`
+  * `Nebula__Log__c.Nebula__ClosedBy__c` - The user who closed the log
+  * `Nebula__Log__c.Nebula__ClosedDate__c`- The datetime that the log was closed
+  * `Nebula__Log__c.Nebula__IsClosed__c` - Indicates if the log is closed, based on the selected status (and associated config in the 'Log Status' custom metadata type)
+  * `Nebula__Log__c.Nebula__IsResolved__c` - Indicates if the log is resolved (indicating that it required analaysis/work, which has been completed). Only closed statuses can be considered resolved. This is also driven based on the selected status (and associated config in the 'Log Status' custom metadata type)
 * To customize the statuses provided, simply update the picklist values for `Nebula__Log__c.Status__c` and create/update corresponding records in the custom metadata type `Nebula__LogStatus__mdt`. This custom metadata type controls which statuses are considerd closed and resolved.
 
-![Manage Log QuickAction](./content/manage-log-quickaction.png)
+## View Related Log Entries
+Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `Nebula__LogEntry__c` with the desired fields.
+* The component automatically shows any related log entries, based on `Nebula__LogEntry__c.Nebula__RecordId__c == :recordId`
+* Users can search the list of log entries for a particular record using the component's built-insearch box. The component dynamically searches all related log entries using SOSL.
+* Component automatically enforces Salesforce's security model
+  * Object-Level Security - Users without read access to LogEntry__c will not see the component
+  * Record-Level Security - Users will only see records that have been shared with them
+  * Field-Level Security - Users will only see the fields within the field set that they have access to
 
+![Related Log Entries](./content/relate-log-entries-lwc.png)
 ## Deleting Old Logs
 Two Apex classes are provided out-of-the-box to handle automatically deleting old logs
-1. `Nebula.LogBatchPurger` - this batch Apex class will delete any `Nebula__Log__c` records with `Log__c.LogRetentionDate__c <= System.today()`.
+1. `Nebula.LogBatchPurger` - this batch Apex class will delete any `Nebula__Log__c` records with `Nebula__Log__c.Nebula__LogRetentionDate__c <= System.today()`.
    * By default, this field is populated with "TODAY + 14 DAYS" - the number of days to retain a log can be customized in `Nebula__LoggerSettings__c`.
    * Users can also manually edit this field to change the retention date - or set it to null to prevent the log from being automatically deleted
 2. `Nebula.LogBatchPurgeScheduler` - this schedulable Apex class can be schedule to run `Nebula.LogBatchPurger` on a daily or weekly basis
