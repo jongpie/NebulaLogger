@@ -36,7 +36,8 @@ After deploying Nebula Logger to your org, there are a few additional configurat
 * Customize the default settings in `Nebula__LoggerSettings__c`
   * You can customize settings at the org, profile and user levels
 * Enable Salesforce Topics for the `Nebula__Log__c` and `Nebula__LogEntry__c` objects for tagging/labeling.
-  * Topics on `Nebula__Log__c` can then be used as list view filters (and more).
+  * Currently, enabling Topics for objects must still be done using the Salesforce Classic UI. Once enabled, Topics can then be used from withing Lightning Experience.
+  * Topics on `Nebula__Log__c` can be used as list view filters (and more).
 
 ## Logger for Apex: Quick Start
 For Apex developers, the `Nebula.Logger` class has several methods that can be used as replacements for `System.debug()`.
