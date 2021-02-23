@@ -103,9 +103,9 @@ To help development and support teams better manage logs (and any underlying cod
   ![Manage Log QuickAction](./content/manage-log-quickaction.png)
 * Additional fields are automatically set based on changes to `Nebula__Log__c.Nebula__Status__c`
   * `Nebula__Log__c.Nebula__ClosedBy__c` - The user who closed the log
-  * `Nebula__Log__c.Nebula__ClosedDate__c`- The datetime that the log was closed
+  * `Nebula__Log__c.Nebula__ClosedDate__c` - The datetime that the log was closed
   * `Nebula__Log__c.Nebula__IsClosed__c` - Indicates if the log is closed, based on the selected status (and associated config in the 'Log Status' custom metadata type)
-  * `Nebula__Log__c.Nebula__IsResolved__c` - Indicates if the log is resolved (indicating that it required analaysis/work, which has been completed). Only closed statuses can be considered resolved. This is also driven based on the selected status (and associated config in the 'Log Status' custom metadata type)
+  * `Nebula__Log__c.Nebula__IsResolved__c` - Indicates if the log is resolved (meaning that it required analaysis/work, which has been completed). Only closed statuses can be considered resolved. This is also driven based on the selected status (and associated config in the 'Log Status' custom metadata type)
 * To customize the statuses provided, simply update the picklist values for `Nebula__Log__c.Nebula__Status__c` and create/update corresponding records in the custom metadata type `Nebula__LogStatus__mdt`. This custom metadata type controls which statuses are considerd closed and resolved.
 
 ## View Related Log Entries
