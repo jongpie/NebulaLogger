@@ -3,15 +3,16 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
-[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t4x000000lsfpAAA)
+[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000001L9zOQAS)
 [![Deploy Unpackaged Metadata](./content/btn-deploy-unmanaged-metadata.png)](https://githubsfdeploy.herokuapp.com)
 
 ## Features
-1. Easily add log entries via Apex, Flow & Process Builder
+1. Easily add log entries via Apex, Flow & Process Builder to generate 1 consolidate log
 2. Manage & report on logging data using the `Nebula__Log__c` and `Nebula__LogEntry__c` objects
 3. Leverage `Nebula__LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `Nebula__LoggerSettings__c` custom hierarchy setting
-5. Dynamically assign Topics to `Nebula__Log__c` and `Nebula__LogEntry__c` records for tagging/labeling your logs
+5. View related log entries on any record page by adding the 'Related Log Entries' component in App Builder
+6. Dynamically assign Topics to `Nebula__Log__c` and `Nebula__LogEntry__c` records for tagging/labeling your logs
 
 ## Installing
 
@@ -26,11 +27,11 @@ In general, using the managed package is recommended - but you can choose to eit
 | Apex Stack Traces        | Automatically stored in `LogEntry__c.StackTrace__c` when calling methods like `Logger.debug('my message');` | Requires calling `parseStackTrace()` due to Salesforce limitations with managed packages. For example:<br />`Nebula.Logger.debug('my message').parseStackTrace(new DmlException().getStackTrace());` |
 
 ## Getting Started
-After deploying Nebula Logger to your org, it can be used immediately by admins without any additional configuration. But you may still want to...
-* Assign the permission set to users
+After deploying Nebula Logger to your org, there are a few additional configuration changes needed...
+* Assign permission set(s) to users
   * `LoggerLogCreator` provides the minimum access needed for users to generate logs via Apex, Flow or Process Builder
   * `LoggerEndUser` provides access to generate logs, as well as read-only access to any log records shared with the user.
-  * `LoggerLogViewer` provides view-all access (read-only) to all log records.
+  * `LoggerLogViewer` provides view-all access (read-only) to all log records. This does **not** provide access to generate logs.
   * `LoggerLogAdmin` provides view-all and modify-all access to all log records.
 * Customize the default settings in `Nebula__LoggerSettings__c`
   * You can customize settings at the org, profile and user levels
