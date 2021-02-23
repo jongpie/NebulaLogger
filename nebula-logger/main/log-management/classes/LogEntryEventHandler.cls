@@ -9,6 +9,7 @@
  */
 public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
+    private static final Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType FROM Organization];
 
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
@@ -193,15 +194,13 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void setOrganizationDetails() {
-        Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType FROM Organization];
-
         LOG.OrganizationDomainUrl__c = Url.getOrgDomainUrl().toExternalForm();
-        LOG.OrganizationId__c = org.Id;
-        LOG.OrganizationInstanceName__c = org.InstanceName;
-        LOG.OrganizationIsSandbox__c = org.IsSandbox;
-        LOG.OrganizationName__c = org.Name;
-        LOG.OrganizationNamespacePrefix__c = org.NamespacePrefix;
-        LOG.OrganizationType__c = org.OrganizationType;
+        LOG.OrganizationId__c = ORG.Id;
+        LOG.OrganizationInstanceName__c = ORG.InstanceName;
+        LOG.OrganizationIsSandbox__c = ORG.IsSandbox;
+        LOG.OrganizationName__c = ORG.Name;
+        LOG.OrganizationNamespacePrefix__c = ORG.NamespacePrefix;
+        LOG.OrganizationType__c = ORG.OrganizationType;
     }
 
     private void setNetworkDetails() {
