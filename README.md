@@ -16,7 +16,7 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Installing
 
-In general, using the managed package is recommended - but you can choose to either deploy the metadata from this repo to your org, or install the managed package. The metadata is the same, but there are some differences in using the 2 versions. All examples in README include the `Nebula` namespace - simple remove the namespace from the examples if you are using the unpackaged metadata.
+In general, using the managed package is recommended - but you can choose to either deploy the metadata from this repo to your org, or install the managed package. The metadata is the same, but there are some differences in using the 2 versions. All examples in README include the `Nebula` namespace - simply remove the namespace from the examples if you are using the unpackaged metadata.
 
 |             | Unpackaged Metadata | 2nd Gen Managed Package |
 | ----------- | ------------------- | ----------------------- |
