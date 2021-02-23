@@ -107,7 +107,7 @@ To help development and support teams better manage logs (and any underlying cod
   * `Nebula__Log__c.Nebula__ClosedDate__c`- The datetime that the log was closed
   * `Nebula__Log__c.Nebula__IsClosed__c` - Indicates if the log is closed, based on the selected status (and associated config in the 'Log Status' custom metadata type)
   * `Nebula__Log__c.Nebula__IsResolved__c` - Indicates if the log is resolved (indicating that it required analaysis/work, which has been completed). Only closed statuses can be considered resolved. This is also driven based on the selected status (and associated config in the 'Log Status' custom metadata type)
-* To customize the statuses provided, simply update the picklist values for `Nebula__Log__c.Status__c` and create/update corresponding records in the custom metadata type `Nebula__LogStatus__mdt`. This custom metadata type controls which statuses are considerd closed and resolved.
+* To customize the statuses provided, simply update the picklist values for `Nebula__Log__c.Nebula__Status__c` and create/update corresponding records in the custom metadata type `Nebula__LogStatus__mdt`. This custom metadata type controls which statuses are considerd closed and resolved.
 
 ## View Related Log Entries
 Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `Nebula__LogEntry__c` with the desired fields.
