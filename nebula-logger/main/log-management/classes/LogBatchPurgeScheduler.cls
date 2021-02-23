@@ -5,7 +5,7 @@
 
 /**
  * @group log-management
- * @description Schedulable class used schedule the batch job LogBatchPurger
+ * @description Schedulable class used to schedule the batch job LogBatchPurger
  * @see LogBatchPurger
  */
 global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
