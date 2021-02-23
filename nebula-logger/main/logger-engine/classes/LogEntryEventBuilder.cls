@@ -10,7 +10,7 @@
  */
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
-    private static final List<String> IGNORED_CLASSES = getIgnoredClasses():
+    private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
     // TODO future enhancement: consider converting strings to enum and add overload for `parseStackTrace(OriginType, String)
