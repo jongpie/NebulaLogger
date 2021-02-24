@@ -161,7 +161,7 @@ global with sharing class LogEntryEventBuilder {
      * @param  topics The list of strings to use as topics for the current entry
      * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
      */
-    global LogEntryEventBuilder setTopics(List<String> topics) {
+    public LogEntryEventBuilder setTopics(List<String> topics) {
         if (!this.shouldSave) {
             return this;
         }

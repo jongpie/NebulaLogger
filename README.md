@@ -12,7 +12,6 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 3. Leverage `Nebula__LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `Nebula__LoggerSettings__c` custom hierarchy setting
 5. View related log entries on any record page by adding the 'Related Log Entries' component in App Builder
-6. Dynamically assign Topics to `Nebula__Log__c` and `Nebula__LogEntry__c` records for tagging/labeling your logs
 
 ## Installing
 
@@ -35,9 +34,6 @@ After deploying Nebula Logger to your org, there are a few additional configurat
   * `LoggerLogAdmin` provides view-all and modify-all access to all log records.
 * Customize the default settings in `Nebula__LoggerSettings__c`
   * You can customize settings at the org, profile and user levels
-* Enable Salesforce Topics for the `Nebula__Log__c` and `Nebula__LogEntry__c` objects for tagging/labeling. See [Salesforce Help](https://help.salesforce.com/articleView?id=sf.collab_topics_records_admin.htm) for more details.
-  * Currently, enabling Topics for objects must still be done using the Salesforce Classic UI. Once enabled, Topics can then be used from withing Lightning Experience.
-  * Once enabled, Topics can be added via Apex and Flow and then used as list view filters (and more) for the object  `Nebula__Log__c`.
 
 ## Logger for Apex: Quick Start
 For Apex developers, the `Nebula.Logger` class has several methods that can be used to add entries with different logging levels. Each logging level's method has several overloads to support multiple parameters.

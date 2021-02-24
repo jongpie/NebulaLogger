@@ -206,7 +206,7 @@ global with sharing class Logger {
     }
 
     // ERROR logging level methods
-    global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException, List<String> topics) {
+    public static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException, List<String> topics) {
         return error().setMessage(logMessage).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -214,7 +214,7 @@ global with sharing class Logger {
         return error().setMessage(logMessage).setExceptionDetails(apexException);
     }
 
-    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException, List<String> topics) {
+    public static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException, List<String> topics) {
         return error().setMessage(logMessage).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -222,7 +222,7 @@ global with sharing class Logger {
         return error().setMessage(logMessage).setRecordId(recordId).setExceptionDetails(apexException);
     }
 
-    global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, List<String> topics) {
         return error().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
@@ -230,11 +230,11 @@ global with sharing class Logger {
         return error().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder error(LogMessage logMessage, List<String> topics) {
+    public static LogEntryEventBuilder error(LogMessage logMessage, List<String> topics) {
         return error().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, Exception apexException, List<String> topics) {
+    public static LogEntryEventBuilder error(LogMessage logMessage, SObject record, Exception apexException, List<String> topics) {
         return error().setMessage(logMessage).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -242,7 +242,7 @@ global with sharing class Logger {
         return error().setMessage(logMessage).setRecordId(record).setExceptionDetails(apexException);
     }
 
-    global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder error(LogMessage logMessage, SObject record, List<String> topics) {
         return error().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
@@ -254,7 +254,7 @@ global with sharing class Logger {
         return error().setMessage(logMessage);
     }
 
-    global static LogEntryEventBuilder error(String message, Exception apexException, List<String> topics) {
+    public static LogEntryEventBuilder error(String message, Exception apexException, List<String> topics) {
         return error().setMessage(message).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -262,7 +262,7 @@ global with sharing class Logger {
         return error().setMessage(message).setExceptionDetails(apexException);
     }
 
-    global static LogEntryEventBuilder error(String message, Id recordId, Exception apexException, List<String> topics) {
+    public static LogEntryEventBuilder error(String message, Id recordId, Exception apexException, List<String> topics) {
         return error().setMessage(message).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -270,7 +270,7 @@ global with sharing class Logger {
         return error().setMessage(message).setRecordId(recordId).setExceptionDetails(apexException);
     }
 
-    global static LogEntryEventBuilder error(String message, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder error(String message, Id recordId, List<String> topics) {
         return error().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
@@ -278,11 +278,11 @@ global with sharing class Logger {
         return error().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder error(String message, List<String> topics) {
+    public static LogEntryEventBuilder error(String message, List<String> topics) {
         return error().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder error(String message, SObject record, Exception apexException, List<String> topics) {
+    public static LogEntryEventBuilder error(String message, SObject record, Exception apexException, List<String> topics) {
         return error().setMessage(message).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
     }
 
@@ -290,7 +290,7 @@ global with sharing class Logger {
         return error().setMessage(message).setRecordId(record).setExceptionDetails(apexException);
     }
 
-    global static LogEntryEventBuilder error(String message, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder error(String message, SObject record, List<String> topics) {
         return error().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
@@ -303,7 +303,7 @@ global with sharing class Logger {
     }
 
     // WARN logging level methods
-    global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, List<String> topics) {
         return warn().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
@@ -311,11 +311,11 @@ global with sharing class Logger {
         return warn().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder warn(LogMessage logMessage, List<String> topics) {
+    public static LogEntryEventBuilder warn(LogMessage logMessage, List<String> topics) {
         return warn().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, List<String> topics) {
         return warn().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
@@ -327,7 +327,7 @@ global with sharing class Logger {
         return warn().setMessage(logMessage);
     }
 
-    global static LogEntryEventBuilder warn(String message, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder warn(String message, Id recordId, List<String> topics) {
         return warn().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
@@ -335,11 +335,11 @@ global with sharing class Logger {
         return warn().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder warn(String message, List<String> topics) {
+    public static LogEntryEventBuilder warn(String message, List<String> topics) {
         return warn().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder warn(String message, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder warn(String message, SObject record, List<String> topics) {
         return warn().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
@@ -352,7 +352,7 @@ global with sharing class Logger {
     }
 
     // INFO logging level methods
-    global static LogEntryEventBuilder info(LogMessage logMessage, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder info(LogMessage logMessage, Id recordId, List<String> topics) {
         return info().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
@@ -360,11 +360,11 @@ global with sharing class Logger {
         return info().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder info(LogMessage logMessage, List<String> topics) {
+    public static LogEntryEventBuilder info(LogMessage logMessage, List<String> topics) {
         return info().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder info(LogMessage logMessage, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder info(LogMessage logMessage, SObject record, List<String> topics) {
         return info().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
@@ -376,7 +376,7 @@ global with sharing class Logger {
         return info().setMessage(logMessage);
     }
 
-    global static LogEntryEventBuilder info(String message, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder info(String message, Id recordId, List<String> topics) {
         return info().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
@@ -384,11 +384,11 @@ global with sharing class Logger {
         return info().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder info(String message, List<String> topics) {
+    public static LogEntryEventBuilder info(String message, List<String> topics) {
         return info().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder info(String message, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder info(String message, SObject record, List<String> topics) {
         return info().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
@@ -401,7 +401,7 @@ global with sharing class Logger {
     }
 
     // DEBUG log level methods
-    global static LogEntryEventBuilder debug(LogMessage logMessage, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder debug(LogMessage logMessage, Id recordId, List<String> topics) {
         return debug().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
@@ -409,11 +409,11 @@ global with sharing class Logger {
         return debug().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder debug(LogMessage logMessage, List<String> topics) {
+    public static LogEntryEventBuilder debug(LogMessage logMessage, List<String> topics) {
         return debug().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder debug(LogMessage logMessage, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder debug(LogMessage logMessage, SObject record, List<String> topics) {
         return debug().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
@@ -425,7 +425,7 @@ global with sharing class Logger {
         return debug().setMessage(logMessage);
     }
 
-    global static LogEntryEventBuilder debug(String message, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder debug(String message, Id recordId, List<String> topics) {
         return debug().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
@@ -433,11 +433,11 @@ global with sharing class Logger {
         return debug().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder debug(String message, List<String> topics) {
+    public static LogEntryEventBuilder debug(String message, List<String> topics) {
         return debug().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder debug(String message, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder debug(String message, SObject record, List<String> topics) {
         return debug().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
@@ -450,7 +450,7 @@ global with sharing class Logger {
     }
 
     // FINE log level methods
-    global static LogEntryEventBuilder fine(LogMessage logMessage, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder fine(LogMessage logMessage, Id recordId, List<String> topics) {
         return fine().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
@@ -458,11 +458,11 @@ global with sharing class Logger {
         return fine().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder fine(LogMessage logMessage, List<String> topics) {
+    public static LogEntryEventBuilder fine(LogMessage logMessage, List<String> topics) {
         return fine().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder fine(LogMessage logMessage, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder fine(LogMessage logMessage, SObject record, List<String> topics) {
         return fine().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
@@ -474,7 +474,7 @@ global with sharing class Logger {
         return fine().setMessage(logMessage);
     }
 
-    global static LogEntryEventBuilder fine(String message, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder fine(String message, Id recordId, List<String> topics) {
         return fine().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
@@ -482,11 +482,11 @@ global with sharing class Logger {
         return fine().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder fine(String message, List<String> topics) {
+    public static LogEntryEventBuilder fine(String message, List<String> topics) {
         return fine().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder fine(String message, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder fine(String message, SObject record, List<String> topics) {
         return fine().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
@@ -499,7 +499,7 @@ global with sharing class Logger {
     }
 
     // FINER log level methods
-    global static LogEntryEventBuilder finer(LogMessage logMessage, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder finer(LogMessage logMessage, Id recordId, List<String> topics) {
         return finer().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
@@ -507,11 +507,11 @@ global with sharing class Logger {
         return finer().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder finer(LogMessage logMessage, List<String> topics) {
+    public static LogEntryEventBuilder finer(LogMessage logMessage, List<String> topics) {
         return finer().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder finer(LogMessage logMessage, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder finer(LogMessage logMessage, SObject record, List<String> topics) {
         return finer().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
@@ -523,7 +523,7 @@ global with sharing class Logger {
         return finer().setMessage(logMessage);
     }
 
-    global static LogEntryEventBuilder finer(String message, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder finer(String message, Id recordId, List<String> topics) {
         return finer().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
@@ -531,11 +531,11 @@ global with sharing class Logger {
         return finer().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder finer(String message, List<String> topics) {
+    public static LogEntryEventBuilder finer(String message, List<String> topics) {
         return finer().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder finer(String message, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder finer(String message, SObject record, List<String> topics) {
         return finer().setMessage(message).setRecordId(record).setTopics(topics);
     }
 
@@ -548,7 +548,7 @@ global with sharing class Logger {
     }
 
     // FINEST log level methods
-    global static LogEntryEventBuilder finest(LogMessage logMessage, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder finest(LogMessage logMessage, Id recordId, List<String> topics) {
         return finest().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
 
@@ -556,11 +556,11 @@ global with sharing class Logger {
         return finest().setMessage(logMessage).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder finest(LogMessage logMessage, List<String> topics) {
+    public static LogEntryEventBuilder finest(LogMessage logMessage, List<String> topics) {
         return finest().setMessage(logMessage).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder finest(LogMessage logMessage, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder finest(LogMessage logMessage, SObject record, List<String> topics) {
         return finest().setMessage(logMessage).setRecordId(record).setTopics(topics);
     }
 
@@ -572,7 +572,7 @@ global with sharing class Logger {
         return finest().setMessage(logMessage);
     }
 
-    global static LogEntryEventBuilder finest(String message, Id recordId, List<String> topics) {
+    public static LogEntryEventBuilder finest(String message, Id recordId, List<String> topics) {
         return finest().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
 
@@ -580,11 +580,11 @@ global with sharing class Logger {
         return finest().setMessage(message).setRecordId(recordId);
     }
 
-    global static LogEntryEventBuilder finest(String message, List<String> topics) {
+    public static LogEntryEventBuilder finest(String message, List<String> topics) {
         return finest().setMessage(message).setTopics(topics);
     }
 
-    global static LogEntryEventBuilder finest(String message, SObject record, List<String> topics) {
+    public static LogEntryEventBuilder finest(String message, SObject record, List<String> topics) {
         return finest().setMessage(message).setRecordId(record).setTopics(topics);
     }
 

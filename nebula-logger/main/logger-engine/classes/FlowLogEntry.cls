@@ -46,7 +46,7 @@ global inherited sharing class FlowLogEntry {
      * @description Optionally provide a list of topics to dynamically assign to the log entry.
      */
     @InvocableVariable(required=false label='(Optional) Topics')
-    global List<String> topics;
+    public List<String> topics;
 
     private DateTime timestamp = System.now();
 
