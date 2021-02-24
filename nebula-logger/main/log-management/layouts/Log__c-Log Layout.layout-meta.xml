@@ -166,11 +166,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>OrganizationInstanceName__c</field>
+                <field>OrganizationType__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>OrganizationType__c</field>
+                <field>OrganizationEnvironmentType__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -180,11 +180,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>ApiVersion__c</field>
+                <field>OrganizationInstanceName__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>OrganizationIsSandbox__c</field>
+                <field>ApiVersion__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -356,7 +356,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h0Y000001YebH</masterLabel>
+        <masterLabel>00h1g000002BBzo</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

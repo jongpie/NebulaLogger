@@ -964,7 +964,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.OrganizationIsSandbox__c</field>
+        <field>Log__c.OrganizationEnvironmentType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

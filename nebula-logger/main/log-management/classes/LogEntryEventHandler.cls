@@ -9,7 +9,7 @@
  */
 public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
-    private static final Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType FROM Organization];
+    private static final Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
 
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
@@ -194,10 +194,19 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void setOrganizationDetails() {
+        String orgEnvironmentType;
+        if(org.IsSandbox == true && org.TrialExpirationDate != null) {
+            orgEnvironmentType ='Scratch Org';
+        } else if(org.IsSandbox == true) {
+            orgEnvironmentType = 'Sandbox';
+        } else {
+            orgEnvironmentType = 'Production';
+        }
+
         LOG.OrganizationDomainUrl__c = Url.getOrgDomainUrl().toExternalForm();
+        LOG.OrganizationEnvironmentType__c = orgEnvironmentType;
         LOG.OrganizationId__c = ORG.Id;
         LOG.OrganizationInstanceName__c = ORG.InstanceName;
-        LOG.OrganizationIsSandbox__c = ORG.IsSandbox;
         LOG.OrganizationName__c = ORG.Name;
         LOG.OrganizationNamespacePrefix__c = ORG.NamespacePrefix;
         LOG.OrganizationType__c = ORG.OrganizationType;
