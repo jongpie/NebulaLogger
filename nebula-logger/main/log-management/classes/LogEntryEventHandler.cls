@@ -1,9 +1,15 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group log-management
+ * @description Subscribes to LogEntryEvent__e platform events and normalizes the data into Log__c and LogEntry__c records
+ */
 public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
+    private static final Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
 
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
@@ -178,36 +184,32 @@ public without sharing class LogEntryEventHandler {
         for (LogEntry__c logEntry : logEntryToTopics.keySet()) {
             for (String topicName : logEntryToTopics.get(logEntry)) {
                 // Add log entry-specific topics
-                topicAssignments.add(
-                    new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id)
-                );
-
-                if (!LoggerSettings__c.getInstance().AddLogEntryTopicsToLog__c) {
-                    continue;
-                }
+                topicAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id));
 
                 // Add all topics to the parent log when enabled
-                topicAssignments.add(
-                    new TopicAssignment(EntityId = LOG.Id, TopicId = topicNameToTopics.get(topicName).Id)
-                );
+                topicAssignments.add(new TopicAssignment(EntityId = LOG.Id, TopicId = topicNameToTopics.get(topicName).Id));
             }
         }
         insert new List<TopicAssignment>(topicAssignments);
     }
 
     private void setOrganizationDetails() {
-        Organization org = [
-            SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType
-            FROM Organization
-        ];
+        String orgEnvironmentType;
+        if(org.IsSandbox == true && org.TrialExpirationDate != null) {
+            orgEnvironmentType ='Scratch Org';
+        } else if(org.IsSandbox == true) {
+            orgEnvironmentType = 'Sandbox';
+        } else {
+            orgEnvironmentType = 'Production';
+        }
 
         LOG.OrganizationDomainUrl__c = Url.getOrgDomainUrl().toExternalForm();
-        LOG.OrganizationId__c = org.Id;
-        LOG.OrganizationInstanceName__c = org.InstanceName;
-        LOG.OrganizationIsSandbox__c = org.IsSandbox;
-        LOG.OrganizationName__c = org.Name;
-        LOG.OrganizationNamespacePrefix__c = org.NamespacePrefix;
-        LOG.OrganizationType__c = org.OrganizationType;
+        LOG.OrganizationEnvironmentType__c = orgEnvironmentType;
+        LOG.OrganizationId__c = ORG.Id;
+        LOG.OrganizationInstanceName__c = ORG.InstanceName;
+        LOG.OrganizationName__c = ORG.Name;
+        LOG.OrganizationNamespacePrefix__c = ORG.NamespacePrefix;
+        LOG.OrganizationType__c = ORG.OrganizationType;
     }
 
     private void setNetworkDetails() {
@@ -242,14 +244,7 @@ public without sharing class LogEntryEventHandler {
 
     private void setUserDetails() {
         User logUser = [
-            SELECT
-                Id,
-                UserRole.Name,
-                Profile.Name,
-                Profile.UserLicenseId,
-                Profile.UserLicense.LicenseDefinitionKey,
-                Profile.UserLicense.Name,
-                Username
+            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
             FROM User
             WHERE Id = :LOG.LoggedBy__c
         ];

@@ -5,7 +5,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>FlowLogEntry_Tests</apexClass>
+        <apexClass>FlowRecordLogEntry</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -13,15 +13,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LogBatchPurgeScheduler_Tests</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>LogBatchPurger</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LogBatchPurger_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -29,23 +21,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LogEntryEventBuilder_Tests</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LogEntryEventHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LogEntryEventHandler_Tests</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LogEntryHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LogEntryHandler_Tests</apexClass>
+        <apexClass>LogMessage</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -53,15 +29,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>Logger_Tests</apexClass>
+        <apexClass>LoggerInstallHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>RelatedLogEntriesController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>RelatedLogEntriesController_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <customMetadataTypeAccesses>
@@ -72,7 +44,7 @@
         <enabled>true</enabled>
         <name>LoggerSettings__c</name>
     </customSettingAccesses>
-    <description>Provides access to manage logs</description>
+    <description>Provides access to manage all logs</description>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.ExceptionMessage__c</field>
@@ -585,7 +557,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.OrganizationIsSandbox__c</field>
+        <field>Log__c.OrganizationEnvironmentType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

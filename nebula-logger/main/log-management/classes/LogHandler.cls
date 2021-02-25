@@ -1,20 +1,22 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group log-management
+ * @description Manages setting fields on Log__c before insert & update
+ */
 public without sharing class LogHandler {
     @testVisible
     private static Map<String, LogStatus__mdt> logStatusByName;
 
     static {
         logStatusByName = new Map<String, LogStatus__mdt>();
-
-        for (LogStatus__mdt logStatus : [
-            SELECT MasterLabel, IsClosed__c, IsResolved__c
-            FROM LogStatus__mdt
-            WHERE IsActive__c = TRUE
-        ]) {
-            logStatusByName.put(logStatus.MasterLabel, logStatus);
+        for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
+            if(logStatus.IsActive__c == true) {
+                logStatusByName.put(logStatus.MasterLabel, logStatus);
+            }
         }
     }
 

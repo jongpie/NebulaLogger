@@ -2,7 +2,7 @@
     "trailingComma": "none",
     "singleQuote": true,
     "tabWidth": 4,
-    "printWidth": 120,
+    "printWidth": 160,
     "arrowParens": "avoid",
     "overrides": [
         {

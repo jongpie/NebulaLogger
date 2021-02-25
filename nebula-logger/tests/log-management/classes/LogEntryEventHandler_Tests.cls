@@ -1,21 +1,21 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
 @isTest
 private class LogEntryEventHandler_Tests {
     static User getCurrentUser() {
         return [
             SELECT
                 Id,
-                UserRoleId,
-                UserRole.Name,
                 ProfileId,
                 Profile.Name,
                 Profile.UserLicenseId,
                 Profile.UserLicense.LicenseDefinitionKey,
                 Profile.UserLicense.Name,
-                Username
+                Username,
+                UserRoleId,
+                UserRole.Name
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
@@ -35,9 +35,9 @@ private class LogEntryEventHandler_Tests {
                 LogoutUrl__c,
                 NetworkId__c,
                 OrganizationDomainUrl__c,
+                OrganizationEnvironmentType__c,
                 OrganizationId__c,
                 OrganizationInstanceName__c,
-                OrganizationIsSandbox__c,
                 OrganizationName__c,
                 OrganizationNamespacePrefix__c,
                 OrganizationType__c,
@@ -119,11 +119,16 @@ private class LogEntryEventHandler_Tests {
     }
 
     static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
-        Organization org = [
-            SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType
-            FROM Organization
-        ];
+        Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         User currentUser = getCurrentUser();
+        String orgEnvironmentType;
+        if(org.IsSandbox == true && org.TrialExpirationDate != null) {
+            orgEnvironmentType ='Scratch Org';
+        } else if(org.IsSandbox == true) {
+            orgEnvironmentType = 'Sandbox';
+        } else {
+            orgEnvironmentType = 'Production';
+        }
 
         System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c);
         System.assertEquals(logEntryEvent.Locale__c, log.Locale__c);
@@ -148,15 +153,15 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.UserLoggingLevel__c, log.UserLoggingLevel__c);
         System.assertEquals(logEntryEvent.UserLoggingLevelOrdinal__c, log.UserLoggingLevelOrdinal__c);
         System.assertEquals(currentUser.Username, log.LoggedByUsername__c);
-        System.assertEquals(currentUser.UserRoleId, log.UserRoleId__c);
-        System.assertEquals(currentUser.UserRoleId == null ? null : currentUser.UserRole.Name, log.UserRoleName__c);
+        // System.assertEquals(currentUser.UserRoleId, log.UserRoleId__c);
+        // System.assertEquals(currentUser.UserRoleId == null ? null : currentUser.UserRole.Name, log.UserRoleName__c);
         System.assertEquals(logEntryEvent.UserType__c, log.UserType__c);
 
         // Org fields
         System.assertEquals(Url.getOrgDomainUrl().toExternalForm(), log.OrganizationDomainUrl__c);
+        System.assertEquals(orgEnvironmentType, log.OrganizationEnvironmentType__c);
         System.assertEquals(org.Id, log.OrganizationId__c);
         System.assertEquals(org.InstanceName, log.OrganizationInstanceName__c);
-        System.assertEquals(org.IsSandbox, log.OrganizationIsSandbox__c);
         System.assertEquals(org.Name, log.OrganizationName__c);
         System.assertEquals(org.NamespacePrefix, log.OrganizationNamespacePrefix__c);
         System.assertEquals(org.OrganizationType, log.OrganizationType__c);
@@ -195,10 +200,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.LimitsSoqlQueriesMax__c, logEntry.LimitsSoqlQueriesMax__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueriesUsed__c, logEntry.LimitsSoqlQueriesUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c, logEntry.LimitsSoqlQueryLocatorRowsMax__c);
-        System.assertEquals(
-            logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c,
-            logEntry.LimitsSoqlQueryLocatorRowsUsed__c
-        );
+        System.assertEquals(logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c, logEntry.LimitsSoqlQueryLocatorRowsUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueryRowsMax__c, logEntry.LimitsSoqlQueryRowsMax__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueryRowsUsed__c, logEntry.LimitsSoqlQueryRowsUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoslSearchesUsed__c, logEntry.LimitsSoslSearchesUsed__c);
@@ -223,11 +225,7 @@ private class LogEntryEventHandler_Tests {
     static void it_should_normalize_simple_event_data_into_log_and_log_entry() {
         String transactionId = '123-456-789-0';
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionId__c = transactionId
-        );
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
@@ -240,6 +238,7 @@ private class LogEntryEventHandler_Tests {
         LogEntry__c logEntry = log.LogEntries__r.get(0);
 
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
@@ -330,5 +329,38 @@ private class LogEntryEventHandler_Tests {
 
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    @isTest
+    static void it_should_create_topic_and_topicAssignment_records() {
+        String transactionId = '123-456-789-0';
+
+        List<String> topics = new List<String>{ 'test-topic-1', 'test-topic-2' };
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            Topics__c = String.join(topics, ','),
+            TransactionId__c = transactionId
+        );
+
+        Test.startTest();
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        Log__c log = getLog();
+        System.assertEquals(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+
+        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        validateLogFields(logEntryEvent, log);
+        validateLogEntryFields(logEntryEvent, logEntry);
+
+        Set<String> topicsSet = new Set<String>(topics);
+        List<TopicAssignment> topicAssignments = [SELECT Id, EntityId, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
+        for(TopicAssignment topicAssignment : topicAssignments) {
+            System.assert(topicsSet.contains(topicAssignment.Topic.Name));
+        }
     }
 }

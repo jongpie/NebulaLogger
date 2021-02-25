@@ -1,29 +1,38 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
-global without sharing class LogEntryEventBuilder {
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group logger-engine
+ * @description Builder class that generates each LogEntryEvent__c record
+ * @see Logger
+ */
+global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
+    private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
-    private static final String ORIGIN_TYPE_COMPONENT = 'Component';
-    private static final String ORIGIN_TYPE_FLOW = 'Flow';
+    // TODO future enhancement: consider converting strings to enum and add overload for `parseStackTrace(OriginType, String)
+    // private static final String ORIGIN_TYPE_COMPONENT = 'Component';
+    // private static final String ORIGIN_TYPE_FLOW = 'Flow';
+    private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
 
     private final LogEntryEvent__e logEntryEvent;
+    private final LoggingLevel loggingLevel;
 
-    private LoggingLevel loggingLevel;
     private Boolean shouldSave;
     private Boolean userSessionDetailsAreSet = false;
 
-    global LogEntryEventBuilder(LoggingLevel loggingLevel) {
+    public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
         this.loggingLevel = loggingLevel;
-        this.shouldSave = Logger.isEnabled(loggingLevel);
 
-        if (!this.shouldSave) {
+        // Verify that the user has create access
+        this.shouldSave = USER_CAN_CREATE_LOG_ENTRY_EVENTS && shouldSave;
+
+        if (this.shouldSave == false) {
             return;
         }
-
-        DmlException stackTraceException = new DmlException();
 
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = API_VERSION,
@@ -51,9 +60,31 @@ global without sharing class LogEntryEventBuilder {
             TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
         );
 
+        // TODO add check to see if the class's namespace == the org's namespace
+        //if (!hasNamespacePrefix()) {
+        DmlException stackTraceException = new DmlException();
         this.parseStackTrace(stackTraceException.getStackTraceString());
+        //}
     }
 
+    /**
+     * Sets the log entry event's message field
+     * @param  logMessage The instance of LogMessage to use - LogMessage.getMessage() will be used
+     * @return            The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
+    global LogEntryEventBuilder setMessage(LogMessage logMessage) {
+        if (!this.shouldSave) {
+            return this;
+        }
+
+        return this.setMessage(logMessage.getMessage());
+    }
+
+    /**
+     * Sets the log entry event's message field
+     * @param  message The instance of LogMessage to use - LogMessage.getMessage() will be used
+     * @return         The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setMessage(String message) {
         if (!this.shouldSave) {
             return this;
@@ -61,9 +92,10 @@ global without sharing class LogEntryEventBuilder {
 
         // When running as unmanaged code, auto-call System.debug
         // System.debug is useless in managed packages, so don't bother when namespaced
-        if (NAMESPACE_PREFIX == null) {
-            System.debug(this.loggingLevel, message);
-        }
+        // TODO add check to see if the class's namespace == the org's namespace
+        // if (!hasNamespacePrefix()) {
+        System.debug(this.loggingLevel, message);
+        // }
 
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
 
@@ -73,14 +105,11 @@ global without sharing class LogEntryEventBuilder {
         return this;
     }
 
-    global LogEntryEventBuilder setMessage(LogMessage logMessage) {
-        if (!this.shouldSave) {
-            return this;
-        }
-
-        return this.setMessage(logMessage.getMessage());
-    }
-
+    /**
+     * Sets the log entry event's exception fields
+     * @param  apexException The instance of an Exception to use.
+     * @return               The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setExceptionDetails(Exception apexException) {
         if (!this.shouldSave) {
             return this;
@@ -97,20 +126,27 @@ global without sharing class LogEntryEventBuilder {
         return this;
     }
 
+    /**
+     * Sets the log entry event's record fields
+     * @param  record The SObject record related to the entry. The JSON of the record is automatically added to the entry
+     * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setRecordId(SObject record) {
         if (!this.shouldSave) {
             return this;
         }
 
-        String truncatedRecordJson = truncateFieldValue(
-            Schema.LogEntryEvent__e.RecordJson__c,
-            Json.serializePretty(record)
-        );
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, Json.serializePretty(record));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
         return this.setRecordId(record.Id);
     }
 
+    /**
+     * Sets the log entry event's record fields
+     * @param  recordId The ID of the SObject record related to the entry
+     * @return          The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder setRecordId(Id recordId) {
         if (!this.shouldSave) {
             return this;
@@ -120,7 +156,12 @@ global without sharing class LogEntryEventBuilder {
         return this;
     }
 
-    global LogEntryEventBuilder setTopics(List<String> topics) {
+    /**
+     * Sets a comma-separate list of strings on the LogEntryEvent__e, which ultimately becomes Topic & TopicAssignment records on Log__c and LogEntry__c
+     * @param  topics The list of strings to use as topics for the current entry
+     * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
+    public LogEntryEventBuilder setTopics(List<String> topics) {
         if (!this.shouldSave) {
             return this;
         }
@@ -129,6 +170,11 @@ global without sharing class LogEntryEventBuilder {
         return this;
     }
 
+    /**
+     * Parses the provided stack trace and sets the log entry's origin & stack trace fields
+     * @param  stackTraceString The Apex stack trace string to parse
+     * @return                  The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (!this.shouldSave) {
             return this;
@@ -142,14 +188,9 @@ global without sharing class LogEntryEventBuilder {
         List<String> stackTraceLines = new List<String>();
         for (String currentStackTraceLine : stackTraceString.split('\n')) {
             // Don't include the logging system's classes in the stack trace
-            List<String> ignoredClasses = new List<String>{
-                Logger.class.getName(),
-                LogMessage.class.getName(),
-                LogEntryEventBuilder.class.getName()
-            };
 
             Boolean ignoreLine = false;
-            for (String ignoredClass : ignoredClasses) {
+            for (String ignoredClass : IGNORED_CLASSES) {
                 if (currentStackTraceLine.contains('.' + ignoredClass + '.')) {
                     ignoreLine = true;
                     continue;
@@ -181,16 +222,19 @@ global without sharing class LogEntryEventBuilder {
         return this;
     }
 
-    global LogEntryEventBuilder alwaysSave() {
-        this.shouldSave = true;
-        return this;
-    }
-
-    global Boolean shouldSave() {
+    /**
+     * Determines if this instance of LogEntryEventBuilder should be saved the next time that Logger.saveLog() is called
+     * @return   Boolean
+     */
+    public Boolean shouldSave() {
         return this.shouldSave;
     }
 
-    global LogEntryEvent__e getLogEntryEvent() {
+    /**
+     * Returns the LogEntryEvent__e record for this instance of LogEntryEventBuilder
+     * @return   The LogEntryEvent__e record
+     */
+    public LogEntryEvent__e getLogEntryEvent() {
         // Lazy-loading of setting user-session details to help minimize Apex heap size usage
         if (!this.userSessionDetailsAreSet) {
             this.setUserSessionDetails();
@@ -206,7 +250,7 @@ global without sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
-    global void setUserSessionDetails() {
+    private void setUserSessionDetails() {
         if (!this.shouldSave) {
             return;
         }
@@ -264,12 +308,38 @@ global without sharing class LogEntryEventBuilder {
         return Auth.SessionManagement.getCurrentSession();
     }
 
+    // Private static methods
     private static String getApiVersion() {
         String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
     }
 
-    private static String getVisualforcePageName() {
+    private static List<String> getignoredClasses() {
+        return new List<String>{
+            Logger.class.getName(),
+            LogMessage.class.getName(),
+            LogEntryEventBuilder.class.getName()
+        };
+    }
+
+    // TODO move namespace methods to separate Namespace class (again) if other classes end up needing this info
+    /* private static Boolean hasNamespacePrefix() {
+        return String.isNotBlank(NAMESPACE_PREFIX);
+    } */
+
+    private static String getNamespacePrefix() {
+        String className = LogEntryEventBuilder.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
+    }
+
+    // private static String getPrefixWithDelimiter(String delimiter) {
+    //     return String.isBlank(getPrefix()) ? '' : getPrefix() + delimiter;
+    // }
+
+    // TODO need to revisit Visualforce logic, re-add fields to either Log__c or LogEntry__c, etc.
+    /* private static String getVisualforcePageName() {
         String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
         if (visualforcePageName != null && visualforcePageName.contains('?')) {
             visualforcePageName = visualforcePageName.substringBetween('apex/', '?');
@@ -278,18 +348,7 @@ global without sharing class LogEntryEventBuilder {
         }
 
         return visualforcePageName;
-    }
-
-    // Private static methods
-    private static String getNamespacePrefix() {
-        String namespacePrefix = null;
-
-        String className = LogEntryEventBuilder.class.getName().substringBefore(':');
-        if (className.contains('.')) {
-            namespacePrefix = className.substringBefore('.');
-        }
-        return namespacePrefix;
-    }
+    } */
 
     private static Boolean isValidStackTrace(String stackTraceString) {
         if (String.isEmpty(stackTraceString)) {
@@ -298,7 +357,7 @@ global without sharing class LogEntryEventBuilder {
         if (stackTraceString == '()') {
             return false;
         }
-        if (stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+        if (stackTraceString == '(' + getNamespacePrefix() + ')') {
             return false;
         }
 
@@ -309,6 +368,9 @@ global without sharing class LogEntryEventBuilder {
         if (topics == null || topics.isEmpty()) {
             return null;
         }
+
+        // De-duplicate the list of topics
+        topics = new List<String>(new Set<String>(topics));
 
         String topicsString = String.escapeSingleQuotes(String.join(topics, ','));
         return truncateFieldValue(Schema.LogEntryEvent__e.Topics__c, topicsString);

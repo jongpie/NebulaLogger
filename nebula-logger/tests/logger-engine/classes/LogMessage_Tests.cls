@@ -1,9 +1,33 @@
-/*************************************************************************************************
- * This file is part of the Nebula Logger project, released under the MIT License.                *
- * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
- *************************************************************************************************/
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
 @isTest
 private class LogMessage_Tests {
+    public class CustomLogMessage extends LogMessage {
+        private String inputString;
+        public CustomLogMessage(String inputString) {
+            this.inputString = inputString;
+        }
+        public override String getMessage() {
+            return inputString;
+        }
+    }
+
+    @isTest
+    static void it_should_support_extending_LogMessage_class() {
+        String expectedMessage = 'The current time is: ' + System.now();
+
+        Test.startTest();
+
+        CustomLogMessage customLogMessage = new CustomLogMessage(expectedMessage);
+        String returnedMessage = customLogMessage.getMessage();
+
+        Test.stopTest();
+
+        System.assertEquals(expectedMessage, returnedMessage);
+    }
+
     @isTest
     static void it_should_return_formatted_message_when_1_object_list_parameter_provided() {
         String unformattedMessage = 'my string with 1 input: {0}';

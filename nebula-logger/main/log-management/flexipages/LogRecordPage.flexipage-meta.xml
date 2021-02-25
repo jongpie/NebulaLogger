@@ -4,29 +4,16 @@
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
-                    <name>actionNames</name>
-                    <valueList>
-                        <valueListItems>
-                            <value>Log__c.ViewJSON</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>ChangeOwnerOne</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Log__c.Manage</value>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Delete</value>
-                        </valueListItems>
-                    </valueList>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
                     <name>collapsed</name>
                     <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>enableActionsConfiguration</name>
-                    <value>true</value>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>enableActionsInNative</name>
+                    <value>false</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>hideChatterActions</name>
@@ -451,7 +438,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationInstanceName__c</fieldItem>
+                <fieldItem>Record.OrganizationType__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -460,7 +447,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationType__c</fieldItem>
+                <fieldItem>Record.OrganizationEnvironmentType__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-c4a1f400-d677-4197-9c0c-60bb1e5b426d</name>
@@ -482,7 +469,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ApiVersion__c</fieldItem>
+                <fieldItem>Record.OrganizationInstanceName__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -491,7 +478,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationIsSandbox__c</fieldItem>
+                <fieldItem>Record.ApiVersion__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

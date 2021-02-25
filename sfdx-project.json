@@ -1,11 +1,22 @@
 {
-    "packageDirectories": [
-        {
-            "path": "nebula-logger",
-            "default": true
-        }
-    ],
     "namespace": "Nebula",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "50.0"
+    "sourceApiVersion": "51.0",
+    "packageDirectories": [
+        {
+            "package": "Nebula Logger",
+            "path": "nebula-logger",
+            "default": true,
+            "definitionFile": "config/logger-scratch-def.json",
+            "postInstallScript": "LoggerInstallHandler",
+            "versionName": "Managed Package Release",
+            "versionNumber": "4.0.0.NEXT",
+            "versionDescription": "Initial release of the new 2GP managed package",
+            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
+        }
+    ],
+    "packageAliases": {
+        "Nebula Logger": "0Ho5Y000000XZCDSA4",
+        "Nebula Logger@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO"
+    }
 }

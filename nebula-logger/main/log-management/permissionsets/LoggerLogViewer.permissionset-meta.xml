@@ -4,10 +4,6 @@
         <apexClass>RelatedLogEntriesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <classAccesses>
-        <apexClass>RelatedLogEntriesController_Tests</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
     <description>Provides access to view all logs</description>
     <fieldPermissions>
         <editable>false</editable>
@@ -521,7 +517,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.OrganizationIsSandbox__c</field>
+        <field>Log__c.OrganizationEnvironmentType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -721,6 +717,15 @@
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Logger: Log Viewer</label>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>LogEntryEvent__e</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
         <allowDelete>false</allowDelete>

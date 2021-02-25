@@ -168,38 +168,61 @@
     </nameField>
     <pluralLabel>Logs</pluralLabel>
     <searchLayouts>
+        <customTabListAdditionalFields>NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>LoggedByUsernameLink__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>StartTime__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Priority__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TransactionId__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalLogEntries__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalERRORLogEntries__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
-        <customTabListAdditionalFields>UserLoggingLevel__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>TotalWARNLogEntries__c</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
-        <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
-        <lookupDialogsAdditionalFields>TransactionId__c</lookupDialogsAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>LoggedByUsernameLink__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>StartTime__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>UserLoggingLevel__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Priority__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TransactionId__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TotalLogEntries__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TotalERRORLogEntries__c</lookupDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>TransactionId__c</lookupPhoneDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>TotalWARNLogEntries__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>LoggedByUsernameLink__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>StartTime__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>OWNER.ALIAS</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>UserLoggingLevel__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Priority__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TransactionId__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>TotalERRORLogEntries__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>TotalWARNLogEntries__c</lookupPhoneDialogsAdditionalFields>
         <massQuickActions>Manage</massQuickActions>
         <searchFilterFields>NAME</searchFilterFields>
-        <searchFilterFields>LoggedBy__c</searchFilterFields>
+        <searchFilterFields>LoggedByUsernameLink__c</searchFilterFields>
+        <searchFilterFields>StartTime__c</searchFilterFields>
+        <searchFilterFields>OWNER.ALIAS</searchFilterFields>
+        <searchFilterFields>Priority__c</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>TransactionId__c</searchFilterFields>
         <searchFilterFields>TotalLogEntries__c</searchFilterFields>
         <searchFilterFields>TotalERRORLogEntries__c</searchFilterFields>
-        <searchFilterFields>UserLoggingLevel__c</searchFilterFields>
-        <searchFilterFields>CREATED_DATE</searchFilterFields>
-        <searchResultsAdditionalFields>TransactionId__c</searchResultsAdditionalFields>
+        <searchFilterFields>TotalWARNLogEntries__c</searchFilterFields>
+        <searchResultsAdditionalFields>NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LoggedByUsernameLink__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>StartTime__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>UserLoggingLevel__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Priority__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TransactionId__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>TotalLogEntries__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>TotalERRORLogEntries__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>TotalWARNLogEntries__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
     <visibility>Public</visibility>
