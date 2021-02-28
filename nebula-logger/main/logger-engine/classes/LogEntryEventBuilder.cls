@@ -16,6 +16,7 @@ global with sharing class LogEntryEventBuilder {
     // TODO future enhancement: consider converting strings to enum and add overload for `parseStackTrace(OriginType, String)
     // private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     // private static final String ORIGIN_TYPE_FLOW = 'Flow';
+    private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
 
     private final LogEntryEvent__e logEntryEvent;
@@ -153,6 +154,8 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.RecordId__c = recordId;
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId);
+        this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
         return this;
     }
 
@@ -248,6 +251,72 @@ global with sharing class LogEntryEventBuilder {
         }
 
         return this.logEntryEvent;
+    }
+
+    private String getSObjectClassification(Id recordId) {
+        // This method could definitely use some cleanup
+        Schema.SObjectType sobjectType = recordId.getSObjectType();
+        String sobjectName = sobjectType.getDescribe().getName();
+
+        // Check the map to see if we've already determined the classification for this SObject type
+        if(SOBJECT_NAME_TO_CLASSIFICATION.containsKey(sobjectName)) {
+            return SOBJECT_NAME_TO_CLASSIFICATION.get(sobjectName);
+        }
+
+        String sobjectClassification;
+
+        // Check several details about the SObject type to determine the classification
+        if(sobjectType.getDescribe().isCustomSetting()) {
+            // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
+            sobjectClassification = 'Custom Setting Object';
+        } else if(sobjectType.getDescribe().isCustom() == true) {
+            Integer delimiterIndex = sobjectName.lastIndexOf('__');
+            String sobjectSuffix = sobjectName.substring(delimiterIndex, sobjectName.length());
+
+            // Some suffixes only apply to custom objects
+            switch on sobjectSuffix {
+                when '__b' {
+                    // Example: MyBigObject__b
+                    sobjectClassification = 'Big Object';
+                }
+                when '__c' {
+                    // Example: Log__c
+                    sobjectClassification = 'Custom Object';
+                }
+                when '__e' {
+                    // LogEntryEvent__e
+                    sobjectClassification = 'Platform Event Object';
+                }
+                when '__mdt' {
+                    // Example: LogStatus__mdt
+                    sobjectClassification = 'Custom Metadata Type Object';
+                }
+            }
+        }
+
+        // Now, all other object classifications can be determined based on suffix (for both standard & custom)
+        if(String.isBlank(sobjectClassification) && sobjectName.endsWith('ChangeEvent')) {
+            // Examples: AccountChangeEvent and Log__ChangeEvent
+            sobjectClassification = 'Change Event Object';
+        } else if(String.isBlank(sobjectClassification) && sobjectName.endsWith('Feed')) {
+            // Examples: AccountFeed and Log__Feed
+            sobjectClassification = 'Chatter Feed Object';
+        } else if(String.isBlank(sobjectClassification) && sobjectName.endsWith('History')) {
+            // Examples: AccountHistory and Log__History
+            sobjectClassification = 'Field History Tracking Object';
+        } else if(String.isBlank(sobjectClassification) && sobjectName.endsWith('Share')) {
+            // Examples: AccountShare and Log__Share
+            sobjectClassification = 'Share Object';
+        } else if(String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
+            sobjectClassification = 'Standard Object';
+        }
+
+        // Cache the results in case there are other entries related to the same SObject type
+        if(String.isNotBlank(sobjectClassification)) {
+            SOBJECT_NAME_TO_CLASSIFICATION.put(sobjectName, sobjectClassification);
+        }
+
+        return sobjectClassification;
     }
 
     private void setUserSessionDetails() {
