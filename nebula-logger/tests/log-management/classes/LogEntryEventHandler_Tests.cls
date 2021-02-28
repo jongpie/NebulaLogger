@@ -107,6 +107,8 @@ private class LogEntryEventHandler_Tests {
                         OriginLocation__c,
                         RecordId__c,
                         RecordJson__c,
+                        RecordSObjectClassification__c,
+                        RecordSObjectType__c,
                         StackTrace__c,
                         Timestamp__c,
                         TriggerIsExecuting__c,
@@ -214,6 +216,8 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.OriginLocation__c, logEntry.OriginLocation__c);
         System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c);
         System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c);
+        System.assertEquals(logEntryEvent.RecordSObjectClassification__c, logEntry.RecordSObjectClassification__c);
+        System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c);
         System.assertEquals(logEntryEvent.StackTrace__c, logEntry.StackTrace__c);
         System.assertEquals(logEntryEvent.Timestamp__c, logEntry.Timestamp__c);
         System.assertEquals(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c);
@@ -297,6 +301,8 @@ private class LogEntryEventHandler_Tests {
             ProfileId__c = currentUser.ProfileId,
             RecordId__c = currentUser.Id,
             RecordJson__c = Json.serializePretty(currentUser),
+            RecordSObjectClassification__c = 'Standard Object',
+            RecordSObjectType__c = 'User',
             SessionId__c = null,
             SessionSecurityLevel__c = null,
             SessionType__c = null,

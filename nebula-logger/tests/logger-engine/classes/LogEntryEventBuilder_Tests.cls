@@ -115,6 +115,8 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
 
         Test.startTest();
 
@@ -125,6 +127,8 @@ private class LogEntryEventBuilder_Tests {
 
         System.assertEquals(currentUserId, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('User', builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
     @isTest
@@ -132,6 +136,8 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
 
         Test.startTest();
 
@@ -142,6 +148,8 @@ private class LogEntryEventBuilder_Tests {
 
         System.assertEquals(currentUser.Id, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(Json.serializePretty(currentUser), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('User', builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
     @isTest
