@@ -46,9 +46,9 @@
                 <label>Platform Event Object</label>
             </value>
             <value>
-                <fullName>Sharing Object</fullName>
+                <fullName>Record Share Object</fullName>
                 <default>false</default>
-                <label>Sharing Object</label>
+                <label>Record Share Object</label>
             </value>
             <value>
                 <fullName>Standard Object</fullName>

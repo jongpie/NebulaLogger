@@ -314,7 +314,7 @@ global with sharing class LogEntryEventBuilder {
             sobjectClassification = 'Field History Tracking Object';
         } else if(String.isBlank(sobjectClassification) && sobjectName.endsWith('Share')) {
             // Examples: AccountShare and Log__Share
-            sobjectClassification = 'Share Object';
+            sobjectClassification = 'Record Share Object';
         } else if(String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
             sobjectClassification = 'Standard Object';
         }
