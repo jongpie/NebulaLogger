@@ -140,11 +140,14 @@ global with sharing class LogEntryEventBuilder {
         if(record == null) {
             return this;
         }
+        this.logEntryEvent.RecordId__c = record.Id;
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
+        this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
 
         String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, Json.serializePretty(record));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
-        return this.setRecordId(record.Id);
+        return this;
     }
 
     /**
@@ -162,7 +165,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.RecordId__c = recordId;
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId);
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
         return this;
     }
@@ -261,9 +264,8 @@ global with sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
-    private String getSObjectClassification(Id recordId) {
+    private String getSObjectClassification(Schema.SObjectType sobjectType) {
         // This method could definitely use some cleanup
-        Schema.SObjectType sobjectType = recordId.getSObjectType();
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
