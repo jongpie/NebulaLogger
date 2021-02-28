@@ -207,6 +207,15 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.RecordSObjectClassification__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.RecordDetailedLink__c</fieldItem>
             </fieldInstance>
         </itemInstances>

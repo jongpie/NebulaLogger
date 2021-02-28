@@ -29,6 +29,10 @@
                 <behavior>Readonly</behavior>
                 <field>Timestamp__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>RecordSObjectClassification__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
