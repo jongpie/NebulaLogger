@@ -23,9 +23,13 @@
         &apos;_top&apos;
     ),
     IF(
-        ISBLANK(RecordName__c),
-        TEXT(RecordSObjectType__c) + &apos;: &apos; + RecordId__c,
-        TEXT(RecordSObjectType__c) + &apos;: &apos; + RecordName__c
+        ISBLANK(RecordId__c),
+        null,
+        IF(
+            ISBLANK(RecordName__c) &amp;&amp; NOT(ISBLANK(RecordId__c)),
+            TEXT(RecordSObjectType__c) + &apos;: &apos; + RecordId__c,
+            TEXT(RecordSObjectType__c) + &apos;: &apos; + RecordName__c
+        )
     ) 
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
