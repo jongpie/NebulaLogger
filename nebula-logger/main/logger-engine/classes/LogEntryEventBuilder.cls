@@ -137,6 +137,10 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        if(record == null) {
+            return this;
+        }
+
         String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, Json.serializePretty(record));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
@@ -150,6 +154,10 @@ global with sharing class LogEntryEventBuilder {
      */
     global LogEntryEventBuilder setRecordId(Id recordId) {
         if (!this.shouldSave) {
+            return this;
+        }
+
+        if(String.isBlank(recordId)) {
             return this;
         }
 
