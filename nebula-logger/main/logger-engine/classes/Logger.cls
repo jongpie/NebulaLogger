@@ -207,7 +207,7 @@ global with sharing class Logger {
 
     // ERROR logging level methods
     public static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException, List<String> topics) {
-        return error().setMessage(logMessage).setTopics(topics).setExceptionDetails(apexException);
+        return error().setMessage(logMessage).setExceptionDetails(apexException).setTopics(topics);
     }
 
     global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException) {
@@ -215,7 +215,7 @@ global with sharing class Logger {
     }
 
     public static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException, List<String> topics) {
-        return error().setMessage(logMessage).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
+        return error().setMessage(logMessage).setRecordId(recordId).setExceptionDetails(apexException).setTopics(topics);
     }
 
     global static LogEntryEventBuilder error(LogMessage logMessage, Id recordId, Exception apexException) {
@@ -235,7 +235,7 @@ global with sharing class Logger {
     }
 
     public static LogEntryEventBuilder error(LogMessage logMessage, SObject record, Exception apexException, List<String> topics) {
-        return error().setMessage(logMessage).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
+        return error().setMessage(logMessage).setRecordId(record).setExceptionDetails(apexException).setTopics(topics);
     }
 
     global static LogEntryEventBuilder error(LogMessage logMessage, SObject record, Exception apexException) {
@@ -255,7 +255,7 @@ global with sharing class Logger {
     }
 
     public static LogEntryEventBuilder error(String message, Exception apexException, List<String> topics) {
-        return error().setMessage(message).setTopics(topics).setExceptionDetails(apexException);
+        return error().setMessage(message).setExceptionDetails(apexException).setTopics(topics);
     }
 
     global static LogEntryEventBuilder error(String message, Exception apexException) {
@@ -263,7 +263,7 @@ global with sharing class Logger {
     }
 
     public static LogEntryEventBuilder error(String message, Id recordId, Exception apexException, List<String> topics) {
-        return error().setMessage(message).setRecordId(recordId).setTopics(topics).setExceptionDetails(apexException);
+        return error().setMessage(message).setRecordId(recordId).setExceptionDetails(apexException).setTopics(topics);
     }
 
     global static LogEntryEventBuilder error(String message, Id recordId, Exception apexException) {
@@ -283,7 +283,7 @@ global with sharing class Logger {
     }
 
     public static LogEntryEventBuilder error(String message, SObject record, Exception apexException, List<String> topics) {
-        return error().setMessage(message).setRecordId(record).setTopics(topics).setExceptionDetails(apexException);
+        return error().setMessage(message).setRecordId(record).setExceptionDetails(apexException).setTopics(topics);
     }
 
     global static LogEntryEventBuilder error(String message, SObject record, Exception apexException) {
@@ -303,6 +303,22 @@ global with sharing class Logger {
     }
 
     // WARN logging level methods
+    public static LogEntryEventBuilder warn(LogMessage logMessage, Exception apexException, List<String> topics) {
+        return warn().setMessage(logMessage).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    global static LogEntryEventBuilder warn(LogMessage logMessage, Exception apexException) {
+        return warn().setMessage(logMessage).setExceptionDetails(apexException);
+    }
+
+    public static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, Exception apexException, List<String> topics) {
+        return warn().setMessage(logMessage).setRecordId(recordId).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    global static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, Exception apexException) {
+        return warn().setMessage(logMessage).setRecordId(recordId).setExceptionDetails(apexException);
+    }
+
     public static LogEntryEventBuilder warn(LogMessage logMessage, Id recordId, List<String> topics) {
         return warn().setMessage(logMessage).setRecordId(recordId).setTopics(topics);
     }
@@ -313,6 +329,14 @@ global with sharing class Logger {
 
     public static LogEntryEventBuilder warn(LogMessage logMessage, List<String> topics) {
         return warn().setMessage(logMessage).setTopics(topics);
+    }
+
+    public static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, Exception apexException, List<String> topics) {
+        return warn().setMessage(logMessage).setRecordId(record).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    global static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, Exception apexException) {
+        return warn().setMessage(logMessage).setRecordId(record).setExceptionDetails(apexException);
     }
 
     public static LogEntryEventBuilder warn(LogMessage logMessage, SObject record, List<String> topics) {
@@ -327,6 +351,22 @@ global with sharing class Logger {
         return warn().setMessage(logMessage);
     }
 
+    public static LogEntryEventBuilder warn(String message, Exception apexException, List<String> topics) {
+        return warn().setMessage(message).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    global static LogEntryEventBuilder warn(String message, Exception apexException) {
+        return warn().setMessage(message).setExceptionDetails(apexException);
+    }
+
+    public static LogEntryEventBuilder warn(String message, Id recordId, Exception apexException, List<String> topics) {
+        return warn().setMessage(message).setRecordId(recordId).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    global static LogEntryEventBuilder warn(String message, Id recordId, Exception apexException) {
+        return warn().setMessage(message).setRecordId(recordId).setExceptionDetails(apexException);
+    }
+
     public static LogEntryEventBuilder warn(String message, Id recordId, List<String> topics) {
         return warn().setMessage(message).setRecordId(recordId).setTopics(topics);
     }
@@ -337,6 +377,14 @@ global with sharing class Logger {
 
     public static LogEntryEventBuilder warn(String message, List<String> topics) {
         return warn().setMessage(message).setTopics(topics);
+    }
+
+    public static LogEntryEventBuilder warn(String message, SObject record, Exception apexException, List<String> topics) {
+        return warn().setMessage(message).setRecordId(record).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    global static LogEntryEventBuilder warn(String message, SObject record, Exception apexException) {
+        return warn().setMessage(message).setRecordId(record).setExceptionDetails(apexException);
     }
 
     public static LogEntryEventBuilder warn(String message, SObject record, List<String> topics) {

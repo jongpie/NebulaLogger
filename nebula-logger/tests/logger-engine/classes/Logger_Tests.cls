@@ -1021,6 +1021,94 @@ private class Logger_Tests {
 
     // Start WARN methods for LogMessage
     @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_recordId_and_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getRecord().Id, getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_recordId_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getRecord().Id, getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
     static void it_should_add_an_warn_entry_for_logMessage_with_recordId_and_topics() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1080,6 +1168,50 @@ private class Logger_Tests {
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_record_and_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getRecord(), getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_logMessage_with_record_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), getRecord(), getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
     }
 
     @isTest
@@ -1147,8 +1279,97 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
     }
+    // End WARN methods for LogMessage
 
     // Start WARN methods for String
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_recordId_and_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getRecord().Id, getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_recordId_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getRecord().Id, getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
     @isTest
     static void it_should_add_an_warn_entry_for_string_message_with_recordId_and_topics() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
@@ -1209,6 +1430,50 @@ private class Logger_Tests {
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
         System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_record_and_exception_and_topics() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getRecord(), getException(), getTopics());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(String.join(getTopics(), ','), entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_warn_entry_for_string_message_with_record_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), getRecord(), getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
     }
 
     @isTest
@@ -1276,7 +1541,6 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
     }
-
     // End WARN methods for String
 
     // Start INFO methods for LogMessage
