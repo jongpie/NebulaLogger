@@ -109,6 +109,7 @@ private class LogEntryEventHandler_Tests {
                         RecordJson__c,
                         RecordSObjectClassification__c,
                         RecordSObjectType__c,
+                        RecordSObjectTypeNamespace__c,
                         StackTrace__c,
                         Timestamp__c,
                         TriggerIsExecuting__c,
@@ -218,6 +219,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c);
         System.assertEquals(logEntryEvent.RecordSObjectClassification__c, logEntry.RecordSObjectClassification__c);
         System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c);
+        System.assertEquals(logEntryEvent.RecordSObjectTypeNamespace__c, logEntry.RecordSObjectTypeNamespace__c);
         System.assertEquals(logEntryEvent.StackTrace__c, logEntry.StackTrace__c);
         System.assertEquals(logEntryEvent.Timestamp__c, logEntry.Timestamp__c);
         System.assertEquals(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c);

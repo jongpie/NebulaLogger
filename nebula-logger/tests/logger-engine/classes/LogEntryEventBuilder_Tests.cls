@@ -19,8 +19,8 @@ private class LogEntryEventBuilder_Tests {
 
     @isTest
     static void it_should_short_circuit_when_enabled_logging_level_above_called_level() {
-        Boolean shouldSave = Logger.isEnabled(LoggingLevel.FINE);
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, false);
+        Boolean shouldSave = false;
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
 
         System.assertEquals(null, builder.getLogEntryEvent());
     }
@@ -111,12 +111,13 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_record_fields_for_recordId() {
+    static void it_should_set_record_fields_for_recordId_when_standard_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
         Test.startTest();
 
@@ -129,15 +130,62 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
         System.assertEquals('User', builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
     }
 
     @isTest
-    static void it_should_set_record_fields_for_record() {
+    static void it_should_set_record_fields_for_recordId_when_custom_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Test.startTest();
+
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        builder.setRecordId(log.Id);
+
+        Test.stopTest();
+
+        System.assertEquals(log.Id, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Custom Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(Log__c.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @isTest
+    static void it_should_set_record_fields_for_recordId_when_custom_metadata_type() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Test.startTest();
+
+        LogStatus__mdt status = [SELECT Id, MasterLabel, DeveloperName FROM LogStatus__mdt LIMIT 1];
+        builder.setRecordId(status.Id);
+
+        Test.stopTest();
+
+        System.assertEquals(status.Id, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Custom Metadata Type Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(LogStatus__mdt.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @isTest
+    static void it_should_set_record_fields_for_record_when_standard_object() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
         Test.startTest();
 
@@ -150,6 +198,52 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Json.serializePretty(currentUser), builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
         System.assertEquals('User', builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+    }
+
+    @isTest
+    static void it_should_set_record_fields_for_record_when_custom_object() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Test.startTest();
+
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        builder.setRecordId(log);
+
+        Test.stopTest();
+
+        System.assertEquals(log.Id, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(log), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Custom Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(Log__c.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @isTest
+    static void it_should_set_record_fields_for_record_when_custom_metadata_type() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Test.startTest();
+
+        LogStatus__mdt status = [SELECT Id, MasterLabel, DeveloperName FROM LogStatus__mdt LIMIT 1];
+        builder.setRecordId(status);
+
+        Test.stopTest();
+
+        System.assertEquals(status.Id, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(Json.serializePretty(status), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Custom Metadata Type Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(LogStatus__mdt.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
     @isTest
