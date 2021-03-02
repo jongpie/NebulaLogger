@@ -266,7 +266,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
-        // This method could definitely use some cleanup
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
@@ -276,56 +275,45 @@ global with sharing class LogEntryEventBuilder {
 
         String sobjectClassification;
 
-        // Check several details about the SObject type to determine the classification
+        // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
         if(sobjectType.getDescribe().isCustomSetting()) {
-            // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
             sobjectClassification = 'Custom Setting Object';
-        } else if(sobjectType.getDescribe().isCustom() == true) {
-            Integer delimiterIndex = sobjectName.lastIndexOf('__');
-            String sobjectSuffix = sobjectName.substring(delimiterIndex, sobjectName.length());
+        }
 
-            // Some suffixes only apply to custom objects
-            switch on sobjectSuffix {
-                when '__b' {
-                    // Example: MyBigObject__b
-                    sobjectClassification = 'Big Object';
-                }
-                when '__c' {
-                    // Example: Log__c
-                    sobjectClassification = 'Custom Object';
-                }
-                when '__e' {
-                    // LogEntryEvent__e
-                    sobjectClassification = 'Platform Event Object';
-                }
-                when '__mdt' {
-                    // Example: LogStatus__mdt
-                    sobjectClassification = 'Custom Metadata Type Object';
-                }
+        // Store the key-values for Salesforce's list of object suffixes
+        Map<String, String> sobjectSuffixToClassification = new Map<String, String>{
+            // Example: MyBigObject__b
+            '__b' => 'Big Object',
+            // Example: Log__c
+            '__c' => 'Custom Object',
+            // Example: LogEntryEvent__e
+            '__e' => 'Platform Event Object',
+            // Example: LogStatus__mdt
+            '__mdt' => 'Custom Metadata Type Object',
+            // Examples: AccountChangeEvent and Log__ChangeEvent
+            'ChangeEvent' => 'Change Event Object',
+            // Examples: AccountFeed and Log__Feed
+            'Feed' => 'Chatter Feed Object',
+            // Examples: AccountHistory and Log__History
+            'History' => 'Field History Tracking Object',
+            // Examples: AccountShare and Log__Share
+            'Share' => 'Record Share Object'
+        };
+
+        for(String sobjectSuffix : sobjectSuffixToClassification.keySet()) {
+            if(String.isBlank(sobjectClassification) && sobjectName.endsWith(sobjectSuffix)) {
+                sobjectClassification = sobjectSuffixToClassification.get(sobjectSuffix);
+                break;
             }
         }
 
-        // Now, all other object classifications can be determined based on suffix (for both standard & custom)
-        if(String.isBlank(sobjectClassification) && sobjectName.endsWith('ChangeEvent')) {
-            // Examples: AccountChangeEvent and Log__ChangeEvent
-            sobjectClassification = 'Change Event Object';
-        } else if(String.isBlank(sobjectClassification) && sobjectName.endsWith('Feed')) {
-            // Examples: AccountFeed and Log__Feed
-            sobjectClassification = 'Chatter Feed Object';
-        } else if(String.isBlank(sobjectClassification) && sobjectName.endsWith('History')) {
-            // Examples: AccountHistory and Log__History
-            sobjectClassification = 'Field History Tracking Object';
-        } else if(String.isBlank(sobjectClassification) && sobjectName.endsWith('Share')) {
-            // Examples: AccountShare and Log__Share
-            sobjectClassification = 'Record Share Object';
-        } else if(String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
+        // Finally, if we still don't have a classification, assume it's a standard object
+        if(String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
             sobjectClassification = 'Standard Object';
         }
 
-        // Cache the results in case there are other entries related to the same SObject type
-        if(String.isNotBlank(sobjectClassification)) {
-            SOBJECT_NAME_TO_CLASSIFICATION.put(sobjectName, sobjectClassification);
-        }
+        // Cache the results in case there are other entries related to the same SObject Type
+        SOBJECT_NAME_TO_CLASSIFICATION.put(sobjectName, sobjectClassification);
 
         return sobjectClassification;
     }
