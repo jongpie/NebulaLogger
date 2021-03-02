@@ -138,6 +138,7 @@ public without sharing class LogEntryEventHandler {
                 RecordJson__c = logEntryEvent.RecordJson__c,
                 RecordSObjectClassification__c = logEntryEvent.RecordSObjectClassification__c,
                 RecordSObjectType__c = logEntryEvent.RecordSObjectType__c,
+                RecordSObjectTypeNamespace__c = logEntryEvent.RecordSObjectTypeNamespace__c,
                 StackTrace__c = logEntryEvent.StackTrace__c,
                 Timestamp__c = timestamp,
                 TriggerIsExecuting__c = logEntryEvent.TriggerIsExecuting__c,

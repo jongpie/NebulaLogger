@@ -143,6 +143,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordId__c = record.Id;
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
+        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
 
         String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, Json.serializePretty(record));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
@@ -327,6 +328,14 @@ global with sharing class LogEntryEventBuilder {
         }
 
         return sobjectClassification;
+    }
+
+    private String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
+        String sobjectFullName = sobjectType.getDescribe().getName();
+        String sobjectLocalName = sobjectType.getDescribe().getLocalName();
+
+        // Remove the trailing '__' if present
+        return sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
     }
 
     private void setUserSessionDetails() {
