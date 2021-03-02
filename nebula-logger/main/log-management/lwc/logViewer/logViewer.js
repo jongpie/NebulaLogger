@@ -17,7 +17,17 @@ export default class LogJSONViewer extends LightningElement {
     jsonCopied = false;
 
     get logJSON() {
-        return this.log.data ? JSON.stringify(this.log.data, null, '\t') : '';
+        let formattedLog;
+        // Sort the keys (fields) in the log object
+        if (this.log.data) {
+            formattedLog = Object.keys(this.log.data)
+                .sort()
+                .reduce((obj, key) => {
+                    obj[key] = this.log.data[key];
+                    return obj;
+                }, {});
+        }
+        return formattedLog ? JSON.stringify(formattedLog, null, '\t') : '';
     }
 
     get title() {
@@ -52,6 +62,6 @@ export default class LogJSONViewer extends LightningElement {
 
         setTimeout(() => {
             this.jsonCopied = false;
-        }, 5000)
+        }, 5000);
     }
 }
