@@ -323,7 +323,11 @@ global with sharing class LogEntryEventBuilder {
         String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 
         // Remove the trailing '__' if present
-        return sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
+        String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
+        if(String.isBlank(namespace)) {
+            namespace = null;
+        }
+        return namespace;
     }
 
     private void setUserSessionDetails() {
