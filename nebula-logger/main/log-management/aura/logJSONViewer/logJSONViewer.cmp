@@ -6,7 +6,7 @@
     <!-- TODO: recordId is a reserved keyword in LWC, can't name the variable recordId till LWC quick actions are GA -->
     <c:logViewer logId="{!v.recordId}"></c:logViewer>
 
-    <!-- Since quick actions don't support LWC yet, change some of the standard formatting that conflicts with lwc -->
+    <!-- Fix some formatting issues that happen when displaying the lwc inside of aura inside of quick action modal -->
     <aura:html tag="style">
         .cuf-content {
             padding: 0 0rem !important;
