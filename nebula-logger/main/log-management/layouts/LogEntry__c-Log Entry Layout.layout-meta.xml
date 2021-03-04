@@ -79,7 +79,19 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>RecordDetailedLink__c</field>
+                <field>RecordSObjectClassification__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>RecordSObjectTypeNamespace__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RecordSObjectType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RecordLink__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>

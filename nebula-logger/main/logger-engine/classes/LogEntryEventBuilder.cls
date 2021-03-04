@@ -19,6 +19,9 @@ global with sharing class LogEntryEventBuilder {
     // private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     // private static final String ORIGIN_TYPE_FLOW = 'Flow';
     private static final User USER = getUser();
+    private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
+    private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
+
     private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
 
     private final LogEntryEvent__e logEntryEvent;
@@ -139,10 +142,19 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        if(record == null) {
+            return this;
+        }
+
+        this.logEntryEvent.RecordId__c = record.Id;
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
+        this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
+        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
+
         String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, Json.serializePretty(record));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
-        return this.setRecordId(record.Id);
+        return this;
     }
 
     /**
@@ -155,7 +167,13 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        if(String.isBlank(recordId)) {
+            return this;
+        }
+
         this.logEntryEvent.RecordId__c = recordId;
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
+        this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
         return this;
     }
 
@@ -314,6 +332,51 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.UserRoleName__c = USER.UserRole?.Name;
     }
 
+    private String getSObjectClassification(Schema.SObjectType sobjectType) {
+        String sobjectName = sobjectType.getDescribe().getName();
+
+        // Check the map to see if we've already determined the classification for this SObject type
+        if(SOBJECT_NAME_TO_CLASSIFICATION.containsKey(sobjectName)) {
+            return SOBJECT_NAME_TO_CLASSIFICATION.get(sobjectName);
+        }
+
+        String sobjectClassification;
+
+        // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
+        if(sobjectType.getDescribe().isCustomSetting()) {
+            sobjectClassification = 'Custom Setting Object';
+        }
+
+        for(String sobjectSuffix : SOBJECT_SUFFIX_TO_CLASSIFICATION.keySet()) {
+            if(String.isBlank(sobjectClassification) && sobjectName.endsWith(sobjectSuffix)) {
+                sobjectClassification = SOBJECT_SUFFIX_TO_CLASSIFICATION.get(sobjectSuffix);
+                break;
+            }
+        }
+
+        // Finally, if we still don't have a classification, assume it's a standard object
+        if(String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
+            sobjectClassification = 'Standard Object';
+        }
+
+        // Cache the results in case there are other entries related to the same SObject Type
+        SOBJECT_NAME_TO_CLASSIFICATION.put(sobjectName, sobjectClassification);
+
+        return sobjectClassification;
+    }
+
+    private String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
+        String sobjectFullName = sobjectType.getDescribe().getName();
+        String sobjectLocalName = sobjectType.getDescribe().getLocalName();
+
+        // Remove the trailing '__' if present
+        String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
+        if(String.isBlank(namespace)) {
+            namespace = null;
+        }
+        return namespace;
+    }
+
     private void setUserSessionDetails() {
         if (this.shouldSave == false) {
             return;
@@ -379,8 +442,13 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static List<String> getIgnoredClasses() {
-        return new List<String>{ Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
+        return new List<String>{
+            Logger.class.getName(),
+            LogMessage.class.getName(),
+            LogEntryEventBuilder.class.getName()
+        };
     }
+
 
     // TODO move namespace methods to separate Namespace class (again) if other classes end up needing this info
     /* private static Boolean hasNamespacePrefix() {
@@ -392,6 +460,27 @@ global with sharing class LogEntryEventBuilder {
         String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
 
         return namespacePrefix;
+    }
+
+    private static Map<String, String> getSObjectSuffixToClassification() {
+       return new Map<String, String>{
+            // Example: MyBigObject__b
+            '__b' => 'Big Object',
+            // Example: Log__c
+            '__c' => 'Custom Object',
+            // Example: LogEntryEvent__e
+            '__e' => 'Platform Event Object',
+            // Example: LogStatus__mdt
+            '__mdt' => 'Custom Metadata Type Object',
+            // Examples: AccountChangeEvent and Log__ChangeEvent
+            'ChangeEvent' => 'Change Event Object',
+            // Examples: AccountFeed and Log__Feed
+            'Feed' => 'Chatter Feed Object',
+            // Examples: AccountHistory and Log__History
+            'History' => 'Field History Tracking Object',
+            // Examples: AccountShare and Log__Share
+            'Share' => 'Record Share Object'
+        };
     }
 
     // private static String getPrefixWithDelimiter(String delimiter) {
