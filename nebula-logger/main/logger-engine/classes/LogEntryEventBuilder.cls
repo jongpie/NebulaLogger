@@ -296,7 +296,7 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.NetworkName__c = (String) NETWORK_SITE.get('Name');
         this.logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(NETWORK_SITE.ID);
-        this.logEntryEvent.NetworkLoginUrl__c = Network.getLogoutUrl(NETWORK_SITE.ID);
+        this.logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(NETWORK_SITE.ID);
         this.logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(NETWORK_SITE.ID);
         this.logEntryEvent.NetworkUrlPathPrefix__c = (String) NETWORK_SITE.get('UrlPathPrefix');
     }
