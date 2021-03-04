@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RecordSObjectClassification__c</fullName>
+    <externalId>false</externalId>
+    <label>Related Record Object Classification</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Change Event Object</fullName>
+                <default>false</default>
+                <label>Change Event Object</label>
+            </value>
+            <value>
+                <fullName>Chatter Feed Object</fullName>
+                <default>false</default>
+                <label>Chatter Feed Object</label>
+            </value>
+            <value>
+                <fullName>Custom Metadata Type Object</fullName>
+                <default>false</default>
+                <label>Custom Metadata Type Object</label>
+            </value>
+            <value>
+                <fullName>Custom Object</fullName>
+                <default>false</default>
+                <label>Custom Object</label>
+            </value>
+            <value>
+                <fullName>Custom Setting Object</fullName>
+                <default>false</default>
+                <label>Custom Setting Object</label>
+            </value>
+            <value>
+                <fullName>Field History Tracking Object</fullName>
+                <default>false</default>
+                <label>Field History Tracking Object</label>
+            </value>
+            <value>
+                <fullName>Platform Event Object</fullName>
+                <default>false</default>
+                <label>Platform Event Object</label>
+            </value>
+            <value>
+                <fullName>Record Share Object</fullName>
+                <default>false</default>
+                <label>Record Share Object</label>
+            </value>
+            <value>
+                <fullName>Standard Object</fullName>
+                <default>false</default>
+                <label>Standard Object</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
