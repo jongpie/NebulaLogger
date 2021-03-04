@@ -53,7 +53,7 @@ public without sharing class LogEntryEventHandler {
         LOG.LogoutUrl__c = logEntryEvent.LogoutUrl__c;
         LOG.NetworkId__c = logEntryEvent.NetworkId__c;
         LOG.NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c;
-        LOG.NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c;
+        LOG.NetworkLogoutUrl__c = logEntryEvent.NetworkLogoutUrl__c;
         LOG.NetworkName__c = logEntryEvent.NetworkName__c;
         LOG.NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c;
         LOG.NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c;
