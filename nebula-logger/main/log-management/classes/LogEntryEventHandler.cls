@@ -14,50 +14,60 @@ public without sharing class LogEntryEventHandler {
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
     private Set<String> topicNames;
-    private List<Topic> topics;
-    private List<TopicAssignment> topicAssignments;
 
     public LogEntryEventHandler() {
         this.logEntries = new List<LogEntry__c>();
         this.logEntryToTopics = new Map<LogEntry__c, List<String>>();
         this.topicNames = new Set<String>();
-        this.topics = new List<Topic>();
-        this.topicAssignments = new List<TopicAssignment>();
     }
 
     public void execute() {
-        this.upsertLog();
-        this.insertLogEntries();
-        this.insertTopics();
+        List<LogEntryEvent__e> logEntryEvents = (List<LogEntryEvent__e>) Trigger.new;
+
+        switch on Trigger.operationType {
+            when AFTER_INSERT {
+                this.upsertLog(logEntryEvents);
+                this.insertLogEntries(logEntryEvents);
+                this.insertTopics();
+            }
+        }
     }
 
-    private void upsertLog() {
-        if (LOG.Id != null) {
-            return; // Log only needs to be saved once
-        }
-        if (Trigger.new == null) {
-            return; // This class should only be used in a trigger context...
-        }
-        if (Trigger.new.getSObjectType() != Schema.LogEntryEvent__e.SObjectType) {
-            return; //...for the LogEntryEvent__e object
+    private void upsertLog(List<LogEntryEvent__e> logEntryEvents) {
+        if(LOG.Id != null) {
+            return;
         }
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
         // The first LogEntryEvent__e record is used to normalize the data
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) Trigger.new[0];
+        LogEntryEvent__e logEntryEvent = logEntryEvents.get(0);
         Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
 
         LOG.ApiVersion__c = logEntryEvent.ApiVersion__c;
         LOG.Locale__c = logEntryEvent.Locale__c;
         LOG.LoggedBy__c = logEntryEvent.CreatedById;
+        LOG.LoggedByUsername__c = logEntryEvent.LoggedByUsername__c;
         LOG.LoginDomain__c = logEntryEvent.LoginDomain__c;
         LOG.LoginHistoryId__c = logEntryEvent.LoginHistoryId__c;
         LOG.LoginType__c = logEntryEvent.LoginType__c;
         LOG.LogoutUrl__c = logEntryEvent.LogoutUrl__c;
         LOG.NetworkId__c = logEntryEvent.NetworkId__c;
+        LOG.NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c;
+        LOG.NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c;
+        LOG.NetworkName__c = logEntryEvent.NetworkName__c;
+        LOG.NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c;
+        LOG.NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c;
+        LOG.OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c;
+        LOG.OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c;
+        LOG.OrganizationId__c = logEntryEvent.OrganizationId__c;
+        LOG.OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c;
+        LOG.OrganizationName__c = logEntryEvent.OrganizationName__c;
+        LOG.OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c;
+        LOG.OrganizationType__c = logEntryEvent.OrganizationType__c;
         LOG.OwnerId = logEntryEvent.CreatedById;
         LOG.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
         LOG.ProfileId__c = logEntryEvent.ProfileId__c;
+        LOG.ProfileName__c = logEntryEvent.ProfileName__c;
         LOG.SessionId__c = logEntryEvent.SessionId__c;
         LOG.SessionId__c = logEntryEvent.SessionId__c;
         LOG.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
@@ -68,25 +78,24 @@ public without sharing class LogEntryEventHandler {
         LOG.TimeZoneId__c = logEntryEvent.TimeZoneId__c;
         LOG.TimeZoneName__c = logEntryEvent.TimeZoneName__c;
         LOG.TransactionId__c = logEntryEvent.TransactionId__c;
+        LOG.UserLicenseDefinitionKey__c = logEntryEvent.UserLicenseDefinitionKey__c;
+        LOG.UserLicenseId__c = logEntryEvent.UserLicenseId__c;
+        LOG.UserLicenseName__c = logEntryEvent.UserLicenseName__c;
         LOG.UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c;
         LOG.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
         LOG.UserRoleId__c = logEntryEvent.UserRoleId__c;
+        LOG.UserRoleName__c = logEntryEvent.UserRoleName__c;
         LOG.UserType__c = logEntryEvent.UserType__c;
 
-        // Since the log is upserted once per transaction, we can run some queries here
-        setOrganizationDetails();
-        setNetworkDetails();
-        setUserDetails();
-
-        upsert log TransactionId__c;
+        upsert LOG TransactionId__c;
     }
 
-    private void insertLogEntries() {
+    private void insertLogEntries(List<LogEntryEvent__e> logEntryEvents) {
         if (LOG.Id == null) {
             return; // Avoid an exception - if there is no log, we can't save log entries
         }
 
-        for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) Trigger.new) {
+        for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
             // Workaround field for platform issue w/ accurate datetimes
             Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
                 ? Datetime.valueOf(logEntryEvent.TimestampString__c)
@@ -150,7 +159,8 @@ public without sharing class LogEntryEventHandler {
                 this.logEntryToTopics.put(logEntry, LogEntryEvent.Topics__c.split(','));
             }
         }
-        insert logEntries;
+
+        insert this.logEntries;
     }
 
     private void insertTopics() {
@@ -193,67 +203,4 @@ public without sharing class LogEntryEventHandler {
         insert new List<TopicAssignment>(topicAssignments);
     }
 
-    private void setOrganizationDetails() {
-        String orgEnvironmentType;
-        if(org.IsSandbox == true && org.TrialExpirationDate != null) {
-            orgEnvironmentType ='Scratch Org';
-        } else if(org.IsSandbox == true) {
-            orgEnvironmentType = 'Sandbox';
-        } else {
-            orgEnvironmentType = 'Production';
-        }
-
-        LOG.OrganizationDomainUrl__c = Url.getOrgDomainUrl().toExternalForm();
-        LOG.OrganizationEnvironmentType__c = orgEnvironmentType;
-        LOG.OrganizationId__c = ORG.Id;
-        LOG.OrganizationInstanceName__c = ORG.InstanceName;
-        LOG.OrganizationName__c = ORG.Name;
-        LOG.OrganizationNamespacePrefix__c = ORG.NamespacePrefix;
-        LOG.OrganizationType__c = ORG.OrganizationType;
-    }
-
-    private void setNetworkDetails() {
-        if (LOG.NetworkId__c == null) {
-            return;
-        }
-
-        String networkApiName = 'Network';
-        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
-        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
-
-        if (!networksEnabled) {
-            return;
-        }
-
-        String networkId = LOG.NetworkId__c;
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
-        List<SObject> matchingNetworks = Database.query(queryString);
-
-        if (matchingNetworks.isEmpty()) {
-            return;
-        }
-
-        SObject matchingNetwork = matchingNetworks.get(0);
-
-        LOG.NetworkName__c = (String) matchingNetwork.get('Name');
-        LOG.NetworkLoginUrl__c = Network.getLoginUrl(networkId);
-        LOG.NetworkLoginUrl__c = Network.getLogoutUrl(networkId);
-        LOG.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(networkId);
-        LOG.NetworkUrlPathPrefix__c = (String) matchingNetwork.get('UrlPathPrefix');
-    }
-
-    private void setUserDetails() {
-        User logUser = [
-            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
-            FROM User
-            WHERE Id = :LOG.LoggedBy__c
-        ];
-
-        LOG.LoggedByUsername__c = logUser.Username;
-        LOG.ProfileName__c = logUser.Profile.Name;
-        LOG.UserLicenseDefinitionKey__c = logUser.Profile.UserLicense.LicenseDefinitionKey;
-        LOG.UserLicenseId__c = logUser.Profile.UserLicenseId;
-        LOG.UserLicenseName__c = logUser.Profile.UserLicense.Name;
-        LOG.UserRoleName__c = logUser.UserRole == null ? null : logUser.UserRole.Name;
-    }
 }
