@@ -5,7 +5,7 @@
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>Login Domain</label>
+    <label>DEPRECATED: Login Domain</label>
     <length>255</length>
     <required>false</required>
     <type>Text</type>

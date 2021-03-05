@@ -10,6 +10,7 @@
  */
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
+    private static final AuthSession AUTH_SESSION = getAuthSession();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final SObject NETWORK_SITE = getNetwork();
@@ -402,15 +403,14 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries();
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
         this.logEntryEvent.NetworkId__c = Network.getNetworkId();
-        this.logEntryEvent.LoginDomain__c = sessionMap?.get('LoginDomain');
-        this.logEntryEvent.LoginHistoryId__c = sessionMap?.get('LoginHistoryId');
-        this.logEntryEvent.LoginType__c = sessionMap?.get('LoginType');
-        this.logEntryEvent.LogoutUrl__c = sessionMap?.get('LogoutUrl');
+        this.logEntryEvent.LoginHistoryId__c = AUTH_SESSION?.LoginHistoryId;
+        this.logEntryEvent.LoginType__c = AUTH_SESSION?.LoginType;
+        this.logEntryEvent.LogoutUrl__c = AUTH_SESSION?.LogoutUrl;
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        this.logEntryEvent.SessionId__c = sessionMap?.get('SessionId');
-        this.logEntryEvent.SessionSecurityLevel__c = sessionMap?.get('SessionSecurityLevel');
-        this.logEntryEvent.SessionType__c = sessionMap?.get('SessionType');
-        this.logEntryEvent.SourceIp__c = sessionMap?.get('SourceIp');
+        this.logEntryEvent.SessionId__c = AUTH_SESSION?.Id;
+        this.logEntryEvent.SessionSecurityLevel__c = AUTH_SESSION?.SessionSecurityLevel;
+        this.logEntryEvent.SessionType__c = AUTH_SESSION?.SessionType;
+        this.logEntryEvent.SourceIp__c = AUTH_SESSION?.SourceIp;
         this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
         this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
         this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
@@ -423,16 +423,37 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
-    private Map<String, String> getSessionMap() {
-        // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
-        // run by the Automated Process user - attempting to access Auth.SessionManagement
-        // methods as that user throws an UNCATCHABLE error. Let's sidestep that.
-        String potentialSession = UserInfo.getSessionId();
-        if (String.isBlank(potentialSession) || Test.isRunningTest()) {
-            return new Map<String, String>{ 'SessionId' => potentialSession };
+    private static AuthSession getAuthSession() {
+        if (String.isBlank(UserInfo.getSessionId())) {
+            return null;
         }
 
-        return Auth.SessionManagement.getCurrentSession();
+        // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
+        // run by the Automated Process user - attempting to access Auth.SessionManagement
+        // methods as that user throws an UNCATCHABLE error. Let's sidestep that by querying AuthSession instead.
+
+        List<AuthSession> sessions = [
+            SELECT
+                Id,
+                LoginType,
+                LoginHistoryId,
+                // TODO add fields to LogEntryEvent__e and Log__c for storing LoginHistory parent fields
+                // LoginHistory.Application,
+                // LoginHistory.Browser,
+                // LoginHistory.Platform,
+                LogoutUrl,
+                SessionSecurityLevel,
+                SessionType,
+                SourceIp
+            FROM AuthSession
+            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
+        ];
+
+        if (sessions.isEmpty()) {
+            return null;
+        } else {
+            return sessions.get(0);
+        }
     }
 
     // Private static methods
