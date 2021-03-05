@@ -4,6 +4,49 @@
 //------------------------------------------------------------------------------------------------//
 @isTest
 private class LogEntryEventBuilder_Tests {
+
+    private static Organization getOrganization() {
+        return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+    }
+
+    private static String getOrganizationEnvironmentType(Organization organization) {
+        String orgEnvironmentType;
+        if (organization.IsSandbox == true && organization.TrialExpirationDate != null) {
+            orgEnvironmentType = 'Scratch Org';
+        } else if (organization.IsSandbox == true) {
+            orgEnvironmentType = 'Sandbox';
+        } else {
+            orgEnvironmentType = 'Production';
+        }
+        return orgEnvironmentType;
+    }
+
+    private static SObject getNetwork() {
+        if (Network.getNetworkId() == null) {
+            return null;
+        }
+
+        String networkApiName = 'Network';
+        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
+        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
+
+        if (!networksEnabled) {
+            return null;
+        }
+
+        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
+
+        return Database.query(queryString);
+    }
+
+    private static User getUser() {
+        return [
+            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ];
+    }
+
     @isTest
     static void it_should_short_circuit_when_not_enabled() {
         Boolean shouldSave = false;
@@ -319,23 +362,52 @@ private class LogEntryEventBuilder_Tests {
 
     @isTest
     static void it_should_return_value_of_shouldSave_when_true() {
-        Boolean inputValue = true;
-
         Test.startTest();
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, inputValue);
+        Boolean shouldSave = true;
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, shouldSave);
         Test.stopTest();
 
-        System.assertEquals(inputValue, builder.shouldSave());
+        System.assertEquals(shouldSave, builder.shouldSave());
     }
 
     @isTest
     static void it_should_return_value_of_shouldSave_when_false() {
-        Boolean inputValue = false;
-
         Test.startTest();
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, inputValue);
+        Boolean shouldSave = false;
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, shouldSave);
         Test.stopTest();
 
-        System.assertEquals(inputValue, builder.shouldSave());
+        System.assertEquals(shouldSave, builder.shouldSave());
+    }
+
+    @isTest
+    static void it_should_set_detailed_fields() {
+        Test.startTest();
+        Boolean shouldSave = true;
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, shouldSave);
+        Test.stopTest();
+
+        // Get expected data
+        Organization organization = getOrganization();
+        String organizationEnvironmentType = getOrganizationEnvironmentType(organization);
+        SObject networkSite = getNetwork();
+        User user = getUser();
+
+        // Verify organization fields
+        System.assertEquals(Url.getOrgDomainUrl().toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
+        System.assertEquals(organizationEnvironmentType, builder.getLogEntryEvent().OrganizationEnvironmentType__c);
+        System.assertEquals(organization.Id, builder.getLogEntryEvent().OrganizationId__c);
+        System.assertEquals(organization.InstanceName, builder.getLogEntryEvent().OrganizationInstanceName__c);
+        System.assertEquals(organization.Name, builder.getLogEntryEvent().OrganizationName__c);
+        System.assertEquals(organization.NamespacePrefix, builder.getLogEntryEvent().OrganizationNamespacePrefix__c);
+        System.assertEquals(organization.OrganizationType, builder.getLogEntryEvent().OrganizationType__c);
+
+        // Verify user fields
+        System.assertEquals(USER.Username, builder.getLogEntryEvent().LoggedByUsername__c);
+        System.assertEquals(USER.Profile.Name, builder.getLogEntryEvent().ProfileName__c);
+        System.assertEquals(USER.Profile.UserLicense.LicenseDefinitionKey, builder.getLogEntryEvent().UserLicenseDefinitionKey__c);
+        System.assertEquals(USER.Profile.UserLicenseId, builder.getLogEntryEvent().UserLicenseId__c);
+        System.assertEquals(USER.Profile.UserLicense.Name, builder.getLogEntryEvent().UserLicenseName__c);
+        System.assertEquals(USER.UserRole?.Name, builder.getLogEntryEvent().UserRoleName__c);
     }
 }

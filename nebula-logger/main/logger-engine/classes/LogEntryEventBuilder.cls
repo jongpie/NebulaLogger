@@ -10,12 +10,16 @@
  */
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
+    private static final AuthSession AUTH_SESSION = getAuthSession();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
+    private static final SObject NETWORK_SITE = getNetwork();
+    private static final Organization ORGANIZATION = getOrganization();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
     // TODO future enhancement: consider converting strings to enum and add overload for `parseStackTrace(OriginType, String)
     // private static final String ORIGIN_TYPE_COMPONENT = 'Component';
     // private static final String ORIGIN_TYPE_FLOW = 'Flow';
+    private static final User USER = getUser();
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
 
@@ -24,8 +28,8 @@ global with sharing class LogEntryEventBuilder {
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel loggingLevel;
 
+    private Boolean detailsAreSet = false;
     private Boolean shouldSave;
-    private Boolean userSessionDetailsAreSet = false;
 
     public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
         this.loggingLevel = loggingLevel;
@@ -76,7 +80,7 @@ global with sharing class LogEntryEventBuilder {
      * @return            The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(LogMessage logMessage) {
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return this;
         }
 
@@ -89,7 +93,7 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(String message) {
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return this;
         }
 
@@ -114,7 +118,7 @@ global with sharing class LogEntryEventBuilder {
      * @return               The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder setExceptionDetails(Exception apexException) {
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return this;
         }
 
@@ -135,13 +139,14 @@ global with sharing class LogEntryEventBuilder {
      * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder setRecordId(SObject record) {
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return this;
         }
 
-        if(record == null) {
+        if (record == null) {
             return this;
         }
+
         this.logEntryEvent.RecordId__c = record.Id;
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
@@ -159,11 +164,11 @@ global with sharing class LogEntryEventBuilder {
      * @return          The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder setRecordId(Id recordId) {
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return this;
         }
 
-        if(String.isBlank(recordId)) {
+        if (String.isBlank(recordId)) {
             return this;
         }
 
@@ -179,7 +184,7 @@ global with sharing class LogEntryEventBuilder {
      * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     public LogEntryEventBuilder setTopics(List<String> topics) {
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return this;
         }
 
@@ -193,7 +198,7 @@ global with sharing class LogEntryEventBuilder {
      * @return                  The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return this;
         }
 
@@ -252,9 +257,18 @@ global with sharing class LogEntryEventBuilder {
      * @return   The LogEntryEvent__e record
      */
     public LogEntryEvent__e getLogEntryEvent() {
-        // Lazy-loading of setting user-session details to help minimize Apex heap size usage
-        if (!this.userSessionDetailsAreSet) {
+        if (this.shouldSave == false) {
+            return null;
+        }
+
+        // Lazy-loading of some details to help minimize Apex heap size usage until needed
+        if (this.detailsAreSet == false) {
+            this.setOrganizationDetails();
+            this.setNetworkDetails();
+            this.setUserDetails();
             this.setUserSessionDetails();
+
+            this.detailsAreSet = true;
         }
 
         // Salesforce does not provide precise datetimes in Apex triggers for platform events
@@ -267,30 +281,82 @@ global with sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
+    private void setOrganizationDetails() {
+        if (this.shouldSave == false) {
+            return;
+        }
+
+        String orgEnvironmentType;
+        if (ORGANIZATION.IsSandbox == true && ORGANIZATION.TrialExpirationDate != null) {
+            orgEnvironmentType = 'Scratch Org';
+        } else if (ORGANIZATION.IsSandbox == true) {
+            orgEnvironmentType = 'Sandbox';
+        } else {
+            orgEnvironmentType = 'Production';
+        }
+
+        this.logEntryEvent.OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm();
+        this.logEntryEvent.OrganizationEnvironmentType__c = orgEnvironmentType;
+        this.logEntryEvent.OrganizationId__c = ORGANIZATION.Id;
+        this.logEntryEvent.OrganizationInstanceName__c = ORGANIZATION.InstanceName;
+        this.logEntryEvent.OrganizationName__c = ORGANIZATION.Name;
+        this.logEntryEvent.OrganizationNamespacePrefix__c = ORGANIZATION.NamespacePrefix;
+        this.logEntryEvent.OrganizationType__c = ORGANIZATION.OrganizationType;
+    }
+
+    private void setNetworkDetails() {
+        if (this.shouldSave == false) {
+            return;
+        }
+
+        if (NETWORK_SITE == null) {
+            return;
+        }
+
+        this.logEntryEvent.NetworkName__c = (String) NETWORK_SITE.get('Name');
+        this.logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(NETWORK_SITE.ID);
+        this.logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(NETWORK_SITE.ID);
+        this.logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(NETWORK_SITE.ID);
+        this.logEntryEvent.NetworkUrlPathPrefix__c = (String) NETWORK_SITE.get('UrlPathPrefix');
+    }
+
+    private void setUserDetails() {
+        if (this.shouldSave == false) {
+            return;
+        }
+
+        this.logEntryEvent.LoggedByUsername__c = USER.Username;
+        this.logEntryEvent.ProfileName__c = USER.Profile.Name;
+        this.logEntryEvent.UserLicenseDefinitionKey__c = USER.Profile.UserLicense.LicenseDefinitionKey;
+        this.logEntryEvent.UserLicenseId__c = USER.Profile.UserLicenseId;
+        this.logEntryEvent.UserLicenseName__c = USER.Profile.UserLicense.Name;
+        this.logEntryEvent.UserRoleName__c = USER.UserRole?.Name;
+    }
+
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
-        if(SOBJECT_NAME_TO_CLASSIFICATION.containsKey(sobjectName)) {
+        if (SOBJECT_NAME_TO_CLASSIFICATION.containsKey(sobjectName)) {
             return SOBJECT_NAME_TO_CLASSIFICATION.get(sobjectName);
         }
 
         String sobjectClassification;
 
         // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
-        if(sobjectType.getDescribe().isCustomSetting()) {
+        if (sobjectType.getDescribe().isCustomSetting()) {
             sobjectClassification = 'Custom Setting Object';
         }
 
-        for(String sobjectSuffix : SOBJECT_SUFFIX_TO_CLASSIFICATION.keySet()) {
-            if(String.isBlank(sobjectClassification) && sobjectName.endsWith(sobjectSuffix)) {
+        for (String sobjectSuffix : SOBJECT_SUFFIX_TO_CLASSIFICATION.keySet()) {
+            if (String.isBlank(sobjectClassification) && sobjectName.endsWith(sobjectSuffix)) {
                 sobjectClassification = SOBJECT_SUFFIX_TO_CLASSIFICATION.get(sobjectSuffix);
                 break;
             }
         }
 
         // Finally, if we still don't have a classification, assume it's a standard object
-        if(String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
+        if (String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
             sobjectClassification = 'Standard Object';
         }
 
@@ -306,18 +372,17 @@ global with sharing class LogEntryEventBuilder {
 
         // Remove the trailing '__' if present
         String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
-        if(String.isBlank(namespace)) {
+        if (String.isBlank(namespace)) {
             namespace = null;
         }
         return namespace;
     }
 
     private void setUserSessionDetails() {
-        if (!this.shouldSave) {
+        if (this.shouldSave == false) {
             return;
         }
 
-        Map<String, String> sessionMap = this.getSessionMap();
         LoggingLevel userLoggingLevel = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
         this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
@@ -337,15 +402,17 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries();
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
         this.logEntryEvent.NetworkId__c = Network.getNetworkId();
-        this.logEntryEvent.LoginDomain__c = sessionMap?.get('LoginDomain');
-        this.logEntryEvent.LoginHistoryId__c = sessionMap?.get('LoginHistoryId');
-        this.logEntryEvent.LoginType__c = sessionMap?.get('LoginType');
-        this.logEntryEvent.LogoutUrl__c = sessionMap?.get('LogoutUrl');
+        this.logEntryEvent.LoginHistoryId__c = AUTH_SESSION?.LoginHistoryId;
+        this.logEntryEvent.LoginApplication__c = AUTH_SESSION?.LoginHistory.Application;
+        this.logEntryEvent.LoginBrowser__c = AUTH_SESSION?.LoginHistory.Browser;
+        this.logEntryEvent.LoginPlatform__c = AUTH_SESSION?.LoginHistory.Platform;
+        this.logEntryEvent.LoginType__c = AUTH_SESSION?.LoginType;
+        this.logEntryEvent.LogoutUrl__c = AUTH_SESSION?.LogoutUrl;
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        this.logEntryEvent.SessionId__c = sessionMap?.get('SessionId');
-        this.logEntryEvent.SessionSecurityLevel__c = sessionMap?.get('SessionSecurityLevel');
-        this.logEntryEvent.SessionType__c = sessionMap?.get('SessionType');
-        this.logEntryEvent.SourceIp__c = sessionMap?.get('SourceIp');
+        this.logEntryEvent.SessionId__c = AUTH_SESSION?.Id;
+        this.logEntryEvent.SessionSecurityLevel__c = AUTH_SESSION?.SessionSecurityLevel;
+        this.logEntryEvent.SessionType__c = AUTH_SESSION?.SessionType;
+        this.logEntryEvent.SourceIp__c = AUTH_SESSION?.SourceIp;
         this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
         this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
         this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
@@ -358,16 +425,36 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
-    private Map<String, String> getSessionMap() {
-        // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
-        // run by the Automated Process user - attempting to access Auth.SessionManagement
-        // methods as that user throws an UNCATCHABLE error. Let's sidestep that.
-        String potentialSession = UserInfo.getSessionId();
-        if (String.isBlank(potentialSession) || Test.isRunningTest()) {
-            return new Map<String, String>{ 'SessionId' => potentialSession };
+    private static AuthSession getAuthSession() {
+        if (String.isBlank(UserInfo.getSessionId())) {
+            return null;
         }
 
-        return Auth.SessionManagement.getCurrentSession();
+        // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
+        // run by the Automated Process user - attempting to access Auth.SessionManagement
+        // methods as that user throws an UNCATCHABLE error. Let's sidestep that by querying AuthSession instead.
+
+        List<AuthSession> sessions = [
+            SELECT
+                Id,
+                LoginType,
+                LoginHistoryId,
+                LoginHistory.Application,
+                LoginHistory.Browser,
+                LoginHistory.Platform,
+                LogoutUrl,
+                SessionSecurityLevel,
+                SessionType,
+                SourceIp
+            FROM AuthSession
+            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
+        ];
+
+        if (sessions.isEmpty()) {
+            return null;
+        } else {
+            return sessions.get(0);
+        }
     }
 
     // Private static methods
@@ -377,13 +464,8 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static List<String> getIgnoredClasses() {
-        return new List<String>{
-            Logger.class.getName(),
-            LogMessage.class.getName(),
-            LogEntryEventBuilder.class.getName()
-        };
+        return new List<String>{ Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
     }
-
 
     // TODO move namespace methods to separate Namespace class (again) if other classes end up needing this info
     /* private static Boolean hasNamespacePrefix() {
@@ -398,7 +480,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static Map<String, String> getSObjectSuffixToClassification() {
-       return new Map<String, String>{
+        return new Map<String, String>{
             // Example: MyBigObject__b
             '__b' => 'Big Object',
             // Example: Log__c
@@ -421,6 +503,36 @@ global with sharing class LogEntryEventBuilder {
     // private static String getPrefixWithDelimiter(String delimiter) {
     //     return String.isBlank(getPrefix()) ? '' : getPrefix() + delimiter;
     // }
+
+    private static Organization getOrganization() {
+        return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+    }
+
+    private static SObject getNetwork() {
+        if (Network.getNetworkId() == null) {
+            return null;
+        }
+
+        String networkApiName = 'Network';
+        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
+        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
+
+        if (!networksEnabled) {
+            return null;
+        }
+
+        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
+
+        return Database.query(queryString);
+    }
+
+    private static User getUser() {
+        return [
+            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ];
+    }
 
     // TODO need to revisit Visualforce logic, re-add fields to either Log__c or LogEntry__c, etc.
     /* private static String getVisualforcePageName() {
