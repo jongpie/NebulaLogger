@@ -403,6 +403,9 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
         this.logEntryEvent.NetworkId__c = Network.getNetworkId();
         this.logEntryEvent.LoginHistoryId__c = AUTH_SESSION?.LoginHistoryId;
+        this.logEntryEvent.LoginApplication__c = AUTH_SESSION?.LoginHistory.Application;
+        this.logEntryEvent.LoginBrowser__c = AUTH_SESSION?.LoginHistory.Browser;
+        this.logEntryEvent.LoginPlatform__c = AUTH_SESSION?.LoginHistory.Platform;
         this.logEntryEvent.LoginType__c = AUTH_SESSION?.LoginType;
         this.logEntryEvent.LogoutUrl__c = AUTH_SESSION?.LogoutUrl;
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
@@ -436,10 +439,9 @@ global with sharing class LogEntryEventBuilder {
                 Id,
                 LoginType,
                 LoginHistoryId,
-                // TODO add fields to LogEntryEvent__e and Log__c for storing LoginHistory parent fields
-                // LoginHistory.Application,
-                // LoginHistory.Browser,
-                // LoginHistory.Platform,
+                LoginHistory.Application,
+                LoginHistory.Browser,
+                LoginHistory.Platform,
                 LogoutUrl,
                 SessionSecurityLevel,
                 SessionType,
