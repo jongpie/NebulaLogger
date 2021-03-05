@@ -144,7 +144,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.DmlResultType__c = Database.DeleteResult.class.getName();
 
         if (!deleteResult.isSuccess()) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serialize(deleteResult.getErrors());
+            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(deleteResult.getErrors());
         }
 
         return this.setRecordId(deleteResult.getId());
@@ -159,7 +159,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.DmlResultType__c = Database.MergeResult.class.getName();
 
         if (!mergeResult.isSuccess()) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serialize(mergeResult.getErrors());
+            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(mergeResult.getErrors());
         }
 
         return this.setRecordId(mergeResult.getId());
@@ -174,7 +174,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.DmlResultType__c = Database.SaveResult.class.getName();
 
         if (!saveResult.isSuccess()) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serialize(saveResult.getErrors());
+            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(saveResult.getErrors());
         }
 
         return this.setRecordId(saveResult.getId());
@@ -191,7 +191,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.DmlResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
         if (!upsertResult.isSuccess()) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serialize(upsertResult.getErrors());
+            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(upsertResult.getErrors());
         }
 
         return this.setRecordId(upsertResult.getId());
@@ -205,7 +205,7 @@ global with sharing class LogEntryEventBuilder {
     global LogEntryEventBuilder setDmlResult(Database.UndeleteResult undeleteResult) {
         this.logEntryEvent.DmlResultType__c = Database.UndeleteResult.class.getName();
         if (!undeleteResult.isSuccess()) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serialize(undeleteResult.getErrors());
+            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(undeleteResult.getErrors());
         }
 
         return this.setRecordId(undeleteResult.getId());
