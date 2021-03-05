@@ -143,7 +143,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        if(record == null) {
+        if (record == null) {
             return this;
         }
 
@@ -168,7 +168,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        if(String.isBlank(recordId)) {
+        if (String.isBlank(recordId)) {
             return this;
         }
 
@@ -337,26 +337,26 @@ global with sharing class LogEntryEventBuilder {
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
-        if(SOBJECT_NAME_TO_CLASSIFICATION.containsKey(sobjectName)) {
+        if (SOBJECT_NAME_TO_CLASSIFICATION.containsKey(sobjectName)) {
             return SOBJECT_NAME_TO_CLASSIFICATION.get(sobjectName);
         }
 
         String sobjectClassification;
 
         // Custom settings and custom objects both end in '__c', so explicitly check if it's a custom setting
-        if(sobjectType.getDescribe().isCustomSetting()) {
+        if (sobjectType.getDescribe().isCustomSetting()) {
             sobjectClassification = 'Custom Setting Object';
         }
 
-        for(String sobjectSuffix : SOBJECT_SUFFIX_TO_CLASSIFICATION.keySet()) {
-            if(String.isBlank(sobjectClassification) && sobjectName.endsWith(sobjectSuffix)) {
+        for (String sobjectSuffix : SOBJECT_SUFFIX_TO_CLASSIFICATION.keySet()) {
+            if (String.isBlank(sobjectClassification) && sobjectName.endsWith(sobjectSuffix)) {
                 sobjectClassification = SOBJECT_SUFFIX_TO_CLASSIFICATION.get(sobjectSuffix);
                 break;
             }
         }
 
         // Finally, if we still don't have a classification, assume it's a standard object
-        if(String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
+        if (String.isBlank(sobjectClassification) && sobjectType.getDescribe().isCustom() == false) {
             sobjectClassification = 'Standard Object';
         }
 
@@ -372,7 +372,7 @@ global with sharing class LogEntryEventBuilder {
 
         // Remove the trailing '__' if present
         String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
-        if(String.isBlank(namespace)) {
+        if (String.isBlank(namespace)) {
             namespace = null;
         }
         return namespace;
@@ -464,13 +464,8 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static List<String> getIgnoredClasses() {
-        return new List<String>{
-            Logger.class.getName(),
-            LogMessage.class.getName(),
-            LogEntryEventBuilder.class.getName()
-        };
+        return new List<String>{ Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
     }
-
 
     // TODO move namespace methods to separate Namespace class (again) if other classes end up needing this info
     /* private static Boolean hasNamespacePrefix() {
@@ -485,7 +480,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static Map<String, String> getSObjectSuffixToClassification() {
-       return new Map<String, String>{
+        return new Map<String, String>{
             // Example: MyBigObject__b
             '__b' => 'Big Object',
             // Example: Log__c
