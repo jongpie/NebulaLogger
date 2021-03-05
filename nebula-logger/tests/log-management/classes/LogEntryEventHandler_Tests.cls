@@ -125,9 +125,9 @@ private class LogEntryEventHandler_Tests {
         Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         User currentUser = getCurrentUser();
         String orgEnvironmentType;
-        if(org.IsSandbox == true && org.TrialExpirationDate != null) {
-            orgEnvironmentType ='Scratch Org';
-        } else if(org.IsSandbox == true) {
+        if (org.IsSandbox == true && org.TrialExpirationDate != null) {
+            orgEnvironmentType = 'Scratch Org';
+        } else if (org.IsSandbox == true) {
             orgEnvironmentType = 'Sandbox';
         } else {
             orgEnvironmentType = 'Production';
@@ -161,18 +161,18 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.UserType__c, log.UserType__c);
 
         // Org fields
-        //System.assertEquals(Url.getOrgDomainUrl().toExternalForm(), log.OrganizationDomainUrl__c);
-        // System.assertEquals(orgEnvironmentType, log.OrganizationEnvironmentType__c);
-        // System.assertEquals(org.Id, log.OrganizationId__c);
-        // System.assertEquals(org.InstanceName, log.OrganizationInstanceName__c);
-        // System.assertEquals(org.Name, log.OrganizationName__c);
-        // System.assertEquals(org.NamespacePrefix, log.OrganizationNamespacePrefix__c);
-        // System.assertEquals(org.OrganizationType, log.OrganizationType__c);
+        System.assertEquals(logEntryEvent.OrganizationDomainUrl__c, log.OrganizationDomainUrl__c);
+        System.assertEquals(logEntryEvent.OrganizationEnvironmentType__c, log.OrganizationEnvironmentType__c);
+        System.assertEquals(logEntryEvent.OrganizationId__c, log.OrganizationId__c);
+        System.assertEquals(logEntryEvent.OrganizationInstanceName__c, log.OrganizationInstanceName__c);
+        System.assertEquals(logEntryEvent.OrganizationName__c, log.OrganizationName__c);
+        System.assertEquals(logEntryEvent.OrganizationNamespacePrefix__c, log.OrganizationNamespacePrefix__c);
+        System.assertEquals(logEntryEvent.OrganizationType__c, log.OrganizationType__c);
 
         // Profile fields
-        // System.assertEquals(currentUser.Profile.UserLicense.LicenseDefinitionKey, log.UserLicenseDefinitionKey__c);
-        // System.assertEquals(currentUser.Profile.UserLicenseId, log.UserLicenseId__c);
-        // System.assertEquals(currentUser.Profile.UserLicense.Name, log.UserLicenseName__c);
+        System.assertEquals(logEntryEvent.UserLicenseDefinitionKey__c, log.UserLicenseDefinitionKey__c);
+        System.assertEquals(logEntryEvent.UserLicenseId__c, log.UserLicenseId__c);
+        System.assertEquals(logEntryEvent.UserLicenseName__c, log.UserLicenseName__c);
     }
 
     static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
@@ -367,7 +367,7 @@ private class LogEntryEventHandler_Tests {
 
         Set<String> topicsSet = new Set<String>(topics);
         List<TopicAssignment> topicAssignments = [SELECT Id, EntityId, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
-        for(TopicAssignment topicAssignment : topicAssignments) {
+        for (TopicAssignment topicAssignment : topicAssignments) {
             System.assert(topicsSet.contains(topicAssignment.Topic.Name));
         }
     }
