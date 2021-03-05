@@ -9,7 +9,6 @@
  */
 public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
-    private static final Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
 
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
@@ -34,7 +33,7 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void upsertLog(List<LogEntryEvent__e> logEntryEvents) {
-        if(LOG.Id != null) {
+        if (LOG.Id != null) {
             return;
         }
 
@@ -49,6 +48,9 @@ public without sharing class LogEntryEventHandler {
         LOG.LoggedByUsername__c = logEntryEvent.LoggedByUsername__c;
         LOG.LoginDomain__c = logEntryEvent.LoginDomain__c;
         LOG.LoginHistoryId__c = logEntryEvent.LoginHistoryId__c;
+        LOG.LoginApplication__c = logEntryEvent.LoginApplication__c;
+        LOG.LoginBrowser__c = logEntryEvent.LoginBrowser__c;
+        LOG.LoginPlatform__c = logEntryEvent.LoginPlatform__c;
         LOG.LoginType__c = logEntryEvent.LoginType__c;
         LOG.LogoutUrl__c = logEntryEvent.LogoutUrl__c;
         LOG.NetworkId__c = logEntryEvent.NetworkId__c;
@@ -205,5 +207,4 @@ public without sharing class LogEntryEventHandler {
         }
         insert new List<TopicAssignment>(topicAssignments);
     }
-
 }
