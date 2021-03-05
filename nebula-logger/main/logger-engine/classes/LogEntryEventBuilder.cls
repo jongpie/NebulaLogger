@@ -133,6 +133,84 @@ global with sharing class LogEntryEventBuilder {
         return this;
     }
 
+    // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
+    // ...but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
+    /**
+     * @description Sets the log entry event's DML result fields
+     * @param  deleteResult The instance of Database.DeleteResult to log
+     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDmlResult(Database.DeleteResult deleteResult) {
+        this.logEntryEvent.DmlResultType__c = Database.DeleteResult.class.getName();
+
+        if (!deleteResult.isSuccess()) {
+            this.logEntryEvent.DmlResultErrors__c = Json.serialize(deleteResult.getErrors());
+        }
+
+        return this.setRecordId(deleteResult.getId());
+    }
+
+    /**
+     * @description Sets the log entry event's DML result fields
+     * @param  mergeResult The instance of Database.MergeResult to log
+     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDmlResult(Database.MergeResult mergeResult) {
+        this.logEntryEvent.DmlResultType__c = Database.MergeResult.class.getName();
+
+        if (!mergeResult.isSuccess()) {
+            this.logEntryEvent.DmlResultErrors__c = Json.serialize(mergeResult.getErrors());
+        }
+
+        return this.setRecordId(mergeResult.getId());
+    }
+
+    /**
+     * @description Sets the log entry event's DML result fields
+     * @param  saveResult The instance of Database.SaveResult to log
+     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDmlResult(Database.SaveResult saveResult) {
+        this.logEntryEvent.DmlResultType__c = Database.SaveResult.class.getName();
+
+        if (!saveResult.isSuccess()) {
+            this.logEntryEvent.DmlResultErrors__c = Json.serialize(saveResult.getErrors());
+        }
+
+        return this.setRecordId(saveResult.getId());
+    }
+
+    /**
+     * @description Sets the log entry event's DML result fields
+     * @param  upsertResult The instance of Database.UpsertResult to log
+     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDmlResult(Database.UpsertResult upsertResult) {
+        // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
+        String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
+        this.logEntryEvent.DmlResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
+
+        if (!upsertResult.isSuccess()) {
+            this.logEntryEvent.DmlResultErrors__c = Json.serialize(upsertResult.getErrors());
+        }
+
+        return this.setRecordId(upsertResult.getId());
+    }
+
+    /**
+     * @description Sets the log entry event's DML result fields
+     * @param  undeleteResult The instance of Database.UndeleteResult to log
+     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDmlResult(Database.UndeleteResult undeleteResult) {
+        this.logEntryEvent.DmlResultType__c = Database.UndeleteResult.class.getName();
+        if (!undeleteResult.isSuccess()) {
+            this.logEntryEvent.DmlResultErrors__c = Json.serialize(undeleteResult.getErrors());
+        }
+
+        return this.setRecordId(undeleteResult.getId());
+    }
+
     /**
      * Sets the log entry event's record fields
      * @param  record The SObject record related to the entry. The JSON of the record is automatically added to the entry

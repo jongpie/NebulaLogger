@@ -25,6 +25,16 @@
   - View shared logs &amp; log entries</description>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.DmlResultErrors__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.DmlResultType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.ExceptionMessage__c</field>
         <readable>true</readable>
     </fieldPermissions>
