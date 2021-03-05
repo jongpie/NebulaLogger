@@ -53,15 +53,15 @@
         <label>Message Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>Message__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>MessageTruncated__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>StackTrace__c</field>
             </layoutItems>
         </layoutColumns>
@@ -74,7 +74,7 @@
         <label>Related Record</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>RecordId__c</field>
             </layoutItems>
             <layoutItems>
@@ -82,7 +82,7 @@
                 <field>RecordSObjectClassification__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>RecordSObjectTypeNamespace__c</field>
             </layoutItems>
             <layoutItems>
@@ -124,15 +124,15 @@
         <label>Exception Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>ExceptionType__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>ExceptionMessage__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>ExceptionStackTrace__c</field>
             </layoutItems>
         </layoutColumns>
