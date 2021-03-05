@@ -383,7 +383,6 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        Map<String, String> sessionMap = this.getSessionMap();
         LoggingLevel userLoggingLevel = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
         this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
