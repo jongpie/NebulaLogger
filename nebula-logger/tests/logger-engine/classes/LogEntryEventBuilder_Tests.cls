@@ -216,7 +216,7 @@ private class LogEntryEventBuilder_Tests {
     // }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_save_result_without_errors() {
+    static void it_should_set_dml_result_fields_for_successful_save_result() {
         Database.SaveResult saveResult = Database.insert(new Log__c(TransactionId__c = '1234'), false);
         System.assertEquals(true, saveResult.isSuccess());
 
@@ -233,7 +233,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_save_result_with_errors() {
+    static void it_should_set_dml_result_fields_for_failed_save_result() {
         Database.SaveResult saveResult = Database.insert(new Account(), false);
         System.assertEquals(false, saveResult.isSuccess());
 
@@ -250,7 +250,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_upsert_result_without_errors_when_insert() {
+    static void it_should_set_dml_result_fields_for_successful_upsert_result_when_insert() {
         // UpsertResult for a new record insert
         Database.UpsertResult upsertResult = Database.upsert(new Log__c(TransactionId__c = '1234'), false);
         System.assertEquals(true, upsertResult.isSuccess());
@@ -268,7 +268,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_upsert_result_with_errors_when_insert() {
+    static void it_should_set_dml_result_fields_for_failed_upsert_result_when_insert() {
         // UpsertResult for a new record insert
         Database.UpsertResult upsertResult = Database.upsert(new Account(), false);
         System.assertEquals(false, upsertResult.isSuccess());
@@ -286,7 +286,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_upsert_result_without_errors_when_update() {
+    static void it_should_set_dml_result_fields_for_successful_upsert_result_when_update() {
         // UpsertResult for an existing record update
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -308,7 +308,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_upsert_result_with_errors_when_update() {
+    static void it_should_set_dml_result_fields_for_failed_upsert_result_when_update() {
         // UpsertResult for an existing record update
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -337,7 +337,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_undelete_result_without_errors() {
+    static void it_should_set_dml_result_fields_for_successful_undelete_result() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         delete log;
@@ -358,7 +358,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_undelete_result_with_errors() {
+    static void it_should_set_dml_result_fields_for_failed_undelete_result() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         delete log;
