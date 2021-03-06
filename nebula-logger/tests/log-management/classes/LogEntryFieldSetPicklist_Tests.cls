@@ -5,7 +5,6 @@
 
 @isTest
 private class LogEntryFieldSetPicklist_Tests {
-
     @isTest
     static void it_should_return_null_for_default_value() {
         // Admins should choose a field set, so always return null for the default
@@ -26,9 +25,9 @@ private class LogEntryFieldSetPicklist_Tests {
 
         List<VisualEditor.DataRow> dataRows = instance.getValues().getDataRows();
         System.assertEquals(expectedFieldSets.size(), dataRows.size());
-        for(VisualEditor.DataRow dataRow : dataRows) {
-            String fieldSetName = (String)dataRow.getValue();
-            String fieldSetLabel = (String)dataRow.getLabel();
+        for (VisualEditor.DataRow dataRow : dataRows) {
+            String fieldSetName = (String) dataRow.getValue();
+            String fieldSetLabel = (String) dataRow.getLabel();
 
             System.assert(expectedFieldSets.containsKey(fieldSetName));
 

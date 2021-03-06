@@ -4,7 +4,6 @@
 //------------------------------------------------------------------------------------------------//
 @isTest
 private class LogEntryEventBuilder_Tests {
-
     private static Organization getOrganization() {
         return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
     }

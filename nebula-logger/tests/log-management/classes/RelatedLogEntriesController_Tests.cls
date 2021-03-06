@@ -22,10 +22,10 @@ private class RelatedLogEntriesController_Tests {
         insert log;
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
-        for(Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
+        for (Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
             LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'test ' + i);
 
-            if(i <= TOTAL_RELATED_LOG_ENTRIES) {
+            if (i <= TOTAL_RELATED_LOG_ENTRIES) {
                 logEntry.RecordId__c = UserInfo.getUserId();
             }
 
@@ -61,7 +61,7 @@ private class RelatedLogEntriesController_Tests {
 
         // Requery the log entries so we can check additional fields that may not be in the field set
         List<LogEntry__c> logEntries = [SELECT Id, RecordId__c FROM LogEntry__c WHERE Id IN :result.records];
-        for(LogEntry__c logEntry : logEntries) {
+        for (LogEntry__c logEntry : logEntries) {
             System.assertEquals(recordId, logEntry.RecordId__c);
         }
     }
@@ -85,9 +85,9 @@ private class RelatedLogEntriesController_Tests {
         List<LogEntry__c> logEntries = [SELECT Id, Message__c, RecordId__c FROM LogEntry__c];
         System.assertEquals(TOTAL_LOG_ENTRIES + 1, logEntries.size());
         Integer countOfMatches = 0;
-        for(LogEntry__c logEntry : logEntries) {
+        for (LogEntry__c logEntry : logEntries) {
             System.debug('checking logEntry: ' + logEntry);
-            if(logEntry.Message__c.contains(search)) {
+            if (logEntry.Message__c.contains(search)) {
                 countOfMatches = countOfMatches + 1;
             }
         }

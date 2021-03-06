@@ -8,7 +8,6 @@
  * @description Dynamically returns LogEntry__c field sets in App Builder when configuring the component RelatedLogEntries
  */
 public without sharing class LogEntryFieldSetPicklist extends VisualEditor.DynamicPickList {
-
     /**
      * Returns a default value of null - admins must select a field set within App Builder
      * @return   return null (no default value)
@@ -29,10 +28,7 @@ public without sharing class LogEntryFieldSetPicklist extends VisualEditor.Dynam
         for (FieldSet fieldSet : fieldSets) {
             String namespacePrefix = String.isEmpty(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
 
-            VisualEditor.DataRow picklistRow = new VisualEditor.DataRow(
-                fieldSet.getLabel(),
-                namespacePrefix + fieldSet.getName()
-            );
+            VisualEditor.DataRow picklistRow = new VisualEditor.DataRow(fieldSet.getLabel(), namespacePrefix + fieldSet.getName());
             picklistRows.addRow(picklistRow);
         }
 
