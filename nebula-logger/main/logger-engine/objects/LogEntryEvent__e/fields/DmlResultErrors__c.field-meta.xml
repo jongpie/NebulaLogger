@@ -8,5 +8,5 @@
     <label>DML Result Errors</label>
     <length>131072</length>
     <type>LongTextArea</type>
-    <visibleLines>5</visibleLines>
+    <visibleLines>8</visibleLines>
 </CustomField>

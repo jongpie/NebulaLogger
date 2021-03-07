@@ -8,5 +8,5 @@
     <label>Related Record JSON</label>
     <length>131072</length>
     <type>LongTextArea</type>
-    <visibleLines>6</visibleLines>
+    <visibleLines>8</visibleLines>
 </CustomField>
