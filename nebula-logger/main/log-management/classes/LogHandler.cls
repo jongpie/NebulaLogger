@@ -5,7 +5,7 @@
 
 /**
  * @group log-management
- * @description Manages setting fields on Log__c before insert & update
+ * @description Manages setting fields on `Log__c` before insert & before update
  */
 public without sharing class LogHandler {
     @testVisible
@@ -20,6 +20,9 @@ public without sharing class LogHandler {
         }
     }
 
+    /**
+     * @description Runs the trigger handler's logic
+     */
     public void execute() {
         List<Log__c> logs = (List<Log__c>) Trigger.new;
         Map<Id, Log__c> oldLogsById = (Map<Id, Log__c>) Trigger.oldMap;

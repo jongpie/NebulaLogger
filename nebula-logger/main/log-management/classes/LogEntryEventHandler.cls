@@ -5,7 +5,7 @@
 
 /**
  * @group log-management
- * @description Subscribes to LogEntryEvent__e platform events and normalizes the data into Log__c and LogEntry__c records
+ * @description Subscribes to `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
 public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();

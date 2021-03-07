@@ -5,9 +5,12 @@
 
 /**
  * @group log-management
- * @description Manages setting fields on LogEntry__c before insert & update
+ * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
 public without sharing class LogEntryHandler {
+    /**
+     * @description Runs the trigger handler's logic
+     */
     public void execute() {
         List<LogEntry__c> logEntries = (List<LogEntry__c>) Trigger.new;
 

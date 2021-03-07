@@ -5,7 +5,7 @@
 
 /**
  * @group log-management
- * @description Batch class used to delete old logs, based on Log__c.LogRetentionDate__c <= :System.today()
+ * @description Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :System.today()`
  * @see LogBatchPurgeScheduler
  */
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
