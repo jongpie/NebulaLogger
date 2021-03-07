@@ -6,7 +6,7 @@
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
     <label>DML Result Errors</label>
-    <length>32768</length>
+    <length>131072</length>
     <type>LongTextArea</type>
     <visibleLines>5</visibleLines>
 </CustomField>

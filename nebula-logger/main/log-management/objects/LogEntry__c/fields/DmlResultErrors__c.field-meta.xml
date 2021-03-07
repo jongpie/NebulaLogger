@@ -3,7 +3,7 @@
     <fullName>DmlResultErrors__c</fullName>
     <externalId>false</externalId>
     <label>DML Result Errors</label>
-    <length>32768</length>
+    <length>131072</length>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>LongTextArea</type>
