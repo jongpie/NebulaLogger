@@ -14,7 +14,7 @@ public without sharing class LogHandler {
     static {
         logStatusByName = new Map<String, LogStatus__mdt>();
         for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
-            if(logStatus.IsActive__c == true) {
+            if (logStatus.IsActive__c == true) {
                 logStatusByName.put(logStatus.MasterLabel, logStatus);
             }
         }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DmlResultType__c</fullName>
+    <externalId>false</externalId>
+    <label>DML Result Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Database.DeleteResult</fullName>
+                <default>false</default>
+                <label>Database.DeleteResult</label>
+            </value>
+            <value>
+                <fullName>Database.MergeResult</fullName>
+                <default>false</default>
+                <label>Database.MergeResult</label>
+            </value>
+            <value>
+                <fullName>Database.SaveResult</fullName>
+                <default>false</default>
+                <label>Database.SaveResult</label>
+            </value>
+            <value>
+                <fullName>Database.UpsertResult.Insert</fullName>
+                <default>false</default>
+                <label>Database.UpsertResult.Insert</label>
+            </value>
+            <value>
+                <fullName>Database.UpsertResult.Update</fullName>
+                <default>false</default>
+                <label>Database.UpsertResult.Update</label>
+            </value>
+            <value>
+                <fullName>Database.UndeleteResult</fullName>
+                <default>false</default>
+                <label>Database.UndeleteResult</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

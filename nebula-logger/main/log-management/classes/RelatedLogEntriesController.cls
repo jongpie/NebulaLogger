@@ -14,7 +14,7 @@ public with sharing class RelatedLogEntriesController {
     private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
     /**
-    * Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
+     * Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
      * @param  recordId        Used to filter LogEntry__c records where RecordId__c == recordId
      * @param  fieldSetName    The API/developer name of the field set
      * @param  rowLimit        The max number of rows to query
@@ -57,13 +57,7 @@ public with sharing class RelatedLogEntriesController {
     }
 
     // Private static helper methods
-    private static List<LogEntry__c> search(
-        Id recordId,
-        String searchTerm,
-        String fieldsClause,
-        String orderByClause,
-        Integer rowLimit
-    ) {
+    private static List<LogEntry__c> search(Id recordId, String searchTerm, String fieldsClause, String orderByClause, Integer rowLimit) {
         searchTerm = '\'*' + String.escapeSingleQuotes(searchTerm) + '*\'';
 
         List<Object> searchTextReplacements = new List<Object>{
@@ -227,11 +221,7 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public Integer totalLogEntriesCount { get; set; }
 
-        private LogEntryQueryResult(
-            FieldSetMetadata fieldSetMetadata,
-            List<LogEntry__c> records,
-            Integer totalLogEntriesCount
-        ) {
+        private LogEntryQueryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records, Integer totalLogEntriesCount) {
             this.fieldSet = fieldSetMetadata;
             this.isAccessible = LOG_ENTRY_SOBJECT_TYPE.getDescribe().isAccessible();
             this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
