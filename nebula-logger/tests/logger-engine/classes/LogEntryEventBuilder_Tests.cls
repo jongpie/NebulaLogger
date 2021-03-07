@@ -153,7 +153,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_delete_result_without_errors() {
+    static void it_should_set_dml_result_fields_for_deleteResult_without_errors() {
         // TODO need to find a way to test DeleteResult with errors
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -174,7 +174,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_delete_result_with_errors() {
+    static void it_should_set_dml_result_fields_for_deleteResult_with_errors() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
 
@@ -215,7 +215,7 @@ private class LogEntryEventBuilder_Tests {
     // }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_successful_save_result() {
+    static void it_should_set_dml_result_fields_for_successful_saveResult() {
         Database.SaveResult saveResult = Database.insert(new Log__c(TransactionId__c = '1234'), false);
         System.assertEquals(true, saveResult.isSuccess());
 
@@ -232,7 +232,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_failed_save_result() {
+    static void it_should_set_dml_result_fields_for_failed_saveResult() {
         Database.SaveResult saveResult = Database.insert(new Account(), false);
         System.assertEquals(false, saveResult.isSuccess());
 
@@ -248,8 +248,54 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DmlResultType__c);
     }
 
+
     @isTest
-    static void it_should_set_dml_result_fields_for_successful_upsert_result_when_insert() {
+    static void it_should_set_dml_result_fields_for_successful_undeleteResult() {
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        delete log;
+
+        Database.UndeleteResult undeleteResult = Database.undelete(log.Id, false);
+        System.assertEquals(true, undeleteResult.isSuccess());
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDmlResult(undeleteResult);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals(null, logEntryEvent.DmlResultErrors__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DmlResultType__c);
+    }
+
+    @isTest
+    static void it_should_set_dml_result_fields_for_failed_undeleteResult() {
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        delete log;
+        // Hard delete to (later) cause an undelete error
+        Database.emptyRecycleBin(log);
+
+        Database.UndeleteResult undeleteResult = Database.undelete(log.Id, false);
+        System.assertEquals(false, undeleteResult.isSuccess());
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDmlResult(undeleteResult);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals(Json.serializePretty(undeleteResult.getErrors()), logEntryEvent.DmlResultErrors__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DmlResultType__c);
+    }
+
+
+    @isTest
+    static void it_should_set_dml_result_fields_for_successful_upsertResult_when_insert() {
         // UpsertResult for a new record insert
         Database.UpsertResult upsertResult = Database.upsert(new Log__c(TransactionId__c = '1234'), false);
         System.assertEquals(true, upsertResult.isSuccess());
@@ -267,7 +313,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_failed_upsert_result_when_insert() {
+    static void it_should_set_dml_result_fields_for_failed_upsertResult_when_insert() {
         // UpsertResult for a new record insert
         Database.UpsertResult upsertResult = Database.upsert(new Account(), false);
         System.assertEquals(false, upsertResult.isSuccess());
@@ -285,7 +331,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_successful_upsert_result_when_update() {
+    static void it_should_set_dml_result_fields_for_successful_upsertResult_when_update() {
         // UpsertResult for an existing record update
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -307,7 +353,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_failed_upsert_result_when_update() {
+    static void it_should_set_dml_result_fields_for_failed_upsertResult_when_update() {
         // UpsertResult for an existing record update
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -333,50 +379,6 @@ private class LogEntryEventBuilder_Tests {
 
         System.assertEquals(Json.serializePretty(upsertResult.getErrors()), logEntryEvent.DmlResultErrors__c);
         System.assertEquals(Database.UpsertResult.class.getName() + '.Update', logEntryEvent.DmlResultType__c);
-    }
-
-    @isTest
-    static void it_should_set_dml_result_fields_for_successful_undelete_result() {
-        Log__c log = new Log__c(TransactionId__c = '1234');
-        insert log;
-        delete log;
-
-        Database.UndeleteResult undeleteResult = Database.undelete(log.Id, false);
-        System.assertEquals(true, undeleteResult.isSuccess());
-
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
-        builder.setDmlResult(undeleteResult);
-        Test.stopTest();
-
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals(null, logEntryEvent.DmlResultErrors__c);
-        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DmlResultType__c);
-    }
-
-    @isTest
-    static void it_should_set_dml_result_fields_for_failed_undelete_result() {
-        Log__c log = new Log__c(TransactionId__c = '1234');
-        insert log;
-        delete log;
-        // Hard delete to (later) cause an undelete error
-        Database.emptyRecycleBin(log);
-
-        Database.UndeleteResult undeleteResult = Database.undelete(log.Id, false);
-        System.assertEquals(false, undeleteResult.isSuccess());
-
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
-        builder.setDmlResult(undeleteResult);
-        Test.stopTest();
-
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals(Json.serializePretty(undeleteResult.getErrors()), logEntryEvent.DmlResultErrors__c);
-        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DmlResultType__c);
     }
 
     @isTest
