@@ -247,7 +247,6 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DmlResultType__c);
     }
 
-
     @isTest
     static void it_should_set_dml_result_fields_for_successful_undeleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
@@ -291,7 +290,6 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Json.serializePretty(undeleteResult.getErrors()), logEntryEvent.DmlResultErrors__c);
         System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DmlResultType__c);
     }
-
 
     @isTest
     static void it_should_set_dml_result_fields_for_successful_upsertResult_when_insert() {
