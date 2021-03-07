@@ -9,11 +9,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>Logger</apexClass>
+        <apexClass>LogMessage</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LogMessage</apexClass>
+        <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -23,11 +23,6 @@
     <description>Provides access to:
   - Generate log entries via Apex, Flow and Process Builder.
   - View shared logs &amp; log entries</description>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LogEntry__c.DmlResultErrors__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.DmlResultType__c</field>
@@ -370,12 +365,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordSObjectType__c</field>
+        <field>LogEntry__c.RecordSObjectTypeNamespace__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordSObjectTypeNamespace__c</field>
+        <field>LogEntry__c.RecordSObjectType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -510,17 +505,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.OrganizationEnvironmentType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.OrganizationId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.OrganizationInstanceName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Log__c.OrganizationEnvironmentType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
