@@ -154,7 +154,6 @@ private class LogEntryEventBuilder_Tests {
 
     @isTest
     static void it_should_set_dml_result_fields_for_deleteResult_without_errors() {
-        // TODO need to find a way to test DeleteResult with errors
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
 
