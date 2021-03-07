@@ -53,7 +53,7 @@ global inherited sharing class FlowRecordLogEntry {
     /**
      * addFlowRecordEntries description
      * @param  flowRecordLogEntries The list of FlowRecordLogEntry instances to save
-     * @return                The current transaction's ID (based on Logger.getTransactionId())
+     * @return                      The current transaction's ID (based on Logger.getTransactionId())
      */
     @InvocableMethod(
         category='Logging'

@@ -80,7 +80,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets the log entry event's message field
+     * @description Sets the log entry event's message field
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -93,7 +93,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets the log entry event's message field
+     * @description Sets the log entry event's message field
      * @param  message The string to use to set the entry's message field
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -118,7 +118,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets the log entry event's exception fields
+     * @description Sets the log entry event's exception fields
      * @param  apexException The instance of an `Exception` to use.
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -237,7 +237,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets the log entry event's record fields
+     * @description Sets the log entry event's record fields
      * @param  record The `SObject` record related to the entry. The JSON of the record is automatically added to the entry
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -262,7 +262,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets the log entry event's record fields
+     * @description Sets the log entry event's record fields
      * @param  recordId The ID of the SObject record related to the entry
      * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -282,7 +282,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets a comma-separate list of strings on the LogEntryEvent__e, which ultimately becomes Topic & TopicAssignment records on Log__c and LogEntry__c
+     * @description Sets a comma-separate list of strings on the LogEntryEvent__e, which ultimately becomes Topic & TopicAssignment records on Log__c and LogEntry__c
      * @param  topics The list of strings to use as topics for the current entry
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -296,7 +296,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Parses the provided stack trace and sets the log entry's origin & stack trace fields
+     * @description Parses the provided stack trace and sets the log entry's origin & stack trace fields
      * @param  stackTraceString The Apex stack trace string to parse
      * @return                  The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -348,7 +348,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Determines if this instance of LogEntryEventBuilder should be saved the next time that Logger.saveLog() is called
+     * @description Determines if this instance of `LogEntryEventBuilder` should be saved the next time that `Logger.saveLog()` is called
      * @return   Boolean
      */
     public Boolean shouldSave() {
@@ -356,7 +356,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
+     * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
      * @return   The `LogEntryEvent__e` record
      */
     public LogEntryEvent__e getLogEntryEvent() {
