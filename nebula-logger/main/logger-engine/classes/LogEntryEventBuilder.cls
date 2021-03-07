@@ -157,7 +157,7 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Sets the log entry event's DML result fields
      * @param  mergeResult The instance of Database.MergeResult to log
-     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @return             The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder setDmlResult(Database.MergeResult mergeResult) {
         if (mergeResult == null) {
@@ -176,7 +176,7 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Sets the log entry event's DML result fields
      * @param  saveResult The instance of Database.SaveResult to log
-     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @return            The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder setDmlResult(Database.SaveResult saveResult) {
         if (saveResult == null) {
@@ -216,7 +216,7 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Sets the log entry event's DML result fields
      * @param  undeleteResult The instance of Database.UndeleteResult to log
-     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @return                The same instance of LogEntryEventBuilder, useful for chaining methods
      */
     global LogEntryEventBuilder setDmlResult(Database.UndeleteResult undeleteResult) {
         if (undeleteResult == null) {
