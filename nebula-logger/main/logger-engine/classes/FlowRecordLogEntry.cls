@@ -5,7 +5,7 @@
 
 /**
  * @group logger-engine
- * @description Handles adding new log entries in Flow for a particular SObject record
+ * @description Handles adding new log entries in Flow for a particular `SObject` record
  * @see FlowLogEntry
  * @see Logger
  * @see LogEntryEventBuilder
@@ -13,37 +13,37 @@
 global inherited sharing class FlowRecordLogEntry {
     /**
      * @description The name of the Flow creating the log entry.
-     * Due to Salesforce limitations, this cannot be automatically determined.
+     *   Due to Salesforce limitations, this cannot be automatically determined
      */
     @InvocableVariable(required=true label='Flow or Process Builder Name')
     global String flowName;
 
     /**
-     * @description The message to log.
+     * @description The message to log
      */
     @InvocableVariable(required=true label='Log Entry Message')
     global String message;
 
     /**
-     * @description The record to relate to this log entry. The record's JSON will be automatically added to the entry.
+     * @description The record to relate to this log entry - the record's JSON is automatically added to the log entry
      */
     @InvocableVariable(required=true label='Record')
     global SObject record;
 
     /**
-     * @description Optionally choose to save any pending log entries.
+     * @description Optionally choose to save any pending log entries
      */
     @InvocableVariable(required=false label='(Optional) Save Log')
     global Boolean saveLog = true;
 
     /**
-     * @description Optionally specify a logging level. The default is 'DEBUG'
+     * @description Optionally specify a logging level - the default is 'DEBUG'
      */
     @InvocableVariable(required=false label='(Optional) Logging Level')
     global String loggingLevelName = 'DEBUG';
 
     /**
-     * @description Optionally provide a list of topics to dynamically assign to the log entry.
+     * @description Optionally provide a list of topics to dynamically assign to the log entry
      */
     @InvocableVariable(required=false label='(Optional) Topics')
     public List<String> topics;
@@ -53,7 +53,7 @@ global inherited sharing class FlowRecordLogEntry {
     /**
      * addFlowRecordEntries description
      * @param  flowRecordLogEntries The list of FlowRecordLogEntry instances to save
-     * @return                      The current transaction's ID (based on Logger.getTransactionId())
+     * @return                      The current transaction's ID (based on `Logger.getTransactionId()`)
      */
     @InvocableMethod(
         category='Logging'

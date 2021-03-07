@@ -13,7 +13,7 @@
 global inherited sharing class FlowLogEntry {
     /**
      * @description The name of the Flow creating the log entry.
-     * Due to Salesforce limitations, this cannot be automatically determined.
+     *   Due to Salesforce limitations, this cannot be automatically determined.
      */
     @InvocableVariable(required=true label='Flow or Process Builder Name')
     global String flowName;
@@ -31,19 +31,19 @@ global inherited sharing class FlowLogEntry {
     global Boolean saveLog = true;
 
     /**
-     * @description Optionally relate the log entry to a particular record ID.
+     * @description Optionally relate the log entry to a particular record ID
      */
     @InvocableVariable(required=false label='(Optional) Record ID')
     global Id recordId;
 
     /**
-     * @description Optionally specify a logging level. The default is 'DEBUG'
+     * @description Optionally specify a logging level - the default is 'DEBUG'
      */
     @InvocableVariable(required=false label='(Optional) Logging Level')
     global String loggingLevelName = 'DEBUG';
 
     /**
-     * @description Optionally provide a list of topics to dynamically assign to the log entry.
+     * @description Optionally provide a list of topics to dynamically assign to the log entry
      */
     @InvocableVariable(required=false label='(Optional) Topics')
     public List<String> topics;
@@ -53,7 +53,7 @@ global inherited sharing class FlowLogEntry {
     /**
      * addFlowEntries description
      * @param  flowLogEntries The list of FlowLogEntry instances to save
-     * @return                The current transaction's ID (based on Logger.getTransactionId())
+     * @return                The current transaction's ID (based on `Logger.getTransactionId()`)
      */
     @InvocableMethod(category='Logging' label='Add Log Entry' description='Creates a log entry for a flow or process builder')
     global static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {

@@ -2935,7 +2935,7 @@ global with sharing class Logger {
      */
     global static LoggingLevel getLoggingLevel(String loggingLevelName) {
         if (loggingLevelName != null) {
-            loggingLevelName = loggingLevelName..trim().toUpperCase();
+            loggingLevelName = loggingLevelName.trim().toUpperCase();
         }
 
         switch on loggingLevelName {
