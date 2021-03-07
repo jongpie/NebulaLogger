@@ -89,7 +89,7 @@ global inherited sharing class FlowLogEntry {
         // When there's a mismatch, Salesforce throws an error:
         // FLOW_ELEMENT_ERROR The number of results does not match the number of interviews that were executed in a single bulk execution request.|FlowActionCall
         List<String> transactionIds = new List<String>();
-        for (Integer i = 0; i < flowRecordLogEntries.size(); i++) {
+        for (Integer i = 0; i < flowLogEntries.size(); i++) {
             transactionIds.add(Logger.getTransactionId());
         }
         return transactionIds;
