@@ -560,7 +560,7 @@ global with sharing class Logger {
     }
 
     // INFO logging level methods
-    global static LogEntryEventBuilder info(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
+    public static LogEntryEventBuilder info(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
         return info().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
     }
 
@@ -568,7 +568,7 @@ global with sharing class Logger {
         return info().setMessage(logMessage).setDmlResult(deleteResult);
     }
 
-    global static LogEntryEventBuilder info(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
+    public static LogEntryEventBuilder info(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
         return info().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
     }
 
@@ -576,7 +576,7 @@ global with sharing class Logger {
         return info().setMessage(logMessage).setDmlResult(mergeResult);
     }
 
-    global static LogEntryEventBuilder info(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
+    public static LogEntryEventBuilder info(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
         return info().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
     }
 
@@ -584,7 +584,7 @@ global with sharing class Logger {
         return info().setMessage(logMessage).setDmlResult(saveResult);
     }
 
-    global static LogEntryEventBuilder info(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
+    public static LogEntryEventBuilder info(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
         return info().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
     }
 
@@ -592,7 +592,7 @@ global with sharing class Logger {
         return info().setMessage(logMessage).setDmlResult(undeleteResult);
     }
 
-    global static LogEntryEventBuilder info(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
+    public static LogEntryEventBuilder info(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
         return info().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
     }
 
@@ -689,7 +689,7 @@ global with sharing class Logger {
     }
 
     // DEBUG log level methods
-    global static LogEntryEventBuilder debug(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
+    public static LogEntryEventBuilder debug(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
         return debug().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
     }
 
@@ -697,7 +697,7 @@ global with sharing class Logger {
         return debug().setMessage(logMessage).setDmlResult(deleteResult);
     }
 
-    global static LogEntryEventBuilder debug(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
+    public static LogEntryEventBuilder debug(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
         return debug().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
     }
 
@@ -705,7 +705,7 @@ global with sharing class Logger {
         return debug().setMessage(logMessage).setDmlResult(mergeResult);
     }
 
-    global static LogEntryEventBuilder debug(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
+    public static LogEntryEventBuilder debug(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
         return debug().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
     }
 
@@ -713,7 +713,7 @@ global with sharing class Logger {
         return debug().setMessage(logMessage).setDmlResult(saveResult);
     }
 
-    global static LogEntryEventBuilder debug(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
+    public static LogEntryEventBuilder debug(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
         return debug().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
     }
 
@@ -721,7 +721,7 @@ global with sharing class Logger {
         return debug().setMessage(logMessage).setDmlResult(undeleteResult);
     }
 
-    global static LogEntryEventBuilder debug(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
+    public static LogEntryEventBuilder debug(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
         return debug().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
     }
 
@@ -818,7 +818,7 @@ global with sharing class Logger {
     }
 
     // FINE log level methods
-    global static LogEntryEventBuilder fine(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
+    public static LogEntryEventBuilder fine(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
         return fine().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
     }
 
@@ -826,7 +826,7 @@ global with sharing class Logger {
         return fine().setMessage(logMessage).setDmlResult(deleteResult);
     }
 
-    global static LogEntryEventBuilder fine(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
+    public static LogEntryEventBuilder fine(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
         return fine().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
     }
 
@@ -834,7 +834,7 @@ global with sharing class Logger {
         return fine().setMessage(logMessage).setDmlResult(mergeResult);
     }
 
-    global static LogEntryEventBuilder fine(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
+    public static LogEntryEventBuilder fine(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
         return fine().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
     }
 
@@ -842,7 +842,7 @@ global with sharing class Logger {
         return fine().setMessage(logMessage).setDmlResult(saveResult);
     }
 
-    global static LogEntryEventBuilder fine(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
+    public static LogEntryEventBuilder fine(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
         return fine().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
     }
 
@@ -850,7 +850,7 @@ global with sharing class Logger {
         return fine().setMessage(logMessage).setDmlResult(undeleteResult);
     }
 
-    global static LogEntryEventBuilder fine(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
+    public static LogEntryEventBuilder fine(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
         return fine().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
     }
 
@@ -947,7 +947,7 @@ global with sharing class Logger {
     }
 
     // FINER log level methods
-    global static LogEntryEventBuilder finer(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
+    public static LogEntryEventBuilder finer(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
         return finer().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
     }
 
@@ -955,7 +955,7 @@ global with sharing class Logger {
         return finer().setMessage(logMessage).setDmlResult(deleteResult);
     }
 
-    global static LogEntryEventBuilder finer(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
+    public static LogEntryEventBuilder finer(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
         return finer().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
     }
 
@@ -963,7 +963,7 @@ global with sharing class Logger {
         return finer().setMessage(logMessage).setDmlResult(mergeResult);
     }
 
-    global static LogEntryEventBuilder finer(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
+    public static LogEntryEventBuilder finer(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
         return finer().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
     }
 
@@ -971,7 +971,7 @@ global with sharing class Logger {
         return finer().setMessage(logMessage).setDmlResult(saveResult);
     }
 
-    global static LogEntryEventBuilder finer(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
+    public static LogEntryEventBuilder finer(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
         return finer().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
     }
 
@@ -979,7 +979,7 @@ global with sharing class Logger {
         return finer().setMessage(logMessage).setDmlResult(undeleteResult);
     }
 
-    global static LogEntryEventBuilder finer(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
+    public static LogEntryEventBuilder finer(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
         return finer().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
     }
 
@@ -1076,7 +1076,7 @@ global with sharing class Logger {
     }
 
     // FINEST log level methods
-    global static LogEntryEventBuilder finest(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
+    public static LogEntryEventBuilder finest(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
         return finest().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
     }
 
@@ -1084,7 +1084,7 @@ global with sharing class Logger {
         return finest().setMessage(logMessage).setDmlResult(deleteResult);
     }
 
-    global static LogEntryEventBuilder finest(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
+    public static LogEntryEventBuilder finest(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
         return finest().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
     }
 
@@ -1092,7 +1092,7 @@ global with sharing class Logger {
         return finest().setMessage(logMessage).setDmlResult(mergeResult);
     }
 
-    global static LogEntryEventBuilder finest(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
+    public static LogEntryEventBuilder finest(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
         return finest().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
     }
 
@@ -1100,7 +1100,7 @@ global with sharing class Logger {
         return finest().setMessage(logMessage).setDmlResult(saveResult);
     }
 
-    global static LogEntryEventBuilder finest(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
+    public static LogEntryEventBuilder finest(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
         return finest().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
     }
 
@@ -1108,7 +1108,7 @@ global with sharing class Logger {
         return finest().setMessage(logMessage).setDmlResult(undeleteResult);
     }
 
-    global static LogEntryEventBuilder finest(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
+    public static LogEntryEventBuilder finest(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
         return finest().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
     }
 
