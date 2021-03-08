@@ -302,7 +302,7 @@ private class LogEntryEventHandler_Tests {
             OriginType__c = 'Apex',
             ProfileId__c = currentUser.ProfileId,
             RecordId__c = currentUser.Id,
-            RecordJson__c = Json.serializePretty(currentUser),
+            RecordJson__c = JSON.serializePretty(currentUser),
             RecordSObjectClassification__c = 'Standard Object',
             RecordSObjectType__c = 'User',
             SessionId__c = null,

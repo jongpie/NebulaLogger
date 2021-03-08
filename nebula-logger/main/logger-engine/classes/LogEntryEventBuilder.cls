@@ -150,7 +150,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(deleteResult);
+        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(deleteResult);
         this.logEntryEvent.DmlResultType__c = Database.DeleteResult.class.getName();
 
         return this.setRecordId(deleteResult.getId());
@@ -166,7 +166,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(mergeResult);
+        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(mergeResult);
         this.logEntryEvent.DmlResultType__c = Database.MergeResult.class.getName();
 
         return this.setRecordId(mergeResult.getId());
@@ -182,7 +182,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(saveResult);
+        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(saveResult);
         this.logEntryEvent.DmlResultType__c = Database.SaveResult.class.getName();
 
         return this.setRecordId(saveResult.getId());
@@ -200,7 +200,7 @@ global with sharing class LogEntryEventBuilder {
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
-        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(upsertResult);
+        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(upsertResult);
         this.logEntryEvent.DmlResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
         return this.setRecordId(upsertResult.getId());
@@ -216,7 +216,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(undeleteResult);
+        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(undeleteResult);
         this.logEntryEvent.DmlResultType__c = Database.UndeleteResult.class.getName();
 
         return this.setRecordId(undeleteResult.getId());
@@ -241,7 +241,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
 
-        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, Json.serializePretty(record));
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(record));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
         return this;
@@ -548,7 +548,7 @@ global with sharing class LogEntryEventBuilder {
 
     // Private static methods
     private static String getApiVersion() {
-        String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
+        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
     }
 

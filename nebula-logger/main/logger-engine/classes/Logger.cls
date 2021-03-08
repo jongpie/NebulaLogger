@@ -3112,7 +3112,7 @@ global with sharing class Logger {
 
             Boolean allOrNone = true;
             RestSaveRequest saveRequest = new RestSaveRequest(records, allOrNone);
-            request.setBody(Json.serialize(saveRequest));
+            request.setBody(JSON.serialize(saveRequest));
 
             HttpResponse response = new Http().send(request);
             this.validateResponse(response);
