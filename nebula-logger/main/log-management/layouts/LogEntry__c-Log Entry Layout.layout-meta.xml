@@ -104,7 +104,7 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Databsae Result</label>
+        <label>Database Result</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
