@@ -150,11 +150,8 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(deleteResult);
         this.logEntryEvent.DmlResultType__c = Database.DeleteResult.class.getName();
-
-        if (deleteResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(deleteResult.getErrors());
-        }
 
         return this.setRecordId(deleteResult.getId());
     }
@@ -169,11 +166,8 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(mergeResult);
         this.logEntryEvent.DmlResultType__c = Database.MergeResult.class.getName();
-
-        if (mergeResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(mergeResult.getErrors());
-        }
 
         return this.setRecordId(mergeResult.getId());
     }
@@ -188,11 +182,8 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(saveResult);
         this.logEntryEvent.DmlResultType__c = Database.SaveResult.class.getName();
-
-        if (saveResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(saveResult.getErrors());
-        }
 
         return this.setRecordId(saveResult.getId());
     }
@@ -209,11 +200,8 @@ global with sharing class LogEntryEventBuilder {
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
+        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(upsertResult);
         this.logEntryEvent.DmlResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
-
-        if (upsertResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(upsertResult.getErrors());
-        }
 
         return this.setRecordId(upsertResult.getId());
     }
@@ -228,10 +216,8 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DmlResultJson__c = Json.serializePretty(undeleteResult);
         this.logEntryEvent.DmlResultType__c = Database.UndeleteResult.class.getName();
-        if (undeleteResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(undeleteResult.getErrors());
-        }
 
         return this.setRecordId(undeleteResult.getId());
     }
