@@ -104,8 +104,8 @@ public without sharing class LogEntryEventHandler {
                 : logEntryEvent.Timestamp__c;
 
             LogEntry__c logEntry = new LogEntry__c(
-                DmlResultJson__c = logEntryEvent.DmlResultJson__c,
-                DmlResultType__c = logEntryEvent.DmlResultType__c,
+                DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
+                DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,

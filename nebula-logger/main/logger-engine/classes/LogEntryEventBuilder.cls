@@ -145,13 +145,13 @@ global with sharing class LogEntryEventBuilder {
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.DeleteResult deleteResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
         if (deleteResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(deleteResult);
-        this.logEntryEvent.DmlResultType__c = Database.DeleteResult.class.getName();
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
         return this.setRecordId(deleteResult.getId());
     }
@@ -161,13 +161,13 @@ global with sharing class LogEntryEventBuilder {
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.MergeResult mergeResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
         if (mergeResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(mergeResult);
-        this.logEntryEvent.DmlResultType__c = Database.MergeResult.class.getName();
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
         return this.setRecordId(mergeResult.getId());
     }
@@ -177,13 +177,13 @@ global with sharing class LogEntryEventBuilder {
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.SaveResult saveResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
         if (saveResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(saveResult);
-        this.logEntryEvent.DmlResultType__c = Database.SaveResult.class.getName();
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
         return this.setRecordId(saveResult.getId());
     }
@@ -193,15 +193,15 @@ global with sharing class LogEntryEventBuilder {
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.UpsertResult upsertResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
         if (upsertResult == null) {
             return this;
         }
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
-        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(upsertResult);
-        this.logEntryEvent.DmlResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
         return this.setRecordId(upsertResult.getId());
     }
@@ -211,13 +211,13 @@ global with sharing class LogEntryEventBuilder {
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.UndeleteResult undeleteResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
         if (undeleteResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DmlResultJson__c = JSON.serializePretty(undeleteResult);
-        this.logEntryEvent.DmlResultType__c = Database.UndeleteResult.class.getName();
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
         return this.setRecordId(undeleteResult.getId());
     }

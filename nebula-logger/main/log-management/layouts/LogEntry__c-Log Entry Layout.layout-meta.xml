@@ -104,15 +104,15 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>DML Result</label>
+        <label>Databsae Result</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>DmlResultType__c</field>
+                <field>DatabaseResultType__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>DmlResultJson__c</field>
+                <field>DatabaseResultJson__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

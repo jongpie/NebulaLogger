@@ -214,7 +214,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
-        return error().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
+        return error().setMessage(logMessage).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -224,7 +224,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(LogMessage logMessage, Database.DeleteResult deleteResult) {
-        return error().setMessage(logMessage).setDmlResult(deleteResult);
+        return error().setMessage(logMessage).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -235,7 +235,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
-        return error().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
+        return error().setMessage(logMessage).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -245,7 +245,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(LogMessage logMessage, Database.MergeResult mergeResult) {
-        return error().setMessage(logMessage).setDmlResult(mergeResult);
+        return error().setMessage(logMessage).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -256,7 +256,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
-        return error().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
+        return error().setMessage(logMessage).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -266,7 +266,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(LogMessage logMessage, Database.SaveResult saveResult) {
-        return error().setMessage(logMessage).setDmlResult(saveResult);
+        return error().setMessage(logMessage).setDatabaseResult(saveResult);
     }
 
     /**
@@ -277,7 +277,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return error().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
+        return error().setMessage(logMessage).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -287,7 +287,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(LogMessage logMessage, Database.UndeleteResult undeleteResult) {
-        return error().setMessage(logMessage).setDmlResult(undeleteResult);
+        return error().setMessage(logMessage).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -298,7 +298,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
-        return error().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
+        return error().setMessage(logMessage).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -308,7 +308,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(LogMessage logMessage, Database.UpsertResult upsertResult) {
-        return error().setMessage(logMessage).setDmlResult(upsertResult);
+        return error().setMessage(logMessage).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -447,7 +447,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(String message, Database.DeleteResult deleteResult, List<String> topics) {
-        return error().setMessage(message).setDmlResult(deleteResult).setTopics(topics);
+        return error().setMessage(message).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -457,7 +457,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Database.DeleteResult deleteResult) {
-        return error().setMessage(message).setDmlResult(deleteResult);
+        return error().setMessage(message).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -468,7 +468,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(String message, Database.MergeResult mergeResult, List<String> topics) {
-        return error().setMessage(message).setDmlResult(mergeResult).setTopics(topics);
+        return error().setMessage(message).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -478,7 +478,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Database.MergeResult mergeResult) {
-        return error().setMessage(message).setDmlResult(mergeResult);
+        return error().setMessage(message).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -489,7 +489,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(String message, Database.SaveResult saveResult, List<String> topics) {
-        return error().setMessage(message).setDmlResult(saveResult).setTopics(topics);
+        return error().setMessage(message).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -499,7 +499,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Database.SaveResult saveResult) {
-        return error().setMessage(message).setDmlResult(saveResult);
+        return error().setMessage(message).setDatabaseResult(saveResult);
     }
 
     /**
@@ -510,7 +510,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(String message, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return error().setMessage(message).setDmlResult(undeleteResult).setTopics(topics);
+        return error().setMessage(message).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -520,7 +520,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Database.UndeleteResult undeleteResult) {
-        return error().setMessage(message).setDmlResult(undeleteResult);
+        return error().setMessage(message).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -531,7 +531,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder error(String message, Database.UpsertResult upsertResult, List<String> topics) {
-        return error().setMessage(message).setDmlResult(upsertResult).setTopics(topics);
+        return error().setMessage(message).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -541,7 +541,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Database.UpsertResult upsertResult) {
-        return error().setMessage(message).setDmlResult(upsertResult);
+        return error().setMessage(message).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -681,7 +681,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
-        return warn().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
+        return warn().setMessage(logMessage).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -691,7 +691,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Database.DeleteResult deleteResult) {
-        return warn().setMessage(logMessage).setDmlResult(deleteResult);
+        return warn().setMessage(logMessage).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -702,7 +702,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
-        return warn().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
+        return warn().setMessage(logMessage).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -712,7 +712,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Database.MergeResult mergeResult) {
-        return warn().setMessage(logMessage).setDmlResult(mergeResult);
+        return warn().setMessage(logMessage).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -723,7 +723,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
-        return warn().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
+        return warn().setMessage(logMessage).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -733,7 +733,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Database.SaveResult saveResult) {
-        return warn().setMessage(logMessage).setDmlResult(saveResult);
+        return warn().setMessage(logMessage).setDatabaseResult(saveResult);
     }
 
     /**
@@ -744,7 +744,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return warn().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
+        return warn().setMessage(logMessage).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -754,7 +754,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Database.UndeleteResult undeleteResult) {
-        return warn().setMessage(logMessage).setDmlResult(undeleteResult);
+        return warn().setMessage(logMessage).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -765,7 +765,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
-        return warn().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
+        return warn().setMessage(logMessage).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -775,7 +775,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Database.UpsertResult upsertResult) {
-        return warn().setMessage(logMessage).setDmlResult(upsertResult);
+        return warn().setMessage(logMessage).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -914,7 +914,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(String message, Database.DeleteResult deleteResult, List<String> topics) {
-        return warn().setMessage(message).setDmlResult(deleteResult).setTopics(topics);
+        return warn().setMessage(message).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -924,7 +924,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Database.DeleteResult deleteResult) {
-        return warn().setMessage(message).setDmlResult(deleteResult);
+        return warn().setMessage(message).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -935,7 +935,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(String message, Database.MergeResult mergeResult, List<String> topics) {
-        return warn().setMessage(message).setDmlResult(mergeResult).setTopics(topics);
+        return warn().setMessage(message).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -945,7 +945,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Database.MergeResult mergeResult) {
-        return warn().setMessage(message).setDmlResult(mergeResult);
+        return warn().setMessage(message).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -956,7 +956,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(String message, Database.SaveResult saveResult, List<String> topics) {
-        return warn().setMessage(message).setDmlResult(saveResult).setTopics(topics);
+        return warn().setMessage(message).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -966,7 +966,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Database.SaveResult saveResult) {
-        return warn().setMessage(message).setDmlResult(saveResult);
+        return warn().setMessage(message).setDatabaseResult(saveResult);
     }
 
     /**
@@ -977,7 +977,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(String message, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return warn().setMessage(message).setDmlResult(undeleteResult).setTopics(topics);
+        return warn().setMessage(message).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -987,7 +987,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Database.UndeleteResult undeleteResult) {
-        return warn().setMessage(message).setDmlResult(undeleteResult);
+        return warn().setMessage(message).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -998,7 +998,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder warn(String message, Database.UpsertResult upsertResult, List<String> topics) {
-        return warn().setMessage(message).setDmlResult(upsertResult).setTopics(topics);
+        return warn().setMessage(message).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -1008,7 +1008,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Database.UpsertResult upsertResult) {
-        return warn().setMessage(message).setDmlResult(upsertResult);
+        return warn().setMessage(message).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -1148,7 +1148,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
-        return info().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
+        return info().setMessage(logMessage).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -1158,7 +1158,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(LogMessage logMessage, Database.DeleteResult deleteResult) {
-        return info().setMessage(logMessage).setDmlResult(deleteResult);
+        return info().setMessage(logMessage).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -1169,7 +1169,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
-        return info().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
+        return info().setMessage(logMessage).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -1179,7 +1179,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(LogMessage logMessage, Database.MergeResult mergeResult) {
-        return info().setMessage(logMessage).setDmlResult(mergeResult);
+        return info().setMessage(logMessage).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -1190,7 +1190,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
-        return info().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
+        return info().setMessage(logMessage).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -1200,7 +1200,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(LogMessage logMessage, Database.SaveResult saveResult) {
-        return info().setMessage(logMessage).setDmlResult(saveResult);
+        return info().setMessage(logMessage).setDatabaseResult(saveResult);
     }
 
     /**
@@ -1211,7 +1211,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return info().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
+        return info().setMessage(logMessage).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -1221,7 +1221,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(LogMessage logMessage, Database.UndeleteResult undeleteResult) {
-        return info().setMessage(logMessage).setDmlResult(undeleteResult);
+        return info().setMessage(logMessage).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -1232,7 +1232,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
-        return info().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
+        return info().setMessage(logMessage).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -1242,7 +1242,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(LogMessage logMessage, Database.UpsertResult upsertResult) {
-        return info().setMessage(logMessage).setDmlResult(upsertResult);
+        return info().setMessage(logMessage).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -1314,7 +1314,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(String message, Database.DeleteResult deleteResult, List<String> topics) {
-        return info().setMessage(message).setDmlResult(deleteResult).setTopics(topics);
+        return info().setMessage(message).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -1324,7 +1324,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(String message, Database.DeleteResult deleteResult) {
-        return info().setMessage(message).setDmlResult(deleteResult);
+        return info().setMessage(message).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -1335,7 +1335,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(String message, Database.MergeResult mergeResult, List<String> topics) {
-        return info().setMessage(message).setDmlResult(mergeResult).setTopics(topics);
+        return info().setMessage(message).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -1345,7 +1345,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(String message, Database.MergeResult mergeResult) {
-        return info().setMessage(message).setDmlResult(mergeResult);
+        return info().setMessage(message).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -1356,7 +1356,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(String message, Database.SaveResult saveResult, List<String> topics) {
-        return info().setMessage(message).setDmlResult(saveResult).setTopics(topics);
+        return info().setMessage(message).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -1366,7 +1366,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(String message, Database.SaveResult saveResult) {
-        return info().setMessage(message).setDmlResult(saveResult);
+        return info().setMessage(message).setDatabaseResult(saveResult);
     }
 
     /**
@@ -1377,7 +1377,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(String message, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return info().setMessage(message).setDmlResult(undeleteResult).setTopics(topics);
+        return info().setMessage(message).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -1387,7 +1387,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(String message, Database.UndeleteResult undeleteResult) {
-        return info().setMessage(message).setDmlResult(undeleteResult);
+        return info().setMessage(message).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -1398,7 +1398,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder info(String message, Database.UpsertResult upsertResult, List<String> topics) {
-        return info().setMessage(message).setDmlResult(upsertResult).setTopics(topics);
+        return info().setMessage(message).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -1408,7 +1408,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(String message, Database.UpsertResult upsertResult) {
-        return info().setMessage(message).setDmlResult(upsertResult);
+        return info().setMessage(message).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -1481,7 +1481,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
-        return debug().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
+        return debug().setMessage(logMessage).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -1491,7 +1491,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(LogMessage logMessage, Database.DeleteResult deleteResult) {
-        return debug().setMessage(logMessage).setDmlResult(deleteResult);
+        return debug().setMessage(logMessage).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -1502,7 +1502,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
-        return debug().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
+        return debug().setMessage(logMessage).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -1512,7 +1512,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(LogMessage logMessage, Database.MergeResult mergeResult) {
-        return debug().setMessage(logMessage).setDmlResult(mergeResult);
+        return debug().setMessage(logMessage).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -1523,7 +1523,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
-        return debug().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
+        return debug().setMessage(logMessage).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -1533,7 +1533,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(LogMessage logMessage, Database.SaveResult saveResult) {
-        return debug().setMessage(logMessage).setDmlResult(saveResult);
+        return debug().setMessage(logMessage).setDatabaseResult(saveResult);
     }
 
     /**
@@ -1544,7 +1544,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return debug().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
+        return debug().setMessage(logMessage).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -1554,7 +1554,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(LogMessage logMessage, Database.UndeleteResult undeleteResult) {
-        return debug().setMessage(logMessage).setDmlResult(undeleteResult);
+        return debug().setMessage(logMessage).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -1565,7 +1565,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
-        return debug().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
+        return debug().setMessage(logMessage).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -1575,7 +1575,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(LogMessage logMessage, Database.UpsertResult upsertResult) {
-        return debug().setMessage(logMessage).setDmlResult(upsertResult);
+        return debug().setMessage(logMessage).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -1647,7 +1647,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(String message, Database.DeleteResult deleteResult, List<String> topics) {
-        return debug().setMessage(message).setDmlResult(deleteResult).setTopics(topics);
+        return debug().setMessage(message).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -1657,7 +1657,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(String message, Database.DeleteResult deleteResult) {
-        return debug().setMessage(message).setDmlResult(deleteResult);
+        return debug().setMessage(message).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -1668,7 +1668,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(String message, Database.MergeResult mergeResult, List<String> topics) {
-        return debug().setMessage(message).setDmlResult(mergeResult).setTopics(topics);
+        return debug().setMessage(message).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -1678,7 +1678,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(String message, Database.MergeResult mergeResult) {
-        return debug().setMessage(message).setDmlResult(mergeResult);
+        return debug().setMessage(message).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -1689,7 +1689,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(String message, Database.SaveResult saveResult, List<String> topics) {
-        return debug().setMessage(message).setDmlResult(saveResult).setTopics(topics);
+        return debug().setMessage(message).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -1699,7 +1699,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(String message, Database.SaveResult saveResult) {
-        return debug().setMessage(message).setDmlResult(saveResult);
+        return debug().setMessage(message).setDatabaseResult(saveResult);
     }
 
     /**
@@ -1710,7 +1710,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(String message, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return debug().setMessage(message).setDmlResult(undeleteResult).setTopics(topics);
+        return debug().setMessage(message).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -1720,7 +1720,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(String message, Database.UndeleteResult undeleteResult) {
-        return debug().setMessage(message).setDmlResult(undeleteResult);
+        return debug().setMessage(message).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -1731,7 +1731,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder debug(String message, Database.UpsertResult upsertResult, List<String> topics) {
-        return debug().setMessage(message).setDmlResult(upsertResult).setTopics(topics);
+        return debug().setMessage(message).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -1741,7 +1741,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(String message, Database.UpsertResult upsertResult) {
-        return debug().setMessage(message).setDmlResult(upsertResult);
+        return debug().setMessage(message).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -1814,7 +1814,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
-        return fine().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
+        return fine().setMessage(logMessage).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -1824,7 +1824,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(LogMessage logMessage, Database.DeleteResult deleteResult) {
-        return fine().setMessage(logMessage).setDmlResult(deleteResult);
+        return fine().setMessage(logMessage).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -1835,7 +1835,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
-        return fine().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
+        return fine().setMessage(logMessage).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -1845,7 +1845,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(LogMessage logMessage, Database.MergeResult mergeResult) {
-        return fine().setMessage(logMessage).setDmlResult(mergeResult);
+        return fine().setMessage(logMessage).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -1856,7 +1856,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
-        return fine().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
+        return fine().setMessage(logMessage).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -1866,7 +1866,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(LogMessage logMessage, Database.SaveResult saveResult) {
-        return fine().setMessage(logMessage).setDmlResult(saveResult);
+        return fine().setMessage(logMessage).setDatabaseResult(saveResult);
     }
 
     /**
@@ -1877,7 +1877,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return fine().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
+        return fine().setMessage(logMessage).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -1887,7 +1887,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(LogMessage logMessage, Database.UndeleteResult undeleteResult) {
-        return fine().setMessage(logMessage).setDmlResult(undeleteResult);
+        return fine().setMessage(logMessage).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -1898,7 +1898,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
-        return fine().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
+        return fine().setMessage(logMessage).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -1908,7 +1908,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(LogMessage logMessage, Database.UpsertResult upsertResult) {
-        return fine().setMessage(logMessage).setDmlResult(upsertResult);
+        return fine().setMessage(logMessage).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -1980,7 +1980,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(String message, Database.DeleteResult deleteResult, List<String> topics) {
-        return fine().setMessage(message).setDmlResult(deleteResult).setTopics(topics);
+        return fine().setMessage(message).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -1990,7 +1990,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(String message, Database.DeleteResult deleteResult) {
-        return fine().setMessage(message).setDmlResult(deleteResult);
+        return fine().setMessage(message).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -2001,7 +2001,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(String message, Database.MergeResult mergeResult, List<String> topics) {
-        return fine().setMessage(message).setDmlResult(mergeResult).setTopics(topics);
+        return fine().setMessage(message).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -2011,7 +2011,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(String message, Database.MergeResult mergeResult) {
-        return fine().setMessage(message).setDmlResult(mergeResult);
+        return fine().setMessage(message).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -2022,7 +2022,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(String message, Database.SaveResult saveResult, List<String> topics) {
-        return fine().setMessage(message).setDmlResult(saveResult).setTopics(topics);
+        return fine().setMessage(message).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -2032,7 +2032,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(String message, Database.SaveResult saveResult) {
-        return fine().setMessage(message).setDmlResult(saveResult);
+        return fine().setMessage(message).setDatabaseResult(saveResult);
     }
 
     /**
@@ -2043,7 +2043,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(String message, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return fine().setMessage(message).setDmlResult(undeleteResult).setTopics(topics);
+        return fine().setMessage(message).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -2053,7 +2053,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(String message, Database.UndeleteResult undeleteResult) {
-        return fine().setMessage(message).setDmlResult(undeleteResult);
+        return fine().setMessage(message).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -2064,7 +2064,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder fine(String message, Database.UpsertResult upsertResult, List<String> topics) {
-        return fine().setMessage(message).setDmlResult(upsertResult).setTopics(topics);
+        return fine().setMessage(message).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -2074,7 +2074,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(String message, Database.UpsertResult upsertResult) {
-        return fine().setMessage(message).setDmlResult(upsertResult);
+        return fine().setMessage(message).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -2147,7 +2147,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
-        return finer().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
+        return finer().setMessage(logMessage).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -2157,7 +2157,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(LogMessage logMessage, Database.DeleteResult deleteResult) {
-        return finer().setMessage(logMessage).setDmlResult(deleteResult);
+        return finer().setMessage(logMessage).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -2168,7 +2168,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
-        return finer().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
+        return finer().setMessage(logMessage).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -2178,7 +2178,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(LogMessage logMessage, Database.MergeResult mergeResult) {
-        return finer().setMessage(logMessage).setDmlResult(mergeResult);
+        return finer().setMessage(logMessage).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -2189,7 +2189,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
-        return finer().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
+        return finer().setMessage(logMessage).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -2199,7 +2199,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(LogMessage logMessage, Database.SaveResult saveResult) {
-        return finer().setMessage(logMessage).setDmlResult(saveResult);
+        return finer().setMessage(logMessage).setDatabaseResult(saveResult);
     }
 
     /**
@@ -2210,7 +2210,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return finer().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
+        return finer().setMessage(logMessage).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -2220,7 +2220,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(LogMessage logMessage, Database.UndeleteResult undeleteResult) {
-        return finer().setMessage(logMessage).setDmlResult(undeleteResult);
+        return finer().setMessage(logMessage).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -2231,7 +2231,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
-        return finer().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
+        return finer().setMessage(logMessage).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -2241,7 +2241,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(LogMessage logMessage, Database.UpsertResult upsertResult) {
-        return finer().setMessage(logMessage).setDmlResult(upsertResult);
+        return finer().setMessage(logMessage).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -2313,7 +2313,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(String message, Database.DeleteResult deleteResult, List<String> topics) {
-        return finer().setMessage(message).setDmlResult(deleteResult).setTopics(topics);
+        return finer().setMessage(message).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -2323,7 +2323,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(String message, Database.DeleteResult deleteResult) {
-        return finer().setMessage(message).setDmlResult(deleteResult);
+        return finer().setMessage(message).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -2334,7 +2334,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(String message, Database.MergeResult mergeResult, List<String> topics) {
-        return finer().setMessage(message).setDmlResult(mergeResult).setTopics(topics);
+        return finer().setMessage(message).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -2344,7 +2344,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(String message, Database.MergeResult mergeResult) {
-        return finer().setMessage(message).setDmlResult(mergeResult);
+        return finer().setMessage(message).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -2355,7 +2355,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(String message, Database.SaveResult saveResult, List<String> topics) {
-        return finer().setMessage(message).setDmlResult(saveResult).setTopics(topics);
+        return finer().setMessage(message).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -2365,7 +2365,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(String message, Database.SaveResult saveResult) {
-        return finer().setMessage(message).setDmlResult(saveResult);
+        return finer().setMessage(message).setDatabaseResult(saveResult);
     }
 
     /**
@@ -2376,7 +2376,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(String message, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return finer().setMessage(message).setDmlResult(undeleteResult).setTopics(topics);
+        return finer().setMessage(message).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -2386,7 +2386,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(String message, Database.UndeleteResult undeleteResult) {
-        return finer().setMessage(message).setDmlResult(undeleteResult);
+        return finer().setMessage(message).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -2397,7 +2397,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finer(String message, Database.UpsertResult upsertResult, List<String> topics) {
-        return finer().setMessage(message).setDmlResult(upsertResult).setTopics(topics);
+        return finer().setMessage(message).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -2407,7 +2407,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(String message, Database.UpsertResult upsertResult) {
-        return finer().setMessage(message).setDmlResult(upsertResult);
+        return finer().setMessage(message).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -2480,7 +2480,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics) {
-        return finest().setMessage(logMessage).setDmlResult(deleteResult).setTopics(topics);
+        return finest().setMessage(logMessage).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -2490,7 +2490,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(LogMessage logMessage, Database.DeleteResult deleteResult) {
-        return finest().setMessage(logMessage).setDmlResult(deleteResult);
+        return finest().setMessage(logMessage).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -2501,7 +2501,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics) {
-        return finest().setMessage(logMessage).setDmlResult(mergeResult).setTopics(topics);
+        return finest().setMessage(logMessage).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -2511,7 +2511,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(LogMessage logMessage, Database.MergeResult mergeResult) {
-        return finest().setMessage(logMessage).setDmlResult(mergeResult);
+        return finest().setMessage(logMessage).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -2522,7 +2522,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics) {
-        return finest().setMessage(logMessage).setDmlResult(saveResult).setTopics(topics);
+        return finest().setMessage(logMessage).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -2532,7 +2532,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(LogMessage logMessage, Database.SaveResult saveResult) {
-        return finest().setMessage(logMessage).setDmlResult(saveResult);
+        return finest().setMessage(logMessage).setDatabaseResult(saveResult);
     }
 
     /**
@@ -2543,7 +2543,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return finest().setMessage(logMessage).setDmlResult(undeleteResult).setTopics(topics);
+        return finest().setMessage(logMessage).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -2553,7 +2553,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(LogMessage logMessage, Database.UndeleteResult undeleteResult) {
-        return finest().setMessage(logMessage).setDmlResult(undeleteResult);
+        return finest().setMessage(logMessage).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -2564,7 +2564,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics) {
-        return finest().setMessage(logMessage).setDmlResult(upsertResult).setTopics(topics);
+        return finest().setMessage(logMessage).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -2574,7 +2574,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(LogMessage logMessage, Database.UpsertResult upsertResult) {
-        return finest().setMessage(logMessage).setDmlResult(upsertResult);
+        return finest().setMessage(logMessage).setDatabaseResult(upsertResult);
     }
 
     /**
@@ -2646,7 +2646,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(String message, Database.DeleteResult deleteResult, List<String> topics) {
-        return finest().setMessage(message).setDmlResult(deleteResult).setTopics(topics);
+        return finest().setMessage(message).setDatabaseResult(deleteResult).setTopics(topics);
     }
 
     /**
@@ -2656,7 +2656,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(String message, Database.DeleteResult deleteResult) {
-        return finest().setMessage(message).setDmlResult(deleteResult);
+        return finest().setMessage(message).setDatabaseResult(deleteResult);
     }
 
     /**
@@ -2667,7 +2667,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(String message, Database.MergeResult mergeResult, List<String> topics) {
-        return finest().setMessage(message).setDmlResult(mergeResult).setTopics(topics);
+        return finest().setMessage(message).setDatabaseResult(mergeResult).setTopics(topics);
     }
 
     /**
@@ -2677,7 +2677,7 @@ global with sharing class Logger {
      * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(String message, Database.MergeResult mergeResult) {
-        return finest().setMessage(message).setDmlResult(mergeResult);
+        return finest().setMessage(message).setDatabaseResult(mergeResult);
     }
 
     /**
@@ -2688,7 +2688,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(String message, Database.SaveResult saveResult, List<String> topics) {
-        return finest().setMessage(message).setDmlResult(saveResult).setTopics(topics);
+        return finest().setMessage(message).setDatabaseResult(saveResult).setTopics(topics);
     }
 
     /**
@@ -2698,7 +2698,7 @@ global with sharing class Logger {
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(String message, Database.SaveResult saveResult) {
-        return finest().setMessage(message).setDmlResult(saveResult);
+        return finest().setMessage(message).setDatabaseResult(saveResult);
     }
 
     /**
@@ -2709,7 +2709,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(String message, Database.UndeleteResult undeleteResult, List<String> topics) {
-        return finest().setMessage(message).setDmlResult(undeleteResult).setTopics(topics);
+        return finest().setMessage(message).setDatabaseResult(undeleteResult).setTopics(topics);
     }
 
     /**
@@ -2719,7 +2719,7 @@ global with sharing class Logger {
      * @return                The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(String message, Database.UndeleteResult undeleteResult) {
-        return finest().setMessage(message).setDmlResult(undeleteResult);
+        return finest().setMessage(message).setDatabaseResult(undeleteResult);
     }
 
     /**
@@ -2730,7 +2730,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public static LogEntryEventBuilder finest(String message, Database.UpsertResult upsertResult, List<String> topics) {
-        return finest().setMessage(message).setDmlResult(upsertResult).setTopics(topics);
+        return finest().setMessage(message).setDatabaseResult(upsertResult).setTopics(topics);
     }
 
     /**
@@ -2740,7 +2740,7 @@ global with sharing class Logger {
      * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(String message, Database.UpsertResult upsertResult) {
-        return finest().setMessage(message).setDmlResult(upsertResult);
+        return finest().setMessage(message).setDatabaseResult(upsertResult);
     }
 
     /**
