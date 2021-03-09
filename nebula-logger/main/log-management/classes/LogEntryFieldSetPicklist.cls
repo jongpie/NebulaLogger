@@ -5,20 +5,20 @@
 
 /**
  * @group log-management
- * @description Dynamically returns LogEntry__c field sets in App Builder when configuring the component RelatedLogEntries
+ * @description Dynamically returns `LogEntry__c` field sets in App Builder when configuring the component RelatedLogEntries
  */
 public without sharing class LogEntryFieldSetPicklist extends VisualEditor.DynamicPickList {
     /**
      * Returns a default value of null - admins must select a field set within App Builder
-     * @return   return null (no default value)
+     * @return   null (no default value)
      */
     public override VisualEditor.DataRow getDefaultValue() {
         return null;
     }
 
     /**
-     * Returns the list of fields sets on LogEntry__c, allowing admins to specify any
-     * field set for each instance of the RelatedLogEntries component
+     * @description Returns the list of fields sets on `LogEntry__c`, allowing admins to specify any
+     *   field set for each instance of the `RelatedLogEntries` component
      * @return   The list of field sets on the LogEntry__c object
      */
     public override VisualEditor.DynamicPickListRows getValues() {

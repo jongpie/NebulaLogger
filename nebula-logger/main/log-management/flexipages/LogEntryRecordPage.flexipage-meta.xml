@@ -276,7 +276,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.DmlResultType__c</fieldItem>
+                <fieldItem>Record.DatabaseResultType__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -285,7 +285,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.DmlResultErrors__c</fieldItem>
+                <fieldItem>Record.DatabaseResultJson__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-839d3f77-0b78-43a9-9477-6b63126dcf12</name>
@@ -575,13 +575,14 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>
-                    <value>DML Result</value>
+                    <value>Database Result</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.LimitsAggregateQueries__c}</leftValue>
-                        <operator>NE</operator>
+                        <leftValue>{!Record.HasDatabaseResult__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

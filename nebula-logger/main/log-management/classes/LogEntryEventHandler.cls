@@ -5,7 +5,7 @@
 
 /**
  * @group log-management
- * @description Subscribes to LogEntryEvent__e platform events and normalizes the data into Log__c and LogEntry__c records
+ * @description Subscribes to `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
 public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
@@ -104,8 +104,8 @@ public without sharing class LogEntryEventHandler {
                 : logEntryEvent.Timestamp__c;
 
             LogEntry__c logEntry = new LogEntry__c(
-                DmlResultErrors__c = logEntryEvent.DmlResultErrors__c,
-                DmlResultType__c = logEntryEvent.DmlResultType__c,
+                DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
+                DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,

@@ -5,7 +5,7 @@
 
 /**
  * @group logger-engine
- * @description Builder class that generates each LogEntryEvent__c record
+ * @description Builder class that generates each `LogEntryEvent__c` record
  * @see Logger
  */
 global with sharing class LogEntryEventBuilder {
@@ -30,6 +30,12 @@ global with sharing class LogEntryEventBuilder {
     private Boolean detailsAreSet = false;
     private Boolean shouldSave;
 
+    /**
+     * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
+     * @param  loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
+     * @param  shouldSave   Determines if the builder's instance of `LogEntryEvent__e` should be saved
+     * @return              The new instance of `LogEntryEventBuilder`
+     */
     public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
         this.loggingLevel = loggingLevel;
 
@@ -74,9 +80,9 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets the log entry event's message field
-     * @param  logMessage The instance of LogMessage to use - LogMessage.getMessage() will be used
-     * @return            The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @description Sets the log entry event's message field
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(LogMessage logMessage) {
         if (this.shouldSave == false) {
@@ -87,9 +93,9 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets the log entry event's message field
-     * @param  message The instance of LogMessage to use - LogMessage.getMessage() will be used
-     * @return         The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @description Sets the log entry event's message field
+     * @param  message The string to use to set the entry's message field
+     * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(String message) {
         if (this.shouldSave == false) {
@@ -112,9 +118,9 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets the log entry event's exception fields
-     * @param  apexException The instance of an Exception to use.
-     * @return               The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @description Sets the log entry event's exception fields
+     * @param  apexException The instance of an `Exception` to use.
+     * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setExceptionDetails(Exception apexException) {
         if (this.shouldSave == false) {
@@ -136,104 +142,90 @@ global with sharing class LogEntryEventBuilder {
     // ...but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
     /**
      * @description Sets the log entry event's DML result fields
-     * @param  deleteResult The instance of Database.DeleteResult to log
-     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @param  deleteResult The instance of `Database.DeleteResult` to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.DeleteResult deleteResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
         if (deleteResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DmlResultType__c = Database.DeleteResult.class.getName();
-
-        if (deleteResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(deleteResult.getErrors());
-        }
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
         return this.setRecordId(deleteResult.getId());
     }
 
     /**
      * @description Sets the log entry event's DML result fields
-     * @param  mergeResult The instance of Database.MergeResult to log
-     * @return             The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @param  mergeResult The instance of `Database.MergeResult` to log
+     * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.MergeResult mergeResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
         if (mergeResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DmlResultType__c = Database.MergeResult.class.getName();
-
-        if (mergeResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(mergeResult.getErrors());
-        }
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
         return this.setRecordId(mergeResult.getId());
     }
 
     /**
      * @description Sets the log entry event's DML result fields
-     * @param  saveResult The instance of Database.SaveResult to log
-     * @return            The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @param  saveResult The instance of `Database.SaveResult` to log
+     * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.SaveResult saveResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
         if (saveResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DmlResultType__c = Database.SaveResult.class.getName();
-
-        if (saveResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(saveResult.getErrors());
-        }
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
         return this.setRecordId(saveResult.getId());
     }
 
     /**
      * @description Sets the log entry event's DML result fields
-     * @param  upsertResult The instance of Database.UpsertResult to log
-     * @return              The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @param  upsertResult The instance of `Database.UpsertResult` to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.UpsertResult upsertResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
         if (upsertResult == null) {
             return this;
         }
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
-        this.logEntryEvent.DmlResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
-
-        if (upsertResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(upsertResult.getErrors());
-        }
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
         return this.setRecordId(upsertResult.getId());
     }
 
     /**
      * @description Sets the log entry event's DML result fields
-     * @param  undeleteResult The instance of Database.UndeleteResult to log
-     * @return                The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @param  undeleteResult The instance of `Database.UndeleteResult` to log
+     * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setDmlResult(Database.UndeleteResult undeleteResult) {
+    global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
         if (undeleteResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DmlResultType__c = Database.UndeleteResult.class.getName();
-        if (undeleteResult.isSuccess() == false) {
-            this.logEntryEvent.DmlResultErrors__c = Json.serializePretty(undeleteResult.getErrors());
-        }
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResult);
+        this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
         return this.setRecordId(undeleteResult.getId());
     }
 
     /**
-     * Sets the log entry event's record fields
-     * @param  record The SObject record related to the entry. The JSON of the record is automatically added to the entry
-     * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @description Sets the log entry event's record fields
+     * @param  record The `SObject` record related to the entry. The JSON of the record is automatically added to the entry
+     * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecordId(SObject record) {
         if (this.shouldSave == false) {
@@ -249,16 +241,16 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
 
-        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, Json.serializePretty(record));
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(record));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
         return this;
     }
 
     /**
-     * Sets the log entry event's record fields
+     * @description Sets the log entry event's record fields
      * @param  recordId The ID of the SObject record related to the entry
-     * @return          The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecordId(Id recordId) {
         if (this.shouldSave == false) {
@@ -276,9 +268,9 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Sets a comma-separate list of strings on the LogEntryEvent__e, which ultimately becomes Topic & TopicAssignment records on Log__c and LogEntry__c
+     * @description Sets a comma-separate list of strings on the LogEntryEvent__e, which ultimately becomes Topic & TopicAssignment records on Log__c and LogEntry__c
      * @param  topics The list of strings to use as topics for the current entry
-     * @return        The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     public LogEntryEventBuilder setTopics(List<String> topics) {
         if (this.shouldSave == false) {
@@ -290,9 +282,9 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Parses the provided stack trace and sets the log entry's origin & stack trace fields
+     * @description Parses the provided stack trace and sets the log entry's origin & stack trace fields
      * @param  stackTraceString The Apex stack trace string to parse
-     * @return                  The same instance of LogEntryEventBuilder, useful for chaining methods
+     * @return                  The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (this.shouldSave == false) {
@@ -342,7 +334,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Determines if this instance of LogEntryEventBuilder should be saved the next time that Logger.saveLog() is called
+     * @description Determines if this instance of `LogEntryEventBuilder` should be saved the next time that `Logger.saveLog()` is called
      * @return   Boolean
      */
     public Boolean shouldSave() {
@@ -350,8 +342,8 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * Returns the LogEntryEvent__e record for this instance of LogEntryEventBuilder
-     * @return   The LogEntryEvent__e record
+     * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
+     * @return   The `LogEntryEvent__e` record
      */
     public LogEntryEvent__e getLogEntryEvent() {
         if (this.shouldSave == false) {
@@ -556,7 +548,7 @@ global with sharing class LogEntryEventBuilder {
 
     // Private static methods
     private static String getApiVersion() {
-        String userJson = Json.serialize(new User(Id = UserInfo.getUserId()));
+        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
     }
 

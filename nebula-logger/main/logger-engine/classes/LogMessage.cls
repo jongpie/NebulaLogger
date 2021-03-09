@@ -15,7 +15,7 @@ global inherited sharing virtual class LogMessage {
     private List<Object> messageInputs;
 
     /**
-     * Constructor to handle dynamically formatting a string with 1 input
+     * @description Constructor to handle dynamically formatting a string with 1 input
      * @param  unformattedMessage The base string to use for your log message
      * @param  messageInput       The replacement text to use for 1 placeholder in the unformatted message
      * @example
@@ -27,7 +27,7 @@ global inherited sharing virtual class LogMessage {
     }
 
     /**
-     * Constructor to handle dynamically formatting a string with 2 inputs
+     * @description Constructor to handle dynamically formatting a string with 2 inputs
      * @param  unformattedMessage The base string to use for your log message
      * @param  messageInput1       The replacement text to use for the first placeholder in the unformatted message
      * @param  messageInput2       The replacement text to use for the second placeholder in the unformatted message
@@ -41,7 +41,7 @@ global inherited sharing virtual class LogMessage {
     }
 
     /**
-     * Constructor to handle dynamically formatting a string with 3 inputs
+     * @description Constructor to handle dynamically formatting a string with 3 inputs
      * @param  unformattedMessage The base string to use for your log message
      * @param  messageInput1       The replacement text to use for the first placeholder in the unformatted message
      * @param  messageInput2       The replacement text to use for the second placeholder in the unformatted message
@@ -56,7 +56,7 @@ global inherited sharing virtual class LogMessage {
     }
 
     /**
-     * Constructor to handle dynamically formatting a string with a list of inputs
+     * @description Constructor to handle dynamically formatting a string with a list of inputs
      * @param  unformattedMessage The base string to use for your log message
      * @param  messageInputs       The list of inputs text to use for any placeholders in the unformatted message
      * @example
@@ -74,7 +74,7 @@ global inherited sharing virtual class LogMessage {
     }
 
     /**
-     * Returns the formatted string to use as the log entry's message
+     * @description Returns the formatted string to use as the log entry's message
      * @return  String
      */
     global virtual String getMessage() {

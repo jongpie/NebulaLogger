@@ -1,5 +1,5 @@
 {
-    "root": "nebula-logger-docs",
+    "root": "",
     "sourceLanguage": "java",
     "home": {
         "header": "./config/apexdocs-header.md"

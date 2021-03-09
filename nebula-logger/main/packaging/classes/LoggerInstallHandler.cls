@@ -9,8 +9,8 @@
  */
 global without sharing class LoggerInstallHandler implements InstallHandler {
     /**
-     * Automatically enables org default settings when installing the managed package
-     * @param  installContext Context automatically provided by Salesforce when installing or upgrading
+     * @description Automatically enables org default settings when installing the managed package
+     * @param  installContext Context automatically provided by Salesforce when installing or upgrading the managed package
      */
     global void onInstall(System.InstallContext installContext) {
         LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
