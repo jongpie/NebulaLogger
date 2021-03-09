@@ -9,14 +9,16 @@
             "default": true,
             "definitionFile": "config/logger-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "versionName": "Managed Package Release",
-            "versionNumber": "4.0.0.NEXT",
-            "versionDescription": "Initial release of the new 2GP managed package",
+            "versionName": "New Apex methods & fields",
+            "versionNumber": "4.2.0.0",
+            "ancestorVersion": "4.0.0.9",
+            "versionDescription": "New Apex methods for additional loggings options + additional fields on Log and Log Entry",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
     "packageAliases": {
         "Nebula Logger": "0Ho5Y000000XZCDSA4",
-        "Nebula Logger@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO"
+        "Nebula Logger@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO",
+        "Nebula Logger@4.2.0-0-more-fields-and-methods": "04t5Y000000Xg4wQAC"
     }
 }
