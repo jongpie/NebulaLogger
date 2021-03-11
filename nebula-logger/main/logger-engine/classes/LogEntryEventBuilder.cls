@@ -243,6 +243,106 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.DeleteResult> deleteResults) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        if (deleteResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(deleteResults);
+        this.logEntryEvent.DatabaseResultType__c = (List<Database.DeleteResult>.class).getName();
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.MergeResult> mergeResults) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        if (mergeResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(mergeResults);
+        this.logEntryEvent.DatabaseResultType__c = (List<Database.MergeResult>.class).getName();
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.SaveResult> saveResults) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        if (saveResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(saveResults);
+        this.logEntryEvent.DatabaseResultType__c = (List<Database.SaveResult>.class).getName();
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.UpsertResult> upsertResults) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        if (upsertResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(upsertResults);
+        this.logEntryEvent.DatabaseResultType__c = (List<Database.UpsertResult>.class).getName();
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.UndeleteResult> undeleteResults) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        if (undeleteResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(undeleteResults);
+        this.logEntryEvent.DatabaseResultType__c = (List<Database.UndeleteResult>.class).getName();
+
+        return this;
+    }
+
+    /**
      * @description Sets the log entry event's record fields
      * @param  record The `SObject` record related to the entry. The JSON of the record is automatically added to the entry
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
