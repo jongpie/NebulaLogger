@@ -62,37 +62,37 @@ private class LogEntryHandler_Tests {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
         String recordJson = '{}';
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = recordJson);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJSON__c = recordJson);
 
         Test.startTest();
         insert logEntry;
         Test.stopTest();
 
-        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assert(logEntry.HasRecordJson__c);
-        System.assertEquals(recordJson, logEntry.RecordJson__c);
+        logEntry = [SELECT Id, HasRecordJSON__c, RecordJSON__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assert(logEntry.HasRecordJSON__c);
+        System.assertEquals(recordJson, logEntry.RecordJSON__c);
     }
 
     @isTest
     static void it_should_set_hasRecordJson_to_true_when_updated() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = null);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJSON__c = null);
         insert logEntry;
-        logEntry = [SELECT Id, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(null, logEntry.RecordJson__c);
+        logEntry = [SELECT Id, RecordJSON__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assertEquals(null, logEntry.RecordJSON__c);
 
         Test.startTest();
 
         String recordJson = '{}';
-        logEntry.RecordJson__c = recordJson;
+        logEntry.RecordJSON__c = recordJson;
         update logEntry;
 
         Test.stopTest();
 
-        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assert(logEntry.HasRecordJson__c);
-        System.assertEquals(recordJson, logEntry.RecordJson__c);
+        logEntry = [SELECT Id, HasRecordJSON__c, RecordJSON__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assert(logEntry.HasRecordJSON__c);
+        System.assertEquals(recordJson, logEntry.RecordJSON__c);
     }
 
     @isTest

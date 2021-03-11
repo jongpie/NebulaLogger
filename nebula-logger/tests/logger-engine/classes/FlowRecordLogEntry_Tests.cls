@@ -44,9 +44,9 @@ private class FlowRecordLogEntry_Tests {
 
         String expectedUserJson = JSON.serializePretty(currentUser);
 
-        LogEntry__c logEntry = [SELECT Id, RecordId__c, RecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        LogEntry__c logEntry = [SELECT Id, RecordId__c, RecordJSON__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
         System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-        System.assertEquals(expectedUserJson, logEntry.RecordJson__c);
+        System.assertEquals(expectedUserJson, logEntry.RecordJSON__c);
     }
 
     @isTest

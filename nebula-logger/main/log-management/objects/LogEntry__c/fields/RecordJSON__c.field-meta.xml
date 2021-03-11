@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>HasRecordJson__c</fullName>
-    <defaultValue>false</defaultValue>
+    <fullName>RecordJSON__c</fullName>
+    <description>JSON of the related SObject record</description>
     <externalId>false</externalId>
-    <label>Has Related Record JSON</label>
+    <label>Related Record JSON</label>
+    <length>131072</length>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
-    <type>Checkbox</type>
+    <type>LongTextArea</type>
+    <visibleLines>8</visibleLines>
 </CustomField>

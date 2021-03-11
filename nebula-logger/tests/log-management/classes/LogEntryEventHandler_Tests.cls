@@ -106,7 +106,7 @@ private class LogEntryEventHandler_Tests {
                         OriginType__c,
                         OriginLocation__c,
                         RecordId__c,
-                        RecordJson__c,
+                        RecordJSON__c,
                         RecordSObjectClassification__c,
                         RecordSObjectType__c,
                         RecordSObjectTypeNamespace__c,
@@ -216,7 +216,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.OriginType__c, logEntry.OriginType__c);
         System.assertEquals(logEntryEvent.OriginLocation__c, logEntry.OriginLocation__c);
         System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c);
-        System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c);
+        System.assertEquals(logEntryEvent.RecordJSON__c, logEntry.RecordJSON__c);
         System.assertEquals(logEntryEvent.RecordSObjectClassification__c, logEntry.RecordSObjectClassification__c);
         System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c);
         System.assertEquals(logEntryEvent.RecordSObjectTypeNamespace__c, logEntry.RecordSObjectTypeNamespace__c);
@@ -302,7 +302,7 @@ private class LogEntryEventHandler_Tests {
             OriginType__c = 'Apex',
             ProfileId__c = currentUser.ProfileId,
             RecordId__c = currentUser.Id,
-            RecordJson__c = JSON.serializePretty(currentUser),
+            RecordJSON__c = JSON.serializePretty(currentUser),
             RecordSObjectClassification__c = 'Standard Object',
             RecordSObjectType__c = 'User',
             SessionId__c = null,

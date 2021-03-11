@@ -104,7 +104,7 @@ public without sharing class LogEntryEventHandler {
                 : logEntryEvent.Timestamp__c;
 
             LogEntry__c logEntry = new LogEntry__c(
-                DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
+                DatabaseResultJSON__c = logEntryEvent.DatabaseResultJSON__c,
                 DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
@@ -148,7 +148,7 @@ public without sharing class LogEntryEventHandler {
                 OriginType__c = logEntryEvent.OriginType__c,
                 OriginLocation__c = logEntryEvent.OriginLocation__c,
                 RecordId__c = logEntryEvent.RecordId__c,
-                RecordJson__c = logEntryEvent.RecordJson__c,
+                RecordJSON__c = logEntryEvent.RecordJSON__c,
                 RecordSObjectClassification__c = logEntryEvent.RecordSObjectClassification__c,
                 RecordSObjectType__c = logEntryEvent.RecordSObjectType__c,
                 RecordSObjectTypeNamespace__c = logEntryEvent.RecordSObjectTypeNamespace__c,

@@ -200,7 +200,7 @@ global with sharing class LogEntryEventBuilder {
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResult);
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(upsertResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
         return this.setRecordId(upsertResult.getId());
@@ -216,7 +216,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResult);
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(undeleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
         return this.setRecordId(undeleteResult.getId());

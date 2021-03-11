@@ -112,7 +112,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntryEvent__e.DatabaseResultJson__c</field>
+        <field>LogEntryEvent__e.DatabaseResultJSON__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -452,7 +452,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntryEvent__e.RecordJson__c</field>
+        <field>LogEntryEvent__e.RecordJSON__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -582,7 +582,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.DatabaseResultJson__c</field>
+        <field>LogEntry__c.DatabaseResultJSON__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -627,7 +627,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HasRecordJson__c</field>
+        <field>LogEntry__c.HasRecordJSON__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -922,7 +922,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordJson__c</field>
+        <field>LogEntry__c.RecordJSON__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

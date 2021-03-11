@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>RecordJson__c</fullName>
-    <description>JSON of the related SObject record</description>
+    <fullName>DatabaseResultJSON__c</fullName>
     <externalId>false</externalId>
-    <label>Related Record JSON</label>
+    <label>Database Result JSON</label>
     <length>131072</length>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
