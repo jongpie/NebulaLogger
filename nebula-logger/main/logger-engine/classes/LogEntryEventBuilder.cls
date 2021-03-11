@@ -141,59 +141,75 @@ global with sharing class LogEntryEventBuilder {
     // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
     // ...but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
         if (deleteResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResult);
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(deleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
         return this.setRecordId(deleteResult.getId());
     }
 
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
         if (mergeResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResult);
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(mergeResult);
         this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
         return this.setRecordId(mergeResult.getId());
     }
 
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
         if (saveResult == null) {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResult);
+        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(saveResult);
         this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
         return this.setRecordId(saveResult.getId());
     }
 
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
         if (upsertResult == null) {
             return this;
         }
@@ -207,11 +223,15 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
         if (undeleteResult == null) {
             return this;
         }
