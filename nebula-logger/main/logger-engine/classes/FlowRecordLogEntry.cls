@@ -31,6 +31,11 @@ global inherited sharing class FlowRecordLogEntry {
     global SObject record;
 
     /**
+     * @description Optionally log a Flow fault error message
+     */
+    @InvocableVariable(required=false label='(Optional) Fault Error Message')
+    global String faultMessage;
+    /**
      * @description Optionally choose to save any pending log entries
      */
     @InvocableVariable(required=false label='(Optional) Save Log')
@@ -79,10 +84,16 @@ global inherited sharing class FlowRecordLogEntry {
             logEntryEvent.OriginType__c = 'Flow';
             logEntryEvent.Timestamp__c = flowRecordLogEntry.timestamp;
 
-            if (flowRecordLogEntry.saveLog) {
+            if (String.isNotBlank(flowRecordLogEntry.faultMessage)) {
+                logEntryEvent.ExceptionMessage__c = flowRecordLogEntry.faultMessage;
+                logEntryEvent.ExceptionType__c = 'Flow.FaultError';
+            }
+
+            if (flowRecordLogEntry.saveLog == true) {
                 saveLog = flowRecordLogEntry.saveLog;
             }
         }
+
         if (saveLog) {
             Logger.saveLog();
         }
