@@ -226,14 +226,15 @@ public without sharing class LogEntryEventHandler {
 
     // Private static methods
     private static List<Log__c> getRecentLogsWithDetails() {
-        // Query for recent logs created only today - the status API should be called at least...
-        // ... once per day to make sure that status details are still accurate
-        Datetime sixHoursAgo = System.now().addMinutes(-6 * 60);
+        // Query for recent logs created only today - the status API should be called...
+        // ...at least once per day to make sure that status details are still accurate.
+        // This query should make a callout approximately every 4 hours.
+        Datetime fourHoursAgo = System.now().addMinutes(-4 * 60);
 
         return [
             SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
             FROM Log__c
-            WHERE CreatedDate >= :sixHoursAgo AND DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c != NULL
+            WHERE CreatedDate >= :fourHoursAgo AND DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c != NULL
             ORDER BY CreatedDate DESC
             LIMIT 1
         ];
