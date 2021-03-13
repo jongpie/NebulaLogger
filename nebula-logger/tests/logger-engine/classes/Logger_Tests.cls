@@ -73,6 +73,17 @@ private class Logger_Tests {
         return deleteResult;
     }
 
+    static List<Database.DeleteResult> getDeleteResultList() {
+        List<Log__c> logs = new List<Log__c>();
+        for(Integer i = 0; i < 3; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+        }
+        insert logs;
+
+
+        return Database.delete(logs, false);
+    }
+
     // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
     // static Database.MergeResult getMergeResult(Boolean isSuccess) { }
 
@@ -86,6 +97,15 @@ private class Logger_Tests {
         }
         System.assertEquals(isSuccess, saveResult.isSuccess());
         return saveResult;
+    }
+
+    static List<Database.SaveResult> getSaveResultList() {
+        List<Log__c> logs = new List<Log__c>();
+        for(Integer i = 0; i < 3; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+        }
+
+        return Database.insert(logs, false);
     }
 
     static Database.UpsertResult getUpsertResult(Boolean isSuccess, Boolean isInsert) {
@@ -120,6 +140,15 @@ private class Logger_Tests {
         return upsertResult;
     }
 
+    static List<Database.UpsertResult> getUpsertResultList() {
+        List<Log__c> logs = new List<Log__c>();
+        for(Integer i = 0; i < 3; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+        }
+
+        return Database.upsert(logs, false);
+    }
+
     static Database.UndeleteResult getUndeleteResult(Boolean isSuccess) {
         Database.UndeleteResult undeleteResult;
 
@@ -137,6 +166,17 @@ private class Logger_Tests {
         }
         System.assertEquals(isSuccess, undeleteResult.isSuccess());
         return undeleteResult;
+    }
+
+    static List<Database.UndeleteResult> getUndeleteResultList() {
+        List<Log__c> logs = new List<Log__c>();
+        for(Integer i = 0; i < 3; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+        }
+        insert logs;
+        delete logs;
+
+        return Database.undelete(logs, false);
     }
 
     static List<String> getTopics() {
