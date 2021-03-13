@@ -101,7 +101,8 @@ public without sharing class LogEntryEventHandler {
         upsert LOG TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (recentLogsWithDetails.isEmpty() == true && getCountOfOpenJobs() == 0) {
+        // TODO probably need to remove the check for Test.isRunningTest() == false
+        if (Test.isRunningTest() == false && recentLogsWithDetails.isEmpty() == true && getCountOfOpenJobs() == 0) {
             System.enqueueJob(new QueueableStatusApiCaller());
         }
     }
