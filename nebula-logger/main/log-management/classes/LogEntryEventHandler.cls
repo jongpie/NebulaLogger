@@ -89,7 +89,6 @@ public without sharing class LogEntryEventHandler {
         LOG.UserRoleName__c = logEntryEvent.UserRoleName__c;
         LOG.UserType__c = logEntryEvent.UserType__c;
 
-        // TODO cleanup
         // To avoid making a callout for every log, try to query recent logs first
         // If there are recent logs with the details already populated, copy the field values before upserting the log
         List<Log__c> recentLogsWithDetails = getRecentLogsWithDetails();
@@ -101,9 +100,9 @@ public without sharing class LogEntryEventHandler {
         upsert LOG TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        // TODO probably need to remove the check for Test.isRunningTest() == false
+        // TODO probably need to remove the check for Test.isRunningTest() == false/add callout mocks to unit tests
         if (Test.isRunningTest() == false && recentLogsWithDetails.isEmpty() == true && getCountOfOpenJobs() == 0) {
-            System.enqueueJob(new QueueableStatusApiCaller());
+            setStatusApiDetails();
         }
     }
 
@@ -227,12 +226,15 @@ public without sharing class LogEntryEventHandler {
 
     // Private static methods
     private static List<Log__c> getRecentLogsWithDetails() {
-        Datetime eightHoursAgo = System.now().addMinutes(-8 * 60);
+        // Query for recent logs created only today - the status API should be called at least...
+        // ... once per day to make sure that status details are still accurate
+        Datetime sixHoursAgo = System.now().addMinutes(-6 * 60);
 
         return [
             SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
             FROM Log__c
-            WHERE CreatedDate >= :eightHoursAgo AND DAY_ONLY(CreatedDate) = :System.today() AND ApiReleaseNumber__c != NULL
+            WHERE CreatedDate >= :sixHoursAgo AND DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c != NULL
+            ORDER BY CreatedDate DESC
             LIMIT 1
         ];
     }
@@ -241,36 +243,36 @@ public without sharing class LogEntryEventHandler {
         return [
             SELECT COUNT()
             FROM AsyncApexJob
-            WHERE ApexClass.Name = :QueueableStatusApiCaller.class.getName() AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing')
+            WHERE
+                ApexClass.Name = :LogEntryEventHandler.class.getName()
+                AND MethodName = 'setStatusApiDetails'
+                AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing')
         ];
     }
 
-    // Private class for calling the Status API and updating `Log__c` records
-    // TODO this name is terrible
-    private class QueueableStatusApiCaller implements Queueable, Database.AllowsCallouts {
-        public void execute(System.QueueableContext queueableContext) {
-            System.debug('Running QueueableStatusApiCaller.execute(System.QueueableContext queueableContext)');
+    @future(callout=true)
+    private static void setStatusApiDetails() {
+        System.debug('Running setStatusApiDetails()');
 
-            Organization organization = [SELECT InstanceName FROM Organization];
-            String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
+        Organization organization = [SELECT InstanceName FROM Organization];
+        String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
-            HttpRequest request = new HttpRequest();
-            request.setEndpoint(statusApiEndpoint);
-            request.setMethod('GET');
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(statusApiEndpoint);
+        request.setMethod('GET');
 
-            HttpResponse response = new Http().send(request);
-            StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-            System.debug('statusApiResponse==' + statusApiResponse);
+        HttpResponse response = new Http().send(request);
+        StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
+        System.debug('statusApiResponse==' + statusApiResponse);
 
-            List<Log__c> logsToUpdate = new List<Log__c>();
-            for (Log__c log : [SELECT Id FROM Log__c WHERE DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c = NULL]) {
-                log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
-                log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
+        List<Log__c> logsToUpdate = new List<Log__c>();
+        for (Log__c log : [SELECT Id FROM Log__c WHERE DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c = NULL]) {
+            log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
+            log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
 
-                logsToUpdate.add(log);
-            }
-            update logsToUpdate;
+            logsToUpdate.add(log);
         }
+        update logsToUpdate;
     }
 
     // Private class for handling the response from api.status.salesforce.com
