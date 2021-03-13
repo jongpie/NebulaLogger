@@ -89,10 +89,27 @@ public without sharing class LogEntryEventHandler {
         LOG.UserRoleName__c = logEntryEvent.UserRoleName__c;
         LOG.UserType__c = logEntryEvent.UserType__c;
 
+        // To avoid making a callout for every log, try to query recent logs first
+        Datetime eightHoursAgo = System.now().addMinutes(-8 * 60);
+        List<Log__c> recentLogsWithDetails = [
+            SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
+            FROM Log__c
+            WHERE CreatedDate >= :eightHoursAgo AND DAY_ONLY(CreatedDate) = :System.today() AND ApiReleaseNumber__c != NULL
+            LIMIT 1
+        ];
+
+        // If there are recent logs with the details already populated, copy the field values before upserting the log
+        if (recentLogsWithDetails.isEmpty() == false) {
+            LOG.ApiReleaseNumber__c = recentLogsWithDetails.get(0).ApiReleaseNumber__c;
+            LOG.ApiReleaseVersion__c = recentLogsWithDetails.get(0).ApiReleaseVersion__c;
+        }
+
         upsert LOG TransactionId__c;
 
-        // TODO improve this - try to avoid making a callout for every log
-        setSalesforceStatusSiteDetails(LOG.Id);
+        // If no recent logs have the details, then resort to making an async callout to update the log
+        if (recentLogsWithDetails.isEmpty() == true) {
+            setStatusApiDetails(LOG.Id);
+        }
     }
 
     private void insertLogEntries(List<LogEntryEvent__e> logEntryEvents) {
@@ -214,39 +231,27 @@ public without sharing class LogEntryEventHandler {
     }
 
     @future(callout=true)
-    private static void setSalesforceStatusSiteDetails(Id logId) {
-        System.debug('starting getSalesforceStatusSiteResponse()');
-        // TODO cleanup/finish try-catch
-        //try {
-            // TODO might be able to eliminate this query by looking at first `LogEntryEvent__e` record
-            Organization organization = [SELECT InstanceName FROM Organization];
+    private static void setStatusApiDetails(Id logId) {
+        System.debug('Running setStatusApiDetails(Id logId), logId==' + logId);
 
-            String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
+        Organization organization = [SELECT InstanceName FROM Organization];
+        String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
-            HttpRequest request = new HttpRequest();
-            request.setEndpoint(statusApiEndpoint);
-            request.setMethod('GET');
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(statusApiEndpoint);
+        request.setMethod('GET');
 
-            HttpResponse response = new Http().send(request);
-            System.debug('SITE STATUS API RESPONSE==' + response.getBody());
-            SalesforceStatusSiteResponse statusApiResponse = (SalesforceStatusSiteResponse)JSON.deserialize(response.getBody(), SalesforceStatusSiteResponse.class);
+        HttpResponse response = new Http().send(request);
+        System.debug('Status API response==' + response.getBody());
+        StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
 
-            Log__c log = new Log__c(
-                Id = logId,
-                ApiReleaseNumber__c = statusApiResponse?.releaseNumber,
-                ApiReleaseVersion__c = statusApiResponse?.releaseVersion
-            );
-            update log;
-        // } catch(Exception ex) {
-        //     // Eat any exceptions - it's better successfully log the entries without this info...
-        //     // ...instead of letting the exception ruin everything
-        //     return null;
-        // }
+        Log__c log = new Log__c(Id = logId, ApiReleaseNumber__c = statusApiResponse.releaseNumber, ApiReleaseVersion__c = statusApiResponse.releaseVersion);
+        update log;
     }
 
     // Private class for handling the response from api.status.salesforce.com
-    private class SalesforceStatusSiteResponse {
-        public String releaseNumber {get; set;}
-        public String releaseVersion {get; set;}
+    private class StatusApiResponse {
+        public String releaseNumber { get; set; }
+        public String releaseVersion { get; set; }
     }
 }
