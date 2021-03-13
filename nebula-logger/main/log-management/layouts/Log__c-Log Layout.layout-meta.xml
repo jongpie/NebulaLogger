@@ -276,11 +276,11 @@
                 <behavior>Readonly</behavior>
                 <field>ApiVersion__c</field>
             </layoutItems>
-			<layoutItems>
+            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>ApiReleaseVersion__c</field>
             </layoutItems>
-			<layoutItems>
+            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>ApiReleaseNumber__c</field>
             </layoutItems>
