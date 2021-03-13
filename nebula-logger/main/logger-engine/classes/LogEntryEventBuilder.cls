@@ -343,11 +343,47 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
+     * @description Deprecated - use `setRecord(Id recordId)` instead
+     */
+    @Deprecated
+    global LogEntryEventBuilder setRecordId(Id recordId) {
+        return this.setRecord(recordId);
+    }
+
+    /**
+     * @description Deprecated - use `setRecord(SObject record)` instead
+     */
+    @Deprecated
+    global LogEntryEventBuilder setRecordId(SObject record) {
+        return this.setRecord(record);
+    }
+
+    /**
+     * @description Sets the log entry event's record fields
+     * @param  recordId The ID of the SObject record related to the entry
+     * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setRecord(Id recordId) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        if (String.isBlank(recordId)) {
+            return this;
+        }
+
+        this.logEntryEvent.RecordId__c = recordId;
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
+        this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
+        return this;
+    }
+
+    /**
      * @description Sets the log entry event's record fields
      * @param  record The `SObject` record related to the entry. The JSON of the record is automatically added to the entry
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setRecordId(SObject record) {
+    global LogEntryEventBuilder setRecord(SObject record) {
         if (this.shouldSave == false) {
             return this;
         }
@@ -361,29 +397,33 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
 
-        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(record));
-        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
+        String truncatedRecordJSON = truncateFieldValue(Schema.LogEntryEvent__e.RecordJSON__c, JSON.serializePretty(record));
+        this.logEntryEvent.RecordJSON__c = truncatedRecordJSON;
 
         return this;
     }
 
     /**
      * @description Sets the log entry event's record fields
-     * @param  recordId The ID of the SObject record related to the entry
-     * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  records The list of `SObject` records related to the entry. The JSON of the list is automatically added to the entry
+     * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setRecordId(Id recordId) {
+    global LogEntryEventBuilder setRecord(List<SObject> records) {
         if (this.shouldSave == false) {
             return this;
         }
 
-        if (String.isBlank(recordId)) {
+        if (records == null) {
             return this;
         }
 
-        this.logEntryEvent.RecordId__c = recordId;
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(records.getSObjectType());
+        this.logEntryEvent.RecordSObjectType__c = 'List<' + records.getSObjectType().getDescribe().getName() + '>';
+        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(records.getSObjectType());
+
+        String truncatedRecordJSON = truncateFieldValue(Schema.LogEntryEvent__e.RecordJSON__c, JSON.serializePretty(records));
+        this.logEntryEvent.RecordJSON__c = truncatedRecordJSON;
+
         return this;
     }
 
@@ -634,6 +674,7 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
+    // Private static methods
     private static AuthSession getAuthSession() {
         if (String.isBlank(UserInfo.getSessionId())) {
             return null;
@@ -666,10 +707,14 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
-    // Private static methods
     private static String getApiVersion() {
-        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
+        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
+        // Serializing any SObject w/ an ID will include the API version
+        // So, use UserInfo.getUserId() to create the current user's record without querying
+        // Then parse the JSOn to get the API version
+        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v51.0/sobjects/User/005J000000AugnYIAR"}
+        String userJSON = JSON.serialize(new User(Id = UserInfo.getUserId()));
+        return userJSON.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static List<String> getIgnoredClasses() {
