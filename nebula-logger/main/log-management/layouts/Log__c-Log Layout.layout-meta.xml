@@ -27,6 +27,14 @@
                 <behavior>Readonly</behavior>
                 <field>TotalLimitsCpuTimeUsed__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ApiReleaseNumber__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ApiReleaseVersion__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -262,12 +270,12 @@
                 <behavior>Readonly</behavior>
                 <field>OrganizationEnvironmentType__c</field>
             </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
+			<layoutItems>
                 <behavior>Readonly</behavior>
                 <field>OrganizationDomainUrl__c</field>
             </layoutItems>
+        </layoutColumns>
+        <layoutColumns>            
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>OrganizationInstanceName__c</field>
@@ -275,6 +283,14 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>ApiVersion__c</field>
+            </layoutItems>
+			<layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ApiReleaseVersion__c</field>
+            </layoutItems>
+			<layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ApiReleaseNumber__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>

@@ -90,6 +90,9 @@ public without sharing class LogEntryEventHandler {
         LOG.UserType__c = logEntryEvent.UserType__c;
 
         upsert LOG TransactionId__c;
+
+        // TODO improve this - try to avoid making a callout for every log
+        setSalesforceStatusSiteDetails(LOG.Id);
     }
 
     private void insertLogEntries(List<LogEntryEvent__e> logEntryEvents) {
@@ -208,5 +211,42 @@ public without sharing class LogEntryEventHandler {
             }
         }
         insert new List<TopicAssignment>(topicAssignments);
+    }
+
+    @future(callout=true)
+    private static void setSalesforceStatusSiteDetails(Id logId) {
+        System.debug('starting getSalesforceStatusSiteResponse()');
+        // TODO cleanup/finish try-catch
+        //try {
+            // TODO might be able to eliminate this query by looking at first `LogEntryEvent__e` record
+            Organization organization = [SELECT InstanceName FROM Organization];
+
+            String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
+
+            HttpRequest request = new HttpRequest();
+            request.setEndpoint(statusApiEndpoint);
+            request.setMethod('GET');
+
+            HttpResponse response = new Http().send(request);
+            System.debug('SITE STATUS API RESPONSE==' + response.getBody());
+            SalesforceStatusSiteResponse statusApiResponse = (SalesforceStatusSiteResponse)JSON.deserialize(response.getBody(), SalesforceStatusSiteResponse.class);
+
+            Log__c log = new Log__c(
+                Id = logId,
+                ApiReleaseNumber__c = statusApiResponse?.releaseNumber,
+                ApiReleaseVersion__c = statusApiResponse?.releaseVersion
+            );
+            update log;
+        // } catch(Exception ex) {
+        //     // Eat any exceptions - it's better successfully log the entries without this info...
+        //     // ...instead of letting the exception ruin everything
+        //     return null;
+        // }
+    }
+
+    // Private class for handling the response from api.status.salesforce.com
+    private class SalesforceStatusSiteResponse {
+        public String releaseNumber {get; set;}
+        public String releaseVersion {get; set;}
     }
 }

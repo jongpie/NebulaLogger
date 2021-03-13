@@ -663,10 +663,6 @@
                 <fieldItem>Record.OrganizationEnvironmentType__c</fieldItem>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-c4a1f400-d677-4197-9c0c-60bb1e5b426d</name>
-        <type>Facet</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -676,6 +672,10 @@
                 <fieldItem>Record.OrganizationDomainUrl__c</fieldItem>
             </fieldInstance>
         </itemInstances>
+        <name>Facet-c4a1f400-d677-4197-9c0c-60bb1e5b426d</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
         <itemInstances>
             <fieldInstance>
                 <fieldInstanceProperties>
@@ -692,6 +692,24 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApiVersion__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ApiReleaseVersion__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ApiReleaseNumber__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
