@@ -27,14 +27,6 @@
                 <behavior>Readonly</behavior>
                 <field>TotalLimitsCpuTimeUsed__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ApiReleaseNumber__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ApiReleaseVersion__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
