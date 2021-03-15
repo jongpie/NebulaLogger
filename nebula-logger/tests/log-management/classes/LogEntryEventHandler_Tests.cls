@@ -4,6 +4,9 @@
 //------------------------------------------------------------------------------------------------//
 @isTest
 private class LogEntryEventHandler_Tests {
+    private static final String MOCK_RELEASE_NUMBER = '230.12.2';
+    private static final String MOCK_RELEASE_VERSION = 'Spring \'21 Patch 12.2';
+
     static User getCurrentUser() {
         return [
             SELECT
@@ -24,6 +27,8 @@ private class LogEntryEventHandler_Tests {
     static Log__c getLog() {
         return [
             SELECT
+                ApiReleaseNumber__c,
+                ApiReleaseVersion__c,
                 ApiVersion__c,
                 Id,
                 Locale__c,
@@ -119,6 +124,29 @@ private class LogEntryEventHandler_Tests {
                 )
             FROM Log__c
         ];
+    }
+
+    private class SuccessCalloutMock implements HttpCalloutMock {
+        public HttpResponse respond(HttpRequest request) {
+            LogEntryEventHandler.StatusApiResponse apiResponse = new LogEntryEventHandler.StatusApiResponse();
+            apiResponse.releaseNumber = MOCK_RELEASE_NUMBER;
+            apiResponse.releaseVersion = MOCK_RELEASE_VERSION;
+
+            HttpResponse response = new HttpResponse();
+            response.setBody(JSON.serialize(apiResponse));
+            response.setHeader('Content-Type', 'application/json');
+            response.setStatusCode(200);
+
+            return response;
+        }
+    }
+
+    private class FailureCalloutMock implements HttpCalloutMock {
+        public HttpResponse respond(HttpRequest request) {
+            HttpResponse response = new HttpResponse();
+            response.setStatusCode(400);
+            return response;
+        }
     }
 
     static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
@@ -370,5 +398,79 @@ private class LogEntryEventHandler_Tests {
         for (TopicAssignment topicAssignment : topicAssignments) {
             System.assert(topicsSet.contains(topicAssignment.Topic.Name));
         }
+    }
+
+    @isTest
+    static void it_should_set_api_release_number_and_api_release_version_from_callout() {
+        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+        LogEntryEventHandler.shouldCallStatusApi = true;
+
+        String transactionId = '123-456-789-0';
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
+
+
+        Database.SaveResult saveResult;
+
+        Test.startTest();
+
+        saveResult = EventBus.publish(logEntryEvent);
+        // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+        // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+        // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+        Test.getEventBus().deliver();
+
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        Log__c log = getLog();
+        System.assertEquals(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+
+        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.assertEquals(MOCK_RELEASE_NUMBER, log.ApiReleaseNumber__c);
+        System.assertEquals(MOCK_RELEASE_VERSION, log.ApiReleaseVersion__c);
+        validateLogFields(logEntryEvent, log);
+        validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    @isTest
+    static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
+        Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
+        LogEntryEventHandler.shouldCallStatusApi = true;
+
+        String transactionId = '123-456-789-0';
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
+
+        Database.SaveResult saveResult;
+        try {
+            Test.startTest();
+
+            saveResult = EventBus.publish(logEntryEvent);
+            // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+            // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+            // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+            Test.getEventBus().deliver();
+
+            Test.stopTest();
+            System.assert(false, 'Exception expected, this assert should not run');
+        } catch (Exception ex) {
+            System.assertEquals(LogEntryEventHandler.StatusApiResponseException.class.getName(), ex.getTypeName());
+
+            String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
+            System.assert(ex.getMessage().contains(expectedErrorMessage));
+        }
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        Log__c log = getLog();
+        System.assertEquals(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+
+        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.assertEquals(null, log.ApiReleaseNumber__c);
+        System.assertEquals(null, log.ApiReleaseVersion__c);
+        validateLogFields(logEntryEvent, log);
+        validateLogEntryFields(logEntryEvent, logEntry);
     }
 }

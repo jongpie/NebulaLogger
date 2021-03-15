@@ -10,6 +10,9 @@
 public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
 
+    @TestVisible
+    private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
+
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
     private Set<String> topicNames;
@@ -100,8 +103,7 @@ public without sharing class LogEntryEventHandler {
         upsert LOG TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        // TODO probably need to remove the check for Test.isRunningTest() == false/add callout mocks to unit tests
-        if (Test.isRunningTest() == false && recentLogWithDetails == null == true && getCountOfOpenJobs() == 0) {
+        if (shouldCallStatusApi == true && recentLogWithDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
     }
@@ -269,22 +271,40 @@ public without sharing class LogEntryEventHandler {
         request.setMethod('GET');
 
         HttpResponse response = new Http().send(request);
+
+        if (response.getStatusCode() >= 400) {
+            String errorMessage =
+                'Callout failed for ' +
+                statusApiEndpoint +
+                '\nReceived request status code ' +
+                response.getStatusCode() +
+                ', status message: ' +
+                response.getStatus();
+            throw new StatusApiResponseException(errorMessage);
+        }
+
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
         System.debug('statusApiResponse==' + statusApiResponse);
 
         List<Log__c> logsToUpdate = new List<Log__c>();
-        for (Log__c log : [SELECT Id FROM Log__c WHERE DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c = NULL FOR UPDATE]) {
+        for (Log__c log : [SELECT Id FROM Log__c WHERE DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c = NULL ORDER BY CreatedDate LIMIT :Limits.getLimitDmlRows()]) {
             log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
             log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
 
             logsToUpdate.add(log);
         }
+        System.debug('logsToUpdate==' + logsToUpdate);
         update logsToUpdate;
     }
 
     // Private class for handling the response from api.status.salesforce.com
+    @TestVisible
     private class StatusApiResponse {
         public String releaseNumber { get; set; }
         public String releaseVersion { get; set; }
+    }
+
+    @TestVisible
+    private class StatusApiResponseException extends Exception {
     }
 }
