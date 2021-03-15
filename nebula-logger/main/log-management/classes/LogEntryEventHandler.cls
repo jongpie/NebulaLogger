@@ -90,18 +90,18 @@ public without sharing class LogEntryEventHandler {
         LOG.UserType__c = logEntryEvent.UserType__c;
 
         // To avoid making a callout for every log, try to query recent logs first
-        // If there are recent logs with the details already populated, copy the field values before upserting the log
-        List<Log__c> recentLogsWithDetails = getRecentLogsWithDetails();
-        if (recentLogsWithDetails.isEmpty() == false) {
-            LOG.ApiReleaseNumber__c = recentLogsWithDetails.get(0).ApiReleaseNumber__c;
-            LOG.ApiReleaseVersion__c = recentLogsWithDetails.get(0).ApiReleaseVersion__c;
+        // If there is a recent log with the details already populated, copy the field values before upserting the log
+        Log__c recentLogWithDetails = getRecentLogWithDetails();
+        if (recentLogWithDetails != null) {
+            LOG.ApiReleaseNumber__c = recentLogWithDetails.ApiReleaseNumber__c;
+            LOG.ApiReleaseVersion__c = recentLogWithDetails.ApiReleaseVersion__c;
         }
 
         upsert LOG TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         // TODO probably need to remove the check for Test.isRunningTest() == false/add callout mocks to unit tests
-        if (Test.isRunningTest() == false && recentLogsWithDetails.isEmpty() == true && getCountOfOpenJobs() == 0) {
+        if (Test.isRunningTest() == false && recentLogWithDetails == null == true && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
     }
@@ -225,19 +225,25 @@ public without sharing class LogEntryEventHandler {
     }
 
     // Private static methods
-    private static List<Log__c> getRecentLogsWithDetails() {
+    private static Log__c getRecentLogWithDetails() {
         // Query for recent logs created only today - the status API should be called...
         // ...at least once per day to make sure that status details are still accurate.
         // This query should make a callout approximately every 4 hours.
         Datetime fourHoursAgo = System.now().addMinutes(-4 * 60);
 
-        return [
+        List<Log__c> logs = [
             SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
             FROM Log__c
             WHERE CreatedDate >= :fourHoursAgo AND DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c != NULL
             ORDER BY CreatedDate DESC
             LIMIT 1
         ];
+
+        if (logs.isEmpty()) {
+            return null;
+        } else {
+            return logs.get(0);
+        }
     }
 
     private static Integer getCountOfOpenJobs() {
@@ -267,7 +273,7 @@ public without sharing class LogEntryEventHandler {
         System.debug('statusApiResponse==' + statusApiResponse);
 
         List<Log__c> logsToUpdate = new List<Log__c>();
-        for (Log__c log : [SELECT Id FROM Log__c WHERE DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c = NULL]) {
+        for (Log__c log : [SELECT Id FROM Log__c WHERE DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c = NULL FOR UPDATE]) {
             log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
             log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
 
