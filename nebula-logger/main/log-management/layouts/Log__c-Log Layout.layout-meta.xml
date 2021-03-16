@@ -262,12 +262,12 @@
                 <behavior>Readonly</behavior>
                 <field>OrganizationEnvironmentType__c</field>
             </layoutItems>
+			<layoutItems>
+                <behavior>Readonly</behavior>
+                <field>OrganizationNamespacePrefix__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>OrganizationDomainUrl__c</field>
-            </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>OrganizationInstanceName__c</field>
@@ -278,7 +278,15 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>OrganizationNamespacePrefix__c</field>
+                <field>ApiReleaseVersion__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ApiReleaseNumber__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>OrganizationDomainUrl__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
