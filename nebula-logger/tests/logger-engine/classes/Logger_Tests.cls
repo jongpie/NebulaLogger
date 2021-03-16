@@ -75,11 +75,10 @@ private class Logger_Tests {
 
     static List<Database.DeleteResult> getDeleteResultList() {
         List<Log__c> logs = new List<Log__c>();
-        for(Integer i = 0; i < 3; i++) {
+        for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
         }
         insert logs;
-
 
         return Database.delete(logs, false);
     }
@@ -101,7 +100,7 @@ private class Logger_Tests {
 
     static List<Database.SaveResult> getSaveResultList() {
         List<Log__c> logs = new List<Log__c>();
-        for(Integer i = 0; i < 3; i++) {
+        for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
         }
 
@@ -142,7 +141,7 @@ private class Logger_Tests {
 
     static List<Database.UpsertResult> getUpsertResultList() {
         List<Log__c> logs = new List<Log__c>();
-        for(Integer i = 0; i < 3; i++) {
+        for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
         }
 
@@ -170,7 +169,7 @@ private class Logger_Tests {
 
     static List<Database.UndeleteResult> getUndeleteResultList() {
         List<Log__c> logs = new List<Log__c>();
-        for(Integer i = 0; i < 3; i++) {
+        for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
         }
         insert logs;
