@@ -345,7 +345,8 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Deprecated - use `setRecord(Id recordId)` instead
      */
-    @Deprecated
+    // TODO before publishing managed package version, uncomment @Deprecated
+    // @Deprecated
     global LogEntryEventBuilder setRecordId(Id recordId) {
         return this.setRecord(recordId);
     }
@@ -353,7 +354,8 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Deprecated - use `setRecord(SObject record)` instead
      */
-    @Deprecated
+    // TODO before publishing managed package version, uncomment @Deprecated
+    // @Deprecated
     global LogEntryEventBuilder setRecordId(SObject record) {
         return this.setRecord(record);
     }
