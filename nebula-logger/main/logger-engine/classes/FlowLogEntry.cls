@@ -27,7 +27,7 @@ global inherited sharing class FlowLogEntry {
     /**
      * @description Optionally log a Flow fault error message
      */
-    @InvocableVariable(required=false label='(Optional) Fault Error Message')
+    @InvocableVariable(required=false label='(Optional) Flow Fault Error Message')
     global String faultMessage;
 
     /**
@@ -46,7 +46,7 @@ global inherited sharing class FlowLogEntry {
      * @description Optionally specify a logging level - the default is 'DEBUG'
      */
     @InvocableVariable(required=false label='(Optional) Logging Level')
-    global String loggingLevelName = 'DEBUG';
+    global String loggingLevelName;
 
     /**
      * @description Optionally provide a list of topics to dynamically assign to the log entry
@@ -65,6 +65,15 @@ global inherited sharing class FlowLogEntry {
     global static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
         Boolean saveLog = false;
         for (FlowLogEntry flowLogEntry : flowLogEntries) {
+            // Set the logging level if it's blank
+            if (String.isBlank(flowLogEntry.loggingLevelName)) {
+                if (String.isNotBlank(flowLogEntry.faultMessage)) {
+                    flowLogEntry.loggingLevelName = 'ERROR';
+                } else {
+                    flowLogEntry.loggingLevelName = 'DEBUG';
+                }
+            }
+
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowLogEntry.loggingLevelName);
 
             LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, flowLogEntry.message)
@@ -73,7 +82,7 @@ global inherited sharing class FlowLogEntry {
 
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
-            if (logEntryEvent == null) {
+            if (logEntryEventBuilder.shouldSave() == false) {
                 continue;
             }
 
@@ -91,7 +100,7 @@ global inherited sharing class FlowLogEntry {
             }
         }
 
-        if (saveLog) {
+        if (saveLog == true) {
             Logger.saveLog();
         }
 

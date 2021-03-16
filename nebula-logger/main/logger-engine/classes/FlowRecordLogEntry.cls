@@ -33,7 +33,7 @@ global inherited sharing class FlowRecordLogEntry {
     /**
      * @description Optionally log a Flow fault error message
      */
-    @InvocableVariable(required=false label='(Optional) Fault Error Message')
+    @InvocableVariable(required=false label='(Optional) Flow Fault Error Message')
     global String faultMessage;
     /**
      * @description Optionally choose to save any pending log entries
@@ -45,7 +45,7 @@ global inherited sharing class FlowRecordLogEntry {
      * @description Optionally specify a logging level - the default is 'DEBUG'
      */
     @InvocableVariable(required=false label='(Optional) Logging Level')
-    global String loggingLevelName = 'DEBUG';
+    global String loggingLevelName;
 
     /**
      * @description Optionally provide a list of topics to dynamically assign to the log entry
@@ -68,6 +68,15 @@ global inherited sharing class FlowRecordLogEntry {
     global static List<String> addFlowRecordEntries(List<FlowRecordLogEntry> flowRecordLogEntries) {
         Boolean saveLog = false;
         for (FlowRecordLogEntry flowRecordLogEntry : flowRecordLogEntries) {
+            // Set the logging level if it's blank
+            if (String.isBlank(flowRecordLogEntry.loggingLevelName)) {
+                if (String.isNotBlank(flowRecordLogEntry.faultMessage)) {
+                    flowRecordLogEntry.loggingLevelName = 'ERROR';
+                } else {
+                    flowRecordLogEntry.loggingLevelName = 'DEBUG';
+                }
+            }
+
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowRecordLogEntry.loggingLevelName);
 
             LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, flowRecordLogEntry.message)
@@ -76,7 +85,7 @@ global inherited sharing class FlowRecordLogEntry {
 
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
-            if (logEntryEvent == null) {
+            if (logEntryEventBuilder.shouldSave() == false) {
                 continue;
             }
 
@@ -94,7 +103,7 @@ global inherited sharing class FlowRecordLogEntry {
             }
         }
 
-        if (saveLog) {
+        if (saveLog == true) {
             Logger.saveLog();
         }
 
