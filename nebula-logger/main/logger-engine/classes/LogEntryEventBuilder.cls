@@ -399,8 +399,8 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
 
-        String truncatedRecordJSON = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(record));
-        this.logEntryEvent.RecordJson__c = truncatedRecordJSON;
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(record));
+        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
         return this;
     }
@@ -423,8 +423,8 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordSObjectType__c = 'List<' + records.getSObjectType().getDescribe().getName() + '>';
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(records.getSObjectType());
 
-        String truncatedRecordJSON = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
-        this.logEntryEvent.RecordJson__c = truncatedRecordJSON;
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
+        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
 
         return this;
     }
@@ -715,8 +715,8 @@ global with sharing class LogEntryEventBuilder {
         // So, use UserInfo.getUserId() to create the current user's record without querying
         // Then parse the JSOn to get the API version
         // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v51.0/sobjects/User/005J000000AugnYIAR"}
-        String userJSON = JSON.serialize(new User(Id = UserInfo.getUserId()));
-        return userJSON.substringAfter('/data/').substringBefore('/sobjects/User');
+        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
+        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static List<String> getIgnoredClasses() {
