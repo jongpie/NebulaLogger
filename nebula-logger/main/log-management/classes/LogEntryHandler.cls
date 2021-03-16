@@ -37,7 +37,7 @@ public without sharing class LogEntryHandler {
         // So, this code handles maintaing some checkbox fields via Apex instead
         for (LogEntry__c logEntry : logEntries) {
             logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
-            logEntry.HasRecordJSON__c = logEntry.RecordJSON__c != null;
+            logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
             logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
         }
     }

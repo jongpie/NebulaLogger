@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>HasRecordJSON__c</fullName>
-    <defaultValue>false</defaultValue>
+    <fullName>DatabaseResultJson__c</fullName>
     <externalId>false</externalId>
-    <label>Has Related Record JSON</label>
+    <label>Database Result JSON</label>
+    <length>131072</length>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
-    <type>Checkbox</type>
+    <type>LongTextArea</type>
+    <visibleLines>8</visibleLines>
 </CustomField>

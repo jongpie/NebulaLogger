@@ -139,8 +139,8 @@ private class FlowLogEntry_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [SELECT Id, RecordId__c, RecordJSON__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        LogEntry__c logEntry = [SELECT Id, RecordId__c, RecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
         System.assertEquals(UserInfo.getUserId(), logEntry.RecordId__c);
-        System.assertEquals(null, logEntry.RecordJSON__c);
+        System.assertEquals(null, logEntry.RecordJson__c);
     }
 }

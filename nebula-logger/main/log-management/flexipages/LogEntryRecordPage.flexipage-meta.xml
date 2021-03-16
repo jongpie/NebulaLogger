@@ -243,10 +243,10 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.RecordJSON__c</fieldItem>
+                <fieldItem>Record.RecordJson__c</fieldItem>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.HasRecordJSON__c}</leftValue>
+                        <leftValue>{!Record.HasRecordJson__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
@@ -285,7 +285,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.DatabaseResultJSON__c</fieldItem>
+                <fieldItem>Record.DatabaseResultJson__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-839d3f77-0b78-43a9-9477-6b63126dcf12</name>

@@ -95,7 +95,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>RecordJSON__c</field>
+                <field>RecordJson__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>
@@ -112,7 +112,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>DatabaseResultJSON__c</field>
+                <field>DatabaseResultJson__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

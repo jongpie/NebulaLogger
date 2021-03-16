@@ -154,7 +154,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(deleteResult);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
         return this.setRecordId(deleteResult.getId());
@@ -174,7 +174,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(mergeResult);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResult);
         this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
         return this.setRecordId(mergeResult.getId());
@@ -194,7 +194,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(saveResult);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResult);
         this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
         return this.setRecordId(saveResult.getId());
@@ -216,7 +216,7 @@ global with sharing class LogEntryEventBuilder {
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(upsertResult);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
         return this.setRecordId(upsertResult.getId());
@@ -236,7 +236,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(undeleteResult);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
         return this.setRecordId(undeleteResult.getId());
@@ -256,7 +256,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(deleteResults);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResults);
         this.logEntryEvent.DatabaseResultType__c = (List<Database.DeleteResult>.class).getName();
 
         return this;
@@ -276,7 +276,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(mergeResults);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResults);
         this.logEntryEvent.DatabaseResultType__c = (List<Database.MergeResult>.class).getName();
 
         return this;
@@ -296,7 +296,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(saveResults);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResults);
         this.logEntryEvent.DatabaseResultType__c = (List<Database.SaveResult>.class).getName();
 
         return this;
@@ -316,7 +316,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(upsertResults);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResults);
         this.logEntryEvent.DatabaseResultType__c = (List<Database.UpsertResult>.class).getName();
 
         return this;
@@ -336,7 +336,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.DatabaseResultJSON__c = JSON.serializePretty(undeleteResults);
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResults);
         this.logEntryEvent.DatabaseResultType__c = (List<Database.UndeleteResult>.class).getName();
 
         return this;
@@ -399,8 +399,8 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
 
-        String truncatedRecordJSON = truncateFieldValue(Schema.LogEntryEvent__e.RecordJSON__c, JSON.serializePretty(record));
-        this.logEntryEvent.RecordJSON__c = truncatedRecordJSON;
+        String truncatedRecordJSON = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(record));
+        this.logEntryEvent.RecordJson__c = truncatedRecordJSON;
 
         return this;
     }
@@ -423,8 +423,8 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordSObjectType__c = 'List<' + records.getSObjectType().getDescribe().getName() + '>';
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(records.getSObjectType());
 
-        String truncatedRecordJSON = truncateFieldValue(Schema.LogEntryEvent__e.RecordJSON__c, JSON.serializePretty(records));
-        this.logEntryEvent.RecordJSON__c = truncatedRecordJSON;
+        String truncatedRecordJSON = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
+        this.logEntryEvent.RecordJson__c = truncatedRecordJSON;
 
         return this;
     }
