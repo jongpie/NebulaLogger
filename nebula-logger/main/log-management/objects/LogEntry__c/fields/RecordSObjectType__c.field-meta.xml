@@ -9,7 +9,7 @@
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
-            <sorted>true</sorted>
+            <sorted>false</sorted>
             <value>
                 <fullName>Account</fullName>
                 <default>false</default>
@@ -29,6 +29,26 @@
                 <fullName>User</fullName>
                 <default>false</default>
                 <label>User</label>
+            </value>
+            <value>
+                <fullName>List&lt;Account&gt;</fullName>
+                <default>false</default>
+                <label>List&lt;Account&gt;</label>
+            </value>
+            <value>
+                <fullName>List&lt;Case&gt;</fullName>
+                <default>false</default>
+                <label>List&lt;Case&gt;</label>
+            </value>
+            <value>
+                <fullName>List&lt;Lead&gt;</fullName>
+                <default>false</default>
+                <label>List&lt;Lead&gt;</label>
+            </value>
+            <value>
+                <fullName>List&lt;User&gt;</fullName>
+                <default>false</default>
+                <label>List&lt;User&gt;</label>
             </value>
         </valueSetDefinition>
     </valueSet>

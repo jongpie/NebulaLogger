@@ -196,9 +196,16 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordId__c</fieldItem>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.HasRecordId__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
+                </visibilityRule>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -241,7 +248,7 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordJson__c</fieldItem>
                 <visibilityRule>
@@ -560,7 +567,7 @@
                 <componentName>flexipage:fieldSection</componentName>
                 <visibilityRule>
                     <criteria>
-                        <leftValue>{!Record.HasRecordId__c}</leftValue>
+                        <leftValue>{!Record.HasRecordJson__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>true</rightValue>
                     </criteria>
