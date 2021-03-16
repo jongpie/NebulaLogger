@@ -11,6 +11,11 @@
         <valueSetDefinition>
             <sorted>true</sorted>
             <value>
+                <fullName>Flow.FaultError</fullName>
+                <default>false</default>
+                <label>Flow.FaultError</label>
+            </value>
+            <value>
                 <fullName>System.AsyncException</fullName>
                 <default>false</default>
                 <label>System.AsyncException</label>
