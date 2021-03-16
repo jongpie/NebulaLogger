@@ -408,7 +408,6 @@ private class LogEntryEventHandler_Tests {
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
 
-
         Database.SaveResult saveResult;
 
         Test.startTest();

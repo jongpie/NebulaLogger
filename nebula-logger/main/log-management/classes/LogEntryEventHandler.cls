@@ -236,7 +236,7 @@ public without sharing class LogEntryEventHandler {
         List<Log__c> logs = [
             SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
             FROM Log__c
-            WHERE CreatedDate >= :fourHoursAgo AND DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c != NULL
+            WHERE CreatedDate >= :fourHoursAgo AND CreatedDate = TODAY AND ApiReleaseNumber__c != NULL
             ORDER BY CreatedDate DESC
             LIMIT 1
         ];
@@ -287,7 +287,13 @@ public without sharing class LogEntryEventHandler {
         System.debug('statusApiResponse==' + statusApiResponse);
 
         List<Log__c> logsToUpdate = new List<Log__c>();
-        for (Log__c log : [SELECT Id FROM Log__c WHERE DAY_ONLY(CreatedDate) = TODAY AND ApiReleaseNumber__c = NULL ORDER BY CreatedDate LIMIT :Limits.getLimitDmlRows()]) {
+        for (Log__c log : [
+            SELECT Id
+            FROM Log__c
+            WHERE CreatedDate = TODAY AND ApiReleaseNumber__c = NULL
+            ORDER BY CreatedDate
+            LIMIT :Limits.getLimitDmlRows()
+        ]) {
             log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
             log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
 
