@@ -8,7 +8,7 @@
         <name>backgroundComponents</name>
         <type>Background</type>
     </flexiPageRegions>
-    <masterLabel>Logger UtilityBar</masterLabel>
+    <masterLabel>Logger Console Utility Bar</masterLabel>
     <template>
         <name>one:utilityBarTemplateDesktop</name>
         <properties>

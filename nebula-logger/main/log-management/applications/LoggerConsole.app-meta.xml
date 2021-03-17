@@ -15,7 +15,7 @@
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
-    <utilityBar>LoggerConsole_UtilityBar</utilityBar>
+    <utilityBar>LoggerConsoleUtilityBar</utilityBar>
     <workspaceConfig>
         <mappings>
             <fieldName>Log__c</fieldName>
