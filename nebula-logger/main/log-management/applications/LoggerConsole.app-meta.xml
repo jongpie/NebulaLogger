@@ -12,6 +12,8 @@
     <navType>Console</navType>
     <tabs>Log__c</tabs>
     <tabs>LogEntry__c</tabs>
+    <tabs>standard-report</tabs>
+    <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LoggerConsole_UtilityBar</utilityBar>
     <workspaceConfig>
@@ -21,6 +23,12 @@
         </mappings>
         <mappings>
             <tab>Log__c</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-Dashboard</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-report</tab>
         </mappings>
     </workspaceConfig>
 </CustomApplication>
