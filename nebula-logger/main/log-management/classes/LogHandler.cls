@@ -122,6 +122,7 @@ public without sharing class LogHandler {
             );
             logShares.add(logShare);
         }
-        System.debug(Database.insert(logShares, false));
+        List<Database.SaveResult> saveResults = Database.insert(logShares, false);
+        System.debug('saveResults==' + saveResults);
     }
 }
