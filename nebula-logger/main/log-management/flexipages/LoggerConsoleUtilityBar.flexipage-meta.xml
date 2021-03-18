@@ -3,6 +3,11 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>macros:macroUtilityItem</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>console:history</componentName>
             </componentInstance>
         </itemInstances>
@@ -18,7 +23,7 @@
         <name>one:utilityBarTemplateDesktop</name>
         <properties>
             <name>isLeftAligned</name>
-            <value>true</value>
+            <value>false</value>
         </properties>
     </template>
     <type>UtilityBar</type>
