@@ -1,0 +1,62 @@
+# Unique name for this workflow
+name: Logger Validation-Only Deployment
+
+on:
+    push:
+        branches:
+            - master
+        paths-ignore:
+            - 'sfdx-project.json'
+            - 'README.md'
+            - 'Contributing.md'
+            - 'CODE_OF_CONDUCT.md'
+            - 'package.json'
+            - 'LICENSE'
+            - 'content/**'
+            - '.gitignore'
+            - '.prettierignore'
+            - '.prettierrc'
+    pull_request:
+        types: [opened, edited, synchronize, reopened]
+        paths-ignore:
+            - 'sfdx-project.json'
+            - 'README.md'
+            - 'Contributing.md'
+            - 'CODE_OF_CONDUCT.md'
+            - 'package.json'
+            - 'LICENSE'
+            - 'content/**'
+            - '.gitignore'
+            - '.prettierignore'
+            - '.prettierrc'
+
+jobs:
+    validation-deployment-test:
+        runs-on: ubuntu-latest
+        environment: Test
+        steps:
+            # Checkout the code
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+
+            # Install Salesforce CLI
+            - name: Install Salesforce CLI
+              run: |
+                  wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+                  mkdir sfdx-cli
+                  tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+                  ./sfdx-cli/install
+
+            # Store secret for dev hub
+            - name: 'Populate auth file with PIPELINE_SFDX_URL secret'
+              shell: bash
+              run: 'echo ${{ env.PIPELINE_SFDX_URL }} > sfdx_url_file'
+              env:
+                  PIPELINE_SFDX_URL: ${{ secrets.PIPELINE_SFDX_URL }}
+
+            # Run check-only deployment
+            - name: 'Deploy & Test'
+              shell: bash
+              run: |
+                sfdx auth:sfdxurl:store --sfdxurlfile sfdx_url_file --setalias nebula_ci
+                sfdx force:source:deploy --targetusername nebula_ci --sourcepath ./nebula-logger --checkonly --testlevel RunLocalTests

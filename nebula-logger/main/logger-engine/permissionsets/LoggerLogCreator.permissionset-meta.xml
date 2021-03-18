@@ -9,11 +9,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>Logger</apexClass>
+        <apexClass>LogMessage</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LogMessage</apexClass>
+        <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <description>Provides access to generate log entries via Apex, Flow and Process Builder</description>

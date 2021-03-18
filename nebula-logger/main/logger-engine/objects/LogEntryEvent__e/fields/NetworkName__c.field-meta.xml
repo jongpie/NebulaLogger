@@ -3,12 +3,12 @@
     <fullName>NetworkName__c</fullName>
     <description>The name of the user&apos;s Community site (based on NetworkId).</description>
     <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
     <label>Site Name</label>
     <length>255</length>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>false</trackHistory>
-    <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>
 </CustomField>

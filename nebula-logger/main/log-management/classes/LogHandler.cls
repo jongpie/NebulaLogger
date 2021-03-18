@@ -38,6 +38,9 @@ public without sharing class LogHandler {
                 // Priority logic relies on roll-up fields, so only run on update (after log entries are inserted)
                 this.setPriority(logs, oldLogsById);
             }
+            when AFTER_INSERT {
+                this.shareLogsWithLoggingUsers(logs);
+            }
         }
     }
 
@@ -97,5 +100,29 @@ public without sharing class LogHandler {
                 log.Priority__c = MEDIUM;
             }
         }
+    }
+
+    private void shareLogsWithLoggingUsers(List<Log__c> logs) {
+        // For each log record, share the record with the user that created the log (Log__c.LoggedBy__c)
+        List<Log__Share> logShares = new List<Log__Share>();
+        for (Log__c log : logs) {
+            LoggerSettings__c loggingUserSettings = LoggerSettings__c.getInstance(log.LoggedBy__c);
+            System.debug('loggingUserSettings==' + loggingUserSettings);
+
+            // Ignore blank and unsupported values
+            if (loggingUserSettings.DefaultSharingAccessLevel__c != 'Read' && loggingUserSettings.DefaultSharingAccessLevel__c != 'Edit') {
+                continue;
+            }
+
+            Log__Share logShare = new Log__Share(
+                AccessLevel = loggingUserSettings.DefaultSharingAccessLevel__c,
+                ParentId = log.Id,
+                RowCause = Schema.Log__Share.RowCause.LoggedByUser__c,
+                UserOrGroupId = log.LoggedBy__c
+            );
+            logShares.add(logShare);
+        }
+        List<Database.SaveResult> saveResults = Database.insert(logShares, false);
+        System.debug('saveResults==' + saveResults);
     }
 }
