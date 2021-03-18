@@ -110,12 +110,12 @@ public without sharing class LogHandler {
             System.debug('loggingUserSettings==' + loggingUserSettings);
 
             // Ignore blank and unsupported values
-            if (loggingUserSettings.SharingAccessLevel__c != 'Read' && loggingUserSettings.SharingAccessLevel__c != 'Edit') {
+            if (loggingUserSettings.DefaultSharingAccessLevel__c != 'Read' && loggingUserSettings.DefaultSharingAccessLevel__c != 'Edit') {
                 continue;
             }
 
             Log__Share logShare = new Log__Share(
-                AccessLevel = loggingUserSettings.SharingAccessLevel__c,
+                AccessLevel = loggingUserSettings.DefaultSharingAccessLevel__c,
                 ParentId = log.Id,
                 RowCause = Schema.Log__Share.RowCause.LoggedByUser__c,
                 UserOrGroupId = log.LoggedBy__c
