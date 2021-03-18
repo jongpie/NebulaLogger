@@ -116,7 +116,12 @@ private class FlowRecordLogEntry_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        LogEntry__c logEntry = [
+            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
         System.assertEquals('ERROR', logEntry.LoggingLevel__c);
         System.assertEquals(flowEntry.faultMessage, logEntry.ExceptionMessage__c);
         System.assertEquals('Flow.FaultError', logEntry.ExceptionType__c);
@@ -124,5 +129,4 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
         System.assertEquals(flowEntry.flowName, logEntry.OriginLocation__c);
     }
-
 }

@@ -154,4 +154,76 @@ private class LogHandler_Tests {
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(MEDIUM_PRIORITY, log.Priority__c);
     }
+
+    @isTest
+    static void it_should_grant_read_access_to_user_when_access_level_is_read() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        settings.DefaultSharingAccessLevel__c = 'Read';
+        upsert settings;
+
+        Test.startTest();
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        insert log;
+        Test.stopTest();
+
+        List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+
+        System.assertEquals(1, logShares.size(), logShares);
+        System.assertEquals('Read', logShares.get(0).AccessLevel);
+        System.assertEquals(log.Id, logShares.get(0).ParentId);
+        System.assertEquals(Schema.Log__Share.RowCause.LoggedByUser__c, logShares.get(0).RowCause);
+        System.assertEquals(log.LoggedBy__c, logShares.get(0).UserOrGroupId);
+    }
+
+    @isTest
+    static void it_should_grant_edit_access_to_user_when_access_level_is_edit() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        settings.DefaultSharingAccessLevel__c = 'Edit';
+        upsert settings;
+
+        Test.startTest();
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        insert log;
+        Test.stopTest();
+
+        List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+
+        System.assertEquals(1, logShares.size(), logShares);
+        System.assertEquals('Edit', logShares.get(0).AccessLevel);
+        System.assertEquals(log.Id, logShares.get(0).ParentId);
+        System.assertEquals(Schema.Log__Share.RowCause.LoggedByUser__c, logShares.get(0).RowCause);
+        System.assertEquals(log.LoggedBy__c, logShares.get(0).UserOrGroupId);
+    }
+
+    @isTest
+    static void it_should_not_grant_access_to_user_when_access_level_is_null() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        settings.DefaultSharingAccessLevel__c = null;
+        upsert settings;
+
+        Test.startTest();
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        insert log;
+        Test.stopTest();
+
+        List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+
+        System.assertEquals(0, logShares.size(), logShares);
+    }
+
+    @isTest
+    static void it_should_not_grant_access_to_user_when_access_level_is_an_unknown_string() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        settings.DefaultSharingAccessLevel__c = 'FAKE LEVEL';
+        upsert settings;
+
+        Test.startTest();
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        insert log;
+        Test.stopTest();
+
+        List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+
+        System.assertEquals(0, logShares.size(), logShares);
+    }
 }
