@@ -105,7 +105,7 @@ public without sharing class LogHandler {
     private void shareLogsWithLoggingUsers(List<Log__c> logs) {
         // For each log record, share the record with the user that created the log (Log__c.LoggedBy__c)
         List<Log__Share> logShares = new List<Log__Share>();
-        for(Log__c log : logs) {
+        for (Log__c log : logs) {
             LoggerSettings__c loggingUserSettings = LoggerSettings__c.getInstance(log.LoggedBy__c);
             System.debug('loggingUserSettings==' + loggingUserSettings);
 
