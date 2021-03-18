@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-     <classAccesses>
+    <applicationVisibilities>
+        <application>LoggerConsole</application>
+        <visible>true</visible>
+    </applicationVisibilities>
+    <classAccesses>
         <apexClass>RelatedLogEntriesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -367,12 +371,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordSObjectType__c</field>
+        <field>LogEntry__c.RecordSObjectTypeNamespace__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordSObjectTypeNamespace__c</field>
+        <field>LogEntry__c.RecordSObjectType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -557,17 +561,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.OrganizationEnvironmentType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.OrganizationId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.OrganizationInstanceName__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Log__c.OrganizationEnvironmentType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -774,7 +778,7 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>LogEntryEvent__e</object>
-        <viewAllRecords>true</viewAllRecords>
+        <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
@@ -794,6 +798,10 @@
         <object>Log__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <tabSettings>
+        <tab>LogEntry__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
     <tabSettings>
         <tab>Log__c</tab>
         <visibility>Visible</visibility>

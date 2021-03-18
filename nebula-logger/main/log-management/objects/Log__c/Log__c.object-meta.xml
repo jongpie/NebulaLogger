@@ -158,6 +158,7 @@
     <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
     <label>Log</label>
     <nameField>
         <displayFormat>Log-{000000}</displayFormat>
@@ -168,7 +169,6 @@
     </nameField>
     <pluralLabel>Logs</pluralLabel>
     <searchLayouts>
-        <customTabListAdditionalFields>NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields>LoggedByUsernameLink__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>StartTime__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
@@ -179,10 +179,9 @@
         <customTabListAdditionalFields>TotalERRORLogEntries__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalWARNLogEntries__c</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
-        <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
-        <lookupDialogsAdditionalFields>NAME</lookupDialogsAdditionalFields>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
         <lookupDialogsAdditionalFields>LoggedByUsernameLink__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>StartTime__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
@@ -192,7 +191,6 @@
         <lookupDialogsAdditionalFields>TotalLogEntries__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TotalERRORLogEntries__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>TotalWARNLogEntries__c</lookupDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>NAME</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LoggedByUsernameLink__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>StartTime__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>OWNER.ALIAS</lookupPhoneDialogsAdditionalFields>
@@ -213,7 +211,6 @@
         <searchFilterFields>TotalLogEntries__c</searchFilterFields>
         <searchFilterFields>TotalERRORLogEntries__c</searchFilterFields>
         <searchFilterFields>TotalWARNLogEntries__c</searchFilterFields>
-        <searchResultsAdditionalFields>NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>LoggedByUsernameLink__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>StartTime__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>

@@ -262,7 +262,7 @@
                 <behavior>Readonly</behavior>
                 <field>OrganizationEnvironmentType__c</field>
             </layoutItems>
-			<layoutItems>
+            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>OrganizationNamespacePrefix__c</field>
             </layoutItems>

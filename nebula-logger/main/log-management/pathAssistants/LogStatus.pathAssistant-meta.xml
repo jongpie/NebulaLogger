@@ -4,17 +4,5 @@
     <entityName>Log__c</entityName>
     <fieldName>Status__c</fieldName>
     <masterLabel>Log Status</masterLabel>
-    <pathAssistantSteps>
-        <picklistValueName>Done</picklistValueName>
-    </pathAssistantSteps>
-    <pathAssistantSteps>
-        <picklistValueName>Ignored</picklistValueName>
-    </pathAssistantSteps>
-    <pathAssistantSteps>
-        <picklistValueName>In Progress</picklistValueName>
-    </pathAssistantSteps>
-    <pathAssistantSteps>
-        <picklistValueName>New</picklistValueName>
-    </pathAssistantSteps>
     <recordTypeName>__MASTER__</recordTypeName>
 </PathAssistant>

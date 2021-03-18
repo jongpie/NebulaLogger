@@ -3,6 +3,9 @@
     <fullName>UserLicenseDefinitionKey__c</fullName>
     <description>https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_userlicense.htm</description>
     <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
     <label>User License Definition Key</label>
     <length>255</length>
     <required>false</required>
