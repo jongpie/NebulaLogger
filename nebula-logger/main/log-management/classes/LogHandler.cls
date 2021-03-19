@@ -62,9 +62,25 @@ public without sharing class LogHandler {
             'AUS8S', 'IND3S', 'USA3S'
         };
 
-        Boolean isPreviewInstance = previewInstances.contains(logs.get(0).OrganizationInstanceName__c);
+        Set<String> nonPreviewInstances = new Set<String>{
+            'CS1', 'CS6', 'CS8', 'CS10', 'CS16', 'CS18', 'CS22', 'CS24', 'CS29', 'CS33', 'CS40', 'CS43',
+            'CS50', 'CS52', 'CS58', 'CS60', 'CS62', 'CS64', 'CS65', 'CS66', 'CS68', 'CS70', 'CS73', 'CS86',
+            'CS89', 'CS90', 'CS92', 'CS94', 'CS98', 'CS100', 'CS101', 'CS102', 'CS110', 'CS114', 'CS115', 'CS117',
+            'CS119', 'CS121', 'CS132', 'CS148', 'CS151', 'CS162', 'CS165', 'CS173', 'AUS4S', 'IND2S', 'USA2S'
+        };
+
+        String releaseCycle;
+        if (previewInstances.contains(logs.get(0).OrganizationInstanceName__c)) {
+            releaseCycle = 'Preview Instance';
+        } else if (nonPreviewInstances.contains(logs.get(0).OrganizationInstanceName__c)) {
+            releaseCycle = 'Non-Preview Instance';
+        } else {
+            // Use 'Unknown' as the default for private instances and situations where the hardcoded sets above are missing some values
+            releaseCycle = 'Unknown';
+        }
+
         for (Log__c log : logs) {
-            log.OrganizationInstanceReleaseCycle__c = isPreviewInstance ? 'Preview Instance' : 'Non-Preview Instance';
+            log.OrganizationInstanceReleaseCycle__c = releaseCycle;
         }
     }
 

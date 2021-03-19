@@ -21,6 +21,11 @@
                 <default>false</default>
                 <label>Non-Preview Instance</label>
             </value>
+            <value>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+                <label>Unknown</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
