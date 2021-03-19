@@ -14,17 +14,17 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>v53</fullName>
+                <fullName>v53.0</fullName>
                 <default>false</default>
                 <label>v53.0 - Winter &apos;22</label>
             </value>
             <value>
-                <fullName>v52</fullName>
+                <fullName>v52.0</fullName>
                 <default>false</default>
                 <label>v52.0 - Summer &apos;21</label>
             </value>
             <value>
-                <fullName>v51</fullName>
+                <fullName>v51.0</fullName>
                 <default>false</default>
                 <label>v51.0 - Spring &apos;21</label>
             </value>
