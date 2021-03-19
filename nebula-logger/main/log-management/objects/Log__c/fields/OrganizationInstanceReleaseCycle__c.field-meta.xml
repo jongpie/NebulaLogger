@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>OrganizationInstanceReleaseCycle__c</fullName>
     <externalId>false</externalId>
-    <label>Organization Instance Release Cycle</label>
+    <label>Instance Release Cycle</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
