@@ -660,7 +660,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationEnvironmentType__c</fieldItem>
+                <fieldItem>Record.OrganizationDomainUrl__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -682,7 +682,25 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.OrganizationEnvironmentType__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationInstanceName__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.OrganizationInstanceReleaseCycle__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -710,15 +728,6 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApiReleaseNumber__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationDomainUrl__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-7a49dd50-62e1-43c4-a95b-81a04f2e4a8e</name>

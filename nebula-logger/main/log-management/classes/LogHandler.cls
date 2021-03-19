@@ -29,6 +29,7 @@ public without sharing class LogHandler {
 
         switch on Trigger.operationType {
             when BEFORE_INSERT {
+                this.setOrgReleaseCycle(logs);
                 this.setClosedStatusFields(logs);
                 // The log retention date field should support being manually changed, so only auto-set it on insert
                 this.setLogRetentionDate(logs);
@@ -41,6 +42,29 @@ public without sharing class LogHandler {
             when AFTER_INSERT {
                 this.shareLogsWithLoggingUsers(logs);
             }
+        }
+    }
+
+    private void setOrgReleaseCycle(List<Log__c> logs) {
+        // Currently, there doesn't seem to be a way within Apex or api.status.salesforce.com...
+        // ...to know if your org is on a preview instance or non-preview instance
+        // So, that unfortunately leaves hardcoding the instances for now
+        // And no need for this to be static since it's only used internally for BEFORE_INSERT context
+        Set<String> previewInstances = new Set<String>{
+            'CS2', 'CS4', 'CS5', 'CS7', 'CS9', 'CS11', 'CS14', 'CS15', 'CS17', 'CS19', 'CS20', 'CS21',
+            'CS23', 'CS25', 'CS26', 'CS27', 'CS28', 'CS31', 'CS32', 'CS34', 'CS35', 'CS36', 'CS37', 'CS41',
+            'CS42', 'CS44', 'CS45', 'CS47', 'CS53', 'CS57', 'CS59', 'CS61', 'CS63', 'CS67', 'CS69', 'CS72',
+            'CS74', 'CS75', 'CS76', 'CS77', 'CS78', 'CS79', 'CS80', 'CS81', 'CS84', 'CS87', 'CS88', 'CS91',
+            'CS95', 'CS96', 'CS97', 'CS99', 'CS105', 'CS106', 'CS107', 'CS108', 'CS109', 'CS111', 'CS112',
+            'CS113', 'CS116', 'CS122', 'CS123', 'CS124', 'CS125', 'CS126', 'CS127', 'CS128', 'CS129', 'CS133',
+            'CS137', 'CS138', 'CS142', 'CS152', 'CS159', 'CS160', 'CS169', 'CS174', 'CS189', 'CS190', 'CS191',
+            'CS192', 'CS193', 'CS194', 'CS195', 'CS196', 'CS197', 'CS198', 'CS199', 'CS201', 'CS203', 'AUS2S',
+            'AUS8S', 'IND3S', 'USA3S'
+        };
+
+        Boolean isPreviewInstance = previewInstances.contains(logs.get(0).OrganizationInstanceName__c);
+        for (Log__c log : logs) {
+            log.OrganizationInstanceReleaseCycle__c = isPreviewInstance ? 'Preview Instance' : 'Non-Preview Instance';
         }
     }
 
