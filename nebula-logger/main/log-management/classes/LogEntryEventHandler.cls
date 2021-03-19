@@ -11,7 +11,7 @@ public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
 
     @TestVisible
-    private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
+    private static Boolean shouldCallStatusApi = Test.isRunningTest() == false && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c;
 
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
