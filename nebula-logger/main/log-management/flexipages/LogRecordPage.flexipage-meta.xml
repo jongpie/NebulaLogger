@@ -660,7 +660,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationDomainUrl__c</fieldItem>
+                <fieldItem>Record.OrganizationNamespacePrefix__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -669,7 +669,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.OrganizationNamespacePrefix__c</fieldItem>
+                <fieldItem>Record.OrganizationDomainUrl__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <name>Facet-c4a1f400-d677-4197-9c0c-60bb1e5b426d</name>

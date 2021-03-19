@@ -260,11 +260,11 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>OrganizationDomainUrl__c</field>
+                <field>OrganizationNamespacePrefix__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>OrganizationNamespacePrefix__c</field>
+                <field>OrganizationDomainUrl__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
