@@ -49,6 +49,7 @@ public without sharing class LogHandler {
         // Currently, there doesn't seem to be a way within Apex or api.status.salesforce.com...
         // ...to know if your org is on a preview instance or non-preview instance
         // So, that unfortunately leaves hardcoding the instances for now
+        // Source: https://www.salesforce.com/blog/spring-21-sandbox-preview/
         // And no need for this to be static since it's only used internally for BEFORE_INSERT context
         Set<String> previewInstances = new Set<String>{
             'CS2', 'CS4', 'CS5', 'CS7', 'CS9', 'CS11', 'CS14', 'CS15', 'CS17', 'CS19', 'CS20', 'CS21',
