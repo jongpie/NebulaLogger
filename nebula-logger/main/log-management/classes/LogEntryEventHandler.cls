@@ -11,7 +11,7 @@ public without sharing class LogEntryEventHandler {
     private static final Log__c LOG = new Log__c();
 
     @TestVisible
-    private static Boolean shouldCallStatusApi = Test.isRunningTest() == false && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c;
+    private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
 
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
@@ -103,7 +103,7 @@ public without sharing class LogEntryEventHandler {
         upsert LOG TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (shouldCallStatusApi == true && recentLogWithDetails == null && getCountOfOpenJobs() == 0) {
+        if (shouldCallStatusApi == true && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c && recentLogWithDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
     }
