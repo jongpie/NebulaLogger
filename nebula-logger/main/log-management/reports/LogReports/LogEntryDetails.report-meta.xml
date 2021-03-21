@@ -78,6 +78,15 @@
     <columns>
         <field>LogEntry__c.ExceptionStackTrace__c</field>
     </columns>
+    <filter>
+        <criteriaItems>
+            <column>LogEntry__c.Timestamp__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>THIS_WEEK</value>
+        </criteriaItems>
+    </filter>
     <format>Summary</format>
     <groupingsDown>
         <dateGranularity>Day</dateGranularity>
@@ -99,7 +108,7 @@
         <value>1</value>
     </params>
     <reportType>CustomEntityCustomEntity$Log__c$LogEntry__c</reportType>
-    <scope>user</scope>
+    <scope>organization</scope>
     <showDetails>true</showDetails>
     <showGrandTotal>true</showGrandTotal>
     <showSubTotals>true</showSubTotals>
