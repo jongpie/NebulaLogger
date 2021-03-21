@@ -548,8 +548,12 @@ global with sharing class LogEntryEventBuilder {
 
     // Private static methods
     private static String getApiVersion() {
+        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
+        // Serializing any SObject with an ID will include the API version in the JSON
+        // So, use UserInfo.getUserId() to create an instance of User and parse the JSOn to get the API version
+        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v51.0/sobjects/User/005J000000AugnYIAR"}
         String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('.0/sobjects/');
+        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
     private static List<String> getIgnoredClasses() {
