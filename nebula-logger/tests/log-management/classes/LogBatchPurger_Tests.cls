@@ -10,6 +10,8 @@ private class LogBatchPurger_Tests {
     static void setupData() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
         settings.IsEnabled__c = false;
+        settings.EnableSystemMessages__c = false;
+        settings.LoggingLevel__c = LoggingLevel.FINEST.name();
         upsert settings;
 
         Date scheduledDeletionDate = System.today().addDays(-7);
@@ -27,7 +29,48 @@ private class LogBatchPurger_Tests {
     }
 
     @isTest
-    static void it_should_delete_a_log_after_scheduled_deletion_date() {
+    static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_enabled() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c = true;
+        settings.EnableSystemMessages__c = true;
+        settings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        upsert settings;
+
+        System.assertEquals(true, LoggerSettings__c.getInstance().IsEnabled__c);
+        System.assertEquals(true, LoggerSettings__c.getInstance().EnableSystemMessages__c);
+        System.assertEquals(LoggingLevel.FINEST.name(), LoggerSettings__c.getInstance().LoggingLevel__c);
+
+        List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
+        List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
+
+        System.assertEquals(1, logs.size());
+        System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
+
+        // Verify assumption that the log in the database has a deletion date in the past
+        Log__c log = logs.get(0);
+        System.assertNotEquals(null, log.LogRetentionDate__c);
+        System.assert(log.LogRetentionDate__c < System.today());
+
+        Test.startTest();
+        Database.executeBatch(new LogBatchPurger());
+        Test.stopTest();
+
+        logs = [SELECT Id FROM Log__c];
+        logEntries = [SELECT Id FROM LogEntry__c];
+        System.assertEquals(1, logs.size(), logs);
+        System.assertEquals(6, logEntries.size(), logEntries);
+    }
+
+    @isTest
+    static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_disabled() {
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.IsEnabled__c = true;
+        upsert settings;
+
+        System.assertEquals(true, LoggerSettings__c.getInstance().IsEnabled__c);
+        System.assertEquals(false, LoggerSettings__c.getInstance().EnableSystemMessages__c);
+        System.assertEquals(LoggingLevel.FINEST.name(), LoggerSettings__c.getInstance().LoggingLevel__c);
+
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
 
