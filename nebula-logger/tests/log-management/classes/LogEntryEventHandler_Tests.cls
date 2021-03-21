@@ -401,9 +401,13 @@ private class LogEntryEventHandler_Tests {
     }
 
     @isTest
-    static void it_should_set_api_release_number_and_api_release_version_from_callout() {
+    static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
         LogEntryEventHandler.shouldCallStatusApi = true;
+
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        orgDefaults.EnableStatusApiCallout__c = true;
+        upsert orgDefaults;
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
@@ -434,9 +438,52 @@ private class LogEntryEventHandler_Tests {
     }
 
     @isTest
+    static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
+        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+        LogEntryEventHandler.shouldCallStatusApi = true;
+
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        orgDefaults.EnableStatusApiCallout__c = false;
+        upsert orgDefaults;
+
+        String transactionId = '123-456-789-0';
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
+
+        Database.SaveResult saveResult;
+
+        Test.startTest();
+
+        saveResult = EventBus.publish(logEntryEvent);
+        // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+        // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+        // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+        Test.getEventBus().deliver();
+
+        System.assertEquals(0, Limits.getCallouts());
+
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        Log__c log = getLog();
+        System.assertEquals(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+
+        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.assertEquals(null, log.ApiReleaseNumber__c);
+        System.assertEquals(null, log.ApiReleaseVersion__c);
+        validateLogFields(logEntryEvent, log);
+        validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    @isTest
     static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
         Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
         LogEntryEventHandler.shouldCallStatusApi = true;
+
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        orgDefaults.EnableStatusApiCallout__c = true;
+        upsert orgDefaults;
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
