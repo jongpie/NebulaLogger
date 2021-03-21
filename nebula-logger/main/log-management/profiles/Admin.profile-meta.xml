@@ -1177,6 +1177,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.OrganizationInstanceReleaseCycle__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.OrganizationType__c</field>
         <readable>true</readable>
     </fieldPermissions>

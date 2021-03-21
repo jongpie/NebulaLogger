@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ApiVersion__c</fullName>
-    <description>The Salesforce release (API version) of the environment</description>
+    <fullName>OrganizationInstanceReleaseCycle__c</fullName>
     <externalId>false</externalId>
-    <inlineHelpText>The Salesforce release (API version) of the environment</inlineHelpText>
-    <label>API Version</label>
+    <label>Instance Release Cycle</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
@@ -14,19 +12,19 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>v53.0</fullName>
+                <fullName>Preview Instance</fullName>
                 <default>false</default>
-                <label>v53.0 - Winter &apos;22 Release</label>
+                <label>Preview Instance</label>
             </value>
             <value>
-                <fullName>v52.0</fullName>
+                <fullName>Non-Preview Instance</fullName>
                 <default>false</default>
-                <label>v52.0 - Summer &apos;21 Release</label>
+                <label>Non-Preview Instance</label>
             </value>
             <value>
-                <fullName>v51.0</fullName>
+                <fullName>Unknown</fullName>
                 <default>false</default>
-                <label>v51.0 - Spring &apos;21 Release</label>
+                <label>Unknown</label>
             </value>
         </valueSetDefinition>
     </valueSet>
