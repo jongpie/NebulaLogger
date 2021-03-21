@@ -71,10 +71,10 @@ public without sharing class LogHandler {
         };
 
         String releaseCycle;
-        if (previewInstances.contains(logs.get(0).OrganizationInstanceName__c)) {
-            releaseCycle = 'Preview Instance';
-        } else if (nonPreviewInstances.contains(logs.get(0).OrganizationInstanceName__c)) {
+        if (logs.get(0).OrganizationEnvironmentType__c == 'Production' || nonPreviewInstances.contains(logs.get(0).OrganizationInstanceName__c)) {
             releaseCycle = 'Non-Preview Instance';
+        } else if (previewInstances.contains(logs.get(0).OrganizationInstanceName__c)) {
+            releaseCycle = 'Preview Instance';
         } else {
             // Use 'Unknown' as the default for private instances and situations where the hardcoded sets above are missing some values
             releaseCycle = 'Unknown';
