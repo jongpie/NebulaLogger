@@ -93,7 +93,7 @@
         <field>Log__c.StartTime__c</field>
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
-    <name>Logs with Log Entries</name>
+    <name>Log Entry Details</name>
     <params>
         <name>co</name>
         <value>1</value>
