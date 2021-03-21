@@ -713,7 +713,7 @@ global with sharing class LogEntryEventBuilder {
         // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
         // Serializing any SObject w/ an ID will include the API version
         // So, use UserInfo.getUserId() to create the current user's record without querying
-        // Then parse the JSOn to get the API version
+        // Then parse the JSON to get the API version
         // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v51.0/sobjects/User/005J000000AugnYIAR"}
         String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
