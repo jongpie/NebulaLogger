@@ -8,6 +8,8 @@
  * @description Manages setting fields on `Log__c` before insert & before update
  */
 public without sharing class LogHandler {
+    private static final Organization ORGANIZATION = [SELECT Id, InstanceName, IsSandbox FROM Organization];
+
     @testVisible
     private static Map<String, LogStatus__mdt> logStatusByName;
 
@@ -71,9 +73,9 @@ public without sharing class LogHandler {
         };
 
         String releaseCycle;
-        if (logs.get(0).OrganizationEnvironmentType__c == 'Production' || nonPreviewInstances.contains(logs.get(0).OrganizationInstanceName__c)) {
+        if (ORGANIZATION.IsSandbox == false || nonPreviewInstances.contains(ORGANIZATION.InstanceName)) {
             releaseCycle = 'Non-Preview Instance';
-        } else if (previewInstances.contains(logs.get(0).OrganizationInstanceName__c)) {
+        } else if (previewInstances.contains(ORGANIZATION.InstanceName)) {
             releaseCycle = 'Preview Instance';
         } else {
             // Use 'Unknown' as the default for private instances and situations where the hardcoded sets above are missing some values
