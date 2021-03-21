@@ -3,8 +3,6 @@ name: Logger Validation-Only Deployment
 
 on:
     push:
-        branches:
-            - master
         paths-ignore:
             - 'sfdx-project.json'
             - 'README.md'
