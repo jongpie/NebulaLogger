@@ -783,8 +783,8 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals('List', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(JSON.serializePretty(users), builder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('Custom Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
-        System.assertEquals(Log__c.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
     @isTest
