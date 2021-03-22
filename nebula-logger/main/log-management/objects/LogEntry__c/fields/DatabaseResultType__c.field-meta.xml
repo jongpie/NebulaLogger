@@ -45,31 +45,6 @@
                 <default>false</default>
                 <label>Database.UndeleteResult</label>
             </value>
-            <value>
-                <fullName>List&lt;Database.DeleteResult&gt;</fullName>
-                <default>false</default>
-                <label>List&lt;Database.DeleteResult&gt;</label>
-            </value>
-            <value>
-                <fullName>List&lt;Database.MergeResult&gt;</fullName>
-                <default>false</default>
-                <label>List&lt;Database.MergeResult&gt;</label>
-            </value>
-            <value>
-                <fullName>List&lt;Database.SaveResult&gt;</fullName>
-                <default>false</default>
-                <label>List&lt;Database.SaveResult&gt;</label>
-            </value>
-            <value>
-                <fullName>List&lt;Database.UpsertResult&gt;</fullName>
-                <default>false</default>
-                <label>List&lt;Database.UpsertResult&gt;</label>
-            </value>
-            <value>
-                <fullName>List&lt;Database.UndeleteResult&gt;</fullName>
-                <default>false</default>
-                <label>List&lt;Database.UndeleteResult&gt;</label>
-            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
