@@ -96,6 +96,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>DatabaseResultCollectionType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>DatabaseResultType__c</field>
             </layoutItems>
             <layoutItems>
@@ -113,6 +117,14 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>RecordCollectionType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RecordSObjectType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>RecordId__c</field>
             </layoutItems>
             <layoutItems>
@@ -125,14 +137,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>RecordSObjectType__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
                 <field>RecordLink__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>RecordJson__c</field>
             </layoutItems>
         </layoutColumns>

@@ -25,6 +25,11 @@
   - View shared logs &amp; log entries</description>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.DatabaseResultCollectionType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.DatabaseResultJson__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -51,7 +56,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HasDatabaseResult__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -360,6 +365,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.RecordCollectionType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.RecordId__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -486,7 +496,7 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.LogRetentionDate__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>

@@ -120,6 +120,7 @@ public without sharing class LogEntryEventHandler {
                 : logEntryEvent.Timestamp__c;
 
             LogEntry__c logEntry = new LogEntry__c(
+                DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
                 DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
                 DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
@@ -153,16 +154,17 @@ public without sharing class LogEntryEventHandler {
                 LimitsSoqlQueryLocatorRowsUsed__c = logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c,
                 LimitsSoqlQueryRowsMax__c = logEntryEvent.LimitsSoqlQueryRowsMax__c,
                 LimitsSoqlQueryRowsUsed__c = logEntryEvent.LimitsSoqlQueryRowsUsed__c,
-                LimitsSoslSearchesUsed__c = logEntryEvent.LimitsSoslSearchesUsed__c,
                 LimitsSoslSearchesMax__c = logEntryEvent.LimitsSoslSearchesMax__c,
+                LimitsSoslSearchesUsed__c = logEntryEvent.LimitsSoslSearchesUsed__c,
                 Log__c = LOG.Id,
                 LoggingLevel__c = logEntryEvent.LoggingLevel__c,
                 LoggingLevelOrdinal__c = logEntryEvent.LoggingLevelOrdinal__c,
                 Message__c = logEntryEvent.Message__c,
                 MessageTruncated__c = logEntryEvent.MessageTruncated__c,
                 Name = null, // Salesforce will auto-set the record ID as the name when null
-                OriginType__c = logEntryEvent.OriginType__c,
                 OriginLocation__c = logEntryEvent.OriginLocation__c,
+                OriginType__c = logEntryEvent.OriginType__c,
+                RecordCollectionType__c = logEntryEvent.RecordCollectionType__c,
                 RecordId__c = logEntryEvent.RecordId__c,
                 RecordJson__c = logEntryEvent.RecordJson__c,
                 RecordSObjectClassification__c = logEntryEvent.RecordSObjectClassification__c,

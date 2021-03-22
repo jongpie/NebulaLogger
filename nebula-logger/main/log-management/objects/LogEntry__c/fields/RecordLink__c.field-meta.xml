@@ -30,7 +30,11 @@
             RecordName__c
         ) 
     ),
-    TEXT(RecordSObjectType__c)
+    IF(
+        TEXT(RecordCollectionType__c) = &apos;Map&apos;,
+        TEXT(RecordCollectionType__c) + &apos;&lt;Id, &apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;,
+        TEXT(RecordCollectionType__c) + &apos;&lt;&apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;
+    )
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Related Record</label>

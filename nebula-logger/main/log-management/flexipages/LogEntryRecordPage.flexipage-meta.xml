@@ -249,6 +249,15 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.DatabaseResultCollectionType__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.DatabaseResultType__c</fieldItem>
             </fieldInstance>
         </itemInstances>
@@ -284,6 +293,24 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.RecordCollectionType__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RecordSObjectType__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.RecordId__c</fieldItem>
                 <visibilityRule>
                     <criteria>
@@ -310,15 +337,6 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordSObjectTypeNamespace__c</fieldItem>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.RecordSObjectType__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

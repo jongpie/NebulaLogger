@@ -154,6 +154,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
@@ -174,6 +175,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResult);
         this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
@@ -194,6 +196,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResult);
         this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
@@ -216,6 +219,8 @@ global with sharing class LogEntryEventBuilder {
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
+
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
@@ -236,6 +241,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
@@ -256,8 +262,9 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResults);
-        this.logEntryEvent.DatabaseResultType__c = (List<Database.DeleteResult>.class).getName();
+        this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
         return this;
     }
@@ -276,8 +283,9 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResults);
-        this.logEntryEvent.DatabaseResultType__c = (List<Database.MergeResult>.class).getName();
+        this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
         return this;
     }
@@ -296,8 +304,9 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResults);
-        this.logEntryEvent.DatabaseResultType__c = (List<Database.SaveResult>.class).getName();
+        this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
         return this;
     }
@@ -316,8 +325,9 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResults);
-        this.logEntryEvent.DatabaseResultType__c = (List<Database.UpsertResult>.class).getName();
+        this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName();
 
         return this;
     }
@@ -336,8 +346,9 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResults);
-        this.logEntryEvent.DatabaseResultType__c = (List<Database.UndeleteResult>.class).getName();
+        this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
         return this;
     }
@@ -374,6 +385,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = recordId;
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
@@ -394,6 +406,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = record.Id;
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
@@ -419,9 +432,61 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.RecordCollectionType__c = 'List';
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(records.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = 'List<' + records.getSObjectType().getDescribe().getName() + '>';
+        this.logEntryEvent.RecordSObjectType__c = records.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(records.getSObjectType());
+
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
+        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's record fields
+     * @param  recordIdToRecords The map of `Id, SObject` records related to the entry. The JSON of the map is automatically added to the entry
+     * @return                   The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setRecord(Map<Id, SObject> recordIdToRecords) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        if (recordIdToRecords == null) {
+            return this;
+        }
+
+        this.logEntryEvent.RecordCollectionType__c = 'Map';
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordIdToRecords.values().getSObjectType());
+        this.logEntryEvent.RecordSObjectType__c = recordIdToRecords.values().getSObjectType().getDescribe().getName();
+        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(recordIdToRecords.values().getSObjectType());
+
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(recordIdToRecords));
+        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
+
+        return this;
+    }
+    /**
+     * @description Sets the log entry event's record fields
+     * @param  records The set of `SObject` records related to the entry. The JSON of the set is automatically added to the entry
+     * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setRecord(Set<SObject> records) {
+        if (this.shouldSave == false) {
+            return this;
+        }
+
+        if (records == null) {
+            return this;
+        }
+
+        Schema.SObjectType sobjectType = new List<SObject>(records).getSObjectType();
+
+        this.logEntryEvent.RecordCollectionType__c = 'Set';
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+        this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
 
         String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
         this.logEntryEvent.RecordJson__c = truncatedRecordJson;
