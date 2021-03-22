@@ -14,19 +14,6 @@ on:
             - '.gitignore'
             - '.prettierignore'
             - '.prettierrc'
-    pull_request:
-        types: [opened, edited, synchronize, reopened]
-        paths-ignore:
-            - 'sfdx-project.json'
-            - 'README.md'
-            - 'Contributing.md'
-            - 'CODE_OF_CONDUCT.md'
-            - 'package.json'
-            - 'LICENSE'
-            - 'content/**'
-            - '.gitignore'
-            - '.prettierignore'
-            - '.prettierrc'
 
 jobs:
     validation-deployment-test:
