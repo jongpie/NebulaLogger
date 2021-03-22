@@ -1,5 +1,5 @@
 # Nebula Logger for Salesforce
-[![Travis CI](https://img.shields.io/travis/jongpie/NebulaLogger/master.svg)](https://travis-ci.org/jongpie/NebulaLogger)
+[![Logger Validation-Only Deployment](https://github.com/jongpie/NebulaLogger/actions/workflows/validate.yml/badge.svg)](https://github.com/jongpie/NebulaLogger/actions/workflows/validate.yml)
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
