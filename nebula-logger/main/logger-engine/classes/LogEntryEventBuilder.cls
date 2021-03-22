@@ -5,7 +5,7 @@
 
 /**
  * @group logger-engine
- * @description Builder class that generates each `LogEntryEvent__c` record
+ * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */
 global with sharing class LogEntryEventBuilder {
