@@ -444,57 +444,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Sets the log entry event's record fields
-     * @param  recordIdToRecords The map of `Id, SObject` records related to the entry. The JSON of the map is automatically added to the entry
-     * @return                   The same instance of `LogEntryEventBuilder`, useful for chaining methods
-     */
-    global LogEntryEventBuilder setRecord(Map<Id, SObject> recordIdToRecords) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (recordIdToRecords == null) {
-            return this;
-        }
-
-        this.logEntryEvent.RecordCollectionType__c = 'Map';
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordIdToRecords.values().getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = recordIdToRecords.values().getSObjectType().getDescribe().getName();
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(recordIdToRecords.values().getSObjectType());
-
-        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(recordIdToRecords));
-        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
-
-        return this;
-    }
-    /**
-     * @description Sets the log entry event's record fields
-     * @param  records The set of `SObject` records related to the entry. The JSON of the set is automatically added to the entry
-     * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
-     */
-    global LogEntryEventBuilder setRecord(Set<SObject> records) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (records == null) {
-            return this;
-        }
-
-        Schema.SObjectType sobjectType = new List<SObject>(records).getSObjectType();
-
-        this.logEntryEvent.RecordCollectionType__c = 'Set';
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
-        this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
-
-        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
-        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
-
-        return this;
-    }
-
-    /**
      * @description Sets a comma-separate list of strings on the LogEntryEvent__e, which ultimately becomes Topic & TopicAssignment records on Log__c and LogEntry__c
      * @param  topics The list of strings to use as topics for the current entry
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -650,6 +599,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
+        if (sobjectType == null) {
+            return null;
+        }
+
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
@@ -683,6 +636,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
+        if (sobjectType == null) {
+            return null;
+        }
+
         String sobjectFullName = sobjectType.getDescribe().getName();
         String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 

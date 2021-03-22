@@ -21,16 +21,6 @@
                 <default>false</default>
                 <label>List</label>
             </value>
-            <value>
-                <fullName>Map</fullName>
-                <default>false</default>
-                <label>Map</label>
-            </value>
-            <value>
-                <fullName>Set</fullName>
-                <default>false</default>
-                <label>Set</label>
-            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
