@@ -591,9 +591,9 @@ global with sharing class LogEntryEventBuilder {
 
     private static Map<String, LoggingLevel> getOriginOverrides() {
         // Get the list of overrides configured for the current user, profile & org
-        List<LoggerOriginOverride__mdt> overrideSettings = new List<LoggerOriginOverride__mdt>();
+        List<LoggerOriginOverride__mdt> overrides = new List<LoggerOriginOverride__mdt>();
 
-        List<String> usernames = new List<String>{CURRENT_USER.Username};
+        List<String> usernames = new List<String>{ CURRENT_USER.Username };
         if (ORGANIZATION.IsSandbox == true && Url.getOrgDomainUrl().toExternalForm().contains('--') == true) {
             // Example: https://mydomain--mysandbox.my.salesforce.com --> mysandbox
             String sandboxSuffix = Url.getOrgDomainUrl().toExternalForm().substringAfter('--').substringBefore('.');
@@ -608,34 +608,29 @@ global with sharing class LogEntryEventBuilder {
         for (LoggerOriginOverride__mdt userOverride : [
             SELECT Id, OriginLocation__c, OverrideLoggingLevel__c, OverrideType__c, ProfileName__c, Username__c
             FROM LoggerOriginOverride__mdt
-            WHERE IsActive__c = true
-            AND OverrideType__c = 'User'
-            AND Username__c IN :usernames
+            WHERE IsActive__c = TRUE AND OverrideType__c = 'User' AND Username__c IN :usernames
         ]) {
-            overrideSettings.add(userOverride);
+            overrides.add(userOverride);
         }
 
         for (LoggerOriginOverride__mdt profileOverride : [
             SELECT Id, OriginLocation__c, OverrideLoggingLevel__c, OverrideType__c, ProfileName__c, Username__c
             FROM LoggerOriginOverride__mdt
-            WHERE IsActive__c = true
-            AND OverrideType__c = 'Profile'
-            AND ProfileName__c = :CURRENT_USER.Profile.Name
+            WHERE IsActive__c = TRUE AND OverrideType__c = 'Profile' AND ProfileName__c = :CURRENT_USER.Profile.Name
         ]) {
-            overrideSettings.add(profileOverride);
+            overrides.add(profileOverride);
         }
 
         for (LoggerOriginOverride__mdt organizationOverride : [
             SELECT Id, OriginLocation__c, OverrideLoggingLevel__c, OverrideType__c, ProfileName__c, Username__c
             FROM LoggerOriginOverride__mdt
-            WHERE IsActive__c = true
-            AND OverrideType__c = 'Organization'
+            WHERE IsActive__c = TRUE AND OverrideType__c = 'Organization'
         ]) {
-            overrideSettings.add(organizationOverride);
+            overrides.add(organizationOverride);
         }
 
         Map<String, LoggingLevel> originLocationToLoggingLevel = new Map<String, LoggingLevel>();
-        for (LoggerOriginOverride__mdt overrideSetting : overrideSettings) {
+        for (LoggerOriginOverride__mdt overrideSetting : overrides) {
             if (originLocationToLoggingLevel.containsKey(overrideSetting.OriginLocation__c) == false) {
                 LoggingLevel overrideLoggingLevel = Logger.getLoggingLevel(overrideSetting.OverrideLoggingLevel__c);
                 originLocationToLoggingLevel.put(overrideSetting.OriginLocation__c, overrideLoggingLevel);
