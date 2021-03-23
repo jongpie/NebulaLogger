@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Username__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>The unique username of the user that should use this override. This is required when Override Type = &apos;User&apos;.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>The unique username of the user that should use this override. This is required when Override Type = &apos;User&apos;.</inlineHelpText>
+    <label>Username</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

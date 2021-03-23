@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OverrideLoggingLevel__c</fullName>
+    <description>Indicates the logging level to use for the specified Apex class. This level will be used instead of any loggin levels specified within the Apex class.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>Indicates the logging level to use for the specified Apex class. This level will be used instead of any loggin levels specified within the Apex class.</inlineHelpText>
+    <label>Override Level</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>ERROR</fullName>
+                <default>false</default>
+                <label>ERROR</label>
+            </value>
+            <value>
+                <fullName>WARN</fullName>
+                <default>false</default>
+                <label>WARN</label>
+            </value>
+            <value>
+                <fullName>INFO</fullName>
+                <default>false</default>
+                <label>INFO</label>
+            </value>
+            <value>
+                <fullName>DEBUG</fullName>
+                <default>false</default>
+                <label>DEBUG</label>
+            </value>
+            <value>
+                <fullName>FINE</fullName>
+                <default>false</default>
+                <label>FINE</label>
+            </value>
+            <value>
+                <fullName>FINER</fullName>
+                <default>false</default>
+                <label>FINER</label>
+            </value>
+            <value>
+                <fullName>FINEST</fullName>
+                <default>false</default>
+                <label>FINEST</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

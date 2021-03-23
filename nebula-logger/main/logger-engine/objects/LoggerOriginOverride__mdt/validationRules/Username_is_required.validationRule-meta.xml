@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Username_is_required</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISPICKVAL(OverrideType__c, &apos;User&apos;),
+    ISBLANK(Username__c)
+)</errorConditionFormula>
+    <errorDisplayField>Username__c</errorDisplayField>
+    <errorMessage>Username is required for override type = &apos;User&apos;</errorMessage>
+</ValidationRule>

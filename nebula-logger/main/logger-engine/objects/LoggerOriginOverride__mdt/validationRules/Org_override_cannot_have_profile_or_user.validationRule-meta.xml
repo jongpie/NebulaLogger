@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Org_override_cannot_have_profile_or_user</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    TEXT(OverrideType__c) == &apos;Organization&apos;,
+    OR(
+        NOT(ISBLANK(ProfileName__c)),
+        NOT(ISBLANK(Username__c))
+    )
+)</errorConditionFormula>
+    <errorMessage>Org overrides cannot have a profile name or username</errorMessage>
+</ValidationRule>
