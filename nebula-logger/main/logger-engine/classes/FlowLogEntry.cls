@@ -76,6 +76,9 @@ global inherited sharing class FlowLogEntry {
 
             LoggingLevel loggingLevel = Logger.getLoggingLevel(flowLogEntry.loggingLevelName);
 
+            // Call getOriginLoggingLevel() in case any overrides have been configured for Flow
+            loggingLevel = LogEntryEventBuilder.getOriginLoggingLevel(flowLogEntry.flowName, loggingLevel);
+
             LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, flowLogEntry.message)
                 .setRecordId(flowLogEntry.recordId)
                 .setTopics(flowLogEntry.topics);
