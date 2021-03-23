@@ -51,6 +51,12 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
+        String triggerSObjectType;
+        if (Trigger.isExecuting == true) {
+            List<SObject> records = Trigger.new != null ? Trigger.new : Trigger.old;
+            triggerSObjectType = records.getSObjectType().getDescribe().getName();
+        }
+
         this.logEntryEvent.ApiVersion__c = API_VERSION;
         this.logEntryEvent.LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries();
         this.logEntryEvent.LimitsAsyncCallsUsed__c = Limits.getAsyncCalls();
@@ -73,7 +79,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.Timestamp__c = System.now();
         this.logEntryEvent.TriggerIsExecuting__c = Trigger.isExecuting;
         this.logEntryEvent.TriggerOperationType__c = Trigger.operationType == null ? null : Trigger.operationType.name();
-        this.logEntryEvent.TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType());
+        this.logEntryEvent.TriggerSObjectType__c = triggerSObjectType;
     }
 
     /**
