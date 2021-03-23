@@ -11,15 +11,12 @@
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final AuthSession AUTH_SESSION = getAuthSession();
+    private static final User CURRENT_USER = getUser();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final SObject NETWORK_SITE = getNetwork();
     private static final Organization ORGANIZATION = getOrganization();
-    private static final String ORIGIN_TYPE_APEX = 'Apex';
-    // TODO future enhancement: consider converting strings to enum and add overload for `parseStackTrace(OriginType, String)
-    // private static final String ORIGIN_TYPE_COMPONENT = 'Component';
-    // private static final String ORIGIN_TYPE_FLOW = 'Flow';
-    private static final User USER = getUser();
+    private static final Map<String, LoggingLevel> ORIGIN_OVERRIDES = getOriginOverrides();
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
     private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
@@ -37,7 +34,17 @@ global with sharing class LogEntryEventBuilder {
      * @return              The new instance of `LogEntryEventBuilder`
      */
     public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
-        this.loggingLevel = loggingLevel;
+        // FIXME - temp approach of setting variables so guard clauses in other methods work
+        // But this is horrible, need to find a cleaner way to get the origin location
+        // FIXME need to consider how the mgd pkg will handle this feature since stack traces don't work well there
+        this.logEntryEvent = new LogEntryEvent__e();
+        this.shouldSave = true;
+        DmlException stackTraceException = new DmlException();
+        this.parseStackTrace(stackTraceException.getStackTraceString());
+
+        System.debug('this.logEntryEvent.OriginLocation__c==' + this.logEntryEvent.OriginLocation__c);
+        this.loggingLevel = getOriginLoggingLevel(this.logEntryEvent.OriginLocation__c, loggingLevel);
+        System.debug('this.loggingLevel==' + this.loggingLevel);
 
         // Verify that the user has create access
         this.shouldSave = USER_CAN_CREATE_LOG_ENTRY_EVENTS && shouldSave;
@@ -46,36 +53,36 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        this.logEntryEvent = new LogEntryEvent__e(
-            ApiVersion__c = API_VERSION,
-            LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries(),
-            LimitsAsyncCallsUsed__c = Limits.getAsyncCalls(),
-            LimitsCalloutsUsed__c = Limits.getCallouts(),
-            LimitsCpuTimeUsed__c = Limits.getCpuTime(),
-            LimitsDmlRowsUsed__c = Limits.getDmlRows(),
-            LimitsDmlStatementsUsed__c = Limits.getDmlStatements(),
-            LimitsEmailInvocationsUsed__c = Limits.getEmailInvocations(),
-            LimitsFutureCallsUsed__c = Limits.getFutureCalls(),
-            LimitsHeapSizeUsed__c = Limits.getHeapSize(),
-            LimitsMobilePushApexCallsUsed__c = Limits.getMobilePushApexCalls(),
-            LimitsQueueableJobsUsed__c = Limits.getQueueableJobs(),
-            LimitsSoqlQueriesUsed__c = Limits.getQueries(),
-            LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows(),
-            LimitsSoqlQueryRowsUsed__c = Limits.getQueryRows(),
-            LimitsSoslSearchesUsed__c = Limits.getSoslQueries(),
-            LoggingLevel__c = loggingLevel.NAME(),
-            LoggingLevelOrdinal__c = loggingLevel.ORDINAL(),
-            OriginType__c = ORIGIN_TYPE_APEX,
-            Timestamp__c = System.now(),
-            TriggerIsExecuting__c = Trigger.isExecuting,
-            TriggerOperationType__c = Trigger.operationType == null ? null : Trigger.operationType.name(),
-            TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
-        );
+        //this.logEntryEvent = new LogEntryEvent__e(
+            this.logEntryEvent.ApiVersion__c = API_VERSION;
+            this.logEntryEvent.LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries();
+            this.logEntryEvent.LimitsAsyncCallsUsed__c = Limits.getAsyncCalls();
+            this.logEntryEvent.LimitsCalloutsUsed__c = Limits.getCallouts();
+            this.logEntryEvent.LimitsCpuTimeUsed__c = Limits.getCpuTime();
+            this.logEntryEvent.LimitsDmlRowsUsed__c = Limits.getDmlRows();
+            this.logEntryEvent.LimitsDmlStatementsUsed__c = Limits.getDmlStatements();
+            this.logEntryEvent.LimitsEmailInvocationsUsed__c = Limits.getEmailInvocations();
+            this.logEntryEvent.LimitsFutureCallsUsed__c = Limits.getFutureCalls();
+            this.logEntryEvent.LimitsHeapSizeUsed__c = Limits.getHeapSize();
+            this.logEntryEvent.LimitsMobilePushApexCallsUsed__c = Limits.getMobilePushApexCalls();
+            this.logEntryEvent.LimitsQueueableJobsUsed__c = Limits.getQueueableJobs();
+            this.logEntryEvent.LimitsSoqlQueriesUsed__c = Limits.getQueries();
+            this.logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows();
+            this.logEntryEvent.LimitsSoqlQueryRowsUsed__c = Limits.getQueryRows();
+            this.logEntryEvent.LimitsSoslSearchesUsed__c = Limits.getSoslQueries();
+            this.logEntryEvent.LoggingLevel__c = this.loggingLevel.NAME();
+            this.logEntryEvent.LoggingLevelOrdinal__c = this.loggingLevel.ORDINAL();
+            this.logEntryEvent.OriginType__c = 'Apex';
+            this.logEntryEvent.Timestamp__c = System.now();
+            this.logEntryEvent.TriggerIsExecuting__c = Trigger.isExecuting;
+            this.logEntryEvent.TriggerOperationType__c = Trigger.operationType == null ? null : Trigger.operationType.name();
+            this.logEntryEvent.TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType());
+        //);
 
         // TODO add check to see if the class's namespace == the org's namespace
         //if (!hasNamespacePrefix()) {
-        DmlException stackTraceException = new DmlException();
-        this.parseStackTrace(stackTraceException.getStackTraceString());
+        //DmlException stackTraceException = new DmlException();
+        //this.parseStackTrace(stackTraceException.getStackTraceString());
         //}
     }
 
@@ -414,12 +421,12 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        this.logEntryEvent.LoggedByUsername__c = USER.Username;
-        this.logEntryEvent.ProfileName__c = USER.Profile.Name;
-        this.logEntryEvent.UserLicenseDefinitionKey__c = USER.Profile.UserLicense.LicenseDefinitionKey;
-        this.logEntryEvent.UserLicenseId__c = USER.Profile.UserLicenseId;
-        this.logEntryEvent.UserLicenseName__c = USER.Profile.UserLicense.Name;
-        this.logEntryEvent.UserRoleName__c = USER.UserRole?.Name;
+        this.logEntryEvent.LoggedByUsername__c = CURRENT_USER.Username;
+        this.logEntryEvent.ProfileName__c = CURRENT_USER.Profile.Name;
+        this.logEntryEvent.UserLicenseDefinitionKey__c = CURRENT_USER.Profile.UserLicense.LicenseDefinitionKey;
+        this.logEntryEvent.UserLicenseId__c = CURRENT_USER.Profile.UserLicenseId;
+        this.logEntryEvent.UserLicenseName__c = CURRENT_USER.Profile.UserLicense.Name;
+        this.logEntryEvent.UserRoleName__c = CURRENT_USER.UserRole?.Name;
     }
 
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
@@ -514,6 +521,16 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
+    // Private static methods
+    private static String getApiVersion() {
+        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
+        // Serializing any SObject with an ID will include the API version in the JSON
+        // So, use UserInfo.getUserId() to create an instance of User and parse the JSOn to get the API version
+        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v51.0/sobjects/User/005J000000AugnYIAR"}
+        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
+        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
+    }
+
     private static AuthSession getAuthSession() {
         if (String.isBlank(UserInfo.getSessionId())) {
             return null;
@@ -546,16 +563,6 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
-    // Private static methods
-    private static String getApiVersion() {
-        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
-        // Serializing any SObject with an ID will include the API version in the JSON
-        // So, use UserInfo.getUserId() to create an instance of User and parse the JSOn to get the API version
-        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v51.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
-    }
-
     private static List<String> getIgnoredClasses() {
         return new List<String>{ Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
     }
@@ -570,6 +577,64 @@ global with sharing class LogEntryEventBuilder {
         String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
 
         return namespacePrefix;
+    }
+
+    private static LoggingLevel getOriginLoggingLevel(String originLocation, LoggingLevel currentLoggingLevel) {
+        if (ORIGIN_OVERRIDES.containsKey(originLocation)) {
+            return ORIGIN_OVERRIDES.get(originLocation);
+        } else {
+            return currentLoggingLevel;
+        }
+    }
+
+    private static Map<String, LoggingLevel> getOriginOverrides() {
+        // Get the list of overrides configured for the current user
+        // Luckily, sorting descending on 'override type' gives the same order as the hierarchy (User --> Profile --> Org)
+        // TODO need to handle usernames + sandbox-specific suffixes (e.g., my.user@example.com.qa)
+        List<LoggerOriginOverride__mdt> overrideSettings = new List<LoggerOriginOverride__mdt>();
+
+        // CMDT has poor support for all SOQL functionality - including no support for 'OR' statements
+        // But CMDT queries don't count towards limits, so run 3 separate queries
+        for (LoggerOriginOverride__mdt userOverride : [
+            SELECT Id, OriginLocation__c, OverrideLoggingLevel__c, OverrideType__c, ProfileName__c, Username__c
+            FROM LoggerOriginOverride__mdt
+            WHERE IsActive__c = true
+            AND OverrideType__c = 'User'
+            AND Username__c = :CURRENT_USER.Username
+        ]) {
+            overrideSettings.add(userOverride);
+        }
+
+        for (LoggerOriginOverride__mdt profileOverride : [
+            SELECT Id, OriginLocation__c, OverrideLoggingLevel__c, OverrideType__c, ProfileName__c, Username__c
+            FROM LoggerOriginOverride__mdt
+            WHERE IsActive__c = true
+            AND OverrideType__c = 'Profile'
+            AND ProfileName__c = :CURRENT_USER.Profile.Name
+        ]) {
+            overrideSettings.add(profileOverride);
+        }
+
+        for (LoggerOriginOverride__mdt organizationOverride : [
+            SELECT Id, OriginLocation__c, OverrideLoggingLevel__c, OverrideType__c, ProfileName__c, Username__c
+            FROM LoggerOriginOverride__mdt
+            WHERE IsActive__c = true
+            AND OverrideType__c = 'Organization'
+        ]) {
+            overrideSettings.add(organizationOverride);
+        }
+
+        Map<String, LoggingLevel> originLocationToLoggingLevel = new Map<String, LoggingLevel>();
+        for (LoggerOriginOverride__mdt overrideSetting : overrideSettings) {
+            if (originLocationToLoggingLevel.containsKey(overrideSetting.OriginLocation__c) == true) {
+                continue;
+            }
+
+            LoggingLevel overrideLoggingLevel = Logger.getLoggingLevel(overrideSetting.OverrideLoggingLevel__c);
+            originLocationToLoggingLevel.put(overrideSetting.OriginLocation__c, overrideLoggingLevel);
+        }
+System.debug('originLocationToLoggingLevel==' + originLocationToLoggingLevel);
+        return originLocationToLoggingLevel;
     }
 
     private static Map<String, String> getSObjectSuffixToClassification() {
