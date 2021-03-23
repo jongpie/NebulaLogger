@@ -585,8 +585,17 @@ global with sharing class LogEntryEventBuilder {
 
     private static Map<String, LoggingLevel> getOriginOverrides() {
         // Get the list of overrides configured for the current user, profile & org
-        // TODO need to handle usernames + sandbox-specific suffixes (e.g., my.user@example.com.qa)
         List<LoggerOriginOverride__mdt> overrideSettings = new List<LoggerOriginOverride__mdt>();
+
+        List<String> usernames = new List<String>{CURRENT_USER.Username};
+        if (ORGANIZATION.IsSandbox == true && Url.getOrgDomainUrl().toExternalForm().contains('--') == true) {
+            // Example: https://mydomain--mysandbox.my.salesforce.com --> mysandbox
+            String sandboxSuffix = Url.getOrgDomainUrl().toExternalForm().substringAfter('--').substringBefore('.');
+            if (CURRENT_USER.Username.contains(sandboxSuffix)) {
+                // Example: my.username@example.com.mysandbox --> my.username@example.com
+                usernames.add(CURRENT_USER.Username.replace('.' + sandboxSuffix, ''));
+            }
+        }
 
         // CMDT has poor support for all SOQL functionality - including no support for 'OR' statements
         // But CMDT queries don't count towards limits, so run 3 separate queries
@@ -595,7 +604,7 @@ global with sharing class LogEntryEventBuilder {
             FROM LoggerOriginOverride__mdt
             WHERE IsActive__c = true
             AND OverrideType__c = 'User'
-            AND Username__c = :CURRENT_USER.Username
+            AND Username__c IN :usernames
         ]) {
             overrideSettings.add(userOverride);
         }
@@ -621,14 +630,14 @@ global with sharing class LogEntryEventBuilder {
 
         Map<String, LoggingLevel> originLocationToLoggingLevel = new Map<String, LoggingLevel>();
         for (LoggerOriginOverride__mdt overrideSetting : overrideSettings) {
-            if (originLocationToLoggingLevel.containsKey(overrideSetting.OriginLocation__c) == true) {
-                continue;
+            if (originLocationToLoggingLevel.containsKey(overrideSetting.OriginLocation__c) == false) {
+                LoggingLevel overrideLoggingLevel = Logger.getLoggingLevel(overrideSetting.OverrideLoggingLevel__c);
+                originLocationToLoggingLevel.put(overrideSetting.OriginLocation__c, overrideLoggingLevel);
             }
-
-            LoggingLevel overrideLoggingLevel = Logger.getLoggingLevel(overrideSetting.OverrideLoggingLevel__c);
-            originLocationToLoggingLevel.put(overrideSetting.OriginLocation__c, overrideLoggingLevel);
         }
-System.debug('originLocationToLoggingLevel==' + originLocationToLoggingLevel);
+
+        System.debug('originLocationToLoggingLevel==' + originLocationToLoggingLevel);
+
         return originLocationToLoggingLevel;
     }
 
