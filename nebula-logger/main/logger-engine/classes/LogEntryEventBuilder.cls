@@ -146,11 +146,7 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (deleteResult == null) {
+        if (this.shouldSave == false || deleteResult == null) {
             return this;
         }
 
@@ -167,11 +163,7 @@ global with sharing class LogEntryEventBuilder {
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (mergeResult == null) {
+        if (this.shouldSave == false || mergeResult == null) {
             return this;
         }
 
@@ -188,11 +180,7 @@ global with sharing class LogEntryEventBuilder {
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (saveResult == null) {
+        if (this.shouldSave == false || saveResult == null) {
             return this;
         }
 
@@ -209,11 +197,7 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (upsertResult == null) {
+        if (this.shouldSave == false || upsertResult == null) {
             return this;
         }
 
@@ -233,11 +217,7 @@ global with sharing class LogEntryEventBuilder {
      * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (undeleteResult == null) {
+        if (this.shouldSave == false || undeleteResult == null) {
             return this;
         }
 
@@ -254,11 +234,7 @@ global with sharing class LogEntryEventBuilder {
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.DeleteResult> deleteResults) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (deleteResults == null) {
+        if (this.shouldSave == false || deleteResults == null) {
             return this;
         }
 
@@ -275,11 +251,7 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.MergeResult> mergeResults) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (mergeResults == null) {
+        if (this.shouldSave == false || mergeResults == null) {
             return this;
         }
 
@@ -296,11 +268,7 @@ global with sharing class LogEntryEventBuilder {
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.SaveResult> saveResults) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (saveResults == null) {
+        if (this.shouldSave == false || saveResults == null) {
             return this;
         }
 
@@ -317,11 +285,7 @@ global with sharing class LogEntryEventBuilder {
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.UpsertResult> upsertResults) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (upsertResults == null) {
+        if (this.shouldSave == false || upsertResults == null) {
             return this;
         }
 
@@ -338,11 +302,7 @@ global with sharing class LogEntryEventBuilder {
      * @return                 The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.UndeleteResult> undeleteResults) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (undeleteResults == null) {
+        if (this.shouldSave == false || undeleteResults == null) {
             return this;
         }
 
@@ -377,11 +337,7 @@ global with sharing class LogEntryEventBuilder {
      * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(Id recordId) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (String.isBlank(recordId)) {
+        if (this.shouldSave == false || String.isBlank(recordId)) {
             return this;
         }
 
@@ -398,11 +354,7 @@ global with sharing class LogEntryEventBuilder {
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(SObject record) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (record == null) {
+        if (this.shouldSave == false || record == null) {
             return this;
         }
 
@@ -424,11 +376,7 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(List<SObject> records) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        if (records == null) {
+        if (this.shouldSave == false || records == null) {
             return this;
         }
 
