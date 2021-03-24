@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RecordLink__c</fullName>
+    <deprecated>false</deprecated>
     <externalId>false</externalId>
     <formula>IF(
     NOT(ISBLANK(RecordId__c)),
@@ -31,9 +32,13 @@
         ) 
     ),
     IF(
-        TEXT(RecordCollectionType__c) = &apos;Map&apos;,
-        TEXT(RecordCollectionType__c) + &apos;&lt;Id, &apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;,
-        TEXT(RecordCollectionType__c) + &apos;&lt;&apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;
+        ISBLANK(TEXT(RecordCollectionType__c)),
+        &apos;&apos;,
+        IF(
+            TEXT(RecordCollectionType__c) = &apos;Map&apos;,
+            TEXT(RecordCollectionType__c) + &apos;&lt;Id, &apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;,
+            TEXT(RecordCollectionType__c) + &apos;&lt;&apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;
+        )
     )
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
