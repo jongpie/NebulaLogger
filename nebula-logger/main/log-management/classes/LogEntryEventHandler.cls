@@ -37,14 +37,12 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void upsertLogs(List<LogEntryEvent__e> logEntryEvents) {
-        if (logsUpserted == true) {
-            return;
-        }
-
         Log__c recentLogWithDetails = getRecentLogWithDetails();
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
         // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
+
+        List<Log__c> logsToUpsert = new List<Log__c>();
         for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
             if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
                 continue;
@@ -106,11 +104,11 @@ public without sharing class LogEntryEventHandler {
             log.UserRoleName__c = logEntryEvent.UserRoleName__c;
             log.UserType__c = logEntryEvent.UserType__c;
 
+            logsToUpsert.add(log);
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
 
-        upsert TRANSACTION_ID_TO_LOG.values() TransactionId__c;
-        logsUpserted = true;
+        upsert logsToUpsert TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         if (shouldCallStatusApi == true && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c && recentLogWithDetails == null && getCountOfOpenJobs() == 0) {
