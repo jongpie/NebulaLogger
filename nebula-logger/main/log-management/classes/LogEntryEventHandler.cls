@@ -8,7 +8,7 @@
  * @description Subscribes to `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
 public without sharing class LogEntryEventHandler {
-    private static final Log__c LOG = new Log__c();
+    private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @TestVisible
     private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
@@ -28,91 +28,92 @@ public without sharing class LogEntryEventHandler {
 
         switch on Trigger.operationType {
             when AFTER_INSERT {
-                this.upsertLog(logEntryEvents);
+                this.upsertLogs(logEntryEvents);
                 this.insertLogEntries(logEntryEvents);
                 this.insertTopics();
             }
         }
     }
 
-    private void upsertLog(List<LogEntryEvent__e> logEntryEvents) {
-        if (LOG.Id != null) {
-            return;
-        }
+    private void upsertLogs(List<LogEntryEvent__e> logEntryEvents) {
+        Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
-        // The first LogEntryEvent__e record is used to normalize the data
-        LogEntryEvent__e logEntryEvent = logEntryEvents.get(0);
-        Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
+        // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
 
-        LOG.ApiVersion__c = logEntryEvent.ApiVersion__c;
-        LOG.Locale__c = logEntryEvent.Locale__c;
-        LOG.LoggedBy__c = logEntryEvent.CreatedById;
-        LOG.LoggedByUsername__c = logEntryEvent.LoggedByUsername__c;
-        LOG.LoginDomain__c = logEntryEvent.LoginDomain__c;
-        LOG.LoginHistoryId__c = logEntryEvent.LoginHistoryId__c;
-        LOG.LoginApplication__c = logEntryEvent.LoginApplication__c;
-        LOG.LoginBrowser__c = logEntryEvent.LoginBrowser__c;
-        LOG.LoginPlatform__c = logEntryEvent.LoginPlatform__c;
-        LOG.LoginType__c = logEntryEvent.LoginType__c;
-        LOG.LogoutUrl__c = logEntryEvent.LogoutUrl__c;
-        LOG.NetworkId__c = logEntryEvent.NetworkId__c;
-        LOG.NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c;
-        LOG.NetworkLogoutUrl__c = logEntryEvent.NetworkLogoutUrl__c;
-        LOG.NetworkName__c = logEntryEvent.NetworkName__c;
-        LOG.NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c;
-        LOG.NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c;
-        LOG.OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c;
-        LOG.OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c;
-        LOG.OrganizationId__c = logEntryEvent.OrganizationId__c;
-        LOG.OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c;
-        LOG.OrganizationName__c = logEntryEvent.OrganizationName__c;
-        LOG.OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c;
-        LOG.OrganizationType__c = logEntryEvent.OrganizationType__c;
-        LOG.OwnerId = logEntryEvent.CreatedById;
-        LOG.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
-        LOG.ProfileId__c = logEntryEvent.ProfileId__c;
-        LOG.ProfileName__c = logEntryEvent.ProfileName__c;
-        LOG.SessionId__c = logEntryEvent.SessionId__c;
-        LOG.SessionId__c = logEntryEvent.SessionId__c;
-        LOG.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
-        LOG.SessionType__c = logEntryEvent.SessionType__c;
-        LOG.SourceIp__c = logEntryEvent.SourceIp__c;
-        LOG.SystemMode__c = logEntryEvent.SystemMode__c;
-        LOG.ThemeDisplayed__c = logEntryEvent.ThemeDisplayed__c;
-        LOG.TimeZoneId__c = logEntryEvent.TimeZoneId__c;
-        LOG.TimeZoneName__c = logEntryEvent.TimeZoneName__c;
-        LOG.TransactionId__c = logEntryEvent.TransactionId__c;
-        LOG.UserLicenseDefinitionKey__c = logEntryEvent.UserLicenseDefinitionKey__c;
-        LOG.UserLicenseId__c = logEntryEvent.UserLicenseId__c;
-        LOG.UserLicenseName__c = logEntryEvent.UserLicenseName__c;
-        LOG.UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c;
-        LOG.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
-        LOG.UserRoleId__c = logEntryEvent.UserRoleId__c;
-        LOG.UserRoleName__c = logEntryEvent.UserRoleName__c;
-        LOG.UserType__c = logEntryEvent.UserType__c;
+        for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
+            if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
+                continue;
+            }
 
-        // To avoid making a callout for every log, try to query recent logs first
-        // If there is a recent log with the details already populated, copy the field values before upserting the log
-        Log__c recentLogWithDetails = getRecentLogWithDetails();
-        if (recentLogWithDetails != null) {
-            LOG.ApiReleaseNumber__c = recentLogWithDetails.ApiReleaseNumber__c;
-            LOG.ApiReleaseVersion__c = recentLogWithDetails.ApiReleaseVersion__c;
+            Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
+            Log__c log = new Log__c();
+            // To avoid making a callout for every log for details retrieved from api.status.salesforce.com,
+            // ...try to query recent logs first to see if there is a recent log with the details already populated
+            if (recentLogWithApiReleaseDetails != null) {
+                log.ApiReleaseNumber__c = recentLogWithApiReleaseDetails.ApiReleaseNumber__c;
+                log.ApiReleaseVersion__c = recentLogWithApiReleaseDetails.ApiReleaseVersion__c;
+            }
+
+            log.ApiVersion__c = logEntryEvent.ApiVersion__c;
+            log.Locale__c = logEntryEvent.Locale__c;
+            log.LoggedBy__c = logEntryEvent.CreatedById;
+            log.LoggedByUsername__c = logEntryEvent.LoggedByUsername__c;
+            log.LoginDomain__c = logEntryEvent.LoginDomain__c;
+            log.LoginHistoryId__c = logEntryEvent.LoginHistoryId__c;
+            log.LoginApplication__c = logEntryEvent.LoginApplication__c;
+            log.LoginBrowser__c = logEntryEvent.LoginBrowser__c;
+            log.LoginPlatform__c = logEntryEvent.LoginPlatform__c;
+            log.LoginType__c = logEntryEvent.LoginType__c;
+            log.LogoutUrl__c = logEntryEvent.LogoutUrl__c;
+            log.NetworkId__c = logEntryEvent.NetworkId__c;
+            log.NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c;
+            log.NetworkLogoutUrl__c = logEntryEvent.NetworkLogoutUrl__c;
+            log.NetworkName__c = logEntryEvent.NetworkName__c;
+            log.NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c;
+            log.NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c;
+            log.OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c;
+            log.OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c;
+            log.OrganizationId__c = logEntryEvent.OrganizationId__c;
+            log.OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c;
+            log.OrganizationName__c = logEntryEvent.OrganizationName__c;
+            log.OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c;
+            log.OrganizationType__c = logEntryEvent.OrganizationType__c;
+            log.OwnerId = logEntryEvent.CreatedById;
+            log.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
+            log.ProfileId__c = logEntryEvent.ProfileId__c;
+            log.ProfileName__c = logEntryEvent.ProfileName__c;
+            log.SessionId__c = logEntryEvent.SessionId__c;
+            log.SessionId__c = logEntryEvent.SessionId__c;
+            log.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
+            log.SessionType__c = logEntryEvent.SessionType__c;
+            log.SourceIp__c = logEntryEvent.SourceIp__c;
+            log.SystemMode__c = logEntryEvent.SystemMode__c;
+            log.ThemeDisplayed__c = logEntryEvent.ThemeDisplayed__c;
+            log.TimeZoneId__c = logEntryEvent.TimeZoneId__c;
+            log.TimeZoneName__c = logEntryEvent.TimeZoneName__c;
+            log.TransactionId__c = logEntryEvent.TransactionId__c;
+            log.UserLicenseDefinitionKey__c = logEntryEvent.UserLicenseDefinitionKey__c;
+            log.UserLicenseId__c = logEntryEvent.UserLicenseId__c;
+            log.UserLicenseName__c = logEntryEvent.UserLicenseName__c;
+            log.UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c;
+            log.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
+            log.UserRoleId__c = logEntryEvent.UserRoleId__c;
+            log.UserRoleName__c = logEntryEvent.UserRoleName__c;
+            log.UserType__c = logEntryEvent.UserType__c;
+
+            TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
 
-        upsert LOG TransactionId__c;
+        upsert TRANSACTION_ID_TO_LOG.values() TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (shouldCallStatusApi == true && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c && recentLogWithDetails == null && getCountOfOpenJobs() == 0) {
+        if (shouldCallStatusApi == true && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
     }
 
     private void insertLogEntries(List<LogEntryEvent__e> logEntryEvents) {
-        if (LOG.Id == null) {
-            return; // Avoid an exception - if there is no log, we can't save log entries
-        }
-
         for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
             // Workaround field for platform issue w/ accurate datetimes
             Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
@@ -156,7 +157,7 @@ public without sharing class LogEntryEventHandler {
                 LimitsSoqlQueryRowsUsed__c = logEntryEvent.LimitsSoqlQueryRowsUsed__c,
                 LimitsSoslSearchesMax__c = logEntryEvent.LimitsSoslSearchesMax__c,
                 LimitsSoslSearchesUsed__c = logEntryEvent.LimitsSoslSearchesUsed__c,
-                Log__c = LOG.Id,
+                Log__c = TRANSACTION_ID_TO_LOG.get(logEntryEvent.TransactionId__c).Id,
                 LoggingLevel__c = logEntryEvent.LoggingLevel__c,
                 LoggingLevelOrdinal__c = logEntryEvent.LoggingLevelOrdinal__c,
                 Message__c = logEntryEvent.Message__c,
@@ -222,14 +223,14 @@ public without sharing class LogEntryEventHandler {
                 topicAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id));
 
                 // Add all topics to the parent log when enabled
-                topicAssignments.add(new TopicAssignment(EntityId = LOG.Id, TopicId = topicNameToTopics.get(topicName).Id));
+                topicAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = topicNameToTopics.get(topicName).Id));
             }
         }
         insert new List<TopicAssignment>(topicAssignments);
     }
 
     // Private static methods
-    private static Log__c getRecentLogWithDetails() {
+    private static Log__c getRecentLogWithApiReleaseDetails() {
         // Query for recent logs created only today - the status API should be called...
         // ...at least once per day to make sure that status details are still accurate.
         // This query should make a callout approximately every 4 hours.

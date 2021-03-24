@@ -123,6 +123,8 @@ private class LogEntryEventHandler_Tests {
                     FROM LogEntries__r
                 )
             FROM Log__c
+            ORDER BY CreatedDate
+            LIMIT 1
         ];
     }
 
@@ -365,6 +367,45 @@ private class LogEntryEventHandler_Tests {
 
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    @isTest
+    static void it_should_normalize_event_data_for_multiple_transactions_into_multiple_logs() {
+        List<String> transactionIds = new List<String>{ '123-456', '789-0' };
+        System.assertEquals(2, transactionIds.size());
+
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+        for (Integer i = 0; i < transactionIds.size(); i++) {
+            LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+                Message__c = 'my message',
+                Timestamp__c = System.now(),
+                TransactionId__c = transactionIds.get(i)
+            );
+
+            logEntryEvents.add(logEntryEvent);
+        }
+        System.assertEquals(transactionIds.size(), logEntryEvents.size());
+
+        Test.startTest();
+        List<Database.SaveResult> saveResults = EventBus.publish(logEntryEvents);
+        Test.getEventBus().deliver();
+        System.assertEquals(transactionIds.size(), saveResults.size());
+        Test.stopTest();
+
+        for (Database.SaveResult saveResult : saveResults) {
+            System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        }
+
+        List<Log__c> logs = [SELECT Id, TransactionId__c, (SELECT Id FROM LogEntries__r) FROM Log__c];
+
+        System.assertEquals(2, logs.size(), logs);
+
+        // Convert the list of txn IDs to a set so we can use `contains()`
+        Set<String> uniqueTransactionIds = new Set<String>(transactionIds);
+        for (Log__c log : logs) {
+            System.assert(uniqueTransactionIds.contains(log.TransactionId__c), log.TransactionId__c);
+            System.assertEquals(1, log.LogEntries__r.size());
+        }
     }
 
     @isTest
