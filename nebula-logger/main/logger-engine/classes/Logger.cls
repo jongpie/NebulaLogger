@@ -314,6 +314,111 @@ global with sharing class Logger {
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return error().setMessage(logMessage).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+        return error().setMessage(logMessage).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return error().setMessage(logMessage).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+        return error().setMessage(logMessage).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics) {
+        return error().setMessage(logMessage).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.SaveResult> saveResults) {
+        return error().setMessage(logMessage).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return error().setMessage(logMessage).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+        return error().setMessage(logMessage).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return error().setMessage(logMessage).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+        return error().setMessage(logMessage).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  apexException The instance of `Exception` to log
      * @param  topics        The instance of `List<String>` to use as topics for the current entry
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -432,6 +537,50 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  records       The list of `SObject` records to log
+     * @param  apexException The instance of `Exception` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(LogMessage logMessage, List<SObject> records, Exception apexException, List<String> topics) {
+        return error().setMessage(logMessage).setRecord(records).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  records       The list of `SObject` records to log
+     * @param  apexException The instance of `Exception` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<SObject> records, Exception apexException) {
+        return error().setMessage(logMessage).setRecord(records).setExceptionDetails(apexException);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(LogMessage logMessage, List<SObject> records, List<String> topics) {
+        return error().setMessage(logMessage).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(LogMessage logMessage, List<SObject> records) {
+        return error().setMessage(logMessage).setRecord(records);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -542,6 +691,111 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder error(String message, Database.UpsertResult upsertResult) {
         return error().setMessage(message).setDatabaseResult(upsertResult);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(String message, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return error().setMessage(message).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(String message, List<Database.DeleteResult> deleteResults) {
+        return error().setMessage(message).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(String message, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return error().setMessage(message).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(String message, List<Database.MergeResult> mergeResults) {
+        return error().setMessage(message).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(String message, List<Database.SaveResult> saveResults, List<String> topics) {
+        return error().setMessage(message).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(String message, List<Database.SaveResult> saveResults) {
+        return error().setMessage(message).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return error().setMessage(message).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(String message, List<Database.UndeleteResult> undeleteResults) {
+        return error().setMessage(message).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(String message, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return error().setMessage(message).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(String message, List<Database.UpsertResult> upsertResults) {
+        return error().setMessage(message).setDatabaseResult(upsertResults);
     }
 
     /**
@@ -665,6 +919,50 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  records       The list of `SObject` records to log
+     * @param  apexException The instance of `Exception` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(String message, List<SObject> records, Exception apexException, List<String> topics) {
+        return error().setMessage(message).setRecord(records).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  records       The list of `SObject` records to log
+     * @param  apexException The instance of `Exception` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(String message, List<SObject> records, Exception apexException) {
+        return error().setMessage(message).setRecord(records).setExceptionDetails(apexException);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder error(String message, List<SObject> records, List<String> topics) {
+        return error().setMessage(message).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder error(String message, List<SObject> records) {
+        return error().setMessage(message).setRecord(records);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -776,6 +1074,111 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Database.UpsertResult upsertResult) {
         return warn().setMessage(logMessage).setDatabaseResult(upsertResult);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return warn().setMessage(logMessage).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+        return warn().setMessage(logMessage).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return warn().setMessage(logMessage).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+        return warn().setMessage(logMessage).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics) {
+        return warn().setMessage(logMessage).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.SaveResult> saveResults) {
+        return warn().setMessage(logMessage).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return warn().setMessage(logMessage).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+        return warn().setMessage(logMessage).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return warn().setMessage(logMessage).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+        return warn().setMessage(logMessage).setDatabaseResult(upsertResults);
     }
 
     /**
@@ -899,6 +1302,50 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  records       The list of `SObject` records to log
+     * @param  apexException The instance of `Exception` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(LogMessage logMessage, List<SObject> records, Exception apexException, List<String> topics) {
+        return warn().setMessage(logMessage).setRecord(records).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  records       The list of `SObject` records to log
+     * @param  apexException The instance of `Exception` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<SObject> records, Exception apexException) {
+        return warn().setMessage(logMessage).setRecord(records).setExceptionDetails(apexException);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(LogMessage logMessage, List<SObject> records, List<String> topics) {
+        return warn().setMessage(logMessage).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(LogMessage logMessage, List<SObject> records) {
+        return warn().setMessage(logMessage).setRecord(records);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1009,6 +1456,111 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder warn(String message, Database.UpsertResult upsertResult) {
         return warn().setMessage(message).setDatabaseResult(upsertResult);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(String message, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return warn().setMessage(message).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(String message, List<Database.DeleteResult> deleteResults) {
+        return warn().setMessage(message).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(String message, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return warn().setMessage(message).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(String message, List<Database.MergeResult> mergeResults) {
+        return warn().setMessage(message).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(String message, List<Database.SaveResult> saveResults, List<String> topics) {
+        return warn().setMessage(message).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(String message, List<Database.SaveResult> saveResults) {
+        return warn().setMessage(message).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return warn().setMessage(message).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(String message, List<Database.UndeleteResult> undeleteResults) {
+        return warn().setMessage(message).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(String message, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return warn().setMessage(message).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(String message, List<Database.UpsertResult> upsertResults) {
+        return warn().setMessage(message).setDatabaseResult(upsertResults);
     }
 
     /**
@@ -1132,6 +1684,50 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  records       The list of `SObject` records to log
+     * @param  apexException The instance of `Exception` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(String message, List<SObject> records, Exception apexException, List<String> topics) {
+        return warn().setMessage(message).setRecord(records).setExceptionDetails(apexException).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  records       The list of `SObject` records to log
+     * @param  apexException The instance of `Exception` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(String message, List<SObject> records, Exception apexException) {
+        return warn().setMessage(message).setRecord(records).setExceptionDetails(apexException);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder warn(String message, List<SObject> records, List<String> topics) {
+        return warn().setMessage(message).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder warn(String message, List<SObject> records) {
+        return warn().setMessage(message).setRecord(records);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
      * @param  message The string to use to set the entry's message field
      * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
@@ -1247,6 +1843,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return info().setMessage(logMessage).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+        return info().setMessage(logMessage).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return info().setMessage(logMessage).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+        return info().setMessage(logMessage).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics) {
+        return info().setMessage(logMessage).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.SaveResult> saveResults) {
+        return info().setMessage(logMessage).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return info().setMessage(logMessage).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+        return info().setMessage(logMessage).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return info().setMessage(logMessage).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+        return info().setMessage(logMessage).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @param  topics     The instance of `List<String>` to use as topics for the current entry
@@ -1295,6 +1996,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder info(LogMessage logMessage, SObject record) {
         return info().setMessage(logMessage).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(LogMessage logMessage, List<SObject> records, List<String> topics) {
+        return info().setMessage(logMessage).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(LogMessage logMessage, List<SObject> records) {
+        return info().setMessage(logMessage).setRecord(records);
     }
 
     /**
@@ -1413,6 +2135,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(String message, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return info().setMessage(message).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(String message, List<Database.DeleteResult> deleteResults) {
+        return info().setMessage(message).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(String message, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return info().setMessage(message).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(String message, List<Database.MergeResult> mergeResults) {
+        return info().setMessage(message).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(String message, List<Database.SaveResult> saveResults, List<String> topics) {
+        return info().setMessage(message).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(String message, List<Database.SaveResult> saveResults) {
+        return info().setMessage(message).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return info().setMessage(message).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(String message, List<Database.UndeleteResult> undeleteResults) {
+        return info().setMessage(message).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(String message, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return info().setMessage(message).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(String message, List<Database.UpsertResult> upsertResults) {
+        return info().setMessage(message).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @param  topics   The instance of `List<String>` to use as topics for the current entry
@@ -1461,6 +2288,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder info(String message, SObject record) {
         return info().setMessage(message).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder info(String message, List<SObject> records, List<String> topics) {
+        return info().setMessage(message).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder info(String message, List<SObject> records) {
+        return info().setMessage(message).setRecord(records);
     }
 
     /**
@@ -1580,6 +2428,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return debug().setMessage(logMessage).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+        return debug().setMessage(logMessage).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return debug().setMessage(logMessage).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+        return debug().setMessage(logMessage).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics) {
+        return debug().setMessage(logMessage).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.SaveResult> saveResults) {
+        return debug().setMessage(logMessage).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return debug().setMessage(logMessage).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+        return debug().setMessage(logMessage).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return debug().setMessage(logMessage).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+        return debug().setMessage(logMessage).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @param  topics     The instance of `List<String>` to use as topics for the current entry
@@ -1628,6 +2581,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder debug(LogMessage logMessage, SObject record) {
         return debug().setMessage(logMessage).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(LogMessage logMessage, List<SObject> records, List<String> topics) {
+        return debug().setMessage(logMessage).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(LogMessage logMessage, List<SObject> records) {
+        return debug().setMessage(logMessage).setRecord(records);
     }
 
     /**
@@ -1746,6 +2720,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(String message, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return debug().setMessage(message).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(String message, List<Database.DeleteResult> deleteResults) {
+        return debug().setMessage(message).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(String message, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return debug().setMessage(message).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(String message, List<Database.MergeResult> mergeResults) {
+        return debug().setMessage(message).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(String message, List<Database.SaveResult> saveResults, List<String> topics) {
+        return debug().setMessage(message).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(String message, List<Database.SaveResult> saveResults) {
+        return debug().setMessage(message).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return debug().setMessage(message).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(String message, List<Database.UndeleteResult> undeleteResults) {
+        return debug().setMessage(message).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(String message, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return debug().setMessage(message).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(String message, List<Database.UpsertResult> upsertResults) {
+        return debug().setMessage(message).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @param  topics   The instance of `List<String>` to use as topics for the current entry
@@ -1794,6 +2873,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder debug(String message, SObject record) {
         return debug().setMessage(message).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder debug(String message, List<SObject> records, List<String> topics) {
+        return debug().setMessage(message).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder debug(String message, List<SObject> records) {
+        return debug().setMessage(message).setRecord(records);
     }
 
     /**
@@ -1913,6 +3013,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return fine().setMessage(logMessage).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+        return fine().setMessage(logMessage).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return fine().setMessage(logMessage).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+        return fine().setMessage(logMessage).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics) {
+        return fine().setMessage(logMessage).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.SaveResult> saveResults) {
+        return fine().setMessage(logMessage).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return fine().setMessage(logMessage).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+        return fine().setMessage(logMessage).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return fine().setMessage(logMessage).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+        return fine().setMessage(logMessage).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @param  topics     The instance of `List<String>` to use as topics for the current entry
@@ -1961,6 +3166,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder fine(LogMessage logMessage, SObject record) {
         return fine().setMessage(logMessage).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(LogMessage logMessage, List<SObject> records, List<String> topics) {
+        return fine().setMessage(logMessage).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(LogMessage logMessage, List<SObject> records) {
+        return fine().setMessage(logMessage).setRecord(records);
     }
 
     /**
@@ -2079,6 +3305,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(String message, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return fine().setMessage(message).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(String message, List<Database.DeleteResult> deleteResults) {
+        return fine().setMessage(message).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(String message, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return fine().setMessage(message).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(String message, List<Database.MergeResult> mergeResults) {
+        return fine().setMessage(message).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(String message, List<Database.SaveResult> saveResults, List<String> topics) {
+        return fine().setMessage(message).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(String message, List<Database.SaveResult> saveResults) {
+        return fine().setMessage(message).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return fine().setMessage(message).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(String message, List<Database.UndeleteResult> undeleteResults) {
+        return fine().setMessage(message).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(String message, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return fine().setMessage(message).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(String message, List<Database.UpsertResult> upsertResults) {
+        return fine().setMessage(message).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @param  topics   The instance of `List<String>` to use as topics for the current entry
@@ -2127,6 +3458,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder fine(String message, SObject record) {
         return fine().setMessage(message).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder fine(String message, List<SObject> records, List<String> topics) {
+        return fine().setMessage(message).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder fine(String message, List<SObject> records) {
+        return fine().setMessage(message).setRecord(records);
     }
 
     /**
@@ -2246,6 +3598,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return finer().setMessage(logMessage).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+        return finer().setMessage(logMessage).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return finer().setMessage(logMessage).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+        return finer().setMessage(logMessage).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics) {
+        return finer().setMessage(logMessage).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.SaveResult> saveResults) {
+        return finer().setMessage(logMessage).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return finer().setMessage(logMessage).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+        return finer().setMessage(logMessage).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return finer().setMessage(logMessage).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+        return finer().setMessage(logMessage).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @param  topics     The instance of `List<String>` to use as topics for the current entry
@@ -2294,6 +3751,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder finer(LogMessage logMessage, SObject record) {
         return finer().setMessage(logMessage).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(LogMessage logMessage, List<SObject> records, List<String> topics) {
+        return finer().setMessage(logMessage).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(LogMessage logMessage, List<SObject> records) {
+        return finer().setMessage(logMessage).setRecord(records);
     }
 
     /**
@@ -2412,6 +3890,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(String message, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return finer().setMessage(message).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(String message, List<Database.DeleteResult> deleteResults) {
+        return finer().setMessage(message).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(String message, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return finer().setMessage(message).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(String message, List<Database.MergeResult> mergeResults) {
+        return finer().setMessage(message).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(String message, List<Database.SaveResult> saveResults, List<String> topics) {
+        return finer().setMessage(message).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(String message, List<Database.SaveResult> saveResults) {
+        return finer().setMessage(message).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return finer().setMessage(message).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(String message, List<Database.UndeleteResult> undeleteResults) {
+        return finer().setMessage(message).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(String message, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return finer().setMessage(message).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(String message, List<Database.UpsertResult> upsertResults) {
+        return finer().setMessage(message).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @param  topics   The instance of `List<String>` to use as topics for the current entry
@@ -2460,6 +4043,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder finer(String message, SObject record) {
         return finer().setMessage(message).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finer(String message, List<SObject> records, List<String> topics) {
+        return finer().setMessage(message).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finer(String message, List<SObject> records) {
+        return finer().setMessage(message).setRecord(records);
     }
 
     /**
@@ -2579,6 +4183,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return finest().setMessage(logMessage).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+        return finest().setMessage(logMessage).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return finest().setMessage(logMessage).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+        return finest().setMessage(logMessage).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics) {
+        return finest().setMessage(logMessage).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage  The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.SaveResult> saveResults) {
+        return finest().setMessage(logMessage).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return finest().setMessage(logMessage).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+        return finest().setMessage(logMessage).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return finest().setMessage(logMessage).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+        return finest().setMessage(logMessage).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
      * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
      * @param  recordId   The record ID of an `SObject` to log
      * @param  topics     The instance of `List<String>` to use as topics for the current entry
@@ -2627,6 +4336,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder finest(LogMessage logMessage, SObject record) {
         return finest().setMessage(logMessage).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(LogMessage logMessage, List<SObject> records, List<String> topics) {
+        return finest().setMessage(logMessage).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(LogMessage logMessage, List<SObject> records) {
+        return finest().setMessage(logMessage).setRecord(records);
     }
 
     /**
@@ -2745,6 +4475,111 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(String message, List<Database.DeleteResult> deleteResults, List<String> topics) {
+        return finest().setMessage(message).setDatabaseResult(deleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(String message, List<Database.DeleteResult> deleteResults) {
+        return finest().setMessage(message).setDatabaseResult(deleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @param  topics       The instance of `List<String>` to use as topics for the current entry
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(String message, List<Database.MergeResult> mergeResults, List<String> topics) {
+        return finest().setMessage(message).setDatabaseResult(mergeResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message      The string to use to set the entry's message field
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(String message, List<Database.MergeResult> mergeResults) {
+        return finest().setMessage(message).setDatabaseResult(mergeResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @param  topics      The instance of `List<String>` to use as topics for the current entry
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(String message, List<Database.SaveResult> saveResults, List<String> topics) {
+        return finest().setMessage(message).setDatabaseResult(saveResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message     The string to use to set the entry's message field
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(String message, List<Database.SaveResult> saveResults) {
+        return finest().setMessage(message).setDatabaseResult(saveResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @param  topics          The instance of `List<String>` to use as topics for the current entry
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics) {
+        return finest().setMessage(message).setDatabaseResult(undeleteResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message         The string to use to set the entry's message field
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(String message, List<Database.UndeleteResult> undeleteResults) {
+        return finest().setMessage(message).setDatabaseResult(undeleteResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @param  topics        The instance of `List<String>` to use as topics for the current entry
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(String message, List<Database.UpsertResult> upsertResults, List<String> topics) {
+        return finest().setMessage(message).setDatabaseResult(upsertResults).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(String message, List<Database.UpsertResult> upsertResults) {
+        return finest().setMessage(message).setDatabaseResult(upsertResults);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
      * @param  message  The string to use to set the entry's message field
      * @param  recordId The record ID of an `SObject` to log
      * @param  topics   The instance of `List<String>` to use as topics for the current entry
@@ -2793,6 +4628,27 @@ global with sharing class Logger {
      */
     global static LogEntryEventBuilder finest(String message, SObject record) {
         return finest().setMessage(message).setRecordId(record);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @param  topics     The instance of `List<String>` to use as topics for the current entry
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    public static LogEntryEventBuilder finest(String message, List<SObject> records, List<String> topics) {
+        return finest().setMessage(message).setRecord(records).setTopics(topics);
+    }
+
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param  logMessage The instance of `LogMessage` to use to set the entry's message field
+     * @param  records    The list of `SObject` records to log
+     * @return            The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global static LogEntryEventBuilder finest(String message, List<SObject> records) {
+        return finest().setMessage(message).setRecord(records);
     }
 
     /**

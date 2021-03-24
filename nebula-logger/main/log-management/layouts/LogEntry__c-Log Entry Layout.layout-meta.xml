@@ -71,31 +71,19 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Related Record</label>
+        <label>Exception Information</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>RecordId__c</field>
+                <field>ExceptionType__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>RecordSObjectClassification__c</field>
+                <field>ExceptionMessage__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>RecordSObjectTypeNamespace__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>RecordSObjectType__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>RecordLink__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>RecordJson__c</field>
+                <field>ExceptionStackTrace__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>
@@ -106,6 +94,10 @@
         <editHeading>true</editHeading>
         <label>Database Result</label>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>DatabaseResultCollectionType__c</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>DatabaseResultType__c</field>
@@ -121,19 +113,35 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Exception Information</label>
+        <label>Related Record</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>ExceptionType__c</field>
+                <field>RecordCollectionType__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>ExceptionMessage__c</field>
+                <field>RecordSObjectType__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>ExceptionStackTrace__c</field>
+                <field>RecordId__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RecordSObjectClassification__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RecordSObjectTypeNamespace__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RecordLink__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RecordJson__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

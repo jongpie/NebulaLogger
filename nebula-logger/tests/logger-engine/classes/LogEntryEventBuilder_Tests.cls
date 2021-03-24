@@ -153,7 +153,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_deleteResult_without_errors() {
+    static void it_should_set_database_result_fields_for_successful_deleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
 
@@ -168,12 +168,13 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(deleteResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_deleteResult_with_errors() {
+    static void it_should_set_database_result_fields_for_failed_deleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
 
@@ -191,13 +192,14 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(deleteResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
     // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
     // @isTest
-    // static void it_should_set_dml_result_fields_for_merge_result_with_errors() {
+    // static void it_should_set_database_result_fields_for_failed_mergeResult() {
     //     Database.MergeResult mergeResult = Database.merge(new Account(Name='Expcted'), new Account(Name='Failure'), false);
     //     System.assertEquals(false, mergeResult.isSuccess());
 
@@ -214,7 +216,7 @@ private class LogEntryEventBuilder_Tests {
     // }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_successful_saveResult() {
+    static void it_should_set_database_result_fields_for_successful_saveResult() {
         Database.SaveResult saveResult = Database.insert(new Log__c(TransactionId__c = '1234'), false);
         System.assertEquals(true, saveResult.isSuccess());
 
@@ -226,12 +228,13 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(saveResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_failed_saveResult() {
+    static void it_should_set_database_result_fields_for_failed_saveResult() {
         Database.SaveResult saveResult = Database.insert(new Account(), false);
         System.assertEquals(false, saveResult.isSuccess());
 
@@ -243,12 +246,13 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(saveResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_successful_undeleteResult() {
+    static void it_should_set_database_result_fields_for_successful_undeleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         delete log;
@@ -264,12 +268,13 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(undeleteResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_failed_undeleteResult() {
+    static void it_should_set_database_result_fields_for_failed_undeleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         delete log;
@@ -287,12 +292,13 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(undeleteResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_successful_upsertResult_when_insert() {
+    static void it_should_set_database_result_fields_for_successful_upsertResult_when_insert() {
         // UpsertResult for a new record insert
         Database.UpsertResult upsertResult = Database.upsert(new Log__c(TransactionId__c = '1234'), false);
         System.assertEquals(true, upsertResult.isSuccess());
@@ -305,12 +311,13 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(upsertResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.UpsertResult.class.getName() + '.Insert', logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_failed_upsertResult_when_insert() {
+    static void it_should_set_database_result_fields_for_failed_upsertResult_when_insert() {
         // UpsertResult for a new record insert
         Database.UpsertResult upsertResult = Database.upsert(new Account(), false);
         System.assertEquals(false, upsertResult.isSuccess());
@@ -323,12 +330,13 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(upsertResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.UpsertResult.class.getName() + '.Insert', logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_successful_upsertResult_when_update() {
+    static void it_should_set_database_result_fields_for_successful_upsertResult_when_update() {
         // UpsertResult for an existing record update
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -345,12 +353,13 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(upsertResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.UpsertResult.class.getName() + '.Update', logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
-    static void it_should_set_dml_result_fields_for_failed_upsertResult_when_update() {
+    static void it_should_set_database_result_fields_for_failed_upsertResult_when_update() {
         // UpsertResult for an existing record update
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -374,8 +383,244 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
 
+        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
         System.assertEquals(JSON.serializePretty(upsertResult), logEntryEvent.DatabaseResultJson__c);
         System.assertEquals(Database.UpsertResult.class.getName() + '.Update', logEntryEvent.DatabaseResultType__c);
+    }
+
+    @isTest
+    static void it_should_set_database_result_fields_for_list_of_successful_deleteResult() {
+        List<Log__c> logs = new List<Log__c>();
+        for (Integer i = 0; i < 5; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
+        }
+        insert logs;
+
+        List<Database.DeleteResult> deleteResults = Database.delete(logs, false);
+        for (Database.DeleteResult deleteResult : deleteResults) {
+            System.assertEquals(true, deleteResult.isSuccess());
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDatabaseResult(deleteResults);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(deleteResults), logEntryEvent.DatabaseResultJson__c);
+        System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    }
+
+    @isTest
+    static void it_should_set_database_result_fields_for_list_of_failed_deleteResult() {
+        List<Log__c> logs = new List<Log__c>();
+        for (Integer i = 0; i < 5; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
+        }
+        insert logs;
+
+        // Delete the logs twice to trigger DeleteResult errors
+        delete logs;
+
+        List<Database.DeleteResult> deleteResults = Database.delete(logs, false);
+        for (Database.DeleteResult deleteResult : deleteResults) {
+            System.assertEquals(false, deleteResult.isSuccess());
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDatabaseResult(deleteResults);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(deleteResults), logEntryEvent.DatabaseResultJson__c);
+        System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    }
+
+    // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
+    // @isTest
+    // static void it_should_set_database_result_fields_for_list_of_failed_mergeResult() {
+    //     Database.MergeResult mergeResult = Database.merge(new Account(Name='Expcted'), new Account(Name='Failure'), false);
+    //     System.assertEquals(false, mergeResult.isSuccess());
+
+    //     LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+    //     Test.startTest();
+    //     builder.setDatabaseResult(mergeResult);
+    //     Test.stopTest();
+
+    //     LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+    //     System.assertEquals(JSON.serializePretty(mergeResult), logEntryEvent.DatabaseResultJson__c);
+    //     System.assertEquals(Database.MergeResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    // }
+
+    @isTest
+    static void it_should_set_database_result_fields_for_list_of_successful_saveResult() {
+        List<Log__c> logs = new List<Log__c>();
+        for (Integer i = 0; i < 5; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
+        }
+        List<Database.SaveResult> saveResults = Database.insert(logs, false);
+        for (Database.SaveResult saveResult : saveResults) {
+            System.assertEquals(true, saveResult.isSuccess());
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDatabaseResult(saveResults);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(saveResults), logEntryEvent.DatabaseResultJson__c);
+        System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    }
+
+    @isTest
+    static void it_should_set_database_result_fields_for_list_of_failed_saveResult() {
+        List<Account> accounts = new List<Account>();
+        for (Integer i = 0; i < 5; i++) {
+            Account account = new Account();
+            accounts.add(account);
+        }
+        List<Database.SaveResult> saveResults = Database.insert(accounts, false);
+        for (Database.SaveResult saveResult : saveResults) {
+            System.assertEquals(false, saveResult.isSuccess());
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDatabaseResult(saveResults);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(saveResults), logEntryEvent.DatabaseResultJson__c);
+        System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    }
+
+    @isTest
+    static void it_should_set_database_result_fields_for_list_of_successful_undeleteResult() {
+        List<Log__c> logs = new List<Log__c>();
+        for (Integer i = 0; i < 5; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
+        }
+        insert logs;
+        delete logs;
+
+        List<Database.UndeleteResult> undeleteResults = Database.undelete(logs, false);
+        for (Database.UndeleteResult undeleteResult : undeleteResults) {
+            System.assertEquals(true, undeleteResult.isSuccess());
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDatabaseResult(undeleteResults);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(undeleteResults), logEntryEvent.DatabaseResultJson__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    }
+
+    @isTest
+    static void it_should_set_database_result_fields_for_list_of_failed_undeleteResult() {
+        List<Log__c> logs = new List<Log__c>();
+        for (Integer i = 0; i < 5; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
+        }
+        insert logs;
+        delete logs;
+        // Hard delete to (later) cause an undelete error
+        Database.emptyRecycleBin(logs);
+
+        List<Database.UndeleteResult> undeleteResults = Database.undelete(logs, false);
+        for (Database.UndeleteResult undeleteResult : undeleteResults) {
+            System.assertEquals(false, undeleteResult.isSuccess());
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDatabaseResult(undeleteResults);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(undeleteResults), logEntryEvent.DatabaseResultJson__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    }
+
+    @isTest
+    static void it_should_set_database_result_fields_for_list_of_successful_upsertResult_when_insert() {
+        // UpsertResult for a new record insert
+        List<Log__c> logs = new List<Log__c>();
+        for (Integer i = 0; i < 5; i++) {
+            Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
+        }
+        List<Database.UpsertResult> upsertResults = Database.upsert(logs, false);
+        for (Database.UpsertResult upsertResult : upsertResults) {
+            System.assertEquals(true, upsertResult.isSuccess());
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDatabaseResult(upsertResults);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(upsertResults), logEntryEvent.DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+    }
+
+    @isTest
+    static void it_should_set_database_result_fields_for_list_of_failed_upsertResult_when_insert() {
+        // UpsertResult for a new record insert
+        List<Account> accounts = new List<Account>();
+        for (Integer i = 0; i < 5; i++) {
+            Account account = new Account();
+            accounts.add(account);
+        }
+        List<Database.UpsertResult> upsertResults = Database.upsert(accounts, false);
+        for (Database.UpsertResult upsertResult : upsertResults) {
+            System.assertEquals(false, upsertResult.isSuccess());
+        }
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+
+        Test.startTest();
+        builder.setDatabaseResult(upsertResults);
+        Test.stopTest();
+
+        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
+
+        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(upsertResults), logEntryEvent.DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
     @isTest
@@ -394,6 +639,7 @@ private class LogEntryEventBuilder_Tests {
 
         Test.stopTest();
 
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(currentUserId, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -418,6 +664,7 @@ private class LogEntryEventBuilder_Tests {
 
         Test.stopTest();
 
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(log.Id, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Custom Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -440,6 +687,7 @@ private class LogEntryEventBuilder_Tests {
 
         Test.stopTest();
 
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(status.Id, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Custom Metadata Type Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -462,6 +710,7 @@ private class LogEntryEventBuilder_Tests {
 
         Test.stopTest();
 
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(currentUser.Id, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(JSON.serializePretty(currentUser), builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -486,6 +735,7 @@ private class LogEntryEventBuilder_Tests {
 
         Test.stopTest();
 
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(log.Id, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(JSON.serializePretty(log), builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Custom Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -512,6 +762,29 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(JSON.serializePretty(status), builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Custom Metadata Type Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
         System.assertEquals(LogStatus__mdt.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @isTest
+    static void it_should_set_record_fields_for_list_of_records() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        builder.setRecord(users);
+
+        Test.stopTest();
+
+        System.assertEquals('List', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
     @isTest

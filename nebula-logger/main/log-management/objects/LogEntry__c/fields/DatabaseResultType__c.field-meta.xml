@@ -26,6 +26,11 @@
                 <label>Database.SaveResult</label>
             </value>
             <value>
+                <fullName>Database.UpsertResult</fullName>
+                <default>false</default>
+                <label>Database.UpsertResult</label>
+            </value>
+            <value>
                 <fullName>Database.UpsertResult.Insert</fullName>
                 <default>false</default>
                 <label>Database.UpsertResult.Insert</label>

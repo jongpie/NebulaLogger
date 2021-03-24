@@ -5,7 +5,7 @@
 
 /**
  * @group logger-engine
- * @description Builder class that generates each `LogEntryEvent__c` record
+ * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */
 global with sharing class LogEntryEventBuilder {
@@ -141,15 +141,16 @@ global with sharing class LogEntryEventBuilder {
     // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
     // ...but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  deleteResult The instance of `Database.DeleteResult` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
-        if (deleteResult == null) {
+        if (this.shouldSave == false || deleteResult == null) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
@@ -157,15 +158,16 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  mergeResult The instance of `Database.MergeResult` to log
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
-        if (mergeResult == null) {
+        if (this.shouldSave == false || mergeResult == null) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResult);
         this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
@@ -173,15 +175,16 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  saveResult The instance of `Database.SaveResult` to log
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
-        if (saveResult == null) {
+        if (this.shouldSave == false || saveResult == null) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResult);
         this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
@@ -189,17 +192,19 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  upsertResult The instance of `Database.UpsertResult` to log
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
-        if (upsertResult == null) {
+        if (this.shouldSave == false || upsertResult == null) {
             return this;
         }
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
+
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
@@ -207,15 +212,16 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Sets the log entry event's DML result fields
+     * @description Sets the log entry event's database operation result fields
      * @param  undeleteResult The instance of `Database.UndeleteResult` to log
      * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
-        if (undeleteResult == null) {
+        if (this.shouldSave == false || undeleteResult == null) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
@@ -223,19 +229,136 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  deleteResults The list of `Database.DeleteResult` instances to log
+     * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.DeleteResult> deleteResults) {
+        if (this.shouldSave == false || deleteResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResults);
+        this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  mergeResults The list of `Database.MergeResult` instances to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.MergeResult> mergeResults) {
+        if (this.shouldSave == false || mergeResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResults);
+        this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  saveResults The list of `Database.SaveResult` instances to log
+     * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.SaveResult> saveResults) {
+        if (this.shouldSave == false || saveResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResults);
+        this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  upsertResults The list of `Database.UpsertResult` instances to log
+     * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.UpsertResult> upsertResults) {
+        if (this.shouldSave == false || upsertResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResults);
+        this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName();
+
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's database operation result fields
+     * @param  undeleteResults The list of `Database.UndeleteResult` instances to log
+     * @return                 The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setDatabaseResult(List<Database.UndeleteResult> undeleteResults) {
+        if (this.shouldSave == false || undeleteResults == null) {
+            return this;
+        }
+
+        this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResults);
+        this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
+
+        return this;
+    }
+
+    /**
+     * @description Deprecated - use `setRecord(Id recordId)` instead
+     */
+    // TODO before publishing managed package version, uncomment @Deprecated
+    // @Deprecated
+    global LogEntryEventBuilder setRecordId(Id recordId) {
+        return this.setRecord(recordId);
+    }
+
+    /**
+     * @description Deprecated - use `setRecord(SObject record)` instead
+     */
+    // TODO before publishing managed package version, uncomment @Deprecated
+    // @Deprecated
+    global LogEntryEventBuilder setRecordId(SObject record) {
+        return this.setRecord(record);
+    }
+
+    /**
+     * @description Sets the log entry event's record fields
+     * @param  recordId The ID of the SObject record related to the entry
+     * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setRecord(Id recordId) {
+        if (this.shouldSave == false || String.isBlank(recordId)) {
+            return this;
+        }
+
+        this.logEntryEvent.RecordCollectionType__c = 'Single';
+        this.logEntryEvent.RecordId__c = recordId;
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
+        this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
+        return this;
+    }
+
+    /**
      * @description Sets the log entry event's record fields
      * @param  record The `SObject` record related to the entry. The JSON of the record is automatically added to the entry
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setRecordId(SObject record) {
-        if (this.shouldSave == false) {
+    global LogEntryEventBuilder setRecord(SObject record) {
+        if (this.shouldSave == false || record == null) {
             return this;
         }
 
-        if (record == null) {
-            return this;
-        }
-
+        this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = record.Id;
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
@@ -249,21 +372,22 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Sets the log entry event's record fields
-     * @param  recordId The ID of the SObject record related to the entry
-     * @return          The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  records The list of `SObject` records related to the entry. The JSON of the list is automatically added to the entry
+     * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    global LogEntryEventBuilder setRecordId(Id recordId) {
-        if (this.shouldSave == false) {
+    global LogEntryEventBuilder setRecord(List<SObject> records) {
+        if (this.shouldSave == false || records == null) {
             return this;
         }
 
-        if (String.isBlank(recordId)) {
-            return this;
-        }
+        this.logEntryEvent.RecordCollectionType__c = 'List';
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(records.getSObjectType());
+        this.logEntryEvent.RecordSObjectType__c = records.getSObjectType().getDescribe().getName();
+        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(records.getSObjectType());
 
-        this.logEntryEvent.RecordId__c = recordId;
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
+        String truncatedRecordJson = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
+        this.logEntryEvent.RecordJson__c = truncatedRecordJson;
+
         return this;
     }
 
@@ -423,6 +547,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
+        if (sobjectType == null) {
+            return null;
+        }
+
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
@@ -456,6 +584,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
+        if (sobjectType == null) {
+            return null;
+        }
+
         String sobjectFullName = sobjectType.getDescribe().getName();
         String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 
@@ -514,6 +646,7 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
+    // Private static methods
     private static AuthSession getAuthSession() {
         if (String.isBlank(UserInfo.getSessionId())) {
             return null;
@@ -546,11 +679,11 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
-    // Private static methods
     private static String getApiVersion() {
         // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
-        // Serializing any SObject with an ID will include the API version in the JSON
-        // So, use UserInfo.getUserId() to create an instance of User and parse the JSOn to get the API version
+        // Serializing any SObject w/ an ID will include the API version
+        // So, use UserInfo.getUserId() to create the current user's record without querying
+        // Then parse the JSON to get the API version
         // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v51.0/sobjects/User/005J000000AugnYIAR"}
         String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');

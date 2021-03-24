@@ -33,10 +33,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerInstallHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>RelatedLogEntriesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -49,6 +45,11 @@
         <name>LoggerSettings__c</name>
     </customSettingAccesses>
     <description>Provides access to manage all logs</description>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.DatabaseResultCollectionType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.DatabaseResultJson__c</field>
@@ -382,6 +383,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.RecordDetailedLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.RecordCollectionType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
