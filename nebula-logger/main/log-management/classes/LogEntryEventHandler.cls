@@ -10,7 +10,6 @@
 public without sharing class LogEntryEventHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
-    private static Boolean logsUpserted = false;
     @TestVisible
     private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
 
@@ -37,12 +36,11 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void upsertLogs(List<LogEntryEvent__e> logEntryEvents) {
-        Log__c recentLogWithDetails = getRecentLogWithDetails();
+        Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
         // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
 
-        List<Log__c> logsToUpsert = new List<Log__c>();
         for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
             if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
                 continue;
@@ -52,9 +50,9 @@ public without sharing class LogEntryEventHandler {
             Log__c log = new Log__c();
             // To avoid making a callout for every log for details retrieved from api.status.salesforce.com,
             // ...try to query recent logs first to see if there is a recent log with the details already populated
-            if (recentLogWithDetails != null) {
-                log.ApiReleaseNumber__c = recentLogWithDetails.ApiReleaseNumber__c;
-                log.ApiReleaseVersion__c = recentLogWithDetails.ApiReleaseVersion__c;
+            if (recentLogWithApiReleaseDetails != null) {
+                log.ApiReleaseNumber__c = recentLogWithApiReleaseDetails.ApiReleaseNumber__c;
+                log.ApiReleaseVersion__c = recentLogWithApiReleaseDetails.ApiReleaseVersion__c;
             }
 
             log.ApiVersion__c = logEntryEvent.ApiVersion__c;
@@ -104,23 +102,18 @@ public without sharing class LogEntryEventHandler {
             log.UserRoleName__c = logEntryEvent.UserRoleName__c;
             log.UserType__c = logEntryEvent.UserType__c;
 
-            logsToUpsert.add(log);
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
 
-        upsert logsToUpsert TransactionId__c;
+        upsert TRANSACTION_ID_TO_LOG.values() TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (shouldCallStatusApi == true && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c && recentLogWithDetails == null && getCountOfOpenJobs() == 0) {
+        if (shouldCallStatusApi == true && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
     }
 
     private void insertLogEntries(List<LogEntryEvent__e> logEntryEvents) {
-        if (logsUpserted == false) {
-            return; // Avoid an exception - if there is no log, we can't save log entries
-        }
-
         for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
             // Workaround field for platform issue w/ accurate datetimes
             Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
@@ -235,7 +228,7 @@ public without sharing class LogEntryEventHandler {
     }
 
     // Private static methods
-    private static Log__c getRecentLogWithDetails() {
+    private static Log__c getRecentLogWithApiReleaseDetails() {
         // Query for recent logs created only today - the status API should be called...
         // ...at least once per day to make sure that status details are still accurate.
         // This query should make a callout approximately every 4 hours.
