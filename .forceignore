@@ -3,6 +3,7 @@
 #
 
 # Ignore certain folders that don't need to be deployed when using the 'Deploy to Salesforce' button in README
+./nebula-logger/examples/
 ./nebula-logger/managed-package/
 
 # LWC configuration files
