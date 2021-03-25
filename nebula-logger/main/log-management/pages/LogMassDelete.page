@@ -1,4 +1,4 @@
-<apex:page standardController="Log__c" recordSetVar="logs" tabStyle="Log__c" extensions="LogMassDeleteExtension">
+<apex:page standardController="Log__c" recordSetVar="logs" extensions="LogMassDeleteExtension" tabStyle="Log__c" lightningStyleSheets="true">
     <apex:slds />
     <style>
         body {
@@ -6,13 +6,15 @@
         }
     </style>
     <script>
-        // sforce.one.showToast({
-        //     message : 'Derp',
-        //     title : 'Some title',
-        //     type : 'Error'
-        // })
-        function cancel() {
-            sforce.one.back(true);
+        function showSuccessMessage() {
+            setTimeout(
+                sforce.one.showToast({
+                    type : 'Success',
+                    title : 'Logs Successfully Deleted',
+                    message : '{!deletableLogs.size} record(s) were deleted'
+                }),
+                5000
+            );
         }
     </script>
 
@@ -26,7 +28,7 @@
                     <h2 class="slds-text-heading_medium" id="prompt-heading-id">Delete Logs</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium" id="prompt-message-wrapper">
-                    [{!countOfSelected} total records selected] <br />
+                    <p>{!deletableLogs.size} logs will be deleted </p>
                     <apex:repeat value="{!selected}" var="selectedLog">
                         [SELECTED LOG: {!selectedLog.Id} {!selectedLog.Name}] <br />
                     </apex:repeat>
@@ -36,8 +38,12 @@
                     </apex:repeat>
                 </div>
                 <footer class="slds-modal__footer slds-theme_default">
-                    <button class="slds-button slds-button_neutral" onclick="cancel();">Cancel</button>
-                    <button class="slds-button slds-button_destructive">Delete Logs</button>
+                    <apex:form>
+                        <!-- <button class="slds-button slds-button_neutral" onclick="cancel();">Cancel</button> -->
+                        <!-- <button class="slds-button slds-button_destructive">Delete Logs</button> -->
+                        <apex:commandButton action="{!cancel}" value="Cancel" styleClass="slds-button slds-button_neutral" />
+                        <apex:commandButton action="{!deleteSelectedLogs}" onclick="showSuccessMessage();" value="Delete Logs" styleClass="slds-button slds-button_destructive" />
+                    </apex:form>
                 </footer>
             </div>
         </section>

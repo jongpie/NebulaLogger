@@ -1,20 +1,21 @@
 public with sharing class LogMassDeleteExtension {
-    private List<Log__c> selectedLogs;
+
+    public class LogMassDeleteException extends Exception {}
+
+    private ApexPages.StandardSetController controller;
+
     public LogMassDeleteExtension(ApexPages.StandardSetController controller) {
         if (Schema.Log__c.SObjectType.getDescribe().isDeletable() == false) {
-            throw new AuraHandledException('You do not have access to delete logs records');
+            String deleteAccessError = 'You do not have access to delete logs records';
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, deleteAccessError));
         }
 
-        this.selectedLogs = controller.getSelected();
-    }
-
-    public Integer getCountOfSelected() {
-        return this.selectedLogs.size();
+        this.controller = controller;
     }
 
     public List<Log__c> getDeletableLogs() {
         List<String> logIds = new List<String>();
-        for (Log__c selectedLog : this.selectedLogs) {
+        for (Log__c selectedLog : (List<Log__c>)this.controller.getSelected()) {
             logIds.add(selectedLog.Id);
         }
 
@@ -25,7 +26,13 @@ public with sharing class LogMassDeleteExtension {
 
         return deletableLogs;
     }
-    public void deleteSelectedLogs() {
-        // TODO
+    public PageReference deleteSelectedLogs() {
+        try {
+            delete getDeletableLogs();
+        } catch(Exception ex) {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, ex.getMessage()));
+        }
+
+        return this.controller.cancel();
     }
 }
