@@ -1,5 +1,5 @@
 # Unique name for this workflow
-name: Logger Validation-Only Deployment
+name: Logger Deployment
 
 on:
     push:
