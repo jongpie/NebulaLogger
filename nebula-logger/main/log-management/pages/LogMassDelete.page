@@ -30,22 +30,35 @@
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
                         <span class="slds-assistive-text">Close</span>
                     </button>
-                    <h2 class="slds-text-heading_medium" id="prompt-heading-id">Delete Logs</h2>
+                    <h2 class="slds-text-heading_medium" id="prompt-heading-id">Delete {!deletableLogs.size} Logs</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium" id="prompt-message-wrapper">
-                    <p>{!deletableLogs.size} logs will be deleted </p>
-                    <apex:repeat value="{!selected}" var="selectedLog">
-                        [SELECTED LOG: {!selectedLog.Id} {!selectedLog.Name}] <br />
-                    </apex:repeat>
-                    <hr />
-                    <apex:repeat value="{!deletableLogs}" var="deletableLog">
-                        [DELETEABLE LOG: {!deletableLog.Id} {!deletableLog.Name}] <br />
-                    </apex:repeat>
+                    <div class="slds-p-vertical_none">
+                        Are you sure that you want to delete these logs?<br /><br />
+                    </div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">{!$ObjectType.Log__c.Fields.Name.Label}</th>
+                                <th scope="col">{!$ObjectType.Log__c.Fields.LoggedBy__c.Label}</th>
+                                <th scope="col">{!$ObjectType.Log__c.Fields.StartTime__c.Label}</th>
+                                <th scope="col">{!$ObjectType.Log__c.Fields.TotalLogEntries__c.Label}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:repeat value="{!deletableLogs}" var="deletableLog">
+                                <tr>
+                                    <td><a href="{! '/' + deletableLog.Id}">{!deletableLog.Name}</a></td>
+                                    <td><a href="{! '/' + deletableLog.LoggedBy__c}">{!deletableLog.LoggedBy__r.Name}</a></td>
+                                    <td><apex:outputField value="{!deletableLog.StartTime__c}"/></td>
+                                    <td>{!deletableLog.TotalLogEntries__c}</td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
                 </div>
                 <footer class="slds-modal__footer slds-theme_default">
                     <apex:form>
-                        <!-- <button class="slds-button slds-button_neutral" onclick="cancel();">Cancel</button> -->
-                        <!-- <button class="slds-button slds-button_destructive">Delete Logs</button> -->
                         <apex:commandButton action="{!cancel}" value="Cancel" styleClass="slds-button slds-button_neutral" />
                         <apex:commandButton action="{!deleteSelectedLogs}" onclick="showSuccessMessage();" value="Delete Logs" styleClass="slds-button slds-button_destructive" />
                     </apex:form>

@@ -24,10 +24,12 @@ public with sharing class LogMassDeleteExtension {
             logIds.add(selectedLog.Id);
         }
 
-        List<Log__c> deletableLogs = new List<Log__c>();
+        List<Id> deletableLogIds = new List<Id>();
         for (UserRecordAccess recordAccess : [SELECT RecordId FROM UserRecordAccess WHERE UserId = :UserInfo.getUserId() AND RecordId IN :logIds AND HasDeleteAccess = true]) {
-            deletableLogs.add(new Log__c(Id = recordAccess.RecordId));
+            deletableLogIds.add(recordAccess.RecordId);
         }
+
+        List<Log__c> deletableLogs = [SELECT Id, Name, LoggedBy__c, LoggedBy__r.Name, StartTime__c, TotalLogEntries__c FROM Log__c WHERE Id IN :deletableLogIds];
 
         return deletableLogs;
     }
