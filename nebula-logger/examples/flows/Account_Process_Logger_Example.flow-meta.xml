@@ -203,7 +203,7 @@
         <label>Run Account Flow</label>
         <locationX>100</locationX>
         <locationY>400</locationY>
-        <actionName>Nebula__Account_Flow_Logger_Example</actionName>
+        <actionName>Account_Flow_Logger_Example</actionName>
         <actionType>flow</actionType>
         <connector>
             <targetReference>myDecision2</targetReference>
