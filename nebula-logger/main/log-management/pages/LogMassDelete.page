@@ -5,12 +5,9 @@
 
 <apex:page standardController="Log__c" recordSetVar="logs" extensions="LogMassDeleteExtension" tabStyle="Log__c" lightningStyleSheets="true">
     <apex:slds />
-    <style>
-        body {
-            background-color: white;
-        }
-    </style>
+
     <script>
+        // TODO revisit how toast message is shown - it needs to be triggered based on success/failure result of Apex method
         function showSuccessMessage() {
             setTimeout(
                 sforce.one.showToast({
@@ -18,7 +15,7 @@
                     title : 'Logs Successfully Deleted',
                     message : '{!deletableLogs.size} record(s) were deleted'
                 }),
-                5000
+                2000
             );
         }
     </script>
@@ -27,14 +24,11 @@
         <section role="alertdialog" tabindex="0" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" class="slds-modal slds-fade-in-open slds-modal_prompt" aria-modal="true">
             <div class="slds-modal__container">
                 <header class="slds-modal__header slds-theme_error slds-theme_alert-texture">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
-                        <span class="slds-assistive-text">Close</span>
-                    </button>
                     <h2 class="slds-text-heading_medium" id="prompt-heading-id">Delete {!deletableLogs.size} Logs</h2>
                 </header>
                 <div class="slds-modal__content slds-p-around_medium" id="prompt-message-wrapper">
-                    <div class="slds-p-vertical_none">
-                        Are you sure that you want to delete these logs?<br /><br />
+                    <div class="slds-p-vertical_medium">
+                        Are you sure that you want to delete these logs?
                     </div>
                     <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
                         <thead>

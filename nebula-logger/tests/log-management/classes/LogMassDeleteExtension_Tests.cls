@@ -50,8 +50,14 @@ private class LogMassDeleteExtension_Tests {
     static void it_should_delete_selected_log_records() {
         List<Log__c> logs = [SELECT Id, Name FROM Log__c];
         List<Log__c> logsToDelete = new List<Log__c>();
-        for (Integer i = 0; i < 3; i++) {
-            logsToDelete.add(logs.get(i));
+        List<Log__c> logsToKeep = new List<Log__c>();
+        Integer numberToKeep = 3;
+        for (Integer i = 0; i < logs.size(); i++) {
+            if (i < numberToKeep) {
+                logsToDelete.add(logs.get(i));
+            } else {
+                logsToKeep.add(logs.get(i));
+            }
         }
 
         ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
@@ -67,9 +73,14 @@ private class LogMassDeleteExtension_Tests {
 
         Test.stopTest();
 
+        // Verify that only the selected logs were deleted
         logsToDelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToDelete ALL ROWS];
         for (Log__c log : logsToDelete) {
             System.assertEquals(true, log.IsDeleted, log);
+        }
+        logsToKeep = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToKeep ALL ROWS];
+        for (Log__c log : logsToDelete) {
+            System.assertEquals(false, log.IsDeleted, log);
         }
     }
 }
