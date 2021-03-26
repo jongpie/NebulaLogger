@@ -179,9 +179,10 @@
         <customTabListAdditionalFields>TotalERRORLogEntries__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalWARNLogEntries__c</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
-        <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <listViewButtons>MassDelete</listViewButtons>
         <lookupDialogsAdditionalFields>LoggedByUsernameLink__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>StartTime__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
