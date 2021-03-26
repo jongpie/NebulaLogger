@@ -79,7 +79,7 @@ private class LogMassDeleteExtension_Tests {
             System.assertEquals(true, log.IsDeleted, log);
         }
         logsToKeep = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToKeep ALL ROWS];
-        for (Log__c log : logsToDelete) {
+        for (Log__c log : logsToKeep) {
             System.assertEquals(false, log.IsDeleted, log);
         }
     }
