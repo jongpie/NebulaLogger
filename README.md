@@ -111,12 +111,12 @@ To help development and support teams better manage logs (and any underlying cod
   * `Log__c.IsResolved__c` - Indicates if the log is resolved (meaning that it required analaysis/work, which has been completed). Only closed statuses can be considered resolved. This is also driven based on the selected status (and associated config in the 'Log Status' custom metadata type)
 * To customize the statuses provided, simply update the picklist values for `Log__c.Status__c` and create/update corresponding records in the custom metadata type `LogStatus__mdt`. This custom metadata type controls which statuses are considerd closed and resolved.
 
-## View Related Log Entries
+## View Related Log Entries on a Record Page
 Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
 * The component automatically shows any related log entries, based on `LogEntry__c.RecordId__c == :recordId`
 * Users can search the list of log entries for a particular record using the component's built-insearch box. The component dynamically searches all related log entries using SOSL.
 * Component automatically enforces Salesforce's security model
-  * Object-Level Security - Users without read access to LogEntry__c will not see the component
+  * Object-Level Security - Users without read access to `LogEntry__c` will not see the component
   * Record-Level Security - Users will only see records that have been shared with them
   * Field-Level Security - Users will only see the fields within the field set that they have access to
 
@@ -125,9 +125,12 @@ Within App Builder, admins can add the 'Related Log Entries' lightning web compo
 Admins can easily delete old logs using 2 methods: list views or Apex batch jobs
 ### Mass Deleting with List Views
 Salesforce (still) does not support mass deleting records out-of-the-box. There's been [an Idea for 11+ years](https://trailblazer.salesforce.com/ideaView?id=08730000000BqczAAC) about it, but it's still not standard functionality. A custom button is available on `Log__c` list views to provide mass deletion functionality.
-1. Users can select 1 or more Log__c records from the list view to choose which logs will be deleted
+1. Users can select 1 or more `Log__c` records from the list view to choose which logs will be deleted
+
 ![Mass Delete Selection](./content/log-mass-delete-selection.png)
+
 2. The button shows a Visualforce page `LogMassDelete` to confirm that the user wants to delete the records
+
 ![Mass Delete Confirmation](./content/log-mass-delete-confirmation.png)
 
 ### Batch Deleting with Apex Jobs
