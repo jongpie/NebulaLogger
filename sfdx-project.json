@@ -8,6 +8,7 @@
             "path": "nebula-logger",
             "default": true,
             "definitionFile": "config/logger-scratch-def.json",
+            "postInstallScript": "LoggerInstallHandler",
             "versionName": "New Logger Console app, expanded Apex & Flow logging",
             "versionNumber": "4.3.0.3",
             "ancestorVersion": "4.2.0.0",
