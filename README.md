@@ -121,6 +121,7 @@ Within App Builder, admins can add the 'Related Log Entries' lightning web compo
   * Field-Level Security - Users will only see the fields within the field set that they have access to
 
 ![Related Log Entries](./content/relate-log-entries-lwc.png)
+
 ## Deleting Old Logs
 Admins can easily delete old logs using 2 methods: list views or Apex batch jobs
 ### Mass Deleting with List Views
