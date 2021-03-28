@@ -1,6 +1,6 @@
 {
-    "name": "nebulalogger",
-    "version": "1.0.0",
+    "name": "Nebula Logger",
+    "version": "4.3.0",
     "description": "Fine-tune your logging in Apex, Flow, and Process Builder",
     "main": "index.js",
     "scripts": {

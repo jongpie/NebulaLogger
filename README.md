@@ -1,10 +1,10 @@
 # Nebula Logger for Salesforce
-[![Logger Validation-Only Deployment](https://github.com/jongpie/NebulaLogger/actions/workflows/validate.yml/badge.svg)](https://github.com/jongpie/NebulaLogger/actions/workflows/validate.yml)
+[![Logger Deployment](https://github.com/jongpie/NebulaLogger/actions/workflows/validate.yml/badge.svg)](https://github.com/jongpie/NebulaLogger/actions/workflows/validate.yml)
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
 [![Deploy Unpackaged Metadata](./content/btn-deploy-unmanaged-metadata.png)](https://githubsfdeploy.herokuapp.com)
-[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000000Xg4wQAC)
+[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000000YLDLQA4)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ## Features
@@ -121,6 +121,7 @@ Within App Builder, admins can add the 'Related Log Entries' lightning web compo
   * Field-Level Security - Users will only see the fields within the field set that they have access to
 
 ![Related Log Entries](./content/relate-log-entries-lwc.png)
+
 ## Deleting Old Logs
 Admins can easily delete old logs using 2 methods: list views or Apex batch jobs
 ### Mass Deleting with List Views

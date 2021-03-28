@@ -2,8 +2,6 @@
 # More information: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_exclude_source.htm
 #
 
-package.xml
-
 # LWC configuration files
 **/jsconfig.json
 **/.eslintrc.json

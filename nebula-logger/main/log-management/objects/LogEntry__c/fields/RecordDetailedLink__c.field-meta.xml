@@ -32,13 +32,17 @@
                 TEXT(RecordSObjectType__c) + &apos;: &apos; + RecordId__c,
                 TEXT(RecordSObjectType__c) + &apos;: &apos; + RecordName__c
             )
-        ) 
+        )
     ),
     IF(
-        TEXT(RecordCollectionType__c) = &apos;Map&apos;,
-        TEXT(RecordCollectionType__c) + &apos;&lt;Id, &apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;,
-        TEXT(RecordCollectionType__c) + &apos;&lt;&apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;
-    )   
+        ISBLANK(TEXT(RecordCollectionType__c)),
+        &apos;&apos;,
+        IF(
+            TEXT(RecordCollectionType__c) = &apos;Map&apos;,
+            TEXT(RecordCollectionType__c) + &apos;&lt;Id, &apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;,
+            TEXT(RecordCollectionType__c) + &apos;&lt;&apos; + TEXT(RecordSObjectType__c) + &apos;&gt;&apos;
+        )
+    )
 )</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Related Record</label>

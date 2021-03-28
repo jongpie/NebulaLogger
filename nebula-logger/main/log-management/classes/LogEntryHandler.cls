@@ -101,8 +101,10 @@ public without sharing class LogEntryHandler {
 
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
             if (sobjectDisplayFieldName != null) {
-                String recordName = (String) recordIdToRecord.get(logEntry.RecordId__c).get(sobjectDisplayFieldName);
-                logEntry.RecordName__c = recordName;
+                if (recordIdToRecord.containsKey(logEntry.RecordId__c)) {
+                    String recordName = (String) recordIdToRecord.get(logEntry.RecordId__c).get(sobjectDisplayFieldName);
+                    logEntry.RecordName__c = recordName;
+                }
             }
         }
     }

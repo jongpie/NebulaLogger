@@ -34,7 +34,7 @@ global inherited sharing class FlowLogEntry {
      * @description Optionally choose to save any pending log entries.
      */
     @InvocableVariable(required=false label='(Optional) Save Log')
-    global Boolean saveLog = true;
+    global Boolean saveLog = false;
 
     /**
      * @description Optionally relate the log entry to a particular record ID
