@@ -271,12 +271,13 @@ private class LogEntryEventHandler_Tests {
         settings.StorePlatformEvents__c = false;
         upsert settings;
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = '1234');
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-
         Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess());
 
         countOfLogs = [SELECT COUNT() FROM Log__c];
         System.assertEquals(0, countOfLogs);

@@ -5,7 +5,6 @@
     <columns>SETUP_TYPE</columns>
     <columns>IsEnabled__c</columns>
     <columns>LoggingLevel__c</columns>
-    <columns>EnableSystemMessages__c</columns>
     <columns>DefaultSaveMethod__c</columns>
     <columns>StorePlatformEvents__c</columns>
     <columns>EnableStatusApiCallout__c</columns>
