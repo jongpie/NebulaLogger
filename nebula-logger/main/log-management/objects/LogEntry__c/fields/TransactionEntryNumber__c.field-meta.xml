@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TransactionEntryNumber__c</fullName>
+    <description>The sequential number of this log entry within the transaction</description>
     <externalId>false</externalId>
+    <inlineHelpText>The sequential number of this log entry within the transaction</inlineHelpText>
     <label>Transaction Entry Number</label>
     <precision>10</precision>
     <required>false</required>
