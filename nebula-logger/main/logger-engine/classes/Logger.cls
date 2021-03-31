@@ -21,9 +21,11 @@ global with sharing class Logger {
 
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
-    private static SaveMethod transactionSaveMethod = SaveMethod.EVENT_BUS;
+    private static SaveMethod transactionSaveMethod = getDefaultSaveMethod();
 
     static {
+        System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
+
         // If settings have not been configured, then insert the org defaults
         LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
         if (orgDefaults.Id == null) {
@@ -4705,6 +4707,31 @@ global with sharing class Logger {
     // Save control methods
 
     /**
+     * @description Returns the current default save method, used when calling `saveLog()`
+     * @return  The enum value of Logger.SaveMethod
+     */
+    global static SaveMethod getDefaultSaveMethod() {
+        if (transactionSaveMethod != null) {
+            return transactionSaveMethod;
+        }
+
+        String saveMethodName = LoggerSettings__c.getInstance().DefaultSaveMethod__c?.toUpperCase();
+        switch on saveMethodName {
+            when 'QUEUEABLE'{
+                transactionSaveMethod = SaveMethod.QUEUEABLE;
+            }
+            when 'REST' {
+                transactionSaveMethod = SaveMethod.REST;
+            }
+            when else {
+                transactionSaveMethod = SaveMethod.EVENT_BUS;
+            }
+        }
+
+        return transactionSaveMethod;
+    }
+
+    /**
      * @description Sets the default save method used when calling saveLog() - any subsequent calls to saveLog() will use the specified save method
      * @param  saveMethod - The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
@@ -4892,7 +4919,8 @@ global with sharing class Logger {
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
-        if (logEntryEventBuilder.shouldSave()) {
+
+        if (logEntryEventBuilder.shouldSave() == true) {
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 
