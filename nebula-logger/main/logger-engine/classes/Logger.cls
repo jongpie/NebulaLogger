@@ -4710,24 +4710,7 @@ global with sharing class Logger {
      * @description Returns the current default save method, used when calling `saveLog()`
      * @return  The enum value of Logger.SaveMethod
      */
-    global static SaveMethod getDefaultSaveMethod() {
-        if (transactionSaveMethod != null) {
-            return transactionSaveMethod;
-        }
-
-        String saveMethodName = LoggerSettings__c.getInstance().DefaultSaveMethod__c?.toUpperCase();
-        switch on saveMethodName {
-            when 'QUEUEABLE'{
-                transactionSaveMethod = SaveMethod.QUEUEABLE;
-            }
-            when 'REST' {
-                transactionSaveMethod = SaveMethod.REST;
-            }
-            when else {
-                transactionSaveMethod = SaveMethod.EVENT_BUS;
-            }
-        }
-
+    global static SaveMethod getSaveMethod() {
         return transactionSaveMethod;
     }
 
@@ -4927,6 +4910,27 @@ global with sharing class Logger {
         }
 
         return logEntryEventBuilder;
+    }
+
+    private static SaveMethod getDefaultSaveMethod() {
+        if (transactionSaveMethod != null) {
+            return transactionSaveMethod;
+        }
+
+        String saveMethodName = LoggerSettings__c.getInstance().DefaultSaveMethod__c?.toUpperCase();
+        switch on saveMethodName {
+            when 'QUEUEABLE'{
+                transactionSaveMethod = SaveMethod.QUEUEABLE;
+            }
+            when 'REST' {
+                transactionSaveMethod = SaveMethod.REST;
+            }
+            when else {
+                transactionSaveMethod = SaveMethod.EVENT_BUS;
+            }
+        }
+
+        return transactionSaveMethod;
     }
 
     private static String getSuspendSavingLogSystemMessage() {
