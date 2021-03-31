@@ -108,7 +108,12 @@ public without sharing class LogEntryEventHandler {
         upsert TRANSACTION_ID_TO_LOG.values() TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (shouldCallStatusApi == true && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
+        if (
+            shouldCallStatusApi == true &&
+            LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c &&
+            recentLogWithApiReleaseDetails == null &&
+            getCountOfOpenJobs() == 0
+        ) {
             setStatusApiDetails();
         }
     }
@@ -173,6 +178,7 @@ public without sharing class LogEntryEventHandler {
                 RecordSObjectTypeNamespace__c = logEntryEvent.RecordSObjectTypeNamespace__c,
                 StackTrace__c = logEntryEvent.StackTrace__c,
                 Timestamp__c = timestamp,
+                TransactionEntryNumber__c = logEntryEvent.TransactionEntryNumber__c,
                 TriggerIsExecuting__c = logEntryEvent.TriggerIsExecuting__c,
                 TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,
                 TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c

@@ -231,7 +231,17 @@ private class Logger_Tests {
     @isTest
     static void it_should_return_transaction_id() {
         String transactionId = Logger.getTransactionId();
-        System.assert(!String.isBlank(transactionId));
+        System.assert(String.isNotBlank(transactionId));
+        System.assertEquals(System.Request.getCurrent().getRequestId(), transactionId);
+    }
+
+    @isTest
+    static void it_should_set_transaction_entry_number() {
+        for (Integer i = 0; i < 10; i++) {
+            LogEntryEventBuilder builder = Logger.info('my log entry');
+
+            System.assertEquals(i + 1, builder.getLogEntryEvent().TransactionEntryNumber__c);
+        }
     }
 
     @isTest
