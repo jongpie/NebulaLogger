@@ -24,12 +24,19 @@ public without sharing class LogEntryEventHandler {
     }
 
     public void execute() {
-        List<LogEntryEvent__e> logEntryEvents = (List<LogEntryEvent__e>) Trigger.new;
+        List<LogEntryEvent__e> logEntryEventsToProcess = new List<LogEntryEvent__e>();
+        for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) Trigger.new) {
+            // Only process records for users that have been configured to store platform events in the custom objects
+            // TODO might create/switch to a new custom field, LoggedBy__c, instead of CreatedById
+            if (LoggerSettings__c.getInstance(logEntryEvent.CreatedById).StorePlatformEvents__c == true) {
+                logEntryEventsToProcess.add(logEntryEvent);
+            }
+        }
 
         switch on Trigger.operationType {
             when AFTER_INSERT {
-                this.upsertLogs(logEntryEvents);
-                this.insertLogEntries(logEntryEvents);
+                this.upsertLogs(logEntryEventsToProcess);
+                this.insertLogEntries(logEntryEventsToProcess);
                 this.insertTopics();
             }
         }
@@ -40,7 +47,6 @@ public without sharing class LogEntryEventHandler {
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
         // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
-
         for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
             if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
                 continue;

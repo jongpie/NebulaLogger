@@ -257,6 +257,31 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c);
     }
 
+    @TestSetup
+    static void setupData() {
+        upsert LoggerSettings__c.getInstance();
+    }
+
+    @isTest
+    static void it_should_not_store_event_data_when_disabled() {
+        Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
+        settings.StorePlatformEvents__c = false;
+        upsert settings;
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(Message__c = 'my message', Timestamp__c = System.now(), TransactionId__c = transactionId);
+
+        Test.startTest();
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+
+        Test.stopTest();
+
+        countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+    }
+
     @isTest
     static void it_should_normalize_simple_event_data_into_log_and_log_entry() {
         String transactionId = '123-456-789-0';
