@@ -1,8 +1,7 @@
 
 # This is also the same script that runs on Github via the Github Action configured in .github/workflows - there, the
 # DEVHUB_SFDX_URL.txt file is populated in a build step
-# TODO update test names or make dynamic
-$testInvocation = 'sfdx force:apex:test:run -n "RollupTests, RollupEvaluatorTests, RollupFieldInitializerTests, RollupCalculatorTests, RollupIntegrationTests, RollupFlowBulkProcessorTests, RollupRelationshipFieldFinderTests" -c -d ./tests/apex -r human -w 20'
+$testInvocation = 'sfdx force:apex:test:run --testlevel RunLocalTests --codecoverage --outputdir ./tests/apex --resultformat human --wait 20'
 
 function Start-Tests() {
   # Run tests
@@ -79,7 +78,7 @@ if($shouldDeployToSandbox) {
   try {
     # Deploy
     Write-Output "Deploying source to sandbox ..."
-    sfdx force:source:deploy -p rollup
+    sfdx force:source:deploy --sourcepath nebula-logger
     Start-Tests
   } catch {
     Reset-SFDX-Json
