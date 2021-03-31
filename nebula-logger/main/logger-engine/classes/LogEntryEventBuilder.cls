@@ -22,7 +22,6 @@ global with sharing class LogEntryEventBuilder {
     private static final User USER = getUser();
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
-    private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
 
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel loggingLevel;
@@ -37,14 +36,13 @@ global with sharing class LogEntryEventBuilder {
      * @return              The new instance of `LogEntryEventBuilder`
      */
     public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
-        this.loggingLevel = loggingLevel;
-
-        // Verify that the user has create access
-        this.shouldSave = USER_CAN_CREATE_LOG_ENTRY_EVENTS && shouldSave;
+        this.shouldSave = shouldSave;
 
         if (this.shouldSave == false) {
             return;
         }
+
+        this.loggingLevel = loggingLevel;
 
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = API_VERSION,

@@ -4918,6 +4918,8 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
+        shouldSave = shouldSave && USER_CAN_CREATE_LOG_ENTRY_EVENTS;
+
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
 
         if (logEntryEventBuilder.shouldSave() == true) {
