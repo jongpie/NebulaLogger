@@ -1,0 +1,60 @@
+# Unique name for this workflow
+name: Rollup Scratch Org Test Run
+
+on:
+  push:
+    paths-ignore:
+      - 'sfdx-project.json'
+      - 'README.md'
+      - 'Contributing.md'
+      - 'CODE_OF_CONDUCT.md'
+      - 'package.json'
+      - 'LICENSE'
+      - 'content/**'
+      - 'examples/**'
+      - 'managed-package/**'
+      - '.gitignore'
+      - '.prettierignore'
+      - '.prettierrc'
+
+jobs:
+  scratch-org-test:
+    runs-on: ubuntu-latest
+    environment: Test
+    steps:
+      # Checkout the code
+      - name: 'Checkout source code'
+        uses: actions/checkout@v2
+
+      - name: 'Setup node'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: 'Install NPM'
+        run: npm install
+
+      # Install Salesforce CLI
+      - name: Install Salesforce CLI
+        run: |
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
+
+      # Store secret for dev hub
+      - name: 'Populate auth file with DEVHUB_SFDX_URL secret'
+        shell: bash
+        run: 'echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt'
+        env:
+          DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+
+      - name: 'Deploy & Test'
+        shell: pwsh
+        run: '. ./scripts/test.ps1'
+
+      # Upload code coverage data
+      - name: 'Upload code coverage for Apex to Codecov.io'
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
