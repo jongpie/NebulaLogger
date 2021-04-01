@@ -4913,24 +4913,22 @@ global with sharing class Logger {
     }
 
     private static SaveMethod getDefaultSaveMethod() {
-        if (transactionSaveMethod != null) {
-            return transactionSaveMethod;
-        }
+        SaveMethod defaultSaveMethod;
 
         String saveMethodName = LoggerSettings__c.getInstance().DefaultSaveMethod__c?.toUpperCase();
         switch on saveMethodName {
             when 'QUEUEABLE'{
-                transactionSaveMethod = SaveMethod.QUEUEABLE;
+                defaultSaveMethod = SaveMethod.QUEUEABLE;
             }
             when 'REST' {
-                transactionSaveMethod = SaveMethod.REST;
+                defaultSaveMethod = SaveMethod.REST;
             }
             when else {
-                transactionSaveMethod = SaveMethod.EVENT_BUS;
+                defaultSaveMethod = SaveMethod.EVENT_BUS;
             }
         }
 
-        return transactionSaveMethod;
+        return defaultSaveMethod;
     }
 
     private static String getSuspendSavingLogSystemMessage() {
