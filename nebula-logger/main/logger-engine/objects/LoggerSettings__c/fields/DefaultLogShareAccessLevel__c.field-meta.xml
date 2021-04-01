@@ -15,7 +15,7 @@ Possible Values:
 (blank)
 Read
 Edit</inlineHelpText>
-    <label>Log Share Level</label>
+    <label>Default Log Records Access Level</label>
     <length>255</length>
     <required>false</required>
     <trackTrending>false</trackTrending>
