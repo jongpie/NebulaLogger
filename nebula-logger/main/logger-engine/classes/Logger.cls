@@ -4917,7 +4917,7 @@ global with sharing class Logger {
 
         String saveMethodName = LoggerSettings__c.getInstance().DefaultSaveMethod__c?.toUpperCase();
         switch on saveMethodName {
-            when 'QUEUEABLE'{
+            when 'QUEUEABLE' {
                 defaultSaveMethod = SaveMethod.QUEUEABLE;
             }
             when 'REST' {

@@ -567,7 +567,6 @@ private class Logger_Tests {
 
         Test.startTest();
 
-
         Logger.saveLog();
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(1, Limits.getQueueableJobs());

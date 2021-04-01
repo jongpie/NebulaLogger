@@ -786,5 +786,4 @@ global with sharing class LogEntryEventBuilder {
 
         return String.escapeSingleQuotes(String.join(topics, ','));
     }
-
 }
