@@ -502,7 +502,7 @@ private class Logger_Tests {
         settings.DefaultSaveMethod__c = 'EVENT_BUS';
         upsert settings;
 
-        System.assertEquals(Logger.SaveMethod.EVENT_BUS, Logger.getSaveMethod());
+        System.assertEquals(Logger.SaveMethod.EVENT_BUS, Logger.transactionSaveMethod);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -558,7 +558,7 @@ private class Logger_Tests {
         settings.DefaultSaveMethod__c = 'QUEUEABLE';
         upsert settings;
 
-        System.assertEquals(Logger.SaveMethod.QUEUEABLE, Logger.getSaveMethod());
+        System.assertEquals(Logger.SaveMethod.QUEUEABLE, Logger.transactionSaveMethod);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -616,7 +616,7 @@ private class Logger_Tests {
         settings.DefaultSaveMethod__c = 'REST';
         upsert settings;
 
-        System.assertEquals(Logger.SaveMethod.REST, Logger.getSaveMethod());
+        System.assertEquals(Logger.SaveMethod.REST, Logger.transactionSaveMethod);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
