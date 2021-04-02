@@ -108,7 +108,12 @@ public without sharing class LogEntryEventHandler {
         upsert TRANSACTION_ID_TO_LOG.values() TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (shouldCallStatusApi == true && LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
+        if (
+            shouldCallStatusApi == true &&
+            LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c &&
+            recentLogWithApiReleaseDetails == null &&
+            getCountOfOpenJobs() == 0
+        ) {
             setStatusApiDetails();
         }
     }
