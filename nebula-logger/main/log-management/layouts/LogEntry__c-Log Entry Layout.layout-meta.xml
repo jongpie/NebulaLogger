@@ -62,10 +62,6 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>MessageTruncated__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
                 <field>StackTrace__c</field>
             </layoutItems>
         </layoutColumns>

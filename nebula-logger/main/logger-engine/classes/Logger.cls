@@ -22,9 +22,12 @@ global with sharing class Logger {
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
-    private static SaveMethod transactionSaveMethod = SaveMethod.EVENT_BUS;
+    @testVisible
+    private static SaveMethod transactionSaveMethod = getDefaultSaveMethod();
 
     static {
+        System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
+
         // If settings have not been configured, then insert the org defaults
         LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
         if (orgDefaults.Id == null) {
@@ -4704,7 +4707,6 @@ global with sharing class Logger {
     }
 
     // Save control methods
-
     /**
      * @description Sets the default save method used when calling saveLog() - any subsequent calls to saveLog() will use the specified save method
      * @param  saveMethod - The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
@@ -4892,13 +4894,34 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
+        shouldSave = shouldSave && USER_CAN_CREATE_LOG_ENTRY_EVENTS;
+
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
-        if (logEntryEventBuilder.shouldSave()) {
+        if (logEntryEventBuilder.shouldSave() == true) {
             logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 
         return logEntryEventBuilder;
+    }
+
+    private static SaveMethod getDefaultSaveMethod() {
+        SaveMethod defaultSaveMethod;
+
+        String saveMethodName = LoggerSettings__c.getInstance().DefaultSaveMethod__c?.toUpperCase();
+        switch on saveMethodName {
+            when 'QUEUEABLE' {
+                defaultSaveMethod = SaveMethod.QUEUEABLE;
+            }
+            when 'REST' {
+                defaultSaveMethod = SaveMethod.REST;
+            }
+            when else {
+                defaultSaveMethod = SaveMethod.EVENT_BUS;
+            }
+        }
+
+        return defaultSaveMethod;
     }
 
     private static String getSuspendSavingLogSystemMessage() {
