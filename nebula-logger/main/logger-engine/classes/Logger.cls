@@ -19,6 +19,7 @@ global with sharing class Logger {
     private static final Boolean USER_HAS_LOGGING_ENABLED = LoggerSettings__c.getInstance().IsEnabled__c;
     private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
+    private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
     @testVisible
@@ -4896,8 +4897,8 @@ global with sharing class Logger {
         shouldSave = shouldSave && USER_CAN_CREATE_LOG_ENTRY_EVENTS;
 
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
-
         if (logEntryEventBuilder.shouldSave() == true) {
+            logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 
@@ -4933,7 +4934,7 @@ global with sharing class Logger {
             when ANONYMOUS {
                 savingLogMessage += 'Anonymous Apex';
             }
-            when Aura, VF {
+            when AURA, VF {
                 savingLogMessage += 'Aura/Lightning/VF component';
             }
             when BATCH_ACS, BATCH_APEX, BATCH_CHUNK_PARALLEL, BATCH_CHUNK_SERIAL {
