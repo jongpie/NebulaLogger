@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsPlatformEventPublishingEnabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>The default Nebula Logger implementation assumes that logging to Log__c via LogEntryEvent__e should occur. Uncheck to prevent Log__c and LogEntry__c records from being created.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The default Nebula Logger implementation assumes that logging to Log__c via LogEntryEvent__e should occur. Uncheck to prevent Log__c and LogEntry__c records from being created.</inlineHelpText>
+    <label>Is Platform Event Publishing Enabled</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

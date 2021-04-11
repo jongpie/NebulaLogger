@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsBigObjectInsertingEnabled__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Insert logs to LogArchive__b. Defaults to false.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Insert logs to LogArchive__b. Defaults to false.</inlineHelpText>
+    <label>Is Big Object Inserting Enabled</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

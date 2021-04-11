@@ -208,6 +208,8 @@ private class Logger_Tests {
         settings.IsEnabled__c = true;
         settings.EnableSystemMessages__c = false;
         settings.LoggingLevel__c = LoggingLevel.DEBUG.name();
+        settings.IsPlatformEventPublishingEnabled__c = true;
+        settings.IsBigObjectInsertingEnabled__c = false;
         upsert settings;
     }
 
@@ -9901,6 +9903,49 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
     }
     // End newEntry for String test methods
+
+    // Start tests for Big Objects
+    @isTest
+    static void it_should_insert_to_log_archive_and_log_custom_object_when_both_settings_enabled() {
+        LoggerSettings__c settings = [SELECT Id, IsPlatformEventPublishingEnabled__c FROM LoggerSettings__c];
+        System.assertEquals(true, settings.IsPlatformEventPublishingEnabled__c, 'Test has started under the wrong conditions');
+        settings.IsBigObjectInsertingEnabled__c = true;
+        update settings;
+
+        String testMessage = 'Testing big object and Log__c creation';
+
+        Test.startTest();
+        Logger.debug(testMessage);
+        System.assertEquals(2, Logger.getBufferSize());
+        System.assertEquals(1, Logger.LOG_ARCHIVES_BUFFER.size());
+        Logger.saveLog();
+        Test.stopTest();
+
+        Log__c insertedLog = [SELECT Id, (SELECT Id, Message__c FROM LogEntries__r) FROM Log__c];
+        System.assertEquals(testMessage, insertedLog.LogEntries__r[0].Message__c, 'Custom object should have been created properly');
+
+        // https://developer.salesforce.com/docs/atlas.en-us.bigobjects.meta/bigobjects/big_object_populate_apex.htm
+        // Logger can't insert Big Objects in unit tests (for ... reasons) so we can't do asserts on LogArchive__b
+    }
+
+    @isTest
+    static void it_should_only_insert_to_big_objects_when_only_big_object_setting_is_enabled() {
+        LoggerSettings__c settings = [SELECT Id, IsPlatformEventPublishingEnabled__c FROM LoggerSettings__c];
+        settings.IsPlatformEventPublishingEnabled__c = false;
+        settings.IsBigObjectInsertingEnabled__c = true;
+        update settings;
+
+
+        Test.startTest();
+        Logger.debug('Some message we\'ll never see again because you can\'t insert Big Objects in tests');
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(1, Logger.LOG_ARCHIVES_BUFFER.size());
+        Test.stopTest();
+
+        // https://developer.salesforce.com/docs/atlas.en-us.bigobjects.meta/bigobjects/big_object_populate_apex.htm
+        // Logger can't insert Big Objects in unit tests (for ... reasons) so we can't do asserts on LogArchive__b
+    }
+    // End tests for Big Objects
 
     // Start tests for utility methods
     @isTest

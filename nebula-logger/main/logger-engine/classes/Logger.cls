@@ -10,12 +10,14 @@
  * @see LogMessage
  */
 global with sharing class Logger {
+    @testVisible
+    private static final List<LogArchive__b> LOG_ARCHIVES_BUFFER = new List<LogArchive__b>();
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Boolean SYSTEM_MESSAGES_ENABLED = LoggerSettings__c.getInstance().EnableSystemMessages__c;
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
     private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
-    private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
+    private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable() || SObjectType.LogArchive__b.isCreateable();
     private static final Boolean USER_HAS_LOGGING_ENABLED = LoggerSettings__c.getInstance().IsEnabled__c;
     private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
@@ -199,7 +201,7 @@ global with sharing class Logger {
      * @return Integer
      */
     global static Integer getBufferSize() {
-        return LOG_ENTRIES_BUFFER.size();
+        return LOG_ENTRIES_BUFFER.size() + LOG_ARCHIVES_BUFFER.size();
     }
 
     /**
@@ -207,6 +209,7 @@ global with sharing class Logger {
      */
     global static void flushBuffer() {
         LOG_ENTRIES_BUFFER.clear();
+        LOG_ARCHIVES_BUFFER.clear();
     }
 
     // ERROR logging level methods
@@ -4734,7 +4737,7 @@ global with sharing class Logger {
             return;
         }
 
-        if (LOG_ENTRIES_BUFFER.isEmpty()) {
+        if (getBufferSize() == 0) {
             return;
         }
 
@@ -4750,26 +4753,22 @@ global with sharing class Logger {
             finest(getSavingLogSystemMessage(saveMethod));
         }
 
+        // TODO - Jonathan, is this extra list even necessary? We've already checked "shouldSave()"
+        // on the builder prior to adding to the buffer
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
             if (logEntryEventBuilder.shouldSave()) {
-                LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-                logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
-                logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
-                logEntryEvent.TransactionId__c = getTransactionId();
-
-                logEntryEvents.add(logEntryEvent);
+                logEntryEvents.add(logEntryEventBuilder.getLogEntryEvent());
             }
         }
 
+        QueueableSaver saver = new QueueableSaver(logEntryEvents, LOG_ARCHIVES_BUFFER);
         switch on saveMethod {
             when EVENT_BUS {
-                // TODO add error handling for when event bus fails to publish
-                List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
-                System.debug('saveResults =' + results);
+                saver.execute(null);
             }
             when QUEUEABLE {
-                System.enqueueJob(new QueueableSaver(logEntryEvents));
+                System.enqueueJob(saver);
             }
             when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
@@ -4777,7 +4776,13 @@ global with sharing class Logger {
                 if (String.isBlank(UserInfo.getUserId())) {
                     saveLog(Logger.SaveMethod.EVENT_BUS);
                 } else {
-                    new RestApiSaver().insertRecords(logEntryEvents);
+                    // it wasn't possible to initialize the list by passing in one of the other collections due to:
+                    // Invalid initializer type List<LogArchive__b> found for List<SObject>
+                    // or Invalid initializer type List<LogEntryEvent__e> found for List<SObject>
+                    List<SObject> combinedEntriesToSave = new List<SObject>();
+                    combinedEntriesToSave.addAll(LOG_ARCHIVES_BUFFER);
+                    combinedEntriesToSave.addAll(logEntryEvents);
+                    new RestApiSaver().insertRecords(combinedEntriesToSave);
                 }
             }
         }
@@ -4895,14 +4900,22 @@ global with sharing class Logger {
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
         shouldSave = shouldSave && USER_CAN_CREATE_LOG_ENTRY_EVENTS;
+        LoggerSettings__c settings = LoggerSettings__c.getInstance();
 
-        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
-        if (logEntryEventBuilder.shouldSave() == true) {
-            logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
-            LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
+        LogEntryArchiveBuilder logEntryArchiveBuilder = new LogEntryArchiveBuilder(loggingLevel, shouldSave);
+        if (logEntryArchiveBuilder.shouldSave() && settings?.IsPlatformEventPublishingEnabled__c == true) {
+            LogEntryEvent__e logEntryEvent = logEntryArchiveBuilder.getLogEntryEvent();
+            logEntryEvent.TransactionEntryNumber__c = currentTransactionEntryNumber++;
+            logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
+            logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
+            logEntryEvent.TransactionId__c = getTransactionId();
+            LOG_ENTRIES_BUFFER.add(logEntryArchiveBuilder);
+        }
+        if (logEntryArchiveBuilder.shouldSave() && settings?.IsBigObjectInsertingEnabled__c == true) {
+            LOG_ARCHIVES_BUFFER.add(logEntryArchiveBuilder.getLogEntryArchive());
         }
 
-        return logEntryEventBuilder;
+        return logEntryArchiveBuilder;
     }
 
     private static SaveMethod getDefaultSaveMethod() {
@@ -4929,7 +4942,7 @@ global with sharing class Logger {
     }
 
     private static String getSavingLogSystemMessage(SaveMethod saveMethod) {
-        String savingLogMessage = 'Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
+        String savingLogMessage = 'Saving ' + getBufferSize() + ' log entries via ';
         switch on getCurrentQuiddity() {
             when ANONYMOUS {
                 savingLogMessage += 'Anonymous Apex';
@@ -4968,14 +4981,25 @@ global with sharing class Logger {
     global class QueueableSaver implements Queueable {
         private Id jobId;
 
-        private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+        private final List<LogEntryEvent__e> logEntryEvents;
+        private final List<LogArchive__b> logArchives;
 
-        private QueueableSaver(List<LogEntryEvent__e> logEntryEvents) {
+        private QueueableSaver(List<LogEntryEvent__e> logEntryEvents, List<LogArchive__b> logArchives) {
             this.logEntryEvents = logEntryEvents;
+            this.logArchives = logArchives;
         }
 
         global void execute(System.QueueableContext queueableContext) {
-            EventBus.publish(this.logEntryEvents);
+            // TODO - handling (if any) of save result failures
+            List<Database.SaveResult> results = new List<Database.SaveResult>();
+            if (this.logEntryEvents.isEmpty() == false) {
+                results.addAll(EventBus.publish(this.logEntryEvents));
+            }
+            // read and weep: unit tests can't insert Big Objects
+            if (this.logArchives.isEmpty() == false && Test.isRunningTest() == false) {
+                results.addAll(Database.insertImmediate(this.logArchives));
+            }
+            System.debug('Logging save results =' + JSON.serializePretty(results));
         }
     }
 

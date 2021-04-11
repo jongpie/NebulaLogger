@@ -8,7 +8,7 @@
  * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */
-global with sharing class LogEntryEventBuilder {
+global with sharing virtual class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final AuthSession AUTH_SESSION = getAuthSession();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
@@ -459,7 +459,7 @@ global with sharing class LogEntryEventBuilder {
      * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
      * @return   The `LogEntryEvent__e` record
      */
-    public LogEntryEvent__e getLogEntryEvent() {
+    public virtual LogEntryEvent__e getLogEntryEvent() {
         if (this.shouldSave == false) {
             return null;
         }
