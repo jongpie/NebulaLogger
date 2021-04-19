@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>TimestampInMilliSecond__c</fullName>
+    <fullName>TimestampInMillisecond__c</fullName>
+    <description>Timestamp in milliseconds of the log event</description>
     <externalId>false</externalId>
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>Timestamp Millisecond</label>
+    <label>TimestampInMillisecond</label>
     <precision>18</precision>
     <required>false</required>
     <scale>0</scale>
