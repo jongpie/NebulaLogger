@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Index xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LogEventArchiveIndex</fullName>
+    <fields>
+        <name>TimestampInMillisecond__c</name>
+        <sortDirection>DESC</sortDirection>
+    </fields>
+    <fields>
+        <name>LoggedByString__c</name>
+        <sortDirection>DESC</sortDirection>
+    </fields>
+    <fields>
+        <name>LoggingLevelOrdinal__c</name>
+        <sortDirection>DESC</sortDirection>
+    </fields>   
+    <fields>
+        <name>TransactionId__c</name>
+        <sortDirection>DESC</sortDirection>
+    </fields>
+    <fields>
+        <name>LogEventArchiveId__c</name>
+        <sortDirection>DESC</sortDirection>
+    </fields>
+    <label>Log Event Archive Index</label>
+</Index>

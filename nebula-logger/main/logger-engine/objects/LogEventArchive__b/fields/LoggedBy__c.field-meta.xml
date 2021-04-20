@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LoggedBy__c</fullName>
+    <externalId>false</externalId>
+    <label>Logged By</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Log_Archives</relationshipName>
+    <required>false</required>
+    <type>Lookup</type>
+</CustomField>
