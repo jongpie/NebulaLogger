@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Index xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>LogEventArchiveIndex</fullName>
+    <fullName>LogEntryArchiveIndex</fullName>
     <fields>
         <name>TimestampInMillisecond__c</name>
         <sortDirection>DESC</sortDirection>
@@ -21,5 +21,5 @@
         <name>TransactionEntryNumber__c</name>
         <sortDirection>DESC</sortDirection>
     </fields>
-    <label>Log Event Archive Index</label>
+    <label>Log Entry Archive Index</label>
 </Index>
