@@ -18,7 +18,7 @@
         <sortDirection>DESC</sortDirection>
     </fields>
     <fields>
-        <name>LogEventArchiveId__c</name>
+        <name>TransactionEntryNumber__c</name>
         <sortDirection>DESC</sortDirection>
     </fields>
     <label>Log Event Archive Index</label>
