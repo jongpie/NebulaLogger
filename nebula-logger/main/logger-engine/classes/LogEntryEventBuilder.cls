@@ -725,8 +725,11 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static SObject getNetwork() {
+        Id networkId;
         if (Network.getNetworkId() == null) {
             return null;
+        } else {
+            networkId = Network.getNetworkId();
         }
 
         String networkApiName = 'Network';
@@ -737,7 +740,7 @@ global with sharing class LogEntryEventBuilder {
             return null;
         }
 
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
+        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
 
         return Database.query(queryString);
     }
