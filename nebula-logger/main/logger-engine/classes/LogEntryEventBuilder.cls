@@ -65,7 +65,7 @@ global with sharing class LogEntryEventBuilder {
             LoggingLevelOrdinal__c = loggingLevel.ORDINAL(),
             OriginType__c = ORIGIN_TYPE_APEX,
             Timestamp__c = System.now(),
-            EpochTimestamp__c = DateTime.now().getTime(),
+            EpochTimestamp__c = System.now().getTime(),
             TriggerIsExecuting__c = Trigger.isExecuting,
             TriggerOperationType__c = Trigger.operationType == null ? null : Trigger.operationType.name(),
             TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
