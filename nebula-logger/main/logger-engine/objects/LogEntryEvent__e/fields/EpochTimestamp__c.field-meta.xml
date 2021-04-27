@@ -6,7 +6,7 @@
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>TimestampInMillisecond</label>
+    <label>Epoch Timestamp</label>
     <precision>18</precision>
     <required>false</required>
     <scale>0</scale>
