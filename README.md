@@ -8,6 +8,8 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000000YLDLQA4)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
+___
+
 ## Features
 1. Easily add log entries via Apex, Flow & Process Builder to generate 1 consolidate log
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
@@ -15,6 +17,8 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
 5. View related log entries on any record page by adding the 'Related Log Entries' component in App Builder
 6. Dynamically assign Topics to `Log__c` and `LogEntry__c` records for tagging/labeling your logs (not currently available in the managed package)
+
+___
 
 ## Installing
 
@@ -29,6 +33,8 @@ You can choose to either deploy the metadata from this repo to your org, or inst
 | Apex Stack Traces        | Automatically stored in `LogEntry__c.StackTrace__c` when calling methods like `Logger.debug('my message');` | Requires calling `parseStackTrace()` due to Salesforce limitations with managed packages. For example:<br />`Logger.debug('my message').parseStackTrace(new DmlException().getStackTrace());` |
 | Assign Topics (Tagging/Labeling System) | Provide `List<String> topics` in Apex or Flow to dynamically assign Salesforce Topics to `Log__c` and `LogEntry__c` records | This functionality is not currently available in the managed package |
 
+___
+
 ## Getting Started
 After deploying Nebula Logger to your org, there are a few additional configuration changes needed...
 * Assign permission set(s) to users
@@ -42,6 +48,7 @@ After deploying Nebula Logger to your org, there are a few additional configurat
   * Currently, enabling Topics for objects must still be done using the Salesforce Classic UI. Once enabled, Topics can then be used from withing Lightning Experience.
   * Once enabled, Topics can be added via Apex and Flow and then used as list view filters (and more) for the object  `Log__c`.
 
+___
 
 ## Logger for Apex: Quick Start
 For Apex developers, the `Logger` class has several methods that can be used to add entries with different logging levels. Each logging level's method has several overloads to support multiple parameters.
@@ -65,6 +72,8 @@ This results in 1 `Log__c` record with several related `LogEntry__c` records.
 
 ![Apex Log Results](./content/apex-log.png)
 
+___
+
 ## Logger for Flow & Process Builder: Quick Start
 Within Flow & Process Builder, you can select 1 of the several Logging actions
 
@@ -77,6 +86,8 @@ In this simple example, a Flow is configured after-insert and after-update to lo
 This results in a `Log__c` record with related `LogEntry__c` records.
 
 ![Flow Log Results](./content/flow-log.png)
+
+___
 
 ## All Together: Apex & Flow in One Log
 After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.
@@ -100,6 +111,8 @@ This generates 1 consolidated `Log__c`, containing `LogEntry__c` records from bo
 ## Event-Driven Integrations with Platform Events
 Logger is built using Salesforce's [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
 
+___
+
 ## Managing Logs
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
 * All editable fields on `Log__c` can be updated via the 'Manage Log' quick action (shown below)
@@ -112,6 +125,8 @@ To help development and support teams better manage logs (and any underlying cod
   * `Log__c.IsResolved__c` - Indicates if the log is resolved (meaning that it required analaysis/work, which has been completed). Only closed statuses can be considered resolved. This is also driven based on the selected status (and associated config in the 'Log Status' custom metadata type)
 * To customize the statuses provided, simply update the picklist values for `Log__c.Status__c` and create/update corresponding records in the custom metadata type `LogStatus__mdt`. This custom metadata type controls which statuses are considerd closed and resolved.
 
+___
+
 ## View Related Log Entries on a Record Page
 Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
 * The component automatically shows any related log entries, based on `LogEntry__c.RecordId__c == :recordId`
@@ -122,6 +137,7 @@ Within App Builder, admins can add the 'Related Log Entries' lightning web compo
   * Field-Level Security - Users will only see the fields within the field set that they have access to
 
 ![Related Log Entries](./content/relate-log-entries-lwc.png)
+___
 
 ## Deleting Old Logs
 Admins can easily delete old logs using 2 methods: list views or Apex batch jobs
@@ -141,3 +157,14 @@ Two Apex classes are provided out-of-the-box to handle automatically deleting ol
    * By default, this field is populated with "TODAY + 14 DAYS" - the number of days to retain a log can be customized in `LoggerSettings__c`.
    * Users can also manually edit this field to change the retention date - or set it to null to prevent the log from being automatically deleted
 2. `LogBatchPurgeScheduler` - this schedulable Apex class can be schedule to run `LogBatchPurger` on a daily or weekly basis
+
+___
+
+## Uninstalling/Removing Logger
+If you want to remove the managed package, you can do so by simply uninstalling it in your org under Setup --> Installed Packages.
+
+If you want to delete the unmanaged metadata, there is a `destructiveChanges.xml` file available in the directory [./uninstall](./uninstall).  This can be used in SFDX with the command `sfdx force:mdapi:deploy --deploydir uninstall --wait 30`. However, due to some Salesforce deployment limitations, there are still some manual steps needed to delete everything:
+
+* Flexipages for `Log__c` and `LogEntry__c` must first be manually removed as the org defaults
+* The quick actions on `Log__c` have to be manually removed from the layouts first - otherwise, Salesforce complains about the quick actions being in use (even though the layout is being deleted at the same time)
+* The global value set `LoggingLevel` has to be manually deleted after all other metadata is deleted - otherwise, Salesforce complains about the global value set being in use (even though the relevant `Log__c` and `LogEntry__c` fields are being deleted at the same time)
