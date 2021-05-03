@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "format": "prettier --write nebula-logger",
+        "generate-docs": "npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main --targetDir nebula-logger-docs",
         "pretest": "node ./scripts/findTests.js",
         "test": "sh ./scripts/test.sh",
         "posttest": "node scripts/findTestsCleanup.js"
