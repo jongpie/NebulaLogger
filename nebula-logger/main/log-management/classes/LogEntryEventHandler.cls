@@ -129,6 +129,7 @@ public without sharing class LogEntryEventHandler {
                 DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
                 DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
                 DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
+                EpochTimestamp__c = logEntryEvent.EpochTimestamp__c,
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,

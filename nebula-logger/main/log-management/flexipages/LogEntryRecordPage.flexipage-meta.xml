@@ -117,6 +117,15 @@
                 </visibilityRule>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.EpochTimestamp__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-f419a303-8d53-44e5-8647-63a464804568</name>
         <type>Facet</type>
     </flexiPageRegions>
