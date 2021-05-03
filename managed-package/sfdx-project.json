@@ -1,0 +1,25 @@
+{
+    "namespace": "Nebula",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "51.0",
+    "packageDirectories": [
+        {
+            "package": "Nebula Logger",
+            "path": "nebula-logger",
+            "default": true,
+            "definitionFile": "config/project-scratch-def.json",
+            "postInstallScript": "LoggerInstallHandler",
+            "versionName": "New Logger Console app, expanded Apex & Flow logging",
+            "versionNumber": "4.3.0.3",
+            "ancestorVersion": "4.2.0.0",
+            "versionDescription": "Includes new Logger Console app & reports for admins, automatic log sharing, and expanded logging for Apex & Flow",
+            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
+        }
+    ],
+    "packageAliases": {
+        "Nebula Logger": "0Ho5Y000000XZCDSA4",
+        "Nebula Logger@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO",
+        "Nebula Logger@4.2.0-0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
+        "Nebula Logger@4.3.0-3-logger-console-app": "04t5Y000000YLDLQA4"
+    }
+}
