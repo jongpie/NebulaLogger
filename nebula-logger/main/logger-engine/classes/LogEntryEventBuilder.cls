@@ -36,13 +36,12 @@ global with sharing class LogEntryEventBuilder {
      * @return              The new instance of `LogEntryEventBuilder`
      */
     public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
+        this.loggingLevel = loggingLevel;
         this.shouldSave = shouldSave;
 
         if (this.shouldSave == false) {
             return;
         }
-
-        this.loggingLevel = loggingLevel;
 
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = API_VERSION,
