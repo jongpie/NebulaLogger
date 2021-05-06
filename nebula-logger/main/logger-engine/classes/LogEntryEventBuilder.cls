@@ -101,11 +101,14 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(String message) {
+        // Always run System.debug statement, even if Logger is disabled
+        // This way, if Salesforce's debug logs have been configured in Dev Console...
+        // ... the debug statements will always be generated (in Dev Console, unit test logs, and so on)
+        System.debug(this.loggingLevel, message);
+
         if (this.shouldSave == false) {
             return this;
         }
-
-        System.debug(this.loggingLevel, message);
 
         this.logEntryEvent.Message__c = message;
 
