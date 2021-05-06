@@ -15,7 +15,7 @@ global without sharing class LoggerInstallHandler implements InstallHandler {
     global void onInstall(System.InstallContext installContext) {
         // Make sure the new DefaultSaveMethod__c field is set in the org
         List<LoggerSettings__c> settings = [SELECT Id, DefaultSaveMethod__c FROM LoggerSettings__c WHERE DefaultSaveMethod__c = null];
-        for (LoggerSettings setting : settings) {
+        for (LoggerSettings__c setting : settings) {
             setting.DefaultSaveMethod__c = 'EVENT_BUS';
         }
         update settings;
