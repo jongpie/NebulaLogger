@@ -776,7 +776,7 @@ global with sharing class LogEntryEventBuilder {
         if (stackTraceString == '()') {
             return false;
         }
-        if (stackTraceString == '(' + getNamespacePrefix() + ')') {
+        if (stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
             return false;
         }
 
