@@ -4,6 +4,7 @@
 .sfdx/
 .vscode/
 */main/default/
+nebula-logger/managed-package/
 .vim-force.com
 
 # NPM
