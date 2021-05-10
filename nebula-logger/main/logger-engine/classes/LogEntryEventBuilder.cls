@@ -24,19 +24,19 @@ global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
 
     private final LogEntryEvent__e logEntryEvent;
-    private final LoggingLevel loggingLevel;
+    private final LoggingLevel entryLoggingLevel;
 
     private Boolean detailsAreSet = false;
     private Boolean shouldSave;
 
     /**
      * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
-     * @param  loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
-     * @param  shouldSave   Determines if the builder's instance of `LogEntryEvent__e` should be saved
-     * @return              The new instance of `LogEntryEventBuilder`
+     * @param  entryLoggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
+     * @param  shouldSave        Determines if the builder's instance of `LogEntryEvent__e` should be saved
+     * @return                   The new instance of `LogEntryEventBuilder`
      */
-    public LogEntryEventBuilder(LoggingLevel loggingLevel, Boolean shouldSave) {
-        this.loggingLevel = loggingLevel;
+    public LogEntryEventBuilder(LoggingLevel entryLoggingLevel, Boolean shouldSave) {
+        this.entryLoggingLevel = entryLoggingLevel;
         this.shouldSave = shouldSave;
 
         if (this.shouldSave == false) {
@@ -60,8 +60,8 @@ global with sharing class LogEntryEventBuilder {
             LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows(),
             LimitsSoqlQueryRowsUsed__c = Limits.getQueryRows(),
             LimitsSoslSearchesUsed__c = Limits.getSoslQueries(),
-            LoggingLevel__c = loggingLevel.NAME(),
-            LoggingLevelOrdinal__c = loggingLevel.ORDINAL(),
+            LoggingLevel__c = entryLoggingLevel.NAME(),
+            LoggingLevelOrdinal__c = entryLoggingLevel.ORDINAL(),
             OriginType__c = ORIGIN_TYPE_APEX,
             Timestamp__c = System.now(),
             EpochTimestamp__c = System.now().getTime(),
@@ -103,7 +103,7 @@ global with sharing class LogEntryEventBuilder {
         // Always run System.debug statement, even if Logger is disabled
         // This way, if Salesforce's debug logs have been configured in Dev Console...
         // ... the debug statements will always be generated (in Dev Console, unit test logs, and so on)
-        System.debug(this.loggingLevel, message);
+        System.debug(this.entryLoggingLevel, message);
 
         if (this.shouldSave == false) {
             return this;
