@@ -12,18 +12,45 @@
 global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
-    private static final Boolean SYSTEM_MESSAGES_ENABLED = LoggerSettings__c.getInstance().EnableSystemMessages__c;
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
     private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
     private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
-    private static final Boolean USER_HAS_LOGGING_ENABLED = LoggerSettings__c.getInstance().IsEnabled__c;
-    private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
+
     @testVisible
-    private static SaveMethod transactionSaveMethod = getDefaultSaveMethod();
+    private static SaveMethod transactionSaveMethod  {
+        get {
+            if (transactionSaveMethod == null) {
+                transactionSaveMethod = getDefaultSaveMethod();
+            }
+            return transactionSaveMethod;
+        }
+        set;
+    }
+
+    private static LoggingLevel userLoggingLevel {
+        get {
+            if (userLoggingLevel == null || userLoggingLevel.name() != getUserSettings().LoggingLevel__c) {
+                userLoggingLevel = getLoggingLevel(getUserSettings().LoggingLevel__c);
+            }
+            return userLoggingLevel;
+        }
+        set;
+    }
+
+    @testVisible
+    private static LoggerSettings__c userSettings {
+        get {
+            if (userSettings == null) {
+                userSettings = LoggerSettings__c.getInstance();
+            }
+            return userSettings;
+        }
+        set;
+    }
 
     static {
         System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
@@ -84,7 +111,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isEnabled() {
-        return USER_HAS_LOGGING_ENABLED;
+        return getUserSettings().IsEnabled__c;
     }
 
     /**
@@ -157,7 +184,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
-        return USER_LOGGING_LEVEL.ordinal() <= logEntryLoggingLevel.ordinal();
+        return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
     /**
@@ -165,7 +192,16 @@ global with sharing class Logger {
      * @return LoggingLevel - The matching instance of LoggingLevel
      */
     global static LoggingLevel getUserLoggingLevel() {
-        return USER_LOGGING_LEVEL;
+        return userLoggingLevel;
+    }
+
+    /**
+     * @description Returns the current user's instance of `LoggerSettings__c`, based on `LoggerSettings__c.getInsance()`
+     * @return LoggerSettings__c - The user's instance of `LoggerSettings__c`
+     */
+    // TODO make this method `global` in a future release
+    public static LoggerSettings__c getUserSettings() {
+        return userSettings;
     }
 
     // Transaction control methods
@@ -4739,14 +4775,14 @@ global with sharing class Logger {
         }
 
         if (suspendSaving) {
-            if (SYSTEM_MESSAGES_ENABLED) {
+            if (getUserSettings().EnableSystemMessages__c == true) {
                 finest(getSuspendSavingLogSystemMessage());
             }
 
             return;
         }
 
-        if (SYSTEM_MESSAGES_ENABLED) {
+        if (getUserSettings().EnableSystemMessages__c == true) {
             finest(getSavingLogSystemMessage(saveMethod));
         }
 
@@ -4823,7 +4859,7 @@ global with sharing class Logger {
                 return LoggingLevel.FINEST;
             }
             when else {
-                if (SYSTEM_MESSAGES_ENABLED) {
+                if (getUserSettings().EnableSystemMessages__c == true) {
                     String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
                     finest(message);
                 }
@@ -4908,7 +4944,7 @@ global with sharing class Logger {
     private static SaveMethod getDefaultSaveMethod() {
         SaveMethod defaultSaveMethod;
 
-        String saveMethodName = LoggerSettings__c.getInstance().DefaultSaveMethod__c?.toUpperCase();
+        String saveMethodName = getUserSettings().DefaultSaveMethod__c?.toUpperCase();
         switch on saveMethodName {
             when 'QUEUEABLE' {
                 defaultSaveMethod = SaveMethod.QUEUEABLE;

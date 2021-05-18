@@ -8,8 +8,6 @@ private class LogBatchPurgeScheduler_Tests {
 
     @isTest
     static void it_should_schedule_job() {
-        insert new LoggerSettings__c(EnableSystemMessages__c = true);
-
         Test.startTest();
 
         Id jobId = System.schedule('Test schedule of LogBatchPurgeScheduler', TEST_CRON_EXPRESSION, new LogBatchPurgeScheduler());

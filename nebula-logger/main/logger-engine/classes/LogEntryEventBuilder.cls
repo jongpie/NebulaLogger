@@ -597,7 +597,7 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        LoggingLevel userLoggingLevel = Logger.getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
+        LoggingLevel userLoggingLevel = Logger.getUserLoggingLevel();
 
         this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
         this.logEntryEvent.LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls();

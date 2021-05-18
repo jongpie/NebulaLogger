@@ -24,7 +24,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         // ...so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
 
-        if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+        if (Logger.getUserSettings().EnableSystemMessages__c == true) {
             Logger.info('Starting LogBatchPurger job');
             Logger.saveLog();
         }
@@ -42,7 +42,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         this.totalProcessedRecords += scope.size();
 
         try {
-            if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+            if (Logger.getUserSettings().EnableSystemMessages__c == true) {
                 Logger.setParentLogTransactionId(this.originalTransactionId);
                 Logger.info(new LogMessage('Starting deletion of {0} records', scope.size()));
             }
@@ -56,18 +56,18 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             delete recordsToDelete;
             Database.emptyRecycleBin(recordsToDelete);
         } catch (Exception apexException) {
-            if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+            if (Logger.getUserSettings().EnableSystemMessages__c == true) {
                 Logger.error('Error deleting logs', apexException);
             }
         } finally {
-            if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+            if (Logger.getUserSettings().EnableSystemMessages__c == true) {
                 Logger.saveLog();
             }
         }
     }
 
     global void finish(Database.BatchableContext batchableContext) {
-        if (LoggerSettings__c.getInstance().EnableSystemMessages__c) {
+        if (Logger.getUserSettings().EnableSystemMessages__c == true) {
             Logger.setParentLogTransactionId(this.originalTransactionId);
             Logger.info(new LogMessage('Finished LogBatchPurger job, {0} total log records processed', this.totalProcessedRecords));
             Logger.saveLog();

@@ -32,9 +32,7 @@ private class Logger_Tests {
     }
 
     static void setUserLoggingLevel(LoggingLevel loggingLevel) {
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
+        Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
     }
 
     static String getMessage() {
@@ -262,10 +260,7 @@ private class Logger_Tests {
     @isTest
     static void it_should_return_user_logging_level() {
         LoggingLevel expectedValue = LoggingLevel.FINE;
-
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.LoggingLevel__c = expectedValue.name();
-        update settings;
+        Logger.getUserSettings().LoggingLevel__c = expectedValue.name();
 
         Test.startTest();
         LoggingLevel returnedValue = Logger.getUserLoggingLevel();
@@ -278,12 +273,12 @@ private class Logger_Tests {
     static void it_should_return_true_when_enabled() {
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+
         Boolean returnedValue = Logger.isEnabled();
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -294,13 +289,13 @@ private class Logger_Tests {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+        Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
+
         Boolean returnedValue = Logger.isEnabled(loggingLevel);
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -308,16 +303,15 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_return_true_when_error_logging_level_is_enabled() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+
         Boolean returnedValue = Logger.isErrorEnabled();
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -325,16 +319,15 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_return_true_when_warn_logging_level_is_enabled() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.WARN.name();
+
         Boolean returnedValue = Logger.isWarnEnabled();
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -342,16 +335,15 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_return_true_when_info_logging_level_is_enabled() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
+
         Boolean returnedValue = Logger.isInfoEnabled();
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -359,16 +351,15 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_return_true_when_debug_logging_level_is_enabled() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
+
         Boolean returnedValue = Logger.isDebugEnabled();
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -376,16 +367,15 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_return_true_when_fine_logging_level_is_enabled() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINE.name();
+
         Boolean returnedValue = Logger.isFineEnabled();
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -393,16 +383,15 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_return_true_when_finer_logging_level_is_enabled() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINER.name();
+
         Boolean returnedValue = Logger.isFinerEnabled();
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -410,16 +399,15 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_return_true_when_finest_logging_level_is_enabled() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Boolean expectedValue = true;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.IsEnabled__c = expectedValue;
-        settings.LoggingLevel__c = loggingLevel.name();
-        update settings;
-
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = expectedValue;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+
         Boolean returnedValue = Logger.isFinestEnabled();
+
         Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
@@ -438,12 +426,13 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_suspend_saving() {
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
         Integer countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfExistingLogEntries);
 
         Test.startTest();
+
+        Logger.getUserSettings().IsEnabled__c = true;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
 
         Logger.suspendSaving();
 
@@ -463,20 +452,30 @@ private class Logger_Tests {
 
         Test.startTest();
 
+        Logger.getUserSettings().IsEnabled__c = true;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+
         Integer logEntriesToCreate = 4;
 
         Logger.suspendSaving();
+        System.assertEquals(true, Logger.isSavingSuspended());
 
         for (Integer i = 0; i < logEntriesToCreate; i++) {
-            Logger.debug('test log entry #' + i);
+            Logger.info('test log entry #' + i);
         }
+        System.assertEquals(logEntriesToCreate, Logger.getBufferSize());
         Logger.saveLog();
 
+        System.assertEquals(logEntriesToCreate, Logger.getBufferSize());
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
         Logger.resumeSaving();
+        System.assertEquals(false, Logger.isSavingSuspended());
+
         Logger.saveLog();
+
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -508,9 +507,7 @@ private class Logger_Tests {
 
         setUserLoggingLevel(LoggingLevel.DEBUG);
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.DefaultSaveMethod__c = 'EVENT_BUS';
-        upsert settings;
+        Logger.getUserSettings().DefaultSaveMethod__c = 'EVENT_BUS';
 
         System.assertEquals(Logger.SaveMethod.EVENT_BUS, Logger.transactionSaveMethod);
 
@@ -564,9 +561,7 @@ private class Logger_Tests {
 
         setUserLoggingLevel(LoggingLevel.DEBUG);
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.DefaultSaveMethod__c = 'QUEUEABLE';
-        upsert settings;
+        Logger.getUserSettings().DefaultSaveMethod__c = 'QUEUEABLE';
 
         System.assertEquals(Logger.SaveMethod.QUEUEABLE, Logger.transactionSaveMethod);
 
@@ -622,9 +617,7 @@ private class Logger_Tests {
 
         setUserLoggingLevel(LoggingLevel.DEBUG);
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.DefaultSaveMethod__c = 'REST';
-        upsert settings;
+        Logger.getUserSettings().DefaultSaveMethod__c = 'REST';
 
         System.assertEquals(Logger.SaveMethod.REST, Logger.transactionSaveMethod);
 
@@ -635,7 +628,7 @@ private class Logger_Tests {
 
         Test.startTest();
 
-        Logger.saveLog(Logger.SaveMethod.REST);
+        Logger.saveLog();
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(0, Limits.getQueueableJobs());
         System.assertEquals(1, Limits.getCallouts());
@@ -697,8 +690,7 @@ private class Logger_Tests {
 
     @isTest
     static void it_should_flush_buffer() {
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
+        System.assertEquals(0, Logger.getBufferSize());
 
         setUserLoggingLevel(LoggingLevel.DEBUG);
 
@@ -706,16 +698,14 @@ private class Logger_Tests {
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
+        System.assertEquals(2, Logger.getBufferSize());
 
         Logger.flushBuffer();
 
         Logger.debug('the only log entry to save');
-        Logger.saveLog();
+        System.assertEquals(1, Logger.getBufferSize());
 
         Test.stopTest();
-
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(1, countOfLogEntries);
     }
 
     // Start ERROR methods for LogMessage
