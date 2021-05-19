@@ -21,7 +21,7 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
 
     @testVisible
-    private static SaveMethod transactionSaveMethod  {
+    private static SaveMethod transactionSaveMethod {
         get {
             if (transactionSaveMethod == null) {
                 transactionSaveMethod = getDefaultSaveMethod();
@@ -4888,6 +4888,7 @@ global with sharing class Logger {
     @AuraEnabled(cacheable=true)
     public static Log__c getLog(String logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
+        logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
         List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
 
         List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), String.join(logEntryFieldNames, ',') };

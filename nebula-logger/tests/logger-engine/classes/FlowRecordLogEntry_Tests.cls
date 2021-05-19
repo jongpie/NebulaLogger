@@ -43,7 +43,12 @@ private class FlowRecordLogEntry_Tests {
 
         String expectedUserJson = JSON.serializePretty(currentUser);
 
-        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        LogEntry__c logEntry = [
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
         System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
         System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
@@ -99,7 +104,12 @@ private class FlowRecordLogEntry_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        LogEntry__c logEntry = [
+            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
         System.assertEquals(null, logEntry.ExceptionMessage__c);
         System.assertEquals(null, logEntry.ExceptionType__c);
         System.assertEquals(expectedEntryLoggingLevel.name(), logEntry.LoggingLevel__c);
@@ -128,7 +138,12 @@ private class FlowRecordLogEntry_Tests {
 
         Test.stopTest();
 
-        LogEntry__c logEntry = [SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        LogEntry__c logEntry = [
+            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
         System.assertEquals(flowEntry.faultMessage, logEntry.ExceptionMessage__c);
         System.assertEquals('Flow.FaultError', logEntry.ExceptionType__c);
         System.assertEquals(expectedEntryLoggingLevel.name(), logEntry.LoggingLevel__c);

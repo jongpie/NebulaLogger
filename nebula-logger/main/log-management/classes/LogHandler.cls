@@ -8,7 +8,6 @@
  * @description Manages setting fields on `Log__c` before insert & before update
  */
 public without sharing class LogHandler {
-
     private static final Organization ORGANIZATION = [SELECT Id, InstanceName, IsSandbox FROM Organization];
 
     @testVisible
