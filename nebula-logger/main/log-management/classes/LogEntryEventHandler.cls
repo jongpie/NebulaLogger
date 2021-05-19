@@ -131,7 +131,9 @@ public without sharing class LogEntryEventHandler {
     private void insertLogEntries() {
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             // Workaround field for platform issue w/ accurate datetimes
-            Datetime timestamp = Datetime.valueOf(logEntryEvent.EpochTimestamp__c);
+            Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
+                ? Datetime.valueOf(logEntryEvent.TimestampString__c)
+                : logEntryEvent.Timestamp__c;
 
             LogEntry__c logEntry = new LogEntry__c(
                 DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
