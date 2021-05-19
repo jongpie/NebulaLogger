@@ -559,8 +559,9 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        Test.startTest();
 
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
         Logger.getUserSettings().DefaultSaveMethod__c = 'QUEUEABLE';
 
         System.assertEquals(Logger.SaveMethod.QUEUEABLE, Logger.transactionSaveMethod);
@@ -568,11 +569,11 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
+        System.assertEquals(2, Logger.getBufferSize());
         System.assertEquals(0, Limits.getQueueableJobs());
 
-        Test.startTest();
-
         Logger.saveLog();
+
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(1, Limits.getQueueableJobs());
         System.assertEquals(0, Limits.getCallouts());
@@ -601,6 +602,8 @@ private class Logger_Tests {
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(1, Limits.getQueueableJobs());
         System.assertEquals(0, Limits.getCallouts());
+
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 

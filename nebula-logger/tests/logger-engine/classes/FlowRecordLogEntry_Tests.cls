@@ -14,15 +14,17 @@ private class FlowRecordLogEntry_Tests {
     }
 
     @isTest
-    static void it_should_add_entry_to_buffer_when_logging_level_met() {
+    static void it_should_save_entry_when_logging_level_met() {
         User currentUser = new User(
             Id = UserInfo.getUserId(),
             FirstName = UserInfo.getFirstName(),
             LastName = UserInfo.getLastName(),
             Username = UserInfo.getUserName()
         );
+
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
 
         Test.startTest();
 
@@ -32,24 +34,35 @@ private class FlowRecordLogEntry_Tests {
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
         flowRecordEntry.record = currentUser;
         FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
-
-        Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize());
 
+        Logger.saveLog();
+
+        Test.stopTest();
+
         String expectedUserJson = JSON.serializePretty(currentUser);
 
-        LogEntryEvent__e logEntryEvent = Logger.getBuffer().get(0).getLogEntryEvent();
-        System.assertEquals(flowRecordEntry.loggingLevelName, logEntryEvent.LoggingLevel__c);
-        System.assertEquals(currentUser.Id, logEntryEvent.RecordId__c);
-        System.assertEquals(expectedUserJson, logEntryEvent.RecordJson__c);
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
+        System.assertEquals(expectedUserJson, logEntry.RecordJson__c);
     }
 
     @isTest
-    static void it_should_not_add_entry_to_buffer_when_logging_level_not_met() {
-        User currentUser = new User(Id = UserInfo.getUserId());
+    static void it_should_not_save_entry_when_logging_level_not_met() {
+        User currentUser = new User(
+            Id = UserInfo.getUserId(),
+            FirstName = UserInfo.getFirstName(),
+            LastName = UserInfo.getLastName(),
+            Username = UserInfo.getUserName()
+        );
+
         LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() > flowRecordEntryLoggingLevel.ordinal());
 
         Test.startTest();
 
@@ -59,6 +72,7 @@ private class FlowRecordLogEntry_Tests {
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
         flowRecordEntry.record = currentUser;
         FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
+
         System.assertEquals(0, Logger.getBufferSize());
 
         Test.stopTest();
@@ -66,56 +80,59 @@ private class FlowRecordLogEntry_Tests {
 
     @isTest
     static void it_should_use_debug_as_default_level_when_faultMessage_is_null() {
-        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        LoggingLevel expectedEntryLoggingLevel = LoggingLevel.DEBUG;
 
         Test.startTest();
 
-        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
 
         FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
         System.assertEquals(null, flowEntry.faultMessage);
         System.assertEquals(null, flowEntry.loggingLevelName);
 
         FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowEntry });
-        System.assertEquals(LoggingLevel.DEBUG.name(), flowEntry.loggingLevelName);
-
-        Test.stopTest();
+        System.assertEquals(expectedEntryLoggingLevel.name(), flowEntry.loggingLevelName);
 
         System.assertEquals(1, Logger.getBufferSize());
 
-        LogEntryEvent__e logEntryEvent = Logger.getBuffer().get(0).getLogEntryEvent();
-        System.assertEquals(LoggingLevel.DEBUG.name(), logEntryEvent.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, logEntryEvent.Message__c);
-        System.assertEquals('Flow', logEntryEvent.OriginType__c);
-        System.assertEquals(flowEntry.flowName, logEntryEvent.OriginLocation__c);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        System.assertEquals(null, logEntry.ExceptionMessage__c);
+        System.assertEquals(null, logEntry.ExceptionType__c);
+        System.assertEquals(expectedEntryLoggingLevel.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(flowEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
     }
 
     @isTest
     static void it_should_use_error_as_default_level_when_faultMessage_is_not_null() {
-        String userLoggingLevel = 'FINEST';
+        LoggingLevel expectedEntryLoggingLevel = LoggingLevel.ERROR;
 
         Test.startTest();
 
-        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel;
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
 
         FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
         flowEntry.faultMessage = 'Whoops, a Flow error has occurred.';
-        System.assertNotEquals(null, flowEntry.faultMessage);
         System.assertEquals(null, flowEntry.loggingLevelName);
 
         FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowEntry });
-        System.assertEquals(LoggingLevel.ERROR.name(), flowEntry.loggingLevelName);
-
-        Test.stopTest();
+        System.assertEquals(expectedEntryLoggingLevel.name(), flowEntry.loggingLevelName);
 
         System.assertEquals(1, Logger.getBufferSize());
 
-        LogEntryEvent__e logEntryEvent = Logger.getBuffer().get(0).getLogEntryEvent();
-        System.assertEquals(LoggingLevel.ERROR.name(), logEntryEvent.LoggingLevel__c);
-        System.assertEquals(flowEntry.faultMessage, logEntryEvent.ExceptionMessage__c);
-        System.assertEquals('Flow.FaultError', logEntryEvent.ExceptionType__c);
-        System.assertEquals(flowEntry.message, logEntryEvent.Message__c);
-        System.assertEquals('Flow', logEntryEvent.OriginType__c);
-        System.assertEquals(flowEntry.flowName, logEntryEvent.OriginLocation__c);
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        System.assertEquals(flowEntry.faultMessage, logEntry.ExceptionMessage__c);
+        System.assertEquals('Flow.FaultError', logEntry.ExceptionType__c);
+        System.assertEquals(expectedEntryLoggingLevel.name(), logEntry.LoggingLevel__c);
+        System.assertEquals(flowEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
     }
 }

@@ -37,7 +37,6 @@ public without sharing class LogEntryEventHandler {
     public void execute() {
         switch on this.triggerOperationType {
             when AFTER_INSERT {
-                System.debug('hello be here now');
                 this.upsertLogs();
                 this.insertLogEntries();
                 this.insertTopics();
