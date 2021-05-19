@@ -231,6 +231,15 @@ global with sharing class Logger {
     }
 
     /**
+     * @description Returns the list of unsaved log entries (instances of `LogEntryEventBuilder`)
+     * @return The list of unsaved `LogEntryEventBuilder` instances
+     */
+    // TODO make this method `global` in a future release
+    public static List<LogEntryEventBuilder> getBuffer() {
+        return LOG_ENTRIES_BUFFER;
+    }
+
+    /**
      * @description Returns the number of entries that have been generated but not yet saved
      * @return Integer
      */
