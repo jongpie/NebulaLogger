@@ -401,14 +401,14 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(transactionIds.size(), logEntryEvents.size());
 
         Test.startTest();
-
-        LogEntryEventHandler handler = new LogEntryEventHandler();
-        handler.logEntryEvents = logEntryEvents;
-        handler.triggerOperationType = TriggerOperation.AFTER_INSERT;
-
-        handler.execute();
-
+        List<Database.SaveResult> saveResults = EventBus.publish(logEntryEvents);
+        Test.getEventBus().deliver();
+        System.assertEquals(transactionIds.size(), saveResults.size());
         Test.stopTest();
+
+        for (Database.SaveResult saveResult : saveResults) {
+            System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        }
 
         List<Log__c> logs = [SELECT Id, TransactionId__c, (SELECT Id FROM LogEntries__r) FROM Log__c];
 
@@ -545,7 +545,6 @@ private class LogEntryEventHandler_Tests {
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
             Message__c = 'my message',
             Timestamp__c = System.now(),
             TransactionEntryNumber__c = 1,
@@ -556,14 +555,13 @@ private class LogEntryEventHandler_Tests {
         try {
             Test.startTest();
 
-            LogEntryEventHandler handler = new LogEntryEventHandler();
-            handler.logEntryEvents = new List<LogEntryEvent__e>{ logEntryEvent };
-            handler.triggerOperationType = TriggerOperation.AFTER_INSERT;
-
-            handler.execute();
+            saveResult = EventBus.publish(logEntryEvent);
+            // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+            // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+            // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+            Test.getEventBus().deliver();
 
             Test.stopTest();
-
             System.assert(false, 'Exception expected, this assert should not run');
         } catch (Exception ex) {
             System.assertEquals(LogEntryEventHandler.StatusApiResponseException.class.getName(), ex.getTypeName());
@@ -571,6 +569,8 @@ private class LogEntryEventHandler_Tests {
             String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
             System.assert(ex.getMessage().contains(expectedErrorMessage));
         }
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());

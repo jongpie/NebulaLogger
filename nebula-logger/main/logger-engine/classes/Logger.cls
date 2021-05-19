@@ -21,12 +21,14 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
 
     @testVisible
-    private static SaveMethod transactionSaveMethod {
+    private static SaveMethod transactionSaveMethod = getDefaultSaveMethod();
+
+    private static LoggerSettings__c userSettings {
         get {
-            if (transactionSaveMethod == null) {
-                transactionSaveMethod = getDefaultSaveMethod();
+            if (userSettings == null) {
+                userSettings = LoggerSettings__c.getInstance();
             }
-            return transactionSaveMethod;
+            return userSettings;
         }
         set;
     }
@@ -37,17 +39,6 @@ global with sharing class Logger {
                 userLoggingLevel = getLoggingLevel(getUserSettings().LoggingLevel__c);
             }
             return userLoggingLevel;
-        }
-        set;
-    }
-
-    @testVisible
-    private static LoggerSettings__c userSettings {
-        get {
-            if (userSettings == null) {
-                userSettings = LoggerSettings__c.getInstance();
-            }
-            return userSettings;
         }
         set;
     }
@@ -228,15 +219,6 @@ global with sharing class Logger {
      */
     global static void resumeSaving() {
         suspendSaving = false;
-    }
-
-    /**
-     * @description Returns the list of unsaved log entries (instances of `LogEntryEventBuilder`)
-     * @return The list of unsaved `LogEntryEventBuilder` instances
-     */
-    // TODO make this method `global` in a future release
-    public static List<LogEntryEventBuilder> getBuffer() {
-        return LOG_ENTRIES_BUFFER;
     }
 
     /**
