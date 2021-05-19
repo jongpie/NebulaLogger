@@ -13,6 +13,7 @@ public without sharing class LogEntryEventHandler {
     @testVisible
     private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
 
+    // Trigger-based variables - tests can override these with mock objects
     @testVisible
     private List<LogEntryEvent__e> logEntryEvents;
     @testVisible
@@ -45,6 +46,8 @@ public without sharing class LogEntryEventHandler {
     }
 
     private void upsertLogs() {
+        // To avoid making a callout for every log for details retrieved from api.status.salesforce.com,
+        // ...try to query recent logs first to see if there is a recent log with the details already populated
         Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
@@ -57,8 +60,7 @@ public without sharing class LogEntryEventHandler {
 
             Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
             Log__c log = new Log__c();
-            // To avoid making a callout for every log for details retrieved from api.status.salesforce.com,
-            // ...try to query recent logs first to see if there is a recent log with the details already populated
+
             if (recentLogWithApiReleaseDetails != null) {
                 log.ApiReleaseNumber__c = recentLogWithApiReleaseDetails.ApiReleaseNumber__c;
                 log.ApiReleaseVersion__c = recentLogWithApiReleaseDetails.ApiReleaseVersion__c;
