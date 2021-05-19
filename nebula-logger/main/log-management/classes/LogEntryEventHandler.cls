@@ -10,38 +10,48 @@
 public without sharing class LogEntryEventHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
-    @TestVisible
+    @testVisible
     private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
+
+    @testVisible
+    private List<LogEntryEvent__e> logEntryEvents;
+    @testVisible
+    private TriggerOperation triggerOperationType;
 
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
     private Set<String> topicNames;
 
     public LogEntryEventHandler() {
+        this.logEntryEvents = (List<LogEntryEvent__e>) Trigger.new;
+        this.triggerOperationType = Trigger.operationType;
+
         this.logEntries = new List<LogEntry__c>();
         this.logEntryToTopics = new Map<LogEntry__c, List<String>>();
         this.topicNames = new Set<String>();
     }
 
+    /**
+     * @description Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
+     */
     public void execute() {
-        List<LogEntryEvent__e> logEntryEvents = (List<LogEntryEvent__e>) Trigger.new;
-
-        switch on Trigger.operationType {
+        switch on this.triggerOperationType {
             when AFTER_INSERT {
-                this.upsertLogs(logEntryEvents);
-                this.insertLogEntries(logEntryEvents);
+                System.debug('hello be here now');
+                this.upsertLogs();
+                this.insertLogEntries();
                 this.insertTopics();
             }
         }
     }
 
-    private void upsertLogs(List<LogEntryEvent__e> logEntryEvents) {
+    private void upsertLogs() {
         Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
 
         // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
         // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
 
-        for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
+        for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
                 continue;
             }
@@ -79,7 +89,7 @@ public without sharing class LogEntryEventHandler {
             log.OrganizationName__c = logEntryEvent.OrganizationName__c;
             log.OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c;
             log.OrganizationType__c = logEntryEvent.OrganizationType__c;
-            log.OwnerId = logEntryEvent.CreatedById;
+            log.OwnerId = logEntryEvent.CreatedById != null ? logEntryEvent.CreatedById : UserInfo.getUserId();
             log.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
             log.ProfileId__c = logEntryEvent.ProfileId__c;
             log.ProfileName__c = logEntryEvent.ProfileName__c;
@@ -105,7 +115,7 @@ public without sharing class LogEntryEventHandler {
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
 
-        upsert TRANSACTION_ID_TO_LOG.values() TransactionId__c;
+        upsert TRANSACTION_ID_TO_LOG.values() Schema.Log__c.TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         if (
@@ -118,8 +128,8 @@ public without sharing class LogEntryEventHandler {
         }
     }
 
-    private void insertLogEntries(List<LogEntryEvent__e> logEntryEvents) {
-        for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
+    private void insertLogEntries() {
+        for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             // Workaround field for platform issue w/ accurate datetimes
             Datetime timestamp = Datetime.valueOf(logEntryEvent.EpochTimestamp__c);
 
@@ -222,8 +232,12 @@ public without sharing class LogEntryEventHandler {
 
         // Assign the topics to the records
         Set<TopicAssignment> topicAssignments = new Set<TopicAssignment>();
-        for (LogEntry__c logEntry : logEntryToTopics.keySet()) {
-            for (String topicName : logEntryToTopics.get(logEntry)) {
+        for (LogEntry__c logEntry : this.logEntryToTopics.keySet()) {
+            if (this.logEntryToTopics.containsKey(logEntry) == false) {
+                continue;
+            }
+
+            for (String topicName : this.logEntryToTopics.get(logEntry)) {
                 // Add log entry-specific topics
                 topicAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id));
 

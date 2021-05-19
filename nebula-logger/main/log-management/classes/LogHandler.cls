@@ -11,43 +11,57 @@ public without sharing class LogHandler {
     private static final Organization ORGANIZATION = [SELECT Id, InstanceName, IsSandbox FROM Organization];
 
     @testVisible
-    private static Map<String, LogStatus__mdt> logStatusByName;
-
-    static {
-        logStatusByName = new Map<String, LogStatus__mdt>();
-        for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
-            if (logStatus.IsActive__c == true) {
-                logStatusByName.put(logStatus.MasterLabel, logStatus);
+    private static Map<String, LogStatus__mdt> logStatusByName  {
+        get {
+            if (logStatusByName == null) {
+                logStatusByName = new Map<String, LogStatus__mdt>();
+                for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
+                    if (logStatus.IsActive__c == true) {
+                        logStatusByName.put(logStatus.MasterLabel, logStatus);
+                    }
+                }
             }
+            return logStatusByName;
         }
+        set;
+    }
+
+    @testVisible
+    private List<Log__c> logs;
+    @testVisible
+    private Map<Id, Log__c> oldLogsById;
+    @testVisible
+    private TriggerOperation triggerOperationType;
+
+    public LogHandler() {
+        this.logs = (List<Log__c>) Trigger.new;
+        this.oldLogsById = (Map<Id, Log__c>) Trigger.oldMap;
+        this.triggerOperationType = Trigger.operationType;
     }
 
     /**
-     * @description Runs the trigger handler's logic
+     * @description Runs the trigger handler's logic for the `Log__c` custom object
      */
     public void execute() {
-        List<Log__c> logs = (List<Log__c>) Trigger.new;
-        Map<Id, Log__c> oldLogsById = (Map<Id, Log__c>) Trigger.oldMap;
-
-        switch on Trigger.operationType {
+        switch on this.triggerOperationType {
             when BEFORE_INSERT {
-                this.setOrgReleaseCycle(logs);
-                this.setClosedStatusFields(logs);
+                this.setOrgReleaseCycle();
+                this.setClosedStatusFields();
                 // The log retention date field should support being manually changed, so only auto-set it on insert
-                this.setLogRetentionDate(logs);
+                this.setLogRetentionDate();
             }
             when BEFORE_UPDATE {
-                this.setClosedStatusFields(logs);
+                this.setClosedStatusFields();
                 // Priority logic relies on roll-up fields, so only run on update (after log entries are inserted)
-                this.setPriority(logs, oldLogsById);
+                this.setPriority();
             }
             when AFTER_INSERT {
-                this.shareLogsWithLoggingUsers(logs);
+                this.shareLogsWithLoggingUsers();
             }
         }
     }
 
-    private void setOrgReleaseCycle(List<Log__c> logs) {
+    private void setOrgReleaseCycle() {
         // Currently, there doesn't seem to be a way within Apex or api.status.salesforce.com...
         // ...to know if your org is on a preview instance or non-preview instance
         // So, that unfortunately leaves hardcoding the instances for now
@@ -214,13 +228,13 @@ public without sharing class LogHandler {
             releaseCycle = 'Unknown';
         }
 
-        for (Log__c log : logs) {
+        for (Log__c log : this.logs) {
             log.OrganizationInstanceReleaseCycle__c = releaseCycle;
         }
     }
 
-    private void setClosedStatusFields(List<Log__c> logs) {
-        for (Log__c log : logs) {
+    private void setClosedStatusFields() {
+        for (Log__c log : this.logs) {
             // Determine if the status is considered closed
             LogStatus__mdt logStatus = logStatusByName.get(log.Status__c);
             if (logStatus != null) {
@@ -239,15 +253,14 @@ public without sharing class LogHandler {
         }
     }
 
-    private void setLogRetentionDate(List<Log__c> logs) {
-        for (Log__c log : logs) {
+    private void setLogRetentionDate() {
+        for (Log__c log : this.logs) {
             // If the retention date has already been populated, leave it as-is
             if (log.LogRetentionDate__c != null) {
                 continue;
             }
 
-            LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance(log.LoggedBy__c);
-            Integer daysToRetainLog = Integer.valueOf(loggerSettings.DefaultNumberOfDaysToRetainLogs__c);
+            Integer daysToRetainLog = Integer.valueOf(Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c);
 
             // When loggerSettings.DefaultNumberOfDaysToRetainLogs__c is null, assume that the log should be kept forever,
             // ...and set the retention date to null so that LogBatchPurger filters out/ignores the record
@@ -255,7 +268,7 @@ public without sharing class LogHandler {
         }
     }
 
-    private void setPriority(List<Log__c> logs, Map<Id, Log__c> oldLogsById) {
+    private void setPriority() {
         List<PicklistEntry> picklistEntries = Schema.Log__c.Priority__c.getDescribe().getPicklistValues();
 
         // 4 assumptions
@@ -266,8 +279,8 @@ public without sharing class LogHandler {
         final String HIGH = picklistEntries.get(0).getValue();
         final String MEDIUM = picklistEntries.get(1).getValue();
 
-        for (Log__c log : logs) {
-            Log__c oldLog = oldLogsById.get(log.Id);
+        for (Log__c log : this.logs) {
+            Log__c oldLog = this.oldLogsById.get(log.Id);
 
             if (log.TotalERRORLogEntries__c != oldLog.TotalERRORLogEntries__c && log.TotalERRORLogEntries__c > 0) {
                 log.Priority__c = HIGH;
@@ -277,10 +290,11 @@ public without sharing class LogHandler {
         }
     }
 
-    private void shareLogsWithLoggingUsers(List<Log__c> logs) {
+    private void shareLogsWithLoggingUsers() {
         // For each log record, share the record with the user that created the log (Log__c.LoggedBy__c)
         List<Log__Share> logShares = new List<Log__Share>();
-        for (Log__c log : logs) {
+        for (Log__c log : this.logs) {
+            System.debug('log.LoggedBy__c==' + log.LoggedBy__c);
             LoggerSettings__c loggingUserSettings = LoggerSettings__c.getInstance(log.LoggedBy__c);
             System.debug('loggingUserSettings==' + loggingUserSettings);
 

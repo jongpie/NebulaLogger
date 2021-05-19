@@ -189,12 +189,18 @@ private class LogHandler_Tests {
         }
 
         Log__c log = new Log__c(TransactionId__c = '1234');
+        System.assertEquals(null, log.OrganizationInstanceReleaseCycle__c);
 
         Test.startTest();
-        insert log;
+
+        LogHandler handler = new LogHandler();
+        handler.logs = new List<Log__c>{ log };
+        handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+
+        handler.execute();
+
         Test.stopTest();
 
-        log = [SELECT Id, OrganizationInstanceReleaseCycle__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedReleaseCycle, log.OrganizationInstanceReleaseCycle__c);
     }
 
@@ -210,10 +216,15 @@ private class LogHandler_Tests {
         );
 
         Test.startTest();
-        insert log;
+
+        LogHandler handler = new LogHandler();
+        handler.logs = new List<Log__c>{ log };
+        handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+
+        handler.execute();
+
         Test.stopTest();
 
-        log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(null, log.ClosedBy__c);
         System.assertEquals(null, log.ClosedDate__c);
         System.assertEquals(false, log.IsClosed__c);
@@ -232,10 +243,15 @@ private class LogHandler_Tests {
         );
 
         Test.startTest();
-        insert log;
+
+        LogHandler handler = new LogHandler();
+        handler.logs = new List<Log__c>{ log };
+        handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+
+        handler.execute();
+
         Test.stopTest();
 
-        log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(UserInfo.getUserId(), log.ClosedBy__c);
         System.assertEquals(System.today(), log.ClosedDate__c.date());
         System.assertEquals(true, log.IsClosed__c);
@@ -245,20 +261,22 @@ private class LogHandler_Tests {
     static void it_should_keep_existing_retention_date_when_populated() {
         Integer defaultDaysToRetainLog = 10;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
-        upsert settings;
-
-        Test.startTest();
-
         Integer specifiedDaysToRetainLog = 50;
         Date retentionDate = System.today().addDays(specifiedDaysToRetainLog);
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), LogRetentionDate__c = retentionDate, TransactionId__c = '1234');
-        insert log;
+
+        Test.startTest();
+
+        Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
+
+        LogHandler handler = new LogHandler();
+        handler.logs = new List<Log__c>{ log };
+        handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+
+        handler.execute();
 
         Test.stopTest();
 
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertNotEquals(defaultDaysToRetainLog, specifiedDaysToRetainLog);
         System.assertEquals(retentionDate, log.LogRetentionDate__c);
     }
@@ -268,35 +286,39 @@ private class LogHandler_Tests {
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
-        upsert settings;
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
 
         Test.startTest();
 
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
-        insert log;
+        Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
+
+        LogHandler handler = new LogHandler();
+        handler.logs = new List<Log__c>{ log };
+        handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+
+        handler.execute();
 
         Test.stopTest();
 
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
     }
 
     @isTest
     static void it_should_have_null_retention_date_when_no_retention_configured() {
-        LoggerSettings__c settings = LoggerSettings__c.getInstance();
-        settings.DefaultNumberOfDaysToRetainLogs__c = null;
-        upsert settings;
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
 
         Test.startTest();
 
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
-        insert log;
+        Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = null;
+
+        LogHandler handler = new LogHandler();
+        handler.logs = new List<Log__c>{ log };
+        handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+
+        handler.execute();
 
         Test.stopTest();
 
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(null, log.LogRetentionDate__c);
     }
 
@@ -337,8 +359,10 @@ private class LogHandler_Tests {
         upsert settings;
 
         Test.startTest();
+
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;
+
         Test.stopTest();
 
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
@@ -357,8 +381,10 @@ private class LogHandler_Tests {
         upsert settings;
 
         Test.startTest();
+
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;
+
         Test.stopTest();
 
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
@@ -371,30 +397,16 @@ private class LogHandler_Tests {
     }
 
     @isTest
-    static void it_should_not_grant_access_to_user_when_access_level_is_null() {
-        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
-        settings.DefaultLogShareAccessLevel__c = null;
-        upsert settings;
-
-        Test.startTest();
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
-        insert log;
-        Test.stopTest();
-
-        List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-
-        System.assertEquals(0, logShares.size(), logShares);
-    }
-
-    @isTest
     static void it_should_not_grant_access_to_user_when_access_level_is_an_unknown_string() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
         settings.DefaultLogShareAccessLevel__c = 'FAKE LEVEL';
         upsert settings;
 
         Test.startTest();
+
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;
+
         Test.stopTest();
 
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
