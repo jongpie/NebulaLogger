@@ -35,7 +35,7 @@ public without sharing class LogEntryHandler {
             when BEFORE_UPDATE {
                 // Realistically, these checkbox fields probably only need to be set on insert...
                 // ...but some admins & devs might decide to update/append data in some of the related fields...
-                // ...and it conceptually feels weird for there to be scenarios that these fields could be inaccurate,
+                // ...and it conceptually feels weird for there to be scenarios where these fields could be inaccurate,
                 // ...so keep them up to date just to be safe
                 this.setCheckboxFields();
             }
