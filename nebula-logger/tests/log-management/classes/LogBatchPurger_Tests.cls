@@ -55,10 +55,10 @@ private class LogBatchPurger_Tests {
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
-        logs = [SELECT Id FROM Log__c];
-        logEntries = [SELECT Id FROM LogEntry__c];
-        System.assertEquals(1, logs.size(), logs);
-        System.assertEquals(6, logEntries.size(), logEntries);
+        logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
+        logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
+        System.assertEquals(0, logs.size(), logs);
+        System.assertEquals(0, logEntries.size(), logEntries);
     }
 
     @isTest
@@ -86,8 +86,8 @@ private class LogBatchPurger_Tests {
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
-        logs = [SELECT Id FROM Log__c];
-        logEntries = [SELECT Id FROM LogEntry__c];
+        logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
+        logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(0, logs.size(), logs);
         System.assertEquals(0, logEntries.size(), logEntries);
     }
@@ -111,8 +111,8 @@ private class LogBatchPurger_Tests {
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
-        logs = [SELECT Id FROM Log__c];
-        logEntries = [SELECT Id FROM LogEntry__c];
+        logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
+        logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(1, logs.size());
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
     }
@@ -136,8 +136,8 @@ private class LogBatchPurger_Tests {
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
-        logs = [SELECT Id FROM Log__c];
-        logEntries = [SELECT Id FROM LogEntry__c];
+        logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
+        logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(1, logs.size(), logs);
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size(), logEntries);
     }
