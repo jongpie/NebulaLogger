@@ -274,14 +274,10 @@ private class LogEntryEventHandler_Tests {
         );
 
         Test.startTest();
-
-        LogEntryEventHandler handler = new LogEntryEventHandler();
-        handler.logEntryEvents = new List<LogEntryEvent__e>{ logEntryEvent };
-        handler.triggerOperationType = TriggerOperation.AFTER_INSERT;
-
-        handler.execute();
-
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
@@ -372,14 +368,10 @@ private class LogEntryEventHandler_Tests {
         );
 
         Test.startTest();
-
-        LogEntryEventHandler handler = new LogEntryEventHandler();
-        handler.logEntryEvents = new List<LogEntryEvent__e>{ logEntryEvent };
-        handler.triggerOperationType = TriggerOperation.AFTER_INSERT;
-
-        handler.execute();
-
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
@@ -445,14 +437,10 @@ private class LogEntryEventHandler_Tests {
         );
 
         Test.startTest();
-
-        LogEntryEventHandler handler = new LogEntryEventHandler();
-        handler.logEntryEvents = new List<LogEntryEvent__e>{ logEntryEvent };
-        handler.triggerOperationType = TriggerOperation.AFTER_INSERT;
-
-        handler.execute();
-
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
@@ -487,15 +475,19 @@ private class LogEntryEventHandler_Tests {
             TransactionId__c = transactionId
         );
 
+        Database.SaveResult saveResult;
+
         Test.startTest();
 
-        LogEntryEventHandler handler = new LogEntryEventHandler();
-        handler.logEntryEvents = new List<LogEntryEvent__e>{ logEntryEvent };
-        handler.triggerOperationType = TriggerOperation.AFTER_INSERT;
-
-        handler.execute();
+        saveResult = EventBus.publish(logEntryEvent);
+        // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+        // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+        // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+        Test.getEventBus().deliver();
 
         Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
@@ -526,14 +518,10 @@ private class LogEntryEventHandler_Tests {
         );
 
         Test.startTest();
-
-        LogEntryEventHandler handler = new LogEntryEventHandler();
-        handler.logEntryEvents = new List<LogEntryEvent__e>{ logEntryEvent };
-        handler.triggerOperationType = TriggerOperation.AFTER_INSERT;
-
-        handler.execute();
-
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
