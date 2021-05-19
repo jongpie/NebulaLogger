@@ -47,11 +47,20 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 Logger.info(new LogMessage('Starting deletion of {0} records', scope.size()));
             }
 
-            List<SObject> recordsToDelete = new List<SObject>();
+            List<Log__c> logsToDelete = new List<Log__c>();
+            List<LogEntry__c> logEntriesToDelete = new List<LogEntry__c>();
             for (Log__c log : scope) {
-                recordsToDelete.addAll(log.LogEntries__r);
-                recordsToDelete.add(log);
+                logEntriesToDelete.addAll(log.LogEntries__r);
+                logsToDelete.add(log);
             }
+
+            List<SObject> recordsToDelete = new List<SObject>();
+            // not obvious coupling - the LogEntry__c records must be deleted first
+            // to avoid System.DmlException: ENTITY_IS_DELETED on the corresponding Log__c records
+            // we also avoid the need to sort but still avoid the potential for a DML chunking error
+            // by correct separating the records of different SObject types from one another
+            recordsToDelete.addAll(logEntriesToDelete);
+            recordsToDelete.addAll(logsToDelete);
 
             delete recordsToDelete;
             Database.emptyRecycleBin(recordsToDelete);
