@@ -21,7 +21,15 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
 
     @testVisible
-    private static SaveMethod transactionSaveMethod = getDefaultSaveMethod();
+    private static SaveMethod transactionSaveMethod {
+        get {
+            if (transactionSaveMethod == null) {
+                transactionSaveMethod = getDefaultSaveMethod();
+            }
+            return transactionSaveMethod;
+        }
+        set;
+    }
 
     private static LoggerSettings__c userSettings {
         get {
