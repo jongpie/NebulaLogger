@@ -200,7 +200,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Returns the spe ified user's instance of `LoggerSettings__c`, based on `LoggerSettings__c.getInsance()`
+     * @description Returns the specified user's instance of `LoggerSettings__c`, based on `LoggerSettings__c.getInsance()`
      * @param  user The user record - at a minimum, this record should have the user Id and Profile fields populated
      * @return      LoggerSettings__c - The specified user's instance of the custom settings
      */
