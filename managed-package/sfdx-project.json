@@ -9,10 +9,10 @@
             "default": true,
             "definitionFile": "config/project-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "versionName": "New Logger Console app, expanded Apex & Flow logging",
-            "versionNumber": "4.3.0.3",
-            "ancestorVersion": "4.2.0.0",
-            "versionDescription": "Includes new Logger Console app & reports for admins, automatic log sharing, and expanded logging for Apex & Flow",
+            "versionName": "Configurable Default Save Method & New Epoch Timestamp Fields",
+            "versionNumber": "4.4.0.2",
+            "ancestorVersion": "4.3.0.3",
+            "versionDescription": "Includes new Logger Setting for the default save method, added new Epoch Timestamp fields and bugfixes",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
@@ -20,6 +20,7 @@
         "Nebula Logger": "0Ho5Y000000XZCDSA4",
         "Nebula Logger@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO",
         "Nebula Logger@4.2.0-0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
-        "Nebula Logger@4.3.0-3-logger-console-app": "04t5Y000000YLDLQA4"
+        "Nebula Logger@4.3.0-3-logger-console-app": "04t5Y000000YLDLQA4",
+        "Nebula Logger@4.4.0-2-config-default-save-method": "04t5Y0000027FFgQAM"
     }
 }

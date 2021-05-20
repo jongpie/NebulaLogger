@@ -5,7 +5,7 @@
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
 [![Deploy Unpackaged Metadata](./content/btn-deploy-unmanaged-metadata.png)](https://githubsfdeploy.herokuapp.com/?owner=jongpie&repo=NebulaLogger&ref=main)
-[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y000000YLDLQA4)
+[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FFgQAM)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ___
