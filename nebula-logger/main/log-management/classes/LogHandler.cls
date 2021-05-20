@@ -292,9 +292,9 @@ public without sharing class LogHandler {
         // For each log record, share the record with the user that created the log (Log__c.LoggedBy__c)
         List<Log__Share> logShares = new List<Log__Share>();
         for (Log__c log : this.logs) {
-            System.debug('log.LoggedBy__c==' + log.LoggedBy__c);
-            LoggerSettings__c loggingUserSettings = LoggerSettings__c.getInstance(log.LoggedBy__c);
-            System.debug('loggingUserSettings==' + loggingUserSettings);
+            // Load the logging user's settings
+            User loggingUser = new User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
+            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
 
             // Ignore blank and unsupported values
             if (loggingUserSettings.DefaultLogShareAccessLevel__c != 'Read' && loggingUserSettings.DefaultLogShareAccessLevel__c != 'Edit') {

@@ -245,7 +245,7 @@ private class LogHandler_Tests {
     static void it_should_keep_existing_retention_date_when_populated() {
         Integer defaultDaysToRetainLog = 10;
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
         upsert settings;
 
@@ -268,7 +268,7 @@ private class LogHandler_Tests {
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
 
-        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
         upsert settings;
 
@@ -285,7 +285,7 @@ private class LogHandler_Tests {
 
     @isTest
     static void it_should_have_null_retention_date_when_no_retention_configured() {
-        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultNumberOfDaysToRetainLogs__c = null;
         upsert settings;
 
@@ -332,7 +332,7 @@ private class LogHandler_Tests {
 
     @isTest
     static void it_should_grant_read_access_to_user_when_access_level_is_read() {
-        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'Read';
         upsert settings;
 
@@ -352,7 +352,7 @@ private class LogHandler_Tests {
 
     @isTest
     static void it_should_grant_edit_access_to_user_when_access_level_is_edit() {
-        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'Edit';
         upsert settings;
 
@@ -371,8 +371,24 @@ private class LogHandler_Tests {
     }
 
     @isTest
+    static void it_should_not_grant_access_to_user_when_access_level_is_null() {
+        LoggerSettings__c settings = Logger.getUserSettings();
+        settings.DefaultLogShareAccessLevel__c = null;
+        upsert settings;
+
+        Test.startTest();
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        insert log;
+        Test.stopTest();
+
+        List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
+
+        System.assertEquals(0, logShares.size(), logShares);
+    }
+
+    @isTest
     static void it_should_not_grant_access_to_user_when_access_level_is_an_unknown_string() {
-        LoggerSettings__c settings = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'FAKE LEVEL';
         upsert settings;
 

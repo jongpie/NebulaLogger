@@ -19,6 +19,7 @@ global with sharing class Logger {
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
+    private static LoggerSettings__c userSettings;
 
     @testVisible
     private static SaveMethod transactionSaveMethod {
@@ -27,16 +28,6 @@ global with sharing class Logger {
                 transactionSaveMethod = getDefaultSaveMethod();
             }
             return transactionSaveMethod;
-        }
-        set;
-    }
-
-    private static LoggerSettings__c userSettings {
-        get {
-            if (userSettings == null) {
-                userSettings = LoggerSettings__c.getInstance();
-            }
-            return userSettings;
         }
         set;
     }
@@ -196,11 +187,50 @@ global with sharing class Logger {
 
     /**
      * @description Returns the current user's instance of `LoggerSettings__c`, based on `LoggerSettings__c.getInsance()`
-     * @return LoggerSettings__c - The user's instance of `LoggerSettings__c`
+     * @return LoggerSettings__c - The current user's instance of the custom settings
      */
     // TODO make this method `global` in a future release
     public static LoggerSettings__c getUserSettings() {
+        // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
+        if (userSettings == null) {
+            User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+            userSettings = getUserSettings(currentUser);
+        }
         return userSettings;
+    }
+
+    /**
+     * @description Returns the spe ified user's instance of `LoggerSettings__c`, based on `LoggerSettings__c.getInsance()`
+     * @param  user The user record - at a minimum, this record should have the user Id and Profile fields populated
+     * @return      LoggerSettings__c - The specified user's instance of the custom settings
+     */
+    // TODO make this method `global` in a future release
+    public static LoggerSettings__c getUserSettings(User loggingUser) {
+        // Typically, using LoggerSettings__c.getInstance() would be easier
+        // However, some settings fields are expected to have null values, which conflicts with how `getInstance()` behaves
+        // So, instead use LoggerSettings__c.getValues(Id userOrProfileId) to load exactly what's been configured (including nulls)
+
+        LoggerSettings__c loggingUserSettings;
+        if (loggingUser.Id != null && LoggerSettings__c.getValues(loggingUser.Id) != null) {
+            // Check for User-level settings
+            loggingUserSettings = LoggerSettings__c.getValues(loggingUser.Id);
+        } else if (loggingUserSettings == null && loggingUser.ProfileId != null && LoggerSettings__c.getValues(loggingUser.ProfileId) != null) {
+            // Next, check for Profile-level settings
+            loggingUserSettings = LoggerSettings__c.getValues(loggingUser.ProfileId);
+        } else {
+            // Finally, use the org defaults
+            loggingUserSettings = LoggerSettings__c.getOrgDefaults();
+        }
+
+        // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
+        // This allows the ability to then upsert the instance of LoggerSettings__c and it will always be specific to that user...
+        // ...which avoids accidentally changing something at the org or profile levels
+        if (loggingUser.Id != null && loggingUserSettings.SetupOwnerId != loggingUser.Id) {
+            loggingUserSettings.Id = null;
+            loggingUserSettings.SetupOwnerId = loggingUser.Id;
+        }
+
+        return loggingUserSettings;
     }
 
     // Transaction control methods
