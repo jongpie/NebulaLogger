@@ -259,7 +259,10 @@ public without sharing class LogHandler {
                 continue;
             }
 
-            Integer daysToRetainLog = Integer.valueOf(Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c);
+            // Load the logging user's settings
+            User loggingUser = new User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
+            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
+            Integer daysToRetainLog = Integer.valueOf(loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c);
 
             // When loggerSettings.DefaultNumberOfDaysToRetainLogs__c is null, assume that the log should be kept forever,
             // ...and set the retention date to null so that LogBatchPurger filters out/ignores the record
