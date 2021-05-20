@@ -34,6 +34,10 @@
         <field>LogEntry__c.Timestamp__c</field>
     </columns>
     <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>LogEntry__c.EpochTimestamp__c</field>
+    </columns>
+    <columns>
         <field>LogEntry__c.LoggingLevelWithImage__c</field>
     </columns>
     <columns>

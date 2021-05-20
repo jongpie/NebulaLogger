@@ -12,18 +12,35 @@
 global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
-    private static final Boolean SYSTEM_MESSAGES_ENABLED = LoggerSettings__c.getInstance().EnableSystemMessages__c;
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
     private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
     private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
-    private static final Boolean USER_HAS_LOGGING_ENABLED = LoggerSettings__c.getInstance().IsEnabled__c;
-    private static final LoggingLevel USER_LOGGING_LEVEL = getLoggingLevel(LoggerSettings__c.getInstance().LoggingLevel__c);
 
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
     private static Boolean suspendSaving = false;
+    private static LoggerSettings__c userSettings;
+
     @testVisible
-    private static SaveMethod transactionSaveMethod = getDefaultSaveMethod();
+    private static SaveMethod transactionSaveMethod {
+        get {
+            if (transactionSaveMethod == null) {
+                transactionSaveMethod = getDefaultSaveMethod();
+            }
+            return transactionSaveMethod;
+        }
+        set;
+    }
+
+    private static LoggingLevel userLoggingLevel {
+        get {
+            if (userLoggingLevel == null || userLoggingLevel.name() != getUserSettings().LoggingLevel__c) {
+                userLoggingLevel = getLoggingLevel(getUserSettings().LoggingLevel__c);
+            }
+            return userLoggingLevel;
+        }
+        set;
+    }
 
     static {
         System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
@@ -84,7 +101,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean isEnabled() {
-        return USER_HAS_LOGGING_ENABLED;
+        return getUserSettings().IsEnabled__c;
     }
 
     /**
@@ -157,7 +174,7 @@ global with sharing class Logger {
      * @return Boolean
      */
     global static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
-        return USER_LOGGING_LEVEL.ordinal() <= logEntryLoggingLevel.ordinal();
+        return userLoggingLevel.ordinal() <= logEntryLoggingLevel.ordinal();
     }
 
     /**
@@ -165,7 +182,55 @@ global with sharing class Logger {
      * @return LoggingLevel - The matching instance of LoggingLevel
      */
     global static LoggingLevel getUserLoggingLevel() {
-        return USER_LOGGING_LEVEL;
+        return userLoggingLevel;
+    }
+
+    /**
+     * @description Returns the current user's instance of `LoggerSettings__c`
+     * @return LoggerSettings__c - The current user's instance of the custom settings
+     */
+    // TODO make this method `global` in a future release
+    public static LoggerSettings__c getUserSettings() {
+        // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
+        if (userSettings == null) {
+            User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+            userSettings = getUserSettings(currentUser);
+        }
+        return userSettings;
+    }
+
+    /**
+     * @description Returns the specified user's instance of `LoggerSettings__c`
+     * @param  user The user record - at a minimum, this record should have the user Id and Profile fields populated
+     * @return      LoggerSettings__c - The specified user's instance of the custom settings
+     */
+    // TODO make this method `global` in a future release
+    public static LoggerSettings__c getUserSettings(User loggingUser) {
+        // Typically, using LoggerSettings__c.getInstance() would be easier
+        // However, some settings fields are expected to have null values, which conflicts with how `getInstance()` behaves
+        // So, instead use LoggerSettings__c.getValues(Id userOrProfileId) to load exactly what's been configured (including nulls)
+
+        LoggerSettings__c loggingUserSettings;
+        if (loggingUser.Id != null && LoggerSettings__c.getValues(loggingUser.Id) != null) {
+            // Check for User-level settings
+            loggingUserSettings = LoggerSettings__c.getValues(loggingUser.Id);
+        } else if (loggingUserSettings == null && loggingUser.ProfileId != null && LoggerSettings__c.getValues(loggingUser.ProfileId) != null) {
+            // Next, check for Profile-level settings
+            loggingUserSettings = LoggerSettings__c.getValues(loggingUser.ProfileId);
+        } else {
+            // Finally, use the org defaults
+            loggingUserSettings = LoggerSettings__c.getOrgDefaults();
+        }
+
+        // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
+        // This allows the ability to then upsert the instance of LoggerSettings__c and it will always be specific to that user...
+        // ...which avoids accidentally changing something at the org or profile levels
+        if (loggingUser.Id != null && loggingUserSettings.SetupOwnerId != loggingUser.Id) {
+            loggingUserSettings.Id = null;
+            loggingUserSettings.SetupOwnerId = loggingUser.Id;
+        }
+
+        return loggingUserSettings;
     }
 
     // Transaction control methods
@@ -4739,14 +4804,14 @@ global with sharing class Logger {
         }
 
         if (suspendSaving) {
-            if (SYSTEM_MESSAGES_ENABLED) {
+            if (getUserSettings().EnableSystemMessages__c == true) {
                 finest(getSuspendSavingLogSystemMessage());
             }
 
             return;
         }
 
-        if (SYSTEM_MESSAGES_ENABLED) {
+        if (getUserSettings().EnableSystemMessages__c == true) {
             finest(getSavingLogSystemMessage(saveMethod));
         }
 
@@ -4823,7 +4888,7 @@ global with sharing class Logger {
                 return LoggingLevel.FINEST;
             }
             when else {
-                if (SYSTEM_MESSAGES_ENABLED) {
+                if (getUserSettings().EnableSystemMessages__c == true) {
                     String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
                     finest(message);
                 }
@@ -4843,6 +4908,7 @@ global with sharing class Logger {
     @AuraEnabled(cacheable=true)
     public static Log__c getLog(String logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
+        logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
         List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
 
         List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), String.join(logEntryFieldNames, ',') };
@@ -4908,7 +4974,7 @@ global with sharing class Logger {
     private static SaveMethod getDefaultSaveMethod() {
         SaveMethod defaultSaveMethod;
 
-        String saveMethodName = LoggerSettings__c.getInstance().DefaultSaveMethod__c?.toUpperCase();
+        String saveMethodName = getUserSettings().DefaultSaveMethod__c?.toUpperCase();
         switch on saveMethodName {
             when 'QUEUEABLE' {
                 defaultSaveMethod = SaveMethod.QUEUEABLE;

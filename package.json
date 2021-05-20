@@ -1,10 +1,12 @@
 {
     "name": "nebula-logger",
-    "version": "4.3.0",
+    "version": "4.4.0",
     "description": "Fine-tune your logging in Apex, Flow, and Process Builder",
     "main": "index.js",
     "scripts": {
+        "create-package-version": "sfdx force:package:version:create --package \"Nebula Logger\" --codecoverage --installationkeybypass --wait 30",
         "format": "prettier --write nebula-logger",
+        "generate-docs": "npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main --targetDir nebula-logger-docs",
         "pretest": "node ./scripts/findTests.js",
         "test": "sh ./scripts/test.sh",
         "posttest": "node scripts/findTestsCleanup.js"

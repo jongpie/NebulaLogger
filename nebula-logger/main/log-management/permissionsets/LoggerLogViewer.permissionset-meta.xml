@@ -30,6 +30,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.EpochTimestamp__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.ExceptionMessage__c</field>
         <readable>true</readable>
     </fieldPermissions>

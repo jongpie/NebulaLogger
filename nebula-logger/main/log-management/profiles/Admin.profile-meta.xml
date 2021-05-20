@@ -82,6 +82,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LogMassDeleteExtension_Tests</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LogMessage</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -604,6 +608,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.DatabaseResultType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntry__c.EpochTimestamp__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
