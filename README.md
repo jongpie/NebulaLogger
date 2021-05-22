@@ -31,47 +31,53 @@ You can choose to install the unlocked package, you can deploy the metadata from
     <thead>
         <tr>
             <th></th>
-            <th>Unpackaged Metadata</th>
             <th>Unlocked Package (Recommended)</th>
             <th>Managed Package</th>
+            <th>Unpackaged Metadata</th>
         </tr>
     </thead>
     <tbody>
         <tr>
+            <td>Installation</td>
+            <td>Install, update & uninstall with 2nd Gen Package</td>
+            <td>Install, update & uninstall with 2nd Gen Package</td>
+            <td>Deploy using metadata API, remove using <code>destructiveChanges.xml</code></td>
+        </tr>
+        <tr>
             <td>Namespace</td>
             <td>none</td>
-            <td>none</td>
             <td><code>Nebula</code></td>
+            <td>none</td>
         </tr>
         <tr>
             <td>Future Releases</td>
-            <td>New enhancements &amp; bugfixes will be immediately available in GitHub</td>
-            <td>Slower release cycle: new package versions will only be released once new enhancements &amp; bugfixes have been tested and code is stabilized</td>
-            <td>Slower release cycle: new package versions will only be released once new enhancements &amp; bugfixes have been tested and code is stabilized</td>
+            <td>Slower release cycle: new package versions will only be released once new enhancements & bugfixes have been tested and code is stabilized</td>
+            <td>Slower release cycle: new package versions will only be released once new enhancements & bugfixes have been tested and code is stabilized</td>
+            <td>New enhancements & bugfixes will be immediately available in GitHub</td>
         </tr>
         <tr>
             <td>Public Apex Methods</td>
             <td>Any <code>public</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> methods are not backwards-compatible</td>
-            <td>Any <code>public</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> methods are not backwards-compatible</td>
             <td>Only <code>global</code> methods are available in managed packages - any <code>global</code> Apex methods available in the managed package will be supported for the foreseeable future</td>
+            <td>Any <code>public</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> methods are not backwards-compatible</td>
         </tr>
         <tr>
             <td>Apex Debug Statements</td>
             <td><code>System.debug()</code> is automatically called</td>
-            <td><code>System.debug()</code> is automatically called</td>
             <td>Requires adding your own calls for <code>System.debug()</code> due to Salesforce limitations with managed packages</td>
+            <td><code>System.debug()</code> is automatically called</td>
         </tr>
         <tr>
             <td>Apex Stack Traces</td>
             <td>Automatically stored in <code>LogEntry__c.StackTrace__c</code> when calling methods like <code>Logger.debug('my message');</code></td>
-            <td>Automatically stored in <code>LogEntry__c.StackTrace__c</code> when calling methods like <code>Logger.debug('my message');</code></td>
             <td>Requires calling <code>parseStackTrace()</code> due to Salesforce limitations with managed packages. For example:<br><code>Logger.debug('my message').parseStackTrace(new DmlException().getStackTrace());</code></td>
+            <td>Automatically stored in <code>LogEntry__c.StackTrace__c</code> when calling methods like <code>Logger.debug('my message');</code></td>
         </tr>
         <tr>
             <td>Assign Topics (Tagging/Labeling System)</td>
             <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
-            <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
             <td>This functionality is not currently available in the managed package</td>
+            <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
         </tr>
     </tbody>
 </table>
