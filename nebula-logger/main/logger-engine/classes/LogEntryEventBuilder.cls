@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group logger-engine
+ * @group Logger Engine
  * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */

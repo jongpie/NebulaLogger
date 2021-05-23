@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group logger-engine
+ * @group Logger Engine
  * @description The core class for logging
  * @see LogEntryEventBuilder
  * @see LogMessage
