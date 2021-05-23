@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+
 ## FlowLogEntry class
 
 Handles adding new log entries in Flow
@@ -9,13 +10,12 @@ Handles adding new log entries in Flow
 
 [FlowRecordLogEntry](FlowRecordLogEntry)
 
-
 [Logger](Logger)
-
 
 [LogEntryEventBuilder](LogEntryEventBuilder)
 
 ---
+
 ### Properties
 
 #### `faultMessage` → `String`
@@ -47,15 +47,18 @@ Optionally choose to save any pending log entries.
 Optionally provide a list of topics to dynamically assign to the log entry
 
 ---
+
 ### Methods
+
 #### `addFlowEntries(List<FlowLogEntry> flowLogEntries)` → `List<String>`
 
- addFlowEntries description
+addFlowEntries description
 
 ##### Parameters
-|Param|Description|
-|-----|-----------|
-|`flowLogEntries` |  The list of FlowLogEntry instances to save |
+
+| Param            | Description                                |
+| ---------------- | ------------------------------------------ |
+| `flowLogEntries` | The list of FlowLogEntry instances to save |
 
 ##### Return
 

@@ -1,26 +1,30 @@
 ---
 layout: default
 ---
+
 ## RelatedLogEntriesController class
 
 Controller class for the component RelatedLogEntries
 
 ---
+
 ### Methods
+
 #### `getQueryResult(Id recordId,String fieldSetName,Integer rowLimit,Integer rowOffset,String sortByFieldName,String sortDirection,String search)` → `LogEntryQueryResult`
 
- Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
+Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
 
 ##### Parameters
-|Param|Description|
-|-----|-----------|
-|`recordId` |         Used to filter LogEntry__c records where RecordId__c == recordId |
-|`fieldSetName` |     The API/developer name of the field set |
-|`rowLimit` |         The max number of rows to query |
-|`rowOffset` |        Reserved for future use |
-|`sortByFieldName` |  The field to sort by |
-|`sortDirection` |    The direction to sort by (asc or desc)) |
-|`search` |           An optional search term to filter by |
+
+| Param             | Description                                                      |
+| ----------------- | ---------------------------------------------------------------- |
+| `recordId`        | Used to filter LogEntry**c records where RecordId**c == recordId |
+| `fieldSetName`    | The API/developer name of the field set                          |
+| `rowLimit`        | The max number of rows to query                                  |
+| `rowOffset`       | Reserved for future use                                          |
+| `sortByFieldName` | The field to sort by                                             |
+| `sortDirection`   | The direction to sort by (asc or desc))                          |
+| `search`          | An optional search term to filter by                             |
 
 ##### Return
 
@@ -33,10 +37,13 @@ LogEntryQueryResult
 The instance of LogEntryQueryResult, containing matching records and metadata
 
 ---
+
 ### Inner Classes
 
 #### RelatedLogEntriesController.FieldMetadata class
+
 ---
+
 ##### Properties
 
 ###### `fieldName` → `String`
@@ -54,8 +61,11 @@ The instance of LogEntryQueryResult, containing matching records and metadata
 ###### `type` → `String`
 
 ---
+
 #### RelatedLogEntriesController.FieldSetMetadata class
+
 ---
+
 ##### Properties
 
 ###### `fields` → `List<FieldMetadata>`
@@ -65,8 +75,11 @@ The instance of LogEntryQueryResult, containing matching records and metadata
 ###### `name` → `String`
 
 ---
+
 #### RelatedLogEntriesController.LogEntryQueryResult class
+
 ---
+
 ##### Properties
 
 ###### `fieldSet` → `FieldSetMetadata`
