@@ -3,7 +3,7 @@ layout: default
 ---
 ## LogEntryFieldSetPicklist class
 
-Dynamically returns LogEntry__c field sets in App Builder when configuring the component RelatedLogEntries
+Dynamically returns `LogEntry__c` field sets in App Builder when configuring the component RelatedLogEntries
 
 ---
 ### Methods
@@ -19,11 +19,11 @@ VisualEditor.DataRow
 
 **Description**
 
-return null (no default value)
+null (no default value)
 
 #### `getValues()` → `VisualEditor.DynamicPickListRows`
 
- Returns the list of fields sets on LogEntry__c, allowing admins to specify any field set for each instance of the RelatedLogEntries component
+Returns the list of fields sets on `LogEntry__c`, allowing admins to specify any field set for each instance of the `RelatedLogEntries` component
 
 ##### Return
 

@@ -1,9 +1,9 @@
 ---
 layout: default
 ---
-# Apex Classes
-## Logger Engine
-The Apex classes used to generate `LogEntryEvent__e` platform event records.
+# Nebula Logger: Documentation
+# Classes
+## logger-engine
 
 ### [FlowLogEntry](logger-engine/FlowLogEntry)
 
@@ -15,14 +15,14 @@ Handles adding new log entries in Flow
 ### [FlowRecordLogEntry](logger-engine/FlowRecordLogEntry)
 
 
-Handles adding new log entries in Flow for a particular SObject record
+Handles adding new log entries in Flow for a particular `SObject` record
 
 
 
 ### [LogEntryEventBuilder](logger-engine/LogEntryEventBuilder)
 
 
-Builder class that generates each LogEntryEvent__c record
+Builder class that generates each `LogEntryEvent__e` record
 
 
 
@@ -39,48 +39,54 @@ Provides the ability to generate string messages on demand, using String.format(
 The core class for logging
 
 
-## Log Management
-The Apex classes used to help automate & manage `Log__c` and `LogEntry__c` records
+## log-management
 
 ### [LogBatchPurgeScheduler](log-management/LogBatchPurgeScheduler)
 
 
-Schedulable class used to schedule the batch job LogBatchPurger
+Schedulable class used to schedule the batch job `LogBatchPurger`
 
 
 
 ### [LogBatchPurger](log-management/LogBatchPurger)
 
 
-Batch class used to delete old logs, based on Log__c.LogRetentionDate__c <= :System.today()
+Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :System.today()`
 
 
 
 ### [LogEntryEventHandler](log-management/LogEntryEventHandler)
 
 
-Subscribes to LogEntryEvent__e platform events and normalizes the data into Log__c and LogEntry__c records
+Subscribes to `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
 
 
 
 ### [LogEntryFieldSetPicklist](log-management/LogEntryFieldSetPicklist)
 
 
-Dynamically returns LogEntry__c field sets in App Builder when configuring the component RelatedLogEntries
+Dynamically returns `LogEntry__c` field sets in App Builder when configuring the component RelatedLogEntries
 
 
 
 ### [LogEntryHandler](log-management/LogEntryHandler)
 
 
-Manages setting fields on LogEntry__c before insert & update
+Manages setting fields on `LogEntry__c` before insert & before update
 
 
 
 ### [LogHandler](log-management/LogHandler)
 
 
-Manages setting fields on Log__c before insert & update
+Manages setting fields on `Log__c` before insert & before update
+
+
+
+### [LogMassDeleteExtension](log-management/LogMassDeleteExtension)
+
+
+Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
 
 
 
@@ -88,14 +94,5 @@ Manages setting fields on Log__c before insert & update
 
 
 Controller class for the component RelatedLogEntries
-
-
-## Packaging
-Additional Apex classes used for the managed package
-
-### [LoggerInstallHandler](packaging/LoggerInstallHandler)
-
-
-Automatically enables org default settings when installing the managed package
 
 

@@ -16,9 +16,8 @@ Provides the ability to generate string messages on demand, using String.format(
 ### Constructors
 #### `LogMessage(String unformattedMessage, Object messageInput)`
 
- Constructor to handle dynamically formatting a string with 1 input
+Constructor to handle dynamically formatting a string with 1 input
 ##### Parameters
-
 |Param|Description|
 |-----|-----------|
 |`unformattedMessage` |  The base string to use for your log message |
@@ -31,9 +30,8 @@ String formattedMessage = new LogMessage('Today is {0}', System.today()).getMess
 
 #### `LogMessage(String unformattedMessage, Object messageInput1, Object messageInput2)`
 
- Constructor to handle dynamically formatting a string with 2 inputs
+Constructor to handle dynamically formatting a string with 2 inputs
 ##### Parameters
-
 |Param|Description|
 |-----|-----------|
 |`unformattedMessage` |  The base string to use for your log message |
@@ -48,9 +46,8 @@ String formattedMessage = new LogMessage(unformattedMessage, 'something', 'somet
 
 #### `LogMessage(String unformattedMessage, Object messageInput1, Object messageInput2, Object messageInput3)`
 
- Constructor to handle dynamically formatting a string with 3 inputs
+Constructor to handle dynamically formatting a string with 3 inputs
 ##### Parameters
-
 |Param|Description|
 |-----|-----------|
 |`unformattedMessage` |  The base string to use for your log message |
@@ -66,9 +63,8 @@ String formattedMessage = new LogMessage(unformattedMessage, 'something', 'somet
 
 #### `LogMessage(String unformattedMessage, List<Object> messageInputs)`
 
- Constructor to handle dynamically formatting a string with a list of inputs
+Constructor to handle dynamically formatting a string with a list of inputs
 ##### Parameters
-
 |Param|Description|
 |-----|-----------|
 |`unformattedMessage` |  The base string to use for your log message |
@@ -85,7 +81,7 @@ String formattedMessage = new LogMessage(unformattedMessage, arguments).getMessa
 ### Methods
 #### `getMessage()` → `String`
 
- Returns the formatted string to use as the log entry's message
+Returns the formatted string to use as the log entry's message
 
 ##### Return
 

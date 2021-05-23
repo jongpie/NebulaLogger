@@ -12,7 +12,6 @@ Controller class for the component RelatedLogEntries
  Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
 
 ##### Parameters
-
 |Param|Description|
 |-----|-----------|
 |`recordId` |         Used to filter LogEntry__c records where RecordId__c == recordId |
