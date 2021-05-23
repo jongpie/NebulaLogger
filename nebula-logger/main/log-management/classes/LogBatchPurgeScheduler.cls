@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group log-management
+ * @group Log Management
  * @description Schedulable class used to schedule the batch job `LogBatchPurger`
  * @see LogBatchPurger
  */

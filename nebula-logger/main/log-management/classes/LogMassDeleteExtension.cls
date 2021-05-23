@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group log-management
+ * @group Log Management
  * @description Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
  */
 public with sharing class LogMassDeleteExtension {
