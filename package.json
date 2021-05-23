@@ -7,7 +7,7 @@
         "create-managed-package-version": "sfdx force:package:version:create --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30",
         "create-unlocked-package-version": "sfdx force:package:version:create --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
         "format": "prettier --write nebula-logger",
-        "generate-docs": "npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main --targetDir docs",
+        "generate-docs": "powershell ./scripts/generate-docs.ps1",
         "pretest": "node ./scripts/findTests.js",
         "test": "sh ./scripts/test.sh",
         "posttest": "node scripts/findTestsCleanup.js"
