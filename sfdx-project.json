@@ -9,7 +9,7 @@
             "default": true,
             "definitionFile": "config/project-scratch-def.json",
             "versionName": "Unlocked package release",
-            "versionNumber": "4.4.1.NEXT",
+            "versionNumber": "4.4.1.3",
             "versionDescription": "First release of the unlocked package",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
