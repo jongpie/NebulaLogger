@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group log-management
+ * @group Log Management
  * @description Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :System.today()`
  * @see LogBatchPurgeScheduler
  */

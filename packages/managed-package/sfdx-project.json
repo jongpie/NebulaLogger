@@ -4,7 +4,7 @@
     "sourceApiVersion": "51.0",
     "packageDirectories": [
         {
-            "package": "Nebula Logger",
+            "package": "Nebula Logger - Managed Package",
             "path": "nebula-logger",
             "default": true,
             "definitionFile": "config/project-scratch-def.json",
@@ -17,10 +17,10 @@
         }
     ],
     "packageAliases": {
-        "Nebula Logger": "0Ho5Y000000XZCDSA4",
-        "Nebula Logger@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO",
-        "Nebula Logger@4.2.0-0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
-        "Nebula Logger@4.3.0-3-logger-console-app": "04t5Y000000YLDLQA4",
-        "Nebula Logger@4.4.0-2-config-default-save-method": "04t5Y0000027FFgQAM"
+        "Nebula Logger - Managed Package": "0Ho5Y000000XZCDSA4",
+        "Nebula Logger - Managed Package@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO",
+        "Nebula Logger - Managed Package@4.2.0-0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
+        "Nebula Logger - Managed Package@4.3.0-3-logger-console-app": "04t5Y000000YLDLQA4",
+        "Nebula Logger - Managed Package@4.4.0-2-config-default-save-method": "04t5Y0000027FFgQAM"
     }
 }

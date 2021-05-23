@@ -5,14 +5,17 @@ on:
   push:
     paths-ignore:
       - 'sfdx-project.json'
+      - 'package.json'
       - 'README.md'
       - 'Contributing.md'
       - 'CODE_OF_CONDUCT.md'
       - 'package.json'
       - 'LICENSE'
       - 'content/**'
+      - 'docs/**'
       - 'examples/**'
-      - 'managed-package/**'
+      - 'packages/**'
+      - '.forceignore'
       - '.gitignore'
       - '.prettierignore'
       - '.prettierrc'

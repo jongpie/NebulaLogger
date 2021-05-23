@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group log-management
+ * @group Log Management
  * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
 public without sharing class LogEntryHandler {
