@@ -1,12 +1,13 @@
 {
     "name": "nebula-logger",
-    "version": "4.4.0",
+    "version": "4.4.1",
     "description": "Fine-tune your logging in Apex, Flow, and Process Builder",
     "main": "index.js",
     "scripts": {
-        "create-package-version": "sfdx force:package:version:create --package \"Nebula Logger\" --codecoverage --installationkeybypass --wait 30",
+        "create-managed-package-version": "sfdx force:package:version:create --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30",
+        "create-unlocked-package-version": "sfdx force:package:version:create --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
         "format": "prettier --write nebula-logger",
-        "generate-docs": "npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main --targetDir nebula-logger-docs",
+        "generate-docs": "npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main --targetDir docs",
         "pretest": "node ./scripts/findTests.js",
         "test": "sh ./scripts/test.sh",
         "posttest": "node scripts/findTestsCleanup.js"
@@ -21,7 +22,8 @@
         "logging-library",
         "salesforce",
         "salesforce-lightning",
-        "salesforce-apex"
+        "salesforce-apex",
+        "salesforce-flow"
     ],
     "author": "Jonathan Gillespie",
     "license": "MIT",
