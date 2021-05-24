@@ -4,13 +4,6 @@ name: Deployment
 on:
     push:
         paths-ignore:
-            - 'sfdx-project.json'
-            - 'package.json'
-            - 'README.md'
-            - 'Contributing.md'
-            - 'CODE_OF_CONDUCT.md'
-            - 'package.json'
-            - 'LICENSE'
             - 'content/**'
             - 'docs/**'
             - 'examples/**'
@@ -19,6 +12,11 @@ on:
             - '.gitignore'
             - '.prettierignore'
             - '.prettierrc'
+            - 'Contributing.md'
+            - 'LICENSE'
+            - 'package.json'
+            - 'README.md'
+            - 'sfdx-project.json'
 
 jobs:
     scratch-org-test:
