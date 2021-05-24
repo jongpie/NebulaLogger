@@ -3,7 +3,8 @@
 .settings/
 .sfdx/
 .vscode/
-*/main/default/
+coverage/
+nebula-logger/main/default/
 nebula-logger/managed-package/
 .vim-force.com
 tests/

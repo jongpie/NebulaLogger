@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --synchronous --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
+        "test:lwc": "sfdx-lwc-jest --coverage",
         "docs:generate": "powershell ./scripts/generate-docs.ps1",
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
