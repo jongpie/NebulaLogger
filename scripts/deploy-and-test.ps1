@@ -57,6 +57,8 @@ if($scratchOrgAllotment -gt 0) {
         # Deploy
         Write-Output 'Pushing source to scratch org ...'
         sfdx force:source:push
+        Write-Output 'Deploying extra tests to scratch org ...'
+        sfdx force:source:deploy --sourcepath ./extra-tests/
         # Run tests
         Start-Tests
         Write-Output "Scratch org tests finished running with success: $?"

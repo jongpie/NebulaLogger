@@ -54,6 +54,12 @@ jobs:
               shell: pwsh
               run: '. ./scripts/deploy-and-test.ps1'
 
+            - name: 'Test unlocked package version creation'
+              run: 'npm run package:version:create:unlocked:skipvalidation'
+
+            - name: 'Test managed package version creation'
+              run: 'npm run package:version:create:managed:skipvalidation'
+
             # Upload code coverage data
             - name: 'Upload code coverage for Apex to Codecov.io'
               uses: codecov/codecov-action@v1
