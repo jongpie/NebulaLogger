@@ -13,7 +13,7 @@
         "lint:aura": "eslint **/aura/**",
         "lint:lwc": "eslint **/lwc/**",
         "package:version:create:managed": "powershell .scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30 && powershell ./scripts/restore-unlocked-package-project-json.ps1",
-        "package:version:create:managed:skipvalidation": "powershell .scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --skipvalidation --installationkeybypass --wait 30 && powershell ./scripts/restore-unlocked-package-project-json.ps1",
+        "package:version:create:managed:skipvalidation": "powershell ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --skipvalidation --installationkeybypass --wait 30 && powershell ./scripts/restore-unlocked-package-project-json.ps1",
         "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
         "package:version:create:unlocked:skipvalidation": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --skipvalidation --installationkeybypass --wait 30",
         "package:version:list": "sfdx force:package:version:list --json",
