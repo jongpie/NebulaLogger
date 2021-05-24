@@ -4,21 +4,21 @@
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "main": "index.js",
     "scripts": {
-        "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --synchronous --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
-        "test:lwc": "sfdx-lwc-jest --coverage",
-        "docs:generate": "powershell ./scripts/generate-docs.ps1",
-        "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-        "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "docs:generate": "pwsh ./scripts/generate-docs.ps1",
         "lint": "npm run lint:lwc && npm run lint:aura",
         "lint:aura": "eslint **/aura/**",
         "lint:lwc": "eslint **/lwc/**",
-        "package:version:create:managed": "powershell .scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30 && powershell ./scripts/restore-unlocked-package-project-json.ps1",
-        "package:version:create:managed:skipvalidation": "powershell ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --skipvalidation --installationkeybypass --wait 30 && powershell ./scripts/restore-unlocked-package-project-json.ps1",
+        "package:version:create:managed": "pwsh .scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30 && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
+        "package:version:create:managed:skipvalidation": "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --skipvalidation --installationkeybypass --wait 30 && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
         "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
         "package:version:create:unlocked:skipvalidation": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --skipvalidation --installationkeybypass --wait 30",
         "package:version:list": "sfdx force:package:version:list --json",
-        "package:version:list:managed":  "powershell ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:list --json --packages \"Nebula Logger - Managed Package\" && powershell ./scripts/restore-unlocked-package-project-json.ps1",
-        "package:version:list:unlocked": "sfdx force:package:version:list --json --packages \"Nebula Logger - Unlocked Package\""
+        "package:version:list:managed":  "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:list --json --packages \"Nebula Logger - Managed Package\" && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
+        "package:version:list:unlocked": "sfdx force:package:version:list --json --packages \"Nebula Logger - Unlocked Package\"",
+        "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --synchronous --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
+        "test:lwc": "sfdx-lwc-jest --coverage"
     },
     "repository": {
         "type": "git",
@@ -55,7 +55,8 @@
         "husky": "latest",
         "lint-staged": "latest",
         "prettier": "latest",
-        "prettier-plugin-apex": "latest"
+        "prettier-plugin-apex": "latest",
+        "pwsh": "latest"
     },
     "dependencies": {},
     "husky": {
