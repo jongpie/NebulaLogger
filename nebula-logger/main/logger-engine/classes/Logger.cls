@@ -580,9 +580,9 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
-     * @param  message The string to use to set the entry's message field
-     * @param  topics  The instance of `List<String>` to use as topics for the current entry
-     * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  message  The string to use to set the entry's message field
+     * @param  recordId The record ID of an `SObject` to log
+     * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Id recordId) {
         return error().setMessage(message).setRecordId(recordId);
@@ -945,9 +945,9 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
-     * @param  message The string to use to set the entry's message field
-     * @param  topics  The instance of `List<String>` to use as topics for the current entry
-     * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  message  The string to use to set the entry's message field
+     * @param  recordId The record ID of an `SObject` to log
+     * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Id recordId) {
         return warn().setMessage(message).setRecordId(recordId);
@@ -1245,9 +1245,9 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
-     * @param  message The string to use to set the entry's message field
-     * @param  topics  The instance of `List<String>` to use as topics for the current entry
-     * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  message  The string to use to set the entry's message field
+     * @param  recordId The record ID of an `SObject` to log
+     * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder info(String message, Id recordId) {
         return info().setMessage(message).setRecordId(recordId);
@@ -1524,9 +1524,9 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-     * @param  message The string to use to set the entry's message field
-     * @param  topics  The instance of `List<String>` to use as topics for the current entry
-     * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  message  The string to use to set the entry's message field
+     * @param  recordId The record ID of an `SObject` to log
+     * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder debug(String message, Id recordId) {
         return debug().setMessage(message).setRecordId(recordId);
@@ -1803,9 +1803,9 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
-     * @param  message The string to use to set the entry's message field
-     * @param  topics  The instance of `List<String>` to use as topics for the current entry
-     * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  message  The string to use to set the entry's message field
+     * @param  recordId The record ID of an `SObject` to log
+     * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder fine(String message, Id recordId) {
         return fine().setMessage(message).setRecordId(recordId);
@@ -2082,9 +2082,9 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
-     * @param  message The string to use to set the entry's message field
-     * @param  topics  The instance of `List<String>` to use as topics for the current entry
-     * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  message  The string to use to set the entry's message field
+     * @param  recordId The record ID of an `SObject` to log
+     * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finer(String message, Id recordId) {
         return finer().setMessage(message).setRecordId(recordId);
@@ -2361,9 +2361,9 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
-     * @param  message The string to use to set the entry's message field
-     * @param  topics  The instance of `List<String>` to use as topics for the current entry
-     * @return         The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  message  The string to use to set the entry's message field
+     * @param  recordId The record ID of an `SObject` to log
+     * @return          The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder finest(String message, Id recordId) {
         return finest().setMessage(message).setRecordId(recordId);

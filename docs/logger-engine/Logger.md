@@ -541,10 +541,10 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -1257,10 +1257,10 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -1887,10 +1887,10 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -2473,10 +2473,10 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -3059,10 +3059,10 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -3793,10 +3793,10 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -4799,10 +4799,10 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 

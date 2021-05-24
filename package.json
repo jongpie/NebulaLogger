@@ -1,7 +1,7 @@
 {
     "name": "nebula-logger",
-    "version": "4.4.1",
-    "description": "Fine-tune your logging in Apex, Flow, and Process Builder",
+    "version": "4.4.2",
+    "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "main": "index.js",
     "scripts": {
         "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --synchronous --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
