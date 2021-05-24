@@ -6,6 +6,7 @@
 */main/default/
 nebula-logger/managed-package/
 .vim-force.com
+tests/
 
 # NPM
 node_modules/
@@ -14,5 +15,3 @@ yarn.lock
 
 # Files to exclude
 *.log
-
-node_modules

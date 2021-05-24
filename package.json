@@ -4,13 +4,15 @@
     "description": "Fine-tune your logging in Apex, Flow, and Process Builder",
     "main": "index.js",
     "scripts": {
-        "create-managed-package-version": "sfdx force:package:version:create --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30",
-        "create-unlocked-package-version": "sfdx force:package:version:create --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
-        "format": "prettier --write nebula-logger",
-        "generate-docs": "powershell ./scripts/generate-docs.ps1",
-        "pretest": "node ./scripts/findTests.js",
-        "test": "sh ./scripts/test.sh",
-        "posttest": "node scripts/findTestsCleanup.js"
+        "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --synchronous --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
+        "docs:generate": "powershell ./scripts/generate-docs.ps1",
+        "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "lint": "npm run lint:lwc && npm run lint:aura",
+        "lint:aura": "eslint **/aura/**",
+        "lint:lwc": "eslint **/lwc/**",
+        "package:create:version:unlocked": "sfdx force:package:version:create --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
+        "package:create:version:managed": "sfdx force:package:version:create --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30"
     },
     "repository": {
         "type": "git",
@@ -31,11 +33,36 @@
         "url": "https://github.com/jongpie/NebulaLogger/issues"
     },
     "homepage": "https://github.com/jongpie/NebulaLogger#readme",
-    "devDependencies": {
-        "prettier": "^2.2.1",
-        "prettier-plugin-apex": "^1.8.0"
+    "engines": {
+        "node": ">= 12.18.0",
+        "npm": ">= 6.14.0"
     },
-    "dependencies": {
-        "@cparra/apexdocs": "^1.11.0"
+    "devDependencies": {
+        "@cparra/apexdocs": "latest",
+        "@prettier/plugin-xml": "latest",
+        "@salesforce/eslint-config-lwc": "latest",
+        "@salesforce/eslint-plugin-aura": "latest",
+        "@salesforce/sfdx-lwc-jest": "latest",
+        "@salesforce/sfdx-scanner": "latest",
+        "eslint": "latest",
+        "eslint-config-prettier": "latest",
+        "husky": "latest",
+        "lint-staged": "latest",
+        "prettier": "latest",
+        "prettier-plugin-apex": "latest"
+    },
+    "dependencies": {},
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
+            "prettier --write"
+        ],
+        "**/{aura|lwc}/**": [
+            "eslint"
+        ]
     }
 }
