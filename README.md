@@ -233,7 +233,7 @@ If you want to remove the unlocked or managed packages, you can do so by simply 
 
 ![Uninstall Packages](./content/installed-packages-uninstall-option.png)
 
-If you want to delete the unmanaged metadata, there is a `destructiveChanges.xml` file available in the directory [./packages/unpackaged-metadata/](./packages/unpackaged-metadata/). This can be used in SFDX with the command `sfdx force:mdapi:deploy --deploydir uninstall --wait 30`. However, due to some Salesforce deployment limitations, there are still some manual steps needed to delete everything:
+If you want to delete the unmanaged metadata, there is a `destructiveChanges.xml` file available in the directory [./packages/unpackaged-metadata/](./packages/unpackaged-metadata/). This can be used in SFDX with the command `sfdx force:mdapi:deploy --deploydir ./packages/unpackaged-metadata/destructiveChanges --wait 30`. However, due to some Salesforce deployment limitations, there are still some manual steps needed to delete everything:
 
 -   Flexipages for `Log__c` and `LogEntry__c` must first be manually removed as the org defaults
 -   The quick actions on `Log__c` have to be manually removed from the layouts first - otherwise, Salesforce complains about the quick actions being in use (even though the layout is being deleted at the same time)
