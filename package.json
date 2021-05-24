@@ -1,7 +1,7 @@
 {
     "name": "nebula-logger",
-    "version": "4.4.1",
-    "description": "Fine-tune your logging in Apex, Flow, and Process Builder",
+    "version": "4.4.2",
+    "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "main": "index.js",
     "scripts": {
         "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --synchronous --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
@@ -12,8 +12,11 @@
         "lint": "npm run lint:lwc && npm run lint:aura",
         "lint:aura": "eslint **/aura/**",
         "lint:lwc": "eslint **/lwc/**",
-        "package:create:version:unlocked": "sfdx force:package:version:create --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
-        "package:create:version:managed": "sfdx force:package:version:create --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30"
+        "package:version:create:managed": "sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30",
+        "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
+        "package:version:list": "sfdx force:package:version:list --json",
+        "package:version:list:managed": "sfdx force:package:version:list --json --packages \"Nebula Logger - Managed Package\"",
+        "package:version:list:unlocked": "sfdx force:package:version:list --json --packages \"Nebula Logger - Unlocked Package\""
     },
     "repository": {
         "type": "git",

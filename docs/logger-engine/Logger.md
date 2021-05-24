@@ -32,28 +32,6 @@ Enum used to control how LogEntryEvent\_\_e records are inserted
 
 ### Methods
 
-#### `debug(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -64,28 +42,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log                       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -118,28 +74,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -150,28 +84,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log                         |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `logMessage`     | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -204,28 +116,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -236,28 +126,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResults` | The instance of `List<Database.DeleteResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -290,28 +158,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResults` | The instance of `List<Database.MergeResult>` to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -322,28 +168,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `mergeResults` | The instance of `List<Database.MergeResult>` to log                  |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResults` | The instance of `List<Database.SaveResult>` to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -376,28 +200,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `logMessage`      | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -408,28 +210,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | ----------------- | -------------------------------------------------------------------- |
 | `logMessage`      | The instance of `LogMessage` to use to set the entry's message field |
 | `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log               |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResults` | The instance of `List<Database.UpsertResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -462,28 +242,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(LogMessage logMessage, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`   | The record ID of an `SObject` to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -505,49 +263,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(LogMessage logMessage, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(LogMessage logMessage, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`     | The `SObject` record to log                                           |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -558,28 +273,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `record`     | The `SObject` record to log                                          |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(LogMessage logMessage, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -632,28 +325,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(String message, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -664,28 +335,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(String message, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -718,28 +367,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(String message, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `message`    | The string to use to set the entry's message field                    |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -750,28 +377,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | ------------ | -------------------------------------------------- |
 | `message`    | The string to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(String message, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `message`        | The string to use to set the entry's message field                    |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -804,28 +409,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(String message, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -836,28 +419,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(String message, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `deleteResults` | The list of `Database.DeleteResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -890,28 +451,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(String message, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `mergeResults` | The list of `Database.MergeResult` instances to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -922,28 +461,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | -------------- | --------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field  |
 | `mergeResults` | The list of `Database.MergeResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(String message, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `saveResults` | The list of `Database.SaveResult` instances to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -976,28 +493,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `message`         | The string to use to set the entry's message field                    |
-| `undeleteResults` | The list of `Database.UndeleteResult` instances to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
@@ -1008,28 +503,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | ----------------- | ------------------------------------------------------ |
 | `message`         | The string to use to set the entry's message field     |
 | `undeleteResults` | The list of `Database.UndeleteResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(String message, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `upsertResults` | The list of `Database.UpsertResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1062,81 +535,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(String message, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param      | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| `message`  | The string to use to set the entry's message field                    |
-| `recordId` | The record ID of an `SObject` to log                                  |
-| `topics`   | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(String message, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(String message, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `debug(String message, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `record`  | The `SObject` record to log                                           |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -1169,38 +577,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `debug(String message, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `debug(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -1221,28 +607,6 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 | Param     | Description                                        |
 | --------- | -------------------------------------------------- |
 | `message` | The string to use to set the entry's message field |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1275,28 +639,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -1307,28 +649,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | ------------- | -------------------------------------------------------------------- |
 | `logMessage`  | The instance of `LogMessage` to use to set the entry's message field |
 | `mergeResult` | The instance of `Database.MergeResult` to log                        |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1361,28 +681,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `logMessage`     | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -1393,28 +691,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | ---------------- | -------------------------------------------------------------------- |
 | `logMessage`     | The instance of `LogMessage` to use to set the entry's message field |
 | `undeleteResult` | The instance of `Database.UndeleteResult` to log                     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1447,28 +723,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResults` | The instance of `List<Database.DeleteResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -1479,28 +733,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `deleteResults` | The instance of `List<Database.DeleteResult>` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResults` | The instance of `List<Database.MergeResult>` to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1533,28 +765,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResults` | The instance of `List<Database.SaveResult>` to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -1565,28 +775,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | ------------- | -------------------------------------------------------------------- |
 | `logMessage`  | The instance of `LogMessage` to use to set the entry's message field |
 | `saveResults` | The instance of `List<Database.SaveResult>` to log                   |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `logMessage`      | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1619,28 +807,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResults` | The instance of `List<Database.UpsertResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -1662,28 +828,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(LogMessage logMessage, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(LogMessage logMessage, Exception apexException)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -1694,29 +838,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `apexException` | The instance of `Exception` to log                                   |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, Id recordId, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`      | The record ID of an `SObject` to log                                  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1750,28 +871,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(LogMessage logMessage, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`   | The record ID of an `SObject` to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -1782,50 +881,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `recordId`   | The record ID of an `SObject` to log                                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, SObject record, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`        | The `SObject` record to log                                           |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1859,28 +914,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(LogMessage logMessage, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`     | The `SObject` record to log                                           |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -1891,29 +924,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `record`     | The `SObject` record to log                                          |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, List<SObject> records, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`       | The list of `SObject` records to log                                  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -1936,28 +946,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `records`       | The list of `SObject` records to log                                 |
 | `apexException` | The instance of `Exception` to log                                   |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(LogMessage logMessage, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2010,28 +998,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -2042,28 +1008,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2096,28 +1040,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `message`    | The string to use to set the entry's message field                    |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -2128,28 +1050,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | ------------ | -------------------------------------------------- |
 | `message`    | The string to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `message`        | The string to use to set the entry's message field                    |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2182,28 +1082,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -2214,28 +1092,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `deleteResults` | The list of `Database.DeleteResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2268,28 +1124,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `mergeResults` | The list of `Database.MergeResult` instances to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -2300,28 +1134,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | -------------- | --------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field  |
 | `mergeResults` | The list of `Database.MergeResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `saveResults` | The list of `Database.SaveResult` instances to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2354,28 +1166,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `message`         | The string to use to set the entry's message field                    |
-| `undeleteResults` | The list of `Database.UndeleteResult` instances to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -2386,28 +1176,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | ----------------- | ------------------------------------------------------ |
 | `message`         | The string to use to set the entry's message field     |
 | `undeleteResults` | The list of `Database.UndeleteResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `upsertResults` | The list of `Database.UpsertResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2440,28 +1208,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, Exception apexException)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -2472,29 +1218,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | --------------- | -------------------------------------------------- |
 | `message`       | The string to use to set the entry's message field |
 | `apexException` | The instance of `Exception` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, Id recordId, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `recordId`      | The record ID of an `SObject` to log                                  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2528,82 +1251,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param      | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| `message`  | The string to use to set the entry's message field                    |
-| `recordId` | The record ID of an `SObject` to log                                  |
-| `topics`   | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, SObject record, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `record`        | The `SObject` record to log                                           |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -2637,28 +1294,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `record`  | The `SObject` record to log                                           |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -2669,29 +1304,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | --------- | -------------------------------------------------- |
 | `message` | The string to use to set the entry's message field |
 | `record`  | The `SObject` record to log                        |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `error(String message, List<SObject> records, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`       | The list of `SObject` records to log                                  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2725,38 +1337,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `error(String message, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.ERROR`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `error(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -2777,28 +1367,6 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 | Param     | Description                                        |
 | --------- | -------------------------------------------------- |
 | `message` | The string to use to set the entry's message field |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2831,28 +1399,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -2863,28 +1409,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | ------------- | -------------------------------------------------------------------- |
 | `logMessage`  | The instance of `LogMessage` to use to set the entry's message field |
 | `mergeResult` | The instance of `Database.MergeResult` to log                        |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -2917,28 +1441,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `logMessage`     | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -2949,28 +1451,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | ---------------- | -------------------------------------------------------------------- |
 | `logMessage`     | The instance of `LogMessage` to use to set the entry's message field |
 | `undeleteResult` | The instance of `Database.UndeleteResult` to log                     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3003,28 +1483,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResults` | The instance of `List<Database.DeleteResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3035,28 +1493,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `deleteResults` | The instance of `List<Database.DeleteResult>` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResults` | The instance of `List<Database.MergeResult>` to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3089,28 +1525,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResults` | The instance of `List<Database.SaveResult>` to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3121,28 +1535,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | ------------- | -------------------------------------------------------------------- |
 | `logMessage`  | The instance of `LogMessage` to use to set the entry's message field |
 | `saveResults` | The instance of `List<Database.SaveResult>` to log                   |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `logMessage`      | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3175,28 +1567,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResults` | The instance of `List<Database.UpsertResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3207,28 +1577,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `upsertResults` | The instance of `List<Database.UpsertResult>` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(LogMessage logMessage, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`   | The record ID of an `SObject` to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3261,49 +1609,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(LogMessage logMessage, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(LogMessage logMessage, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`     | The `SObject` record to log                                           |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3314,28 +1619,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `record`     | The `SObject` record to log                                          |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(LogMessage logMessage, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3388,28 +1671,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(String message, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3420,28 +1681,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(String message, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3474,28 +1713,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(String message, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `message`    | The string to use to set the entry's message field                    |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3506,28 +1723,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | ------------ | -------------------------------------------------- |
 | `message`    | The string to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(String message, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `message`        | The string to use to set the entry's message field                    |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3560,28 +1755,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(String message, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3592,28 +1765,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(String message, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `deleteResults` | The list of `Database.DeleteResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3646,28 +1797,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(String message, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `mergeResults` | The list of `Database.MergeResult` instances to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3678,28 +1807,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | -------------- | --------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field  |
 | `mergeResults` | The list of `Database.MergeResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(String message, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `saveResults` | The list of `Database.SaveResult` instances to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3732,28 +1839,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `message`         | The string to use to set the entry's message field                    |
-| `undeleteResults` | The list of `Database.UndeleteResult` instances to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
@@ -3764,28 +1849,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | ----------------- | ------------------------------------------------------ |
 | `message`         | The string to use to set the entry's message field     |
 | `undeleteResults` | The list of `Database.UndeleteResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(String message, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `upsertResults` | The list of `Database.UpsertResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -3818,81 +1881,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(String message, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param      | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| `message`  | The string to use to set the entry's message field                    |
-| `recordId` | The record ID of an `SObject` to log                                  |
-| `topics`   | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(String message, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(String message, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `fine(String message, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `record`  | The `SObject` record to log                                           |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -3925,38 +1923,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `fine(String message, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINE`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `fine(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -3977,28 +1953,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 | Param     | Description                                        |
 | --------- | -------------------------------------------------- |
 | `message` | The string to use to set the entry's message field |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4031,28 +1985,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4063,28 +1995,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | ------------- | -------------------------------------------------------------------- |
 | `logMessage`  | The instance of `LogMessage` to use to set the entry's message field |
 | `mergeResult` | The instance of `Database.MergeResult` to log                        |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4117,28 +2027,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `logMessage`     | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4149,28 +2037,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | ---------------- | -------------------------------------------------------------------- |
 | `logMessage`     | The instance of `LogMessage` to use to set the entry's message field |
 | `undeleteResult` | The instance of `Database.UndeleteResult` to log                     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4203,28 +2069,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResults` | The instance of `List<Database.DeleteResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4235,28 +2079,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `deleteResults` | The instance of `List<Database.DeleteResult>` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResults` | The instance of `List<Database.MergeResult>` to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4289,28 +2111,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResults` | The instance of `List<Database.SaveResult>` to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4321,28 +2121,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | ------------- | -------------------------------------------------------------------- |
 | `logMessage`  | The instance of `LogMessage` to use to set the entry's message field |
 | `saveResults` | The instance of `List<Database.SaveResult>` to log                   |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `logMessage`      | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4375,28 +2153,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResults` | The instance of `List<Database.UpsertResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4407,28 +2163,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `upsertResults` | The instance of `List<Database.UpsertResult>` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(LogMessage logMessage, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`   | The record ID of an `SObject` to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4461,49 +2195,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(LogMessage logMessage, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(LogMessage logMessage, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`     | The `SObject` record to log                                           |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4514,28 +2205,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `record`     | The `SObject` record to log                                          |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(LogMessage logMessage, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4588,28 +2257,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(String message, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4620,28 +2267,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(String message, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4674,28 +2299,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(String message, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `message`    | The string to use to set the entry's message field                    |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4706,28 +2309,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | ------------ | -------------------------------------------------- |
 | `message`    | The string to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(String message, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `message`        | The string to use to set the entry's message field                    |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4760,28 +2341,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(String message, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4792,28 +2351,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(String message, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `deleteResults` | The list of `Database.DeleteResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4846,28 +2383,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(String message, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `mergeResults` | The list of `Database.MergeResult` instances to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4878,28 +2393,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | -------------- | --------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field  |
 | `mergeResults` | The list of `Database.MergeResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(String message, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `saveResults` | The list of `Database.SaveResult` instances to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -4932,28 +2425,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `message`         | The string to use to set the entry's message field                    |
-| `undeleteResults` | The list of `Database.UndeleteResult` instances to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
@@ -4964,28 +2435,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | ----------------- | ------------------------------------------------------ |
 | `message`         | The string to use to set the entry's message field     |
 | `undeleteResults` | The list of `Database.UndeleteResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(String message, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `upsertResults` | The list of `Database.UpsertResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5018,81 +2467,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(String message, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param      | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| `message`  | The string to use to set the entry's message field                    |
-| `recordId` | The record ID of an `SObject` to log                                  |
-| `topics`   | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(String message, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(String message, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finer(String message, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `record`  | The `SObject` record to log                                           |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -5125,38 +2509,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finer(String message, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINER`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finer(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -5177,28 +2539,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 | Param     | Description                                        |
 | --------- | -------------------------------------------------- |
 | `message` | The string to use to set the entry's message field |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5231,28 +2571,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(LogMessage logMessage, Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5263,28 +2581,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | ------------- | -------------------------------------------------------------------- |
 | `logMessage`  | The instance of `LogMessage` to use to set the entry's message field |
 | `mergeResult` | The instance of `Database.MergeResult` to log                        |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5317,28 +2613,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `logMessage`     | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(LogMessage logMessage, Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5349,28 +2623,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | ---------------- | -------------------------------------------------------------------- |
 | `logMessage`     | The instance of `LogMessage` to use to set the entry's message field |
 | `undeleteResult` | The instance of `Database.UndeleteResult` to log                     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5403,28 +2655,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResults` | The instance of `List<Database.DeleteResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5435,28 +2665,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `deleteResults` | The instance of `List<Database.DeleteResult>` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResults` | The instance of `List<Database.MergeResult>` to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5489,28 +2697,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResults` | The instance of `List<Database.SaveResult>` to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5521,28 +2707,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | ------------- | -------------------------------------------------------------------- |
 | `logMessage`  | The instance of `LogMessage` to use to set the entry's message field |
 | `saveResults` | The instance of `List<Database.SaveResult>` to log                   |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `logMessage`      | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5575,28 +2739,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResults` | The instance of `List<Database.UpsertResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5607,28 +2749,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `upsertResults` | The instance of `List<Database.UpsertResult>` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(LogMessage logMessage, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`   | The record ID of an `SObject` to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5661,49 +2781,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(LogMessage logMessage, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(LogMessage logMessage, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`     | The `SObject` record to log                                           |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5714,28 +2791,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `record`     | The `SObject` record to log                                          |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(LogMessage logMessage, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5788,28 +2843,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(String message, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5820,28 +2853,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(String message, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5874,28 +2885,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(String message, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `message`    | The string to use to set the entry's message field                    |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5906,28 +2895,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | ------------ | -------------------------------------------------- |
 | `message`    | The string to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(String message, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `message`        | The string to use to set the entry's message field                    |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -5960,28 +2927,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(String message, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -5992,28 +2937,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(String message, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `deleteResults` | The list of `Database.DeleteResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -6046,28 +2969,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(String message, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `mergeResults` | The list of `Database.MergeResult` instances to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -6078,28 +2979,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | -------------- | --------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field  |
 | `mergeResults` | The list of `Database.MergeResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(String message, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `saveResults` | The list of `Database.SaveResult` instances to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -6132,28 +3011,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `message`         | The string to use to set the entry's message field                    |
-| `undeleteResults` | The list of `Database.UndeleteResult` instances to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
@@ -6164,28 +3021,6 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 | ----------------- | ------------------------------------------------------ |
 | `message`         | The string to use to set the entry's message field     |
 | `undeleteResults` | The list of `Database.UndeleteResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(String message, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `upsertResults` | The list of `Database.UpsertResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -6218,81 +3053,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(String message, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param      | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| `message`  | The string to use to set the entry's message field                    |
-| `recordId` | The record ID of an `SObject` to log                                  |
-| `topics`   | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(String message, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(String message, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `finest(String message, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `record`  | The `SObject` record to log                                           |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -6325,38 +3095,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `finest(String message, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.FINEST`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `finest(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -6536,28 +3284,6 @@ LoggerSettings\_\_c
 
 LoggerSettings\_\_c - The specified user's instance of the custom settings
 
-#### `info(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -6568,28 +3294,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log                       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -6622,28 +3326,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -6654,28 +3336,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log                         |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `logMessage`     | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -6708,28 +3368,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -6740,28 +3378,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResults` | The instance of `List<Database.DeleteResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -6794,28 +3410,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResults` | The instance of `List<Database.MergeResult>` to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -6826,28 +3420,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `mergeResults` | The instance of `List<Database.MergeResult>` to log                  |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResults` | The instance of `List<Database.SaveResult>` to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -6880,28 +3452,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `logMessage`      | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -6912,28 +3462,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | ----------------- | -------------------------------------------------------------------- |
 | `logMessage`      | The instance of `LogMessage` to use to set the entry's message field |
 | `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log               |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResults` | The instance of `List<Database.UpsertResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -6966,28 +3494,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(LogMessage logMessage, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`   | The record ID of an `SObject` to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -7009,49 +3515,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(LogMessage logMessage, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(LogMessage logMessage, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`     | The `SObject` record to log                                           |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -7062,28 +3525,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `record`     | The `SObject` record to log                                          |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(LogMessage logMessage, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -7136,28 +3577,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(String message, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -7168,28 +3587,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(String message, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -7222,28 +3619,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(String message, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `message`    | The string to use to set the entry's message field                    |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -7254,28 +3629,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | ------------ | -------------------------------------------------- |
 | `message`    | The string to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(String message, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `message`        | The string to use to set the entry's message field                    |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -7308,28 +3661,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(String message, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -7340,28 +3671,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(String message, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `deleteResults` | The list of `Database.DeleteResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -7394,28 +3703,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(String message, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `mergeResults` | The list of `Database.MergeResult` instances to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -7426,28 +3713,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | -------------- | --------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field  |
 | `mergeResults` | The list of `Database.MergeResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(String message, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `saveResults` | The list of `Database.SaveResult` instances to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -7480,28 +3745,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `message`         | The string to use to set the entry's message field                    |
-| `undeleteResults` | The list of `Database.UndeleteResult` instances to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -7512,28 +3755,6 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 | ----------------- | ------------------------------------------------------ |
 | `message`         | The string to use to set the entry's message field     |
 | `undeleteResults` | The list of `Database.UndeleteResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(String message, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `upsertResults` | The list of `Database.UpsertResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -7566,81 +3787,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(String message, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param      | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| `message`  | The string to use to set the entry's message field                    |
-| `recordId` | The record ID of an `SObject` to log                                  |
-| `topics`   | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(String message, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(String message, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `info(String message, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `record`  | The `SObject` record to log                                           |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -7673,38 +3829,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `info(String message, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.INFO`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `info(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -8026,28 +4160,6 @@ Sets the default save method used when calling saveLog() - any subsequent calls 
 
 Pauses saving for the current transaction. Any calls to saveLog() are ignored until saving is resumed.
 
-#### `warn(LogMessage logMessage, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8058,28 +4170,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log                       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8112,28 +4202,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(LogMessage logMessage, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(LogMessage logMessage, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8144,28 +4212,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log                         |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `logMessage`     | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8198,28 +4244,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(LogMessage logMessage, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(LogMessage logMessage, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8230,28 +4254,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log                       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `deleteResults` | The instance of `List<Database.DeleteResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8284,28 +4286,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(LogMessage logMessage, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `logMessage`   | The instance of `LogMessage` to use to set the entry's message field  |
-| `mergeResults` | The instance of `List<Database.MergeResult>` to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8316,28 +4296,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | -------------- | -------------------------------------------------------------------- |
 | `logMessage`   | The instance of `LogMessage` to use to set the entry's message field |
 | `mergeResults` | The instance of `List<Database.MergeResult>` to log                  |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `logMessage`  | The instance of `LogMessage` to use to set the entry's message field  |
-| `saveResults` | The instance of `List<Database.SaveResult>` to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8370,28 +4328,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `logMessage`      | The instance of `LogMessage` to use to set the entry's message field  |
-| `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8402,28 +4338,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | ----------------- | -------------------------------------------------------------------- |
 | `logMessage`      | The instance of `LogMessage` to use to set the entry's message field |
 | `undeleteResults` | The instance of `List<Database.UndeleteResult>` to log               |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `upsertResults` | The instance of `List<Database.UpsertResult>` to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8456,28 +4370,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(LogMessage logMessage, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(LogMessage logMessage, Exception apexException)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8488,29 +4380,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | --------------- | -------------------------------------------------------------------- |
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `apexException` | The instance of `Exception` to log                                   |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, Id recordId, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`      | The record ID of an `SObject` to log                                  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8544,28 +4413,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(LogMessage logMessage, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `recordId`   | The record ID of an `SObject` to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(LogMessage logMessage, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8576,50 +4423,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `recordId`   | The record ID of an `SObject` to log                                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, SObject record, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`        | The `SObject` record to log                                           |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8653,28 +4456,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(LogMessage logMessage, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `record`     | The `SObject` record to log                                           |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(LogMessage logMessage, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8685,29 +4466,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | ------------ | -------------------------------------------------------------------- |
 | `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
 | `record`     | The `SObject` record to log                                          |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, List<SObject> records, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`       | The list of `SObject` records to log                                  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8730,28 +4488,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | `logMessage`    | The instance of `LogMessage` to use to set the entry's message field |
 | `records`       | The list of `SObject` records to log                                 |
 | `apexException` | The instance of `Exception` to log                                   |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(LogMessage logMessage, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8804,28 +4540,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, Database.DeleteResult deleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `deleteResult` | The instance of `Database.DeleteResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8836,28 +4550,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `deleteResult` | The instance of `Database.DeleteResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, Database.MergeResult mergeResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `mergeResult` | The instance of `Database.MergeResult` to log                         |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8890,28 +4582,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, Database.SaveResult saveResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `message`    | The string to use to set the entry's message field                    |
-| `saveResult` | The instance of `Database.SaveResult` to log                          |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -8922,28 +4592,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | ------------ | -------------------------------------------------- |
 | `message`    | The string to use to set the entry's message field |
 | `saveResult` | The instance of `Database.SaveResult` to log       |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, Database.UndeleteResult undeleteResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param            | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| `message`        | The string to use to set the entry's message field                    |
-| `undeleteResult` | The instance of `Database.UndeleteResult` to log                      |
-| `topics`         | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -8976,28 +4624,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, Database.UpsertResult upsertResult, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `upsertResult` | The instance of `Database.UpsertResult` to log                        |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -9008,28 +4634,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | -------------- | -------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field |
 | `upsertResult` | The instance of `Database.UpsertResult` to log     |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, List<Database.DeleteResult> deleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `deleteResults` | The list of `Database.DeleteResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -9062,28 +4666,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, List<Database.MergeResult> mergeResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param          | Description                                                           |
-| -------------- | --------------------------------------------------------------------- |
-| `message`      | The string to use to set the entry's message field                    |
-| `mergeResults` | The list of `Database.MergeResult` instances to log                   |
-| `topics`       | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -9094,28 +4676,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | -------------- | --------------------------------------------------- |
 | `message`      | The string to use to set the entry's message field  |
 | `mergeResults` | The list of `Database.MergeResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, List<Database.SaveResult> saveResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param         | Description                                                           |
-| ------------- | --------------------------------------------------------------------- |
-| `message`     | The string to use to set the entry's message field                    |
-| `saveResults` | The list of `Database.SaveResult` instances to log                    |
-| `topics`      | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -9148,28 +4708,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, List<Database.UndeleteResult> undeleteResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param             | Description                                                           |
-| ----------------- | --------------------------------------------------------------------- |
-| `message`         | The string to use to set the entry's message field                    |
-| `undeleteResults` | The list of `Database.UndeleteResult` instances to log                |
-| `topics`          | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -9180,28 +4718,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | ----------------- | ------------------------------------------------------ |
 | `message`         | The string to use to set the entry's message field     |
 | `undeleteResults` | The list of `Database.UndeleteResult` instances to log |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, List<Database.UpsertResult> upsertResults, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `upsertResults` | The list of `Database.UpsertResult` instances to log                  |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -9234,28 +4750,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, Exception apexException)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -9266,29 +4760,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | --------------- | -------------------------------------------------- |
 | `message`       | The string to use to set the entry's message field |
 | `apexException` | The instance of `Exception` to log                 |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, Id recordId, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `recordId`      | The record ID of an `SObject` to log                                  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -9322,82 +4793,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, Id recordId, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param      | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| `message`  | The string to use to set the entry's message field                    |
-| `recordId` | The record ID of an `SObject` to log                                  |
-| `topics`   | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, Id recordId)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
 
 ##### Parameters
 
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, SObject record, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `message`       | The string to use to set the entry's message field                    |
-| `record`        | The `SObject` record to log                                           |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
+| Param      | Description                                        |
+| ---------- | -------------------------------------------------- |
+| `message`  | The string to use to set the entry's message field |
+| `recordId` | The record ID of an `SObject` to log               |
 
 ##### Return
 
@@ -9431,28 +4836,6 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, SObject record, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param     | Description                                                           |
-| --------- | --------------------------------------------------------------------- |
-| `message` | The string to use to set the entry's message field                    |
-| `record`  | The `SObject` record to log                                           |
-| `topics`  | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, SObject record)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
@@ -9463,29 +4846,6 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 | --------- | -------------------------------------------------- |
 | `message` | The string to use to set the entry's message field |
 | `record`  | The `SObject` record to log                        |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
-#### `warn(String message, List<SObject> records, Exception apexException, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param           | Description                                                           |
-| --------------- | --------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`       | The list of `SObject` records to log                                  |
-| `apexException` | The instance of `Exception` to log                                    |
-| `topics`        | The instance of `List<String>` to use as topics for the current entry |
 
 ##### Return
 
@@ -9519,38 +4879,16 @@ LogEntryEventBuilder
 
 The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
-#### `warn(String message, List<SObject> records, List<String> topics)` → `LogEntryEventBuilder`
-
-Creates a new log entry with logging level == `LoggingLevel.WARN`
-
-##### Parameters
-
-| Param        | Description                                                           |
-| ------------ | --------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field  |
-| `records`    | The list of `SObject` records to log                                  |
-| `topics`     | The instance of `List<String>` to use as topics for the current entry |
-
-##### Return
-
-**Type**
-
-LogEntryEventBuilder
-
-**Description**
-
-The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
-
 #### `warn(String message, List<SObject> records)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
