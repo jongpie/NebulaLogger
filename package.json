@@ -4,10 +4,16 @@
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "main": "index.js",
     "scripts": {
+        "deploy": "npm run deploy:logger && deploy:extratests",
+        "deploy:logger": "sfdx force:source:deploy --sourcepath ./nebula-logger/",
+        "deploy:extratests": "sfdx force:source:deploy --sourcepath ./extra-tests/",
         "docs:generate": "pwsh ./scripts/generate-docs.ps1",
         "lint": "npm run lint:lwc && npm run lint:aura",
         "lint:aura": "eslint **/aura/**",
         "lint:lwc": "eslint **/lwc/**",
+        "org:create": "sfdx force:org:create --json --definitionfile ./config/project-scratch-def.json --setalias LoggerScratchOrg --setdefaultusername",
+        "org:create:experience": "sfdx force:org:create --json --definitionfile ./config/project-scratch-def-with-experience-cloud.json --setalias LoggerScratchOrg --setdefaultusername",
+        "org:details": "sfdx force:org:display --json --verbose",
         "package:version:create:managed": "pwsh .scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30 && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
         "package:version:create:managed:skipvalidation": "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --skipvalidation --installationkeybypass --wait 30 && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
         "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
@@ -17,7 +23,8 @@
         "package:version:list:unlocked": "sfdx force:package:version:list --json --packages \"Nebula Logger - Unlocked Package\"",
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
-        "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --synchronous --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
+        "test": "npm run test:lwc && npm run test:apex",
+        "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage"
     },
     "repository": {
