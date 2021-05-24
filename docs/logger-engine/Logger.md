@@ -583,10 +583,10 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -1343,10 +1343,10 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -1929,10 +1929,10 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -2515,10 +2515,10 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -3101,10 +3101,10 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -3835,10 +3835,10 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
@@ -4885,10 +4885,10 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
-| `records`    | The list of `SObject` records to log                                 |
+| Param     | Description                                        |
+| --------- | -------------------------------------------------- |
+| `message` | The string to use to set the entry's message field |
+| `records` | The list of `SObject` records to log               |
 
 ##### Return
 
