@@ -13,4 +13,9 @@ private class Logger_Tests_ExperienceSite {
     private static void it_should_test_something() {
         System.assert(false, 'TODO: write tests for users without a Network, users with a Network, and the guest user');
     }
+
+    @isTest
+    private static void it_should_save_log_for_guest_user() {
+        System.assert(false, 'TODO: write tests for the guest user');
+    }
 }
