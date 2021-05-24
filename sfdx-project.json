@@ -7,7 +7,7 @@
             "package": "Nebula Logger - Unlocked Package",
             "path": "nebula-logger",
             "default": true,
-            "definitionFile": "config/project-scratch-def.json",
+            "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
             "versionName": "Topics overloads cleanup",
             "versionNumber": "4.4.2.0",
             "versionDescription": "Removed some old Topics overloads in Logger",
