@@ -50,15 +50,18 @@ jobs:
               env:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
-            - name: 'Deploy & Test'
+            - name: 'Deploy & Test Unpackaged Metadata'
               shell: pwsh
               run: '. ./scripts/deploy-and-test.ps1'
 
-            - name: 'Test unlocked package version creation'
+            - name: 'Create unvalidated unlocked package version'
               run: 'npm run package:version:create:unlocked:skipvalidation'
 
-            - name: 'Test managed package version creation'
+            - name: 'Create unvalidated managed package version'
               run: 'npm run package:version:create:managed:skipvalidation'
+
+            - name: 'Generate docs'
+              run: 'npm run docs:generate'
 
             # Upload code coverage data
             - name: 'Upload code coverage for Apex to Codecov.io'
