@@ -9,11 +9,11 @@ Write-Output "Processing file: $indexPageFile"
 (Get-Content -path $indexPageFile -Raw) -replace "/Log-Management/","log-management/" | Set-Content -Path $indexPageFile -NoNewline
 
 $docsSubdirectories = "docs/*/*.*"
-    foreach($file in Get-ChildItem $docsSubdirectories) {
-        Write-Output "Processing file: $file"
-        (Get-Content -path $file -Raw) -replace ".md","" | Set-Content -Path $file -NoNewline
-        (Get-Content -path $file -Raw) -replace "/Logger-Engine/","" | Set-Content -Path $file -NoNewline
-        (Get-Content -path $file -Raw) -replace "/Log-Management/","" | Set-Content -Path $file -NoNewline
-    }
+foreach($file in Get-ChildItem $docsSubdirectories) {
+    Write-Output "Processing file: $file"
+    (Get-Content -path $file -Raw) -replace ".md","" | Set-Content -Path $file -NoNewline
+    (Get-Content -path $file -Raw) -replace "/Logger-Engine/","" | Set-Content -Path $file -NoNewline
+    (Get-Content -path $file -Raw) -replace "/Log-Management/","" | Set-Content -Path $file -NoNewline
+}
 
 prettier ./docs --write
