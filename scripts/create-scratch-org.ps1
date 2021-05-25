@@ -30,7 +30,6 @@ foreach($devHub in $devHubs) {
             if($scratchOrgCreateMessage -eq 'The signup request failed because this organization has reached its active scratch org limit') {
                 throw $1
             }
-            $userNameHasBeenSet = $true
             break
         } catch {
             Write-Output "There was an issue with scratch org creation, continuing ..."
