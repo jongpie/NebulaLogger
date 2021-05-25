@@ -14,6 +14,7 @@
         "org:create": "sfdx force:org:create --json --definitionfile ./config/project-scratch-def.json --setalias LoggerScratchOrg --setdefaultusername",
         "org:create:experience": "sfdx force:org:create --json --definitionfile ./config/project-scratch-def-with-experience-cloud.json --setalias LoggerExpScratchOrg --setdefaultusername",
         "org:delete": "sfdx force:org:delete --json",
+        "org:delete:noprompt": "sfdx force:org:delete --json --noprompt",
         "org:details": "sfdx force:org:display --json --verbose",
         "package:version:create:managed": "pwsh .scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30 && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
         "package:version:create:managed:skipvalidation": "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --skipvalidation --installationkeybypass --wait 30 && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
