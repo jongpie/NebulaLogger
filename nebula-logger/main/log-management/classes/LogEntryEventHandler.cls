@@ -61,6 +61,14 @@ public without sharing class LogEntryEventHandler {
             Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
             Log__c log = new Log__c();
 
+            String guestUserLicenseDefinitionKey = 'PID_Guest_User';
+            Id logOwnerId;
+            if (logEntryEvent.UserLicenseDefinitionKey__c == guestUserLicenseDefinitionKey || String.isBlank(logEntryEvent.CreatedById)) {
+                logOwnerId = UserInfo.getUserId();
+            } else {
+                logOwnerId = logEntryEvent.CreatedById;
+            }
+
             if (recentLogWithApiReleaseDetails != null) {
                 log.ApiReleaseNumber__c = recentLogWithApiReleaseDetails.ApiReleaseNumber__c;
                 log.ApiReleaseVersion__c = recentLogWithApiReleaseDetails.ApiReleaseVersion__c;
@@ -90,11 +98,10 @@ public without sharing class LogEntryEventHandler {
             log.OrganizationName__c = logEntryEvent.OrganizationName__c;
             log.OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c;
             log.OrganizationType__c = logEntryEvent.OrganizationType__c;
-            log.OwnerId = logEntryEvent.CreatedById != null ? logEntryEvent.CreatedById : UserInfo.getUserId();
+            log.OwnerId = logOwnerId;
             log.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
             log.ProfileId__c = logEntryEvent.ProfileId__c;
             log.ProfileName__c = logEntryEvent.ProfileName__c;
-            log.SessionId__c = logEntryEvent.SessionId__c;
             log.SessionId__c = logEntryEvent.SessionId__c;
             log.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
             log.SessionType__c = logEntryEvent.SessionType__c;
