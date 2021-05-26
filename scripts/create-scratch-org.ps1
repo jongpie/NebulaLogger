@@ -36,15 +36,26 @@ foreach($devHub in $devHubs) {
         Write-Output "Beginning scratch org creation"
         # Create Scratch Org
         try {
-            $scratchOrgCreateMessage = sfdx force:org:create --setdefaultusername --durationdays $durationdays --definitionfile $definitionFile
+            $scratchOrgCreateMessage = sfdx force:org:create --setdefaultusername --durationdays $durationdays --definitionfile $definitionFile --wait 10
             # Sometimes SFDX lies (UTC date problem?) about the number of scratch orgs remaining in a given day
             # The other issue is that this doesn't throw, so we have to test the response message ourselves
+            Write-Output "Scratch org creation mesage: $scratchOrgCreateMessage"
             if($scratchOrgCreateMessage -eq 'The signup request failed because this organization has reached its active scratch org limit') {
                 throw $1
             }
-            break
+
+            $defaultUsername = (sfdx config:get defaultusername  --json | ConvertFrom-Json).result.value
+            if ($defaultUsername -ne $null) {
+                Write-Output "Scratch org created in dev hub $devHub, default username is: $defaultUsername"
+                break
+            }
         } catch {
             Write-Output "There was an issue with scratch org creation, continuing ..."
         }
     }
+}
+
+$defaultUsername = (sfdx config:get defaultusername  --json | ConvertFrom-Json).result.value
+if ($defaultUsername -eq $null) {
+    throw "Scratch org creation failed"
 }
