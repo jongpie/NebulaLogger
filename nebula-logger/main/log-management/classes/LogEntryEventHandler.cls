@@ -61,9 +61,9 @@ public without sharing class LogEntryEventHandler {
             Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
             Log__c log = new Log__c();
 
-            String guestUserLicenseDefinitionKey = 'PID_Guest_User';
+            String guestUserLicenseName = 'Guest User License';
             Id logOwnerId;
-            if (logEntryEvent.UserLicenseDefinitionKey__c == guestUserLicenseDefinitionKey || String.isBlank(logEntryEvent.CreatedById)) {
+            if (logEntryEvent.UserLicenseName__c == guestUserLicenseName || String.isBlank(logEntryEvent.CreatedById)) {
                 logOwnerId = UserInfo.getUserId();
             } else {
                 logOwnerId = logEntryEvent.CreatedById;
