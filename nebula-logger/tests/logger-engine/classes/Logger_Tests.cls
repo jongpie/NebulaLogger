@@ -481,6 +481,44 @@ private class Logger_Tests {
     }
 
     @isTest
+    static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
+        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = null];
+        User currentUser = new User(Id = UserInfo.getUserId(), TimeZoneSidKey = UserInfo.getTimeZone().getId());
+
+        // Make sure that the current user has a different time zone from the automated process user
+        if (automatedProcessUser.TimeZoneSidKey == currentUser.TimeZoneSidKey) {
+            switch on automatedProcessUser.TimeZoneSidKey {
+                when 'America/Los_Angeles' {
+                    currentUser.TimeZoneSidKey = 'America/New_York';
+                }
+                when else {
+                    currentUser.TimeZoneSidKey = 'America/Los_Angeles';
+                }
+            }
+            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, currentUser.TimeZoneSidKey);
+            update currentUser;
+        }
+
+        Datetime originalTimestamp;
+        System.runAs(currentUser) {
+            Logger.getUserSettings().IsEnabled__c = true;
+            Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
+
+            LogEntryEventBuilder builder = Logger.info('test log entry');
+            originalTimestamp = builder.getLogEntryEvent().TimeStamp__c;
+            System.assertNotEquals(null, originalTimestamp);
+
+            System.assertEquals(1, Logger.getBufferSize());
+            Logger.saveLog();
+
+            Test.getEventBus().deliver();
+        }
+
+        LogEntry__c logEntry = [SELECT Id, Timestamp__c FROM LogEntry__c];
+        System.assertEquals(originalTimestamp, logEntry.Timestamp__c);
+    }
+
+    @isTest
     static void it_should_return_the_buffer_size() {
         System.assertEquals(0, Logger.getBufferSize());
 
