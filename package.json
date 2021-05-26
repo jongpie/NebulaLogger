@@ -4,6 +4,7 @@
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "main": "index.js",
     "scripts": {
+        "community:create": "sfdx force:community:create --name \"Logger Test\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test\"",
         "deploy": "npm run deploy:logger && npm run deploy:managedpackage && npm run deploy:extratests",
         "deploy:logger": "sfdx force:source:deploy --sourcepath ./nebula-logger/",
         "deploy:extratests": "sfdx force:source:deploy --sourcepath ./extra-tests/",
