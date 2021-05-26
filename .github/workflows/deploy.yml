@@ -65,7 +65,7 @@ jobs:
             # Start remote testing
 
             # Store secrets for dev hubs
-            - name: 'Populate auth files with DevHub SFDX URLs'
+            - name: 'Populate DevHub Auth Files'
               shell: bash
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
@@ -91,6 +91,11 @@ jobs:
             - name: 'Run Apex Tests'
               run: npm run test:apex
 
+            - name: 'Delete Scratch Org'
+              run: npm run org:delete
+              if: ${{ always() }}
+
+
             # TODO uncomment
             # - name: 'Create unvalidated unlocked package version'
             #   run: npm run package:version:create:unlocked:skipvalidation
@@ -102,7 +107,7 @@ jobs:
             # - name: 'Create validated unlocked package version'
             #   run: npm run package:version:create:unlocked
 
-            - name: 'Generate docs'
+            - name: 'Generate Docs'
               run: npm run docs:generate
 
             # Upload code coverage data
