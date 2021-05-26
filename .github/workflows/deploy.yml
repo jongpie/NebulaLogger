@@ -88,11 +88,12 @@ jobs:
             - name: 'Run Apex Tests'
               run: npm run test:apex
 
-            - name: 'Create unvalidated unlocked package version'
-              run: npm run package:version:create:unlocked:skipvalidation
+            # TODO uncomment
+            # - name: 'Create unvalidated unlocked package version'
+            #   run: npm run package:version:create:unlocked:skipvalidation
 
-            - name: 'Create unvalidated managed package version'
-              run: npm run package:version:create:managed:skipvalidation
+            # - name: 'Create unvalidated managed package version'
+            #   run: npm run package:version:create:managed:skipvalidation
 
             # TODO uncomment
             # - name: 'Create validated unlocked package version'
