@@ -7,7 +7,7 @@
     "features": ["Communities"],
     "settings": {
         "communitiesSettings": {
-            "networksEnabled": true
+            "enableNetworksEnabled": true
         }
     }
 }
