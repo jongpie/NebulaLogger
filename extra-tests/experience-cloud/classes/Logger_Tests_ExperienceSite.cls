@@ -16,8 +16,6 @@ private class Logger_Tests_ExperienceSite {
         Profile loggerSiteProfile = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name);
 
-        // User guestUser = createTestUser(loggerSiteProfile.Id);
-        // insert guestUser;
         User guestUser = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
 
         PermissionSet logCreatorPermissionSet = [SELECT Id, Name FROM PermissionSet WHERE Name = :LOG_CREATOR_PERMISSION_SET_NAME];
