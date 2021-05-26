@@ -61,6 +61,7 @@ public without sharing class LogEntryEventHandler {
             Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
             Log__c log = new Log__c();
 
+            // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
             String guestUserLicenseName = 'Guest User License';
             Id logOwnerId;
             if (logEntryEvent.UserLicenseName__c == guestUserLicenseName || String.isBlank(logEntryEvent.CreatedById)) {
