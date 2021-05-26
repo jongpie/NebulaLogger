@@ -5,8 +5,11 @@ param ([string[]]$devHubs, [string]$definitionFile, [int]$durationdays)
 
 Write-Output "Starting scratch org creation script"
 
-# Get the configured default dev hub if no devHubs have been specified via parameter
-if ($devHubs -eq $null) {
+if ($devHubs -ne $null) {
+    # Make sure the variable is treated as an array, not a single string
+    $devHubs = $devHubs -split ","
+} else {
+    # Otherwise, get the configured default dev hub if no devHubs have been specified via parameter
     Write-Output "No dev hubs specified, checking for default dev hub instead"
 
     $defaultDevHub = (sfdx config:get defaultdevhubusername  --json | ConvertFrom-Json).result.value
