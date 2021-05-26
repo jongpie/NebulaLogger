@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": true,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionName": "Guest User Bugfix",
-            "versionNumber": "4.4.3.0",
-            "versionDescription": "Fixes an issue that caused logs from guest users to fail to save",
+            "versionName": "Timestamp Bugfix",
+            "versionNumber": "4.4.4.0",
+            "versionDescription": "Fixes an issue that caused inaccurate timestamps for different time zones",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
