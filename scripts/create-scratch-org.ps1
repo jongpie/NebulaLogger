@@ -1,7 +1,7 @@
 # This is used to circumvent the daily scratch org limits of 6 in dev orgs
 # To avoid this limitation, the script checks several dev hubs until it finds one that has an allotment of 1+ scratch org
 # This script assumes that the dev hubs have already been authorized locally
-param ([string[]]$devHubs)
+param ([string[]]$devHubs, [string]$definitionFile, [int]$durationdays)
 
 Write-Output "Starting scratch org creation script"
 
@@ -14,7 +14,15 @@ if ($devHubs -eq $null) {
 
     [string[]]$devHubs = $defaultDevHub
 }
+
+# Set a default duration in days if none is specified
+if ($durationdays -eq $null -Or $durationdays -eq 0) {
+    $durationdays = 7
+}
+
 Write-Output "List of possible dev hubs: $devHubs"
+Write-Output "Using scratch org definition file: $definitionFile"
+Write-Output "Scratch org duration in days: $durationdays"
 
 foreach($devHub in $devHubs) {
     Write-Output "Trying dev hub: $devHub"
@@ -25,9 +33,9 @@ foreach($devHub in $devHubs) {
         Write-Output "Beginning scratch org creation"
         # Create Scratch Org
         try {
-            $scratchOrgCreateMessage = sfdx force:org:create --setdefaultusername --durationdays 1 --definitionfile config/project-scratch-def-with-experience-cloud.json
-            # # # Sometimes SFDX lies (UTC date problem?) about the number of scratch orgs remaining in a given day
-            # # # The other issue is that this doesn't throw, so we have to test the response message ourselves
+            $scratchOrgCreateMessage = sfdx force:org:create --setdefaultusername --durationdays $durationdays --definitionfile $definitionFile
+            # Sometimes SFDX lies (UTC date problem?) about the number of scratch orgs remaining in a given day
+            # The other issue is that this doesn't throw, so we have to test the response message ourselves
             if($scratchOrgCreateMessage -eq 'The signup request failed because this organization has reached its active scratch org limit') {
                 throw $1
             }
