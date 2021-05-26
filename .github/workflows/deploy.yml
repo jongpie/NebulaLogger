@@ -80,7 +80,7 @@ jobs:
                   sfdx auth:sfdxurl:store --sfdxurlfile ./BACKUP_DEVHUB_1_SFDX_URL.txt --setalias nebula-logger-backup-devhub-1
 
             - name: 'Create Scratch Org with Experience Sites Enabled'
-              run: npm run org:create:experience -durationdays 1 -devhubs nebula-logger-packaging,nebula-logger-backup-devhub-1
+              run: npm run org:create:experience -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-logger-backup-devhub-1
 
             - name: 'Deploy Metadata'
               run: npm run deploy
