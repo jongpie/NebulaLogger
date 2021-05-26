@@ -36,7 +36,7 @@ foreach($devHub in $devHubs) {
         Write-Output "Beginning scratch org creation"
         # Create Scratch Org
         try {
-            $scratchOrgCreateMessage = sfdx force:org:create --setdefaultusername --durationdays $durationdays --definitionfile $definitionFile --wait 10
+            $scratchOrgCreateMessage = sfdx force:org:create --setdefaultusername --targetdevhubusername $devHub --durationdays $durationdays --definitionfile $definitionFile --wait 10
             # Sometimes SFDX lies (UTC date problem?) about the number of scratch orgs remaining in a given day
             # The other issue is that this doesn't throw, so we have to test the response message ourselves
             Write-Output "Scratch org creation mesage: $scratchOrgCreateMessage"
