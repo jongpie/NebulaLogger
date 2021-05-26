@@ -7,7 +7,7 @@ coverage/
 nebula-logger/main/default/
 nebula-logger/managed-package/
 .vim-force.com
-tests/
+tests/apex/
 
 # NPM
 node_modules/

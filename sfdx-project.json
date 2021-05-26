@@ -7,16 +7,17 @@
             "package": "Nebula Logger - Unlocked Package",
             "path": "nebula-logger",
             "default": true,
-            "definitionFile": "config/project-scratch-def.json",
-            "versionName": "Topics overloads cleanup",
-            "versionNumber": "4.4.2.0",
-            "versionDescription": "Removed some old Topics overloads in Logger",
+            "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
+            "versionName": "Guest User Bugfix",
+            "versionNumber": "4.4.3.0",
+            "versionDescription": "Fixes an issue that caused logs from guest users to fail to save",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
     "packageAliases": {
         "Nebula Logger - Unlocked Package": "0Ho5Y000000TNKASA4",
         "Nebula Logger - Unlocked Package@4.4.1-3-unlocked-package-release": "04t5Y0000027FGFQA2",
-        "Nebula Logger - Unlocked Package@4.4.2-0-topics-overloads-cleanup": "04t5Y0000027FGeQAM"
+        "Nebula Logger - Unlocked Package@4.4.2-0-topics-overloads-cleanup": "04t5Y0000027FGeQAM",
+        "Nebula Logger - Unlocked Package@4.4.3-0-guest-user-bugfix": "04t5Y0000027FI1QAM"
     }
 }
