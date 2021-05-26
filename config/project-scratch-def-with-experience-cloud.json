@@ -6,7 +6,7 @@
     "language": "en_US",
     "features": ["Communities"],
     "settings": {
-        "orgPreferenceSettings": {
+        "communitiesSettings": {
             "networksEnabled": true
         }
     }
