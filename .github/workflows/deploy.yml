@@ -69,18 +69,21 @@ jobs:
               shell: bash
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  echo ${{ env.BACKUP_DEVHUB_1_SFDX_URL }} > ./BACKUP_DEVHUB_1_SFDX_URL.txt
+                  echo ${{ env.NEBULA_CI_DEVHUB_SFDX_URL }} > ./NEBULA_CI_DEVHUB_SFDX_URL.txt
+                  echo ${{ env.JONGPIE_DEVHUB_SFDX_URL }} > ./JONGPIE_DEVHUB_SFDX_URL.txt
               env:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
-                  BACKUP_DEVHUB_1_SFDX_URL: ${{ secrets.BACKUP_DEVHUB_1_SFDX_URL }}
+                  NEBULA_CI_DEVHUB_SFDX_URL: ${{ secrets.NEBULA_CI_DEVHUB_SFDX_URL }}
+                  JONGPIE_DEVHUB_SFDX_URL: ${{ secrets.JONGPIE_DEVHUB_SFDX_URL }}
 
             - name: 'Authorize Dev Hubs'
               run: |
                   sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./BACKUP_DEVHUB_1_SFDX_URL.txt --setalias nebula-logger-backup-devhub-1
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./NEBULA_CI_DEVHUB_SFDX_URL.txt --setalias nebula-ci-devhub
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./JONGPIE_DEVHUB_SFDX_URL.txt --setalias jongpie-devhub
 
             - name: 'Create Scratch Org with Experience Sites Enabled'
-              run: npm run org:create:experience -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-logger-backup-devhub-1
+              run: npm run org:create:experience -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-ci-devhub,jongpie-devhub
 
             - name: 'Create Test Experience Site'
               run: npm run community:create
