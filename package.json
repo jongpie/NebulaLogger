@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.4.3",
+    "version": "4.4.4",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "scripts": {
         "community:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",
@@ -25,9 +25,12 @@
         "package:version:create:managed:skipvalidation": "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --skipvalidation --installationkeybypass --wait 30 && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
         "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
         "package:version:create:unlocked:skipvalidation": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --skipvalidation --installationkeybypass --wait 30",
-        "package:version:list": "sfdx force:package:version:list --json",
-        "package:version:list:managed":  "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:list --json --packages \"Nebula Logger - Managed Package\" && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
-        "package:version:list:unlocked": "sfdx force:package:version:list --json --packages \"Nebula Logger - Unlocked Package\"",
+        "package:version:list": "sfdx force:package:version:list --json --verbose --orderby PatchVersion",
+        "package:version:list:released": "sfdx force:package:version:list --json --verbose --released --orderby PatchVersion",
+        "package:version:list:managed":  "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:list --json --verbose --orderby PatchVersion --packages \"Nebula Logger - Managed Package\" && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
+        "package:version:list:managed:released":  "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:list --json --verbose --released --orderby PatchVersion --packages \"Nebula Logger - Managed Package\" && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
+        "package:version:list:unlocked": "sfdx force:package:version:list --json --verbose --orderby PatchVersion --packages \"Nebula Logger - Unlocked Package\"",
+        "package:version:list:unlocked:released": "sfdx force:package:version:list --json --verbose --released --orderby PatchVersion --packages \"Nebula Logger - Unlocked Package\"",
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "test": "npm run test:lwc && npm run test:apex",
