@@ -14,7 +14,7 @@ Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :Sy
 
 ### Methods
 
-#### `execute(Database.BatchableContext batchableContext, List<Log__c> scope)` → `void`
+#### `execute(Database.BatchableContext batchableContext, List<Log__c> logsToDelete)` → `void`
 
 #### `finish(Database.BatchableContext batchableContext)` → `void`
 

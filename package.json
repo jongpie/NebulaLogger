@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.4.4",
+    "version": "4.4.5",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "scripts": {
         "community:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",

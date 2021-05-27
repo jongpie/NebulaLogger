@@ -5,7 +5,7 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FIQQA2)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FIVQA2)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FFgQAM)
 [![Deploy Unpackaged Metadata](./content/btn-deploy-unpackaged-metadata.png)](https://githubsfdeploy.herokuapp.com/?owner=jongpie&repo=NebulaLogger&ref=main)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
@@ -51,9 +51,9 @@ You can choose to install the unlocked package, you can deploy the metadata from
         </tr>
         <tr>
             <td>Future Releases</td>
-            <td>Slower release cycle: new package versions will only be released once new enhancements & bugfixes have been tested and code is stabilized</td>
-            <td>Slower release cycle: new package versions will only be released once new enhancements & bugfixes have been tested and code is stabilized</td>
-            <td>New enhancements & bugfixes will be immediately available in GitHub</td>
+            <td>Faster release cycle: new patch versions are released (e.g., `v4.4.x`) for new enhancements & bugfixes that are merged to the `main` branch in GitHub</td>
+            <td>Slower release cycle: new minor versions are only released (e.g., `v4.x`) once new enhancements & bugfixes have been tested and code is stabilized</td>
+            <td>Faster release cycle: new enhancements & bugfixes will be immediately available in GitHub</td>
         </tr>
         <tr>
             <td>Public Apex Methods</td>
