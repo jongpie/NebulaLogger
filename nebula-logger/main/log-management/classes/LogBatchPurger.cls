@@ -60,9 +60,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 Logger.error('Error deleting logs', apexException);
             }
         } finally {
-            if (Logger.getUserSettings().EnableSystemMessages__c == true) {
-                Logger.saveLog();
-            }
+            Logger.saveLog();
         }
     }
 
