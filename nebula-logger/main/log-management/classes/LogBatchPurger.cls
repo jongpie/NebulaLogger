@@ -34,44 +34,33 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         );
     }
 
-    global void execute(Database.BatchableContext batchableContext, List<Log__c> scope) {
+    global void execute(Database.BatchableContext batchableContext, List<Log__c> logsToDelete) {
         if (!Schema.Log__c.SObjectType.getDescribe().isDeletable()) {
             throw new LogBatchPurgerException('User does not have access to delete logs');
         }
 
-        this.totalProcessedRecords += scope.size();
+        this.totalProcessedRecords += logsToDelete.size();
 
         try {
             if (Logger.getUserSettings().EnableSystemMessages__c == true) {
                 Logger.setParentLogTransactionId(this.originalTransactionId);
-                Logger.info(new LogMessage('Starting deletion of {0} records', scope.size()));
+                Logger.info(new LogMessage('Starting deletion of {0} records', logsToDelete.size()));
             }
 
-            List<Log__c> logsToDelete = new List<Log__c>();
-            List<LogEntry__c> logEntriesToDelete = new List<LogEntry__c>();
-            for (Log__c log : scope) {
-                logEntriesToDelete.addAll(log.LogEntries__r);
-                logsToDelete.add(log);
-            }
+            // Delete the child log entries first
+            List<LogEntry__c> logEntriesToDelete = [SELECT Id FROM LogEntry__c WHERE Log__c IN :logsToDelete];
+            delete logEntriesToDelete;
+            Database.emptyRecycleBin(logEntriesToDelete);
 
-            List<SObject> recordsToDelete = new List<SObject>();
-            // not obvious coupling - the LogEntry__c records must be deleted first
-            // to avoid System.DmlException: ENTITY_IS_DELETED on the corresponding Log__c records
-            // we also avoid the need to sort but still avoid the potential for a DML chunking error
-            // by correct separating the records of different SObject types from one another
-            recordsToDelete.addAll(logEntriesToDelete);
-            recordsToDelete.addAll(logsToDelete);
-
-            delete recordsToDelete;
-            Database.emptyRecycleBin(recordsToDelete);
+            // Now delete the parent logs
+            delete logsToDelete;
+            Database.emptyRecycleBin(logsToDelete);
         } catch (Exception apexException) {
             if (Logger.getUserSettings().EnableSystemMessages__c == true) {
                 Logger.error('Error deleting logs', apexException);
             }
         } finally {
-            if (Logger.getUserSettings().EnableSystemMessages__c == true) {
-                Logger.saveLog();
-            }
+            Logger.saveLog();
         }
     }
 

@@ -100,7 +100,7 @@ jobs:
               run: npm run test:apex
 
             - name: 'Delete Scratch Org'
-              run: npm run org:delete
+              run: npm run org:delete:noprompt
               if: ${{ always() }}
 
 
