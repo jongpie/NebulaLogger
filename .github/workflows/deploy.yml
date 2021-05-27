@@ -30,7 +30,7 @@ jobs:
             - name: 'Setup node'
               uses: actions/setup-node@v2
               with:
-                  node-version: '14'
+                node-version: '14'
 
             - name: 'Install npm'
               run: npm install
@@ -87,6 +87,11 @@ jobs:
 
             - name: 'Create Test Experience Site'
               run: npm run community:create
+
+            - name: 'Wait for Experience Site creation'
+              uses: maddox/actions/sleep@master
+              with:
+                args: '120'
 
             - name: 'Deploy Metadata'
               run: npm run deploy
