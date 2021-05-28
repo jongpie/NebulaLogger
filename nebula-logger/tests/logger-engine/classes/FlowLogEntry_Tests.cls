@@ -40,6 +40,34 @@ private class FlowLogEntry_Tests {
     }
 
     @isTest
+    static void it_should_auto_save_entry_when_saveLog_is_true() {
+        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
+
+        Test.startTest();
+
+        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+
+        FlowLogEntry flowRecordEntry = createFlowLogEntry();
+        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
+        flowRecordEntry.saveLog = true;
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowRecordEntry });
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
+        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+    }
+
+    @isTest
     static void it_should_not_save_entry_when_logging_level_not_met() {
         LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
@@ -64,7 +92,7 @@ private class FlowLogEntry_Tests {
 
         Test.startTest();
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         System.assertEquals(null, flowEntry.faultMessage);
