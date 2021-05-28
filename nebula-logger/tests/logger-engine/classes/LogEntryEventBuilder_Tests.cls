@@ -46,10 +46,40 @@ private class LogEntryEventBuilder_Tests {
         ];
     }
 
+    static String getMessage() {
+        return 'Hello, world';
+    }
+
+    static LogMessage getLogMessage() {
+        return new LogMessage('The current time is {0}', System.now());
+    }
+
     @isTest
     static void it_should_short_circuit_when_not_enabled() {
         Boolean shouldSave = false;
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG, shouldSave);
+
+        // Run all public and global methods to make sure no errors occur when not enabled (it's happened before)
+        System.assertEquals(null, builder.setMessage(getLogMessage()).getLogEntryEvent());
+        System.assertEquals(null, builder.setMessage(getMessage()).getLogEntryEvent());
+        System.assertEquals(null, builder.setExceptionDetails(new DmlException()).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult((Database.DeleteResult) null).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult((Database.MergeResult) null).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult((Database.SaveResult) null).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult((Database.UpsertResult) null).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult((Database.UndeleteResult) null).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult(new List<Database.DeleteResult>()).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult(new List<Database.MergeResult>()).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult(new List<Database.SaveResult>()).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult(new List<Database.UpsertResult>()).getLogEntryEvent());
+        System.assertEquals(null, builder.setDatabaseResult(new List<Database.UndeleteResult>()).getLogEntryEvent());
+        System.assertEquals(null, builder.setRecordId(UserInfo.getUserId()).getLogEntryEvent());
+        System.assertEquals(null, builder.setRecordId(new User(Id = UserInfo.getUserId())).getLogEntryEvent());
+        System.assertEquals(null, builder.setRecord(UserInfo.getUserId()).getLogEntryEvent());
+        System.assertEquals(null, builder.setRecord(new User(Id = UserInfo.getUserId())).getLogEntryEvent());
+        System.assertEquals(null, builder.setRecord(new List<User>{new User(Id = UserInfo.getUserId())}).getLogEntryEvent());
+        System.assertEquals(null, builder.setTopics(new List<String>{'topic-1', 'topic-2'}).getLogEntryEvent());
+        System.assertEquals(null, builder.parseStackTrace(new DmlException().getStackTraceString()).getLogEntryEvent());
 
         System.assertEquals(null, builder.getLogEntryEvent());
         System.assertEquals(null, builder.setMessage('test').getLogEntryEvent());
