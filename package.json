@@ -3,7 +3,6 @@
     "version": "4.4.5",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "scripts": {
-        "community:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",
         "deploy": "npm run deploy:logger && npm run deploy:managedpackage && npm run deploy:extratests",
         "deploy:logger": "sfdx force:source:deploy --sourcepath ./nebula-logger/",
         "deploy:extratests": "sfdx force:source:deploy --sourcepath ./extra-tests/",
@@ -12,6 +11,7 @@
         "devhub:limits": "pwsh ./scripts/get-devhub-org-limits.ps1",
         "devhub:open": "pwsh ./scripts/open-devhub-org.ps1",
         "docs:generate": "pwsh ./scripts/generate-docs.ps1",
+        "experience:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",
         "lint": "npm run lint:lwc && npm run lint:aura",
         "lint:aura": "eslint **/aura/**",
         "lint:lwc": "eslint **/lwc/**",

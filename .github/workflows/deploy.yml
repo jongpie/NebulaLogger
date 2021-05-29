@@ -86,7 +86,7 @@ jobs:
               run: npm run org:create:experience -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-ci-devhub,jongpie-devhub
 
             - name: 'Create Test Experience Site'
-              run: npm run community:create
+              run: npm run experience:create
 
             - name: 'Wait for Experience Site creation'
               uses: maddox/actions/sleep@master
