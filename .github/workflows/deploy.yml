@@ -56,9 +56,8 @@ jobs:
             #   run: npm run lint:lwc
 
             # LWC unit tests
-            # TODO uncomment lwc testing once tests have been created
-            # - name: 'Run LWC Tests'
-            #   run: npm run test:lwc
+            - name: 'Run LWC Tests'
+              run: npm run test:lwc
 
             # End local testing
 
