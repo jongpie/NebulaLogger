@@ -59,6 +59,13 @@ jobs:
             - name: 'Run LWC Tests'
               run: npm run test:lwc
 
+              # Upload code coverage data for LWC
+            - name: 'Upload code coverage for LWC to Codecov.io'
+              uses: codecov/codecov-action@v1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  flags: LWC
+
             # End local testing
 
             # Start remote testing
@@ -98,6 +105,13 @@ jobs:
             - name: 'Run Apex Tests'
               run: npm run test:apex
 
+              # Upload code coverage data for Apex
+            - name: 'Upload code coverage for Apex to Codecov.io'
+              uses: codecov/codecov-action@v1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  flags: Apex
+
             - name: 'Delete Scratch Org'
               run: npm run org:delete:noprompt
               if: ${{ always() }}
@@ -115,9 +129,3 @@ jobs:
 
             - name: 'Generate Docs'
               run: npm run docs:generate
-
-            # Upload code coverage data
-            - name: 'Upload code coverage for Apex to Codecov.io'
-              uses: codecov/codecov-action@v1
-              with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
