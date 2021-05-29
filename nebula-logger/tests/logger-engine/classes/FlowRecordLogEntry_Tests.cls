@@ -29,6 +29,7 @@ private class FlowRecordLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
@@ -72,6 +73,7 @@ private class FlowRecordLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
@@ -112,6 +114,7 @@ private class FlowRecordLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
@@ -130,6 +133,7 @@ private class FlowRecordLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
         System.assertEquals(null, flowEntry.faultMessage);
@@ -164,6 +168,7 @@ private class FlowRecordLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
         flowEntry.faultMessage = 'Whoops, a Flow error has occurred.';
