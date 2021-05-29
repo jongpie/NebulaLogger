@@ -80,13 +80,6 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.setRecord(new List<User>{new User(Id = UserInfo.getUserId())}).getLogEntryEvent());
         System.assertEquals(null, builder.setTopics(new List<String>{'topic-1', 'topic-2'}).getLogEntryEvent());
         System.assertEquals(null, builder.parseStackTrace(new DmlException().getStackTraceString()).getLogEntryEvent());
-
-        System.assertEquals(null, builder.getLogEntryEvent());
-        System.assertEquals(null, builder.setMessage('test').getLogEntryEvent());
-        System.assertEquals(null, builder.setExceptionDetails(new IllegalArgumentException('test')).getLogEntryEvent());
-        System.assertEquals(null, builder.setRecordId(new Account()).getLogEntryEvent());
-        System.assertEquals(null, builder.setRecordId('005000000000001').getLogEntryEvent());
-        System.assertEquals(null, builder.setTopics(new List<String>{ '', ' ' }).getLogEntryEvent());
     }
 
     @isTest
