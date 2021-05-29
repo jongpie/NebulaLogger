@@ -15,9 +15,9 @@ private class Logger_Tests_InboundEmailHandler {
         Messaging.InboundEnvelope envelope = new Messaging.InboundEnvelope();
 
         // Create the email body
-        Messaging.InboundEmail email  = new Messaging.InboundEmail();
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
         email.plainTextBody = 'Example email content';
-        email.fromAddress ='test@test.com';
+        email.fromAddress = 'test@test.com';
         String contactEmail = 'someone@salesforce.com';
         email.subject = 'My example email';
 
@@ -40,5 +40,5 @@ private class Logger_Tests_InboundEmailHandler {
         List<LogEntry__c> logEntries = [SELECT Id, Message__c FROM LogEntry__c];
         System.assertEquals(1, logEntries.size());
         System.assertEquals(ExampleInboundEmailHandler.logEntryMessage, logEntries.get(0).Message__c);
-   }
+    }
 }

@@ -20,10 +20,7 @@ private class Logger_Tests_ExperienceSite {
         User guestUser = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
 
         PermissionSet logCreatorPermissionSet = [SELECT Id, Name FROM PermissionSet WHERE Name = :LOG_CREATOR_PERMISSION_SET_NAME];
-        PermissionSetAssignment  permissionSetAssignment = new PermissionSetAssignment(
-            AssigneeId = guestUser.Id,
-            PermissionSetId = logCreatorPermissionSet.Id
-        );
+        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = guestUser.Id, PermissionSetId = logCreatorPermissionSet.Id);
         insert permissionSetAssignment;
     }
 
@@ -39,7 +36,7 @@ private class Logger_Tests_ExperienceSite {
             log.OwnerId = guestUser.Id;
             update log;
             System.assert(false, 'Expected exception, this exception should not occur');
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             String expectedExceptionMessage = 'FIELD_INTEGRITY_EXCEPTION, field integrity exception (Guest users cannot be record owners.)';
             System.assert(ex.getMessage().contains(expectedExceptionMessage));
         }

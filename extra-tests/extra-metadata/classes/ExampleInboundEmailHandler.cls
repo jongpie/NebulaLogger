@@ -3,7 +3,6 @@ global with sharing class ExampleInboundEmailHandler implements Messaging.Inboun
     private static String logEntryMessage = 'Testing logging from InboundEmailHandler';
 
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope env) {
-
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
         try {
             String nullString = null;
