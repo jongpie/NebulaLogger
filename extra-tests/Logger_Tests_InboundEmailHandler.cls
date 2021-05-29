@@ -5,7 +5,7 @@
 
 /**
  * @group Extra Tests
- * @description Additional integration tests for logging from an instance of Messaging.InboundEmailHandler
+ * @description Additional integration tests for logging from an instance of `Messaging.InboundEmailHandler`
  */
 @isTest
 private class Logger_Tests_InboundEmailHandler {
