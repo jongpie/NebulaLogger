@@ -29,6 +29,7 @@ private class FlowRecordLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
@@ -38,6 +39,47 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+
+        Test.stopTest();
+
+        String expectedUserJson = JSON.serializePretty(currentUser);
+
+        LogEntry__c logEntry = [
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
+        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
+        System.assertEquals(expectedUserJson, logEntry.RecordJson__c);
+    }
+
+    @isTest
+    static void it_should_auto_save_entry_when_saveLog_is_true() {
+        User currentUser = new User(
+            Id = UserInfo.getUserId(),
+            FirstName = UserInfo.getFirstName(),
+            LastName = UserInfo.getLastName(),
+            Username = UserInfo.getUserName()
+        );
+
+        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
+
+        Test.startTest();
+
+        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
+
+        FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
+        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
+        flowRecordEntry.record = currentUser;
+        flowRecordEntry.saveLog = true;
+        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
 
         Test.stopTest();
 
@@ -72,6 +114,7 @@ private class FlowRecordLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
@@ -89,7 +132,8 @@ private class FlowRecordLogEntry_Tests {
 
         Test.startTest();
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
         System.assertEquals(null, flowEntry.faultMessage);
@@ -124,6 +168,7 @@ private class FlowRecordLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
         flowEntry.faultMessage = 'Whoops, a Flow error has occurred.';

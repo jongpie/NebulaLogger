@@ -488,10 +488,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setOrganizationDetails() {
-        if (this.shouldSave == false) {
-            return;
-        }
-
         String orgEnvironmentType;
         if (ORGANIZATION.IsSandbox == true && ORGANIZATION.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';
@@ -511,10 +507,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setNetworkDetails() {
-        if (this.shouldSave == false) {
-            return;
-        }
-
         if (NETWORK_SITE == null) {
             return;
         }
@@ -527,10 +519,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setUserDetails() {
-        if (this.shouldSave == false) {
-            return;
-        }
-
         this.logEntryEvent.LoggedByUsername__c = USER.Username;
         this.logEntryEvent.ProfileName__c = USER.Profile.Name;
         this.logEntryEvent.UserLicenseDefinitionKey__c = USER.Profile.UserLicense.LicenseDefinitionKey;
@@ -540,10 +528,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
-        if (sobjectType == null) {
-            return null;
-        }
-
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
@@ -577,10 +561,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
-        if (sobjectType == null) {
-            return null;
-        }
-
         String sobjectFullName = sobjectType.getDescribe().getName();
         String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 
@@ -593,10 +573,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setUserSessionDetails() {
-        if (this.shouldSave == false) {
-            return;
-        }
-
         LoggingLevel userLoggingLevel = Logger.getUserLoggingLevel();
 
         this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
