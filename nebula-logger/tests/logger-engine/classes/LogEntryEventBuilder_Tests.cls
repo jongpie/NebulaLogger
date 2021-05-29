@@ -51,7 +51,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     static LogMessage getLogMessage() {
-        return new LogMessage('The current time is {0}', System.now());
+        return new LogMessage('The current date is {0}', System.today());
     }
 
     @isTest

@@ -4,6 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
+ * @group Extra Tests
  * @description Additional integration tests for orgs with Experience Sites (Communities) enabled
  */
 @isTest
