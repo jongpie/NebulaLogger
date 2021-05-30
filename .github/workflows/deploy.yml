@@ -19,6 +19,26 @@ on:
             - 'sfdx-project.json'
 
 jobs:
+    generate-docs:
+        runs-on: ubuntu-latest
+        environment: Test
+        steps:
+            # Checkout the code
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+
+            - name: 'Setup node'
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '14'
+
+            - name: 'Install npm'
+              run: npm install
+
+            - name: 'Generate Docs'
+              run: npm run docs:generate
+              # TODO need to commit & push any changes to ./docs/*
+
     lwc-local-test:
         runs-on: ubuntu-latest
         environment: Test
@@ -44,17 +64,14 @@ jobs:
                   ./sfdx-cli/install
 
             # Start local testing
-
             # TODO uncomment
             # Prettier formatting
             # - name: 'Code formatting verification with Prettier'
             #   run: npm run prettier:verify
-
             # TODO uncomment
             # Lint LWC
             # - name: 'Lint Lightning Web Components'
             #   run: npm run lint:lwc
-
             # LWC unit tests
             - name: 'Run LWC Tests'
               run: npm run test:lwc
@@ -148,6 +165,3 @@ jobs:
             # TODO uncomment
             # - name: 'Create validated unlocked package version'
             #   run: npm run package:version:create:unlocked
-
-            - name: 'Generate Docs'
-              run: npm run docs:generate
