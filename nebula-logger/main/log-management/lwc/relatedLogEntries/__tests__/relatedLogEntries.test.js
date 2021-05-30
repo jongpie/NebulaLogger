@@ -1,6 +1,6 @@
 import { createElement } from 'lwc';
 import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
-import RelatedLogEntries from 'c/relatedLogEntriesElement';
+import RelatedLogEntries from 'c/relatedLogEntries';
 import getQueryResult from '@salesforce/apex/RelatedLogEntriesController.getQueryResult';
 
 // Mock data
