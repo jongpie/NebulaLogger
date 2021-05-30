@@ -1,10 +1,7 @@
 {
     "compilerOptions": {
         "experimentalDecorators": true,
-        "baseUrl": ".",
-        "paths": {
-            "c/logViewer": ["logViewer/logViewer.js"]
-        }
+        "baseUrl": "."
     },
     "include": ["**/*", "../../.sfdx/typings/lwc/**/*.d.ts", "../../../../.sfdx/typings/lwc/**/*.d.ts"],
     "typeAcquisition": {
