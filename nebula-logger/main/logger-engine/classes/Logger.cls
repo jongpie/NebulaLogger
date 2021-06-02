@@ -14,7 +14,6 @@ global with sharing class Logger {
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = System.Request.getCurrent().getRequestId();
     private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
-    private static final Boolean USER_CAN_CREATE_LOG_ENTRY_EVENTS = SObjectType.LogEntryEvent__e.isCreateable();
 
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
@@ -2463,16 +2462,11 @@ global with sharing class Logger {
      * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
      */
     global static void saveLog(SaveMethod saveMethod) {
-        // Verify that the user has create access
-        if (USER_CAN_CREATE_LOG_ENTRY_EVENTS == false) {
-            return;
-        }
-
         if (LOG_ENTRIES_BUFFER.isEmpty()) {
             return;
         }
 
-        if (suspendSaving) {
+        if (suspendSaving == true) {
             if (getUserSettings().EnableSystemMessages__c == true) {
                 finest(getSuspendSavingLogSystemMessage());
             }
@@ -2629,8 +2623,6 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
-        shouldSave = shouldSave && USER_CAN_CREATE_LOG_ENTRY_EVENTS;
-
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
         if (logEntryEventBuilder.shouldSave() == true) {
             logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
