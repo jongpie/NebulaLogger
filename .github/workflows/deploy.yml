@@ -139,7 +139,7 @@ jobs:
 
     create-package-version:
         name: 'Create Packge Version'
-        needs: [job1, job2]
+        needs: [lwc-local-tests, scratch-org-tests]
         runs-on: ubuntu-latest
         environment: Test
         steps:
