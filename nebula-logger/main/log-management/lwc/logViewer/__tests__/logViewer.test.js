@@ -9,10 +9,6 @@ const mockGetLog = require('./data/getLog.json');
 // Register a test wire adapter
 const getLogAdapter = registerApexTestWireAdapter(getLog);
 
-function assertForTestConditions() {
-    const resolvedPromise = Promise.resolve();
-    return resolvedPromise.then.apply(resolvedPromise, arguments);
-}
 
 function flushPromises() {
     return new Promise(resolve => setTimeout(resolve, 0));
@@ -41,7 +37,7 @@ describe('Logger JSON Viewer lwc tests', () => {
         getLogAdapter.emit(mockGetLog);
 
         // Resolve a promise to wait for a rerender of the new content
-        return assertForTestConditions(() => {
+        return flushPromises().then(() => {
             expect(logViewerElement.title).toEqual('JSON for ' + mockGetLog.Name);
         });
     });
@@ -52,10 +48,10 @@ describe('Logger JSON Viewer lwc tests', () => {
         getLogAdapter.emit(mockGetLog);
 
         // Resolve a promise to wait for a rerender of the new content
-        return assertForTestConditions(() => {
+        return flushPromises().then(() => {
             const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
             expect(logViewer.title).toEqual('JSON for ' + mockGetLog.Name); // this works (TODO remove this)
-            expect(logViewer.variant).toEqual('brand'); // this fails due to undefined (TODO remove this)
+            expect(inputButton.variant).toEqual('brand'); // this fails due to undefined (TODO remove this)
         });
     });
 });

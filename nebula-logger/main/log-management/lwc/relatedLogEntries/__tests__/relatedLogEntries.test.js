@@ -10,11 +10,6 @@ const mockQueryResult = require('./data/getQueryResult.json');
 // Register a test wire adapter
 const getQueryResultAdapter = registerApexTestWireAdapter(getQueryResult);
 
-function assertForTestConditions() {
-    const resolvedPromise = Promise.resolve();
-    return resolvedPromise.then.apply(resolvedPromise, arguments);
-}
-
 function flushPromises() {
     return new Promise(resolve => setTimeout(resolve, 0));
 }
@@ -43,9 +38,9 @@ describe('Related Log Entries lwc tests', () => {
         getQueryResultAdapter.emit(mockQueryResult);
 
         // Resolve a promise to wait for a rerender of the new content
-        return Promise.resolve().then(() => {
-            // expect(relatedLogEntriesElement.queryResult).not.toEqual(undefined);
-            // expect(relatedLogEntriesElement.queryResult).toEqual(mockQueryResult);
+        return flushPromises().then(() => {
+            expect(relatedLogEntriesElement.queryResult).toBeTruthy();
+            expect(relatedLogEntriesElement.queryResult).toEqual(mockQueryResult);
             expect(relatedLogEntriesElement.fieldSetName).not.toBe(undefined);
         });
     });
