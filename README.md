@@ -180,7 +180,7 @@ Apex developers can use additional `Logger` methods to dynamically control how l
 -   `Logger.flushBuffer()` – discards any unsaved log entries
 -   `Logger.setSaveMethod(SaveMethod saveMethod)` - sets the default save method used when calling `saveLog()`. Any subsequent calls to `saveLog()` in the current transaction will use the specified save method
 -   `Logger.saveLog(SaveMethod saveMethod)` - saves any entries in Logger's buffer, using the specified save method for only this call. All subsequent calls to `saveLog()` will use the default save method.
-- Enum `Logger.SaveMethod` - this enum can be used for both `Logger.setSaveMethod(saveMethod)` and `Logger.saveLog(saveMethod)`
+-   Enum `Logger.SaveMethod` - this enum can be used for both `Logger.setSaveMethod(saveMethod)` and `Logger.saveLog(saveMethod)`
     -   `Logger.SaveMethod.EVENT_BUS` - The default save method, this uses the `EventBus` class to publish `LogEntryEvent__e` records. The default save method can also be controlled declaratively by updating the field `LoggerSettings__c.DefaultSaveMethod__c`
     -   `Logger.SaveMethod.QUEUEABLE` - This save method will trigger Logger to save any pending records asynchronously using a queueable job. This is useful when you need to defer some CPU usage and other limits consumed by Logger.
     -   `Logger.SaveMethod.REST` - This save method will use the current user’s session ID to make a synchronous callout to the org’s REST API. This is useful when you have other callouts being made and you need to avoid mixed DML operations.
@@ -311,7 +311,32 @@ LogEntryEventBuilder builder = Logger.debug('my string').setRecord(currentUser);
 Logger.saveLog();
 ```
 
----
+### Using LogMessage to Improve CPU Usage for String Formatting
+
+The class `LogMessage` provides the ability to generate string messages on demand, using `String.format()`. This provides 2 benefits:
+
+1. Improved CPU usage by skipping unnecessary calls to `String.format()`
+
+    ```java
+    // Without using LogMessage, String.format() is always called, even if the FINE logging level is not enabled for a user
+    String formattedString = String.format('my example with input: {0}', List<Object>{'myString'});
+    Logger.fine(formattedString);
+
+    // With LogMessage, when the specified logging level (FINE) is disabled for the current user, `String.format()` is not called
+    LogMessage logMessage = new LogMessage('my example with input: {0}', 'myString');
+    Logger.fine(logMessage);
+    ```
+
+2. Easily build complex strings
+    ```java
+     // There are several constructors for LogMessage to support different numbers of parameters for the formatted string
+     String unformattedMessage = 'my string with 3 inputs: {0} and then {1} and finally {2}';
+     String formattedMessage = new LogMessage(unformattedMessage, 'something', 'something else', 'one more').getMessage();
+     String expectedMessage = 'my string with 3 inputs: something and then something else and finally one more';
+     System.assertEquals(expectedMessage, formattedMessage);
+    ```
+
+## For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
 
 ## Managing Logs
 
