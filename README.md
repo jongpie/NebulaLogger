@@ -336,7 +336,7 @@ The class `LogMessage` provides the ability to generate string messages on deman
      System.assertEquals(expectedMessage, formattedMessage);
     ```
 
-## For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
+For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
 
 ## Managing Logs
 
