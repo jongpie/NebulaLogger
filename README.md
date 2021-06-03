@@ -20,6 +20,9 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
 5. View related log entries on any record page by adding the 'Related Log Entries' component in App Builder
 6. Dynamically assign Topics to `Log__c` and `LogEntry__c` records for tagging/labeling your logs (not currently available in the managed package)
+7. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
+
+Learn more about the design and history of the project on [Joys Of Apex](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
 
 ---
 
@@ -162,9 +165,151 @@ This generates 1 consolidated `Log__c`, containing `LogEntry__c` records from bo
 
 ![Flow Log Results](./content/combined-apex-flow-log.png)
 
-## Event-Driven Integrations with Platform Events
+---
 
-Logger is built using Salesforce's [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
+## Advanced Features for Apex Developers
+
+Within Apex, there are several different methods that you can use that provide greater control over the logging system.
+
+### Transaction Controls
+
+Apex developers can use additional `Logger` methods to dynamically control how logs are saved during the current transaction.
+
+-   `Logger.suspendSaving()` – causes Logger to ignore any calls to `saveLog()` in the current transaction until `resumeSaving()` is called. Useful for reducing DML statements used by `Logger`
+-   `Logger.resumeSaving()` – re-enables saving after `suspendSaving()` is used
+-   `Logger.flushBuffer()` – discards any unsaved log entries
+-   `Logger.setSaveMethod(SaveMethod saveMethod)` - sets the default save method used when calling `saveLog()`. Any subsequent calls to `saveLog()` in the current transaction will use the specified save method
+-   `Logger.saveLog(SaveMethod saveMethod)` - saves any entries in Logger's buffer, using the specified save method for only this call. All subsequent calls to `saveLog()` will use the default save method.
+- Enum `Logger.SaveMethod` - this enum can be used for both `Logger.setSaveMethod(saveMethod)` and `Logger.saveLog(saveMethod)`
+    -   `Logger.SaveMethod.EVENT_BUS` - The default save method, this uses the `EventBus` class to publish `LogEntryEvent__e` records.
+    -   `Logger.SaveMethod.QUEUEABLE` - This save method will trigger Logger to save any pending records asynchronously using a queueable job. This is useful when you need to defer some CPU usage and other limits consumed by Logger.
+    -   `Logger.SaveMethod.REST` - This save method will use the current user’s session ID to make a synchronous callout to the org’s REST API. This is useful when you have other callouts being made and you need to avoid mixed DML operations.
+
+### Track Related Logs in Batchable and Queuable Jobs
+
+In Salesforce, asynchronous jobs like batchable and queuable run in separate transactions - each with their own unique transaction ID. To relate these jobs back to the original log, Apex developers can use the method Logger.setParentLogTransactionId(String). `Logger` uses this value to relate child `Log__c` records, using the field `Log__c.ParentLog__c`.
+
+This example batchable class shows how you can leverage this feature to relate all of your batch job’s logs together.
+
+> :information_source: If you deploy this example class to your org,you can run it using `Database.executeBatch(new BatchableLoggerExample());`
+
+```java
+public with sharing class BatchableLoggerExample implements Database.Batchable<SObject>, Database.Stateful {
+    private String originalTransactionId;
+
+    public Database.QueryLocator start(Database.BatchableContext batchableContext) {
+        // Each batchable method runs in a separate transaction
+        // ...so store the first transaction ID to later relate the other transactions
+        this.originalTransactionId = Logger.getTransactionId();
+
+        Logger.info('Starting BatchableLoggerExample');
+        Logger.saveLog();
+
+        // Just as an example, query all accounts
+        return Database.getQueryLocator([SELECT Id, Name, RecordTypeId FROM Account]);
+    }
+
+    public void execute(Database.BatchableContext batchableContext, List<Account> scope) {
+        // One-time call (per transaction) to set the parent log
+        Logger.setParentLogTransactionId(this.originalTransactionId);
+
+        for (Account account : scope) {
+            // TODO add your batch job's logic
+
+            // Then log the result
+            Logger.info('Processed an account record', account);
+        }
+
+        Logger.saveLog();
+    }
+
+    public void finish(Database.BatchableContext batchableContext) {
+        // The finish method runs in yet-another transaction, so set the parent log again
+        Logger.setParentLogTransactionId(this.originalTransactionId);
+
+        Logger.info('Finishing running BatchableLoggerExample');
+        Logger.saveLog();
+    }
+}
+```
+
+Queueable jobs can also leverage the parent transaction ID to relate logs together. This example queueable job will run several chained instances. Each instance uses the parentLogTransactionId to relate its log back to the original instance's log.
+
+> :information_source: If you deploy this example class to your org,you can run it using `System.enqueueJob(new QueueableLoggerExample(3));`
+
+```java
+public with sharing class QueueableLoggerExample implements Queueable {
+    private Integer numberOfJobsToChain;
+    private String parentLogTransactionId;
+
+    private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+
+    // Main constructor - for demo purposes, it accepts an integer that controls how many times the job runs
+    public QueueableLoggerExample(Integer numberOfJobsToChain) {
+        this(numberOfJobsToChain, null);
+    }
+
+    // Second constructor, used to pass the original transaction's ID to each chained instance of the job
+    // You don't have to use a constructor - a public method or property would work too.
+    // There just needs to be a way to pass the value of parentLogTransactionId between instances
+    public QueueableLoggerExample(Integer numberOfJobsToChain, String parentLogTransactionId) {
+        this.numberOfJobsToChain = numberOfJobsToChain;
+        this.parentLogTransactionId = parentLogTransactionId;
+    }
+
+    // Creates some log entries and starts a new instance of the job when applicable (based on numberOfJobsToChain)
+    public void execute(System.QueueableContext queueableContext) {
+        Logger.setParentLogTransactionId(this.parentLogTransactionId);
+
+        Logger.fine('queueableContext==' + queueableContext);
+        Logger.info('this.numberOfJobsToChain==' + this.numberOfJobsToChain);
+        Logger.info('this.parentLogTransactionId==' + this.parentLogTransactionId);
+
+        // TODO add your queueable job's logic
+
+        Logger.saveLog();
+
+        --this.numberOfJobsToChain;
+        if (this.numberOfJobsToChain > 0) {
+            String parentLogTransactionId = this.parentLogTransactionId != null ? this.parentLogTransactionId : Logger.getTransactionId();
+            System.enqueueJob(new QueueableLoggerExample(this.numberOfJobsToChain, parentLogTransactionId));
+        }
+    }
+}
+```
+
+### Overloads for Logging Methods
+
+Each of the logging methods in `Logger` (such as `Logger.error()`, `Logger.debug()`, and so on) has several static overloads for various parameters. These are intended to provide simple method calls for common parameters, such as:
+
+-   Log a message and a record - `Logger.error(String message, SObject record)`
+-   Log a message and a record ID - `Logger.error(String message, Id recordId)`
+-   Log a message and a save result - `Logger.error(String message, Database.SaveResult saveResult)`
+-   ...
+
+There are several overloads provided for each logging level. To see the full list of overloads, check out the `Logger` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/Logger).
+
+### Using the Fluent Interface
+
+Each of the logging methods in `Logger` returns an instance of the class `LogEntryEventBuilder`. This class provides several additional methods together to further customize each log entry - each of the builder methods can be chained together. In this example Apex, 3 log entries are created using different approaches for calling `Logger` - all 3 approaches result in identical log entries.
+
+```java
+// Get the current user so we can log it (just as an example of logging an SObject)
+User currentUser = [SELECT Id, Name, Username, Email FROM User WHERE Id = :UserInfo.getUserId()];
+
+// Using static Logger method overloads
+Logger.debug('my string', currentUser);
+
+// Using the instance of LogEntryEventBuilder
+LogEntryEventBuilder builder = Logger.debug('my string');
+builder.setRecord(currentUser);
+
+// Chaining builder methods together
+LogEntryEventBuilder builder = Logger.debug('my string').setRecord(currentUser);
+
+// Save all of the log entries
+Logger.saveLog();
+```
 
 ---
 
