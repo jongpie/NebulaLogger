@@ -305,7 +305,7 @@ LogEntryEventBuilder builder = Logger.debug('my string');
 builder.setRecord(currentUser);
 
 // Chaining builder methods together
-LogEntryEventBuilder builder = Logger.debug('my string').setRecord(currentUser);
+Logger.debug('my string').setRecord(currentUser);
 
 // Save all of the log entries
 Logger.saveLog();
