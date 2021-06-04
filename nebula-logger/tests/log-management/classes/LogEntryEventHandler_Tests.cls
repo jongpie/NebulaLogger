@@ -54,6 +54,7 @@ private class LogEntryEventHandler_Tests {
                 SessionSecurityLevel__c,
                 SessionType__c,
                 SourceIp__c,
+                StartTime__c,
                 SystemMode__c,
                 ThemeDisplayed__c,
                 TimeZoneId__c,
@@ -125,7 +126,7 @@ private class LogEntryEventHandler_Tests {
                     FROM LogEntries__r
                 )
             FROM Log__c
-            ORDER BY CreatedDate
+            ORDER BY StartTime__c DESC
             LIMIT 1
         ];
     }
@@ -557,6 +558,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(0, Limits.getCallouts());
 
         Log__c log = getLog();
+        System.assertNotEquals(recentLog.Id, log.Id, log.StartTime__c);
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
 
