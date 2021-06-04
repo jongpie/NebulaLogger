@@ -2510,9 +2510,7 @@ global with sharing class Logger {
                 }
             }
             when SYNCHRONOUS_DML {
-                System.debug('saving with LogEntryEventHandler');
                 new LogEntryEventHandler(logEntryEvents).execute();
-                System.debug('saved with LogEntryEventHandler');
             }
         }
 
