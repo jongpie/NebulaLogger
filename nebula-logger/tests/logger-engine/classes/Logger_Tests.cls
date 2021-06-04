@@ -595,10 +595,11 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
-        Test.startTest();
-
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
         Logger.getUserSettings().DefaultSaveMethod__c = 'QUEUEABLE';
+        upsert Logger.getUserSettings();
+
+        Test.startTest();
 
         System.assertEquals(Logger.SaveMethod.QUEUEABLE, Logger.transactionSaveMethod);
 
