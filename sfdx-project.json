@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": true,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionName": "LogBatchPurger Bugfixes",
-            "versionNumber": "4.4.5.0",
-            "versionDescription": "Fixes 2 issues in LogBatchPurger that could cause errors due to record chunking and query limits",
+            "versionName": "New save method SYNCHRONOUS_DML",
+            "versionNumber": "4.4.6.0",
+            "versionDescription": "The new save method skips publishing platform events and instead immediately creates Log__c and LogEntry__c records. Use cautiously!",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
@@ -20,6 +20,7 @@
         "Nebula Logger - Unlocked Package@4.4.2-0-topics-overloads-cleanup": "04t5Y0000027FGeQAM",
         "Nebula Logger - Unlocked Package@4.4.3-0-guest-user-bugfix": "04t5Y0000027FI1QAM",
         "Nebula Logger - Unlocked Package@4.4.4-0-timestamp-bugfix": "04t5Y0000027FIQQA2",
-        "Nebula Logger - Unlocked Package@4.4.5-0-log-batch-purger-bugfixes": "04t5Y0000027FIVQA2"
+        "Nebula Logger - Unlocked Package@4.4.5-0-log-batch-purger-bugfixes": "04t5Y0000027FIVQA2",
+        "Nebula Logger - Unlocked Package@4.4.6-0-new-save-method-synchronous_dml": "04t5Y0000027FJdQAM"
     }
 }
