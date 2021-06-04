@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `Log__c` before insert & before update
  */
-public without sharing class LogHandler {
+public without sharing class LogHandler extends LoggerHandler {
     private static final Organization ORGANIZATION = [SELECT Id, InstanceName, IsSandbox FROM Organization];
 
     @testVisible
@@ -60,7 +60,7 @@ public without sharing class LogHandler {
         }
 
         // Run any post-processors
-        LoggerHandler.executePostProcessors(this.logs, this.oldLogsById);
+        super.executePostProcessors(this.logs, this.oldLogsById);
     }
 
     private void setOrgReleaseCycle() {

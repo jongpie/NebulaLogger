@@ -1,12 +1,15 @@
-global class LoggerHandler {
-    private LoggerHandler() {
-    }
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
 
-    global interface PostProcessor {
-        void execute(TriggerOperation triggerOperation, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById);
-    }
+/**
+ * @group Log Management
+ * @description Abstract class used by trigger handlers for shared logic
+ */
+ public abstract class LoggerHandler {
 
-    public static void executePostProcessors(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
+    protected void executePostProcessors(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
         if (loggerRecords == null) {
             return;
         }
@@ -24,17 +27,17 @@ global class LoggerHandler {
         executeFlow(loggerHandlerConfiguration?.FlowName__c, loggerRecords, oldLoggerRecordsById);
     }
 
-    private static void executeApexClass(String apexClassName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
+    private void executeApexClass(String apexClassName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
         if (String.isBlank(apexClassName)) {
             return;
         }
 
         Type postProcessorType = Type.forName(apexClassName);
-        PostProcessor recordPostProcessor = (PostProcessor) postProcessorType.newInstance();
+        LoggerPostProcessor recordPostProcessor = (LoggerPostProcessor) postProcessorType.newInstance();
         recordPostProcessor.execute(Trigger.operationType, loggerRecords, oldLoggerRecordsById);
     }
 
-    private static void executeFlow(String flowName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
+    private void executeFlow(String flowName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
         if (String.isBlank(flowName)) {
             return;
         }

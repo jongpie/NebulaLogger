@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
-public without sharing class LogEntryHandler {
+public without sharing class LogEntryHandler extends LoggerHandler {
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
     private List<LogEntry__c> logEntries;
@@ -44,7 +44,7 @@ public without sharing class LogEntryHandler {
         }
 
         // Run any post-processors
-        LoggerHandler.executePostProcessors(this.logEntries, this.oldLogEntriesById);
+        super.executePostProcessors(this.logEntries, this.oldLogEntriesById);
     }
 
     private void setCheckboxFields() {
