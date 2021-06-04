@@ -771,8 +771,6 @@ private class Logger_Tests {
 
         setUserLoggingLevel(LoggingLevel.DEBUG);
 
-        Logger.getUserSettings().DefaultSaveMethod__c = 'SYNCHRONOUS_DML';
-
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
