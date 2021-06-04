@@ -54,6 +54,7 @@ private class LogEntryEventHandler_Tests {
                 SessionSecurityLevel__c,
                 SessionType__c,
                 SourceIp__c,
+                StartTime__c,
                 SystemMode__c,
                 ThemeDisplayed__c,
                 TimeZoneId__c,
@@ -125,7 +126,7 @@ private class LogEntryEventHandler_Tests {
                     FROM LogEntries__r
                 )
             FROM Log__c
-            ORDER BY CreatedDate
+            ORDER BY StartTime__c DESC
             LIMIT 1
         ];
     }
@@ -259,6 +260,16 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c);
         System.assertEquals(logEntryEvent.TriggerOperationType__c, logEntry.TriggerOperationType__c);
         System.assertEquals(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c);
+    }
+
+    @isTest
+    static void it_should_gracefully_skip_execution_when_logEntryEvents_list_is_empty() {
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+        System.assert(logEntryEvents.isEmpty());
+
+        Test.startTest();
+        new LogEntryEventHandler(logEntryEvents).execute();
+        Test.stopTest();
     }
 
     @isTest
@@ -495,6 +506,62 @@ private class LogEntryEventHandler_Tests {
 
         System.assertEquals(MOCK_RELEASE_NUMBER, log.ApiReleaseNumber__c);
         System.assertEquals(MOCK_RELEASE_VERSION, log.ApiReleaseVersion__c);
+        validateLogFields(logEntryEvent, log);
+        validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    @isTest
+    static void it_should_set_api_release_number_and_api_release_version_from_recent_record() {
+        Log__c recentLog = new Log__c(
+            ApiReleaseNumber__c = 'QWERTY',
+            ApiReleaseVersion__c = 'ASDF',
+            TransactionId__c = 'ABC-XYZ'
+        );
+        insert recentLog;
+
+        insert new LogEntry__c(
+            Log__c = recentLog.Id,
+            Timestamp__c = System.now().addHours(-1)
+        );
+
+        LogEntryEventHandler.shouldCallStatusApi = true;
+
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        orgDefaults.EnableStatusApiCallout__c = true;
+        upsert orgDefaults;
+
+        String transactionId = '123-456-789-0';
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            EpochTimestamp__c = System.now().getTime(),
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            TransactionEntryNumber__c = 1,
+            TransactionId__c = transactionId
+        );
+
+        Database.SaveResult saveResult;
+
+        Test.startTest();
+
+        saveResult = EventBus.publish(logEntryEvent);
+        // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+        // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+        // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+        Test.getEventBus().deliver();
+
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        System.assertEquals(0, Limits.getCallouts());
+
+        Log__c log = getLog();
+        System.assertNotEquals(recentLog.Id, log.Id, log.StartTime__c);
+        System.assertEquals(1, log.LogEntries__r.size());
+        LogEntry__c logEntry = log.LogEntries__r.get(0);
+
+        System.assertEquals(recentLog.ApiReleaseNumber__c, log.ApiReleaseNumber__c);
+        System.assertEquals(recentLog.ApiReleaseVersion__c, log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }

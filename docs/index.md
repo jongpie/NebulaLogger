@@ -38,7 +38,7 @@ Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :Sy
 
 ### [LogEntryEventHandler](log-management/LogEntryEventHandler)
 
-Subscribes to `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
+Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
 
 ### [LogEntryFieldSetPicklist](log-management/LogEntryFieldSetPicklist)
 
