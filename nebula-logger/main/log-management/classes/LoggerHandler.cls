@@ -1,5 +1,6 @@
 global class LoggerHandler {
-    private LoggerHandler() {}
+    private LoggerHandler() {
+    }
 
     global interface PostProcessor {
         void execute(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById);
@@ -37,9 +38,9 @@ global class LoggerHandler {
         Map<String, Object> flowInputs = new Map<String, Object>();
         flowInputs.put('records', loggerRecords);
         flowInputs.put('oldRecords', oldLoggerRecordsById.values());
+        flowInputs.put('triggerOperation', Trigger.operationType);
 
         Flow.Interview recordFlow = Flow.Interview.createInterview(flowName, flowInputs);
         recordFlow.start();
     }
 }
-

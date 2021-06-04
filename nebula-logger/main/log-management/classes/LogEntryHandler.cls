@@ -8,7 +8,6 @@
  * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
 public without sharing class LogEntryHandler {
-
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
     private List<LogEntry__c> logEntries;

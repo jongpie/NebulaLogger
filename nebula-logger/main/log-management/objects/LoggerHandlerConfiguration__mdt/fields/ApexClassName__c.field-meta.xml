@@ -7,7 +7,7 @@
     <inlineHelpText>The name of an Apex class that implements LoggerPostProcessor.Handler</inlineHelpText>
     <label>Apex Class Name</label>
     <length>255</length>
-    <required>true</required>
+    <required>false</required>
     <type>Text</type>
     <unique>false</unique>
 </CustomField>
