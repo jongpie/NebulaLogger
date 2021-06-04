@@ -346,12 +346,12 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
     1. `records` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
     2. `oldRecords` - The list of logger records as they exist in the datatabase - this is only populated when running in the context of `Trigger.isUpdate`
     3. `triggerOperation` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
--   Apex post-processors: your Apex class should implement `LoggerHandler.PostProcessor` and the method `executePostProcessors(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById)`. For example:
+-   Apex post-processors: your Apex class should implement `LoggerHandler.PostProcessor`. For example:
 
     ```java
     public class ExamplePostProcessor implements LoggerHandler.PostProcessor {
-        public void execute(List<Log__c> logs, Map<Id, SObject> oldLoggerRecordsById) {
-            switch on Trigger.operationType {
+        public void execute(Trigger.operationType triggerOperation, List<Log__c> logs, Map<Id, SObject> oldLoggerRecordsById) {
+            switch on triggerOperation {
                 when BEFORE_INSERT {
                     for (Log__c log : logs) {
                         log.Status__c = 'On Hold';

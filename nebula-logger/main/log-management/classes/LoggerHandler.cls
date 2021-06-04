@@ -3,7 +3,7 @@ global class LoggerHandler {
     }
 
     global interface PostProcessor {
-        void execute(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById);
+        void execute(TriggerOperation triggerOperation, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById);
     }
 
     public static void executePostProcessors(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
@@ -27,7 +27,7 @@ global class LoggerHandler {
 
         Type postProcessorType = Type.forName(apexClassName);
         PostProcessor recordPostProcessor = (PostProcessor) postProcessorType.newInstance();
-        recordPostProcessor.execute(loggerRecords, oldLoggerRecordsById);
+        recordPostProcessor.execute(Trigger.operationType, loggerRecords, oldLoggerRecordsById);
     }
 
     private static void executeFlow(String flowName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
