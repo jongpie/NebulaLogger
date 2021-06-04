@@ -16,22 +16,17 @@ public without sharing class LogEntryEventHandler {
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
     private List<LogEntryEvent__e> logEntryEvents;
-    @testVisible
-    private TriggerOperation triggerOperationType;
 
     private List<LogEntry__c> logEntries;
     private Map<LogEntry__c, List<String>> logEntryToTopics;
     private Set<String> topicNames;
 
-    public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents) {
-        this();
-
-        this.logEntryEvents = logEntryEvents;
+    public LogEntryEventHandler() {
+        this((List<LogEntryEvent__e>) Trigger.new);
     }
 
-    public LogEntryEventHandler() {
-        this.logEntryEvents = (List<LogEntryEvent__e>) Trigger.new;
-        this.triggerOperationType = Trigger.operationType;
+    public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents) {
+        this.logEntryEvents = logEntryEvents;
 
         this.logEntries = new List<LogEntry__c>();
         this.logEntryToTopics = new Map<LogEntry__c, List<String>>();
@@ -276,7 +271,7 @@ public without sharing class LogEntryEventHandler {
             SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
             FROM Log__c
             WHERE CreatedDate >= :fourHoursAgo AND CreatedDate = TODAY AND ApiReleaseNumber__c != NULL
-            ORDER BY CreatedDate DESC
+            ORDER BY StartTime__c DESC
             LIMIT 1
         ];
 
