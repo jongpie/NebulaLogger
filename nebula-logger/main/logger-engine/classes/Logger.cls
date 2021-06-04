@@ -57,7 +57,8 @@ global with sharing class Logger {
     global enum SaveMethod {
         EVENT_BUS,
         QUEUEABLE,
-        REST
+        REST,
+        SYNCHRONOUS_DML
     }
 
     // Settings management methods
@@ -2508,6 +2509,11 @@ global with sharing class Logger {
                     new RestApiSaver().insertRecords(logEntryEvents);
                 }
             }
+            when SYNCHRONOUS_DML {
+                System.debug('saving with LogEntryEventHandler');
+                new LogEntryEventHandler(logEntryEvents).execute();
+                System.debug('saved with LogEntryEventHandler');
+            }
         }
 
         flushBuffer();
@@ -2642,6 +2648,9 @@ global with sharing class Logger {
             }
             when 'REST' {
                 defaultSaveMethod = SaveMethod.REST;
+            }
+            when 'SYNCHRONOUS_DML' {
+                defaultSaveMethod = SaveMethod.SYNCHRONOUS_DML;
             }
             when else {
                 defaultSaveMethod = SaveMethod.EVENT_BUS;

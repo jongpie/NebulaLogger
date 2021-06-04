@@ -23,6 +23,12 @@ public without sharing class LogEntryEventHandler {
     private Map<LogEntry__c, List<String>> logEntryToTopics;
     private Set<String> topicNames;
 
+    public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents) {
+        this();
+
+        this.logEntryEvents = logEntryEvents;
+    }
+
     public LogEntryEventHandler() {
         this.logEntryEvents = (List<LogEntryEvent__e>) Trigger.new;
         this.triggerOperationType = Trigger.operationType;
@@ -36,13 +42,13 @@ public without sharing class LogEntryEventHandler {
      * @description Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
      */
     public void execute() {
-        switch on this.triggerOperationType {
-            when AFTER_INSERT {
-                this.upsertLogs();
-                this.insertLogEntries();
-                this.insertTopics();
-            }
+        if (this.logEntryEvents.isEmpty()) {
+            return;
         }
+
+        this.upsertLogs();
+        this.insertLogEntries();
+        this.insertTopics();
     }
 
     private void upsertLogs() {
