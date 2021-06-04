@@ -37,13 +37,11 @@ public without sharing class LogEntryEventHandler {
      * @description Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
      */
     public void execute() {
-        if (this.logEntryEvents.isEmpty()) {
-            return;
+        if (this.logEntryEvents.isEmpty() == false) {
+            this.upsertLogs();
+            this.insertLogEntries();
+            this.insertTopics();
         }
-
-        this.upsertLogs();
-        this.insertLogEntries();
-        this.insertTopics();
     }
 
     private void upsertLogs() {
