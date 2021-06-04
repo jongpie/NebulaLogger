@@ -58,6 +58,9 @@ public without sharing class LogHandler {
                 this.shareLogsWithLoggingUsers();
             }
         }
+
+        // Run any post-processors
+        LoggerHandler.executePostProcessors(this.logs, this.oldLogsById);
     }
 
     private void setOrgReleaseCycle() {

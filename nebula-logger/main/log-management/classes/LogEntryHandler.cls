@@ -8,14 +8,18 @@
  * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
 public without sharing class LogEntryHandler {
+
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
     private List<LogEntry__c> logEntries;
+    @testVisible
+    private Map<Id, LogEntry__c> oldLogEntriesById;
     @testVisible
     private TriggerOperation triggerOperationType;
 
     public LogEntryHandler() {
         this.logEntries = (List<LogEntry__c>) Trigger.new;
+        this.oldLogEntriesById = (Map<Id, LogEntry__c>) Trigger.oldMap;
         this.triggerOperationType = Trigger.operationType;
     }
 
@@ -39,6 +43,9 @@ public without sharing class LogEntryHandler {
                 this.setCheckboxFields();
             }
         }
+
+        // Run any post-processors
+        LoggerHandler.executePostProcessors(this.logEntries, this.oldLogEntriesById);
     }
 
     private void setCheckboxFields() {

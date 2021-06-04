@@ -338,6 +338,32 @@ The class `LogMessage` provides the ability to generate string messages on deman
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
 
+### Adding Custom Post-Processors for Log__c and LogEntry__c
+
+If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you leverage Apex or Flow.
+
+-   Flow post-processors: your Flow should be built with 2 input parameters
+    1. `records` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
+    1. `oldRecords` - The list of logger records as they exist in the datatabase - this is only populated when running in the context of `Trigger.isUpdate`
+-   Apex post-processors: your Apex class should implement `LoggerHandler.PostProcessor` and the method `executePostProcessors(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById)`. For example:
+
+    ```java
+    public with sharing class ExamplePostProcessor implements LoggerHandler.PostProcessor {
+        public void execute(List<Log__c> logs, Map<Id, SObject> oldLoggerRecordsById) {
+            switch on Trigger.operationType {
+                when BEFORE_INSERT {
+                    for (Log__c log : logs) {
+                        log.Status__c = 'On Hold';
+                    }
+                }
+            }
+        }
+    }
+
+    ```
+
+Once you've created your Apex or Flow post-processor(s), you will also need to configure the custom metadata type `LoggerHandlerConfiguration__mdt` to specify the name(s) of Apex class and Flow to run.
+
 ## Managing Logs
 
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
