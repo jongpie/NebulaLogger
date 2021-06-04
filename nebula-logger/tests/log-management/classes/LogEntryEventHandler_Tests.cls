@@ -500,8 +500,6 @@ private class LogEntryEventHandler_Tests {
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
-        System.assertEquals(1, Limits.getCallouts());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
