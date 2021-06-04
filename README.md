@@ -342,7 +342,7 @@ For more details, check out the `LogMessage` class [documentation](https://jongp
 
 If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you can leverage Apex or Flow to define "post-processors" - the logger system will then automatically run the post-processors after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on)
 
--   Flow post-processors: your Flow should be built with 2 input parameters
+-   Flow post-processors: your Flow should be built with these input parameters:
     1. `records` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
     2. `oldRecords` - The list of logger records as they exist in the datatabase - this is only populated when running in the context of `Trigger.isUpdate`
     3. `triggerOperation` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
