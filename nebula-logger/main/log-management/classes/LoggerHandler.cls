@@ -7,12 +7,16 @@ global class LoggerHandler {
     }
 
     public static void executePostProcessors(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
+        if (loggerRecords == null) {
+            return;
+        }
+
         String sobjectTypeCmdtName = loggerRecords.getSObjectType().getDescribe().getName().replace('__c', '');
 
         List<LoggerHandlerConfiguration__mdt> loggerHandlerConfigurations = [
             SELECT ApexClassName__c, FlowName__c
             FROM LoggerHandlerConfiguration__mdt
-            WHERE LoggerSObject__r.DeveloperName = :sobjectTypeCmdtName
+            WHERE LoggerSObject__r.DeveloperName = :sobjectTypeCmdtName AND IsActive__c = TRUE
         ];
         LoggerHandlerConfiguration__mdt loggerHandlerConfiguration = loggerHandlerConfigurations.isEmpty() ? null : loggerHandlerConfigurations.get(0);
 
@@ -37,7 +41,7 @@ global class LoggerHandler {
 
         Map<String, Object> flowInputs = new Map<String, Object>();
         flowInputs.put('records', loggerRecords);
-        flowInputs.put('oldRecords', oldLoggerRecordsById.values());
+        flowInputs.put('oldRecords', oldLoggerRecordsById?.values());
         flowInputs.put('triggerOperation', Trigger.operationType);
 
         Flow.Interview recordFlow = Flow.Interview.createInterview(flowName, flowInputs);

@@ -3,6 +3,7 @@
     <fullName>All</fullName>
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
+    <columns>IsActive__c</columns>
     <columns>LoggerSObject__c</columns>
     <columns>ApexClassName__c</columns>
     <columns>FlowName__c</columns>
