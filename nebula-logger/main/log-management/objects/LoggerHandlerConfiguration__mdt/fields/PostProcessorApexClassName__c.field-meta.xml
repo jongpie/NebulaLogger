@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ApexClassName__c</fullName>
+    <fullName>PostProcessorApexClassName__c</fullName>
     <description>The name of an Apex class that implements LoggerPostProcessor.Handler</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>The name of an Apex class that implements LoggerPostProcessor.Handler</inlineHelpText>
     <label>Apex Class Name</label>
     <length>255</length>

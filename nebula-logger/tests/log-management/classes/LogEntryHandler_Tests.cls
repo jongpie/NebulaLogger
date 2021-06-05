@@ -4,6 +4,30 @@
 //------------------------------------------------------------------------------------------------//
 @isTest
 private class LogEntryHandler_Tests {
+
+    public class LogEntryPostProcessorTest implements LoggerPostProcessor {
+        public void execute(TriggerOperation triggerOperationType, List<SObject> logs, Map<Id, SObject> oldLogsById) {
+            if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
+                for (LogEntry__c logEntry : (List<LogEntry__c>) logs) {
+                    // The specific field changed doesn't really matter - we just want to ensure that whatever...
+                    // ...logic implement in the instance of LoggerPostProcessor is executed
+                    logEntry.Message__c = 'Some String';
+                }
+            }
+        }
+    }
+
+    private static LoggerHandlerConfiguration__mdt getMockConfiguration() {
+        // Mocking entity deefinition fields on CMDT is not properly supported, so here's some goofy workarounds for mocking an instance
+        EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :LogEntry__c.getSObjectType().getDescribe().getName()];
+        LoggerHandlerConfiguration__mdt configuration =  new LoggerHandlerConfiguration__mdt();
+
+        Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
+        configurationUntyped.put('LoggerSObject__r', logEntityDefinition);
+
+        return (LoggerHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerHandlerConfiguration__mdt.class);
+    }
+
     @testSetup
     static void setupData() {
         Log__c log = new Log__c(TransactionId__c = '1234');
@@ -199,5 +223,32 @@ private class LogEntryHandler_Tests {
         logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
         System.assert(logEntry.HasStackTrace__c);
         System.assertEquals(stackTrace, logEntry.StackTrace__c);
+    }
+
+    @isTest
+    static void it_should_run_apex_post_processor_when_configured() {
+        String expectedMessage = 'Some String';
+
+        LoggerHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
+        logHandlerConfiguration.PostProcessorApexClassName__c = LogEntryPostProcessorTest.class.getName();
+
+        Map<SObjectType, LoggerHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerHandlerConfiguration__mdt>{
+            Schema.LogEntry__c.SObjectType => logHandlerConfiguration
+        };
+
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+
+        Test.startTest();
+
+        // Use the mock configurations
+        LoggerHandler.configurationsBySObjectType = configurationsBySObjectType;
+
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');
+        insert logEntry;
+
+        logEntry = [SELECT Id, Message__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assertEquals(expectedMessage, logEntry.Message__c);
+
+        Test.stopTest();
     }
 }

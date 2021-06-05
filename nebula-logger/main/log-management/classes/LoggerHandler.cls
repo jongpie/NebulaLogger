@@ -8,46 +8,51 @@
  * @description Abstract class used by trigger handlers for shared logic
  */
  public abstract class LoggerHandler {
+    @testVisible
+    private static Map<SObjectType, LoggerHandlerConfiguration__mdt> configurationsbySObjectType = loadConfigurations();
+
+    private static Map<SObjectType, LoggerHandlerConfiguration__mdt> loadConfigurations() {
+        Map<SObjectType, LoggerHandlerConfiguration__mdt> configsbySObjectType = new Map<SObjectType, LoggerHandlerConfiguration__mdt>();
+        for (LoggerHandlerConfiguration__mdt config : LoggerHandlerConfiguration__mdt.getAll().values()) {
+            // Schema.getGlobalDescribe() is the worst, so don't use it
+            SObjectType sobjectType = ((SObject) Type.forName(config.LoggerSObject__r.DeveloperName + '__c').newInstance()).getSObjectType();
+
+            configsbySObjectType.put(sobjectType, config);
+        }
+        return configsbySObjectType;
+    }
 
     protected void executePostProcessors(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
         if (loggerRecords == null) {
             return;
         }
 
-        String sobjectTypeCmdtName = loggerRecords.getSObjectType().getDescribe().getName().replace('__c', '');
+        LoggerHandlerConfiguration__mdt loggerHandlerConfiguration = configurationsbySObjectType.get(loggerRecords.getSObjectType());
 
-        List<LoggerHandlerConfiguration__mdt> loggerHandlerConfigurations = [
-            SELECT ApexClassName__c, FlowName__c
-            FROM LoggerHandlerConfiguration__mdt
-            WHERE LoggerSObject__r.DeveloperName = :sobjectTypeCmdtName AND IsActive__c = TRUE
-        ];
-        LoggerHandlerConfiguration__mdt loggerHandlerConfiguration = loggerHandlerConfigurations.isEmpty() ? null : loggerHandlerConfigurations.get(0);
-
-        executeApexClass(loggerHandlerConfiguration?.ApexClassName__c, loggerRecords, oldLoggerRecordsById);
-        executeFlow(loggerHandlerConfiguration?.FlowName__c, loggerRecords, oldLoggerRecordsById);
+        this.executeApexClass(loggerHandlerConfiguration?.PostProcessorApexClassName__c, loggerRecords, oldLoggerRecordsById);
+        this.executeFlow(loggerHandlerConfiguration?.PostProcessorFlowApiName__c, loggerRecords, oldLoggerRecordsById);
     }
 
     private void executeApexClass(String apexClassName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
-        if (String.isBlank(apexClassName)) {
+        if (String.isBlank(apexClassName) || Type.forName(apexClassName) == null) {
             return;
         }
 
-        Type postProcessorType = Type.forName(apexClassName);
-        LoggerPostProcessor recordPostProcessor = (LoggerPostProcessor) postProcessorType.newInstance();
+        LoggerPostProcessor recordPostProcessor = (LoggerPostProcessor) Type.forName(apexClassName).newInstance();
         recordPostProcessor.execute(Trigger.operationType, loggerRecords, oldLoggerRecordsById);
     }
 
-    private void executeFlow(String flowName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
-        if (String.isBlank(flowName)) {
+    private void executeFlow(String flowApiName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
+        if (String.isBlank(flowApiName)) {
             return;
         }
 
         Map<String, Object> flowInputs = new Map<String, Object>();
+        flowInputs.put('triggerOperationType', Trigger.operationType);
         flowInputs.put('records', loggerRecords);
         flowInputs.put('oldRecords', oldLoggerRecordsById?.values());
-        flowInputs.put('triggerOperation', Trigger.operationType);
 
-        Flow.Interview recordFlow = Flow.Interview.createInterview(flowName, flowInputs);
+        Flow.Interview recordFlow = Flow.Interview.createInterview(flowApiName, flowInputs);
         recordFlow.start();
     }
 }

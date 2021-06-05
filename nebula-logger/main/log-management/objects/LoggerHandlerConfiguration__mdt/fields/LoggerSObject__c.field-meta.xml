@@ -3,7 +3,7 @@
     <fullName>LoggerSObject__c</fullName>
     <description>The Logger object to process - Log__c or LogEntry__c</description>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
+    <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>The Logger object to process - Log__c or LogEntry__c</inlineHelpText>
     <label>Logger Object</label>
     <referenceTo>EntityDefinition</referenceTo>
