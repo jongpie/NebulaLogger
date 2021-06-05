@@ -60,7 +60,7 @@ public without sharing class LogHandler extends LoggerHandler {
         }
 
         // Run any post-processors
-        super.executePostProcessors(this.logs, this.oldLogsById);
+        this.executePostProcessors(this.logs, this.oldLogsById);
     }
 
     private void setOrgReleaseCycle() {

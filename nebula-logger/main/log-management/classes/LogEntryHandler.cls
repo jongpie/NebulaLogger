@@ -44,7 +44,7 @@ public without sharing class LogEntryHandler extends LoggerHandler {
         }
 
         // Run any post-processors
-        super.executePostProcessors(this.logEntries, this.oldLogEntriesById);
+        this.executePostProcessors(this.logEntries, this.oldLogEntriesById);
     }
 
     private void setCheckboxFields() {
