@@ -9,10 +9,58 @@
  * @see LogBatchPurgeScheduler
  */
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
+    private final Boolean isSystemDebuggingEnabled;
+
     private String originalTransactionId;
     private Integer totalProcessedRecords = 0;
 
+    // Database.emptyRecycleBin counts as a DML statement per record
+    private static Integer MAX_RECORDS_DELETED = (Limits.getLimitDmlRows() / 2) - 1;
+    private static Integer DELETED_COUNT = 0;
+
     private class LogBatchPurgerException extends Exception {
+    }
+
+    global LogBatchPurger() {
+        this.isSystemDebuggingEnabled = Logger.getUserSettings()?.EnableSystemMessages__c == true;
+    }
+
+    private class LogDeleter implements System.Queueable {
+        private final List<SObject> recordsToDelete;
+        public LogDeleter(List<SObject> recordsToDelete) {
+            this.recordsToDelete = recordsToDelete;
+        }
+
+        public void process() {
+            if (DELETED_COUNT + this.recordsToDelete.size() < MAX_RECORDS_DELETED) {
+                this.hardDelete(this.recordsToDelete);
+                this.recordsToDelete.clear();
+            } else {
+                List<SObject> safeToDeleteRecords = new List<SObject>();
+                while (this.recordsToDelete.size() > MAX_RECORDS_DELETED && !this.recordsToDelete.isEmpty()) {
+                    for (Integer index = this.recordsToDelete.size() - 1; index >= 0; index--) {
+                        safeToDeleteRecords.add(this.recordsToDelete[index]);
+                        this.recordsToDelete.remove(index);
+                    }
+                }
+                this.hardDelete(safeToDeleteRecords);
+            }
+
+
+            if (!this.recordsToDelete.isEmpty() && Limits.getLimitQueueableJobs() > Limits.getQueueableJobs()) {
+                System.enqueueJob(this);
+            }
+        }
+
+        public void execute(QueueableContext queueableContext) {
+            this.process();
+        }
+
+        private void hardDelete(List<SObject> records) {
+            DELETED_COUNT += records.size();
+            delete records;
+            Database.emptyRecycleBin(records);
+        }
     }
 
     global Database.QueryLocator start(Database.BatchableContext batchableContext) {
@@ -24,7 +72,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         // ...so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
 
-        if (Logger.getUserSettings().EnableSystemMessages__c == true) {
+        if (this.isSystemDebuggingEnabled) {
             Logger.info('Starting LogBatchPurger job');
             Logger.saveLog();
         }
@@ -39,24 +87,22 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             throw new LogBatchPurgerException('User does not have access to delete logs');
         }
 
-        this.totalProcessedRecords += logsToDelete.size();
 
         try {
-            if (Logger.getUserSettings().EnableSystemMessages__c == true) {
+            if (this.isSystemDebuggingEnabled) {
                 Logger.setParentLogTransactionId(this.originalTransactionId);
                 Logger.info(new LogMessage('Starting deletion of {0} records', logsToDelete.size()));
             }
 
             // Delete the child log entries first
             List<LogEntry__c> logEntriesToDelete = [SELECT Id FROM LogEntry__c WHERE Log__c IN :logsToDelete];
-            delete logEntriesToDelete;
-            Database.emptyRecycleBin(logEntriesToDelete);
+            new LogDeleter(logEntriesToDelete).process();
 
             // Now delete the parent logs
-            delete logsToDelete;
-            Database.emptyRecycleBin(logsToDelete);
+            new LogDeleter(logsToDelete).process();
+            this.totalProcessedRecords += DELETED_COUNT;
         } catch (Exception apexException) {
-            if (Logger.getUserSettings().EnableSystemMessages__c == true) {
+            if (this.isSystemDebuggingEnabled) {
                 Logger.error('Error deleting logs', apexException);
             }
         } finally {
@@ -65,7 +111,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     }
 
     global void finish(Database.BatchableContext batchableContext) {
-        if (Logger.getUserSettings().EnableSystemMessages__c == true) {
+        if (this.isSystemDebuggingEnabled) {
             Logger.setParentLogTransactionId(this.originalTransactionId);
             Logger.info(new LogMessage('Finished LogBatchPurger job, {0} total log records processed', this.totalProcessedRecords));
             Logger.saveLog();
