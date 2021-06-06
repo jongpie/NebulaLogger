@@ -56,6 +56,14 @@ Manages setting fields on `Log__c` before insert & before update
 
 Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
 
+### [LoggerSObjectHandler](log-management/LoggerSObjectHandler)
+
+Abstract class used by trigger handlers for shared logic
+
+### [LoggerSObjectPostProcessor](log-management/LoggerSObjectPostProcessor)
+
+Interface used to define custom logic to run when DML statements occur on `Log__c` or `LogEntry__c`
+
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 
 Controller class for the component RelatedLogEntries
