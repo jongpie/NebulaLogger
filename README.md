@@ -347,10 +347,10 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
     1. `triggerOperationType` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
     2. `records` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
     3. `oldRecords` - The list of logger records as they exist in the datatabase - this is only populated when running in the context of `Trigger.isUpdate`
--   Apex post-processors: your Apex class should implement `LoggerPostProcessor`. For example:
+-   Apex post-processors: your Apex class should implement `LoggerSObjectPostProcessor`. For example:
 
     ```java
-    public class ExamplePostProcessor implements LoggerPostProcessor {
+    public class ExamplePostProcessor implements LoggerSObjectPostProcessor {
         public void execute(Trigger.operationType triggerOperationType, List<Log__c> logs, Map<Id, SObject> oldLoggerRecordsById) {
             switch on triggerOperationType {
                 when BEFORE_INSERT {
@@ -364,7 +364,7 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
 
     ```
 
-Once you've created your Apex or Flow post-processor(s), you will also need to configure the custom metadata type `LoggerHandlerConfiguration__mdt` to specify the name(s) of Apex class and Flow to run.
+Once you've created your Apex or Flow post-processor(s), you will also need to configure the custom metadata type `LoggerSObjectHandlerConfiguration__mdt` to specify the name(s) of Apex class and Flow to run.
 
 ![Logger Handler Configuration](./content/logger-handler-configuration.png)
 

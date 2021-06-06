@@ -11,27 +11,27 @@ private class LogHandler_Tests {
     private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
-    public class LogPostProcessorTest implements LoggerPostProcessor {
+    public class LogPostProcessorTest implements LoggerSObjectPostProcessor {
         public void execute(TriggerOperation triggerOperationType, List<SObject> logs, Map<Id, SObject> oldLogsById) {
             if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
                 for (Log__c log : (List<Log__c>) logs) {
                     // The specific field changed doesn't really matter - we just want to ensure that whatever...
-                    // ...logic implement in the instance of LoggerPostProcessor is executed
+                    // ...logic implement in the instance of LoggerSObjectPostProcessor is executed
                     log.ProfileName__c = 'Some String';
                 }
             }
         }
     }
 
-    private static LoggerHandlerConfiguration__mdt getMockConfiguration() {
+    private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
         // Mocking entity deefinition fields on CMDT is not properly supported, so here's some goofy workarounds for mocking an instance
         EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :Log__c.getSObjectType().getDescribe().getName()];
-        LoggerHandlerConfiguration__mdt configuration =  new LoggerHandlerConfiguration__mdt();
+        LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
 
         Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
         configurationUntyped.put('LoggerSObject__r', logEntityDefinition);
 
-        return (LoggerHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerHandlerConfiguration__mdt.class);
+        return (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
     }
 
     @testSetup
@@ -429,17 +429,17 @@ private class LogHandler_Tests {
     static void it_should_run_apex_post_processor_when_configured() {
         String expectedProfileName = 'Some String';
 
-        LoggerHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
+        LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.PostProcessorApexClassName__c = LogPostProcessorTest.class.getName();
 
-        Map<SObjectType, LoggerHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerHandlerConfiguration__mdt>{
+        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
             Schema.Log__c.SObjectType => logHandlerConfiguration
         };
 
         Test.startTest();
 
         // Use the mock configurations
-        LoggerHandler.configurationsBySObjectType = configurationsBySObjectType;
+        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;

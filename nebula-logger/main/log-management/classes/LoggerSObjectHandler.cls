@@ -7,13 +7,13 @@
  * @group Log Management
  * @description Abstract class used by trigger handlers for shared logic
  */
- public abstract class LoggerHandler {
+ public abstract class LoggerSObjectHandler {
     @testVisible
-    private static Map<SObjectType, LoggerHandlerConfiguration__mdt> configurationsbySObjectType = loadConfigurations();
+    private static Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsbySObjectType = loadConfigurations();
 
-    private static Map<SObjectType, LoggerHandlerConfiguration__mdt> loadConfigurations() {
-        Map<SObjectType, LoggerHandlerConfiguration__mdt> configsbySObjectType = new Map<SObjectType, LoggerHandlerConfiguration__mdt>();
-        for (LoggerHandlerConfiguration__mdt config : LoggerHandlerConfiguration__mdt.getAll().values()) {
+    private static Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> loadConfigurations() {
+        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configsbySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>();
+        for (LoggerSObjectHandlerConfiguration__mdt config : LoggerSObjectHandlerConfiguration__mdt.getAll().values()) {
             // Schema.getGlobalDescribe() is the worst, so don't use it
             SObjectType sobjectType = ((SObject) Type.forName(config.LoggerSObject__r.DeveloperName + '__c').newInstance()).getSObjectType();
 
@@ -27,22 +27,22 @@
             return;
         }
 
-        LoggerHandlerConfiguration__mdt loggerHandlerConfiguration = configurationsbySObjectType.get(loggerRecords.getSObjectType());
+        LoggerSObjectHandlerConfiguration__mdt loggerHandlerConfiguration = configurationsbySObjectType.get(loggerRecords.getSObjectType());
 
-        this.executeApexClass(loggerHandlerConfiguration?.PostProcessorApexClassName__c, loggerRecords, oldLoggerRecordsById);
-        this.executeFlow(loggerHandlerConfiguration?.PostProcessorFlowApiName__c, loggerRecords, oldLoggerRecordsById);
+        this.executePostProcessorApexClass(loggerHandlerConfiguration?.PostProcessorApexClassName__c, loggerRecords, oldLoggerRecordsById);
+        this.executePostProcessorFlow(loggerHandlerConfiguration?.PostProcessorFlowApiName__c, loggerRecords, oldLoggerRecordsById);
     }
 
-    private void executeApexClass(String apexClassName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
+    private void executePostProcessorApexClass(String apexClassName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
         if (String.isBlank(apexClassName) || Type.forName(apexClassName) == null) {
             return;
         }
 
-        LoggerPostProcessor recordPostProcessor = (LoggerPostProcessor) Type.forName(apexClassName).newInstance();
+        LoggerSObjectPostProcessor recordPostProcessor = (LoggerSObjectPostProcessor) Type.forName(apexClassName).newInstance();
         recordPostProcessor.execute(Trigger.operationType, loggerRecords, oldLoggerRecordsById);
     }
 
-    private void executeFlow(String flowApiName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
+    private void executePostProcessorFlow(String flowApiName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
         if (String.isBlank(flowApiName)) {
             return;
         }
@@ -52,7 +52,7 @@
         flowInputs.put('records', loggerRecords);
         flowInputs.put('oldRecords', oldLoggerRecordsById?.values());
 
-        Flow.Interview recordFlow = Flow.Interview.createInterview(flowApiName, flowInputs);
-        recordFlow.start();
+        Flow.Interview postProcessorFlow = Flow.Interview.createInterview(flowApiName, flowInputs);
+        postProcessorFlow.start();
     }
 }

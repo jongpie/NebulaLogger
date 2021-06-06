@@ -7,6 +7,6 @@
  * @group Log Management
  * @description Interface used to define custom logic to run when DML statements occur on `Log__c` or `LogEntry__c`
  */
- global interface LoggerPostProcessor {
+ global interface LoggerSObjectPostProcessor {
     void execute(TriggerOperation triggerOperationType, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById);
 }

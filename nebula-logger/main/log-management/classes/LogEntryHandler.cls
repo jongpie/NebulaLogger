@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
-public without sharing class LogEntryHandler extends LoggerHandler {
+public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
     private List<LogEntry__c> logEntries;

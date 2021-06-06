@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `Log__c` before insert & before update
  */
-public without sharing class LogHandler extends LoggerHandler {
+public without sharing class LogHandler extends LoggerSObjectHandler {
     private static final Organization ORGANIZATION = [SELECT Id, InstanceName, IsSandbox FROM Organization];
 
     @testVisible
