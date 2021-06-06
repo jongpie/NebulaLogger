@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": true,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionName": "New save method SYNCHRONOUS_DML",
-            "versionNumber": "4.4.6.0",
-            "versionDescription": "The new save method skips publishing platform events and instead immediately creates Log__c and LogEntry__c records. Use cautiously!",
+            "versionName": "Logger SObject Post-Processors",
+            "versionNumber": "4.5.0.0",
+            "versionDescription": "Easily add your own automations for Log__c and LogEntry__c objects using Apex or Flow",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],

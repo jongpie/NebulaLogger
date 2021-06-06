@@ -9,10 +9,10 @@
             "default": true,
             "definitionFile": "config/project-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "versionName": "Configurable Default Save Method & New Epoch Timestamp Fields",
-            "versionNumber": "4.4.0.2",
-            "ancestorVersion": "4.3.0.3",
-            "versionDescription": "Includes new Logger Setting for the default save method, added new Epoch Timestamp fields and bugfixes",
+            "versionName": "Logger SObject Post-Processors",
+            "versionNumber": "4.5.0.0",
+            "ancestorVersion": "4.4.0.2",
+            "versionDescription": "Easily add your own automations for Log__c and LogEntry__c objects using Apex or Flow",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
