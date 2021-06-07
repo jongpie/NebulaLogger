@@ -9,7 +9,6 @@ const mockGetLog = require('./data/getLog.json');
 // Register a test wire adapter
 const getLogAdapter = registerApexTestWireAdapter(getLog);
 
-
 function flushPromises() {
     return new Promise(resolve => setTimeout(resolve, 0));
 }
