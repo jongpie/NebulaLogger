@@ -4,6 +4,7 @@
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>LoggerSObject__c</columns>
+    <columns>IsEnabled__c</columns>
     <columns>PostProcessorApexClassName__c</columns>
     <columns>PostProcessorFlowApiName__c</columns>
     <filterScope>Everything</filterScope>

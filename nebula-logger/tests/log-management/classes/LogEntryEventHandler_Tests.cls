@@ -263,6 +263,13 @@ private class LogEntryEventHandler_Tests {
     }
 
     @isTest
+    static void it_should_return_the_logEntryEvent_sobjectType() {
+        Test.startTest();
+        System.assertEquals(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
+        Test.stopTest();
+    }
+
+    @isTest
     static void it_should_gracefully_skip_execution_when_logEntryEvents_list_is_empty() {
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         System.assert(logEntryEvents.isEmpty());

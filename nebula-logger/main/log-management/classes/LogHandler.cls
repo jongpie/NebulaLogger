@@ -39,9 +39,21 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     /**
+     * @description Returns SObject Type that the handler is responsible for processing
+     * @return      The instance of `SObjectType`
+     */
+    public override SObjectType getSObjectType() {
+        return Schema.Log__c.SObjectType;
+    }
+
+    /**
      * @description Runs the trigger handler's logic for the `Log__c` custom object
      */
     public void execute() {
+        if (this.configuration.IsEnabled__c == false) {
+            return;
+        }
+
         switch on this.triggerOperationType {
             when BEFORE_INSERT {
                 this.setOrgReleaseCycle();

@@ -23,9 +23,21 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     /**
+     * @description Returns SObject Type that the handler is responsible for processing
+     * @return      The instance of `SObjectType`
+     */
+    public override SObjectType getSObjectType() {
+        return Schema.LogEntry__c.SObjectType;
+    }
+
+    /**
      * @description Runs the trigger handler's logic for the `LogEntry__c` custom object
      */
     public void execute() {
+        if (this.configuration.IsEnabled__c == false) {
+            return;
+        }
+
         switch on this.triggerOperationType {
             when BEFORE_INSERT {
                 this.setCheckboxFields();

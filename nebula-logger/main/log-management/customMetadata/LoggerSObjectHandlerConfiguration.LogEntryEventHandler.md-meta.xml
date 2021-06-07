@@ -4,10 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>LogEntry__c custom object</label>
+    <label>LogEntryEventHandler confg</label>
     <protected>false</protected>
     <values>
         <field>LoggerSObject__c</field>
-        <value xsi:type="xsd:string">LogEntry__c</value>
+        <value xsi:type="xsd:string">LogEntryEvent__e</value>
     </values>
 </CustomMetadata>

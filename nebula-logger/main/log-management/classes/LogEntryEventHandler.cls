@@ -34,9 +34,21 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     /**
+     * @description Returns SObject Type that the handler is responsible for processing
+     * @return      The instance of `SObjectType`
+     */
+    public override SObjectType getSObjectType() {
+        return Schema.LogEntryEvent__e.SObjectType;
+    }
+
+    /**
      * @description Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
      */
     public void execute() {
+        if (this.configuration.IsEnabled__c == false) {
+            return;
+        }
+
         if (this.logEntryEvents.isEmpty() == false) {
             this.upsertLogs();
             this.insertLogEntries();

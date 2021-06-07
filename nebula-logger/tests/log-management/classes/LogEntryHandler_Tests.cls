@@ -18,7 +18,7 @@ private class LogEntryHandler_Tests {
     }
 
     private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
-        // Mocking entity deefinition fields on CMDT is not properly supported, so here's some goofy workarounds for mocking an instance
+        // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
         EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :LogEntry__c.getSObjectType().getDescribe().getName()];
         LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
 
@@ -33,6 +33,13 @@ private class LogEntryHandler_Tests {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         Test.setCreatedDate(log.Id, System.now().addDays(-8));
+    }
+
+    @isTest
+    static void it_should_return_the_logEntry_sobjectType() {
+        Test.startTest();
+        System.assertEquals(Schema.LogEntry__c.SObjectType, new LogEntryHandler().getSObjectType());
+        Test.stopTest();
     }
 
     @isTest
