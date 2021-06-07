@@ -55,6 +55,34 @@ private class LogHandler_Tests {
     }
 
     @isTest
+    static void it_should_load_a_default_config_when_no_config_present() {
+        LogStatus__mdt closedLogStatus = [SELECT Id, MasterLabel FROM LogStatus__mdt WHERE IsActive__c = true AND IsClosed__c = true LIMIT 1];
+
+        Test.startTest();
+
+        // Clear any CMDT records that have been loaded from the database
+        LoggerSObjectHandler.configurationsBySObjectType.clear();
+        LoggerSObjectHandlerConfiguration__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.Log__c.SObjectType);
+        System.assertEquals(null, configuration);
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
+        insert log;
+
+        // Verify that a default config has been loaded w/ IsEnabled__c = true
+        configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.Log__c.SObjectType);
+        System.assertNotEquals(null, configuration);
+        System.assertEquals(null, configuration.Id);
+        System.assertEquals(true, configuration.IsEnabled__c);
+
+        Test.stopTest();
+
+        // Assumption: the default config should have been loaded with IsEnabled__c = true, resulting in log.IsClosed__c being auto-set to true...
+        // ...so if it's true, it indicates that the handler executed with a default config
+        log = [SELECT Id, IsClosed__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(true, log.IsClosed__c);
+    }
+
+    @isTest
     static void it_should_not_run_handler_when_disabled_via_configuration() {
         LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.IsEnabled__c = false;

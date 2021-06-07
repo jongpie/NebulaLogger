@@ -282,6 +282,41 @@ private class LogEntryEventHandler_Tests {
         Test.stopTest();
     }
 
+
+    @isTest
+    static void it_should_load_a_default_config_when_no_config_present() {
+        Test.startTest();
+
+        // Clear any CMDT records that have been loaded from the database
+        LoggerSObjectHandler.configurationsBySObjectType.clear();
+        LoggerSObjectHandlerConfiguration__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.LogEntryEvent__e.SObjectType);
+        System.assertEquals(null, configuration);
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            EpochTimestamp__c = System.now().getTime(),
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            TransactionEntryNumber__c = 1,
+            TransactionId__c = '1234'
+        );
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+
+        // Verify that a default config has been loaded w/ IsEnabled__c = true
+        configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.LogEntryEvent__e.SObjectType);
+        System.assertNotEquals(null, configuration);
+        System.assertEquals(null, configuration.Id);
+        System.assertEquals(true, configuration.IsEnabled__c);
+
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        // Assumption: the default config should have been loaded with IsEnabled__c = true, resulting in a log being created
+        // ...which indicates that the handler executed with a default config
+        Integer logCount = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(1, logCount);
+    }
+
     @isTest
     static void it_should_not_run_handler_when_disabled_via_configuration() {
         LoggerSObjectHandlerConfiguration__mdt logEntryEventHandlerConfiguration = getMockConfiguration();
@@ -303,7 +338,6 @@ private class LogEntryEventHandler_Tests {
             TransactionEntryNumber__c = 1,
             TransactionId__c = '1234'
         );
-
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
 
         Test.stopTest();
