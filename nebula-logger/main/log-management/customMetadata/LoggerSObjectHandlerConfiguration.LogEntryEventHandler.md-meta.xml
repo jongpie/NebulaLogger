@@ -7,7 +7,7 @@
     <label>LogEntryEventHandler confg</label>
     <protected>false</protected>
     <values>
-        <field>LoggerSObject__c</field>
+        <field>SObjectType__c</field>
         <value xsi:type="xsd:string">LogEntryEvent__e</value>
     </values>
 </CustomMetadata>

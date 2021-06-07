@@ -29,7 +29,7 @@ private class LogHandler_Tests {
         LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
 
         Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
-        configurationUntyped.put('LoggerSObject__r', logEntityDefinition);
+        configurationUntyped.put('SObjectType__r', logEntityDefinition);
 
         return (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
     }
@@ -51,6 +51,33 @@ private class LogHandler_Tests {
         Test.startTest();
         System.assertEquals(Schema.Log__c.SObjectType, new LogHandler().getSObjectType());
         Test.stopTest();
+    }
+
+    @isTest
+    static void it_should_not_run_handler_when_configured() {
+        LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
+        logHandlerConfiguration.IsEnabled__c = false;
+
+        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
+            Schema.Log__c.SObjectType => logHandlerConfiguration
+        };
+
+        LogStatus__mdt closedLogStatus = [SELECT Id, MasterLabel FROM LogStatus__mdt WHERE IsActive__c = true AND IsClosed__c = true LIMIT 1];
+
+        Test.startTest();
+
+        // Use the mock configurations
+        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
+        insert log;
+
+        Test.stopTest();
+
+        // Assumption: if the handler had executed, then log.IsClosed__c should have been auto-set to true...
+        // ...so if it's still false, it indicates that the handler did not execute
+        log = [SELECT Id, IsClosed__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(false, log.IsClosed__c);
     }
 
     @isTest

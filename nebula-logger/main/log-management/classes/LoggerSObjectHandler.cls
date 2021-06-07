@@ -15,7 +15,7 @@
         Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>();
         for (LoggerSObjectHandlerConfiguration__mdt config : LoggerSObjectHandlerConfiguration__mdt.getAll().values()) {
             // Schema.getGlobalDescribe() is the worst, so don't use it
-            SObjectType sobjectType = ((SObject) Type.forName(config.LoggerSObject__r.QualifiedApiName + '__c').newInstance()).getSObjectType();
+            SObjectType sobjectType = ((SObject) Type.forName(config.SObjectType__r.QualifiedApiName + '__c').newInstance()).getSObjectType();
 
             configsBySObjectType.put(sobjectType, config);
         }
@@ -51,9 +51,10 @@
 
             // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
             // TODO cache entity definition query for Log__c, LogEntry__c and LogEntryEvent__e
+            String entityDefinitionRelationshipName = Schema.LoggerSObjectHandlerConfiguration__mdt.SObjectType__c.getDescribe().getName().replace('__c', '__r');
             EntityDefinition sobjectEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :sobjectType.getDescribe().getName()];
             Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
-            configurationUntyped.put('LoggerSObject__r', sobjectEntityDefinition);
+            configurationUntyped.put(entityDefinitionRelationshipName, sobjectEntityDefinition);
 
             configuration = (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
             configuration.IsEnabled__c = true;

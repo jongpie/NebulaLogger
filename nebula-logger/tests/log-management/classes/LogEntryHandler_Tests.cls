@@ -23,7 +23,7 @@ private class LogEntryHandler_Tests {
         LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
 
         Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
-        configurationUntyped.put('LoggerSObject__r', logEntityDefinition);
+        configurationUntyped.put('SObjectType__r', logEntityDefinition);
 
         return (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
     }
