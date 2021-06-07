@@ -47,7 +47,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 this.hardDelete(safeToDeleteRecords);
             }
 
-
             if (!this.recordsToDelete.isEmpty() && Limits.getLimitQueueableJobs() > Limits.getQueueableJobs()) {
                 System.enqueueJob(this);
             }
@@ -58,9 +57,14 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
 
         private void hardDelete(List<SObject> records) {
-            DELETED_COUNT += records.size();
-            delete records;
-            Database.emptyRecycleBin(records);
+            // normally this would be an anti-pattern since most DML operations
+            // are a no-op with an empty list - but emptyRecycleBin throws
+            // for empty lists!
+            if (!records.isEmpty()) {
+                DELETED_COUNT += records.size();
+                delete records;
+                Database.emptyRecycleBin(records);
+            }
         }
     }
 
@@ -88,15 +92,13 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             throw new LogBatchPurgerException('User does not have access to delete logs');
         }
 
-
         try {
-            if (this.isSystemDebuggingEnabled) {
-                Logger.setParentLogTransactionId(this.originalTransactionId);
-                Logger.info(new LogMessage('Starting deletion of {0} records', logsToDelete.size()));
-            }
-
             // Delete the child log entries first
             List<LogEntry__c> logEntriesToDelete = [SELECT Id FROM LogEntry__c WHERE Log__c IN :logsToDelete];
+            if (this.isSystemDebuggingEnabled) {
+                Logger.setParentLogTransactionId(this.originalTransactionId);
+                Logger.info(new LogMessage('Starting deletion of {0} logs and {1} log entries', logsToDelete.size(), logEntriesToDelete.size()));
+            }
             new LogDeleter(logEntriesToDelete).process();
 
             // Now delete the parent logs
