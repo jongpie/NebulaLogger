@@ -56,7 +56,7 @@
     private LoggerSObjectHandlerConfiguration__mdt getConfiguration(SObjectType sobjectType) {
         LoggerSObjectHandlerConfiguration__mdt configuration = configurationsBySObjectType.get(sobjectType);
 
-        if (configuration == null || Test.isRunningTest()) {
+        if (configuration == null) {
             configuration =  new LoggerSObjectHandlerConfiguration__mdt();
 
             // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
@@ -68,6 +68,8 @@
 
             configuration = (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
             configuration.IsEnabled__c = true;
+
+            configurationsBySObjectType.put(sobjectType, configuration);
         }
 
         return configuration;
@@ -78,8 +80,8 @@
             return;
         }
 
-        LoggerSObjectPostProcessor recordPostProcessor = (LoggerSObjectPostProcessor) Type.forName(apexClassName).newInstance();
-        recordPostProcessor.execute(Trigger.operationType, loggerRecords, oldLoggerRecordsById);
+        LoggerSObjectPostProcessor apexPostProcessor = (LoggerSObjectPostProcessor) Type.forName(apexClassName).newInstance();
+        apexPostProcessor.execute(Trigger.operationType, loggerRecords, oldLoggerRecordsById);
     }
 
     private void executePostProcessorFlow(String flowApiName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
@@ -92,7 +94,7 @@
         flowInputs.put('records', loggerRecords);
         flowInputs.put('oldRecords', oldLoggerRecordsById?.values());
 
-        Flow.Interview postProcessorFlow = Flow.Interview.createInterview(flowApiName, flowInputs);
-        postProcessorFlow.start();
+        Flow.Interview flowPostProcessor = Flow.Interview.createInterview(flowApiName, flowInputs);
+        flowPostProcessor.start();
     }
 }

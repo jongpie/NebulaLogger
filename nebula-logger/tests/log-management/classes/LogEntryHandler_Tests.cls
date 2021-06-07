@@ -21,6 +21,7 @@ private class LogEntryHandler_Tests {
         // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
         EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :LogEntry__c.getSObjectType().getDescribe().getName()];
         LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
+        configuration.IsEnabled__c = true;
 
         Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
         configurationUntyped.put('SObjectType__r', logEntityDefinition);
@@ -40,6 +41,36 @@ private class LogEntryHandler_Tests {
         Test.startTest();
         System.assertEquals(Schema.LogEntry__c.SObjectType, new LogEntryHandler().getSObjectType());
         Test.stopTest();
+    }
+
+    @isTest
+    static void it_should_not_run_handler_when_disabled_via_configuration() {
+        String currentUserJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
+
+        LoggerSObjectHandlerConfiguration__mdt logEntryHandlerConfiguration = getMockConfiguration();
+        logEntryHandlerConfiguration.IsEnabled__c = false;
+
+        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
+            Schema.LogEntry__c.SObjectType => logEntryHandlerConfiguration
+        };
+
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = currentUserJson);
+
+        Test.startTest();
+
+        // Use the mock configurations
+        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+
+        insert logEntry;
+
+        Test.stopTest();
+
+        // Assumption: if the handler had executed, then log.HasRecordJson__c should have been auto-set to true...
+        // ...so if it's still false, it indicates that the handler did not execute
+        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assertNotEquals(null, logEntry.RecordJson__c);
+        System.assertEquals(false, logEntry.HasRecordJson__c);
     }
 
     @isTest

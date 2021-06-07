@@ -154,6 +154,19 @@ private class LogEntryEventHandler_Tests {
         }
     }
 
+
+    private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
+        // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
+        EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :LogEntryEvent__e.getSObjectType().getDescribe().getName()];
+        LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
+        configuration.IsEnabled__c = true;
+
+        Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
+        configurationUntyped.put('SObjectType__r', logEntityDefinition);
+
+        return (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
+    }
+
     static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
         Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         User currentUser = getCurrentUser();
@@ -267,6 +280,40 @@ private class LogEntryEventHandler_Tests {
         Test.startTest();
         System.assertEquals(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
         Test.stopTest();
+    }
+
+    @isTest
+    static void it_should_not_run_handler_when_disabled_via_configuration() {
+        LoggerSObjectHandlerConfiguration__mdt logEntryEventHandlerConfiguration = getMockConfiguration();
+        logEntryEventHandlerConfiguration.IsEnabled__c = false;
+
+        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
+            Schema.LogEntryEvent__e.SObjectType => logEntryEventHandlerConfiguration
+        };
+
+        Test.startTest();
+
+        // Use the mock configurations
+        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            EpochTimestamp__c = System.now().getTime(),
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            TransactionEntryNumber__c = 1,
+            TransactionId__c = '1234'
+        );
+
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        // Assumption: if the handler had executed, then a log record would have been created
+        // ...so if there are 0 logs, it indicates that the handler did not execute
+        Integer logCount = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, logCount);
     }
 
     @isTest

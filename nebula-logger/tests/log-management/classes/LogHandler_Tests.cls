@@ -27,6 +27,7 @@ private class LogHandler_Tests {
         // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
         EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :Log__c.getSObjectType().getDescribe().getName()];
         LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
+        configuration.IsEnabled__c = true;
 
         Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
         configurationUntyped.put('SObjectType__r', logEntityDefinition);
@@ -54,7 +55,7 @@ private class LogHandler_Tests {
     }
 
     @isTest
-    static void it_should_not_run_handler_when_configured() {
+    static void it_should_not_run_handler_when_disabled_via_configuration() {
         LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.IsEnabled__c = false;
 
@@ -474,6 +475,8 @@ private class LogHandler_Tests {
 
         // Use the mock configurations
         LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+
+        System.debug('LoggerSObjectHandler.configurationsBySObjectType==' + LoggerSObjectHandler.configurationsBySObjectType);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;
