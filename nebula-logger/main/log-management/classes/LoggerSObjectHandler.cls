@@ -12,10 +12,20 @@
     private static Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = loadConfigurations();
 
     private static Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> loadConfigurations() {
+        DescribeSObjectResult configDescribe = Schema.LoggerSObjectHandlerConfiguration__mdt.SObjectType.getDescribe();
+
+        // When using CMDT's getAll(), it does not return relationship fields for EntityDefinition fields...
+        // ... so dynamically query the LoggerSObjectHandlerConfiguration__mdt CMDT object
+        List<String> queryFields = new List<String>( configDescribe.fields.getMap().keySet() );
+        String sobjectTypeRelationshipName = Schema.LoggerSObjectHandlerConfiguration__mdt.SObjectType__c.getDescribe().getName().replace('__c', '__r');
+        queryFields.add(sobjectTypeRelationshipName + '.' + Schema.EntityDefinition.DeveloperName);
+        queryFields.add(sobjectTypeRelationshipName + '.' + Schema.EntityDefinition.QualifiedApiName);
+        String query = 'SELECT ' + String.join(queryFields, ', ') + ' FROM ' + configDescribe.getName();
+
         Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>();
-        for (LoggerSObjectHandlerConfiguration__mdt config : LoggerSObjectHandlerConfiguration__mdt.getAll().values()) {
+        for (LoggerSObjectHandlerConfiguration__mdt config : (List<LoggerSObjectHandlerConfiguration__mdt>) Database.query(query)) {
             // Schema.getGlobalDescribe() is the worst, so don't use it
-            SObjectType sobjectType = ((SObject) Type.forName(config.SObjectType__r.QualifiedApiName + '__c').newInstance()).getSObjectType();
+            SObjectType sobjectType = ((SObject) Type.forName(config.SObjectType__r.QualifiedApiName).newInstance()).getSObjectType();
 
             configsBySObjectType.put(sobjectType, config);
         }
