@@ -14,6 +14,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     private String originalTransactionId;
     private Integer totalProcessedRecords = 0;
 
+    @testVisible
     // Database.emptyRecycleBin counts as a DML statement per record
     private static Integer MAX_RECORDS_DELETED = (Limits.getLimitDmlRows() / 2) - 1;
     private static Integer DELETED_COUNT = 0;

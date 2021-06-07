@@ -93,6 +93,21 @@ private class LogBatchPurger_Tests {
     }
 
     @isTest
+    static void it_should_continue_deleting_logs_even_when_current_count_greater_than_limits() {
+        List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
+        LogBatchPurger.MAX_RECORDS_DELETED = logsToDelete.size() / 2;
+
+        Test.startTest();
+        new LogBatchPurger().execute(null, logsToDelete);
+        Test.stopTest();
+
+        logsToDelete = [SELECT Id FROM Log__c];
+        List<LogEntry__c>  logEntries = [SELECT Id FROM LogEntry__c];
+        System.assertEquals(0, logsToDelete.size(), logsToDelete);
+        System.assertEquals(0, logEntries.size(), logEntries);
+    }
+
+    @isTest
     static void it_should_not_delete_a_log_before_scheduled_deletion_date() {
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
