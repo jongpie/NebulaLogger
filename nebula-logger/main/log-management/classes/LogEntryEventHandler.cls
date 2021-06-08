@@ -15,22 +15,22 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
-    private List<LogEntryEvent__e> logEntryEvents;
+    private List<LogEntryEvent__e> logEntryEvents {
+        get {
+            return (List<LogEntryEvent__e>) this.records;
+        }
+    }
 
-    private List<LogEntry__c> logEntries;
-    private Map<LogEntry__c, List<String>> logEntryToTopics;
-    private Set<String> topicNames;
+    private List<LogEntry__c> logEntries = new List<LogEntry__c>();
+    private Map<LogEntry__c, List<String>> logEntryToTopics = new Map<LogEntry__c, List<String>>();
+    private Set<String> topicNames = new Set<String>();
 
     public LogEntryEventHandler() {
-        this((List<LogEntryEvent__e>) Trigger.new);
     }
 
     public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents) {
-        this.logEntryEvents = logEntryEvents;
-
-        this.logEntries = new List<LogEntry__c>();
-        this.logEntryToTopics = new Map<LogEntry__c, List<String>>();
-        this.topicNames = new Set<String>();
+        // Override the records provided by LoggerSObjectHandler
+        this.records = logEntryEvents;
     }
 
     /**
@@ -45,15 +45,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
      * @description Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
      */
     public void execute() {
-        if (this.configuration.IsEnabled__c == false) {
+        if (this.isEnabled() == false) {
             return;
         }
 
-        if (this.logEntryEvents.isEmpty() == false) {
-            this.upsertLogs();
-            this.insertLogEntries();
-            this.insertTopics();
-        }
+        this.upsertLogs();
+        this.insertLogEntries();
+        this.insertTopics();
     }
 
     private void upsertLogs() {

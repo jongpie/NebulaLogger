@@ -34,10 +34,23 @@ public abstract class LoggerSObjectHandler {
         return configsBySObjectType;
     }
 
-    protected LoggerSObjectHandlerConfiguration__mdt configuration;
+    @testVisible
+    protected List<SObject> records;
+    @testVisible
+    protected Map<Id, SObject> oldRecordsById;
+    @testVisible
+    protected TriggerOperation triggerOperationType;
+
+    private LoggerSObjectHandlerConfiguration__mdt configuration;
 
     public LoggerSObjectHandler() {
         this.configuration = getConfiguration(this.getSObjectType());
+
+        if (this.configuration.IsEnabled__c == true) {
+            this.records = Trigger.new;
+            this.oldRecordsById = Trigger.oldMap;
+            this.triggerOperationType = Trigger.operationType;
+        }
     }
 
     /**
@@ -46,13 +59,17 @@ public abstract class LoggerSObjectHandler {
      */
     public abstract SObjectType getSObjectType();
 
+    protected Boolean isEnabled() {
+        return this.configuration.IsEnabled__c;
+    }
+
     protected void executePostProcessors(List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
         if (loggerRecords == null) {
             return;
         }
 
-        this.executePostProcessorApexClass(this.configuration?.PostProcessorApexClassName__c, loggerRecords, oldLoggerRecordsById);
-        this.executePostProcessorFlow(this.configuration?.PostProcessorFlowApiName__c, loggerRecords, oldLoggerRecordsById);
+        this.executePostProcessorApexClass();
+        this.executePostProcessorFlow();
     }
 
     private LoggerSObjectHandlerConfiguration__mdt getConfiguration(SObjectType sobjectType) {
@@ -67,26 +84,26 @@ public abstract class LoggerSObjectHandler {
         return configuration;
     }
 
-    private void executePostProcessorApexClass(String apexClassName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
-        if (String.isBlank(apexClassName) || Type.forName(apexClassName) == null) {
+    private void executePostProcessorApexClass() {
+        if (String.isBlank(this.configuration.PostProcessorApexClassName__c) || Type.forName(this.configuration.PostProcessorApexClassName__c) == null) {
             return;
         }
 
-        LoggerSObjectPostProcessor apexPostProcessor = (LoggerSObjectPostProcessor) Type.forName(apexClassName).newInstance();
-        apexPostProcessor.execute(Trigger.operationType, loggerRecords, oldLoggerRecordsById);
+        LoggerSObjectPostProcessor apexPostProcessor = (LoggerSObjectPostProcessor) Type.forName(this.configuration.PostProcessorApexClassName__c).newInstance();
+        apexPostProcessor.execute(this.triggerOperationType, this.records, this.oldRecordsById);
     }
 
-    private void executePostProcessorFlow(String flowApiName, List<SObject> loggerRecords, Map<Id, SObject> oldLoggerRecordsById) {
-        if (String.isBlank(flowApiName)) {
+    private void executePostProcessorFlow() {
+        if (String.isBlank(this.configuration?.PostProcessorFlowApiName__c)) {
             return;
         }
 
         Map<String, Object> flowInputs = new Map<String, Object>();
-        flowInputs.put('triggerOperationType', Trigger.operationType?.name());
-        flowInputs.put('records', loggerRecords);
-        flowInputs.put('oldRecords', oldLoggerRecordsById?.values());
+        flowInputs.put('triggerOperationType', this.triggerOperationType?.name());
+        flowInputs.put('records', this.records);
+        flowInputs.put('oldRecords', this.oldRecordsById?.values());
 
-        Flow.Interview flowPostProcessor = Flow.Interview.createInterview(flowApiName, flowInputs);
+        Flow.Interview flowPostProcessor = Flow.Interview.createInterview(this.configuration?.PostProcessorFlowApiName__c, flowInputs);
         flowPostProcessor.start();
     }
 }

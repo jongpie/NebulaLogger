@@ -10,16 +10,17 @@
 public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
-    private List<LogEntry__c> logEntries;
-    @testVisible
-    private Map<Id, LogEntry__c> oldLogEntriesById;
-    @testVisible
-    private TriggerOperation triggerOperationType;
+    private List<LogEntry__c> logEntries {
+        get {
+            return (List<LogEntry__c>) this.records;
+        }
+    }
 
-    public LogEntryHandler() {
-        this.logEntries = (List<LogEntry__c>) Trigger.new;
-        this.oldLogEntriesById = (Map<Id, LogEntry__c>) Trigger.oldMap;
-        this.triggerOperationType = Trigger.operationType;
+    @testVisible
+    private Map<Id, LogEntry__c> oldLogEntriesById {
+        get {
+            return (Map<Id, LogEntry__c>) this.oldRecordsById;
+        }
     }
 
     /**
@@ -34,7 +35,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
      * @description Runs the trigger handler's logic for the `LogEntry__c` custom object
      */
     public void execute() {
-        if (this.configuration.IsEnabled__c == false) {
+        if (this.isEnabled() == false) {
             return;
         }
 
