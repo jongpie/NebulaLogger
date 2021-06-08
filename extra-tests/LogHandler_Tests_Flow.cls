@@ -19,11 +19,15 @@ private class LogHandler_Tests_Flow {
 
     @isTest
     static void it_should_run_flow_post_processor_when_configured() {
-        String expectedLoginApplication = 'Some Fake Application';
+        // Assumption: the Flow LogHandler_Tests_Flow makes an update to the current user's FirstName
+        // The specific action within the Flow isn't that important - we just want to make sure...
+        // ...that that Flow is dynamically executed
+        String postProcessorFlowApiName = 'LogHandler_Tests_Flow';
+        String expectedUserFirstName = 'Logger-Flow-Test';
 
         LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.IsEnabled__c = true;
-        logHandlerConfiguration.PostProcessorFlowApiName__c = 'LogHandler_Tests_Flow';
+        logHandlerConfiguration.PostProcessorFlowApiName__c = postProcessorFlowApiName;
 
         Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
             Schema.Log__c.SObjectType => logHandlerConfiguration
@@ -37,10 +41,10 @@ private class LogHandler_Tests_Flow {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
 
-        // TODO
-        // log = [SELECT Id, LoginApplication__c FROM Log__c WHERE Id = :log.Id];
-        // System.assertEquals(expectedLoginApplication, log.LoginApplication__c);
-
         Test.stopTest();
+
+        // Assumption: the FLow
+        User currentUser = [SELECT Id, FirstName FROM User WHERE Id = :UserInfo.getUserId()];
+        System.assertEquals(expectedUserFirstName, currentUser.FirstName);
     }
 }
