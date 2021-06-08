@@ -18,15 +18,8 @@ private class LogEntryHandler_Tests {
     }
 
     private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
-        // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
-        EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :LogEntry__c.getSObjectType().getDescribe().getName()];
-        LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
-        configuration.IsEnabled__c = true;
-
-        Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
-        configurationUntyped.put('SObjectType__r', logEntityDefinition);
-
-        return (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
+        Schema.SObjectType sobjectType = Schema.LogEntry__c.SObjectType;
+        return new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
     @testSetup

@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Abstract class used by trigger handlers for shared logic
  */
- public abstract class LoggerSObjectHandler {
+public abstract class LoggerSObjectHandler {
     @testVisible
     private static Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = loadConfigurations();
 
@@ -15,17 +15,19 @@
         DescribeSObjectResult configDescribe = Schema.LoggerSObjectHandlerConfiguration__mdt.SObjectType.getDescribe();
 
         // When using CMDT's getAll(), it does not return relationship fields for EntityDefinition fields...
-        // ... so dynamically query the LoggerSObjectHandlerConfiguration__mdt CMDT object
-        List<String> queryFields = new List<String>( configDescribe.fields.getMap().keySet() );
-        String sobjectTypeRelationshipName = Schema.LoggerSObjectHandlerConfiguration__mdt.SObjectType__c.getDescribe().getName().replace('__c', '__r');
-        queryFields.add(sobjectTypeRelationshipName + '.' + Schema.EntityDefinition.DeveloperName);
-        queryFields.add(sobjectTypeRelationshipName + '.' + Schema.EntityDefinition.QualifiedApiName);
-        String query = 'SELECT ' + String.join(queryFields, ', ') + ' FROM ' + configDescribe.getName();
+        // ... so instead query the LoggerSObjectHandlerConfiguration__mdt CMDT object
+        List<LoggerSObjectHandlerConfiguration__mdt> configurations = [
+            SELECT Id, IsEnabled__c, PostProcessorApexClassName__c, PostProcessorFlowApiName__c, SObjectType__r.QualifiedApiName
+            FROM LoggerSObjectHandlerConfiguration__mdt
+        ];
 
         Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>();
-        for (LoggerSObjectHandlerConfiguration__mdt config : (List<LoggerSObjectHandlerConfiguration__mdt>) Database.query(query)) {
+        for (LoggerSObjectHandlerConfiguration__mdt config : configurations) {
+            // CMDT entity-definition relationship fields are weird, so skip some headaches by copying the Qualified API name
+            config.SObjectType__c = config.SObjectType__r.QualifiedApiName;
+
             // Schema.getGlobalDescribe() is the worst, so don't use it
-            SObjectType sobjectType = ((SObject) Type.forName(config.SObjectType__r.QualifiedApiName).newInstance()).getSObjectType();
+            SObjectType sobjectType = ((SObject) Type.forName(config.SObjectType__c).newInstance()).getSObjectType();
 
             configsBySObjectType.put(sobjectType, config);
         }
@@ -57,17 +59,7 @@
         LoggerSObjectHandlerConfiguration__mdt configuration = configurationsBySObjectType.get(sobjectType);
 
         if (configuration == null) {
-            configuration =  new LoggerSObjectHandlerConfiguration__mdt();
-
-            // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
-            // TODO cache entity definition query for Log__c, LogEntry__c and LogEntryEvent__e
-            String entityDefinitionRelationshipName = Schema.LoggerSObjectHandlerConfiguration__mdt.SObjectType__c.getDescribe().getName().replace('__c', '__r');
-            EntityDefinition sobjectEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :sobjectType.getDescribe().getName()];
-            Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
-            configurationUntyped.put(entityDefinitionRelationshipName, sobjectEntityDefinition);
-
-            configuration = (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
-            configuration.IsEnabled__c = true;
+            configuration = new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
 
             configurationsBySObjectType.put(sobjectType, configuration);
         }

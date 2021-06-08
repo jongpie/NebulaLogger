@@ -154,17 +154,9 @@ private class LogEntryEventHandler_Tests {
         }
     }
 
-
     private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
-        // Setting entity definition fields on CMDT is not properly supported, so here's some goofy workarounds for handling it
-        EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :LogEntryEvent__e.getSObjectType().getDescribe().getName()];
-        LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
-        configuration.IsEnabled__c = true;
-
-        Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
-        configurationUntyped.put('SObjectType__r', logEntityDefinition);
-
-        return (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
+        Schema.SObjectType sobjectType = Schema.LogEntryEvent__e.SObjectType;
+        return new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
     static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
@@ -280,41 +272,6 @@ private class LogEntryEventHandler_Tests {
         Test.startTest();
         System.assertEquals(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
         Test.stopTest();
-    }
-
-
-    @isTest
-    static void it_should_load_a_default_config_when_no_config_present() {
-        Test.startTest();
-
-        // Clear any CMDT records that have been loaded from the database
-        LoggerSObjectHandler.configurationsBySObjectType.clear();
-        LoggerSObjectHandlerConfiguration__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.LogEntryEvent__e.SObjectType);
-        System.assertEquals(null, configuration);
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '1234'
-        );
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-
-        // Verify that a default config has been loaded w/ IsEnabled__c = true
-        configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.LogEntryEvent__e.SObjectType);
-        System.assertNotEquals(null, configuration);
-        System.assertEquals(null, configuration.Id);
-        System.assertEquals(true, configuration.IsEnabled__c);
-
-        Test.stopTest();
-
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
-        // Assumption: the default config should have been loaded with IsEnabled__c = true, resulting in a log being created
-        // ...which indicates that the handler executed with a default config
-        Integer logCount = [SELECT COUNT() FROM Log__c];
-        System.assertEquals(1, logCount);
     }
 
     @isTest
