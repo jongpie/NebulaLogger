@@ -22,10 +22,11 @@ private class LogHandler_Tests_Flow {
         String expectedLoginApplication = 'Some Fake Application';
 
         LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
+        logHandlerConfiguration.IsEnabled__c = true;
         logHandlerConfiguration.PostProcessorFlowApiName__c = 'LogHandler_Tests_Flow';
 
         Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
-            Schema.LogEntry__c.SObjectType => logHandlerConfiguration
+            Schema.Log__c.SObjectType => logHandlerConfiguration
         };
 
         Test.startTest();
