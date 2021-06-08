@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <assignments>
+        <name>Update_Field</name>
+        <label>Update Field</label>
+        <locationX>264</locationX>
+        <locationY>278</locationY>
+        <assignmentItems>
+            <assignToReference>Process_Records.LoginApplication__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Some Fake Application</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Process_Records</targetReference>
+        </connector>
+    </assignments>
+    <interviewLabel>LogHandler_Tests_Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>LogHandler_Tests_Flow</label>
+    <loops>
+        <name>Process_Records</name>
+        <label>Process Records</label>
+        <locationX>176</locationX>
+        <locationY>158</locationY>
+        <collectionReference>records</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Update_Field</targetReference>
+        </nextValueConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Process_Records</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>records</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Log__c</objectType>
+    </variables>
+</Flow>
