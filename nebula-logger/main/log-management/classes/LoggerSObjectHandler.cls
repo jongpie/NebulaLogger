@@ -94,7 +94,7 @@ public abstract class LoggerSObjectHandler {
     }
 
     private void executePostProcessorFlow() {
-        if (String.isBlank(this.configuration?.PostProcessorFlowApiName__c)) {
+        if (String.isBlank(this.configuration.PostProcessorFlowApiName__c)) {
             return;
         }
 
@@ -103,7 +103,7 @@ public abstract class LoggerSObjectHandler {
         flowInputs.put('records', this.records);
         flowInputs.put('oldRecords', this.oldRecordsById?.values());
 
-        Flow.Interview flowPostProcessor = Flow.Interview.createInterview(this.configuration?.PostProcessorFlowApiName__c, flowInputs);
+        Flow.Interview flowPostProcessor = Flow.Interview.createInterview(this.configuration.PostProcessorFlowApiName__c, flowInputs);
         flowPostProcessor.start();
     }
 }
