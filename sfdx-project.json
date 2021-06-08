@@ -21,6 +21,7 @@
         "Nebula Logger - Unlocked Package@4.4.3-0-guest-user-bugfix": "04t5Y0000027FI1QAM",
         "Nebula Logger - Unlocked Package@4.4.4-0-timestamp-bugfix": "04t5Y0000027FIQQA2",
         "Nebula Logger - Unlocked Package@4.4.5-0-log-batch-purger-bugfixes": "04t5Y0000027FIVQA2",
-        "Nebula Logger - Unlocked Package@4.4.6-0-new-save-method-synchronous_dml": "04t5Y0000027FJdQAM"
+        "Nebula Logger - Unlocked Package@4.4.6-0-new-save-method-synchronous_dml": "04t5Y0000027FJdQAM",
+        "Nebula Logger - Unlocked Package@4.5.0-0-logger-sobject-post-processors": "04t5Y0000027FKWQA2"
     }
 }
