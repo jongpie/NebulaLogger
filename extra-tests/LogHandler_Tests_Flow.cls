@@ -24,6 +24,7 @@ private class LogHandler_Tests_Flow {
         // ...that that Flow is dynamically executed
         String postProcessorFlowApiName = 'LogHandler_Tests_Flow';
         String expectedUserFirstName = 'Logger-Flow-Test';
+        System.assertNotEquals(expectedUserFirstName, UserInfo.getFirstName());
 
         LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.IsEnabled__c = true;
@@ -43,7 +44,7 @@ private class LogHandler_Tests_Flow {
 
         Test.stopTest();
 
-        // Assumption: the FLow
+        // Verify that the Flow ran by checking if the user's FirstName was updated
         User currentUser = [SELECT Id, FirstName FROM User WHERE Id = :UserInfo.getUserId()];
         System.assertEquals(expectedUserFirstName, currentUser.FirstName);
     }
