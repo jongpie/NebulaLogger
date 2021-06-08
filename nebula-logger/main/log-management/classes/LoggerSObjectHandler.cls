@@ -90,7 +90,7 @@
         }
 
         Map<String, Object> flowInputs = new Map<String, Object>();
-        flowInputs.put('triggerOperationType', Trigger.operationType);
+        flowInputs.put('triggerOperationType', Trigger.operationType?.name());
         flowInputs.put('records', loggerRecords);
         flowInputs.put('oldRecords', oldLoggerRecordsById?.values());
 
