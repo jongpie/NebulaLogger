@@ -12,8 +12,6 @@ public abstract class LoggerSObjectHandler {
     private static Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = loadConfigurations();
 
     private static Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> loadConfigurations() {
-        DescribeSObjectResult configDescribe = Schema.LoggerSObjectHandlerConfiguration__mdt.SObjectType.getDescribe();
-
         // When using CMDT's getAll(), it does not return relationship fields for EntityDefinition fields...
         // ... so instead query the LoggerSObjectHandlerConfiguration__mdt CMDT object
         List<LoggerSObjectHandlerConfiguration__mdt> configurations = [
