@@ -5,18 +5,6 @@
 
 @isTest
 private class LogHandler_Tests_Flow {
-    private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
-        // Mocking entity deefinition fields on CMDT is not properly supported, so here's some goofy workarounds for mocking an instance
-        EntityDefinition logEntityDefinition = [SELECT QualifiedApiName, DeveloperName FROM EntityDefinition WHERE QualifiedApiName = :LogEntry__c.getSObjectType().getDescribe().getName()];
-        LoggerSObjectHandlerConfiguration__mdt configuration =  new LoggerSObjectHandlerConfiguration__mdt();
-        configuration.IsEnabled__c = true;
-
-        Map<String, Object> configurationUntyped = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(configuration));
-        configurationUntyped.put('LoggerSObject__r', logEntityDefinition);
-
-        return (LoggerSObjectHandlerConfiguration__mdt) JSON.deserialize(JSON.serialize(configurationUntyped), LoggerSObjectHandlerConfiguration__mdt.class);
-    }
-
     @isTest
     static void it_should_run_flow_post_processor_when_configured() {
         // Assumption: the Flow LogHandler_Tests_Flow makes an update to the current user's FirstName
@@ -26,18 +14,18 @@ private class LogHandler_Tests_Flow {
         String expectedUserFirstName = 'Logger-Flow-Test';
         System.assertNotEquals(expectedUserFirstName, UserInfo.getFirstName());
 
-        LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
-        logHandlerConfiguration.IsEnabled__c = true;
-        logHandlerConfiguration.PostProcessorFlowApiName__c = postProcessorFlowApiName;
-
-        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
-            Schema.Log__c.SObjectType => logHandlerConfiguration
+        LoggerSObjectPostProcessor__mdt postProcessor = new LoggerSObjectPostProcessor__mdt(
+            PostProcessorType__c = 'Flow',
+            PostProcessorApiName__c = postProcessorFlowApiName
+        );
+        Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>> postProcessorsBySObjectType = new Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>>{
+            Schema.Log__c.SObjectType => new List<LoggerSObjectPostProcessor__mdt>{ postProcessor }
         };
 
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+        LoggerSObjectHandler.postProcessorsBySObjectType = postProcessorsBySObjectType;
 
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;

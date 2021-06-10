@@ -291,11 +291,12 @@ private class LogEntryHandler_Tests {
     static void it_should_run_apex_post_processor_when_configured() {
         String expectedMessage = 'Some String';
 
-        LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
-        logHandlerConfiguration.PostProcessorApexClassName__c = LogEntryPostProcessorTest.class.getName();
-
-        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
-            Schema.LogEntry__c.SObjectType => logHandlerConfiguration
+        LoggerSObjectPostProcessor__mdt postProcessor = new LoggerSObjectPostProcessor__mdt(
+            PostProcessorType__c = 'Apex',
+            PostProcessorApiName__c = LogEntryPostProcessorTest.class.getName()
+        );
+        Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>> postProcessorsBySObjectType = new Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>>{
+            Schema.LogEntry__c.SObjectType => new List<LoggerSObjectPostProcessor__mdt>{ postProcessor }
         };
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
@@ -303,7 +304,7 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+        LoggerSObjectHandler.postProcessorsBySObjectType = postProcessorsBySObjectType;
 
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');
         insert logEntry;

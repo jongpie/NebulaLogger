@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description
-    >Used to configure additional Apex classes that should be executed by Logger after creating or updating records in Log__c or LogEntry__c</description>
+    <description>Used to configure the Apex trigger handler classes that run on the objects LogEntryEvent__e, Log__c and LogEntry__c</description>
     <label>Logger SObject Handler Configuration</label>
     <pluralLabel>Logger SObject Handler Configurations</pluralLabel>
     <visibility>Public</visibility>

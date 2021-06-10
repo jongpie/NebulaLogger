@@ -16,11 +16,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
     }
 
-    @testVisible
-    private Map<Id, LogEntry__c> oldLogEntriesById {
-        get {
-            return (Map<Id, LogEntry__c>) this.oldRecordsById;
-        }
+    public LogEntryHandler() {
     }
 
     /**
@@ -56,8 +52,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
 
-        // Run any post-processors
-        this.executePostProcessors(this.logEntries, this.oldLogEntriesById);
+        // Run any post-processors configured in the LoggerSObjectPostProcessor__mdt custom metadata type
+        this.executePostProcessors();
     }
 
     private void setCheckboxFields() {

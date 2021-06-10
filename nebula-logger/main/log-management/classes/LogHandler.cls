@@ -39,6 +39,9 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
     }
 
+    public LogHandler() {
+    }
+
     /**
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
@@ -72,8 +75,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
         }
 
-        // Run any post-processors
-        this.executePostProcessors(this.logs, this.oldLogsById);
+        // Run any post-processors configured in the LoggerSObjectPostProcessor__mdt custom metadata type
+        this.executePostProcessors();
     }
 
     private void setOrgReleaseCycle() {

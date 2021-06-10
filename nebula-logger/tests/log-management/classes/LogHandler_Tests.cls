@@ -28,6 +28,11 @@ private class LogHandler_Tests {
         return new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
+    private static LoggerSObjectHandlerConfiguration__mdt getMockPostProcessor() {
+        Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
+        return new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+    }
+
     @testSetup
     static void setupData() {
         Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
@@ -485,19 +490,18 @@ private class LogHandler_Tests {
     static void it_should_run_apex_post_processor_when_configured() {
         String expectedProfileName = 'Some String';
 
-        LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
-        logHandlerConfiguration.PostProcessorApexClassName__c = LogPostProcessorTest.class.getName();
-
-        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
-            Schema.Log__c.SObjectType => logHandlerConfiguration
+        LoggerSObjectPostProcessor__mdt postProcessor = new LoggerSObjectPostProcessor__mdt(
+            PostProcessorType__c = 'Apex',
+            PostProcessorApiName__c = LogPostProcessorTest.class.getName()
+        );
+        Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>> postProcessorsBySObjectType = new Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>>{
+            Schema.Log__c.SObjectType => new List<LoggerSObjectPostProcessor__mdt>{ postProcessor }
         };
 
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
-
-        System.debug('LoggerSObjectHandler.configurationsBySObjectType==' + LoggerSObjectHandler.configurationsBySObjectType);
+        LoggerSObjectHandler.postProcessorsBySObjectType = postProcessorsBySObjectType;
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;
