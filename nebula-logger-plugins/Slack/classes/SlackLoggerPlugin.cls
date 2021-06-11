@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPlugin, Queueable, Database.AllowsCallouts { //, Database.Batchable<Log__c> {
+public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPlugin, Queueable, Database.AllowsCallouts {
     private List<Log__c> logs;
 
     public SlackLoggerPlugin() {
@@ -22,44 +22,30 @@ public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPl
     ) {
         switch on triggerOperationType {
             when BEFORE_INSERT, BEFORE_UPDATE {
-                for (Log__c log : (List<Log__c>) triggerNew) {
-                    if (log.TotalERRORLogEntries__c > 0 || log.TotalWARNLogEntries__c > 0) {
-                        log.SendSlackNotification__c = true;
-                    }
-                }
+                this.flagLogsForSlackNotification((List<Log__c>) triggerNew);
             }
             when AFTER_INSERT, AFTER_UPDATE {
-                List<Log__c> logsToSend = new List<Log__c>();
-                for (Log__c log : (List<Log__c>) triggerNew) {
-                    if (log.SendSlackNotification__c == true) {
-                        logsToSend.add(log);
-                    }
-                }
-                // Since plugins are called from trigger handlers, and triggers can't make callouts...
-                // ...run this class as a queueable (async) job
-                if (logsToSend.isEmpty() == false) {
-                    System.enqueueJob(new SlackLoggerPlugin(logsToSend));
-                }
+                this.sendAsyncSlackNotifications((List<Log__c>) triggerNew);
             }
         }
     }
 
     public void execute(System.QueueableContext queueableContext) {
-        // Requery the logs, in case any other fields have changed
-        this.logs = [
-            SELECT Id, Name, LoggedBy__c, LoggedBy__r.Name, TotalLogEntries__c, TotalERRORLogEntries__c, TotalWARNLogEntries__c, TransactionId__c
-            FROM Log__c
-            WHERE Id IN :this.logs AND SendSlackNotification__c = TRUE AND SlackNotificationDate__c = NULL
-        ];
+        // Requery the logs, in case any field values have changed
+        this.requeryLogs();
+
+        if (this.logs.isEmpty() == true) {
+            return;
+        }
 
         List<Log__c> sentLogs = new List<Log__c>();
         List<Log__c> unsentLogs = new List<Log__c>();
         for (Log__c log : this.logs) {
             // log = log.clone(true);
             if (Limits.getCallouts() == Limits.getLimitCallouts()) {
-                //     // If there are too many logs to send in the same transaction...
-                //     // ...add them to the unsentLogs list, which will be queued as a separate job
-                //     unsentLogs.add(log);
+                // If there are too many logs to send in the same transaction...
+                // ...add them to the unsentLogs list, which will be queued as a separate job
+                unsentLogs.add(log);
             } else {
                 NotificationDto notification = new NotificationDto();
                 notification.text = 'Salesforce Log Alert';
@@ -70,19 +56,14 @@ public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPl
                 request.setEndpoint('callout:Slack');
                 request.setMethod('POST');
                 request.setHeader('Content-Type', 'application/json');
-                String notificationJson = JSON.serialize(notification);
+
                 // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
-                notificationJson = notificationJson.replace('"isShort"', '"short"');
+                String notificationJson = JSON.serialize(notification).replace('"isShort"', '"short"');
                 request.setBody(notificationJson);
 
-System.debug('request==' + request);
-System.debug('request.getEndpoint()==' + request.getEndpoint());
-System.debug('request.getBody()==' + request.getBody());
                 HttpResponse response = new Http().send(request);
-
                 System.debug('response.getStatusCode()==' + response.getStatusCode());
                 System.debug('response.getStatus()==' + response.getStatus());
-                System.debug('response.getBody()==' + response.getBody());
 
                 log.SlackNotificationDate__c = System.now();
                 sentLogs.add(log);
@@ -96,11 +77,51 @@ System.debug('request.getBody()==' + request.getBody());
         }
     }
 
+    private void flagLogsForSlackNotification(List<Log__c> logs) {
+        for (Log__c log : logs) {
+            if (log.TotalERRORLogEntries__c > 0 || log.TotalWARNLogEntries__c > 0) {
+                log.SendSlackNotification__c = true;
+            }
+        }
+    }
+
+    private void sendAsyncSlackNotifications(List<Log__c> logs) {
+        List<Log__c> logsToSend = new List<Log__c>();
+        for (Log__c log : logs) {
+            if (log.SendSlackNotification__c == true) {
+                logsToSend.add(log);
+            }
+        }
+
+        // Since plugins are called from trigger handlers, and triggers can't make callouts...
+        // ...run this class as a queueable (async) job
+        if (logsToSend.isEmpty() == false) {
+            System.enqueueJob(new SlackLoggerPlugin(logsToSend));
+        }
+    }
+
+    private void requeryLogs() {
+        this.logs = [
+            SELECT
+                Id,
+                Name,
+                LoggedBy__c,
+                LoggedBy__r.Name,
+                TotalLogEntries__c,
+                TotalERRORLogEntries__c,
+                TotalWARNLogEntries__c,
+                TransactionId__c,
+                (SELECT Id, Message__c FROM LogEntries__r WHERE LoggingLevelOrdinal__c >= :LoggingLevel.WARN.ordinal() ORDER BY Timestamp__c)
+            FROM Log__c
+            WHERE Id IN :this.logs AND SendSlackNotification__c = TRUE AND SlackNotificationDate__c = NULL
+        ];
+    }
+
     private LogDto convertLog(Log__c log) {
         LogDto notification = new LogDto();
         notification.author_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.LoggedBy__c;
         notification.author_name = log.LoggedBy__r.Name;
-        notification.color = log.TotalERRORLogEntries__c >= 1 ? '#FF7373' : '#7CD197'; // Red if there are exceptions, otherwise green
+        notification.color = this.getNotificationColor(log);
         notification.fields = new List<FieldDto>();
         notification.text = 'Transaction ID: ' + log.TransactionId__c;
         notification.title = log.Name;
@@ -124,17 +145,29 @@ System.debug('request.getBody()==' + request.getBody());
         // orgIsProductionField.value   = '`' + !ORG.IsSandbox + '`';
         // notification.fields.add(orgIsProductionField);
 
-        FieldDto totalDebugEntriesField = new FieldDto();
-        totalDebugEntriesField.isShort = true;
-        totalDebugEntriesField.title = '# of Entries';
-        totalDebugEntriesField.value = String.valueOf(log.TotalLogEntries__c);
-        notification.fields.add(totalDebugEntriesField);
+        FieldDto totalEntriesField = new FieldDto();
+        totalEntriesField.isShort = true;
+        totalEntriesField.title = '# of Total Entries';
+        totalEntriesField.value = String.valueOf(log.TotalLogEntries__c);
+        notification.fields.add(totalEntriesField);
 
-        FieldDto totalExceptionEntriesField = new FieldDto();
-        totalExceptionEntriesField.isShort = true;
-        totalExceptionEntriesField.title = '# of Exception Entries';
-        totalExceptionEntriesField.value = String.valueOf(log.TotalERRORLogEntries__c);
-        notification.fields.add(totalExceptionEntriesField);
+        FieldDto totalERROREntriesField = new FieldDto();
+        totalERROREntriesField.isShort = true;
+        totalERROREntriesField.title = '# of ERROR Entries';
+        totalERROREntriesField.value = String.valueOf(log.TotalERRORLogEntries__c);
+        notification.fields.add(totalERROREntriesField);
+
+        FieldDto totalWARNEntriesField = new FieldDto();
+        totalWARNEntriesField.isShort = true;
+        totalWARNEntriesField.title = '# of WARN Entries';
+        totalWARNEntriesField.value = String.valueOf(log.TotalWARNLogEntries__c);
+        notification.fields.add(totalWARNEntriesField);
+
+        FieldDto logEntryField = new FieldDto();
+        logEntryField.isShort = false;
+        logEntryField.title = 'Log Entry Message';
+        logEntryField.value = '`' + log.LogEntries__r.get(0).Message__c + '`';
+        notification.fields.add(logEntryField);
 
         List<String> topicNames = new List<String>();
         for (TopicAssignment topicAssignment : log.TopicAssignments) {
@@ -142,18 +175,32 @@ System.debug('request.getBody()==' + request.getBody());
         }
         topicNames.sort();
 
-        if (topicNames.isEmpty())
-            return notification;
-
-        FieldDto topicsField = new FieldDto();
-        topicsField.isShort = false;
-        topicsField.title = 'Topics';
-        topicsField.value = String.join(topicNames, ', ');
-        notification.fields.add(topicsField);
+        if (topicNames.isEmpty() == false) {
+            FieldDto topicsField = new FieldDto();
+            topicsField.isShort = false;
+            topicsField.title = 'Topics';
+            topicsField.value = '`' + String.join(topicNames, '`, `') + '`';
+            notification.fields.add(topicsField);
+        }
 
         return notification;
     }
 
+    private String getNotificationColor(Log__c log) {
+        String color;
+
+        if (log.TotalERRORLogEntries__c >= 1) {
+            color = '#FF7373';
+        } else if (log.TotalWARNLogEntries__c >= 1) {
+            color = '#FFC873';
+        } else {
+            color = '#7CD197';
+        }
+
+        return color;
+    }
+
+    // Private DTO classes that match Slack's API
     private class NotificationDto {
         public List<LogDto> attachments;
         public String text;
