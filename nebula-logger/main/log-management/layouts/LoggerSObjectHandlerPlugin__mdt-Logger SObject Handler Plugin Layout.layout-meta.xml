@@ -22,7 +22,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>LoggerSObjectHandlerConfiguration__c</field>
+                <field>SObjectHandler__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -39,13 +39,13 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>PostProcessorType__c</field>
+                <field>PluginType__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>PostProcessorApiName__c</field>
+                <field>PluginApiName__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>

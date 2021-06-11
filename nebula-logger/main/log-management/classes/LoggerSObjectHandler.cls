@@ -9,30 +9,30 @@
  */
 public abstract class LoggerSObjectHandler {
     @testVisible
-    private static Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType;
+    private static Map<SObjectType, LoggerSObjectHandler__mdt> configurationsBySObjectType;
     @testVisible
-    private static Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>> postProcessorsBySObjectType;
+    private static Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType;
 
     static {
         // When using CMDT's getAll(), it does not return relationship fields for EntityDefinition fields or child CMDT objects...
-        // ... so instead query the LoggerSObjectHandlerConfiguration__mdt CMDT object
-        List<LoggerSObjectHandlerConfiguration__mdt> configurations = [
+        // ... so instead query the LoggerSObjectHandler__mdt CMDT object
+        List<LoggerSObjectHandler__mdt> configurations = [
             SELECT
                 Id,
                 IsEnabled__c,
                 SObjectType__r.QualifiedApiName,
                 (
-                    SELECT Id, PostProcessorType__c, PostProcessorApiName__c
-                    FROM LoggerSObjectPostProcessors__r
+                    SELECT Id, PluginType__c, PluginApiName__c
+                    FROM LoggerSObjectHandlerPlugins__r
                     WHERE IsEnabled__c = TRUE
                     ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName
                 )
-            FROM LoggerSObjectHandlerConfiguration__mdt
+            FROM LoggerSObjectHandler__mdt
         ];
 
-        configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>();
-        postProcessorsBySObjectType = new Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>>();
-        for (LoggerSObjectHandlerConfiguration__mdt config : configurations) {
+        configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>();
+        pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>();
+        for (LoggerSObjectHandler__mdt config : configurations) {
             // CMDT entity-definition relationship fields are weird, so skip some headaches by copying the Qualified API name
             config.SObjectType__c = config.SObjectType__r.QualifiedApiName;
 
@@ -40,13 +40,13 @@ public abstract class LoggerSObjectHandler {
             SObjectType sobjectType = ((SObject) Type.forName(config.SObjectType__c).newInstance()).getSObjectType();
 
             configurationsBySObjectType.put(sobjectType, config);
-            postProcessorsBySObjectType.put(sobjectType, config?.LoggerSObjectPostProcessors__r);
+            pluginsBySObjectType.put(sobjectType, config?.LoggerSObjectHandlerPlugins__r);
         }
 
         if (Test.isRunningTest() == true) {
             // Test shouldn't rely on the actual CMDT rules in the org - clear the loaded values, and defaults will be used
             configurationsBySObjectType.clear();
-            postProcessorsBySObjectType.clear();
+            pluginsBySObjectType.clear();
         }
     }
 
@@ -55,16 +55,22 @@ public abstract class LoggerSObjectHandler {
     @testVisible
     protected List<SObject> records;
     @testVisible
+    protected Map<Id, SObject> recordsById;
+    @testVisible
+    protected List<SObject> oldRecords;
+    @testVisible
     protected Map<Id, SObject> oldRecordsById;
 
-    private LoggerSObjectHandlerConfiguration__mdt handlerConfiguration;
-    private List<LoggerSObjectPostProcessor__mdt> postProcessors;
+    private LoggerSObjectHandler__mdt handlerConfiguration;
+    private List<LoggerSObjectHandlerPlugin__mdt> plugins;
 
     public LoggerSObjectHandler() {
         this.setConfigurations();
 
         if (this.handlerConfiguration.IsEnabled__c == true) {
             this.records = Trigger.new;
+            this.recordsById = Trigger.newMap;
+            this.oldRecords = Trigger.old;
             this.oldRecordsById = Trigger.oldMap;
             this.triggerOperationType = Trigger.operationType;
         }
@@ -80,18 +86,18 @@ public abstract class LoggerSObjectHandler {
         return this.handlerConfiguration.IsEnabled__c;
     }
 
-    protected void executePostProcessors() {
-        if (this.records == null || this.postProcessors == null || this.postProcessors.isEmpty()) {
+    protected void executePlugins() {
+        if (this.records == null || this.plugins == null || this.plugins.isEmpty()) {
             return;
         }
 
-        for (LoggerSObjectPostProcessor__mdt postProcessorConfiguration : this.postProcessors) {
-            switch on postProcessorConfiguration.PostProcessorType__c {
+        for (LoggerSObjectHandlerPlugin__mdt pluginConfiguration : this.plugins) {
+            switch on pluginConfiguration.PluginType__c {
                 when 'Apex' {
-                    this.executePostProcessorApexClass(postProcessorConfiguration.PostProcessorApiName__c);
+                    this.executePluginApexClass(pluginConfiguration.PluginApiName__c);
                 }
                 when 'Flow' {
-                    this.executePostProcessorFlow(postProcessorConfiguration.PostProcessorApiName__c);
+                    this.executePluginFlow(pluginConfiguration.PluginApiName__c);
                 }
             }
         }
@@ -99,32 +105,31 @@ public abstract class LoggerSObjectHandler {
 
     private void setConfigurations() {
         this.handlerConfiguration = configurationsBySObjectType.get(this.getSObjectType());
-        this.postProcessors = postProcessorsBySObjectType.get(this.getSObjectType());
+        this.plugins = pluginsBySObjectType.get(this.getSObjectType());
 
         if (this.handlerConfiguration == null) {
             // If no config exists in the org, then load some in-memory defaults
-            this.handlerConfiguration = new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = this.getSObjectType().getDescribe().getName());
+            this.handlerConfiguration = new LoggerSObjectHandler__mdt(
+                IsEnabled__c = true,
+                SObjectType__c = this.getSObjectType().getDescribe().getName()
+            );
 
             configurationsBySObjectType.put(this.getSObjectType(), this.handlerConfiguration);
         }
     }
 
-    private void executePostProcessorApexClass(String apexClassName) {
-        LoggerSObjectPostProcessor apexPostProcessor = (LoggerSObjectPostProcessor) Type.forName(apexClassName).newInstance();
-        apexPostProcessor.execute(this.triggerOperationType, this.records, this.oldRecordsById);
+    private void executePluginApexClass(String apexClassName) {
+        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
+        apexPlugin.execute(this.triggerOperationType, this.records, this.recordsById, this.oldRecords, this.oldRecordsById);
     }
 
-    private void executePostProcessorFlow(String flowApiName) {
-        if (String.isBlank(flowApiName)) {
-            return;
-        }
-
+    private void executePluginFlow(String flowApiName) {
         Map<String, Object> flowInputs = new Map<String, Object>();
         flowInputs.put('triggerOperationType', this.triggerOperationType?.name());
         flowInputs.put('records', this.records);
         flowInputs.put('oldRecords', this.oldRecordsById?.values());
 
-        Flow.Interview flowPostProcessor = Flow.Interview.createInterview(flowApiName, flowInputs);
-        flowPostProcessor.start();
+        Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
+        flowPlugin.start();
     }
 }

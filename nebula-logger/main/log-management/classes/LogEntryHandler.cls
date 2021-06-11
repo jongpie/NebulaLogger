@@ -52,8 +52,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
 
-        // Run any post-processors configured in the LoggerSObjectPostProcessor__mdt custom metadata type
-        this.executePostProcessors();
+        // Run any post-processors configured in the LoggerSObjectHandlerPlugin__mdt custom metadata type
+        this.executePlugins();
     }
 
     private void setCheckboxFields() {

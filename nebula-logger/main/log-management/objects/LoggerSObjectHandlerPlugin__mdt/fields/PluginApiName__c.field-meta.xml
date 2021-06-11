@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>PostProcessorApiName__c</fullName>
+    <fullName>PluginApiName__c</fullName>
     <description>The API name of the metadata to run, based on the Post-Processor Type
- - Apex: The name of an Apex class that implements the interface LoggerSObjectPostProcessor
+ - Apex: The name of an Apex class that implements the interface LoggerSObjectHandlerPlugin
  - Flow: The API name of a Flow that supports these inputs:
      - triggerOperationType: text variable
      - records: record collection variable
@@ -10,12 +10,12 @@
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>The API name of the metadata to run, based on the Post-Processor Type
- - Apex: The name of an Apex class that implements the interface LoggerSObjectPostProcessor
+ - Apex: The name of an Apex class that implements the interface LoggerSObjectHandlerPlugin
  - Flow: The API name of a Flow that supports these inputs:
      - triggerOperationType: text variable
      - records: record collection variable
      - oldRecords: record collection variable</inlineHelpText>
-    <label>Post Processor API Name</label>
+    <label>Plugin API Name</label>
     <length>255</length>
     <required>true</required>
     <type>Text</type>

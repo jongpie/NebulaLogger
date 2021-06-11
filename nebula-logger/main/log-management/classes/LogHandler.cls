@@ -75,8 +75,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
         }
 
-        // Run any post-processors configured in the LoggerSObjectPostProcessor__mdt custom metadata type
-        this.executePostProcessors();
+        // Run any post-processors configured in the LoggerSObjectHandlerPlugin__mdt custom metadata type
+        this.executePlugins();
     }
 
     private void setOrgReleaseCycle() {

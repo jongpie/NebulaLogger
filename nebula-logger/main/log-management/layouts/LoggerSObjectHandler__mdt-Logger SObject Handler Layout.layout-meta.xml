@@ -66,12 +66,12 @@
     </layoutSections>
     <relatedLists>
         <fields>MasterLabel</fields>
-        <fields>IsEnabled__c</fields>
         <fields>DeveloperName</fields>
-        <fields>PostProcessorType__c</fields>
-        <fields>PostProcessorApiName__c</fields>
+        <fields>IsEnabled__c</fields>
+        <fields>PluginType__c</fields>
+        <fields>PluginApiName__c</fields>
         <fields>ExecutionOrder__c</fields>
-        <relatedList>LoggerSObjectPostProcessor__mdt.LoggerSObjectHandlerConfiguration__c</relatedList>
+        <relatedList>LoggerSObjectHandlerPlugin__mdt.SObjectHandler__c</relatedList>
         <sortField>ExecutionOrder__c</sortField>
         <sortOrder>Asc</sortOrder>
     </relatedLists>

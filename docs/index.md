@@ -60,7 +60,7 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 
 Abstract class used by trigger handlers for shared logic
 
-### [LoggerSObjectPostProcessor](log-management/LoggerSObjectPostProcessor)
+### [LoggerSObjectHandlerPlugin](log-management/LoggerSObjectHandlerPlugin)
 
 Interface used to define custom logic to run when DML statements occur on `Log__c` or `LogEntry__c`
 

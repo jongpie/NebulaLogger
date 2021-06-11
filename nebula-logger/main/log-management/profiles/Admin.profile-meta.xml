@@ -102,7 +102,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerSObjectPostProcessor</apexClass>
+        <apexClass>LoggerSObjectHandlerPlugin</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1410,17 +1410,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectHandlerConfiguration__mdt.IsEnabled__c</field>
+        <field>LoggerSObjectHandler__mdt.IsEnabled__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectPostProcessor__mdt.ExecutionOrder__c</field>
+        <field>LoggerSObjectHandlerPlugin__mdt.ExecutionOrder__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectPostProcessor__mdt.IsEnabled__c</field>
+        <field>LoggerSObjectHandlerPlugin__mdt.IsEnabled__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <layoutAssignments>
@@ -1433,10 +1433,10 @@
         <layout>Log__c-Log Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>LoggerSObjectHandlerConfiguration__mdt-Logger Handler Configuration Layout</layout>
+        <layout>LoggerSObjectHandler__mdt-Logger SObject Handler Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>LoggerSObjectPostProcessor__mdt-Logger Post Processor Layout</layout>
+        <layout>LoggerSObjectHandlerPlugin__mdt-Logger SObject Handler Plugin Layout</layout>
     </layoutAssignments>
     <objectPermissions>
         <allowCreate>true</allowCreate>

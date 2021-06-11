@@ -154,9 +154,9 @@ private class LogEntryEventHandler_Tests {
         }
     }
 
-    private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
+    private static LoggerSObjectHandler__mdt getMockConfiguration() {
         Schema.SObjectType sobjectType = Schema.LogEntryEvent__e.SObjectType;
-        return new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
     static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
@@ -276,10 +276,10 @@ private class LogEntryEventHandler_Tests {
 
     @isTest
     static void it_should_not_run_handler_when_disabled_via_configuration() {
-        LoggerSObjectHandlerConfiguration__mdt logEntryEventHandlerConfiguration = getMockConfiguration();
+        LoggerSObjectHandler__mdt logEntryEventHandlerConfiguration = getMockConfiguration();
         logEntryEventHandlerConfiguration.IsEnabled__c = false;
 
-        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
+        Map<SObjectType, LoggerSObjectHandler__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
             Schema.LogEntryEvent__e.SObjectType => logEntryEventHandlerConfiguration
         };
 

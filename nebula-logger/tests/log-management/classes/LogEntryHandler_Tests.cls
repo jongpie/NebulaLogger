@@ -5,21 +5,27 @@
 @isTest
 private class LogEntryHandler_Tests {
 
-    public class LogEntryPostProcessorTest implements LoggerSObjectPostProcessor {
-        public void execute(TriggerOperation triggerOperationType, List<SObject> logs, Map<Id, SObject> oldLogsById) {
+    public class LogEntryPluginTest implements LoggerSObjectHandlerPlugin {
+        public void execute(
+            TriggerOperation triggerOperationType,
+            List<SObject> triggerNew,
+            Map<Id, SObject> triggerNewMap,
+            List<SObject> triggerOld,
+            Map<Id, SObject> triggerOldMap
+        ) {
             if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
-                for (LogEntry__c logEntry : (List<LogEntry__c>) logs) {
+                for (LogEntry__c logEntry : (List<LogEntry__c>) triggerNew) {
                     // The specific field changed doesn't really matter - we just want to ensure that whatever...
-                    // ...logic implement in the instance of LoggerSObjectPostProcessor is executed
+                    // ...logic implement in the instance of LoggerSObjectHandlerPlugin is executed
                     logEntry.Message__c = 'Some String';
                 }
             }
         }
     }
 
-    private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
+    private static LoggerSObjectHandler__mdt getMockConfiguration() {
         Schema.SObjectType sobjectType = Schema.LogEntry__c.SObjectType;
-        return new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
     @testSetup
@@ -47,7 +53,7 @@ private class LogEntryHandler_Tests {
 
         // Clear any CMDT records that have been loaded from the database
         LoggerSObjectHandler.configurationsBySObjectType.clear();
-        LoggerSObjectHandlerConfiguration__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.LogEntry__c.SObjectType);
+        LoggerSObjectHandler__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.LogEntry__c.SObjectType);
         System.assertEquals(null, configuration);
 
         insert logEntry;
@@ -71,10 +77,10 @@ private class LogEntryHandler_Tests {
     static void it_should_not_run_handler_when_disabled_via_configuration() {
         String currentUserJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
 
-        LoggerSObjectHandlerConfiguration__mdt logEntryHandlerConfiguration = getMockConfiguration();
+        LoggerSObjectHandler__mdt logEntryHandlerConfiguration = getMockConfiguration();
         logEntryHandlerConfiguration.IsEnabled__c = false;
 
-        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
+        Map<SObjectType, LoggerSObjectHandler__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
             Schema.LogEntry__c.SObjectType => logEntryHandlerConfiguration
         };
 
@@ -291,12 +297,12 @@ private class LogEntryHandler_Tests {
     static void it_should_run_apex_post_processor_when_configured() {
         String expectedMessage = 'Some String';
 
-        LoggerSObjectPostProcessor__mdt postProcessor = new LoggerSObjectPostProcessor__mdt(
-            PostProcessorType__c = 'Apex',
-            PostProcessorApiName__c = LogEntryPostProcessorTest.class.getName()
+        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(
+            PluginType__c = 'Apex',
+            PluginApiName__c = LogEntryPluginTest.class.getName()
         );
-        Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>> postProcessorsBySObjectType = new Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>>{
-            Schema.LogEntry__c.SObjectType => new List<LoggerSObjectPostProcessor__mdt>{ postProcessor }
+        Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>{
+            Schema.LogEntry__c.SObjectType => new List<LoggerSObjectHandlerPlugin__mdt>{ plugin }
         };
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
@@ -304,7 +310,7 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.postProcessorsBySObjectType = postProcessorsBySObjectType;
+        LoggerSObjectHandler.pluginsBySObjectType = pluginsBySObjectType;
 
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');
         insert logEntry;

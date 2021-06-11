@@ -11,26 +11,32 @@ private class LogHandler_Tests {
     private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
-    public class LogPostProcessorTest implements LoggerSObjectPostProcessor {
-        public void execute(TriggerOperation triggerOperationType, List<SObject> logs, Map<Id, SObject> oldLogsById) {
+    public class LogPluginTest implements LoggerSObjectHandlerPlugin {
+        public void execute(
+            TriggerOperation triggerOperationType,
+            List<SObject> triggerNew,
+            Map<Id, SObject> triggerNewMap,
+            List<SObject> triggerOld,
+            Map<Id, SObject> triggerOldMap
+        ) {
             if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
-                for (Log__c log : (List<Log__c>) logs) {
+                for (Log__c log : (List<Log__c>) triggerNew) {
                     // The specific field changed doesn't really matter - we just want to ensure that whatever...
-                    // ...logic implement in the instance of LoggerSObjectPostProcessor is executed
+                    // ...logic implement in the instance of LoggerSObjectHandlerPlugin is executed
                     log.ProfileName__c = 'Some String';
                 }
             }
         }
     }
 
-    private static LoggerSObjectHandlerConfiguration__mdt getMockConfiguration() {
+    private static LoggerSObjectHandler__mdt getMockConfiguration() {
         Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
-        return new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
-    private static LoggerSObjectHandlerConfiguration__mdt getMockPostProcessor() {
+    private static LoggerSObjectHandler__mdt getMockPlugin() {
         Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
-        return new LoggerSObjectHandlerConfiguration__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
     @testSetup
@@ -60,7 +66,7 @@ private class LogHandler_Tests {
 
         // Clear any CMDT records that have been loaded from the database
         LoggerSObjectHandler.configurationsBySObjectType.clear();
-        LoggerSObjectHandlerConfiguration__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.Log__c.SObjectType);
+        LoggerSObjectHandler__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.Log__c.SObjectType);
         System.assertEquals(null, configuration);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
@@ -82,10 +88,10 @@ private class LogHandler_Tests {
 
     @isTest
     static void it_should_not_run_handler_when_disabled_via_configuration() {
-        LoggerSObjectHandlerConfiguration__mdt logHandlerConfiguration = getMockConfiguration();
+        LoggerSObjectHandler__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.IsEnabled__c = false;
 
-        Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandlerConfiguration__mdt>{
+        Map<SObjectType, LoggerSObjectHandler__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
             Schema.Log__c.SObjectType => logHandlerConfiguration
         };
 
@@ -490,18 +496,18 @@ private class LogHandler_Tests {
     static void it_should_run_apex_post_processor_when_configured() {
         String expectedProfileName = 'Some String';
 
-        LoggerSObjectPostProcessor__mdt postProcessor = new LoggerSObjectPostProcessor__mdt(
-            PostProcessorType__c = 'Apex',
-            PostProcessorApiName__c = LogPostProcessorTest.class.getName()
+        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(
+            PluginType__c = 'Apex',
+            PluginApiName__c = LogPluginTest.class.getName()
         );
-        Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>> postProcessorsBySObjectType = new Map<SObjectType, List<LoggerSObjectPostProcessor__mdt>>{
-            Schema.Log__c.SObjectType => new List<LoggerSObjectPostProcessor__mdt>{ postProcessor }
+        Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>{
+            Schema.Log__c.SObjectType => new List<LoggerSObjectHandlerPlugin__mdt>{ plugin }
         };
 
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.postProcessorsBySObjectType = postProcessorsBySObjectType;
+        LoggerSObjectHandler.pluginsBySObjectType = pluginsBySObjectType;
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;

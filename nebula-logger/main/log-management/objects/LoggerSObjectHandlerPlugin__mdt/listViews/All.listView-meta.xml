@@ -4,9 +4,9 @@
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>IsEnabled__c</columns>
-    <columns>LoggerSObjectHandlerConfiguration__c</columns>
-    <columns>PostProcessorType__c</columns>
-    <columns>PostProcessorApiName__c</columns>
+    <columns>SObjectHandler__c</columns>
+    <columns>PluginType__c</columns>
+    <columns>PluginApiName__c</columns>
     <columns>ExecutionOrder__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
