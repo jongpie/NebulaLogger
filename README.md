@@ -5,7 +5,7 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FKWQA2)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FKqQAM)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FKbQAM)
 [![Deploy Unpackaged Metadata](./content/btn-deploy-unpackaged-metadata.png)](https://githubsfdeploy.herokuapp.com/?owner=jongpie&repo=NebulaLogger&ref=main)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
@@ -339,19 +339,25 @@ The class `LogMessage` provides the ability to generate string messages on deman
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
 
-### Adding Custom Post-Processors for Log\_\_c and LogEntry\_\_c
+### Adding Custom Plugins for Log\_\_c and LogEntry\_\_c
 
-If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you can leverage Apex or Flow to define "post-processors" - the logger system will then automatically run the post-processors after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on)
+If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you can leverage Apex or Flow to define "plugins" - the logger system will then automatically run the plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on)
 
--   Flow post-processors: your Flow should be built with these input parameters:
+-   Flow plugins: your Flow should be built with these input parameters:
     1. `triggerOperationType` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
     2. `records` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
     3. `oldRecords` - The list of logger records as they exist in the datatabase - this is only populated when running in the context of `Trigger.isUpdate`
--   Apex post-processors: your Apex class should implement `LoggerSObjectPostProcessor`. For example:
+-   Apex plugins: your Apex class should implement `LoggerSObjectHandlerPlugin`. For example:
 
     ```java
-    public class ExamplePostProcessor implements LoggerSObjectPostProcessor {
-        public void execute(Trigger.operationType triggerOperationType, List<Log__c> logs, Map<Id, SObject> oldLoggerRecordsById) {
+    public class ExamplePlugin implements LoggerSObjectHandlerPlugin {
+        public void execute(
+            TriggerOperation triggerOperationType,
+            List<SObject> triggerNew,
+            Map<Id, SObject> triggerNewMap,
+            List<SObject> triggerOld,
+            Map<Id, SObject> triggerOldMap
+        ) {
             switch on triggerOperationType {
                 when BEFORE_INSERT {
                     for (Log__c log : logs) {
@@ -364,7 +370,7 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
 
     ```
 
-Once you've created your Apex or Flow post-processor(s), you will also need to configure the custom metadata type `LoggerSObjectHandlerConfiguration__mdt` to specify the name(s) of Apex class and Flow to run.
+Once you've created your Apex or Flow plugin(s), you will also need to configure the custom metadata type `LoggerSObjectHandler__mdt` to specify the name(s) of Apex class and Flow to run.
 
 ![Logger Handler Configuration](./content/logger-handler-configuration.png)
 

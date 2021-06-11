@@ -12,6 +12,22 @@
             "versionNumber": "4.5.0.0",
             "versionDescription": "Easily add your own automations for Log__c and LogEntry__c objects using Apex or Flow",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
+        },
+        {
+            "package": "Nebula Logger - Slack Plugin",
+            "path": "nebula-logger-plugins/Slack",
+            "default": false,
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Unlocked Package",
+                    "versionNumber": "4.5.0.LATEST"
+                }
+            ],
+            "versionNumber": "1.0.0.0"
+        },
+        {
+            "path": "extra-tests",
+            "default": false
         }
     ],
     "packageAliases": {
