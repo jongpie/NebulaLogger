@@ -35,7 +35,7 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Post-Processor Details</label>
+        <label>Plugin Details</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>

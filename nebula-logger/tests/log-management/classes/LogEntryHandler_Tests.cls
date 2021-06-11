@@ -52,14 +52,14 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Clear any CMDT records that have been loaded from the database
-        LoggerSObjectHandler.configurationsBySObjectType.clear();
-        LoggerSObjectHandler__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.LogEntry__c.SObjectType);
+        LoggerSObjectHandler.configurationBySObjectType.clear();
+        LoggerSObjectHandler__mdt configuration = LoggerSObjectHandler.configurationBySObjectType.get(Schema.LogEntry__c.SObjectType);
         System.assertEquals(null, configuration);
 
         insert logEntry;
 
         // Verify that a default config has been loaded w/ IsEnabled__c = true
-        configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.LogEntry__c.SObjectType);
+        configuration = LoggerSObjectHandler.configurationBySObjectType.get(Schema.LogEntry__c.SObjectType);
         System.assertNotEquals(null, configuration);
         System.assertEquals(null, configuration.Id);
         System.assertEquals(true, configuration.IsEnabled__c);
@@ -80,7 +80,7 @@ private class LogEntryHandler_Tests {
         LoggerSObjectHandler__mdt logEntryHandlerConfiguration = getMockConfiguration();
         logEntryHandlerConfiguration.IsEnabled__c = false;
 
-        Map<SObjectType, LoggerSObjectHandler__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
+        Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
             Schema.LogEntry__c.SObjectType => logEntryHandlerConfiguration
         };
 
@@ -90,7 +90,7 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+        LoggerSObjectHandler.configurationBySObjectType = configurationBySObjectType;
 
         insert logEntry;
 
@@ -294,7 +294,7 @@ private class LogEntryHandler_Tests {
     }
 
     @isTest
-    static void it_should_run_apex_post_processor_when_configured() {
+    static void it_should_run_apex_plugin_when_configured() {
         String expectedMessage = 'Some String';
 
         LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(

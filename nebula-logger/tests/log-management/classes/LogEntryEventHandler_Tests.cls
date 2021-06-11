@@ -279,14 +279,14 @@ private class LogEntryEventHandler_Tests {
         LoggerSObjectHandler__mdt logEntryEventHandlerConfiguration = getMockConfiguration();
         logEntryEventHandlerConfiguration.IsEnabled__c = false;
 
-        Map<SObjectType, LoggerSObjectHandler__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
+        Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
             Schema.LogEntryEvent__e.SObjectType => logEntryEventHandlerConfiguration
         };
 
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+        LoggerSObjectHandler.configurationBySObjectType = configurationBySObjectType;
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),

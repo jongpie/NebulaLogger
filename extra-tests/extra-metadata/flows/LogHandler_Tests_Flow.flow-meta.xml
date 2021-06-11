@@ -17,7 +17,7 @@
             <targetReference>Save_current_user</targetReference>
         </connector>
     </assignments>
-    <description>An additional Flow used test dynamically running Flow post-processors from LoggerSObjectHandler</description>
+    <description>An additional Flow used test dynamically running Flow plugins from LoggerSObjectHandler</description>
     <interviewLabel>LogHandler_Tests_Flow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>LogHandler_Tests_Flow</label>
     <processMetadataValues>

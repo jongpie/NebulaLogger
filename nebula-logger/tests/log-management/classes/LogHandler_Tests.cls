@@ -65,15 +65,15 @@ private class LogHandler_Tests {
         Test.startTest();
 
         // Clear any CMDT records that have been loaded from the database
-        LoggerSObjectHandler.configurationsBySObjectType.clear();
-        LoggerSObjectHandler__mdt configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.Log__c.SObjectType);
+        LoggerSObjectHandler.configurationBySObjectType.clear();
+        LoggerSObjectHandler__mdt configuration = LoggerSObjectHandler.configurationBySObjectType.get(Schema.Log__c.SObjectType);
         System.assertEquals(null, configuration);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
         insert log;
 
         // Verify that a default config has been loaded w/ IsEnabled__c = true
-        configuration = LoggerSObjectHandler.configurationsBySObjectType.get(Schema.Log__c.SObjectType);
+        configuration = LoggerSObjectHandler.configurationBySObjectType.get(Schema.Log__c.SObjectType);
         System.assertNotEquals(null, configuration);
         System.assertEquals(null, configuration.Id);
         System.assertEquals(true, configuration.IsEnabled__c);
@@ -91,7 +91,7 @@ private class LogHandler_Tests {
         LoggerSObjectHandler__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.IsEnabled__c = false;
 
-        Map<SObjectType, LoggerSObjectHandler__mdt> configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
+        Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
             Schema.Log__c.SObjectType => logHandlerConfiguration
         };
 
@@ -100,7 +100,7 @@ private class LogHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.configurationsBySObjectType = configurationsBySObjectType;
+        LoggerSObjectHandler.configurationBySObjectType = configurationBySObjectType;
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
         insert log;
@@ -493,7 +493,7 @@ private class LogHandler_Tests {
     }
 
     @isTest
-    static void it_should_run_apex_post_processor_when_configured() {
+    static void it_should_run_apex_plugin_when_configured() {
         String expectedProfileName = 'Some String';
 
         LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(

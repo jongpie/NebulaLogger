@@ -52,7 +52,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
         }
 
-        // Run any post-processors configured in the LoggerSObjectHandlerPlugin__mdt custom metadata type
+        // Run any plugins configured in the LoggerSObjectHandlerPlugin__mdt custom metadata type
         this.executePlugins();
     }
 

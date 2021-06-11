@@ -9,7 +9,7 @@
  */
 public abstract class LoggerSObjectHandler {
     @testVisible
-    private static Map<SObjectType, LoggerSObjectHandler__mdt> configurationsBySObjectType;
+    private static Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType;
     @testVisible
     private static Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType;
 
@@ -30,7 +30,7 @@ public abstract class LoggerSObjectHandler {
             FROM LoggerSObjectHandler__mdt
         ];
 
-        configurationsBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>();
+        configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>();
         pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>();
         for (LoggerSObjectHandler__mdt config : configurations) {
             // CMDT entity-definition relationship fields are weird, so skip some headaches by copying the Qualified API name
@@ -39,13 +39,13 @@ public abstract class LoggerSObjectHandler {
             // Schema.getGlobalDescribe() is the worst, so don't use it
             SObjectType sobjectType = ((SObject) Type.forName(config.SObjectType__c).newInstance()).getSObjectType();
 
-            configurationsBySObjectType.put(sobjectType, config);
+            configurationBySObjectType.put(sobjectType, config);
             pluginsBySObjectType.put(sobjectType, config?.LoggerSObjectHandlerPlugins__r);
         }
 
         if (Test.isRunningTest() == true) {
             // Test shouldn't rely on the actual CMDT rules in the org - clear the loaded values, and defaults will be used
-            configurationsBySObjectType.clear();
+            configurationBySObjectType.clear();
             pluginsBySObjectType.clear();
         }
     }
@@ -104,7 +104,7 @@ public abstract class LoggerSObjectHandler {
     }
 
     private void setConfigurations() {
-        this.handlerConfiguration = configurationsBySObjectType.get(this.getSObjectType());
+        this.handlerConfiguration = configurationBySObjectType.get(this.getSObjectType());
         this.plugins = pluginsBySObjectType.get(this.getSObjectType());
 
         if (this.handlerConfiguration == null) {
@@ -114,7 +114,7 @@ public abstract class LoggerSObjectHandler {
                 SObjectType__c = this.getSObjectType().getDescribe().getName()
             );
 
-            configurationsBySObjectType.put(this.getSObjectType(), this.handlerConfiguration);
+            configurationBySObjectType.put(this.getSObjectType(), this.handlerConfiguration);
         }
     }
 

@@ -8,7 +8,7 @@
             "path": "nebula-logger",
             "default": true,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionName": "Logger SObject Post-Processors",
+            "versionName": "Logger SObject Handler Plugins",
             "versionNumber": "4.5.0.0",
             "versionDescription": "Easily add your own automations for Log__c and LogEntry__c objects using Apex or Flow",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
@@ -22,6 +22,7 @@
         "Nebula Logger - Unlocked Package@4.4.4-0-timestamp-bugfix": "04t5Y0000027FIQQA2",
         "Nebula Logger - Unlocked Package@4.4.5-0-log-batch-purger-bugfixes": "04t5Y0000027FIVQA2",
         "Nebula Logger - Unlocked Package@4.4.6-0-new-save-method-synchronous_dml": "04t5Y0000027FJdQAM",
-        "Nebula Logger - Unlocked Package@4.5.0-0-logger-sobject-post-processors": "04t5Y0000027FKWQA2"
+        "Nebula Logger - Unlocked Package@4.5.0-0-logger-sobject-handler-plugins": "04t5Y0000027FKWQA2",
+        "Nebula Logger - Unlocked Package@4.5.0-0": "04t5Y0000027FKqQAM"
     }
 }
