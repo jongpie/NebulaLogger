@@ -5,8 +5,8 @@
 @isTest
 private class LogEntryHandler_Tests {
 
-    public class LogEntryPluginTest implements LoggerSObjectHandlerPlugin {
-        public void execute(
+    public class LogEntryPluginTest extends LoggerSObjectHandlerPlugin {
+        public override void execute(
             TriggerOperation triggerOperationType,
             List<SObject> triggerNew,
             Map<Id, SObject> triggerNewMap,

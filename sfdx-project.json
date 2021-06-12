@@ -23,7 +23,7 @@
                     "versionNumber": "4.5.0.LATEST"
                 }
             ],
-            "versionNumber": "1.0.0.0"
+            "versionNumber": "0.9.0.0"
         },
         {
             "path": "extra-tests",

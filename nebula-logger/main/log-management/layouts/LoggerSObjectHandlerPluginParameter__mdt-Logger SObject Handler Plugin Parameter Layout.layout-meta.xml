@@ -22,11 +22,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>SObjectHandler__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ExecutionOrder__c</field>
+                <field>SObjectHandlerPlugin__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -35,24 +31,22 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Plugin Details</label>
+        <label>Parameter Details</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>PluginType__c</field>
+                <field>DataType__c</field>
             </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>PluginApiName__c</field>
+                <behavior>Edit</behavior>
+                <field>Value__c</field>
             </layoutItems>
         </layoutColumns>
-        <style>TwoColumnsTopToBottom</style>
+        <style>OneColumn</style>
     </layoutSections>
     <layoutSections>
         <customLabel>false</customLabel>
-        <detailHeading>true</detailHeading>
+        <detailHeading>false</detailHeading>
         <editHeading>true</editHeading>
         <label>System Information</label>
         <layoutColumns>
@@ -87,23 +81,13 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedLists>
-        <fields>MasterLabel</fields>
-        <fields>DeveloperName</fields>
-        <fields>IsEnabled__c</fields>
-        <fields>DataType__c</fields>
-        <fields>Value__c</fields>
-        <relatedList>LoggerSObjectHandlerPluginParameter__mdt.SObjectHandlerPlugin__c</relatedList>
-        <sortField>DeveloperName</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h11000004Bf4m</masterLabel>
+        <masterLabel>00h11000004BsIW</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

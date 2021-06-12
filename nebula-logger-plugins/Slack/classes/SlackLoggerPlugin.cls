@@ -3,7 +3,14 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPlugin, Queueable, Database.AllowsCallouts {
+public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
+    // Constants used for loading configuration & parameters from custom metadata type objects
+    private static final String AUTH_METHOD_API_TOKEN = 'API_TOKEN';
+    private static final String PARAM_API_TOKEN = 'SlackApiToken';
+    private static final String PARAM_AUTH_METHOD = 'SlackAuthMethod';
+    private static final String PARAM_ENDPOINT = 'SlackEndpoint';
+    private static final String SLACK_CONFIGURATION_NAME = 'Slack';
+
     private List<Log__c> logs;
 
     public SlackLoggerPlugin() {
@@ -13,7 +20,7 @@ public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPl
         this.logs = unsentLogs;
     }
 
-    public void execute(
+    public override void execute(
         TriggerOperation triggerOperationType,
         List<SObject> triggerNew,
         Map<Id, SObject> triggerNewMap,
@@ -47,15 +54,15 @@ public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPl
                 // ...add them to the unsentLogs list, which will be queued as a separate job
                 unsentLogs.add(log);
             } else {
+                HttpRequest request = this.createHttpRequest();
+                System.debug('request.getEndpoint()==' + request.getEndpoint());
+                System.debug('request.getMethod()==' + request.getMethod());
+                System.debug('request.getBody()==' + request.getBody());
+
                 NotificationDto notification = new NotificationDto();
                 notification.text = 'Salesforce Log Alert';
                 notification.attachments = new List<LogDto>();
                 notification.attachments.add(this.convertLog(log));
-
-                HttpRequest request = new HttpRequest();
-                request.setEndpoint('callout:Slack');
-                request.setMethod('POST');
-                request.setHeader('Content-Type', 'application/json');
 
                 // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
                 String notificationJson = JSON.serialize(notification).replace('"isShort"', '"short"');
@@ -106,7 +113,7 @@ public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPl
                 Id,
                 Name,
                 LoggedBy__c,
-                LoggedBy__r.Name,
+                LoggedBy__r.Username,
                 TotalLogEntries__c,
                 TotalERRORLogEntries__c,
                 TotalWARNLogEntries__c,
@@ -117,10 +124,30 @@ public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPl
         ];
     }
 
+    private HttpRequest createHttpRequest() {
+        String authMethod = this.getParameterValue(PARAM_AUTH_METHOD);
+        System.debug('authMethod==' + authMethod);
+        String endpoint = this.getParameterValue(PARAM_ENDPOINT);
+        System.debug('endpoint==' + endpoint);
+        String apiToken = this.getParameterValue(PARAM_API_TOKEN);
+        System.debug('apiToken==' + apiToken);
+
+        if (authMethod == AUTH_METHOD_API_TOKEN && String.isNotBlank(apiToken)) {
+            endpoint += apiToken;
+        }
+
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(endpoint);
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json');
+
+        return request;
+    }
+
     private LogDto convertLog(Log__c log) {
         LogDto notification = new LogDto();
         notification.author_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.LoggedBy__c;
-        notification.author_name = log.LoggedBy__r.Name;
+        notification.author_name = log.LoggedBy__r.Username;
         notification.color = this.getNotificationColor(log);
         notification.fields = new List<FieldDto>();
         notification.text = 'Transaction ID: ' + log.TransactionId__c;
@@ -190,11 +217,11 @@ public without sharing class SlackLoggerPlugin implements LoggerSObjectHandlerPl
         String color;
 
         if (log.TotalERRORLogEntries__c >= 1) {
-            color = '#FF7373';
+            color = '#FF7373'; // Red
         } else if (log.TotalWARNLogEntries__c >= 1) {
-            color = '#FFC873';
+            color = '#FFC873'; // Organge
         } else {
-            color = '#7CD197';
+            color = '#7CD197'; // Green
         }
 
         return color;

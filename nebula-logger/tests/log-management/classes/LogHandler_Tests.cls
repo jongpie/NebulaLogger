@@ -11,8 +11,8 @@ private class LogHandler_Tests {
     private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
-    public class LogPluginTest implements LoggerSObjectHandlerPlugin {
-        public void execute(
+    public class LogPluginTest extends LoggerSObjectHandlerPlugin {
+        public override void execute(
             TriggerOperation triggerOperationType,
             List<SObject> triggerNew,
             Map<Id, SObject> triggerNewMap,

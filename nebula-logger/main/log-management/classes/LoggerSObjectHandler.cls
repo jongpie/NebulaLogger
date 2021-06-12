@@ -94,10 +94,10 @@ public abstract class LoggerSObjectHandler {
         for (LoggerSObjectHandlerPlugin__mdt pluginConfiguration : this.plugins) {
             switch on pluginConfiguration.PluginType__c {
                 when 'Apex' {
-                    this.executePluginApexClass(pluginConfiguration.PluginApiName__c);
+                    this.executeApexPlugin(pluginConfiguration.PluginApiName__c);
                 }
                 when 'Flow' {
-                    this.executePluginFlow(pluginConfiguration.PluginApiName__c);
+                    this.executeFlowPlugin(pluginConfiguration.PluginApiName__c);
                 }
             }
         }
@@ -118,12 +118,12 @@ public abstract class LoggerSObjectHandler {
         }
     }
 
-    private void executePluginApexClass(String apexClassName) {
+    private void executeApexPlugin(String apexClassName) {
         LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
         apexPlugin.execute(this.triggerOperationType, this.records, this.recordsById, this.oldRecords, this.oldRecordsById);
     }
 
-    private void executePluginFlow(String flowApiName) {
+    private void executeFlowPlugin(String flowApiName) {
         Map<String, Object> flowInputs = new Map<String, Object>();
         flowInputs.put('triggerOperationType', this.triggerOperationType?.name());
         flowInputs.put('records', this.records);
