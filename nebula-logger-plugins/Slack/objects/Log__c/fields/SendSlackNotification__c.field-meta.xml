@@ -4,8 +4,8 @@
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
     <label>Send Slack Notification</label>
-    <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>false</trackHistory>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

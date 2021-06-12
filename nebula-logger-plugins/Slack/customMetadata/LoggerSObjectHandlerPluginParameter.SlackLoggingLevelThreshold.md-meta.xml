@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>Slack Auth Method</label>
+    <label>Slack Logging Level Threshold</label>
     <protected>false</protected>
     <values>
         <field>DataType__c</field>
-        <value xsi:type="xsd:string">String</value>
-    </values>
-    <values>
-        <field>Description__c</field>
-        <value xsi:type="xsd:string">Possible values:
-
-API_TOKEN
-NAMED_CREDENTIALS</value>
+        <value xsi:type="xsd:string">Integer</value>
     </values>
     <values>
         <field>SObjectHandlerPlugin__c</field>
@@ -19,6 +12,6 @@ NAMED_CREDENTIALS</value>
     </values>
     <values>
         <field>Value__c</field>
-        <value xsi:type="xsd:string">API_TOKEN</value>
+        <value xsi:type="xsd:string">WARN</value>
     </values>
 </CustomMetadata>

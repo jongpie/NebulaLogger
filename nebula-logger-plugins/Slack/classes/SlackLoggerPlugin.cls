@@ -9,6 +9,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     private static final String PARAM_API_TOKEN = 'SlackApiToken';
     private static final String PARAM_AUTH_METHOD = 'SlackAuthMethod';
     private static final String PARAM_ENDPOINT = 'SlackEndpoint';
+    private static final String PARAM_LOGGING_LEVEL_THRESHOLD = 'SlackLoggingLevelThreshold';
     private static final String SLACK_CONFIGURATION_NAME = 'Slack';
 
     private List<Log__c> logs;
@@ -85,8 +86,9 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private void flagLogsForSlackNotification(List<Log__c> logs) {
+        LoggingLevel thresholdLoggingLevel = Logger.getLoggingLevel(PARAM_LOGGING_LEVEL_THRESHOLD);
         for (Log__c log : logs) {
-            if (log.TotalERRORLogEntries__c > 0 || log.TotalWARNLogEntries__c > 0) {
+            if (log.MaxLogEntryLoggingLevelOrdinal__c >= thresholdLoggingLevel.ordinal()) {
                 log.SendSlackNotification__c = true;
             }
         }
@@ -114,6 +116,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
                 Name,
                 LoggedBy__c,
                 LoggedBy__r.Username,
+                MaxLogEntryLoggingLevelOrdinal__c,
                 TotalLogEntries__c,
                 TotalERRORLogEntries__c,
                 TotalWARNLogEntries__c,
