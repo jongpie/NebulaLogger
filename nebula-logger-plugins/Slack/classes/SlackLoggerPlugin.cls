@@ -28,12 +28,14 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         List<SObject> triggerOld,
         Map<Id, SObject> triggerOldMap
     ) {
+        this.logs = (List<Log__c>) triggerNew;
+
         switch on triggerOperationType {
             when BEFORE_INSERT, BEFORE_UPDATE {
-                this.flagLogsForSlackNotification((List<Log__c>) triggerNew);
+                this.flagLogsForSlackNotification();
             }
             when AFTER_INSERT, AFTER_UPDATE {
-                this.sendAsyncSlackNotifications((List<Log__c>) triggerNew);
+                this.sendAsyncSlackNotifications();
             }
         }
     }
@@ -85,18 +87,18 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         }
     }
 
-    private void flagLogsForSlackNotification(List<Log__c> logs) {
+    private void flagLogsForSlackNotification() {
         LoggingLevel thresholdLoggingLevel = Logger.getLoggingLevel(PARAM_LOGGING_LEVEL_THRESHOLD);
-        for (Log__c log : logs) {
+        for (Log__c log : this.logs) {
             if (log.MaxLogEntryLoggingLevelOrdinal__c >= thresholdLoggingLevel.ordinal()) {
                 log.SendSlackNotification__c = true;
             }
         }
     }
 
-    private void sendAsyncSlackNotifications(List<Log__c> logs) {
+    private void sendAsyncSlackNotifications() {
         List<Log__c> logsToSend = new List<Log__c>();
-        for (Log__c log : logs) {
+        for (Log__c log : this.logs) {
             if (log.SendSlackNotification__c == true) {
                 logsToSend.add(log);
             }
