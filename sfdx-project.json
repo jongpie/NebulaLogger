@@ -16,7 +16,6 @@
         {
             "package": "Nebula Logger - Slack Plugin",
             "path": "nebula-logger-plugins/Slack",
-            "default": false,
             "dependencies": [
                 {
                     "package": "Nebula Logger - Unlocked Package",
@@ -26,8 +25,7 @@
             "versionNumber": "0.9.0.0"
         },
         {
-            "path": "extra-tests",
-            "default": false
+            "path": "extra-tests"
         }
     ],
     "packageAliases": {
@@ -39,6 +37,7 @@
         "Nebula Logger - Unlocked Package@4.4.5-0-log-batch-purger-bugfixes": "04t5Y0000027FIVQA2",
         "Nebula Logger - Unlocked Package@4.4.6-0-new-save-method-synchronous_dml": "04t5Y0000027FJdQAM",
         "Nebula Logger - Unlocked Package@4.5.0-0-logger-sobject-handler-plugins": "04t5Y0000027FKWQA2",
-        "Nebula Logger - Unlocked Package@4.5.0-0": "04t5Y0000027FKqQAM"
+        "Nebula Logger - Unlocked Package@4.5.0-0": "04t5Y0000027FKqQAM",
+        "Nebula Logger - Slack Plugin": "0Ho5Y000000TNKoSAO"
     }
 }

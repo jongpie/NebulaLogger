@@ -116,14 +116,32 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
             SELECT
                 Id,
                 Name,
+                ApiVersion__c,
                 LoggedBy__c,
                 LoggedBy__r.Username,
+                OwnerId,
+                TYPEOF Owner
+                    WHEN User THEN Username
+                    ELSE Name
+                END,
                 MaxLogEntryLoggingLevelOrdinal__c,
+                OrganizationId__c,
+                OrganizationEnvironmentType__c,
+                OrganizationInstanceName__c,
+                OrganizationName__c,
+                Priority__c,
+                StartTime__c,
+                TimeZoneId__c,
                 TotalLogEntries__c,
                 TotalERRORLogEntries__c,
                 TotalWARNLogEntries__c,
                 TransactionId__c,
-                (SELECT Id, Message__c FROM LogEntries__r WHERE LoggingLevelOrdinal__c >= :LoggingLevel.WARN.ordinal() ORDER BY Timestamp__c)
+                (
+                    SELECT Id, LoggingLevel__c, Message__c
+                    FROM LogEntries__r
+                    WHERE LoggingLevelOrdinal__c >= :LoggingLevel.WARN.ordinal()
+                    ORDER BY Timestamp__c DESC
+                )
             FROM Log__c
             WHERE Id IN :this.logs AND SendSlackNotification__c = TRUE AND SlackNotificationDate__c = NULL
         ];
@@ -155,51 +173,77 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         notification.author_name = log.LoggedBy__r.Username;
         notification.color = this.getNotificationColor(log);
         notification.fields = new List<FieldDto>();
-        notification.text = 'Transaction ID: ' + log.TransactionId__c;
+        notification.text = Schema.Log__c.TotalLogEntries__c.getDescribe().getLabel() + ': `' + String.valueOf(log.TotalLogEntries__c) + '`';
         notification.title = log.Name;
         notification.title_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
 
-        FieldDto orgNameField = new FieldDto();
-        orgNameField.isShort = false;
-        orgNameField.title = 'Org Name';
-        orgNameField.value = UserInfo.getOrganizationName();
-        notification.fields.add(orgNameField);
+        FieldDto startTimeField = new FieldDto();
+        startTimeField.isShort = true;
+        startTimeField.title = Schema.Log__c.StartTime__c.getDescribe().getLabel();
+        startTimeField.value = '`' + log.StartTime__c.format() + ' ' + log.TimeZoneId__c + '`';
+        notification.fields.add(startTimeField);
 
-        FieldDto orgIdField = new FieldDto();
-        orgIdField.isShort = true;
-        orgIdField.title = 'Org ID';
-        orgIdField.value = '`' + UserInfo.getOrganizationId() + '`';
-        notification.fields.add(orgIdField);
-
-        // FieldDto orgIsProductionField = new FieldDto();
-        // orgIsProductionField.isShort = true;
-        // orgIsProductionField.title   = 'Production';
-        // orgIsProductionField.value   = '`' + !ORG.IsSandbox + '`';
-        // notification.fields.add(orgIsProductionField);
-
-        FieldDto totalEntriesField = new FieldDto();
-        totalEntriesField.isShort = true;
-        totalEntriesField.title = '# of Total Entries';
-        totalEntriesField.value = String.valueOf(log.TotalLogEntries__c);
-        notification.fields.add(totalEntriesField);
+        FieldDto transactionIdField = new FieldDto();
+        transactionIdField.isShort = true;
+        transactionIdField.title = Schema.Log__c.TransactionId__c.getDescribe().getLabel();
+        transactionIdField.value = '`' + log.TransactionId__c + '`';
+        notification.fields.add(transactionIdField);
 
         FieldDto totalERROREntriesField = new FieldDto();
         totalERROREntriesField.isShort = true;
-        totalERROREntriesField.title = '# of ERROR Entries';
-        totalERROREntriesField.value = String.valueOf(log.TotalERRORLogEntries__c);
+        totalERROREntriesField.title = Schema.Log__c.TotalERRORLogEntries__c.getDescribe().getLabel();
+        totalERROREntriesField.value = '`' + String.valueOf(log.TotalERRORLogEntries__c) + '`';
         notification.fields.add(totalERROREntriesField);
 
         FieldDto totalWARNEntriesField = new FieldDto();
         totalWARNEntriesField.isShort = true;
-        totalWARNEntriesField.title = '# of WARN Entries';
-        totalWARNEntriesField.value = String.valueOf(log.TotalWARNLogEntries__c);
+        totalWARNEntriesField.title = Schema.Log__c.TotalWARNLogEntries__c.getDescribe().getLabel();
+        totalWARNEntriesField.value = '`' + String.valueOf(log.TotalWARNLogEntries__c) + '`';
         notification.fields.add(totalWARNEntriesField);
 
+        LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
         FieldDto logEntryField = new FieldDto();
         logEntryField.isShort = false;
-        logEntryField.title = 'Log Entry Message';
-        logEntryField.value = '`' + log.LogEntries__r.get(0).Message__c + '`';
+        logEntryField.title = 'Last Log Entry Message';
+        logEntryField.value = lastLogEntry.LoggingLevel__c + ': `' + lastLogEntry.Message__c + '`';
         notification.fields.add(logEntryField);
+
+        String logOwnerType = log.OwnerId.getSObjectType().getDescribe().getName();
+        FieldDto logOwnerNameField = new FieldDto();
+        logOwnerNameField.isShort = true;
+        logOwnerNameField.title = 'Log Owner';
+        logOwnerNameField.value = logOwnerType == 'Group' ? '`Queue: ' + log.Owner.Name + '`' : '`User: ' + log.Owner.Username + '`';
+        notification.fields.add(logOwnerNameField);
+
+        FieldDto priorityField = new FieldDto();
+        priorityField.isShort = true;
+        priorityField.title = Schema.Log__c.Priority__c.getDescribe().getLabel();
+        priorityField.value = '`' + log.Priority__c + '`';
+        notification.fields.add(priorityField);
+
+        FieldDto orgIdField = new FieldDto();
+        orgIdField.isShort = true;
+        orgIdField.title = 'Org ID';
+        orgIdField.value = '`' + log.OrganizationId__c + '`';
+        notification.fields.add(orgIdField);
+
+        FieldDto orgNameField = new FieldDto();
+        orgNameField.isShort = true;
+        orgNameField.title = 'Org Name';
+        orgNameField.value = '`' + log.OrganizationName__c + '`';
+        notification.fields.add(orgNameField);
+
+        FieldDto orgTypeField = new FieldDto();
+        orgTypeField.isShort = true;
+        orgTypeField.title = 'Org Type & Instance';
+        orgTypeField.value = '`' + log.OrganizationEnvironmentType__c + ' - ' + log.OrganizationInstanceName__c + '`';
+        notification.fields.add(orgTypeField);
+
+        FieldDto orgApiVersion = new FieldDto();
+        orgApiVersion.isShort = true;
+        orgApiVersion.title = Schema.Log__c.ApiVersion__c.getDescribe().getLabel();
+        orgApiVersion.value = '`' + log.ApiVersion__c + '`';
+        notification.fields.add(orgApiVersion);
 
         List<String> topicNames = new List<String>();
         for (TopicAssignment topicAssignment : log.TopicAssignments) {
