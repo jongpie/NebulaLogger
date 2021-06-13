@@ -70,11 +70,6 @@
                 <default>false</default>
                 <label>String</label>
             </value>
-            <value>
-                <fullName>Time</fullName>
-                <default>false</default>
-                <label>Time</label>
-            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

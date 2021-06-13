@@ -14,10 +14,7 @@ private class LogHandler_Tests_Flow {
         String expectedUserFirstName = 'Logger-Flow-Test';
         System.assertNotEquals(expectedUserFirstName, UserInfo.getFirstName());
 
-        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(
-             PluginType__c = 'Flow',
-            PluginApiName__c = pluginFlowApiName
-        );
+        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(PluginType__c = 'Flow', PluginApiName__c = pluginFlowApiName);
         Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>{
             Schema.Log__c.SObjectType => new List<LoggerSObjectHandlerPlugin__mdt>{ plugin }
         };

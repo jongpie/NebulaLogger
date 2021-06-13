@@ -5,12 +5,15 @@
 
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
     // Constants used for loading configuration & parameters from custom metadata type objects
-    private static final String AUTH_METHOD_API_TOKEN = 'API_TOKEN';
     private static final String PARAM_API_TOKEN = 'SlackApiToken';
     private static final String PARAM_AUTH_METHOD = 'SlackAuthMethod';
     private static final String PARAM_ENDPOINT = 'SlackEndpoint';
-    private static final String PARAM_LOGGING_LEVEL_THRESHOLD = 'SlackLoggingLevelThreshold';
-    private static final String SLACK_CONFIGURATION_NAME = 'Slack';
+    private static final String PARAM_THRESHOLD_LOGGING_LEVEL_NAME = 'SlackLoggingLevelThreshold';
+
+    private enum SlackAuthMethod {
+        API_TOKEN,
+        NAMED_CREDENTIAL
+    }
 
     private List<Log__c> logs;
 
@@ -41,7 +44,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     public void execute(System.QueueableContext queueableContext) {
-        // Requery the logs, in case any field values have changed
+        // SInce this runs in an async context, requery the logs just in case any field values have changed
         this.requeryLogs();
 
         if (this.logs.isEmpty() == true) {
@@ -51,21 +54,16 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         List<Log__c> sentLogs = new List<Log__c>();
         List<Log__c> unsentLogs = new List<Log__c>();
         for (Log__c log : this.logs) {
-            // log = log.clone(true);
             if (Limits.getCallouts() == Limits.getLimitCallouts()) {
                 // If there are too many logs to send in the same transaction...
                 // ...add them to the unsentLogs list, which will be queued as a separate job
                 unsentLogs.add(log);
             } else {
-                HttpRequest request = this.createHttpRequest();
-                System.debug('request.getEndpoint()==' + request.getEndpoint());
-                System.debug('request.getMethod()==' + request.getMethod());
-                System.debug('request.getBody()==' + request.getBody());
+                HttpRequest request = this.createSlackHttpRequest();
 
                 NotificationDto notification = new NotificationDto();
                 notification.text = 'Salesforce Log Alert';
-                notification.attachments = new List<LogDto>();
-                notification.attachments.add(this.convertLog(log));
+                notification.attachments = new List<LogDto>{ this.convertLog(log) };
 
                 // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
                 String notificationJson = JSON.serialize(notification).replace('"isShort"', '"short"');
@@ -88,7 +86,13 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private void flagLogsForSlackNotification() {
-        LoggingLevel thresholdLoggingLevel = Logger.getLoggingLevel(PARAM_LOGGING_LEVEL_THRESHOLD);
+        String thresholdLoggingLevelName = this.getParameterAsString(PARAM_THRESHOLD_LOGGING_LEVEL_NAME);
+
+        if (String.isBlank(thresholdLoggingLevelName)) {
+            return;
+        }
+
+        LoggingLevel thresholdLoggingLevel = Logger.getLoggingLevel(thresholdLoggingLevelName);
         for (Log__c log : this.logs) {
             if (log.MaxLogEntryLoggingLevelOrdinal__c >= thresholdLoggingLevel.ordinal()) {
                 log.SendSlackNotification__c = true;
@@ -141,21 +145,22 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
                     FROM LogEntries__r
                     WHERE LoggingLevelOrdinal__c >= :LoggingLevel.WARN.ordinal()
                     ORDER BY Timestamp__c DESC
+                    LIMIT 1
                 )
             FROM Log__c
             WHERE Id IN :this.logs AND SendSlackNotification__c = TRUE AND SlackNotificationDate__c = NULL
         ];
     }
 
-    private HttpRequest createHttpRequest() {
-        String authMethod = this.getParameterValue(PARAM_AUTH_METHOD);
+    private HttpRequest createSlackHttpRequest() {
+        String authMethod = this.getParameterAsString(PARAM_AUTH_METHOD);
         System.debug('authMethod==' + authMethod);
-        String endpoint = this.getParameterValue(PARAM_ENDPOINT);
+        String endpoint = this.getParameterAsString(PARAM_ENDPOINT);
         System.debug('endpoint==' + endpoint);
-        String apiToken = this.getParameterValue(PARAM_API_TOKEN);
+        String apiToken = this.getParameterAsString(PARAM_API_TOKEN);
         System.debug('apiToken==' + apiToken);
 
-        if (authMethod == AUTH_METHOD_API_TOKEN && String.isNotBlank(apiToken)) {
+        if (authMethod == SlackAuthMethod.API_TOKEN.name() && String.isNotBlank(apiToken)) {
             endpoint += apiToken;
         }
 
@@ -205,7 +210,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         FieldDto logEntryField = new FieldDto();
         logEntryField.isShort = false;
         logEntryField.title = 'Last Log Entry Message';
-        logEntryField.value = lastLogEntry.LoggingLevel__c + ': `' + lastLogEntry.Message__c + '`';
+        logEntryField.value = '`' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '`';
         notification.fields.add(logEntryField);
 
         String logOwnerType = log.OwnerId.getSObjectType().getDescribe().getName();
@@ -268,7 +273,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         if (log.TotalERRORLogEntries__c >= 1) {
             color = '#FF7373'; // Red
         } else if (log.TotalWARNLogEntries__c >= 1) {
-            color = '#FFC873'; // Organge
+            color = '#FFC873'; // Orange
         } else {
             color = '#7CD197'; // Green
         }

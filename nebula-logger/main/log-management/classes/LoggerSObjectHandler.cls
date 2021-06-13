@@ -109,10 +109,7 @@ public abstract class LoggerSObjectHandler {
 
         if (this.handlerConfiguration == null) {
             // If no config exists in the org, then load some in-memory defaults
-            this.handlerConfiguration = new LoggerSObjectHandler__mdt(
-                IsEnabled__c = true,
-                SObjectType__c = this.getSObjectType().getDescribe().getName()
-            );
+            this.handlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = this.getSObjectType().getDescribe().getName());
 
             configurationBySObjectType.put(this.getSObjectType(), this.handlerConfiguration);
         }

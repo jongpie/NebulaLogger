@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Description__c</fullName>
-    <description>Used purely for documentation purposes to store any important details about this parameter</description>
+    <description>Used purely for documentation purposes to store any important details about this plugin</description>
     <externalId>false</externalId>
-    <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText>Used purely for documentation purposes to store any important details about this parameter</inlineHelpText>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Used purely for documentation purposes to store any important details about this plugin</inlineHelpText>
     <label>Description</label>
-    <required>false</required>
-    <type>TextArea</type>
+    <length>131072</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
 </CustomField>

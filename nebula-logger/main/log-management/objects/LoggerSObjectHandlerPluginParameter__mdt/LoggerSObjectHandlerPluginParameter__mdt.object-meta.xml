@@ -3,5 +3,5 @@
     <description>Used to store additional key-value pair parameters that can be used by Logger plugins</description>
     <label>Logger SObject Handler Plugin Parameter</label>
     <pluralLabel>Logger SObject Handler Plugin Parameters</pluralLabel>
-    <visibility>Public</visibility>
+    <visibility>Protected</visibility>
 </CustomObject>

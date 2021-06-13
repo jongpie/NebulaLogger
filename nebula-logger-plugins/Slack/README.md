@@ -28,6 +28,5 @@ Choose auth method: 'API_TOKEN' or 'NAMED_CREDENTIALS'
 ### 'NAMED_CREDENTIALS' Steps
 
 1. Create Slack app
-2. Create Auth Provider
-3. Create Named Credential
-4. Create/update logger plugin parameter
+2. Create Auth Provider & Named Credential - See [UnofficialSF.com's article](https://unofficialsf.com/authorizing-salesforce-access-to-slack/) on how to set this up for Slack
+3. Create/update logger plugin parameter

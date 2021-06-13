@@ -7,8 +7,9 @@
  * @group Log Management
  * @description Interface used to define custom logic to run when DML statements occur on `Log__c` or `LogEntry__c`
  */
-global abstract class LoggerSObjectHandlerPlugin {
-    global abstract void execute(
+// TODO: convert to `global` once plugin framework is stable/solidified/ready for the managed package
+public abstract class LoggerSObjectHandlerPlugin {
+    public abstract void execute(
         TriggerOperation triggerOperationType,
         List<SObject> triggerNew,
         Map<Id, SObject> triggerNewMap,
@@ -16,32 +17,54 @@ global abstract class LoggerSObjectHandlerPlugin {
         Map<Id, SObject> triggerOldMap
     );
 
-    global virtual LoggerSObjectHandlerPlugin__mdt getConfiguration() {
-        // By default, check to see if there is a plugin named after the current Apex class name
-        // Implementations of LoggerSObjectHandlerPlugin can override this behavior if desired
-        String currentClassName = String.valueOf(this).substring(0, String.valueOf(this).indexOf(':'));
-        return LoggerSObjectHandlerPlugin__mdt.getInstance(currentClassName);
-    }
-
-    // protected LoggerSObjectHandlerPlugin__mdt getConfiguration(String configurationDeveloperName) {
-    //     // To include the child object LoggerSObjectHandlerPluginParameter__mdt, we have to query the object...
-    //     // ...instead of using getAll()
-
-    //     // TODO Consider caching the query results... maybe...
-    //     return [
-    //         SELECT
-    //             Id,
-    //             MasterLabel,
-    //             DeveloperName,
-    //             (SELECT Id, MasterLabel, DeveloperName, DataType__c, Value__c FROM LoggerSObjectHandlerPluginParameters__r WHERE IsEnabled__c = TRUE)
-    //         FROM LoggerSObjectHandlerPlugin__mdt
-    //         WHERE IsEnabled__c = TRUE AND DeveloperName = :configurationDeveloperName
-    //     ];
-    // }
-
-    protected String getParameterValue(String parameterDeveloperName) {
+    protected String getParameterAsString(String parameterDeveloperName) {
         return this.getParameter(parameterDeveloperName)?.Value__c;
     }
+
+    // TODO: uncomment these as a future enhancement
+    // protected Blob getParameterAsBlob(String parameterDeveloperName) {
+    //     return Blob.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Boolean getParameterAsBoolean(String parameterDeveloperName) {
+    //     return Boolean.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Date getParameterAsDate(String parameterDeveloperName) {
+    //     return Date.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Datetime getParameterAsDatetime(String parameterDeveloperName) {
+    //     return Datetime.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Decimal getParameterAsDecimal(String parameterDeveloperName) {
+    //     return Decimal.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Double getParameterAsDouble(String parameterDeveloperName) {
+    //     return Double.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Id getParameterAsId(String parameterDeveloperName) {
+    //     return Id.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Integer getParameterAsInteger(String parameterDeveloperName) {
+    //     return Integer.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Long getParameterAsLong(String parameterDeveloperName) {
+    //     return Long.valueOf(this.getParameterAsString(parameterDeveloperName));
+    // }
+
+    // protected Object getParameterAsObject(String parameterDeveloperName) {
+    //     return (Object) this.getParameterAsString(parameterDeveloperName);
+    // }
+
+    // protected SObject getParameterAsSObject(String parameterDeveloperName) {
+    //     return (SObject) JSON.deserialize(this.getParameterAsString(parameterDeveloperName), SObject.class);
+    // }
 
     private LoggerSObjectHandlerPluginParameter__mdt getParameter(String parameterDeveloperName) {
         LoggerSObjectHandlerPluginParameter__mdt parameter = LoggerSObjectHandlerPluginParameter__mdt.getInstance(parameterDeveloperName);
