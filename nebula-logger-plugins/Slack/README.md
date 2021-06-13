@@ -9,12 +9,15 @@ Adds a Slack integration for Nebula Logger. Any logs with log entries that meet 
 ## What's Included
 
 This plugin includes some add-on metadata for Logger to support the Slack integration
+
 1. Apex class `SlackLoggerPlugin` and corresponding tests in `SlackLoggerPlugin_Tests`
 2. Plugin configuration details stored in Logger's CMDT objects `LoggerSObjectHandlerPlugin__mdt` and `LoggerSObjectHandlerPluginParameter__mdt`
 3. Custom fields `Log__c.SendSlackNotification__c` and `Log__c.SlackNotificationDate__c`
 4. Field-level security (FLS) updates for the permission sets `LoggerAdmin` and `LoggerLogViewer` to provide access to the custom Slack fields
 5. Custom list views for the `Log__c` and `LoggerSObjectHandlerPluginParameter__mdt` objects
 6. Remote site setting for Slack's API
+
+---
 
 ## Installation Steps
 
