@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Log Management
+ * @group Plugin Framework
  * @description Abstract class used to define custom plugins to execute when DML statements occur on `Log__c` or `LogEntry__c`
  */
 // TODO: convert to `global` once plugin framework is stable/solidified/ready for the managed package (if possible)

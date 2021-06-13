@@ -3,6 +3,10 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/**
+ * @group Plugins
+ * @description Optional plugin that integrates with Slack to send alerts for important logs
+ */
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
     // Constants used for loading configuration & parameters from custom metadata type objects
     private static final String PARAM_API_TOKEN = 'SlackApiToken';

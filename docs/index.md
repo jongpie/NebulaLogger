@@ -60,10 +60,12 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 
 Abstract class used by trigger handlers for shared logic
 
-### [LoggerSObjectHandlerPlugin](log-management/LoggerSObjectHandlerPlugin)
-
-Abstract class used to define custom plugins to execute when DML statements occur on `Log__c` or `LogEntry__c`
-
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 
 Controller class for the component RelatedLogEntries
+
+## Plugin Framework
+
+### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
+
+Abstract class used to define custom plugins to execute when DML statements occur on `Log__c` or `LogEntry__c`
