@@ -2,8 +2,6 @@
 
 Adds a Slack integration for Nebula Logger. Any logs with 1+ ERROR or WARN log entries will automatically be posted to your Slack channel.
 
-[![Install Unlocked Package](./../../content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=TODO-add-package-ID)
-
 ![Slack plugin: notification](./../../content/slack-plugin-notification.png)
 
 ---
