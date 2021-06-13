@@ -68,11 +68,11 @@ public abstract class LoggerSObjectHandler {
         this.setConfigurations();
 
         if (this.handlerConfiguration.IsEnabled__c == true) {
+            this.triggerOperationType = Trigger.operationType;
             this.records = Trigger.new;
             this.recordsById = Trigger.newMap;
             this.oldRecords = Trigger.old;
             this.oldRecordsById = Trigger.oldMap;
-            this.triggerOperationType = Trigger.operationType;
         }
     }
 
@@ -132,8 +132,8 @@ public abstract class LoggerSObjectHandler {
     private void executeFlowPlugin(String flowApiName) {
         Map<String, Object> flowInputs = new Map<String, Object>();
         flowInputs.put('triggerOperationType', this.triggerOperationType?.name());
-        flowInputs.put('records', this.records);
-        flowInputs.put('oldRecords', this.oldRecordsById?.values());
+        flowInputs.put('triggerNew', this.records);
+        flowInputs.put('triggerOld', this.oldRecords);
 
         Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
         flowPlugin.start();

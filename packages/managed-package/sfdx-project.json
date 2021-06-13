@@ -9,10 +9,10 @@
             "default": true,
             "definitionFile": "config/project-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "versionName": "Logger SObject Handler Plugins",
+            "versionName": "Code Stability & Bugfixes",
             "versionNumber": "4.5.0.0",
             "ancestorVersion": "4.4.0.2",
-            "versionDescription": "Easily add your own automations for Log__c and LogEntry__c objects using Apex or Flow",
+            "versionDescription": "Code stability & bugfixes for the managed package. Unlocked package only: new logger plugin framework",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],

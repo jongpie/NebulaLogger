@@ -68,4 +68,4 @@ Controller class for the component RelatedLogEntries
 
 ### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
 
-Abstract class used to define custom plugins to execute when DML statements occur on `Log__c` or `LogEntry__c`
+Abstract class used to create custom Apex plugins to execute for all trigger operations on `Log__c` or `LogEntry__c`

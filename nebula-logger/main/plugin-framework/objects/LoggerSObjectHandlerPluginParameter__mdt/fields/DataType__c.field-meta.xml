@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DataType__c</fullName>
+    <description>The expected data type of the parameter value</description>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText>The expected data type of the parameter value</inlineHelpText>
     <label>Data Type</label>
     <required>true</required>
     <type>Picklist</type>
@@ -64,6 +66,18 @@
                 <fullName>String</fullName>
                 <default>false</default>
                 <label>String</label>
+            </value>
+            <value>
+                <fullName>Blob</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Blob</label>
+            </value>
+            <value>
+                <fullName>Time</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Time</label>
             </value>
         </valueSetDefinition>
     </valueSet>
