@@ -62,7 +62,7 @@ Abstract class used by trigger handlers for shared logic
 
 ### [LoggerSObjectHandlerPlugin](log-management/LoggerSObjectHandlerPlugin)
 
-Abstract class used to define custom plugins to run when DML statements occur on `Log__c` or `LogEntry__c`
+Abstract class used to define custom plugins to execute when DML statements occur on `Log__c` or `LogEntry__c`
 
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 

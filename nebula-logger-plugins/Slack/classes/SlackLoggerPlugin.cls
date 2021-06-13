@@ -86,7 +86,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private void flagLogsForSlackNotification() {
-        String thresholdLoggingLevelName = this.getParameterAsString(PARAM_THRESHOLD_LOGGING_LEVEL_NAME);
+        String thresholdLoggingLevelName = this.getStringParameter(PARAM_THRESHOLD_LOGGING_LEVEL_NAME);
 
         if (String.isBlank(thresholdLoggingLevelName)) {
             return;
@@ -153,11 +153,11 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private HttpRequest createSlackHttpRequest() {
-        String authMethod = this.getParameterAsString(PARAM_AUTH_METHOD);
+        String authMethod = this.getStringParameter(PARAM_AUTH_METHOD);
         System.debug('authMethod==' + authMethod);
-        String endpoint = this.getParameterAsString(PARAM_ENDPOINT);
+        String endpoint = this.getStringParameter(PARAM_ENDPOINT);
         System.debug('endpoint==' + endpoint);
-        String apiToken = this.getParameterAsString(PARAM_API_TOKEN);
+        String apiToken = this.getStringParameter(PARAM_API_TOKEN);
         System.debug('apiToken==' + apiToken);
 
         HttpRequest request = new HttpRequest();

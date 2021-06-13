@@ -53,7 +53,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     /**
      * @description Runs the trigger handler's logic for the `Log__c` custom object
      */
-    public void execute() {
+    public override void execute() {
         if (this.isEnabled() == false) {
             return;
         }

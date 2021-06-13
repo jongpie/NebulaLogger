@@ -82,6 +82,15 @@ public abstract class LoggerSObjectHandler {
      */
     public abstract SObjectType getSObjectType();
 
+    /**
+     * @description Runs the handler class's logic
+     */
+    public abstract void execute();
+
+    /**
+     * @description Indicates if the current SObject Handler is enabled, based on `LoggerSObjectHandler__mdt.IsEnabled__c`
+     * @return   The `Boolean` value (`true` == enabled, `false` == disabled)
+     */
     protected Boolean isEnabled() {
         return this.handlerConfiguration.IsEnabled__c;
     }

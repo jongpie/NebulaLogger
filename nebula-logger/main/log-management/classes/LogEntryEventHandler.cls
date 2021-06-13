@@ -44,7 +44,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     /**
      * @description Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
      */
-    public void execute() {
+    public override void execute() {
         if (this.isEnabled() == false) {
             return;
         }

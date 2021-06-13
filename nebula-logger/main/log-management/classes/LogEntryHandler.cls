@@ -30,7 +30,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     /**
      * @description Runs the trigger handler's logic for the `LogEntry__c` custom object
      */
-    public void execute() {
+    public override void execute() {
         if (this.isEnabled() == false) {
             return;
         }

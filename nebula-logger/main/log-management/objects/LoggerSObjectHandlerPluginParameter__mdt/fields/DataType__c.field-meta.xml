@@ -11,11 +11,6 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Blob</fullName>
-                <default>true</default>
-                <label>Blob</label>
-            </value>
-            <value>
                 <fullName>Boolean</fullName>
                 <default>false</default>
                 <label>Boolean</label>
