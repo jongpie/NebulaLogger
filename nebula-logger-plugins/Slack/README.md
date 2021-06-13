@@ -1,6 +1,6 @@
 # Slack plugin for Nebula Logger
 
-Adds a Slack integration for Nebula Logger. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel.
+Adds a Slack integration for Nebula Logger. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
 
 ![Slack plugin: notification](./../../content/slack-plugin-notification.png)
 
