@@ -347,7 +347,7 @@ For more details, check out the `LogMessage` class [documentation](https://jongp
 
 ---
 
-## New Beta Feature: Adding Custom Plugins for Log\_\_c and LogEntry\_\_c
+## New Beta Feature: Custom Plugin Framework for Log\_\_c and LogEntry\_\_c objects
 
 Note: the logger plugin framework is currently not available in the managed package. Once this feature has been stabilized, it'll be added to the managed package version as well.
 
