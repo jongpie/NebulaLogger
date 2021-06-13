@@ -15,7 +15,7 @@ NAMED_CREDENTIALS</value>
     </values>
     <values>
         <field>SObjectHandlerPlugin__c</field>
-        <value xsi:type="xsd:string">SlackLoggerPlugin</value>
+        <value xsi:type="xsd:string">Slack</value>
     </values>
     <values>
         <field>Value__c</field>

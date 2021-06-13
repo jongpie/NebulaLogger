@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>SlackLoggerPlugin</fullName>
+    <fullName>SlackPlugin</fullName>
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>SObjectHandlerPlugin__c</columns>
@@ -12,7 +12,7 @@
     <filters>
         <field>SObjectHandlerPlugin__c</field>
         <operation>equals</operation>
-        <value>SlackLoggerPlugin</value>
+        <value>SlackPlugin</value>
     </filters>
     <label>Slack Logger Plugin Parameters</label>
 </ListView>

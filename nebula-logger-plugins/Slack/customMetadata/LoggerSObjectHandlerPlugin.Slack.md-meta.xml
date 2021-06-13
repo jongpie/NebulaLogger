@@ -9,6 +9,14 @@
 Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackLoggingLevelThreshold&apos; will send a notification to Slack</value>
     </values>
     <values>
+        <field>ExecutionOrder__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
         <field>PluginApiName__c</field>
         <value xsi:type="xsd:string">SlackLoggerPlugin</value>
     </values>
