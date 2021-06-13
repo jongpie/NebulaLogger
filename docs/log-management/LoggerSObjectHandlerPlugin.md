@@ -2,9 +2,9 @@
 layout: default
 ---
 
-## LoggerSObjectHandlerPlugin interface
+## LoggerSObjectHandlerPlugin class
 
-Interface used to define custom logic to run when DML statements occur on `Log__c` or `LogEntry__c`
+Abstract class used to define custom plugins to run when DML statements occur on `Log__c` or `LogEntry__c`
 
 ---
 

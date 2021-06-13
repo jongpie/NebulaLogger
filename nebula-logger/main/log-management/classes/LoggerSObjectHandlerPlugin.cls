@@ -5,7 +5,7 @@
 
 /**
  * @group Log Management
- * @description Interface used to define custom logic to run when DML statements occur on `Log__c` or `LogEntry__c`
+ * @description Abstract class used to define custom plugins to run when DML statements occur on `Log__c` or `LogEntry__c`
  */
 // TODO: convert to `global` once plugin framework is stable/solidified/ready for the managed package
 public abstract class LoggerSObjectHandlerPlugin {
