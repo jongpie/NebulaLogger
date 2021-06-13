@@ -347,7 +347,7 @@ For more details, check out the `LogMessage` class [documentation](https://jongp
 
 ---
 
-## New Beta Feature: Custom Plugin Framework for Log\_\_c and LogEntry\_\_c objects
+## Beta Feature: Custom Plugin Framework for Log\_\_c and LogEntry\_\_c objects
 
 Note: the logger plugin framework is currently not available in the managed package. Once this feature has been stabilized, it'll be added to the managed package version as well.
 
@@ -384,7 +384,7 @@ Once you've created your Apex or Flow plugin(s), you will also need to configure
 
 ![Logger Handler Configuration](./content/logger-handler-configuration.png)
 
-### New Beta Plugin: Slack Integration
+### Beta Plugin: Slack Integration
 
 The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:
 
