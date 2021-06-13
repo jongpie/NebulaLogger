@@ -54,8 +54,8 @@ You can choose to install the unlocked package, you can deploy the metadata from
         </tr>
         <tr>
             <td>Future Releases</td>
-            <td>Faster release cycle: new patch versions are released (e.g., `v4.4.x`) for new enhancements & bugfixes that are merged to the `main` branch in GitHub</td>
-            <td>Slower release cycle: new minor versions are only released (e.g., `v4.x`) once new enhancements & bugfixes have been tested and code is stabilized</td>
+            <td>Faster release cycle: new patch versions are released (e.g., <code>v4.4.x</code>) for new enhancements & bugfixes that are merged to the <code>main</code> branch in GitHub</td>
+            <td>Slower release cycle: new minor versions are only released (e.g., <code>v4.x</code>) once new enhancements & bugfixes have been tested and code is stabilized</td>
             <td>Faster release cycle: new enhancements & bugfixes will be immediately available in GitHub</td>
         </tr>
         <tr>
@@ -81,6 +81,12 @@ You can choose to install the unlocked package, you can deploy the metadata from
             <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
             <td>This functionality is not currently available in the managed package</td>
             <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
+        </tr>
+        <tr>
+            <td>Logger Plugin Framework</td>
+            <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
+            <td>This functionality is not currently available in the managed package</td>
+            <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
         </tr>
     </tbody>
 </table>
@@ -339,7 +345,11 @@ The class `LogMessage` provides the ability to generate string messages on deman
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
 
-### Adding Custom Plugins for Log\_\_c and LogEntry\_\_c
+---
+
+## New Beta Feature: Adding Custom Plugins for Log\_\_c and LogEntry\_\_c
+
+Note: the logger plugin framework is currently not available in the managed package. Once this feature has been stabilized, it'll be added to the managed package version as well.
 
 If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you can leverage Apex or Flow to define "plugins" - the logger system will then automatically run the plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on)
 
@@ -373,6 +383,17 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
 Once you've created your Apex or Flow plugin(s), you will also need to configure the custom metadata type `LoggerSObjectHandler__mdt` to specify the name(s) of Apex class and Flow to run.
 
 ![Logger Handler Configuration](./content/logger-handler-configuration.png)
+
+### New Beta Plugin: Slack Integration
+
+The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:
+
+-   Use Apex to apply custom logic to `Log__c` and `LogEntry__c` records
+-   Add custom fields and list views to Logger's objects
+-   Extend permission sets to include field-level security for your custom fields
+-   Leverage the new `LoggerSObjectHandlerPluginParameter__mdt` CMDT object to store configuration for your plugin
+
+Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on how to install & customize the plugin
 
 ## Managing Logs
 
