@@ -160,14 +160,14 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         String apiToken = this.getParameterAsString(PARAM_API_TOKEN);
         System.debug('apiToken==' + apiToken);
 
-        if (authMethod == SlackAuthMethod.API_TOKEN.name() && String.isNotBlank(apiToken)) {
-            endpoint += apiToken;
-        }
-
         HttpRequest request = new HttpRequest();
         request.setEndpoint(endpoint);
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
+
+        if (authMethod == SlackAuthMethod.API_TOKEN.name() && String.isNotBlank(apiToken)) {
+            request.setHeader('token', apiToken);
+        }
 
         return request;
     }
