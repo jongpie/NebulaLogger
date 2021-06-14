@@ -28,14 +28,14 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     @testVisible
     private List<Log__c> logs {
         get {
-            return (List<Log__c>) this.records;
+            return (List<Log__c>) this.triggerNew;
         }
     }
 
     @testVisible
     private Map<Id, Log__c> oldLogsById {
         get {
-            return (Map<Id, Log__c>) this.oldRecordsById;
+            return (Map<Id, Log__c>) this.triggerOldMap;
         }
     }
 

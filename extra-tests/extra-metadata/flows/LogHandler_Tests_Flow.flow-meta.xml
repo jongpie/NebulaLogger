@@ -76,7 +76,7 @@
     </start>
     <status>Active</status>
     <variables>
-        <name>oldRecords</name>
+        <name>triggerOld</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>true</isInput>

@@ -17,7 +17,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     @testVisible
     private List<LogEntryEvent__e> logEntryEvents {
         get {
-            return (List<LogEntryEvent__e>) this.records;
+            return (List<LogEntryEvent__e>) this.triggerNew;
         }
     }
 
@@ -30,7 +30,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents) {
         // Override the records provided by LoggerSObjectHandler
-        this.records = logEntryEvents;
+        this.triggerNew = logEntryEvents;
     }
 
     /**

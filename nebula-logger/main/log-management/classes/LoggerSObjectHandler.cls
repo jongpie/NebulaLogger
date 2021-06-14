@@ -53,13 +53,13 @@ public abstract class LoggerSObjectHandler {
     @testVisible
     protected TriggerOperation triggerOperationType;
     @testVisible
-    protected List<SObject> records;
+    protected List<SObject> triggerNew;
     @testVisible
-    protected Map<Id, SObject> recordsById;
+    protected Map<Id, SObject> triggerNewMap;
     @testVisible
-    protected List<SObject> oldRecords;
+    protected List<SObject> triggerOld;
     @testVisible
-    protected Map<Id, SObject> oldRecordsById;
+    protected Map<Id, SObject> triggerOldMap;
 
     private LoggerSObjectHandler__mdt handlerConfiguration;
     private List<LoggerSObjectHandlerPlugin__mdt> plugins;
@@ -69,10 +69,10 @@ public abstract class LoggerSObjectHandler {
 
         if (this.handlerConfiguration.IsEnabled__c == true) {
             this.triggerOperationType = Trigger.operationType;
-            this.records = Trigger.new;
-            this.recordsById = Trigger.newMap;
-            this.oldRecords = Trigger.old;
-            this.oldRecordsById = Trigger.oldMap;
+            this.triggerNew = Trigger.new;
+            this.triggerNewMap = Trigger.newMap;
+            this.triggerOld = Trigger.old;
+            this.triggerOldMap = Trigger.oldMap;
         }
     }
 
@@ -96,7 +96,7 @@ public abstract class LoggerSObjectHandler {
     }
 
     protected void executePlugins() {
-        if (this.records == null || this.plugins == null || this.plugins.isEmpty()) {
+        if (this.triggerNew == null || this.plugins == null || this.plugins.isEmpty() == true) {
             return;
         }
 
@@ -126,21 +126,21 @@ public abstract class LoggerSObjectHandler {
 
     private void executeApexPlugin(String apexClassName) {
         LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
-        apexPlugin.execute(this.triggerOperationType, this.records, this.recordsById, this.oldRecords, this.oldRecordsById);
+        apexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
     }
 
     private void executeFlowPlugin(String flowApiName) {
         Map<String, Object> flowInputs = new Map<String, Object>();
         flowInputs.put('triggerOperationType', this.triggerOperationType?.name());
-        flowInputs.put('triggerNew', this.records);
-        flowInputs.put('triggerOld', this.oldRecords);
+        flowInputs.put('triggerNew', this.triggerNew);
+        flowInputs.put('triggerOld', this.triggerOld);
 
         Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
         flowPlugin.start();
 
         List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
-        if (updatedTriggerNew != null && updatedTriggerNew.size() == this.records.size()) {
-            this.records = updatedTriggerNew;
+        if (updatedTriggerNew != null && updatedTriggerNew.size() == this.triggerNew.size()) {
+            this.triggerNew = updatedTriggerNew;
         }
     }
 }
