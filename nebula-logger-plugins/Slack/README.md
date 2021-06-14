@@ -26,7 +26,7 @@ This plugin includes some add-on metadata for Logger to support the Slack integr
 3. In Slack, create a new app in your Slack workspace and enable incoming webhooks for your app.
 4. In Slack, create a new incoming webhook, and copy the webhook URL.
 5. In Salesforce, go to Setup --> Custom Metadata Types --> Logger Plugin --> Slack (shown in screenshot below) and find the parameter 'Slack Endpoint'. Paste the Slack webhook URL into the `Value__c` field and save the Plugin Parameter record.
-6. In Salesforce, set the desired logging level value for the Logger Plugin Parameter 'Slack Logging Level Threshold` (shown in screenshot below). It controls which logging level (ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST) will trigger the Slack notifications to be sent.
+6. In Salesforce, set the desired logging level value for the Logger Plugin Parameter 'Slack Notification Logging Level` (shown in screenshot below). It controls which logging level (ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST) will trigger the Slack notifications to be sent.
 
 At this point, the Slack integration should now be setup & working - any new logs that meet the threshold logging level (step 6 above) will send a Slack notification.
 

@@ -10,12 +10,7 @@
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
     // Constants used for loading configuration & parameters from custom metadata type objects
     private static final String PARAM_ENDPOINT = 'SlackEndpoint';
-    private static final String PARAM_THRESHOLD_LOGGING_LEVEL_NAME = 'SlackLoggingLevelThreshold';
-
-    private enum SlackAuthMethod {
-        API_TOKEN,
-        NAMED_CREDENTIAL
-    }
+    private static final String PARAM_NOTIFICATION_LOGGING_LEVEL_NAME = 'SlackNotificationLoggingLevel';
 
     private List<Log__c> logs;
 
@@ -88,15 +83,15 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private void flagLogsForSlackNotification() {
-        String thresholdLoggingLevelName = this.getStringParameter(PARAM_THRESHOLD_LOGGING_LEVEL_NAME);
+        String notificationLoggingLevelName = this.getParameter(PARAM_NOTIFICATION_LOGGING_LEVEL_NAME)?.Value__c;
 
-        if (String.isBlank(thresholdLoggingLevelName)) {
+        if (String.isBlank(notificationLoggingLevelName)) {
             return;
         }
 
-        LoggingLevel thresholdLoggingLevel = Logger.getLoggingLevel(thresholdLoggingLevelName);
+        LoggingLevel notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
         for (Log__c log : this.logs) {
-            if (log.MaxLogEntryLoggingLevelOrdinal__c >= thresholdLoggingLevel.ordinal()) {
+            if (log.MaxLogEntryLoggingLevelOrdinal__c >= notificationLoggingLevel.ordinal()) {
                 log.SendSlackNotification__c = true;
             }
         }
@@ -156,7 +151,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private HttpRequest createSlackHttpRequest() {
-        String endpoint = this.getStringParameter(PARAM_ENDPOINT);
+        String endpoint = this.getParameter(PARAM_ENDPOINT)?.Value__c;
         System.debug('endpoint==' + endpoint);
 
         HttpRequest request = new HttpRequest();

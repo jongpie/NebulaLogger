@@ -12,7 +12,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     @testVisible
     private List<LogEntry__c> logEntries {
         get {
-            return (List<LogEntry__c>) this.records;
+            return (List<LogEntry__c>) this.triggerNew;
         }
     }
 
