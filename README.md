@@ -349,14 +349,14 @@ For more details, check out the `LogMessage` class [documentation](https://jongp
 
 ## Beta Feature: Custom Plugin Framework for Log\_\_c and LogEntry\_\_c objects
 
-Note: the logger plugin framework is not available in the managed package due to some platform limitations & considerations with some of the underlying code. The unlocked package is recommended (instead of the managed package) when possible, including if you want to be able to leverage the plugin framework in your org.
+If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you can leverage Apex or Flow to define "plugins" - the logger system will then automatically run the plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on). This framework makes it easy to build your own plugins, or deploy/install others' prebuilt packages, without having to modify the logging system directly.
 
-If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you can leverage Apex or Flow to define "plugins" - the logger system will then automatically run the plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).
+-   Flow plugins: your Flow should be built as auto-launched Flows with these parameters:
+    1. `Input` parameter `triggerOperationType` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
+    2. `Input` parameter `triggerNew` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
+    2. `Output` parameter `updatedTriggerNew` - If your Flow makes any updates to the collection of records, you should return a record collection containing the updated records
+    3. `Input` parameter `triggerOld` - The list of logger records as they exist in the datatabase
 
--   Flow plugins: your Flow should be built with these input parameters:
-    1. `triggerOperationType` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
-    2. `triggerNew` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
-    3. `triggerOld` - The list of logger records as they exist in the datatabase - this is only populated when running in the context of `Trigger.isUpdate`
 -   Apex plugins: your Apex class should implement `LoggerSObjectHandlerPlugin`. For example:
 
     ```java
@@ -386,6 +386,7 @@ Once you've created your Apex or Flow plugin(s), you will also need to configure
 
 ![Logger plugin: configuration](./content/slack-plugin-configuration.png)
 
+Note: the logger plugin framework is not available in the managed package due to some platform limitations & considerations with some of the underlying code. The unlocked package is recommended (instead of the managed package) when possible, including if you want to be able to leverage the plugin framework in your org.
 ### Beta Plugin: Slack Integration
 
 The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:

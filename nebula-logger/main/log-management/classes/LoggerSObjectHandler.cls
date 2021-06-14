@@ -137,5 +137,10 @@ public abstract class LoggerSObjectHandler {
 
         Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
         flowPlugin.start();
+
+        List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
+        if (updatedTriggerNew != null && updatedTriggerNew.size() == this.records.size()) {
+            this.records = updatedTriggerNew;
+        }
     }
 }
