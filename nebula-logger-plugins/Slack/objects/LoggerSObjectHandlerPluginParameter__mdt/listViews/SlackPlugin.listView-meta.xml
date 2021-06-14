@@ -12,7 +12,7 @@
     <filters>
         <field>SObjectHandlerPlugin__c</field>
         <operation>equals</operation>
-        <value>SlackPlugin</value>
+        <value>Slack</value>
     </filters>
-    <label>Slack Logger Plugin Parameters</label>
+    <label>Slack Plugin Parameters</label>
 </ListView>

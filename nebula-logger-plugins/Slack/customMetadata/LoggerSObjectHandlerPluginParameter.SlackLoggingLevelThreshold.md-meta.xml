@@ -7,11 +7,11 @@
         <value xsi:type="xsd:string">String</value>
     </values>
     <values>
-        <field>SObjectHandlerPlugin__c</field>
-        <value xsi:type="xsd:string">Slack</value>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">The logging level name that triggers a Slack notification to be sent. Possible logging levels are: ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST</value>
     </values>
     <values>
-        <field>Value__c</field>
-        <value xsi:type="xsd:string">WARN</value>
+        <field>SObjectHandlerPlugin__c</field>
+        <value xsi:type="xsd:string">Slack</value>
     </values>
 </CustomMetadata>
