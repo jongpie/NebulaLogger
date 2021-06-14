@@ -9,8 +9,6 @@
  */
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
     // Constants used for loading configuration & parameters from custom metadata type objects
-    private static final String PARAM_API_TOKEN = 'SlackApiToken';
-    private static final String PARAM_AUTH_METHOD = 'SlackAuthMethod';
     private static final String PARAM_ENDPOINT = 'SlackEndpoint';
     private static final String PARAM_THRESHOLD_LOGGING_LEVEL_NAME = 'SlackLoggingLevelThreshold';
 
