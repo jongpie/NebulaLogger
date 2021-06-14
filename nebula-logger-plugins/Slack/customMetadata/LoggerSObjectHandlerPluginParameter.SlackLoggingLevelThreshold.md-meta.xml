@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>DataType__c</field>
-        <value xsi:type="xsd:string">Integer</value>
+        <value xsi:type="xsd:string">String</value>
     </values>
     <values>
         <field>SObjectHandlerPlugin__c</field>

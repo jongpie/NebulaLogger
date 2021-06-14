@@ -59,10 +59,10 @@ You can choose to install the unlocked package, you can deploy the metadata from
             <td>Faster release cycle: new enhancements & bugfixes will be immediately available in GitHub</td>
         </tr>
         <tr>
-            <td>Public Apex Methods</td>
-            <td>Any <code>public</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> methods are not backwards-compatible</td>
+            <td>Public & Protected Apex Methods</td>
+            <td>Any <code>public</code> and <code>protected</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> and <code>protected</code> methods are not backwards-compatible</td>
             <td>Only <code>global</code> methods are available in managed packages - any <code>global</code> Apex methods available in the managed package will be supported for the foreseeable future</td>
-            <td>Any <code>public</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> methods are not backwards-compatible</td>
+            <td>Any <code>public</code> and <code>protected</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> and <code>protected</code> methods are not backwards-compatible</td>
         </tr>
         <tr>
             <td>Apex Debug Statements</td>
@@ -370,7 +370,7 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
         ) {
             switch on triggerOperationType {
                 when BEFORE_INSERT {
-                    for (Log__c log : logs) {
+                    for (Log__c log : (List<Log__c>) triggerNew) {
                         log.Status__c = 'On Hold';
                     }
                 }

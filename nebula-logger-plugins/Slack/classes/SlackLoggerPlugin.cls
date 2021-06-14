@@ -120,6 +120,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private void requeryLogs() {
+        // TODO: switch to dynamically querying based on a new `Log__c` field set parameter
         this.logs = [
             SELECT
                 Id,
@@ -157,35 +158,32 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private HttpRequest createSlackHttpRequest() {
-        String authMethod = this.getStringParameter(PARAM_AUTH_METHOD);
-        System.debug('authMethod==' + authMethod);
         String endpoint = this.getStringParameter(PARAM_ENDPOINT);
         System.debug('endpoint==' + endpoint);
-        String apiToken = this.getStringParameter(PARAM_API_TOKEN);
-        System.debug('apiToken==' + apiToken);
 
         HttpRequest request = new HttpRequest();
         request.setEndpoint(endpoint);
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
 
-        if (authMethod == SlackAuthMethod.API_TOKEN.name() && String.isNotBlank(apiToken)) {
-            request.setHeader('token', apiToken);
-        }
-
         return request;
     }
 
     private LogDto convertLog(Log__c log) {
+        LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
+        String messageText = 'Last Log Entry Message'
+            + '\n`' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '`';
+
         LogDto notification = new LogDto();
         notification.author_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.LoggedBy__c;
         notification.author_name = log.LoggedBy__r.Username;
         notification.color = this.getNotificationColor(log);
         notification.fields = new List<FieldDto>();
-        notification.text = Schema.Log__c.TotalLogEntries__c.getDescribe().getLabel() + ': `' + String.valueOf(log.TotalLogEntries__c) + '`';
+        notification.text = messageText;//Schema.Log__c.TotalLogEntries__c.getDescribe().getLabel() + ': `' + String.valueOf(log.TotalLogEntries__c) + '`';
         notification.title = log.Name;
         notification.title_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
 
+        // TODO: switch to dynamically creating Slack DTO fields based on a new `Log__c` field set parameter
         FieldDto startTimeField = new FieldDto();
         startTimeField.isShort = true;
         startTimeField.title = Schema.Log__c.StartTime__c.getDescribe().getLabel();
@@ -209,13 +207,6 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         totalWARNEntriesField.title = Schema.Log__c.TotalWARNLogEntries__c.getDescribe().getLabel();
         totalWARNEntriesField.value = '`' + String.valueOf(log.TotalWARNLogEntries__c) + '`';
         notification.fields.add(totalWARNEntriesField);
-
-        LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
-        FieldDto logEntryField = new FieldDto();
-        logEntryField.isShort = false;
-        logEntryField.title = 'Last Log Entry Message';
-        logEntryField.value = '`' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '`';
-        notification.fields.add(logEntryField);
 
         String logOwnerType = log.OwnerId.getSObjectType().getDescribe().getName();
         FieldDto logOwnerNameField = new FieldDto();

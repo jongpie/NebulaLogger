@@ -21,25 +21,13 @@ This plugin includes some add-on metadata for Logger to support the Slack integr
 
 ## Installation Steps
 
-1. Ensure that you have the unlocked package version of Nebula Logger installed in your org
-2. Install/deploy Slack plugin package for Logger
-3. Create a new app in you Slack workspace
-4. Add Slack as an Auth Provider in your org
-5. Add a named credential called 'Slack' in your org
+1. In Salesforce, ensure that you have the unlocked package version of Nebula Logger installed in your org.
+2. In Salesforce, deploy the metadata for the Slack plugin for Logger. Currently, this has to be done by cloning/downloading the repo from GitHub and deploying yourself. An unlocked package will be released in the future to make this process much easier.
+3. In Slack, create a new app in your Slack workspace and enable incoming webhooks for your app.
+4. In Slack, create a new incoming webhook, and copy the webhook URL.
+5. In Salesforce, go to Setup --> Custom Metadata Types --> Logger Plugin --> Slack (shown in screenshot below) and find the parameter 'Slack Endpoint'. Paste the Slack webhook URL into the `Value__c` field and save the Plugin Parameter record.
+6. In Salesforce, set the desired logging level value for the Logger Plugin Parameter 'Slack Logging Level Threshold` (shown in screenshot below). It controls which logging level (ERROR, WARN, INFO, DEBUG, FINE, FINER OR FINEST) will trigger the Slack notifications to be sent.
 
----
+At this point, the Slack integration should now be setup & working - any new logs that meet the threshold logging level (step 6 above) will send a Slack notification.
 
-## Setup Steps
-
-Choose auth method: 'API_TOKEN' or 'NAMED_CREDENTIALS'
-
-### 'API_TOKEN' Steps
-
-1. Create remote site setting
-2. Create/update logger plugin parameter
-
-### 'NAMED_CREDENTIALS' Steps
-
-1. Create Slack app
-2. Create Auth Provider & Named Credential - See [UnofficialSF.com's article](https://unofficialsf.com/authorizing-salesforce-access-to-slack/) on how to set this up for Slack
-3. Create/update logger plugin parameter
+![Slack plugin: configuration](./../../content/slack-plugin-configuration.png)
