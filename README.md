@@ -380,9 +380,11 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
 
     ```
 
-Once you've created your Apex or Flow plugin(s), you will also need to configure the custom metadata type `LoggerSObjectHandler__mdt` to specify the name(s) of Apex class and Flow to run.
+Once you've created your Apex or Flow plugin(s), you will also need to configure the plugin:
+- 'Logger Plugin' - use the custom metadata type `LoggerSObjectHandlerPlugin__mdt` to define your plugin, including the plugin type (Apex or Flow) and the API name of your plugin's Apex class or Flow
+- 'Logger Plugin Parameter' - use the custom metadata type `LoggerSObjectHandlerPluginParameter__mdt` to define any configurable parameters needed for your plugin, such as environment-specific URLs and other similar configurations
 
-![Logger Handler Configuration](./content/logger-handler-configuration.png)
+![Logger plugin: configuration](./content/slack-plugin-configuration.png)
 
 ### Beta Plugin: Slack Integration
 
@@ -394,6 +396,8 @@ The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula
 -   Leverage the new `LoggerSObjectHandlerPluginParameter__mdt` CMDT object to store configuration for your plugin
 
 Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on how to install & customize the plugin
+
+![Slack plugin: notification](./content/slack-plugin-notification.png)
 
 ## Managing Logs
 
