@@ -12,15 +12,38 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     private static final String PARAM_ENDPOINT = 'SlackEndpoint';
     private static final String PARAM_NOTIFICATION_LOGGING_LEVEL_NAME = 'SlackNotificationLoggingLevel';
 
+    @testVisible
+    private static String endpoint;
+    @testVisible
+    private static LoggingLevel notificationLoggingLevel;
+
+    static {
+        endpoint = LoggerSObjectHandlerPluginParameter__mdt.getInstance(PARAM_ENDPOINT)?.Value__c;
+
+        LoggerSObjectHandlerPluginParameter__mdt loggingLevelParameter = LoggerSObjectHandlerPluginParameter__mdt.getInstance(PARAM_NOTIFICATION_LOGGING_LEVEL_NAME);
+        if (loggingLevelParameter != null && loggingLevelParameter.IsEnabled__c == true) {
+            String notificationLoggingLevelName = loggingLevelParameter?.Value__c;
+            notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
+        }
+    }
+
+    // Member variables
+    // @testVisible
+    // private String endpoint;
+    // private LoggingLevel notificationLoggingLevel;
+
     private List<Log__c> logs;
 
+    // Constructors
     public SlackLoggerPlugin() {
     }
 
     private SlackLoggerPlugin(List<Log__c> unsentLogs) {
+        this();
         this.logs = unsentLogs;
     }
 
+    // Instance methods
     public override void execute(
         TriggerOperation triggerOperationType,
         List<SObject> triggerNew,
@@ -83,13 +106,10 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private void flagLogsForSlackNotification() {
-        String notificationLoggingLevelName = this.getParameter(PARAM_NOTIFICATION_LOGGING_LEVEL_NAME)?.Value__c;
-
-        if (String.isBlank(notificationLoggingLevelName)) {
+        if (notificationLoggingLevel == null) {
             return;
         }
 
-        LoggingLevel notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
         for (Log__c log : this.logs) {
             if (log.MaxLogEntryLoggingLevelOrdinal__c >= notificationLoggingLevel.ordinal()) {
                 log.SendSlackNotification__c = true;
@@ -151,7 +171,6 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private HttpRequest createSlackHttpRequest() {
-        String endpoint = this.getParameter(PARAM_ENDPOINT)?.Value__c;
         System.debug('endpoint==' + endpoint);
 
         HttpRequest request = new HttpRequest();
