@@ -7,10 +7,16 @@
  * @group Plugin Framework
  * @description Abstract class used to create custom Apex plugins to execute for all trigger operations on `Log__c` or `LogEntry__c`
  */
-// TODO: If possible, convert to `global` for the managed package - there are some additional platform limitations...
-//      ... and restrictions with making future changes to abstract classes & interfaces within managed packages...
-//      ... which could lead to a lot of problems, so for now/indefinitely, plugins will only work in the unlocked package
+// TODO: If possible, convert to `global` for the managed package - there are some additional platform limitations
+//       and restrictions with making future changes to abstract classes & interfaces within managed packages
+//       which could lead to a lot of problems, so for now/indefinitely, plugins will only work in the unlocked package
 public abstract class LoggerSObjectHandlerPlugin {
+    /**
+     * @description All instances of `LoggerSObjectHandlerPlugin` are dynamically created, which requires aparameterless constructor
+     */
+    public LoggerSObjectHandlerPlugin() {
+    }
+
     /**
      * @description This method is the entry point for plugins to execute any custom logic.
      *              It is automatically called by the logging system for any enabled plugins.
@@ -249,15 +255,15 @@ public abstract class LoggerSObjectHandlerPlugin {
      * @return                        The matching instance of `LoggerSObjectHandlerPluginParameter__mdt`,
      *                                or null when not found or disabled
      */
-    protected LoggerSObjectHandlerPluginParameter__mdt getParameter(String parameterDeveloperName) {
-        LoggerSObjectHandlerPluginParameter__mdt parameter = LoggerSObjectHandlerPluginParameter__mdt.getInstance(parameterDeveloperName);
+    // protected LoggerSObjectHandlerPluginParameter__mdt getParameter(String parameterDeveloperName) {
+    //     LoggerSObjectHandlerPluginParameter__mdt parameter = LoggerSObjectHandlerPluginParameter__mdt.getInstance(parameterDeveloperName);
 
-        if (parameter == null || parameter.IsEnabled__c == false) {
-            return null;
-        }
+    //     if (parameter == null || parameter.IsEnabled__c == false) {
+    //         return null;
+    //     }
 
-        return parameter;
-    }
+    //     return parameter;
+    // }
 
     // private Object castParameter(String parameterDeveloperName, Type dataType) {
     //     // return JSON.deserialize(this.getStringParameter(parameterDeveloperName), dataType);

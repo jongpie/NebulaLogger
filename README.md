@@ -357,11 +357,11 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
     2. `Output` parameter `updatedTriggerNew` - If your Flow makes any updates to the collection of records, you should return a record collection containing the updated records
     3. `Input` parameter `triggerOld` - The list of logger records as they exist in the datatabase
 
--   Apex plugins: your Apex class should implement `LoggerSObjectHandlerPlugin`. For example:
+-   Apex plugins: your Apex class should extend the abstract class `LoggerSObjectHandlerPlugin`. For example:
 
     ```java
-    public class ExamplePlugin implements LoggerSObjectHandlerPlugin {
-        public void execute(
+    public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
+        public override void execute(
             TriggerOperation triggerOperationType,
             List<SObject> triggerNew,
             Map<Id, SObject> triggerNewMap,

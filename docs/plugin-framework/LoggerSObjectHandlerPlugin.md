@@ -8,6 +8,12 @@ Abstract class used to create custom Apex plugins to execute for all trigger ope
 
 ---
 
+### Constructors
+
+#### `LoggerSObjectHandlerPlugin()`
+
+## All instances of `LoggerSObjectHandlerPlugin` are dynamically created, which requires aparameterless constructor
+
 ### Methods
 
 #### `execute(TriggerOperation triggerOperationType,List<SObject> triggerNew,Map<Id, SObject> triggerNewMap,List<SObject> triggerOld,Map<Id, SObject> triggerOldMap)` → `void`
