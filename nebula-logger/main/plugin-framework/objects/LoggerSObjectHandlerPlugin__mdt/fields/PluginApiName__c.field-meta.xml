@@ -10,7 +10,7 @@ Flow: The API name of a Flow that supports these inputs:
  - triggerNew: record collection variable
  - triggerOld: record collection variable</description>
     <externalId>false</externalId>
-    <fieldManageability>SubscriberControlled</fieldManageability>
+    <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText>The API name of the metadata to run, based on the Plugin Type
 
 Apex: The name of an Apex class that implements the interface LoggerSObjectHandlerPlugin

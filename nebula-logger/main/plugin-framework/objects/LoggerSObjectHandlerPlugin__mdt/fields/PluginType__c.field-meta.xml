@@ -3,7 +3,7 @@
     <fullName>PluginType__c</fullName>
     <description>The type of plugin that the logging system should dynamically execute - Apex or Flow.</description>
     <externalId>false</externalId>
-    <fieldManageability>SubscriberControlled</fieldManageability>
+    <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText>The type of plugin that the logging system should dynamically execute - Apex or Flow.</inlineHelpText>
     <label>Plugin Type</label>
     <required>true</required>

@@ -3,7 +3,7 @@
     <fullName>DataType__c</fullName>
     <description>The expected data type of the parameter value</description>
     <externalId>false</externalId>
-    <fieldManageability>SubscriberControlled</fieldManageability>
+    <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText>The expected data type of the parameter value</inlineHelpText>
     <label>Data Type</label>
     <required>true</required>
