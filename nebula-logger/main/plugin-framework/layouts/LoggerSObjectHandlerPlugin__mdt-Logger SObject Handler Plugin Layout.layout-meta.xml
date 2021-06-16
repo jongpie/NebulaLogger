@@ -104,6 +104,7 @@
         <fields>MasterLabel</fields>
         <fields>DeveloperName</fields>
         <fields>IsEnabled__c</fields>
+        <fields>CollectionType__c</fields>
         <fields>DataType__c</fields>
         <fields>Value__c</fields>
         <relatedList>LoggerSObjectHandlerPluginParameter__mdt.SObjectHandlerPlugin__c</relatedList>

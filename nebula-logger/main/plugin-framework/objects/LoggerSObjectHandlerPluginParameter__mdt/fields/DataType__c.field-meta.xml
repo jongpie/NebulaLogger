@@ -67,18 +67,6 @@
                 <default>false</default>
                 <label>String</label>
             </value>
-            <value>
-                <fullName>Blob</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Blob</label>
-            </value>
-            <value>
-                <fullName>Time</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Time</label>
-            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

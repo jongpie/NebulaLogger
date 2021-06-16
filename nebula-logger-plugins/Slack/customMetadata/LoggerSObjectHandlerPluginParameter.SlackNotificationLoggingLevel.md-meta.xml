@@ -3,6 +3,10 @@
     <label>Slack Notification Logging Level Name</label>
     <protected>false</protected>
     <values>
+        <field>CollectionType__c</field>
+        <value xsi:type="xsd:string">Single</value>
+    </values>
+    <values>
         <field>DataType__c</field>
         <value xsi:type="xsd:string">String</value>
     </values>

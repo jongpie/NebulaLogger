@@ -35,6 +35,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
+                <field>CollectionType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
                 <field>DataType__c</field>
             </layoutItems>
             <layoutItems>

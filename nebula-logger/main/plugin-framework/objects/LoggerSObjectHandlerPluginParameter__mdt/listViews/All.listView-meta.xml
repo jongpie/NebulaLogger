@@ -5,6 +5,7 @@
     <columns>DeveloperName</columns>
     <columns>SObjectHandlerPlugin__c</columns>
     <columns>IsEnabled__c</columns>
+    <columns>CollectionType__c</columns>
     <columns>DataType__c</columns>
     <columns>Value__c</columns>
     <columns>Description__c</columns>
