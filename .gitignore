@@ -4,6 +4,7 @@
 .sfdx/
 .vscode/
 coverage/
+force-app/
 nebula-logger/main/default/
 nebula-logger/managed-package/
 .vim-force.com

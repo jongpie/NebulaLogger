@@ -20,7 +20,9 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     static {
         endpoint = LoggerSObjectHandlerPluginParameter__mdt.getInstance(PARAM_ENDPOINT)?.Value__c;
 
-        LoggerSObjectHandlerPluginParameter__mdt loggingLevelParameter = LoggerSObjectHandlerPluginParameter__mdt.getInstance(PARAM_NOTIFICATION_LOGGING_LEVEL_NAME);
+        LoggerSObjectHandlerPluginParameter__mdt loggingLevelParameter = LoggerSObjectHandlerPluginParameter__mdt.getInstance(
+            PARAM_NOTIFICATION_LOGGING_LEVEL_NAME
+        );
         if (loggingLevelParameter != null && loggingLevelParameter.IsEnabled__c == true) {
             String notificationLoggingLevelName = loggingLevelParameter?.Value__c;
             notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
@@ -161,7 +163,11 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
                     LIMIT 1
                 )
             FROM Log__c
-            WHERE Id IN :this.logs AND SendSlackNotification__c = TRUE AND SlackNotificationDate__c = NULL
+            WHERE
+                Id IN :this.logs
+                AND MaxLogEntryLoggingLevelOrdinal__c >= :notificationLoggingLevel.ordinal()
+                AND SendSlackNotification__c = TRUE
+                AND SlackNotificationDate__c = NULL
         ];
     }
 
@@ -178,15 +184,14 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
 
     private LogDto convertLog(Log__c log) {
         LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
-        String messageText = 'Last Log Entry Message'
-            + '\n`' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '`';
+        String messageText = 'Last Log Entry Message' + '\n`' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '`';
 
         LogDto notification = new LogDto();
         notification.author_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.LoggedBy__c;
         notification.author_name = log.LoggedBy__r.Username;
         notification.color = this.getNotificationColor(log);
         notification.fields = new List<FieldDto>();
-        notification.text = messageText;//Schema.Log__c.TotalLogEntries__c.getDescribe().getLabel() + ': `' + String.valueOf(log.TotalLogEntries__c) + '`';
+        notification.text = messageText; //Schema.Log__c.TotalLogEntries__c.getDescribe().getLabel() + ': `' + String.valueOf(log.TotalLogEntries__c) + '`';
         notification.title = log.Name;
         notification.title_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
 

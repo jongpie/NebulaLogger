@@ -2,7 +2,7 @@
 
 Adds a Slack integration for Nebula Logger. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
 
-[![Install Unlocked Package](./../../content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FLoQAM)
+[![Install Unlocked Package](./../../content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5e0000005whPAAQ)
 
 ![Slack plugin: notification](./../../content/slack-plugin-notification.png)
 
@@ -29,19 +29,19 @@ In order to use the Slack plugin, there are some configuration changes needed in
 
 Within Slack, you'll need to setup incoming webhooks to allow the Logger Slack plugin to create messages. The high-level steps are:
 
-1. Create a new app in your Slack workspace and enable incoming webhooks for your app.
+1. Create a new app in your Slack workspace and enable incoming webhooks for your app
 2. Create a new incoming webhook for your app, and copy the webhook URL. This will be used in Salesforce (see below steps)
 
 Check out [Slack's webhooks documentation](https://api.slack.com/messaging/webhooks) for more details on how to setup incoming webhooks.
 
 ### Salesforce setup
 
-1. Ensure that you have the unlocked package version of Nebula Logger installed in your org.
-2. Install the unlocked package for the Slack plugin.
+1. Ensure that you have the unlocked package version of Nebula Logger installed in your org
+2. Install the unlocked package for the Slack plugin
 3. Go to Setup --> Custom Metadata Types --> Logger Plugin --> Slack. There are 2 parameters to configure (shown in screenshot below)
     - Parameter 'Slack Endpoint' - Paste the Slack webhook URL into the `Value__c` field and save the Plugin Parameter record.
     - Parameter 'Slack Notification Logging Level' - Set the desired logging level value that should trigger a Slack notification to be sent the Logger Plugin Parameter 'Slack Notification Logging Level`. It controls which logging level (ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST) will trigger the Slack notifications to be sent.
 
-At this point, the Slack integration should now be setup & working - any new logs that meet the specified notification logging level (step 6 above) will send a Slack notification.
+The Slack integration should now be setup & working - any new logs that meet the specified notification logging level (step 6 above) will send a Slack notification.
 
 ![Slack plugin: configuration](./../../content/slack-plugin-configuration.png)
