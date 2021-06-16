@@ -392,7 +392,7 @@ Within App Builder, admins can add the 'Related Log Entries' lightning web compo
 
 Admins can easily delete old logs using 2 methods: list views or Apex batch jobs
 
-##### Mass Deleting with List Views
+#### Mass Deleting with List Views
 
 Salesforce (still) does not support mass deleting records out-of-the-box. There's been [an Idea for 11+ years](https://trailblazer.salesforce.com/ideaView?id=08730000000BqczAAC) about it, but it's still not standard functionality. A custom button is available on `Log__c` list views to provide mass deletion functionality.
 
