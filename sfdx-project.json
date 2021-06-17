@@ -18,6 +18,18 @@
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
+            "path": "nebula-logger-plugins/BigObject",
+            "package": "Nebula Logger Plugin - BigObject",
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Unlocked Package@4.5.0-0-logger-plugin-framework"
+                }
+            ],
+            "versionName": "Prototype of BigObject plugin based on beta release of plugin framework",
+            "versionNumber": "0.1.0.0",
+            "default": false
+        },
+        {
             "path": "nebula-logger-plugins/Slack",
             "package": "Nebula Logger Plugin - Slack",
             "dependencies": [

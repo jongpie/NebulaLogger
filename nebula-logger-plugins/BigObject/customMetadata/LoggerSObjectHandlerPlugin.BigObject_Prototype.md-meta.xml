@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>BIG Object Prototype</label>
+    <protected>true</protected>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">This prototype plugin (along with a few small changes to Logger itself) demos how a plugin could be built to convert &amp; store LogEntryEvent__e records in a (unbuilt) BIG object</value>
+    </values>
+    <values>
+        <field>ExecutionOrder__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>PluginApiName__c</field>
+        <value xsi:type="xsd:string">BigObjectLoggerPlugin</value>
+    </values>
+    <values>
+        <field>PluginType__c</field>
+        <value xsi:type="xsd:string">Apex</value>
+    </values>
+    <values>
+        <field>SObjectHandler__c</field>
+        <value xsi:type="xsd:string">LogEntryEventHandler</value>
+    </values>
+</CustomMetadata>
