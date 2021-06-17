@@ -29,7 +29,7 @@ In order to use the Slack plugin, there are some configuration changes needed in
 
 Within Slack, you'll need to setup incoming webhooks to allow the Logger Slack plugin to create messages. The high-level steps are:
 
-1. Create a new app in your Slack workspace and enable incoming webhooks for your app
+1. Create a new app in your Slack workspace (or use an existing app, if you prefer)
 2. Create a new incoming webhook for your app, and copy the webhook URL. This will be used in Salesforce (see below steps)
 
 Check out [Slack's webhooks documentation](https://api.slack.com/messaging/webhooks) for more details on how to setup incoming webhooks.
