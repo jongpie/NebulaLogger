@@ -138,7 +138,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         if (
             shouldCallStatusApi == true &&
-            LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c &&
+            LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi') == true &&
             recentLogWithApiReleaseDetails == null &&
             getCountOfOpenJobs() == 0
         ) {
