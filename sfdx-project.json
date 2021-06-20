@@ -18,8 +18,8 @@
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
-            "path": "nebula-logger-plugins/Slack",
             "package": "Nebula Logger Plugin - Slack",
+            "path": "nebula-logger-plugins/Slack",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Unlocked Package@4.5.0-0-logger-plugin-framework"
@@ -43,8 +43,8 @@
         "Nebula Logger - Unlocked Package@4.4.4-0-timestamp-bugfix": "04t5Y0000027FIQQA2",
         "Nebula Logger - Unlocked Package@4.4.5-0-log-batch-purger-bugfixes": "04t5Y0000027FIVQA2",
         "Nebula Logger - Unlocked Package@4.4.6-0-new-save-method-synchronous_dml": "04t5Y0000027FJdQAM",
-        "Nebula Logger - Unlocked Package@4.5.0-0-logger-plugin-framework": "04t5Y0000027FM8QAM",
+        "Nebula Logger - Unlocked Package@4.5.0-0-logger-plugin-framework": "04t5Y0000027FMrQAM",
         "Nebula Logger Plugin - Slack": "0Ho5e000000oM3pCAE",
-        "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e0000005whPAAQ"
+        "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ"
     }
 }
