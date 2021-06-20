@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CollectionType__c</fullName>
+    <description>The expected collection type of the parameter. For example, String vs List&lt;String&gt;</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>The expected collection type of the parameter. For example, String vs List&lt;String&gt;</inlineHelpText>
+    <label>Collection Type</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Single</fullName>
+                <default>true</default>
+                <label>Single</label>
+            </value>
+            <value>
+                <fullName>List</fullName>
+                <default>false</default>
+                <label>List</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
