@@ -96,7 +96,7 @@ public abstract class LoggerSObjectHandler {
     }
 
     protected void executePlugins() {
-        if (this.triggerNew == null || this.plugins == null || this.plugins.isEmpty() == true) {
+        if (this.plugins == null || this.plugins.isEmpty() == true) {
             return;
         }
 
