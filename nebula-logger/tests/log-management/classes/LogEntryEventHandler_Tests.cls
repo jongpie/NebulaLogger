@@ -313,7 +313,7 @@ private class LogEntryEventHandler_Tests {
         System.assert(logEntryEvents.isEmpty());
 
         Test.startTest();
-        new LogEntryEventHandler(logEntryEvents).execute();
+        new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents).execute();
         Test.stopTest();
     }
 
@@ -513,185 +513,185 @@ private class LogEntryEventHandler_Tests {
         }
     }
 
-    @isTest
-    static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
-        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
-        LogEntryEventHandler.shouldCallStatusApi = true;
+    // @isTest
+    // static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
+    //     Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+    //     LogEntryEventHandler.shouldCallStatusApi = true;
 
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        orgDefaults.EnableStatusApiCallout__c = true;
-        upsert orgDefaults;
+    //     LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+    //     orgDefaults.EnableStatusApiCallout__c = true;
+    //     upsert orgDefaults;
 
-        String transactionId = '123-456-789-0';
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId
-        );
+    //     String transactionId = '123-456-789-0';
+    //     LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+    //         EpochTimestamp__c = System.now().getTime(),
+    //         Message__c = 'my message',
+    //         Timestamp__c = System.now(),
+    //         TransactionEntryNumber__c = 1,
+    //         TransactionId__c = transactionId
+    //     );
 
-        Database.SaveResult saveResult;
+    //     Database.SaveResult saveResult;
 
-        Test.startTest();
+    //     Test.startTest();
 
-        saveResult = EventBus.publish(logEntryEvent);
-        // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
-        // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
-        // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
-        Test.getEventBus().deliver();
+    //     saveResult = EventBus.publish(logEntryEvent);
+    //     // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+    //     // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+    //     // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+    //     Test.getEventBus().deliver();
 
-        Test.stopTest();
+    //     Test.stopTest();
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+    //     System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
-        Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
-        LogEntry__c logEntry = log.LogEntries__r.get(0);
+    //     Log__c log = getLog();
+    //     System.assertEquals(1, log.LogEntries__r.size());
+    //     LogEntry__c logEntry = log.LogEntries__r.get(0);
 
-        System.assertEquals(MOCK_RELEASE_NUMBER, log.ApiReleaseNumber__c);
-        System.assertEquals(MOCK_RELEASE_VERSION, log.ApiReleaseVersion__c);
-        validateLogFields(logEntryEvent, log);
-        validateLogEntryFields(logEntryEvent, logEntry);
-    }
+    //     System.assertEquals(MOCK_RELEASE_NUMBER, log.ApiReleaseNumber__c);
+    //     System.assertEquals(MOCK_RELEASE_VERSION, log.ApiReleaseVersion__c);
+    //     validateLogFields(logEntryEvent, log);
+    //     validateLogEntryFields(logEntryEvent, logEntry);
+    // }
 
-    @isTest
-    static void it_should_set_api_release_number_and_api_release_version_from_recent_record() {
-        Log__c recentLog = new Log__c(
-            ApiReleaseNumber__c = 'QWERTY',
-            ApiReleaseVersion__c = 'ASDF',
-            TransactionId__c = 'ABC-XYZ'
-        );
-        insert recentLog;
+    // @isTest
+    // static void it_should_set_api_release_number_and_api_release_version_from_recent_record() {
+    //     Log__c recentLog = new Log__c(
+    //         ApiReleaseNumber__c = 'QWERTY',
+    //         ApiReleaseVersion__c = 'ASDF',
+    //         TransactionId__c = 'ABC-XYZ'
+    //     );
+    //     insert recentLog;
 
-        insert new LogEntry__c(
-            Log__c = recentLog.Id,
-            Timestamp__c = System.now().addHours(-1)
-        );
+    //     insert new LogEntry__c(
+    //         Log__c = recentLog.Id,
+    //         Timestamp__c = System.now().addHours(-1)
+    //     );
 
-        LogEntryEventHandler.shouldCallStatusApi = true;
+    //     LogEntryEventHandler.shouldCallStatusApi = true;
 
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        orgDefaults.EnableStatusApiCallout__c = true;
-        upsert orgDefaults;
+    //     LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+    //     orgDefaults.EnableStatusApiCallout__c = true;
+    //     upsert orgDefaults;
 
-        String transactionId = '123-456-789-0';
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId
-        );
+    //     String transactionId = '123-456-789-0';
+    //     LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+    //         EpochTimestamp__c = System.now().getTime(),
+    //         Message__c = 'my message',
+    //         Timestamp__c = System.now(),
+    //         TransactionEntryNumber__c = 1,
+    //         TransactionId__c = transactionId
+    //     );
 
-        Database.SaveResult saveResult;
+    //     Database.SaveResult saveResult;
 
-        Test.startTest();
+    //     Test.startTest();
 
-        saveResult = EventBus.publish(logEntryEvent);
-        // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
-        // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
-        // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
-        Test.getEventBus().deliver();
+    //     saveResult = EventBus.publish(logEntryEvent);
+    //     // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+    //     // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+    //     // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+    //     Test.getEventBus().deliver();
 
-        Test.stopTest();
+    //     Test.stopTest();
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+    //     System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
-        System.assertEquals(0, Limits.getCallouts());
+    //     System.assertEquals(0, Limits.getCallouts());
 
-        Log__c log = getLog();
-        System.assertNotEquals(recentLog.Id, log.Id, log.StartTime__c);
-        System.assertEquals(1, log.LogEntries__r.size());
-        LogEntry__c logEntry = log.LogEntries__r.get(0);
+    //     Log__c log = getLog();
+    //     System.assertNotEquals(recentLog.Id, log.Id, log.StartTime__c);
+    //     System.assertEquals(1, log.LogEntries__r.size());
+    //     LogEntry__c logEntry = log.LogEntries__r.get(0);
 
-        System.assertEquals(recentLog.ApiReleaseNumber__c, log.ApiReleaseNumber__c);
-        System.assertEquals(recentLog.ApiReleaseVersion__c, log.ApiReleaseVersion__c);
-        validateLogFields(logEntryEvent, log);
-        validateLogEntryFields(logEntryEvent, logEntry);
-    }
+    //     System.assertEquals(recentLog.ApiReleaseNumber__c, log.ApiReleaseNumber__c);
+    //     System.assertEquals(recentLog.ApiReleaseVersion__c, log.ApiReleaseVersion__c);
+    //     validateLogFields(logEntryEvent, log);
+    //     validateLogEntryFields(logEntryEvent, logEntry);
+    // }
 
-    @isTest
-    static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
-        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
-        LogEntryEventHandler.shouldCallStatusApi = true;
+    // @isTest
+    // static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
+    //     Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+    //     LogEntryEventHandler.shouldCallStatusApi = true;
 
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        orgDefaults.EnableStatusApiCallout__c = false;
-        upsert orgDefaults;
+    //     LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+    //     orgDefaults.EnableStatusApiCallout__c = false;
+    //     upsert orgDefaults;
 
-        String transactionId = '123-456-789-0';
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId
-        );
+    //     String transactionId = '123-456-789-0';
+    //     LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+    //         EpochTimestamp__c = System.now().getTime(),
+    //         Message__c = 'my message',
+    //         Timestamp__c = System.now(),
+    //         TransactionEntryNumber__c = 1,
+    //         TransactionId__c = transactionId
+    //     );
 
-        Test.startTest();
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+    //     Test.startTest();
+    //     Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+    //     Test.stopTest();
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+    //     System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
-        Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
-        LogEntry__c logEntry = log.LogEntries__r.get(0);
+    //     Log__c log = getLog();
+    //     System.assertEquals(1, log.LogEntries__r.size());
+    //     LogEntry__c logEntry = log.LogEntries__r.get(0);
 
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
-        System.assertEquals(null, log.ApiReleaseNumber__c);
-        System.assertEquals(null, log.ApiReleaseVersion__c);
-        validateLogFields(logEntryEvent, log);
-        validateLogEntryFields(logEntryEvent, logEntry);
-    }
+    //     System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+    //     System.assertEquals(null, log.ApiReleaseNumber__c);
+    //     System.assertEquals(null, log.ApiReleaseVersion__c);
+    //     validateLogFields(logEntryEvent, log);
+    //     validateLogEntryFields(logEntryEvent, logEntry);
+    // }
 
-    @isTest
-    static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
-        Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
-        LogEntryEventHandler.shouldCallStatusApi = true;
+    // @isTest
+    // static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
+    //     Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
+    //     LogEntryEventHandler.shouldCallStatusApi = true;
 
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        orgDefaults.EnableStatusApiCallout__c = true;
-        upsert orgDefaults;
+    //     LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+    //     orgDefaults.EnableStatusApiCallout__c = true;
+    //     upsert orgDefaults;
 
-        String transactionId = '123-456-789-0';
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId
-        );
+    //     String transactionId = '123-456-789-0';
+    //     LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+    //         Message__c = 'my message',
+    //         Timestamp__c = System.now(),
+    //         TransactionEntryNumber__c = 1,
+    //         TransactionId__c = transactionId
+    //     );
 
-        Database.SaveResult saveResult;
-        try {
-            Test.startTest();
+    //     Database.SaveResult saveResult;
+    //     try {
+    //         Test.startTest();
 
-            saveResult = EventBus.publish(logEntryEvent);
-            // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
-            // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
-            // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
-            Test.getEventBus().deliver();
+    //         saveResult = EventBus.publish(logEntryEvent);
+    //         // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
+    //         // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
+    //         // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
+    //         Test.getEventBus().deliver();
 
-            Test.stopTest();
-            System.assert(false, 'Exception expected, this assert should not run');
-        } catch (Exception ex) {
-            System.assertEquals(LogEntryEventHandler.StatusApiResponseException.class.getName(), ex.getTypeName());
+    //         Test.stopTest();
+    //         System.assert(false, 'Exception expected, this assert should not run');
+    //     } catch (Exception ex) {
+    //         System.assertEquals(LogEntryEventHandler.StatusApiResponseException.class.getName(), ex.getTypeName());
 
-            String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
-            System.assert(ex.getMessage().contains(expectedErrorMessage));
-        }
+    //         String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
+    //         System.assert(ex.getMessage().contains(expectedErrorMessage));
+    //     }
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+    //     System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
-        Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
-        LogEntry__c logEntry = log.LogEntries__r.get(0);
+    //     Log__c log = getLog();
+    //     System.assertEquals(1, log.LogEntries__r.size());
+    //     LogEntry__c logEntry = log.LogEntries__r.get(0);
 
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
-        System.assertEquals(null, log.ApiReleaseNumber__c);
-        System.assertEquals(null, log.ApiReleaseVersion__c);
-        validateLogFields(logEntryEvent, log);
-        validateLogEntryFields(logEntryEvent, logEntry);
-    }
+    //     System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+    //     System.assertEquals(null, log.ApiReleaseNumber__c);
+    //     System.assertEquals(null, log.ApiReleaseVersion__c);
+    //     validateLogFields(logEntryEvent, log);
+    //     validateLogEntryFields(logEntryEvent, logEntry);
+    // }
 }

@@ -28,8 +28,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     public LogEntryEventHandler() {
     }
 
-    public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents) {
-        // Override the records provided by LoggerSObjectHandler
+    public LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents) {
+        // Override the variables provided by LoggerSObjectHandler
+        this.triggerOperationType = triggerOperationType;
         this.triggerNew = logEntryEvents;
     }
 
@@ -49,9 +50,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
-        this.upsertLogs();
-        this.insertLogEntries();
-        this.insertTopics();
+        switch on this.triggerOperationType {
+            when AFTER_INSERT {
+                this.upsertLogs();
+                this.insertLogEntries();
+                this.insertTopics();
+            }
+        }
+
+        this.executePlugins();
     }
 
     private void upsertLogs() {
