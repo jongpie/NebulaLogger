@@ -230,6 +230,16 @@ private class Logger_Tests {
     }
 
     @isTest
+    static void it_should_generate_a_valid_uuid() {
+        Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
+
+        Logger.Uuid uuid = new Logger.Uuid();
+        System.assertEquals(36, uuid.getValue().length());
+        Matcher matcher = pattern.matcher(uuid.getValue());
+        System.assert(matcher.matches(), 'Generated UUID=' + uuid.getValue());
+    }
+
+    @isTest
     static void it_should_set_transaction_entry_number() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
