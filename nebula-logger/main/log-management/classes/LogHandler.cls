@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `Log__c` before insert & before update
  */
-public without sharing class LogHandler {
+public without sharing class LogHandler extends LoggerSObjectHandler {
     private static final Organization ORGANIZATION = [SELECT Id, InstanceName, IsSandbox FROM Organization];
 
     @testVisible
@@ -26,22 +26,38 @@ public without sharing class LogHandler {
 
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
-    private List<Log__c> logs;
+    private List<Log__c> logs {
+        get {
+            return (List<Log__c>) this.triggerNew;
+        }
+    }
+
     @testVisible
-    private Map<Id, Log__c> oldLogsById;
-    @testVisible
-    private TriggerOperation triggerOperationType;
+    private Map<Id, Log__c> oldLogsById {
+        get {
+            return (Map<Id, Log__c>) this.triggerOldMap;
+        }
+    }
 
     public LogHandler() {
-        this.logs = (List<Log__c>) Trigger.new;
-        this.oldLogsById = (Map<Id, Log__c>) Trigger.oldMap;
-        this.triggerOperationType = Trigger.operationType;
+    }
+
+    /**
+     * @description Returns SObject Type that the handler is responsible for processing
+     * @return      The instance of `SObjectType`
+     */
+    public override SObjectType getSObjectType() {
+        return Schema.Log__c.SObjectType;
     }
 
     /**
      * @description Runs the trigger handler's logic for the `Log__c` custom object
      */
-    public void execute() {
+    public override void execute() {
+        if (this.isEnabled() == false) {
+            return;
+        }
+
         switch on this.triggerOperationType {
             when BEFORE_INSERT {
                 this.setOrgReleaseCycle();
@@ -58,6 +74,9 @@ public without sharing class LogHandler {
                 this.shareLogsWithLoggingUsers();
             }
         }
+
+        // Run any plugins configured in the LoggerSObjectHandlerPlugin__mdt custom metadata type
+        this.executePlugins();
     }
 
     private void setOrgReleaseCycle() {

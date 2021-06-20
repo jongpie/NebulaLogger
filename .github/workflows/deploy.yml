@@ -16,6 +16,7 @@ on:
             - 'LICENSE'
             - 'package.json'
             - 'README.md'
+            - './**/README.md'
             - 'sfdx-project.json'
 
 jobs:

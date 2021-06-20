@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
-public without sharing class LogEntryEventHandler {
+public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @testVisible
@@ -15,33 +15,43 @@ public without sharing class LogEntryEventHandler {
 
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
-    private List<LogEntryEvent__e> logEntryEvents;
+    private List<LogEntryEvent__e> logEntryEvents {
+        get {
+            return (List<LogEntryEvent__e>) this.triggerNew;
+        }
+    }
 
-    private List<LogEntry__c> logEntries;
-    private Map<LogEntry__c, List<String>> logEntryToTopics;
-    private Set<String> topicNames;
+    private List<LogEntry__c> logEntries = new List<LogEntry__c>();
+    private Map<LogEntry__c, List<String>> logEntryToTopics = new Map<LogEntry__c, List<String>>();
+    private Set<String> topicNames = new Set<String>();
 
     public LogEntryEventHandler() {
-        this((List<LogEntryEvent__e>) Trigger.new);
     }
 
     public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents) {
-        this.logEntryEvents = logEntryEvents;
+        // Override the records provided by LoggerSObjectHandler
+        this.triggerNew = logEntryEvents;
+    }
 
-        this.logEntries = new List<LogEntry__c>();
-        this.logEntryToTopics = new Map<LogEntry__c, List<String>>();
-        this.topicNames = new Set<String>();
+    /**
+     * @description Returns SObject Type that the handler is responsible for processing
+     * @return      The instance of `SObjectType`
+     */
+    public override SObjectType getSObjectType() {
+        return Schema.LogEntryEvent__e.SObjectType;
     }
 
     /**
      * @description Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
      */
-    public void execute() {
-        if (this.logEntryEvents.isEmpty() == false) {
-            this.upsertLogs();
-            this.insertLogEntries();
-            this.insertTopics();
+    public override void execute() {
+        if (this.isEnabled() == false) {
+            return;
         }
+
+        this.upsertLogs();
+        this.insertLogEntries();
+        this.insertTopics();
     }
 
     private void upsertLogs() {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Slack Notification Logging Level Name</label>
+    <protected>false</protected>
+    <values>
+        <field>CollectionType__c</field>
+        <value xsi:type="xsd:string">Single</value>
+    </values>
+    <values>
+        <field>DataType__c</field>
+        <value xsi:type="xsd:string">String</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">The logging level name that triggers a Slack notification to be sent. Possible logging levels are: ERROR, WARN, INFO, DEBUG, FINE, FINER, or FINEST</value>
+    </values>
+    <values>
+        <field>SObjectHandlerPlugin__c</field>
+        <value xsi:type="xsd:string">Slack</value>
+    </values>
+</CustomMetadata>

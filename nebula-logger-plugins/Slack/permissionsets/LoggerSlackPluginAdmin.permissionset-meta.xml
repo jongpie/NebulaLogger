@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Provides additional access for the Logger Slack plugin</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.SendSlackNotification__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.SlackNotificationDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <label>Logger: Slack Plugin Admin</label>
+</PermissionSet>

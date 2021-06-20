@@ -154,6 +154,11 @@ private class LogEntryEventHandler_Tests {
         }
     }
 
+    private static LoggerSObjectHandler__mdt getMockConfiguration() {
+        Schema.SObjectType sobjectType = Schema.LogEntryEvent__e.SObjectType;
+        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+    }
+
     static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
         Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
         User currentUser = getCurrentUser();
@@ -260,6 +265,46 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c);
         System.assertEquals(logEntryEvent.TriggerOperationType__c, logEntry.TriggerOperationType__c);
         System.assertEquals(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c);
+    }
+
+    @isTest
+    static void it_should_return_the_logEntryEvent_sobjectType() {
+        Test.startTest();
+        System.assertEquals(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
+        Test.stopTest();
+    }
+
+    @isTest
+    static void it_should_not_run_handler_when_disabled_via_configuration() {
+        LoggerSObjectHandler__mdt logEntryEventHandlerConfiguration = getMockConfiguration();
+        logEntryEventHandlerConfiguration.IsEnabled__c = false;
+
+        Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
+            Schema.LogEntryEvent__e.SObjectType => logEntryEventHandlerConfiguration
+        };
+
+        Test.startTest();
+
+        // Use the mock configurations
+        LoggerSObjectHandler.configurationBySObjectType = configurationBySObjectType;
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            EpochTimestamp__c = System.now().getTime(),
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            TransactionEntryNumber__c = 1,
+            TransactionId__c = '1234'
+        );
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        // Assumption: if the handler had executed, then a log record would have been created
+        // ...so if there are 0 logs, it indicates that the handler did not execute
+        Integer logCount = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, logCount);
     }
 
     @isTest

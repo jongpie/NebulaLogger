@@ -7,22 +7,34 @@
  * @group Log Management
  * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
-public without sharing class LogEntryHandler {
+public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
-    private List<LogEntry__c> logEntries;
-    @testVisible
-    private TriggerOperation triggerOperationType;
+    private List<LogEntry__c> logEntries {
+        get {
+            return (List<LogEntry__c>) this.triggerNew;
+        }
+    }
 
     public LogEntryHandler() {
-        this.logEntries = (List<LogEntry__c>) Trigger.new;
-        this.triggerOperationType = Trigger.operationType;
+    }
+
+    /**
+     * @description Returns SObject Type that the handler is responsible for processing
+     * @return      The instance of `SObjectType`
+     */
+    public override SObjectType getSObjectType() {
+        return Schema.LogEntry__c.SObjectType;
     }
 
     /**
      * @description Runs the trigger handler's logic for the `LogEntry__c` custom object
      */
-    public void execute() {
+    public override void execute() {
+        if (this.isEnabled() == false) {
+            return;
+        }
+
         switch on this.triggerOperationType {
             when BEFORE_INSERT {
                 this.setCheckboxFields();
@@ -39,6 +51,9 @@ public without sharing class LogEntryHandler {
                 this.setCheckboxFields();
             }
         }
+
+        // Run any plugins configured in the LoggerSObjectHandlerPlugin__mdt custom metadata type
+        this.executePlugins();
     }
 
     private void setCheckboxFields() {

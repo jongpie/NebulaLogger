@@ -56,6 +56,16 @@ Manages setting fields on `Log__c` before insert & before update
 
 Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
 
+### [LoggerSObjectHandler](log-management/LoggerSObjectHandler)
+
+Abstract class used by trigger handlers for shared logic
+
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 
 Controller class for the component RelatedLogEntries
+
+## Plugin Framework
+
+### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
+
+Abstract class used to create custom Apex plugins to execute for all trigger operations on `Log__c` or `LogEntry__c`
