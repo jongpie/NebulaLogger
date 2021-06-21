@@ -531,10 +531,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
-        if (sobjectType == null) {
-            return null;
-        }
-
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
@@ -568,10 +564,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
-        if (sobjectType == null) {
-            return null;
-        }
-
         String sobjectFullName = sobjectType.getDescribe().getName();
         String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 
