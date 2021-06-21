@@ -375,11 +375,14 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        Schema.SObjectType sobjectType = records.getSObjectType() != null ? records.getSObjectType() : records.get(0).getSObjectType();
+        String sobjectTypeName = sobjectType?.getDescribe().getName();
+
         this.logEntryEvent.RecordCollectionType__c = 'List';
         this.logEntryEvent.RecordJson__c = JSON.serializePretty(records);
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(records.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = records.getSObjectType().getDescribe().getName();
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(records.getSObjectType());
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+        this.logEntryEvent.RecordSObjectType__c = sobjectTypeName;
+        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
 
         return this;
     }
@@ -528,6 +531,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
+        if (sobjectType == null) {
+            return null;
+        }
+
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
@@ -561,6 +568,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
+        if (sobjectType == null) {
+            return null;
+        }
+
         String sobjectFullName = sobjectType.getDescribe().getName();
         String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 

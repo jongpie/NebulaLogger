@@ -33,7 +33,7 @@ private class FlowCollectionLogEntry_Tests {
 
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
-        flowCollectionEntry.records = new List<User>{ currentUser };
+        flowCollectionEntry.records = new List<SObject>{ currentUser };
         FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowCollectionEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
@@ -42,10 +42,10 @@ private class FlowCollectionLogEntry_Tests {
 
         Test.stopTest();
 
-        String expectedUserJson = JSON.serializePretty(new List<User>{ currentUser });
+        String expectedUserJson = JSON.serializePretty(new List<SObject>{ currentUser });
 
         LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c, RecordSObjectType__c
             FROM LogEntry__c
             ORDER BY CreatedDate
             LIMIT 1
@@ -55,6 +55,7 @@ private class FlowCollectionLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
         System.assertEquals(null, logEntry.RecordId__c);
         System.assertEquals('List', logEntry.RecordCollectionType__c);
+        System.assertEquals('User', logEntry.RecordSObjectType__c);
         System.assertEquals(expectedUserJson, logEntry.RecordJson__c);
     }
 
@@ -78,16 +79,16 @@ private class FlowCollectionLogEntry_Tests {
 
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
-        flowCollectionEntry.records = new List<User>{ currentUser };
+        flowCollectionEntry.records = new List<SObject>{ currentUser };
         flowCollectionEntry.saveLog = true;
         FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowCollectionEntry });
 
         Test.stopTest();
 
-        String expectedUserJson = JSON.serializePretty(new List<User>{ currentUser });
+        String expectedUserJson = JSON.serializePretty(new List<SObject>{ currentUser });
 
         LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c, RecordSObjectType__c
             FROM LogEntry__c
             ORDER BY CreatedDate
             LIMIT 1
@@ -97,6 +98,7 @@ private class FlowCollectionLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
         System.assertEquals(null, logEntry.RecordId__c);
         System.assertEquals('List', logEntry.RecordCollectionType__c);
+        System.assertEquals('User', logEntry.RecordSObjectType__c);
         System.assertEquals(expectedUserJson, logEntry.RecordJson__c);
     }
 
@@ -120,7 +122,7 @@ private class FlowCollectionLogEntry_Tests {
 
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
-        flowCollectionEntry.records = new List<User>{ currentUser };
+        flowCollectionEntry.records = new List<SObject>{ currentUser };
         FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowCollectionEntry });
 
         System.assertEquals(0, Logger.getBufferSize());
