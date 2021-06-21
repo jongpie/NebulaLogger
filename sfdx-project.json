@@ -12,9 +12,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionName": "Logger Plugin Framework",
-            "versionNumber": "4.5.0.0",
-            "versionDescription": "Easily build or install plugins that enhance the Log__c and LogEntry__c objects, using Apex or Flow",
+            "versionName": "Flow Collection Logging",
+            "versionNumber": "4.5.1.0",
+            "versionDescription": "Adds the ability to log a record collection in Flow",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
