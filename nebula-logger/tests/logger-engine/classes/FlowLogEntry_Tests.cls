@@ -103,7 +103,6 @@ private class FlowLogEntry_Tests {
         System.assertEquals(null, flowEntry.loggingLevelName);
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
-        System.assertEquals(expectedEntryLoggingLevel.name(), flowEntry.loggingLevelName);
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -138,7 +137,6 @@ private class FlowLogEntry_Tests {
         System.assertEquals(null, flowEntry.loggingLevelName);
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
-        System.assertEquals(expectedEntryLoggingLevel.name(), flowEntry.loggingLevelName);
 
         System.assertEquals(1, Logger.getBufferSize());
 
