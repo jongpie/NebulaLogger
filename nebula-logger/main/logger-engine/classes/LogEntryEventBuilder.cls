@@ -751,10 +751,8 @@ global with sharing class LogEntryEventBuilder {
         if (String.isEmpty(stackTraceString)) {
             return false;
         }
-        if (stackTraceString == '()') {
-            return false;
-        }
-        if (stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+
+        if (stackTraceString == '()' || stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
             return false;
         }
 
