@@ -5,7 +5,7 @@
 
 /**
  * @group Logger Engine
- * @description Handles some common logic used `FlowLogEntry`, `FlowRecordLogEntry` and `FlowCollectionLogEntry`
+ * @description Handles some common logic used by `FlowLogEntry`, `FlowRecordLogEntry` and `FlowCollectionLogEntry`
  * @see FlowLogEntry
  * @see FlowRecordLogEntry
  * @see FlowCollectionLogEntry
@@ -35,8 +35,6 @@ public inherited sharing class FlowLogger {
         private LogEntryEvent__e logEntryEvent;
 
         public LogEntryEventBuilder addToLoggerBuffer() {
-            System.debug('this==' + this);
-
             if (this.logEntryEventBuilder != null) {
                 return this.logEntryEventBuilder;
             }
@@ -54,7 +52,6 @@ public inherited sharing class FlowLogger {
             this.logEntryEventBuilder = Logger.newEntry(this.loggingLevel, this.message).setTopics(this.topics);
             this.logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
-            System.debug('this.logEntryEventBuilder.shouldSave()==' + this.logEntryEventBuilder.shouldSave());
             if (this.logEntryEventBuilder.shouldSave() == false) {
                 return this.logEntryEventBuilder;
             }
@@ -82,8 +79,6 @@ public inherited sharing class FlowLogger {
                 saveLog = flowEntry.saveLog;
             }
         }
-        System.debug('Logger.getBufferSize()==' + Logger.getBufferSize());
-        System.debug('saveLog ==' + saveLog);
 
         if (saveLog == true) {
             Logger.saveLog();

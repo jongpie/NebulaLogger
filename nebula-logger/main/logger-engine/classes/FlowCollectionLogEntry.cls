@@ -5,44 +5,44 @@
 
 /**
  * @group Logger Engine
- * @description Handles adding new log entries in Flow
+ * @description Handles adding new log entries in Flow for a particular `SObject` record collection
+ * @see FlowLogEntry
  * @see FlowRecordLogEntry
- * @see FlowCollectionLogEntry
  * @see FlowLogger
+ * @see FlowLogEntry
  * @see Logger
  * @see LogEntryEventBuilder
  */
-global inherited sharing class FlowLogEntry {
+global inherited sharing class FlowCollectionLogEntry {
     /**
      * @description The name of the Flow creating the log entry.
-     *   Due to Salesforce limitations, this cannot be automatically determined.
+     *   Due to Salesforce limitations, this cannot be automatically determined
      */
     @InvocableVariable(required=true label='Flow or Process Builder Name')
     global String flowName;
 
     /**
-     * @description The message to log.
+     * @description The message to log
      */
     @InvocableVariable(required=true label='Log Entry Message')
     global String message;
+
+    /**
+     * @description The records to relate to this log entry - the records' JSON is automatically added to the log entry
+     */
+    @InvocableVariable(required=true label='Records')
+    global List<SObject> records;
 
     /**
      * @description Optionally log a Flow fault error message
      */
     @InvocableVariable(required=false label='(Optional) Flow Fault Error Message')
     global String faultMessage;
-
     /**
-     * @description Optionally choose to save any pending log entries.
+     * @description Optionally choose to save any pending log entries
      */
     @InvocableVariable(required=false label='(Optional) Save Log')
-    global Boolean saveLog;
-
-    /**
-     * @description Optionally relate the log entry to a particular record ID
-     */
-    @InvocableVariable(required=false label='(Optional) Record ID')
-    global Id recordId;
+    global Boolean saveLog = false;
 
     /**
      * @description Optionally specify a logging level - the default is 'DEBUG'
@@ -59,16 +59,20 @@ global inherited sharing class FlowLogEntry {
     public DateTime timestamp = System.now();
 
     /**
-     * addFlowEntries description
-     * @param  flowLogEntries The list of FlowLogEntry instances to save
-     * @return                The current transaction's ID (based on `Logger.getTransactionId()`)
+     * addFlowRecordEntries description
+     * @param  flowRecordLogEntries The list of FlowRecordLogEntry instances to save
+     * @return                      The current transaction's ID (based on `Logger.getTransactionId()`)
      */
-    @InvocableMethod(category='Logging' label='Add Log Entry' description='Creates a log entry for a flow or process builder')
-    global static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
+    @InvocableMethod(
+        category='Logging'
+        label='Add Log Entry for an SObject Record Collection'
+        description='Creates a log entry for a flow or process builder and stores the record as JSON'
+    )
+    global static List<String> addFlowCollectionEntries(List<FlowCollectionLogEntry> flowCollectionLogEntries) {
         List<FlowLogger.LogEntry> shadowLogEntries = new List<FlowLogger.LogEntry>();
-        for (FlowLogEntry flowLogEntry : flowLogEntries) {
-            FlowLogger.LogEntry shadowLogEntry = (FlowLogger.LogEntry) JSON.deserialize(JSON.serialize(flowLogEntry), FlowLogger.LogEntry.class);
-            shadowLogEntry.addToLoggerBuffer()?.setRecordId(flowLogEntry.recordId);
+        for (FlowCollectionLogEntry flowCollectionLogEntry : flowCollectionLogEntries) {
+            FlowLogger.LogEntry shadowLogEntry = (FlowLogger.LogEntry) JSON.deserialize(JSON.serialize(flowCollectionLogEntry), FlowLogger.LogEntry.class);
+            shadowLogEntry.addToLoggerBuffer()?.setRecord(flowCollectionLogEntry.records);
 
             shadowLogEntries.add(shadowLogEntry);
         }
