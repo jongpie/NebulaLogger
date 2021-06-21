@@ -9,7 +9,6 @@
  * @see FlowLogEntry
  * @see FlowCollectionLogEntry
  * @see FlowLogger
- * @see FlowLogEntry
  * @see Logger
  * @see LogEntryEventBuilder
  */
