@@ -241,13 +241,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             releaseCycle = 'Non-Preview Instance';
         } else if (previewInstances.contains(ORGANIZATION.InstanceName)) {
             releaseCycle = 'Preview Instance';
-        } else {
-            // Use 'Unknown' as the default for private instances and situations where the hardcoded sets above are missing some values
-            releaseCycle = 'Unknown';
         }
 
         for (Log__c log : this.logs) {
-            log.OrganizationInstanceReleaseCycle__c = releaseCycle;
+            // Use 'Unknown' as the default for private instances and situations where the hardcoded sets above are missing some values
+            log.OrganizationInstanceReleaseCycle__c = String.isNotBlank(releaseCycle) ? releaseCycle : 'Unknown';
         }
     }
 

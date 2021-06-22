@@ -2,15 +2,15 @@
 layout: default
 ---
 
-## FlowRecordLogEntry class
+## FlowCollectionLogEntry class
 
-Handles adding new log entries in Flow for a particular `SObject` record
+Handles adding new log entries in Flow for a particular `SObject` record collection
 
 ### Related
 
 [FlowLogEntry](FlowLogEntry)
 
-[FlowCollectionLogEntry](FlowCollectionLogEntry)
+[FlowRecordLogEntry](FlowRecordLogEntry)
 
 [FlowLogger](FlowLogger)
 
@@ -38,9 +38,9 @@ Optionally specify a logging level - the default is 'DEBUG'
 
 The message to log
 
-#### `record` → `SObject`
+#### `records` → `List<SObject>`
 
-The record to relate to this log entry - the record's JSON is automatically added to the log entry
+The records to relate to this log entry - the records' JSON is automatically added to the log entry
 
 #### `saveLog` → `Boolean`
 
@@ -56,7 +56,7 @@ Optionally provide a list of topics to dynamically assign to the log entry
 
 ### Methods
 
-#### `addFlowRecordEntries(List<FlowRecordLogEntry> flowRecordLogEntries)` → `List<String>`
+#### `addFlowCollectionEntries(List<FlowCollectionLogEntry> flowCollectionLogEntries)` → `List<String>`
 
 addFlowRecordEntries description
 

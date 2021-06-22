@@ -375,11 +375,14 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        Schema.SObjectType sobjectType = records.getSObjectType() != null ? records.getSObjectType() : records.get(0).getSObjectType();
+        String sobjectTypeName = sobjectType?.getDescribe().getName();
+
         this.logEntryEvent.RecordCollectionType__c = 'List';
         this.logEntryEvent.RecordJson__c = JSON.serializePretty(records);
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(records.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = records.getSObjectType().getDescribe().getName();
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(records.getSObjectType());
+        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+        this.logEntryEvent.RecordSObjectType__c = sobjectTypeName;
+        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
 
         return this;
     }
@@ -748,10 +751,8 @@ global with sharing class LogEntryEventBuilder {
         if (String.isEmpty(stackTraceString)) {
             return false;
         }
-        if (stackTraceString == '()') {
-            return false;
-        }
-        if (stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+
+        if (stackTraceString == '()' || stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
             return false;
         }
 

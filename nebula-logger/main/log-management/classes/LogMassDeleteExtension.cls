@@ -55,11 +55,7 @@ public with sharing class LogMassDeleteExtension {
      * @return      The PageReference of the previous page (based on `controller.cancel()`)
      */
     public PageReference deleteSelectedLogs() {
-        try {
-            delete getDeletableLogs();
-        } catch (Exception ex) {
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, ex.getMessage()));
-        }
+        delete getDeletableLogs();
 
         // The controller's method cancel() just returns the user to the previous page - it doesn't rollback any DML statements (like the delete above)
         return this.controller.cancel();
