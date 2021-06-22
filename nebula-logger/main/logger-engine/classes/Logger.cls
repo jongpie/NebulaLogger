@@ -2496,8 +2496,8 @@ global with sharing class Logger {
         // It's... it's... almost like... this part of the code IS a BEFORE_INSERT context. Huzzah!
         // This gives us a chance to run the handler & handler plugins before insert, allowing the plugins to make further changes to the `LogEntryEvent__e` records
         // For example: the BIG object plugin can run at this point and create BIG object records :-)
-        LogEntryEventHandler handler = new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents);
-        handler.execute(); // execute the handler, which internally then executes any plugins
+        // So, execute the handler, which internally then executes any plugins
+        new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents).execute();
 
         // Now that the plugins have run, double check to make sure that saving should still happen
         // For example: the BIG object plugin might create big object records (based on the platform events),
@@ -2525,7 +2525,7 @@ global with sharing class Logger {
                 }
             }
             when SYNCHRONOUS_DML {
-                handler.execute();
+                new LogEntryEventHandler(TriggerOperation.AFTER_INSERT, logEntryEvents).execute();
             }
         }
 
