@@ -39,7 +39,8 @@ on:
             - 'sfdx-project.json'
 
 jobs:
-    scratch-org-test:
+    lwc-local-tests:
+        name: 'LWC Local Tests'
         runs-on: ubuntu-latest
         environment: Test
         steps:
@@ -64,23 +65,49 @@ jobs:
                   ./sfdx-cli/install
 
             # Start local testing
-
             # TODO uncomment
             # Prettier formatting
             # - name: 'Code formatting verification with Prettier'
             #   run: npm run prettier:verify
-
             # TODO uncomment
             # Lint LWC
             # - name: 'Lint Lightning Web Components'
             #   run: npm run lint:lwc
-
             # LWC unit tests
-            # TODO uncomment lwc testing once tests have been created
-            # - name: 'Run LWC Tests'
-            #   run: npm run test:lwc
+            - name: 'Run LWC Tests'
+              run: npm run test:lwc
 
-            # End local testing
+              # Upload code coverage data for LWC
+            - name: 'Upload code coverage for LWC to Codecov.io'
+              uses: codecov/codecov-action@v1
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  flags: LWC
+
+    scratch-org-tests:
+        name: 'Scratch Org Tests'
+        runs-on: ubuntu-latest
+        environment: Test
+        steps:
+            # Checkout the code
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+
+            - name: 'Setup node'
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '14'
+
+            - name: 'Install npm'
+              run: npm install
+
+            # Install Salesforce CLI
+            - name: Install Salesforce CLI
+              run: |
+                  wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+                  mkdir sfdx-cli
+                  tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+                  ./sfdx-cli/install
 
             # Start remote testing
 
@@ -119,26 +146,40 @@ jobs:
             - name: 'Run Apex Tests'
               run: npm run test:apex
 
-            - name: 'Delete Scratch Org'
-              run: npm run org:delete:noprompt
-              if: ${{ always() }}
-
-            # TODO uncomment
-            # - name: 'Create unvalidated unlocked package version'
-            #   run: npm run package:version:create:unlocked:skipvalidation
-
-            # - name: 'Create unvalidated managed package version'
-            #   run: npm run package:version:create:managed:skipvalidation
-
-            # TODO uncomment
-            # - name: 'Create validated unlocked package version'
-            #   run: npm run package:version:create:unlocked
-
-            - name: 'Generate Docs'
-              run: npm run docs:generate
-
-            # Upload code coverage data
+              # Upload code coverage data for Apex
             - name: 'Upload code coverage for Apex to Codecov.io'
               uses: codecov/codecov-action@v1
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
+                  flags: Apex
+
+            - name: 'Delete Scratch Org'
+              run: npm run org:delete:noprompt
+              if: ${{ always() }}
+
+    # TODO finish auto-creation & promotion of unlocked package + committing changes to docs
+    # create-package-version:
+    #     name: 'Create Package Version'
+    #     needs: [lwc-local-tests, scratch-org-tests]
+    #     runs-on: ubuntu-latest
+    #     environment: Test
+    #     steps:
+    #         # Checkout the code
+    #         - name: 'Checkout source code'
+    #           uses: actions/checkout@v2
+
+    #         - name: 'Setup node'
+    #           uses: actions/setup-node@v2
+    #           with:
+    #               node-version: '14'
+
+    #         - name: 'Install npm'
+    #           run: npm install
+
+    #         - name: 'Generate Docs'
+    #           run: npm run docs:generate
+              # TODO need to commit & push any changes to ./docs/*
+
+              # TODO uncomment
+          # - name: 'Create unlocked package version'
+          #   run: npm run package:version:create:unlocked

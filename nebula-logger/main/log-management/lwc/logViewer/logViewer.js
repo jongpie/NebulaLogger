@@ -30,6 +30,7 @@ export default class LogJSONViewer extends LightningElement {
         return formattedLog ? JSON.stringify(formattedLog, null, '\t') : '';
     }
 
+    @api
     get title() {
         return this.log.data ? 'JSON for ' + this.log.data.Name : '';
     }
