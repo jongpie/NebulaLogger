@@ -16,9 +16,6 @@ global with sharing class LogEntryEventBuilder {
     private static final SObject NETWORK_SITE = getNetwork();
     private static final Organization ORGANIZATION = getOrganization();
     private static final String ORIGIN_TYPE_APEX = 'Apex';
-    // TODO future enhancement: consider converting strings to enum and add overload for `parseStackTrace(OriginType, String)
-    // private static final String ORIGIN_TYPE_COMPONENT = 'Component';
-    // private static final String ORIGIN_TYPE_FLOW = 'Flow';
     private static final User USER = getUser();
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();

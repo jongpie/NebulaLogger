@@ -15,7 +15,7 @@ export default class RelatedLogEntries extends LightningElement {
 
     @track showComponent = false;
     @track title;
-    @track queryResult;
+    @api queryResult;
 
     @api
     handleSort(event) {
