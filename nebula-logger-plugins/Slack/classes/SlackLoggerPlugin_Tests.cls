@@ -32,9 +32,7 @@ private class SlackLoggerPlugin_Tests {
             PluginApiName__c = SlackLoggerPlugin.class.getName(),
             PluginType__c = 'Apex'
         );
-        LoggerSObjectHandler.pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>{
-            Schema.Log__c.SObjectType => new List<LoggerSObjectHandlerPlugin__mdt>{ slackPluginConfig }
-        };
+        LoggerSObjectHandler.mockPlugin(Schema.Log__c.SObjectType, slackPluginConfig);
 
         // Set the plugin's internal variables
         SlackLoggerPlugin.endpoint = 'https://fake.slack.com/';

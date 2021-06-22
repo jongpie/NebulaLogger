@@ -10,9 +10,6 @@
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
-    @testVisible
-    private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
-
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
     private List<LogEntryEvent__e> logEntryEvents {
@@ -21,11 +18,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
     }
 
+    private Boolean shouldCallStatusApi;
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
     private Map<LogEntry__c, List<String>> logEntryToTopics = new Map<LogEntry__c, List<String>>();
     private Set<String> topicNames = new Set<String>();
 
     public LogEntryEventHandler() {
+        this.shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     }
 
     public LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents) {
@@ -144,8 +143,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         if (
-            shouldCallStatusApi == true &&
-            LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi') == true &&
+            this.shouldCallStatusApi == true &&
             recentLogWithApiReleaseDetails == null &&
             getCountOfOpenJobs() == 0
         ) {

@@ -10,9 +10,6 @@
  */
 public class LoggerParameter {
     // Static stuff
-    @testVisible
-    private Map<String, String> mockParameterValueByDeveloperName = new Map<String, String>();
-
 
     /**
      * @description An instance of `LoggerParameter` that loads SObject Handler parameters from the object `LoggerSObjectHandlerParameter__mdt`
@@ -57,6 +54,7 @@ public class LoggerParameter {
 
     // Instance stuff
     private SObjectType configurationSObjectType;
+    private Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
 
     private LoggerParameter(Schema.SObjectType configurationSObjectType) {
         this.configurationSObjectType = configurationSObjectType;
@@ -69,7 +67,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public Boolean getBoolean(String parameterDeveloperName) {
-        return (Boolean) this.castParameterValue(parameterDeveloperName, Boolean.class);
+        return this.getBoolean(parameterDeveloperName, null);
+    }
+
+    public Boolean getBoolean(String parameterDeveloperName, Boolean defaultValue) {
+        Boolean parameterValue = (Boolean) this.castParameterValue(parameterDeveloperName, Boolean.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -79,7 +82,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<Boolean> getBooleanList(String parameterDeveloperName) {
-        return (List<Boolean>) this.castParameterValue(parameterDeveloperName, List<Boolean>.class);
+        return this.getBooleanList(parameterDeveloperName, null);
+    }
+
+    public List<Boolean> getBooleanList(String parameterDeveloperName, List<Boolean> defaultValue) {
+        List<Boolean> parameterValue = (List<Boolean>) this.castParameterValue(parameterDeveloperName, List<Boolean>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -89,7 +97,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public Date getDate(String parameterDeveloperName) {
-        return (Date) this.castParameterValue(parameterDeveloperName, Date.class);
+        return this.getDate(parameterDeveloperName, null);
+    }
+
+    public Date getDate(String parameterDeveloperName, Date defaultValue) {
+        Date parameterValue = (Date) this.castParameterValue(parameterDeveloperName, Date.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -99,7 +112,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<Date> getDateList(String parameterDeveloperName) {
-        return (List<Date>) this.castParameterValue(parameterDeveloperName, List<Date>.class);
+        return this.getDateList(parameterDeveloperName, null);
+    }
+
+    public List<Date> getDateList(String parameterDeveloperName, List<Date> defaultValue) {
+        List<Date> parameterValue = (List<Date>) this.castParameterValue(parameterDeveloperName, List<Date>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -112,6 +130,11 @@ public class LoggerParameter {
         return (Datetime) this.castParameterValue(parameterDeveloperName, Datetime.class);
     }
 
+    public Datetime getDatetime(String parameterDeveloperName, Datetime defaultValue) {
+        Datetime parameterValue = (Datetime) this.castParameterValue(parameterDeveloperName, Datetime.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
     /**
      * @description Returns the configured value of the field `LoggerSObjectHandlerPluginParameter__mdt.Value__c` as a `List<Datetime>`
      * @param  parameterDeveloperName The developer name of the instance of `LoggerSObjectHandlerPluginParameter__mdt`
@@ -119,7 +142,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<Datetime> getDatetimeList(String parameterDeveloperName) {
-        return (List<Datetime>) this.castParameterValue(parameterDeveloperName, List<Datetime>.class);
+        return this.getDatetimeList(parameterDeveloperName, null);
+    }
+
+    public List<Datetime> getDatetimeList(String parameterDeveloperName, List<Datetime> defaultValue) {
+        List<Datetime> parameterValue = (List<Datetime>) this.castParameterValue(parameterDeveloperName, List<Datetime>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -129,7 +157,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public Decimal getDecimal(String parameterDeveloperName) {
-        return (Decimal) this.castParameterValue(parameterDeveloperName, Decimal.class);
+        return this.getDecimal(parameterDeveloperName, null);
+    }
+
+    public Decimal getDecimal(String parameterDeveloperName, Decimal defaultValue) {
+        Decimal parameterValue = (Decimal) this.castParameterValue(parameterDeveloperName, Decimal.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -139,7 +172,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<Decimal> getDecimalList(String parameterDeveloperName) {
-        return (List<Decimal>) this.castParameterValue(parameterDeveloperName, List<Decimal>.class);
+        return this.getDecimalList(parameterDeveloperName, null);
+    }
+
+    public List<Decimal> getDecimalList(String parameterDeveloperName, List<Decimal> defaultValue) {
+        List<Decimal> parameterValue = (List<Decimal>) this.castParameterValue(parameterDeveloperName, List<Decimal>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -149,7 +187,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public Double getDouble(String parameterDeveloperName) {
-        return (Double) this.castParameterValue(parameterDeveloperName, Double.class);
+        return this.getDouble(parameterDeveloperName, null);
+    }
+
+    public Double getDouble(String parameterDeveloperName, Double defaultValue) {
+        Double parameterValue = (Double) this.castParameterValue(parameterDeveloperName, Double.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -159,7 +202,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<Double> getDoubleList(String parameterDeveloperName) {
-        return (List<Double>) this.castParameterValue(parameterDeveloperName, List<Double>.class);
+        return this.getDoubleList(parameterDeveloperName, null);
+    }
+
+    public List<Double> getDoubleList(String parameterDeveloperName, List<Double> defaultValue) {
+        List<Double> parameterValue = (List<Double>) this.castParameterValue(parameterDeveloperName, List<Double>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -169,7 +217,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public Id getId(String parameterDeveloperName) {
-        return (Id) this.getString(parameterDeveloperName);
+        return this.getId(parameterDeveloperName, null);
+    }
+
+    public Id getId(String parameterDeveloperName, Id defaultValue) {
+        Id parameterValue = (Id) this.castParameterValue(parameterDeveloperName, Id.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -179,7 +232,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<Id> getIdList(String parameterDeveloperName) {
-        return (List<Id>) this.castParameterValue(parameterDeveloperName, List<Id>.class);
+        return this.getIdList(parameterDeveloperName, null);
+    }
+
+    public List<Id> getIdList(String parameterDeveloperName, List<Id> defaultValue) {
+        List<Id> parameterValue = (List<Id>) this.castParameterValue(parameterDeveloperName, List<Id>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -189,7 +247,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public Integer getInteger(String parameterDeveloperName) {
-        return (Integer) this.castParameterValue(parameterDeveloperName, Integer.class);
+        return this.getInteger(parameterDeveloperName, null);
+    }
+
+    public Integer getInteger(String parameterDeveloperName, Integer defaultValue) {
+        Integer parameterValue = (Integer) this.castParameterValue(parameterDeveloperName, Integer.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -199,7 +262,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<Integer> getIntegerList(String parameterDeveloperName) {
-        return (List<Integer>) this.castParameterValue(parameterDeveloperName, List<Integer>.class);
+        return this.getIntegerList(parameterDeveloperName, null);
+    }
+
+    public List<Integer> getIntegerList(String parameterDeveloperName, List<Integer> defaultValue) {
+        List<Integer> parameterValue = (List<Integer>) this.castParameterValue(parameterDeveloperName, List<Integer>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -209,7 +277,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public Long getLong(String parameterDeveloperName) {
-        return (Long) this.castParameterValue(parameterDeveloperName, Long.class);
+        return this.getLong(parameterDeveloperName, null);
+    }
+
+    public Long getLong(String parameterDeveloperName, Long defaultValue) {
+        Long parameterValue = (Long) this.castParameterValue(parameterDeveloperName, Long.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -219,27 +292,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<Long> getLongList(String parameterDeveloperName) {
-        return (List<Long>) this.castParameterValue(parameterDeveloperName, List<Long>.class);
+        return this.getLongList(parameterDeveloperName, null);
     }
 
-    /**
-     * @description Returns the configured value of the field `LoggerSObjectHandlerPluginParameter__mdt.Value__c` as an `Object`
-     * @param  parameterDeveloperName The developer name of the instance of `LoggerSObjectHandlerPluginParameter__mdt`
-     * @return                        The `Object` value configured in the matching instance of `LoggerSObjectHandlerPluginParameter__mdt`,
-     *                                or null when not found or disabled
-     */
-    public Object getObject(String parameterDeveloperName) {
-        return (Object) this.getString(parameterDeveloperName);
-    }
-
-    /**
-     * @description Returns the configured value of the field `LoggerSObjectHandlerPluginParameter__mdt.Value__c` as an `List<Object>`
-     * @param  parameterDeveloperName The developer name of the instance of `LoggerSObjectHandlerPluginParameter__mdt`
-     * @return                        The `List<Object>` value configured in the matching instance of `LoggerSObjectHandlerPluginParameter__mdt`,
-     *                                or null when not found or disabled
-     */
-    public List<Object> getObjectList(String parameterDeveloperName) {
-        return (List<Object>) this.castParameterValue(parameterDeveloperName, List<Object>.class);
+    public List<Long> getLongList(String parameterDeveloperName, List<Long> defaultValue) {
+        List<Long> parameterValue = (List<Long>) this.castParameterValue(parameterDeveloperName,  List<Long>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -249,7 +307,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public SObject getSObject(String parameterDeveloperName) {
-        return (SObject) this.castParameterValue(parameterDeveloperName, SObject.class);
+        return this.getSObject(parameterDeveloperName, null);
+    }
+
+    public SObject getSObject(String parameterDeveloperName, SObject defaultValue) {
+        SObject parameterValue = (SObject) this.castParameterValue(parameterDeveloperName,  SObject.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -259,7 +322,12 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<SObject> getSObjectList(String parameterDeveloperName) {
-        return (List<SObject>) this.castParameterValue(parameterDeveloperName, List<SObject>.class);
+        return this.getSObjectList(parameterDeveloperName, null);
+    }
+
+    public List<SObject> getSObjectList(String parameterDeveloperName, List<SObject> defaultValue) {
+        List<SObject> parameterValue = (List<SObject>) this.castParameterValue(parameterDeveloperName,  List<SObject>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -270,7 +338,12 @@ public class LoggerParameter {
      */
     // Since the Value__c field is a string field, this method is used internally by the other parameter methods
     public String getString(String parameterDeveloperName) {
-        return this.loadParameterValue(parameterDeveloperName);
+        return this.getString(parameterDeveloperName, null);
+    }
+
+    public String getString(String parameterDeveloperName, String defaultValue) {
+        String parameterValue = this.loadParameterValue(parameterDeveloperName);
+        return parameterValue != null ? parameterValue : defaultValue;
     }
 
     /**
@@ -280,7 +353,23 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public List<String> getStringList(String parameterDeveloperName) {
-        return (List<String>) this.castParameterValue(parameterDeveloperName, List<String>.class);
+        return this.getStringList(parameterDeveloperName, null);
+    }
+
+    public List<String> getStringList(String parameterDeveloperName, List<String> defaultValue) {
+        List<String> parameterValue = (List<String>) this.castParameterValue(parameterDeveloperName, List<String>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    // Private testVisible methods
+    @testVisible
+    private void mockParameter(LoggerSObjectHandlerParameter__mdt parameter) {
+        this.mockParameterByDeveloperName.put(parameter.DeveloperName, parameter);
+    }
+
+    @testVisible
+    private void mockParameter(LoggerSObjectHandlerPluginParameter__mdt parameter) {
+        this.mockParameterByDeveloperName.put(parameter.DeveloperName, parameter);
     }
 
     // Private methods
@@ -313,7 +402,7 @@ public class LoggerParameter {
 
         if (Test.isRunningTest() == true) {
             // During tests, don't actually use the org's CMDT records - only use mock records
-            parameterValue = mockParameterValueByDeveloperName.get(parameterDeveloperName);
+            parameterValue = (String) mockParameterByDeveloperName.get(parameterDeveloperName)?.get('Value__c');
         }
 
         return parameterValue;

@@ -8,8 +8,6 @@
  * @description Manages setting fields on `Log__c` before insert & before update
  */
 public without sharing class LogHandler extends LoggerSObjectHandler {
-    private static final Organization ORGANIZATION = [SELECT Id, InstanceName, IsSandbox FROM Organization];
-
     @testVisible
     private static Map<String, LogStatus__mdt> logStatusByName = loadActiveLogStatuses();
 
@@ -86,17 +84,18 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         // Source: https://help.salesforce.com/articleView?id=000357271&type=1&mode=1
         // And no need for this to be static since it's only used internally for BEFORE_INSERT context
         String apiVersion = JSON.serialize(new User(Id = UserInfo.getUserId())).substringAfter('/data/').substringBefore('/sobjects/User');
-        Set<String> previewInstances = new Set<String>( LoggerParameter.Handler.getStringList('LogHandler_PreviewInstances_' + apiVersion) );
-        Set<String> nonPreviewInstances = new Set<String>( LoggerParameter.Handler.getStringList('LogHandler_NonPreviewInstances_' + apiVersion) );
+        Set<String> previewInstances = new Set<String>( LoggerParameter.Handler.getStringList('LogHandler_PreviewInstances_' + apiVersion, new List<String>()));
+        Set<String> nonPreviewInstances = new Set<String>( LoggerParameter.Handler.getStringList('LogHandler_NonPreviewInstances_' + apiVersion, new List<String>()));
 
         String releaseCycle;
-        if (ORGANIZATION.IsSandbox == false || nonPreviewInstances != null && nonPreviewInstances.contains(ORGANIZATION.InstanceName)) {
-            releaseCycle = 'Non-Preview Instance';
-        } else if (previewInstances != null && previewInstances.contains(ORGANIZATION.InstanceName)) {
-            releaseCycle = 'Preview Instance';
-        }
 
         for (Log__c log : this.logs) {
+            if (log.OrganizationInstanceName__c == 'Production' || nonPreviewInstances != null && nonPreviewInstances.contains(log.OrganizationInstanceName__c)) {
+                releaseCycle = 'Non-Preview Instance';
+            } else if (previewInstances != null && previewInstances.contains(log.OrganizationInstanceName__c)) {
+                releaseCycle = 'Preview Instance';
+            }
+
             // Use 'Unknown' as the default for private instances and situations where the hardcoded sets above are missing some values
             log.OrganizationInstanceReleaseCycle__c = String.isNotBlank(releaseCycle) ? releaseCycle : 'Unknown';
         }

@@ -43,46 +43,11 @@ private class LogEntryHandler_Tests {
     }
 
     @isTest
-    static void it_should_load_a_default_config_when_no_config_present() {
-        String currentUserJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
-
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = currentUserJson);
-
-        Test.startTest();
-
-        // Clear any CMDT records that have been loaded from the database
-        LoggerSObjectHandler.configurationBySObjectType.clear();
-        LoggerSObjectHandler__mdt configuration = LoggerSObjectHandler.configurationBySObjectType.get(Schema.LogEntry__c.SObjectType);
-        System.assertEquals(null, configuration);
-
-        insert logEntry;
-
-        // Verify that a default config has been loaded w/ IsEnabled__c = true
-        configuration = LoggerSObjectHandler.configurationBySObjectType.get(Schema.LogEntry__c.SObjectType);
-        System.assertNotEquals(null, configuration);
-        System.assertEquals(null, configuration.Id);
-        System.assertEquals(true, configuration.IsEnabled__c);
-
-        Test.stopTest();
-
-        // Assumption: the default config should have been loaded with IsEnabled__c = true, resulting in logEntry.HasRecordJson__c should have been auto-set to true...
-        // ...so if it's still false, it indicates that the handler did not execute
-        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertNotEquals(null, logEntry.RecordJson__c);
-        System.assertEquals(true, logEntry.HasRecordJson__c);
-    }
-
-    @isTest
     static void it_should_not_run_handler_when_disabled_via_configuration() {
         String currentUserJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
 
         LoggerSObjectHandler__mdt logEntryHandlerConfiguration = getMockConfiguration();
         logEntryHandlerConfiguration.IsEnabled__c = false;
-
-        Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
-            Schema.LogEntry__c.SObjectType => logEntryHandlerConfiguration
-        };
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = currentUserJson);
@@ -90,7 +55,7 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.configurationBySObjectType = configurationBySObjectType;
+        LoggerSObjectHandler.mockConfiguration(Schema.LogEntry__c.SObjectType,  logEntryHandlerConfiguration);
 
         insert logEntry;
 
@@ -297,20 +262,16 @@ private class LogEntryHandler_Tests {
     static void it_should_run_apex_plugin_when_configured() {
         String expectedMessage = 'Some String';
 
-        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(
-            PluginType__c = 'Apex',
-            PluginApiName__c = LogEntryPluginTest.class.getName()
-        );
-        Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>{
-            Schema.LogEntry__c.SObjectType => new List<LoggerSObjectHandlerPlugin__mdt>{ plugin }
-        };
-
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.pluginsBySObjectType = pluginsBySObjectType;
+        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(
+            PluginType__c = 'Apex',
+            PluginApiName__c = LogEntryPluginTest.class.getName()
+        );
+        LoggerSObjectHandler.mockPlugin(Schema.LogEntry__c.SObjectType, plugin);
 
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');
         insert logEntry;
