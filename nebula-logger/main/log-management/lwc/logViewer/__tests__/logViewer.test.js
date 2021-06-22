@@ -50,8 +50,24 @@ describe('Logger JSON Viewer lwc tests', () => {
         // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
-            expect(logViewer.title).toEqual('JSON for ' + mockGetLog.Name); // this works (TODO remove this)
-            expect(inputButton.variant).toEqual('brand'); // this fails due to undefined (TODO remove this)
+            expect(logViewer.title).toEqual('JSON for ' + mockGetLog.Name);
+            expect(inputButton.variant).toEqual('brand');
+        });
+    });
+    it('copies the JSON to the clipboard', async () => {
+        const logViewer = createElement('c-log-viewer', { is: LogViewer });
+        document.body.appendChild(logViewer);
+
+        getLogAdapter.emit(mockGetLog);
+
+        // Resolve a promise to wait for a rerender of the new content
+        return flushPromises().then(() => {
+            logViewer.shadowRoot.querySelector('lightning-button-stateful').click();
+        }).then(() => {
+            const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
+
+            const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('pre').textContent);
+            expect(clipboardContent).toEqual(mockGetLog);
         });
     });
 });
