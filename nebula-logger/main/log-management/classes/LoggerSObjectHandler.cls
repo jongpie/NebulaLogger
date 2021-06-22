@@ -26,7 +26,6 @@ public abstract class LoggerSObjectHandler {
                     ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName
                 )
             FROM LoggerSObjectHandler__mdt
-            WHERE IsEnabled__c = TRUE
         ];
 
         configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>();

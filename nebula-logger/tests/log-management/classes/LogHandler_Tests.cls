@@ -68,7 +68,7 @@ private class LogHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.mockConfiguration(Schema.LogEntry__c.SObjectType,  logHandlerConfiguration);
+        LoggerSObjectHandler.mockConfiguration(Schema.Log__c.SObjectType,  logHandlerConfiguration);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
         insert log;
