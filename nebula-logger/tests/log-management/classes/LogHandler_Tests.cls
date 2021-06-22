@@ -11,6 +11,34 @@ private class LogHandler_Tests {
     private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
+    public class LogPluginTest extends LoggerSObjectHandlerPlugin {
+        public override void execute(
+            TriggerOperation triggerOperationType,
+            List<SObject> triggerNew,
+            Map<Id, SObject> triggerNewMap,
+            List<SObject> triggerOld,
+            Map<Id, SObject> triggerOldMap
+        ) {
+            if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
+                for (Log__c log : (List<Log__c>) triggerNew) {
+                    // The specific field changed doesn't really matter - we just want to ensure that whatever...
+                    // ...logic implement in the instance of LoggerSObjectHandlerPlugin is executed
+                    log.ProfileName__c = 'Some String';
+                }
+            }
+        }
+    }
+
+    private static LoggerSObjectHandler__mdt getMockConfiguration() {
+        Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
+        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+    }
+
+    private static LoggerSObjectHandler__mdt getMockPlugin() {
+        Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
+        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+    }
+
     @testSetup
     static void setupData() {
         Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
@@ -21,6 +49,68 @@ private class LogHandler_Tests {
         logStatusByName.put(closedStatus.MasterLabel, closedStatus);
 
         LogHandler.logStatusByName = logStatusByName;
+    }
+
+    @isTest
+    static void it_should_return_the_log_sobjectType() {
+        Test.startTest();
+        System.assertEquals(Schema.Log__c.SObjectType, new LogHandler().getSObjectType());
+        Test.stopTest();
+    }
+
+    @isTest
+    static void it_should_load_a_default_config_when_no_config_present() {
+        LogStatus__mdt closedLogStatus = [SELECT Id, MasterLabel FROM LogStatus__mdt WHERE IsActive__c = true AND IsClosed__c = true LIMIT 1];
+
+        Test.startTest();
+
+        // Clear any CMDT records that have been loaded from the database
+        LoggerSObjectHandler.configurationBySObjectType.clear();
+        LoggerSObjectHandler__mdt configuration = LoggerSObjectHandler.configurationBySObjectType.get(Schema.Log__c.SObjectType);
+        System.assertEquals(null, configuration);
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
+        insert log;
+
+        // Verify that a default config has been loaded w/ IsEnabled__c = true
+        configuration = LoggerSObjectHandler.configurationBySObjectType.get(Schema.Log__c.SObjectType);
+        System.assertNotEquals(null, configuration);
+        System.assertEquals(null, configuration.Id);
+        System.assertEquals(true, configuration.IsEnabled__c);
+
+        Test.stopTest();
+
+        // Assumption: the default config should have been loaded with IsEnabled__c = true, resulting in log.IsClosed__c being auto-set to true...
+        // ...so if it's true, it indicates that the handler executed with a default config
+        log = [SELECT Id, IsClosed__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(true, log.IsClosed__c);
+    }
+
+    @isTest
+    static void it_should_not_run_handler_when_disabled_via_configuration() {
+        LoggerSObjectHandler__mdt logHandlerConfiguration = getMockConfiguration();
+        logHandlerConfiguration.IsEnabled__c = false;
+
+        Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
+            Schema.Log__c.SObjectType => logHandlerConfiguration
+        };
+
+        LogStatus__mdt closedLogStatus = [SELECT Id, MasterLabel FROM LogStatus__mdt WHERE IsActive__c = true AND IsClosed__c = true LIMIT 1];
+
+        Test.startTest();
+
+        // Use the mock configurations
+        LoggerSObjectHandler.configurationBySObjectType = configurationBySObjectType;
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
+        insert log;
+
+        Test.stopTest();
+
+        // Assumption: if the handler had executed, then log.IsClosed__c should have been auto-set to true...
+        // ...so if it's still false, it indicates that the handler did not execute
+        log = [SELECT Id, IsClosed__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(false, log.IsClosed__c);
     }
 
     @isTest
@@ -400,5 +490,31 @@ private class LogHandler_Tests {
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
 
         System.assertEquals(0, logShares.size(), logShares);
+    }
+
+    @isTest
+    static void it_should_run_apex_plugin_when_configured() {
+        String expectedProfileName = 'Some String';
+
+        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(
+            PluginType__c = 'Apex',
+            PluginApiName__c = LogPluginTest.class.getName()
+        );
+        Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>{
+            Schema.Log__c.SObjectType => new List<LoggerSObjectHandlerPlugin__mdt>{ plugin }
+        };
+
+        Test.startTest();
+
+        // Use the mock configurations
+        LoggerSObjectHandler.pluginsBySObjectType = pluginsBySObjectType;
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        insert log;
+
+        log = [SELECT Id, ProfileName__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedProfileName, log.ProfileName__c);
+
+        Test.stopTest();
     }
 }

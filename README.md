@@ -5,8 +5,8 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FIVQA2)
-[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FFgQAM)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FN6QAM)
+[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FMhQAM)
 [![Deploy Unpackaged Metadata](./content/btn-deploy-unpackaged-metadata.png)](https://githubsfdeploy.herokuapp.com/?owner=jongpie&repo=NebulaLogger&ref=main)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
@@ -18,9 +18,10 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
-5. View related log entries on any record page by adding the 'Related Log Entries' component in App Builder
+5. View related log entries on any Lighting SObject flexipage by adding the 'Related Log Entries' component in App Builder
 6. Dynamically assign Topics to `Log__c` and `LogEntry__c` records for tagging/labeling your logs (not currently available in the managed package)
-7. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
+7. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow
+8. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
 
 Learn more about the design and history of the project on [Joys Of Apex blog post](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
 
@@ -54,15 +55,15 @@ You can choose to install the unlocked package, you can deploy the metadata from
         </tr>
         <tr>
             <td>Future Releases</td>
-            <td>Faster release cycle: new patch versions are released (e.g., `v4.4.x`) for new enhancements & bugfixes that are merged to the `main` branch in GitHub</td>
-            <td>Slower release cycle: new minor versions are only released (e.g., `v4.x`) once new enhancements & bugfixes have been tested and code is stabilized</td>
+            <td>Faster release cycle: new patch versions are released (e.g., <code>v4.4.x</code>) for new enhancements & bugfixes that are merged to the <code>main</code> branch in GitHub</td>
+            <td>Slower release cycle: new minor versions are only released (e.g., <code>v4.x</code>) once new enhancements & bugfixes have been tested and code is stabilized</td>
             <td>Faster release cycle: new enhancements & bugfixes will be immediately available in GitHub</td>
         </tr>
         <tr>
-            <td>Public Apex Methods</td>
-            <td>Any <code>public</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> methods are not backwards-compatible</td>
+            <td>Public & Protected Apex Methods</td>
+            <td>Any <code>public</code> and <code>protected</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> and <code>protected</code> methods are not backwards-compatible</td>
             <td>Only <code>global</code> methods are available in managed packages - any <code>global</code> Apex methods available in the managed package will be supported for the foreseeable future</td>
-            <td>Any <code>public</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> methods are not backwards-compatible</td>
+            <td>Any <code>public</code> and <code>protected</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> and <code>protected</code> methods are not backwards-compatible</td>
         </tr>
         <tr>
             <td>Apex Debug Statements</td>
@@ -81,6 +82,12 @@ You can choose to install the unlocked package, you can deploy the metadata from
             <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
             <td>This functionality is not currently available in the managed package</td>
             <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
+        </tr>
+        <tr>
+            <td>Logger Plugin Framework</td>
+            <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
+            <td>This functionality is not currently available in the managed package</td>
+            <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
         </tr>
     </tbody>
 </table>
@@ -104,7 +111,7 @@ After deploying Nebula Logger to your org, there are a few additional configurat
 
 ---
 
-## Logger for Apex: Quick Start
+### Logger for Apex: Quick Start
 
 For Apex developers, the `Logger` class has several methods that can be used to add entries with different logging levels. Each logging level's method has several overloads to support multiple parameters.
 
@@ -129,7 +136,7 @@ This results in 1 `Log__c` record with several related `LogEntry__c` records.
 
 ---
 
-## Logger for Flow & Process Builder: Quick Start
+### Logger for Flow & Process Builder: Quick Start
 
 Within Flow & Process Builder, you can select 1 of the several Logging actions
 
@@ -145,7 +152,7 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ---
 
-## All Together: Apex & Flow in One Log
+### All Together: Apex & Flow in One Log
 
 After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.
 
@@ -167,7 +174,7 @@ This generates 1 consolidated `Log__c`, containing `LogEntry__c` records from bo
 
 ---
 
-## Advanced Features for Apex Developers
+## Features for Apex Developers
 
 Within Apex, there are several different methods that you can use that provide greater control over the logging system.
 
@@ -184,6 +191,7 @@ Apex developers can use additional `Logger` methods to dynamically control how l
     -   `Logger.SaveMethod.EVENT_BUS` - The default save method, this uses the `EventBus` class to publish `LogEntryEvent__e` records. The default save method can also be controlled declaratively by updating the field `LoggerSettings__c.DefaultSaveMethod__c`
     -   `Logger.SaveMethod.QUEUEABLE` - This save method will trigger `Logger` to save any pending records asynchronously using a queueable job. This is useful when you need to defer some CPU usage and other limits consumed by Logger.
     -   `Logger.SaveMethod.REST` - This save method will use the current user’s session ID to make a synchronous callout to the org’s REST API. This is useful when you have other callouts being made and you need to avoid mixed DML operations.
+    -   `Logger.SaveMethod.SYNCHRONOUS_DML` - This save method will skip publishing the `LogEntryEvent__e` platform events, and instead immediately creates `Log__c` and `LogEntry__c` records. This is useful when you are logging from within the context of another platform event and/or you do not anticipate any exceptions to occur in the current transaction. **Note**: when using this save method, any exceptions will prevent your log entries from being saved - Salesforce will rollback any DML statements, including your log entries! Use this save method cautiously.
 
 ### Track Related Logs in Batchable and Queuable Jobs
 
@@ -338,7 +346,30 @@ The class `LogMessage` provides the ability to generate string messages on deman
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
 
-## Managing Logs
+---
+
+## Features for Flow Builders
+
+Within Flow (and Process Builder), there are 4 invocable actions that you can use to leverage Nebula Logger
+
+1. 'Add Log Entry' - uses the class `FlowLogEntry` to add a log entry with a specified message
+2. 'Add Log Entry for an SObject Record' - uses the class `FlowRecordLogEntry` to add a log entry with a specified message for a particular SObject record
+3. 'Add Log Entry for an SObject Record Collection' - uses the class `FlowCollectionLogEntry` to add a log entry with a specified message for an SObject record collection
+4. 'Save Log' - uses the class `Logger` to save any pending logs
+
+![Flow Builder: Logging Invocable Actions](./content/flow-builder-logging-invocable-actions.png)
+
+---
+
+## Log Management
+
+### Logger Console App
+
+The Logger Console app provides access to `Log__c` and `LogEntry__c` object tabs (for any users with the correct access).
+
+![Logger Console app](./content/logger-console-app.png)
+
+### Log's 'Manage' Quick Action
 
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
 
@@ -355,7 +386,7 @@ To help development and support teams better manage logs (and any underlying cod
 
 ---
 
-## View Related Log Entries on a Record Page
+### View Related Log Entries on a Record Page
 
 Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
 
@@ -370,15 +401,15 @@ Within App Builder, admins can add the 'Related Log Entries' lightning web compo
 
 ---
 
-## Deleting Old Logs
+### Deleting Old Logs
 
 Admins can easily delete old logs using 2 methods: list views or Apex batch jobs
 
-### Mass Deleting with List Views
+#### Mass Deleting with List Views
 
 Salesforce (still) does not support mass deleting records out-of-the-box. There's been [an Idea for 11+ years](https://trailblazer.salesforce.com/ideaView?id=08730000000BqczAAC) about it, but it's still not standard functionality. A custom button is available on `Log__c` list views to provide mass deletion functionality.
 
-1. Users can select 1 or more `Log__c` records from the list view to choose which logs will be deleted
+1. Admins can select 1 or more `Log__c` records from the list view to choose which logs will be deleted
 
 ![Mass Delete Selection](./content/log-mass-delete-selection.png)
 
@@ -386,14 +417,72 @@ Salesforce (still) does not support mass deleting records out-of-the-box. There'
 
 ![Mass Delete Confirmation](./content/log-mass-delete-confirmation.png)
 
-### Batch Deleting with Apex Jobs
+#### Batch Deleting with Apex Jobs
 
 Two Apex classes are provided out-of-the-box to handle automatically deleting old logs
 
 1. `LogBatchPurger` - this batch Apex class will delete any `Log__c` records with `Log__c.LogRetentionDate__c <= System.today()`.
     - By default, this field is populated with "TODAY + 14 DAYS" - the number of days to retain a log can be customized in `LoggerSettings__c`.
-    - Users can also manually edit this field to change the retention date - or set it to null to prevent the log from being automatically deleted
+    - Admins can also manually edit this field to change the retention date - or set it to null to prevent the log from being automatically deleted
 2. `LogBatchPurgeScheduler` - this schedulable Apex class can be schedule to run `LogBatchPurger` on a daily or weekly basis
+
+---
+
+## Beta Feature: Custom Plugin Framework for Log\_\_c and LogEntry\_\_c objects
+
+If you want to add your own automation to the `Log__c` or `LogEntry__c` objects, you can leverage Apex or Flow to define "plugins" - the logger system will then automatically run the plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on). This framework makes it easy to build your own plugins, or deploy/install others' prebuilt packages, without having to modify the logging system directly.
+
+-   Flow plugins: your Flow should be built as auto-launched Flows with these parameters:
+
+    1. `Input` parameter `triggerOperationType` - The name of the current trigger operation (such as BEFORE_INSERT, BEFORE_UPDATE, etc.)
+    2. `Input` parameter `triggerNew` - The list of logger records being processed (`Log__c` or `LogEntry__c` records)
+    3. `Output` parameter `updatedTriggerNew` - If your Flow makes any updates to the collection of records, you should return a record collection containing the updated records
+    4. `Input` parameter `triggerOld` - The list of logger records as they exist in the datatabase
+
+-   Apex plugins: your Apex class should extend the abstract class `LoggerSObjectHandlerPlugin`. For example:
+
+    ```java
+    public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
+        public override void execute(
+            TriggerOperation triggerOperationType,
+            List<SObject> triggerNew,
+            Map<Id, SObject> triggerNewMap,
+            List<SObject> triggerOld,
+            Map<Id, SObject> triggerOldMap
+        ) {
+            switch on triggerOperationType {
+                when BEFORE_INSERT {
+                    for (Log__c log : (List<Log__c>) triggerNew) {
+                        log.Status__c = 'On Hold';
+                    }
+                }
+            }
+        }
+    }
+
+    ```
+
+Once you've created your Apex or Flow plugin(s), you will also need to configure the plugin:
+
+-   'Logger Plugin' - use the custom metadata type `LoggerSObjectHandlerPlugin__mdt` to define your plugin, including the plugin type (Apex or Flow) and the API name of your plugin's Apex class or Flow
+-   'Logger Plugin Parameter' - use the custom metadata type `LoggerSObjectHandlerPluginParameter__mdt` to define any configurable parameters needed for your plugin, such as environment-specific URLs and other similar configurations
+
+![Logger plugin: configuration](./content/slack-plugin-configuration.png)
+
+Note: the logger plugin framework is not available in the managed package due to some platform limitations & considerations with some of the underlying code. The unlocked package is recommended (instead of the managed package) when possible, including if you want to be able to leverage the plugin framework in your org.
+
+### Beta Plugin: Slack Integration
+
+The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:
+
+-   Use Apex to apply custom logic to `Log__c` and `LogEntry__c` records
+-   Add custom fields and list views to Logger's objects
+-   Extend permission sets to include field-level security for your custom fields
+-   Leverage the new `LoggerSObjectHandlerPluginParameter__mdt` CMDT object to store configuration for your plugin
+
+Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on how to install & customize the plugin
+
+![Slack plugin: notification](./content/slack-plugin-notification.png)
 
 ---
 

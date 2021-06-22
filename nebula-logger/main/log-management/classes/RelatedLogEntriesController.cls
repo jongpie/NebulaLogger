@@ -84,6 +84,7 @@ public with sharing class RelatedLogEntriesController {
         };
         String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
         logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
+        System.debug('logEntryQuery==' + logEntryQuery);
 
         return (List<LogEntry__c>) Database.query(logEntryQuery);
     }
@@ -149,15 +150,13 @@ public with sharing class RelatedLogEntriesController {
         for (String fieldName : educatedGuesses) {
             Schema.SObjectField field = lookupSObjectType.getDescribe().fields.getMap().get(fieldName);
 
-            if (field == null) {
-                continue;
-            }
+            if (field != null) {
+                Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
 
-            Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-
-            if (fieldDescribe.isNameField()) {
-                displayFieldApiName = fieldDescribe.getName();
-                break;
+                if (fieldDescribe.isNameField()) {
+                    displayFieldApiName = fieldDescribe.getName();
+                    break;
+                }
             }
         }
 
@@ -169,14 +168,7 @@ public with sharing class RelatedLogEntriesController {
 
         String tabIcon;
         for (Schema.DescribeTabSetResult tabSetResult : Schema.describeTabs()) {
-            if (tabIcon != null) {
-                break;
-            }
-
             for (Schema.DescribeTabResult tabResult : tabSetResult.getTabs()) {
-                if (tabIcon != null) {
-                    break;
-                }
                 if (tabResult.getSObjectName() != sobjectName) {
                     continue;
                 }
@@ -193,12 +185,6 @@ public with sharing class RelatedLogEntriesController {
                     break;
                 }
             }
-        }
-        // Hardcoded exceptions - Salesforce doesn't return SVGs for these objects, so hardcoding is necessary
-        if (tabIcon == null && sobjectName == 'Asset') {
-            tabIcon = 'standard:maintenance_asset';
-        } else if (tabIcon == null && sobjectName == 'AssetRelationship') {
-            tabIcon = 'standard:asset_relationship';
         }
 
         return tabIcon;

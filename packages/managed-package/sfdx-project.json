@@ -9,10 +9,10 @@
             "default": true,
             "definitionFile": "config/project-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "versionName": "Configurable Default Save Method & New Epoch Timestamp Fields",
-            "versionNumber": "4.4.0.2",
-            "ancestorVersion": "4.3.0.3",
-            "versionDescription": "Includes new Logger Setting for the default save method, added new Epoch Timestamp fields and bugfixes",
+            "versionName": "Code Stability & Bugfixes",
+            "versionNumber": "4.5.0.0",
+            "ancestorVersion": "4.4.0.2",
+            "versionDescription": "Code stability & bugfixes for the managed package. Unlocked package only: new logger plugin framework",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
@@ -21,6 +21,7 @@
         "Nebula Logger - Managed Package@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO",
         "Nebula Logger - Managed Package@4.2.0-0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
         "Nebula Logger - Managed Package@4.3.0-3-logger-console-app": "04t5Y000000YLDLQA4",
-        "Nebula Logger - Managed Package@4.4.0-2-config-default-save-method": "04t5Y0000027FFgQAM"
+        "Nebula Logger - Managed Package@4.4.0-2-config-default-save-method": "04t5Y0000027FFgQAM",
+        "Nebula Logger - Managed Package@4.5.0-0-logger-plugin-framework": "04t5Y0000027FMhQAM"
     }
 }

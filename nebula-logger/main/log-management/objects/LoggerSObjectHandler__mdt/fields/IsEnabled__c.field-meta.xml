@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsEnabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description
+    >Controls if the SObject&apos;s trigger handler class should execute. This is useful for temporary disabling the logger&apos;s trigger handlers, but should typically be enabled.</description>
+    <externalId>false</externalId>
+    <fieldManageability>SubscriberControlled</fieldManageability>
+    <inlineHelpText
+    >Controls if the SObject&apos;s trigger handler class should execute. This is useful for temporary disabling the logger&apos;s trigger handlers, but should typically be enabled.</inlineHelpText>
+    <label>Is Enabled</label>
+    <type>Checkbox</type>
+</CustomField>

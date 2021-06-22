@@ -6,9 +6,17 @@ layout: default
 
 ## Logger Engine
 
+### [FlowCollectionLogEntry](logger-engine/FlowCollectionLogEntry)
+
+Handles adding new log entries in Flow for a particular `SObject` record collection
+
 ### [FlowLogEntry](logger-engine/FlowLogEntry)
 
 Handles adding new log entries in Flow
+
+### [FlowLogger](logger-engine/FlowLogger)
+
+Handles some common logic used by `FlowLogEntry`, `FlowRecordLogEntry` and `FlowCollectionLogEntry`
 
 ### [FlowRecordLogEntry](logger-engine/FlowRecordLogEntry)
 
@@ -38,7 +46,7 @@ Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :Sy
 
 ### [LogEntryEventHandler](log-management/LogEntryEventHandler)
 
-Subscribes to `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
+Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
 
 ### [LogEntryFieldSetPicklist](log-management/LogEntryFieldSetPicklist)
 
@@ -56,6 +64,16 @@ Manages setting fields on `Log__c` before insert & before update
 
 Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
 
+### [LoggerSObjectHandler](log-management/LoggerSObjectHandler)
+
+Abstract class used by trigger handlers for shared logic
+
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 
 Controller class for the component RelatedLogEntries
+
+## Plugin Framework
+
+### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
+
+Abstract class used to create custom Apex plugins to execute for all trigger operations on `Log__c` or `LogEntry__c`

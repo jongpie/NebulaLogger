@@ -10,6 +10,10 @@ Handles adding new log entries in Flow for a particular `SObject` record
 
 [FlowLogEntry](FlowLogEntry)
 
+[FlowCollectionLogEntry](FlowCollectionLogEntry)
+
+[FlowLogger](FlowLogger)
+
 [Logger](Logger)
 
 [LogEntryEventBuilder](LogEntryEventBuilder)
@@ -41,6 +45,8 @@ The record to relate to this log entry - the record's JSON is automatically adde
 #### `saveLog` → `Boolean`
 
 Optionally choose to save any pending log entries
+
+#### `timestamp` → `DateTime`
 
 #### `topics` → `List<String>`
 

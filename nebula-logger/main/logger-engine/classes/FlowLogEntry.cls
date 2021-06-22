@@ -7,6 +7,8 @@
  * @group Logger Engine
  * @description Handles adding new log entries in Flow
  * @see FlowRecordLogEntry
+ * @see FlowCollectionLogEntry
+ * @see FlowLogger
  * @see Logger
  * @see LogEntryEventBuilder
  */
@@ -34,7 +36,7 @@ global inherited sharing class FlowLogEntry {
      * @description Optionally choose to save any pending log entries.
      */
     @InvocableVariable(required=false label='(Optional) Save Log')
-    global Boolean saveLog = false;
+    global Boolean saveLog;
 
     /**
      * @description Optionally relate the log entry to a particular record ID
@@ -54,7 +56,7 @@ global inherited sharing class FlowLogEntry {
     @InvocableVariable(required=false label='(Optional) Topics')
     public List<String> topics;
 
-    private DateTime timestamp = System.now();
+    public DateTime timestamp = System.now();
 
     /**
      * addFlowEntries description
@@ -63,55 +65,14 @@ global inherited sharing class FlowLogEntry {
      */
     @InvocableMethod(category='Logging' label='Add Log Entry' description='Creates a log entry for a flow or process builder')
     global static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {
-        Boolean saveLog = false;
+        List<FlowLogger.LogEntry> shadowLogEntries = new List<FlowLogger.LogEntry>();
         for (FlowLogEntry flowLogEntry : flowLogEntries) {
-            // Set the logging level if it's blank
-            if (String.isBlank(flowLogEntry.loggingLevelName)) {
-                if (String.isNotBlank(flowLogEntry.faultMessage)) {
-                    flowLogEntry.loggingLevelName = 'ERROR';
-                } else {
-                    flowLogEntry.loggingLevelName = 'DEBUG';
-                }
-            }
+            FlowLogger.LogEntry shadowLogEntry = (FlowLogger.LogEntry) JSON.deserialize(JSON.serialize(flowLogEntry), FlowLogger.LogEntry.class);
+            shadowLogEntry.addToLoggerBuffer()?.setRecordId(flowLogEntry.recordId);
 
-            LoggingLevel loggingLevel = Logger.getLoggingLevel(flowLogEntry.loggingLevelName);
-
-            LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, flowLogEntry.message)
-                .setRecordId(flowLogEntry.recordId)
-                .setTopics(flowLogEntry.topics);
-
-            LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
-
-            if (logEntryEventBuilder.shouldSave() == false) {
-                continue;
-            }
-
-            logEntryEvent.OriginLocation__c = flowLogEntry.flowName;
-            logEntryEvent.OriginType__c = 'Flow';
-            logEntryEvent.Timestamp__c = flowLogEntry.timestamp;
-
-            if (String.isNotBlank(flowLogEntry.faultMessage)) {
-                logEntryEvent.ExceptionMessage__c = flowLogEntry.faultMessage;
-                logEntryEvent.ExceptionType__c = 'Flow.FaultError';
-            }
-
-            if (flowLogEntry.saveLog == true) {
-                saveLog = flowLogEntry.saveLog;
-            }
+            shadowLogEntries.add(shadowLogEntry);
         }
 
-        if (saveLog == true) {
-            Logger.saveLog();
-        }
-
-        // Event though it's the same transaction ID, Salesforce expects the returned list...
-        // ...to have the same number of items as the initial input.
-        // When there's a mismatch, Salesforce throws an error:
-        // FLOW_ELEMENT_ERROR The number of results does not match the number of interviews that were executed in a single bulk execution request.|FlowActionCall
-        List<String> transactionIds = new List<String>();
-        for (Integer i = 0; i < flowLogEntries.size(); i++) {
-            transactionIds.add(Logger.getTransactionId());
-        }
-        return transactionIds;
+        return FlowLogger.addEntries(shadowLogEntries);
     }
 }

@@ -10,6 +10,10 @@ Handles adding new log entries in Flow
 
 [FlowRecordLogEntry](FlowRecordLogEntry)
 
+[FlowCollectionLogEntry](FlowCollectionLogEntry)
+
+[FlowLogger](FlowLogger)
+
 [Logger](Logger)
 
 [LogEntryEventBuilder](LogEntryEventBuilder)
@@ -41,6 +45,8 @@ Optionally relate the log entry to a particular record ID
 #### `saveLog` → `Boolean`
 
 Optionally choose to save any pending log entries.
+
+#### `timestamp` → `DateTime`
 
 #### `topics` → `List<String>`
 
