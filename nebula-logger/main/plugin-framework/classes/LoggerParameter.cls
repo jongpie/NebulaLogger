@@ -363,7 +363,7 @@ public class LoggerParameter {
 
     // Private testVisible methods
     @testVisible
-    private void mockParameter(LoggerSObjectHandlerParameter__mdt parameter) {
+    private void setMockParameter(LoggerSObjectHandlerParameter__mdt parameter) {
         this.mockParameterByDeveloperName.put(parameter.DeveloperName, parameter);
     }
 

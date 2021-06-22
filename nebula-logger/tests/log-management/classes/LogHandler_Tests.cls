@@ -68,7 +68,7 @@ private class LogHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.mockConfiguration(Schema.Log__c.SObjectType,  logHandlerConfiguration);
+        LoggerSObjectHandler.setMockConfiguration(Schema.Log__c.SObjectType,  logHandlerConfiguration);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
         insert log;
@@ -92,7 +92,7 @@ private class LogHandler_Tests {
             DeveloperName = 'LogHandler_PreviewInstances_' + apiVersion,
             Value__c = JSON.serialize(mockPreviewInstances)
         );
-        LoggerParameter.Handler.mockParameter(mockPreviewInstancesParameter);
+        LoggerParameter.Handler.setMockParameter(mockPreviewInstancesParameter);
 
         Log__c log = new Log__c(OrganizationInstanceName__c = mockOrgInstance, TransactionId__c = '1234');
         insert log;
@@ -316,7 +316,7 @@ private class LogHandler_Tests {
             PluginType__c = 'Apex',
             PluginApiName__c = LogPluginTest.class.getName()
         );
-        LoggerSObjectHandler.mockPlugin(Schema.Log__c.SObjectType, plugin);
+        LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;

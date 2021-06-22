@@ -55,7 +55,7 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.mockConfiguration(Schema.LogEntry__c.SObjectType,  logEntryHandlerConfiguration);
+        LoggerSObjectHandler.setMockConfiguration(Schema.LogEntry__c.SObjectType,  logEntryHandlerConfiguration);
 
         insert logEntry;
 
@@ -271,7 +271,7 @@ private class LogEntryHandler_Tests {
             PluginType__c = 'Apex',
             PluginApiName__c = LogEntryPluginTest.class.getName()
         );
-        LoggerSObjectHandler.mockPlugin(Schema.LogEntry__c.SObjectType, plugin);
+        LoggerSObjectHandler.setMockPlugin(Schema.LogEntry__c.SObjectType, plugin);
 
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');
         insert logEntry;

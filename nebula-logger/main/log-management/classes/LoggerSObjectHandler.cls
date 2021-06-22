@@ -50,12 +50,12 @@ public abstract class LoggerSObjectHandler {
 
     // Private static testVisible methods
     @testVisible
-    private static void mockConfiguration(Schema.SObjectType sobjectType, LoggerSObjectHandler__mdt configuration) {
+    private static void setMockConfiguration(Schema.SObjectType sobjectType, LoggerSObjectHandler__mdt configuration) {
         configurationBySObjectType.put(sobjectType, configuration);
     }
 
     @testVisible
-    private static void mockPlugin(Schema.SObjectType sobjectType, LoggerSObjectHandlerPlugin__mdt plugin) {
+    private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerSObjectHandlerPlugin__mdt plugin) {
         List<LoggerSObjectHandlerPlugin__mdt> plugins = pluginsBySObjectType.get(sobjectType);
         if (plugins == null) {
             plugins = new List<LoggerSObjectHandlerPlugin__mdt>();

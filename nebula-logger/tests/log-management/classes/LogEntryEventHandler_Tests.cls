@@ -282,7 +282,7 @@ private class LogEntryEventHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.mockConfiguration(Schema.LogEntryEvent__e.SObjectType, logEntryEventHandlerConfiguration);
+        LoggerSObjectHandler.setMockConfiguration(Schema.LogEntryEvent__e.SObjectType, logEntryEventHandlerConfiguration);
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -516,7 +516,7 @@ private class LogEntryEventHandler_Tests {
             DeveloperName = 'LogEntryEventHandler_CallStatusApi',
             Value__c = 'true'
         );
-        LoggerParameter.Handler.mockParameter(mockCallStatusApiParameter);
+        LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -569,7 +569,7 @@ private class LogEntryEventHandler_Tests {
             DeveloperName = 'LogEntryEventHandler_CallStatusApi',
             Value__c = 'true'
         );
-        LoggerParameter.Handler.mockParameter(mockCallStatusApiParameter);
+        LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -614,7 +614,7 @@ private class LogEntryEventHandler_Tests {
             DeveloperName = 'LogEntryEventHandler_CallStatusApi',
             Value__c = 'false'
         );
-        LoggerParameter.Handler.mockParameter(mockCallStatusApiParameter);
+        LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
 
 
         String transactionId = '123-456-789-0';
@@ -650,7 +650,7 @@ private class LogEntryEventHandler_Tests {
             DeveloperName = 'LogEntryEventHandler_CallStatusApi',
             Value__c = 'true'
         );
-        LoggerParameter.Handler.mockParameter(mockCallStatusApiParameter);
+        LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
