@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.5.1",
+    "version": "4.5.2",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "scripts": {
         "deploy": "npm run deploy:logger && npm run deploy:managedpackage && npm run deploy:extratests",
