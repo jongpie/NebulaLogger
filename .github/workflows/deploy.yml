@@ -157,26 +157,27 @@ jobs:
               run: npm run org:delete:noprompt
               if: ${{ always() }}
 
-    create-package-version:
-        name: 'Create Package Version'
-        needs: [lwc-local-tests, scratch-org-tests]
-        runs-on: ubuntu-latest
-        environment: Test
-        steps:
-            # Checkout the code
-            - name: 'Checkout source code'
-              uses: actions/checkout@v2
+    # TODO finish auto-creation & promotion of unlocked package + committing changes to docs
+    # create-package-version:
+    #     name: 'Create Package Version'
+    #     needs: [lwc-local-tests, scratch-org-tests]
+    #     runs-on: ubuntu-latest
+    #     environment: Test
+    #     steps:
+    #         # Checkout the code
+    #         - name: 'Checkout source code'
+    #           uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
-              with:
-                  node-version: '14'
+    #         - name: 'Setup node'
+    #           uses: actions/setup-node@v2
+    #           with:
+    #               node-version: '14'
 
-            - name: 'Install npm'
-              run: npm install
+    #         - name: 'Install npm'
+    #           run: npm install
 
-            - name: 'Generate Docs'
-              run: npm run docs:generate
+    #         - name: 'Generate Docs'
+    #           run: npm run docs:generate
               # TODO need to commit & push any changes to ./docs/*
 
               # TODO uncomment
