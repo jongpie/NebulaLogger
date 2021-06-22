@@ -1,5 +1,5 @@
 # This script is used to generate the markdown files used by Github pages
-npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/ --targetDir docs
+npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main/ --targetDir docs
 
 # Make a few adjustments to the generated markdown files so that they work correctly in Github Pages
 $indexPageFile = "docs/index.md"

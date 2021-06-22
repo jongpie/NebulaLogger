@@ -3,6 +3,25 @@ name: Deployment
 
 on:
     push:
+        branches:
+            - main
+        paths-ignore:
+            - 'content/**'
+            - 'docs/**'
+            - 'examples/**'
+            - 'packages/**'
+            - '.forceignore'
+            - '.gitignore'
+            - '.prettierignore'
+            - '.prettierrc'
+            - 'Contributing.md'
+            - 'LICENSE'
+            - 'package.json'
+            - 'README.md'
+            - './**/README.md'
+            - 'sfdx-project.json'
+    pull_request:
+        types: [opened, edited, synchronize, reopened]
         paths-ignore:
             - 'content/**'
             - 'docs/**'

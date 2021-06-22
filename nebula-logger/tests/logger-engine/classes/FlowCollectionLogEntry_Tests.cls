@@ -3,14 +3,14 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 @isTest
-private class FlowRecordLogEntry_Tests {
-    static FlowRecordLogEntry createFlowRecordLogEntry() {
-        FlowRecordLogEntry flowRecordEntry = new FlowRecordLogEntry();
-        flowRecordEntry.flowName = 'MyFlowOrProcessBuilder';
-        flowRecordEntry.message = 'my test message';
-        flowRecordEntry.saveLog = false;
+private class FlowCollectionLogEntry_Tests {
+    static FlowCollectionLogEntry createFlowCollectionLogEntry() {
+        FlowCollectionLogEntry flowCollectionEntry = new FlowCollectionLogEntry();
+        flowCollectionEntry.flowName = 'MyFlowOrProcessBuilder';
+        flowCollectionEntry.message = 'my test message';
+        flowCollectionEntry.saveLog = false;
 
-        return flowRecordEntry;
+        return flowCollectionEntry;
     }
 
     @isTest
@@ -23,18 +23,18 @@ private class FlowRecordLogEntry_Tests {
         );
 
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
+        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
 
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
-        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
-        flowRecordEntry.record = currentUser;
-        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
+        FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
+        flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
+        flowCollectionEntry.records = new List<SObject>{ currentUser };
+        FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowCollectionEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -42,18 +42,20 @@ private class FlowRecordLogEntry_Tests {
 
         Test.stopTest();
 
-        String expectedUserJson = JSON.serializePretty(currentUser);
+        String expectedUserJson = JSON.serializePretty(new List<SObject>{ currentUser });
 
         LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c, RecordSObjectType__c
             FROM LogEntry__c
             ORDER BY CreatedDate
             LIMIT 1
         ];
-        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
-        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals(flowCollectionEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowCollectionEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
+        System.assertEquals(null, logEntry.RecordId__c);
+        System.assertEquals('List', logEntry.RecordCollectionType__c);
+        System.assertEquals('User', logEntry.RecordSObjectType__c);
         System.assertEquals(expectedUserJson, logEntry.RecordJson__c);
     }
 
@@ -67,34 +69,36 @@ private class FlowRecordLogEntry_Tests {
         );
 
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
+        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
 
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
-        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
-        flowRecordEntry.record = currentUser;
-        flowRecordEntry.saveLog = true;
-        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
+        FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
+        flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
+        flowCollectionEntry.records = new List<SObject>{ currentUser };
+        flowCollectionEntry.saveLog = true;
+        FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowCollectionEntry });
 
         Test.stopTest();
 
-        String expectedUserJson = JSON.serializePretty(currentUser);
+        String expectedUserJson = JSON.serializePretty(new List<SObject>{ currentUser });
 
         LogEntry__c logEntry = [
-            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c, RecordSObjectType__c
             FROM LogEntry__c
             ORDER BY CreatedDate
             LIMIT 1
         ];
-        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
-        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals(flowCollectionEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowCollectionEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
+        System.assertEquals(null, logEntry.RecordId__c);
+        System.assertEquals('List', logEntry.RecordCollectionType__c);
+        System.assertEquals('User', logEntry.RecordSObjectType__c);
         System.assertEquals(expectedUserJson, logEntry.RecordJson__c);
     }
 
@@ -108,18 +112,18 @@ private class FlowRecordLogEntry_Tests {
         );
 
         LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
-        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() > flowRecordEntryLoggingLevel.ordinal());
+        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() > flowCollectionEntryLoggingLevel.ordinal());
 
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
-        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
-        flowRecordEntry.record = currentUser;
-        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
+        FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
+        flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
+        flowCollectionEntry.records = new List<SObject>{ currentUser };
+        FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowCollectionEntry });
 
         System.assertEquals(0, Logger.getBufferSize());
 
@@ -135,11 +139,11 @@ private class FlowRecordLogEntry_Tests {
         Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
+        FlowCollectionLogEntry flowEntry = createFlowCollectionLogEntry();
         System.assertEquals(null, flowEntry.faultMessage);
         System.assertEquals(null, flowEntry.loggingLevelName);
 
-        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowEntry });
+        FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -148,7 +152,7 @@ private class FlowRecordLogEntry_Tests {
         Test.stopTest();
 
         LogEntry__c logEntry = [
-            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c
             FROM LogEntry__c
             ORDER BY CreatedDate
             LIMIT 1
@@ -169,11 +173,11 @@ private class FlowRecordLogEntry_Tests {
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
+        FlowCollectionLogEntry flowEntry = createFlowCollectionLogEntry();
         flowEntry.faultMessage = 'Whoops, a Flow error has occurred.';
         System.assertEquals(null, flowEntry.loggingLevelName);
 
-        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowEntry });
+        FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -182,7 +186,7 @@ private class FlowRecordLogEntry_Tests {
         Test.stopTest();
 
         LogEntry__c logEntry = [
-            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c
             FROM LogEntry__c
             ORDER BY CreatedDate
             LIMIT 1

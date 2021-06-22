@@ -6,11 +6,27 @@
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>FlowCollectionLogEntry</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FlowCollectionLogEntry_Tests</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>FlowLogEntry</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>FlowLogEntry_Tests</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FlowLogger</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FlowLogger_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

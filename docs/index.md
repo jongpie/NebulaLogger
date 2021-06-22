@@ -6,9 +6,17 @@ layout: default
 
 ## Logger Engine
 
+### [FlowCollectionLogEntry](logger-engine/FlowCollectionLogEntry)
+
+Handles adding new log entries in Flow for a particular `SObject` record collection
+
 ### [FlowLogEntry](logger-engine/FlowLogEntry)
 
 Handles adding new log entries in Flow
+
+### [FlowLogger](logger-engine/FlowLogger)
+
+Handles some common logic used by `FlowLogEntry`, `FlowRecordLogEntry` and `FlowCollectionLogEntry`
 
 ### [FlowRecordLogEntry](logger-engine/FlowRecordLogEntry)
 
