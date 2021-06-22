@@ -14,6 +14,11 @@ function flushPromises() {
     return new Promise(resolve => setTimeout(resolve, 0));
 }
 
+function setElementValue(element, value) {
+    element.value = value;
+    element.dispatchEvent(new CustomEvent('commit'));
+}
+
 jest.mock(
     '@salesforce/apex/RelatedLogEntriesController.getQueryResult',
     () => {
@@ -30,6 +35,7 @@ describe('Related Log Entries lwc tests', () => {
             document.body.removeChild(document.body.firstChild);
         }
     });
+
     it('sets query result', async () => {
         const relatedLogEntriesElement = createElement('c-related-log-entries', { is: RelatedLogEntries });
         relatedLogEntriesElement.recordId = mockRecordId;
