@@ -36,21 +36,6 @@ public class LoggerParameter {
         }
         set;
     }
-    /**
-     * @description Creates an instance of `LoggerParameter` that can load parameters from `LoggerSObjectHandlerParameter__mdt`
-     * @return    An instance of `LoggerParameter` for the `LoggerSObjectHandlerParameter__mdt` CMDT object
-     */
-    public static LoggerParameter getHandlerInstance() {
-        return new LoggerParameter(Schema.LoggerSObjectHandlerParameter__mdt.SObjectType);
-    }
-
-    /**
-     * @description Creates an instance of `LoggerParameter` that can load parameters from `LoggerSObjectHandlerPluginParameter__mdt`
-     * @return    An instance of `LoggerParameter` for the `LoggerSObjectHandlerPluginParameter__mdt` CMDT object
-     */
-    public static LoggerParameter getPluginInstance() {
-        return new LoggerParameter(Schema.LoggerSObjectHandlerPluginParameter__mdt.SObjectType);
-    }
 
     // Instance stuff
     private SObjectType configurationSObjectType;

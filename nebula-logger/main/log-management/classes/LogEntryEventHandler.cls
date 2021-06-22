@@ -18,13 +18,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
     }
 
-    private Boolean shouldCallStatusApi;
+    private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
     private Map<LogEntry__c, List<String>> logEntryToTopics = new Map<LogEntry__c, List<String>>();
     private Set<String> topicNames = new Set<String>();
 
     public LogEntryEventHandler() {
-        this.shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     }
 
     public LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents) {

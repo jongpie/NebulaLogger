@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <layoutSections>
         <customLabel>false</customLabel>
@@ -59,11 +59,20 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
-        <layoutColumns />
-        <layoutColumns />
-        <layoutColumns />
+        <layoutColumns/>
+        <layoutColumns/>
+        <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
+    <relatedLists>
+        <fields>MasterLabel</fields>
+        <fields>DeveloperName</fields>
+        <fields>IsEnabled__c</fields>
+        <fields>CollectionType__c</fields>
+        <fields>DataType__c</fields>
+        <fields>Value__c</fields>
+        <relatedList>LoggerSObjectHandlerParameter__mdt.SObjectHandler__c</relatedList>
+    </relatedLists>
     <relatedLists>
         <fields>MasterLabel</fields>
         <fields>DeveloperName</fields>
@@ -81,7 +90,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h3F0000048Uxu</masterLabel>
+        <masterLabel>00h11000004Bf4n</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
