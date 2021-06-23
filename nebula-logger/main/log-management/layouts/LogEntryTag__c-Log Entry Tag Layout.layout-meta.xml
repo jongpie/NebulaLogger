@@ -14,16 +14,16 @@
         <label>Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>Name</field>
+                <behavior>Required</behavior>
+                <field>Tag__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
                 <field>LogEntry__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>Tag__c</field>
+                <behavior>Edit</behavior>
+                <field>Log__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

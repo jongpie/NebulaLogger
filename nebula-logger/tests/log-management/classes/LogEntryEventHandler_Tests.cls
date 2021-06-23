@@ -483,7 +483,7 @@ private class LogEntryEventHandler_Tests {
             EpochTimestamp__c = System.now().getTime(),
             Message__c = 'my message',
             Timestamp__c = System.now(),
-            Topics__c = String.join(topics, ','),
+            Tags__c = String.join(topics, ','),
             TransactionEntryNumber__c = 1,
             TransactionId__c = transactionId
         );

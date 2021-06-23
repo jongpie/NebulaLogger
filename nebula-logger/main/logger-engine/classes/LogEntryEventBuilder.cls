@@ -394,7 +394,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.Topics__c = getTopicsString(topics);
+        this.logEntryEvent.Tags__c = getTopicsString(topics);
         return this;
     }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionOverrides>
         <actionName>Accept</actionName>
@@ -147,7 +147,7 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <compactLayoutAssignment>LoggerTagCompactLayout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Custom tags used by Logger for labeling Log__c and LogEntry__c records</description>
     <enableActivities>true</enableActivities>

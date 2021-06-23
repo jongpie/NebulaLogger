@@ -783,7 +783,7 @@ private class LogEntryEventBuilder_Tests {
     @isTest
     static void it_should_set_topics_string_for_list_of_topics() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-        System.assertEquals(null, builder.getLogEntryEvent().Topics__c);
+        System.assertEquals(null, builder.getLogEntryEvent().Tags__c);
 
         Test.startTest();
 
@@ -793,13 +793,13 @@ private class LogEntryEventBuilder_Tests {
         Test.stopTest();
 
         String expectedTopicsString = String.escapeSingleQuotes(String.join(topics, ','));
-        System.assertEquals(expectedTopicsString, builder.getLogEntryEvent().Topics__c);
+        System.assertEquals(expectedTopicsString, builder.getLogEntryEvent().Tags__c);
     }
 
     @isTest
     static void it_should_deduplicate_topics() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-        System.assertEquals(null, builder.getLogEntryEvent().Topics__c);
+        System.assertEquals(null, builder.getLogEntryEvent().Tags__c);
 
         Test.startTest();
 
@@ -809,7 +809,7 @@ private class LogEntryEventBuilder_Tests {
         Test.stopTest();
 
         String expectedTopicsString = 'duplicate-topic,another One';
-        System.assertEquals(expectedTopicsString, builder.getLogEntryEvent().Topics__c);
+        System.assertEquals(expectedTopicsString, builder.getLogEntryEvent().Tags__c);
     }
 
     @isTest

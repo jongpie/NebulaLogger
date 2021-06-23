@@ -20,8 +20,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
-    private Map<LogEntry__c, List<String>> logEntryToTopics = new Map<LogEntry__c, List<String>>();
-    private Set<String> topicNames = new Set<String>();
+    private Map<LogEntry__c, List<String>> logEntryToTagNames = new Map<LogEntry__c, List<String>>();
+    private Set<String> tagNames = new Set<String>();
 
     public LogEntryEventHandler() {
     }
@@ -52,7 +52,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             when AFTER_INSERT {
                 this.upsertLogs();
                 this.insertLogEntries();
-                this.insertTopics();
+                this.insertTags();
             }
         }
 
@@ -219,57 +219,108 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             this.logEntries.add(logEntry);
 
-            if (logEntryEvent.Topics__c != null) {
-                this.topicNames.addAll(logEntryEvent.Topics__c.split(','));
-                this.logEntryToTopics.put(logEntry, LogEntryEvent.Topics__c.split(','));
+            if (logEntryEvent.Tags__c != null) {
+                this.tagNames.addAll(logEntryEvent.Tags__c.split(','));
+                this.logEntryToTagNames.put(logEntry, LogEntryEvent.Tags__c.split(','));
             }
         }
-
+System.debug('this.tagNames==' + this.tagNames);
         insert this.logEntries;
     }
 
-    private void insertTopics() {
-        if (this.topicNames.isEmpty()) {
+    private void insertTags() {
+        if (this.tagNames.isEmpty()) {
             return;
         }
 
-        // Query for existing topics
-        Map<String, Topic> topicNameToTopics = new Map<String, Topic>();
-        for (Topic topic : [SELECT Id, Name FROM Topic WHERE Name IN :this.topicNames]) {
-            topicNameToTopics.put(topic.Name, topic);
+        // Orgs can be configured to either use Topic & TopicAssignment, or to use LoggerTag__c, LogTag__c and LogEntryTag__c
+        Boolean useTopics = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
+
+System.debug('useTopics==' + useTopics);
+
+        Schema.SObjectType tagObject;
+        Schema.SObjectType logTagAssignmentObject;
+        Schema.SObjectField logTagAssignmentLogLookup;
+        Schema.SObjectField logTagAssignmentTagLookup;
+        Schema.SObjectType logEntryTagAssignmentObject;
+        Schema.SObjectField logEntryTagAssignmentLogEntryLookup;
+        Schema.SObjectField logEntryTagAssignmentTagLookup;
+
+        if (useTopics == true) {
+            tagObject = Schema.Topic.SObjectType;
+            logTagAssignmentObject = Schema.TopicAssignment.SObjectType;
+            logTagAssignmentLogLookup = Schema.TopicAssignment.EntityId;
+            logTagAssignmentTagLookup = Schema.TopicAssignment.TopicId;
+            logEntryTagAssignmentObject = Schema.TopicAssignment.SObjectType;
+            logEntryTagAssignmentLogEntryLookup = Schema.TopicAssignment.EntityId;
+            logEntryTagAssignmentTagLookup = Schema.TopicAssignment.TopicId;
+        } else {
+            tagObject = Schema.LoggerTag__c.SObjectType;
+            logTagAssignmentObject = Schema.LogTag__c.SObjectType;
+            logTagAssignmentLogLookup = Schema.LogTag__c.Log__c;
+            logTagAssignmentTagLookup = Schema.LogTag__c.Tag__c;
+            logEntryTagAssignmentObject = Schema.LogEntryTag__c.SObjectType;
+            logEntryTagAssignmentLogEntryLookup = Schema.LogEntryTag__c.LogEntry__c;
+            logEntryTagAssignmentTagLookup = Schema.LogEntryTag__c.Tag__c;
         }
-        // Create any new topics
-        List<Topic> topicsToCreate = new List<Topic>();
-        for (String topicName : this.topicNames) {
-            if (topicNameToTopics.get(topicName) != null) {
+
+        // Query for existing tags/topics
+        Map<String, Id> tagNameToId = new Map<String, Id>();
+        String tagQuery = 'SELECT Id, Name FROM ' + tagObject + ' WHERE Name IN :this.tagNames';
+        for (SObject tag : Database.query(tagQuery)) {
+            tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
+        }
+        // Create any new tags/topics
+        List<SObject> tagsToCreate = new List<SObject>();
+        for (String tagName : this.tagNames) {
+            if (tagNameToId.get(tagName) != null) {
                 continue;
             }
 
-            topicsToCreate.add(new Topic(Name = topicName));
+            SObject tag = tagObject.newSObject();
+            tag.put('Name', tagName);
+            tagsToCreate.add(tag);
         }
-        if (!topicsToCreate.isEmpty()) {
-            insert topicsToCreate;
-            for (Topic topic : topicsToCreate) {
-                topicNameToTopics.put(topic.Name, topic);
+        if (!tagsToCreate.isEmpty()) {
+            insert tagsToCreate;
+            for (SObject tag : tagsToCreate) {
+                tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
             }
         }
 
-        // Assign the topics to the records
-        Set<TopicAssignment> topicAssignments = new Set<TopicAssignment>();
-        for (LogEntry__c logEntry : this.logEntryToTopics.keySet()) {
-            if (this.logEntryToTopics.containsKey(logEntry) == false) {
+        // Assign the tags to the records
+        Set<SObject> tagAssignments = new Set<SObject>();
+        for (LogEntry__c logEntry : this.logEntryToTagNames.keySet()) {
+            if (this.logEntryToTagNames.containsKey(logEntry) == false) {
                 continue;
             }
 
-            for (String topicName : this.logEntryToTopics.get(logEntry)) {
-                // Add log entry-specific topics
-                topicAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = topicNameToTopics.get(topicName).Id));
+            for (String tagName : this.logEntryToTagNames.get(logEntry)) {
+                if (useTopics == true) {
+                    // Add the topic for the log entry
+                    tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
+                    // Add the topic to the parent log
+                    tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
+                } else {
+                    // Add a LogEntryTag__c record that links to both the LogEntry__c and the Log__c
+                    tagAssignments.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Log__c = logEntry.Log__c, Tag__c = tagNameToId.get(tagName)));
+                }
 
-                // Add all topics to the parent log when enabled
-                topicAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = topicNameToTopics.get(topicName).Id));
+                // // Add log entry-specific tags
+                // SObject logTagAssignment = logTagAssignmentObject.newSObject();
+                // logTagAssignment.put(logTagAssignmentLogLookup, logEntry.Log__c);
+                // logTagAssignment.put(logTagAssignmentTagLookup, tagNameToId.get(tagName));
+                // tagAssignments.add(logTagAssignment);
+
+                // // Add all tags to the parent log as well
+                // tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
+                // SObject logEntryTagAssignment = logEntryTagAssignmentObject.newSObject();
+                // logEntryTagAssignment.put(logEntryTagAssignmentLogEntryLookup, logEntry.Id);
+                // logEntryTagAssignment.put(logEntryTagAssignmentTagLookup, tagNameToId.get(tagName));
+                // tagAssignments.add(logEntryTagAssignment);
             }
         }
-        insert new List<TopicAssignment>(topicAssignments);
+        insert new List<SObject>(tagAssignments);
     }
 
     // Private static methods

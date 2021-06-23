@@ -25,6 +25,7 @@ public inherited sharing class FlowLogger {
         public String message;
         public String faultMessage;
         public String loggingLevelName;
+        public List<String> tags;
         public List<String> topics;
         public Boolean saveLog = false;
         public DateTime timestamp;
