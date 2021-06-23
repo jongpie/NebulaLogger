@@ -90,7 +90,7 @@ After deploying Nebula Logger to your org, there are a few additional configurat
     -   `LoggerAdmin` provides view-all and modify-all access to all log records.
 -   Customize the default settings in `LoggerSettings__c`
     -   You can customize settings at the org, profile and user levels
--   Unmanaged Metadata Only: Enable Salesforce Topics for the `Log__c` and `LogEntry__c` objects for tagging/labeling. See [Salesforce Help](https://help.salesforce.com/articleView?id=sf.collab_topics_records_admin.htm) for more details.
+-   Unlocked Package Only: Enable Salesforce Topics for the `Log__c` and `LogEntry__c` objects for tagging/labeling. See [Salesforce Help](https://help.salesforce.com/articleView?id=sf.collab_topics_records_admin.htm) for more details.
     -   Currently, enabling Topics for objects must still be done using the Salesforce Classic UI. Once enabled, Topics can then be used from withing Lightning Experience.
     -   Once enabled, Topics can be added via Apex and Flow and then used as list view filters (and more) for the object `Log__c`.
 
@@ -486,9 +486,3 @@ Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on
 If you want to remove the unlocked or managed packages, you can do so by simply uninstalling them in your org under Setup --> Installed Packages.
 
 ![Uninstall Packages](./content/installed-packages-uninstall-option.png)
-
-If you want to delete the unmanaged metadata, there is a `destructiveChanges.xml` file available in the directory [./packages/unpackaged-metadata/](./packages/unpackaged-metadata/). This can be used in SFDX with the command `sfdx force:mdapi:deploy --deploydir ./packages/unpackaged-metadata/destructiveChanges --wait 30`. However, due to some Salesforce deployment limitations, there are still some manual steps needed to delete everything:
-
--   Flexipages for `Log__c` and `LogEntry__c` must first be manually removed as the org defaults
--   The quick actions on `Log__c` have to be manually removed from the layouts first - otherwise, Salesforce complains about the quick actions being in use (even though the layout is being deleted at the same time)
--   The global value set `LoggingLevel` has to be manually deleted after all other metadata is deleted - otherwise, Salesforce complains about the global value set being in use (even though the relevant `Log__c` and `LogEntry__c` fields are being deleted at the same time)
