@@ -7,7 +7,6 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 [![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FN6QAM)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FMhQAM)
-[![Deploy Unpackaged Metadata](./content/btn-deploy-unpackaged-metadata.png)](https://githubsfdeploy.herokuapp.com/?owner=jongpie&repo=NebulaLogger&ref=main)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ---
@@ -37,57 +36,43 @@ You can choose to install the unlocked package, you can deploy the metadata from
             <th></th>
             <th>Unlocked Package (Recommended)</th>
             <th>Managed Package</th>
-            <th>Unpackaged Metadata</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>Installation</td>
-            <td>Install, update & uninstall with 2nd Gen Package</td>
-            <td>Install, update & uninstall with 2nd Gen Package</td>
-            <td>Deploy using metadata API, remove using <code>destructiveChanges.xml</code></td>
-        </tr>
-        <tr>
             <td>Namespace</td>
             <td>none</td>
             <td><code>Nebula</code></td>
-            <td>none</td>
         </tr>
         <tr>
             <td>Future Releases</td>
             <td>Faster release cycle: new patch versions are released (e.g., <code>v4.4.x</code>) for new enhancements & bugfixes that are merged to the <code>main</code> branch in GitHub</td>
             <td>Slower release cycle: new minor versions are only released (e.g., <code>v4.x</code>) once new enhancements & bugfixes have been tested and code is stabilized</td>
-            <td>Faster release cycle: new enhancements & bugfixes will be immediately available in GitHub</td>
         </tr>
         <tr>
             <td>Public & Protected Apex Methods</td>
             <td>Any <code>public</code> and <code>protected</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> and <code>protected</code> methods are not backwards-compatible</td>
             <td>Only <code>global</code> methods are available in managed packages - any <code>global</code> Apex methods available in the managed package will be supported for the foreseeable future</td>
-            <td>Any <code>public</code> and <code>protected</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> and <code>protected</code> methods are not backwards-compatible</td>
         </tr>
         <tr>
             <td>Apex Debug Statements</td>
             <td><code>System.debug()</code> is automatically called</td>
             <td>Requires adding your own calls for <code>System.debug()</code> due to Salesforce limitations with managed packages</td>
-            <td><code>System.debug()</code> is automatically called</td>
         </tr>
         <tr>
             <td>Apex Stack Traces</td>
             <td>Automatically stored in <code>LogEntry__c.StackTrace__c</code> when calling methods like <code>Logger.debug('my message');</code></td>
             <td>Requires calling <code>parseStackTrace()</code> due to Salesforce limitations with managed packages. For example:<br><code>Logger.debug('my message').parseStackTrace(new DmlException().getStackTrace());</code></td>
-            <td>Automatically stored in <code>LogEntry__c.StackTrace__c</code> when calling methods like <code>Logger.debug('my message');</code></td>
         </tr>
         <tr>
             <td>Assign Topics (Tagging/Labeling System)</td>
             <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
             <td>This functionality is not currently available in the managed package</td>
-            <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
         </tr>
         <tr>
             <td>Logger Plugin Framework</td>
             <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
             <td>This functionality is not currently available in the managed package</td>
-            <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
         </tr>
     </tbody>
 </table>
