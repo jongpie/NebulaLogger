@@ -871,6 +871,30 @@ private class Logger_Tests {
     }
 
     @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_deleteResultList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        List<Database.DeleteResult> deleteResults = getDeleteResultList();
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), deleteResults);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -919,6 +943,30 @@ private class Logger_Tests {
     }
 
     @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_saveResultList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        List<Database.SaveResult> saveResults = getSaveResultList();
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), saveResults);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -962,6 +1010,30 @@ private class Logger_Tests {
         System.assertEquals(undeleteResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(JSON.serializePretty(undeleteResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_undeleteResultList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        List<Database.UndeleteResult> undeleteResults = getUndeleteResultList();
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), undeleteResults);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.assertEquals(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
     }
@@ -1059,6 +1131,30 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.assertEquals(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_logMessage_with_upsertResultList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        List<Database.UpsertResult> upsertResults = getUpsertResultList();
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), upsertResults);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
     }
 
@@ -1433,6 +1529,102 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(JSON.serializePretty(upsertResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
         System.assertEquals(Database.UpsertResult.class.getName() + '.Update', entryBuilder.getLogEntryEvent().DatabaseResultType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_deleteResultList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        List<Database.DeleteResult> deleteResults = getDeleteResultList();
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), deleteResults);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(deleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.DeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_saveResultList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        List<Database.SaveResult> saveResults = getSaveResultList();
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), saveResults);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(saveResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.SaveResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_undeleteResultList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        List<Database.UndeleteResult> undeleteResults = getUndeleteResultList();
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), undeleteResults);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(undeleteResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
+    }
+
+    @isTest
+    static void it_should_add_an_error_entry_for_string_message_with_upsertResultList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        List<Database.UpsertResult> upsertResults = getUpsertResultList();
+
+        Test.startTest();
+
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), upsertResults);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(upsertResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Topics__c);
     }
 
