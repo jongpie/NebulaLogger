@@ -74,6 +74,10 @@ Controller class for the component RelatedLogEntries
 
 ## Plugin Framework
 
+### [LoggerParameter](plugin-framework/LoggerParameter)
+
+Provides a centralized way to load T parameters for SObject handlers & plugins, and casts the parameters to common data types
+
 ### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
 
 Abstract class used to create custom Apex plugins to execute for all trigger operations on `Log__c` or `LogEntry__c`
