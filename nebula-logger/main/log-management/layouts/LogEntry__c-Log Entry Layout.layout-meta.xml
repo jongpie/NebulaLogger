@@ -248,13 +248,20 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
     </platformActionList>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>LoggerTag__c.NAME</fields>
+        <fields>LoggerTag__c.TotalLogs__c</fields>
+        <fields>LoggerTag__c.TotalLogEntries__c</fields>
+        <relatedList>LogEntryTag__c.LogEntry__c</relatedList>
+    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00hP0000002fULH</masterLabel>
+        <masterLabel>00h11000004Bf4j</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
