@@ -10,9 +10,6 @@
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
-    @testVisible
-    private static Boolean shouldCallStatusApi = Test.isRunningTest() == false;
-
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
     private List<LogEntryEvent__e> logEntryEvents {
@@ -21,6 +18,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
     }
 
+    private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
     private Map<LogEntry__c, List<String>> logEntryToTopics = new Map<LogEntry__c, List<String>>();
     private Set<String> topicNames = new Set<String>();
@@ -28,8 +26,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     public LogEntryEventHandler() {
     }
 
-    public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents) {
-        // Override the records provided by LoggerSObjectHandler
+    public LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents) {
+        // Override the variables provided by LoggerSObjectHandler
+        this.triggerOperationType = triggerOperationType;
         this.triggerNew = logEntryEvents;
     }
 
@@ -49,9 +48,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
-        this.upsertLogs();
-        this.insertLogEntries();
-        this.insertTopics();
+        switch on this.triggerOperationType {
+            when AFTER_INSERT {
+                this.upsertLogs();
+                this.insertLogEntries();
+                this.insertTopics();
+            }
+        }
+
+        this.executePlugins();
     }
 
     private void upsertLogs() {
@@ -137,8 +142,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         if (
-            shouldCallStatusApi == true &&
-            LoggerSettings__c.getOrgDefaults().EnableStatusApiCallout__c &&
+            this.shouldCallStatusApi == true &&
             recentLogWithApiReleaseDetails == null &&
             getCountOfOpenJobs() == 0
         ) {

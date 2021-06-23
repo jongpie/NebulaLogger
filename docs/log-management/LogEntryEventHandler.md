@@ -12,7 +12,7 @@ Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__
 
 #### `LogEntryEventHandler()`
 
-#### `LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents)`
+#### `LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents)`
 
 ---
 

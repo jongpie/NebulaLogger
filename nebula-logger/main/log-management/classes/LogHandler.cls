@@ -8,8 +8,6 @@
  * @description Manages setting fields on `Log__c` before insert & before update
  */
 public without sharing class LogHandler extends LoggerSObjectHandler {
-    private static final Organization ORGANIZATION = [SELECT Id, InstanceName, IsSandbox FROM Organization];
-
     @testVisible
     private static Map<String, LogStatus__mdt> logStatusByName = loadActiveLogStatuses();
 
@@ -85,165 +83,19 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         // So, that unfortunately leaves hardcoding the instances for now
         // Source: https://help.salesforce.com/articleView?id=000357271&type=1&mode=1
         // And no need for this to be static since it's only used internally for BEFORE_INSERT context
-        Set<String> previewInstances = new Set<String>{
-            'CS2',
-            'CS4',
-            'CS5',
-            'CS7',
-            'CS9',
-            'CS11',
-            'CS14',
-            'CS15',
-            'CS17',
-            'CS19',
-            'CS20',
-            'CS21',
-            'CS23',
-            'CS25',
-            'CS26',
-            'CS27',
-            'CS28',
-            'CS31',
-            'CS32',
-            'CS34',
-            'CS35',
-            'CS36',
-            'CS37',
-            'CS41',
-            'CS42',
-            'CS44',
-            'CS45',
-            'CS47',
-            'CS53',
-            'CS57',
-            'CS59',
-            'CS61',
-            'CS63',
-            'CS67',
-            'CS69',
-            'CS72',
-            'CS74',
-            'CS75',
-            'CS76',
-            'CS77',
-            'CS78',
-            'CS79',
-            'CS80',
-            'CS81',
-            'CS84',
-            'CS87',
-            'CS88',
-            'CS91',
-            'CS95',
-            'CS96',
-            'CS97',
-            'CS99',
-            'CS105',
-            'CS106',
-            'CS107',
-            'CS108',
-            'CS109',
-            'CS111',
-            'CS112',
-            'CS113',
-            'CS116',
-            'CS122',
-            'CS123',
-            'CS124',
-            'CS125',
-            'CS126',
-            'CS127',
-            'CS128',
-            'CS129',
-            'CS133',
-            'CS137',
-            'CS138',
-            'CS142',
-            'CS152',
-            'CS159',
-            'CS160',
-            'CS166',
-            'CS167',
-            'CS169',
-            'CS172',
-            'CS174',
-            'CS189',
-            'CS190',
-            'CS191',
-            'CS192',
-            'CS193',
-            'CS194',
-            'CS195',
-            'CS196',
-            'CS197',
-            'CS198',
-            'CS199',
-            'CS201',
-            'CS203',
-            'AUS2S',
-            'IND3S',
-            'USA3S'
-        };
-
-        Set<String> nonPreviewInstances = new Set<String>{
-            'CS1',
-            'CS6',
-            'CS8',
-            'CS10',
-            'CS16',
-            'CS18',
-            'CS22',
-            'CS24',
-            'CS29',
-            'CS33',
-            'CS40',
-            'CS43',
-            'CS50',
-            'CS58',
-            'CS60',
-            'CS62',
-            'CS64',
-            'CS65',
-            'CS66',
-            'CS68',
-            'CS73',
-            'CS86',
-            'CS89',
-            'CS90',
-            'CS92',
-            'CS94',
-            'CS98',
-            'CS100',
-            'CS101',
-            'CS102',
-            'CS110',
-            'CS114',
-            'CS115',
-            'CS117',
-            'CS119',
-            'CS121',
-            'CS132',
-            'CS148',
-            'CS151',
-            'CS162',
-            'CS165',
-            'CS171',
-            'CS173',
-            'CS200',
-            'CS202',
-            'AUS4S',
-            'IND2S',
-            'USA2S'
-        };
+        String apiVersion = JSON.serialize(new User(Id = UserInfo.getUserId())).substringAfter('/data/').substringBefore('/sobjects/User');
+        Set<String> previewInstances = new Set<String>( LoggerParameter.Handler.getStringList('LogHandler_PreviewInstances_' + apiVersion, new List<String>()));
+        Set<String> nonPreviewInstances = new Set<String>( LoggerParameter.Handler.getStringList('LogHandler_NonPreviewInstances_' + apiVersion, new List<String>()));
 
         String releaseCycle;
-        if (ORGANIZATION.IsSandbox == false || nonPreviewInstances.contains(ORGANIZATION.InstanceName)) {
-            releaseCycle = 'Non-Preview Instance';
-        } else if (previewInstances.contains(ORGANIZATION.InstanceName)) {
-            releaseCycle = 'Preview Instance';
-        }
 
         for (Log__c log : this.logs) {
+            if (log.OrganizationInstanceName__c == 'Production' || nonPreviewInstances != null && nonPreviewInstances.contains(log.OrganizationInstanceName__c)) {
+                releaseCycle = 'Non-Preview Instance';
+            } else if (previewInstances != null && previewInstances.contains(log.OrganizationInstanceName__c)) {
+                releaseCycle = 'Preview Instance';
+            }
+
             // Use 'Unknown' as the default for private instances and situations where the hardcoded sets above are missing some values
             log.OrganizationInstanceReleaseCycle__c = String.isNotBlank(releaseCycle) ? releaseCycle : 'Unknown';
         }

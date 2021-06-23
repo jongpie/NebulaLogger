@@ -2491,6 +2491,19 @@ global with sharing class Logger {
             }
         }
 
+        // Platform events don't support BEFORE_INSERT operations (only AFTER_INSERT is supported)
+        // ... but here we are, getting ready to insert the records, but we haven't.... yet
+        // It's... it's... almost like... this part of the code IS a BEFORE_INSERT context. Huzzah!
+        // This gives us a chance to run the handler class & handler plugins before insert,
+        // allowing the plugins to make further changes to the `LogEntryEvent__e` records
+        // So, execute the handler, which internally then executes any plugins
+        new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents).execute();
+
+        // Now that the plugins have run, double check to make sure that saving should still happen
+        if (getBufferSize() == 0) {
+            return;
+        }
+
         switch on saveMethod {
             when EVENT_BUS {
                 // TODO add error handling for when event bus fails to publish
@@ -2510,7 +2523,7 @@ global with sharing class Logger {
                 }
             }
             when SYNCHRONOUS_DML {
-                new LogEntryEventHandler(logEntryEvents).execute();
+                new LogEntryEventHandler(TriggerOperation.AFTER_INSERT, logEntryEvents).execute();
             }
         }
 

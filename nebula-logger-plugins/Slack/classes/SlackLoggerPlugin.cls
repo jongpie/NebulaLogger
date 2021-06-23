@@ -8,25 +8,16 @@
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
-    // Constants used for loading parameters from CMDT objects
-    private static final String PARAM_ENDPOINT = 'SlackEndpoint';
-    private static final String PARAM_NOTIFICATION_LOGGING_LEVEL_NAME = 'SlackNotificationLoggingLevel';
-
     @testVisible
     private static String endpoint;
     @testVisible
     private static LoggingLevel notificationLoggingLevel;
 
     static {
-        endpoint = LoggerSObjectHandlerPluginParameter__mdt.getInstance(PARAM_ENDPOINT)?.Value__c;
+        endpoint = LoggerParameter.Plugin.getString('SlackEndpoint');
 
-        LoggerSObjectHandlerPluginParameter__mdt loggingLevelParameter = LoggerSObjectHandlerPluginParameter__mdt.getInstance(
-            PARAM_NOTIFICATION_LOGGING_LEVEL_NAME
-        );
-        if (loggingLevelParameter != null && loggingLevelParameter.IsEnabled__c == true) {
-            String notificationLoggingLevelName = loggingLevelParameter?.Value__c;
-            notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
-        }
+        String notificationLoggingLevelName = LoggerParameter.Plugin.getString('SlackNotificationLoggingLevel');
+        notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
     }
 
     private List<Log__c> logs;

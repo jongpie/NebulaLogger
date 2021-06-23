@@ -5,9 +5,8 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FN6QAM)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FNaQAM)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FMhQAM)
-[![Deploy Unpackaged Metadata](./content/btn-deploy-unpackaged-metadata.png)](https://githubsfdeploy.herokuapp.com/?owner=jongpie&repo=NebulaLogger&ref=main)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ---
@@ -37,57 +36,43 @@ You can choose to install the unlocked package, you can deploy the metadata from
             <th></th>
             <th>Unlocked Package (Recommended)</th>
             <th>Managed Package</th>
-            <th>Unpackaged Metadata</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>Installation</td>
-            <td>Install, update & uninstall with 2nd Gen Package</td>
-            <td>Install, update & uninstall with 2nd Gen Package</td>
-            <td>Deploy using metadata API, remove using <code>destructiveChanges.xml</code></td>
-        </tr>
-        <tr>
             <td>Namespace</td>
             <td>none</td>
             <td><code>Nebula</code></td>
-            <td>none</td>
         </tr>
         <tr>
             <td>Future Releases</td>
             <td>Faster release cycle: new patch versions are released (e.g., <code>v4.4.x</code>) for new enhancements & bugfixes that are merged to the <code>main</code> branch in GitHub</td>
             <td>Slower release cycle: new minor versions are only released (e.g., <code>v4.x</code>) once new enhancements & bugfixes have been tested and code is stabilized</td>
-            <td>Faster release cycle: new enhancements & bugfixes will be immediately available in GitHub</td>
         </tr>
         <tr>
             <td>Public & Protected Apex Methods</td>
             <td>Any <code>public</code> and <code>protected</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> and <code>protected</code> methods are not backwards-compatible</td>
             <td>Only <code>global</code> methods are available in managed packages - any <code>global</code> Apex methods available in the managed package will be supported for the foreseeable future</td>
-            <td>Any <code>public</code> and <code>protected</code> Apex methods are subject to change in the future - they can be used, but you may encounter deployment issues if future changes to <code>public</code> and <code>protected</code> methods are not backwards-compatible</td>
         </tr>
         <tr>
             <td>Apex Debug Statements</td>
             <td><code>System.debug()</code> is automatically called</td>
             <td>Requires adding your own calls for <code>System.debug()</code> due to Salesforce limitations with managed packages</td>
-            <td><code>System.debug()</code> is automatically called</td>
         </tr>
         <tr>
             <td>Apex Stack Traces</td>
             <td>Automatically stored in <code>LogEntry__c.StackTrace__c</code> when calling methods like <code>Logger.debug('my message');</code></td>
             <td>Requires calling <code>parseStackTrace()</code> due to Salesforce limitations with managed packages. For example:<br><code>Logger.debug('my message').parseStackTrace(new DmlException().getStackTrace());</code></td>
-            <td>Automatically stored in <code>LogEntry__c.StackTrace__c</code> when calling methods like <code>Logger.debug('my message');</code></td>
         </tr>
         <tr>
             <td>Assign Topics (Tagging/Labeling System)</td>
             <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
             <td>This functionality is not currently available in the managed package</td>
-            <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
         </tr>
         <tr>
             <td>Logger Plugin Framework</td>
             <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
             <td>This functionality is not currently available in the managed package</td>
-            <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
         </tr>
     </tbody>
 </table>
@@ -105,7 +90,7 @@ After deploying Nebula Logger to your org, there are a few additional configurat
     -   `LoggerAdmin` provides view-all and modify-all access to all log records.
 -   Customize the default settings in `LoggerSettings__c`
     -   You can customize settings at the org, profile and user levels
--   Unmanaged Metadata Only: Enable Salesforce Topics for the `Log__c` and `LogEntry__c` objects for tagging/labeling. See [Salesforce Help](https://help.salesforce.com/articleView?id=sf.collab_topics_records_admin.htm) for more details.
+-   Unlocked Package Only: Enable Salesforce Topics for the `Log__c` and `LogEntry__c` objects for tagging/labeling. See [Salesforce Help](https://help.salesforce.com/articleView?id=sf.collab_topics_records_admin.htm) for more details.
     -   Currently, enabling Topics for objects must still be done using the Salesforce Classic UI. Once enabled, Topics can then be used from withing Lightning Experience.
     -   Once enabled, Topics can be added via Apex and Flow and then used as list view filters (and more) for the object `Log__c`.
 
@@ -386,6 +371,16 @@ To help development and support teams better manage logs (and any underlying cod
 
 ---
 
+### Log's 'View JSON' Quick Action
+
+Everyone loves JSON - so to make it easy to see a JSON version of a `Log__c` record, you can use the 'View JSON' quick action button. It displays the current `Log__c` + all related `LogEntry__c` records in JSON format, as well as a handy button to copy the JSON to your clipboard. All fields that the current user can view (based on field-level security) are dynamically returned, including any custom fields added directly in your org or by plugins.
+
+![View JSON Log QuickAction Button](./content/view-json-log-quickaction-btn.png)
+
+![View JSON Log QuickAction](./content/view-json-log-quickaction.png)
+
+---
+
 ### View Related Log Entries on a Record Page
 
 Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
@@ -491,9 +486,3 @@ Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on
 If you want to remove the unlocked or managed packages, you can do so by simply uninstalling them in your org under Setup --> Installed Packages.
 
 ![Uninstall Packages](./content/installed-packages-uninstall-option.png)
-
-If you want to delete the unmanaged metadata, there is a `destructiveChanges.xml` file available in the directory [./packages/unpackaged-metadata/](./packages/unpackaged-metadata/). This can be used in SFDX with the command `sfdx force:mdapi:deploy --deploydir ./packages/unpackaged-metadata/destructiveChanges --wait 30`. However, due to some Salesforce deployment limitations, there are still some manual steps needed to delete everything:
-
--   Flexipages for `Log__c` and `LogEntry__c` must first be manually removed as the org defaults
--   The quick actions on `Log__c` have to be manually removed from the layouts first - otherwise, Salesforce complains about the quick actions being in use (even though the layout is being deleted at the same time)
--   The global value set `LoggingLevel` has to be manually deleted after all other metadata is deleted - otherwise, Salesforce complains about the global value set being in use (even though the relevant `Log__c` and `LogEntry__c` fields are being deleted at the same time)

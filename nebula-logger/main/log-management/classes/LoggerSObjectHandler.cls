@@ -8,9 +8,7 @@
  * @description Abstract class used by trigger handlers for shared logic
  */
 public abstract class LoggerSObjectHandler {
-    @testVisible
     private static Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType;
-    @testVisible
     private static Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType;
 
     static {
@@ -48,6 +46,22 @@ public abstract class LoggerSObjectHandler {
             configurationBySObjectType.clear();
             pluginsBySObjectType.clear();
         }
+    }
+
+    // Private static testVisible methods
+    @testVisible
+    private static void setMockConfiguration(Schema.SObjectType sobjectType, LoggerSObjectHandler__mdt configuration) {
+        configurationBySObjectType.put(sobjectType, configuration);
+    }
+
+    @testVisible
+    private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerSObjectHandlerPlugin__mdt plugin) {
+        List<LoggerSObjectHandlerPlugin__mdt> plugins = pluginsBySObjectType.get(sobjectType);
+        if (plugins == null) {
+            plugins = new List<LoggerSObjectHandlerPlugin__mdt>();
+        }
+        plugins.add(plugin);
+        pluginsBySObjectType.put(sobjectType, plugins);
     }
 
     @testVisible
@@ -96,7 +110,7 @@ public abstract class LoggerSObjectHandler {
     }
 
     protected void executePlugins() {
-        if (this.triggerNew == null || this.plugins == null || this.plugins.isEmpty() == true) {
+        if (this.plugins == null || this.plugins.isEmpty() == true) {
             return;
         }
 

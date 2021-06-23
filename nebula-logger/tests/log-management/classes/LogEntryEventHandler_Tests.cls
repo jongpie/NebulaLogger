@@ -279,14 +279,10 @@ private class LogEntryEventHandler_Tests {
         LoggerSObjectHandler__mdt logEntryEventHandlerConfiguration = getMockConfiguration();
         logEntryEventHandlerConfiguration.IsEnabled__c = false;
 
-        Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>{
-            Schema.LogEntryEvent__e.SObjectType => logEntryEventHandlerConfiguration
-        };
-
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.configurationBySObjectType = configurationBySObjectType;
+        LoggerSObjectHandler.setMockConfiguration(Schema.LogEntryEvent__e.SObjectType, logEntryEventHandlerConfiguration);
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -313,7 +309,7 @@ private class LogEntryEventHandler_Tests {
         System.assert(logEntryEvents.isEmpty());
 
         Test.startTest();
-        new LogEntryEventHandler(logEntryEvents).execute();
+        new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents).execute();
         Test.stopTest();
     }
 
@@ -516,11 +512,11 @@ private class LogEntryEventHandler_Tests {
     @isTest
     static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
-        LogEntryEventHandler.shouldCallStatusApi = true;
-
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        orgDefaults.EnableStatusApiCallout__c = true;
-        upsert orgDefaults;
+        LoggerSObjectHandlerParameter__mdt mockCallStatusApiParameter = new LoggerSObjectHandlerParameter__mdt(
+            DeveloperName = 'LogEntryEventHandler_CallStatusApi',
+            Value__c = 'true'
+        );
+        LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -569,11 +565,11 @@ private class LogEntryEventHandler_Tests {
             Timestamp__c = System.now().addHours(-1)
         );
 
-        LogEntryEventHandler.shouldCallStatusApi = true;
-
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        orgDefaults.EnableStatusApiCallout__c = true;
-        upsert orgDefaults;
+        LoggerSObjectHandlerParameter__mdt mockCallStatusApiParameter = new LoggerSObjectHandlerParameter__mdt(
+            DeveloperName = 'LogEntryEventHandler_CallStatusApi',
+            Value__c = 'true'
+        );
+        LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -614,11 +610,12 @@ private class LogEntryEventHandler_Tests {
     @isTest
     static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
-        LogEntryEventHandler.shouldCallStatusApi = true;
+        LoggerSObjectHandlerParameter__mdt mockCallStatusApiParameter = new LoggerSObjectHandlerParameter__mdt(
+            DeveloperName = 'LogEntryEventHandler_CallStatusApi',
+            Value__c = 'false'
+        );
+        LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
 
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        orgDefaults.EnableStatusApiCallout__c = false;
-        upsert orgDefaults;
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -649,11 +646,11 @@ private class LogEntryEventHandler_Tests {
     @isTest
     static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
         Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
-        LogEntryEventHandler.shouldCallStatusApi = true;
-
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        orgDefaults.EnableStatusApiCallout__c = true;
-        upsert orgDefaults;
+        LoggerSObjectHandlerParameter__mdt mockCallStatusApiParameter = new LoggerSObjectHandlerParameter__mdt(
+            DeveloperName = 'LogEntryEventHandler_CallStatusApi',
+            Value__c = 'true'
+        );
+        LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(

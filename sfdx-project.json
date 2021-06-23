@@ -12,9 +12,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionName": "Flow Collection Logging",
-            "versionNumber": "4.5.1.0",
-            "versionDescription": "Adds the ability to log a record collection in Flow",
+            "versionName": "Plugin Framework Enhancements",
+            "versionNumber": "4.5.2.0",
+            "versionDescription": "Optimizations & new developer features for the plugin framework",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
@@ -22,12 +22,12 @@
             "path": "nebula-logger-plugins/Slack",
             "dependencies": [
                 {
-                    "package": "Nebula Logger - Unlocked Package@4.5.0-0-logger-plugin-framework"
+                    "package": "Nebula Logger - Unlocked Package@4.5.2-0-plugin-framework-enhancements"
                 }
             ],
-            "versionName": "Beta Release",
-            "versionNumber": "0.9.0.0",
-            "versionDescription": "New beta plugin for Nebula Logger",
+            "versionName": "Beta Release: Round 2",
+            "versionNumber": "0.9.1.0",
+            "versionDescription": "Internal optimizations to leverage latest changes within the plugin framework",
             "default": false
         },
         {
@@ -45,7 +45,9 @@
         "Nebula Logger - Unlocked Package@4.4.6-0-new-save-method-synchronous_dml": "04t5Y0000027FJdQAM",
         "Nebula Logger - Unlocked Package@4.5.0-0-logger-plugin-framework": "04t5Y0000027FMrQAM",
         "Nebula Logger - Unlocked Package@4.5.1-0-flow-collection-log-entry": "04t5Y0000027FN6QAM",
+        "Nebula Logger - Unlocked Package@4.5.2-0-plugin-framework-enhancements": "04t5Y0000027FNaQAM",
         "Nebula Logger Plugin - Slack": "0Ho5e000000oM3pCAE",
-        "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ"
+        "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ",
+        "Nebula Logger Plugin - Slack@0.9.1-0-beta-release-round-2": "04t5e00000065xiAAA"
     }
 }
