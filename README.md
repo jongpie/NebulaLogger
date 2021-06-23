@@ -386,6 +386,16 @@ To help development and support teams better manage logs (and any underlying cod
 
 ---
 
+### Log's 'View JSON' Quick Action
+
+Everyone loves JSON - so to make it easy to see a JSON version of a `Log__c` record, you can use the 'View JSON' quick action button. It displays the current `Log__c` + all related `LogEntry__c` records in JSON format, as well as a handy button to copy the JSON to your clipboard. All fields that the current user can view (based on field-level security) are dynamically returned, including any custom fields added directly in your org or by plugins.
+
+![View JSON Log QuickAction Button](./content/view-json-log-quickaction-btn.png)
+
+![View JSON Log QuickAction Button](./content/view-json-log-quickaction.png)
+
+---
+
 ### View Related Log Entries on a Record Page
 
 Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
