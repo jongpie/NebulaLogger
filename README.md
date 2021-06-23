@@ -5,7 +5,7 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FN6QAM)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FNaQAM)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000027FMhQAM)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
@@ -377,7 +377,7 @@ Everyone loves JSON - so to make it easy to see a JSON version of a `Log__c` rec
 
 ![View JSON Log QuickAction Button](./content/view-json-log-quickaction-btn.png)
 
-![View JSON Log QuickAction Button](./content/view-json-log-quickaction.png)
+![View JSON Log QuickAction](./content/view-json-log-quickaction.png)
 
 ---
 
