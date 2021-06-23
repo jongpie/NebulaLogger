@@ -137,7 +137,7 @@ public class LoggerParameter {
      *                                or null when not found or disabled
      */
     public Datetime getDatetime(String parameterDeveloperName) {
-        return (Datetime) this.castParameterValue(parameterDeveloperName, Datetime.class);
+        return this.getDatetime(parameterDeveloperName, null);
     }
 
     /**
