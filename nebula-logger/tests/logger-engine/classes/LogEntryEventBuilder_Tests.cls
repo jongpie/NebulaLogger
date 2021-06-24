@@ -808,7 +808,7 @@ private class LogEntryEventBuilder_Tests {
 
         Test.stopTest();
 
-        String expectedTagsString = 'duplicate-tag,another One';
+        String expectedTagsString = 'duplicate-tag\nanother One';
         System.assertEquals(expectedTagsString, builder.getLogEntryEvent().Tags__c);
     }
 

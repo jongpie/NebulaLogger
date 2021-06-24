@@ -177,6 +177,6 @@
         <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
     </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>Read</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>
