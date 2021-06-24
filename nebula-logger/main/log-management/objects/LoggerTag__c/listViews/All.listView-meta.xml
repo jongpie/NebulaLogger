@@ -2,7 +2,6 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All</fullName>
     <columns>NAME</columns>
-    <columns>TotalLogs__c</columns>
     <columns>TotalLogEntries__c</columns>
     <columns>CREATED_DATE</columns>
     <columns>LAST_UPDATE</columns>

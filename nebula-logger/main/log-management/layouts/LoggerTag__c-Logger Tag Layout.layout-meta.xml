@@ -51,10 +51,6 @@
         <style>CustomLinks</style>
     </layoutSections>
     <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>LogTag__c.Tag__c</relatedList>
-    </relatedLists>
-    <relatedLists>
         <fields>LogEntry__c.NAME</fields>
         <fields>LogEntry__c.Log__c</fields>
         <fields>LogEntry__c.LoggingLevelWithImage__c</fields>

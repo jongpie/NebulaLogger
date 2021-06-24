@@ -22,7 +22,7 @@
                 <field>LogEntry__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>Log__c</field>
             </layoutItems>
         </layoutColumns>

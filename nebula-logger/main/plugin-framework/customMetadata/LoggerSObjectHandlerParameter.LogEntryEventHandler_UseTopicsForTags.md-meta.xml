@@ -12,9 +12,9 @@
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">When set to &apos;true&apos;, any custom Logger tags will use the standard objects Topic and TopicAssignment 
+        <value xsi:type="xsd:string">When set to &apos;true&apos;, any custom Logger tags will use the standard objects Topic and TopicAssignment
 
-When set to &apos;false&apos;, any custom Logger tags will use the custom objects LoggerTag__c, LogTag__c and LogEntryTag__c</value>
+When set to &apos;false&apos; (default), any custom Logger tags will use the custom objects LoggerTag__c and LogEntryTag__c</value>
     </values>
     <values>
         <field>IsEnabled__c</field>

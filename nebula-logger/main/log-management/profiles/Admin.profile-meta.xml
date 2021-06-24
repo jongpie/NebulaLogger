@@ -1648,11 +1648,6 @@
         <field>LoggerTag__c.TotalLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerTag__c.TotalLogs__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
     <layoutAssignments>
         <layout>LogEntryTag__c-Log Entry Tag Layout</layout>
     </layoutAssignments>
@@ -1661,9 +1656,6 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>LogStatus__mdt-Log Status Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>LogTag__c-Log Tag Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Log__c-Log Layout</layout>
@@ -1717,15 +1709,6 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
         <object>LogEntry__c</object>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions>
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
-        <object>LogTag__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>

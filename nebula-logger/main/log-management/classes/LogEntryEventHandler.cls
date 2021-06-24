@@ -233,7 +233,7 @@ System.debug('this.tagNames==' + this.tagNames);
             return;
         }
 
-        // Orgs can be configured to either use Topic & TopicAssignment, or to use LoggerTag__c, LogTag__c and LogEntryTag__c
+        // Orgs can be configured to either use Topic & TopicAssignment, or to use LoggerTag__c and LogEntryTag__c
         Boolean useTopics = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
 
 System.debug('useTopics==' + useTopics);
@@ -256,9 +256,9 @@ System.debug('useTopics==' + useTopics);
             logEntryTagAssignmentTagLookup = Schema.TopicAssignment.TopicId;
         } else {
             tagObject = Schema.LoggerTag__c.SObjectType;
-            logTagAssignmentObject = Schema.LogTag__c.SObjectType;
-            logTagAssignmentLogLookup = Schema.LogTag__c.Log__c;
-            logTagAssignmentTagLookup = Schema.LogTag__c.Tag__c;
+            // logTagAssignmentObject = Schema.LogTag__c.SObjectType;
+            // logTagAssignmentLogLookup = Schema.LogTag__c.Log__c;
+            // logTagAssignmentTagLookup = Schema.LogTag__c.Tag__c;
             logEntryTagAssignmentObject = Schema.LogEntryTag__c.SObjectType;
             logEntryTagAssignmentLogEntryLookup = Schema.LogEntryTag__c.LogEntry__c;
             logEntryTagAssignmentTagLookup = Schema.LogEntryTag__c.Tag__c;
