@@ -235,34 +235,7 @@ System.debug('this.tagNames==' + this.tagNames);
 
         // Orgs can be configured to either use Topic & TopicAssignment, or to use LoggerTag__c and LogEntryTag__c
         Boolean useTopics = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
-
-System.debug('useTopics==' + useTopics);
-
-        Schema.SObjectType tagObject;
-        Schema.SObjectType logTagAssignmentObject;
-        Schema.SObjectField logTagAssignmentLogLookup;
-        Schema.SObjectField logTagAssignmentTagLookup;
-        Schema.SObjectType logEntryTagAssignmentObject;
-        Schema.SObjectField logEntryTagAssignmentLogEntryLookup;
-        Schema.SObjectField logEntryTagAssignmentTagLookup;
-
-        if (useTopics == true) {
-            tagObject = Schema.Topic.SObjectType;
-            logTagAssignmentObject = Schema.TopicAssignment.SObjectType;
-            logTagAssignmentLogLookup = Schema.TopicAssignment.EntityId;
-            logTagAssignmentTagLookup = Schema.TopicAssignment.TopicId;
-            logEntryTagAssignmentObject = Schema.TopicAssignment.SObjectType;
-            logEntryTagAssignmentLogEntryLookup = Schema.TopicAssignment.EntityId;
-            logEntryTagAssignmentTagLookup = Schema.TopicAssignment.TopicId;
-        } else {
-            tagObject = Schema.LoggerTag__c.SObjectType;
-            // logTagAssignmentObject = Schema.LogTag__c.SObjectType;
-            // logTagAssignmentLogLookup = Schema.LogTag__c.Log__c;
-            // logTagAssignmentTagLookup = Schema.LogTag__c.Tag__c;
-            logEntryTagAssignmentObject = Schema.LogEntryTag__c.SObjectType;
-            logEntryTagAssignmentLogEntryLookup = Schema.LogEntryTag__c.LogEntry__c;
-            logEntryTagAssignmentTagLookup = Schema.LogEntryTag__c.Tag__c;
-        }
+        Schema.SObjectType tagObject = useTopics == true ? Schema.Topic.SObjectType : Schema.LoggerTag__c.SObjectType;
 
         // Query for existing tags/topics
         Map<String, Id> tagNameToId = new Map<String, Id>();
@@ -305,19 +278,6 @@ System.debug('useTopics==' + useTopics);
                     // Add a LogEntryTag__c record that links to both the LogEntry__c and the Log__c
                     tagAssignments.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Log__c = logEntry.Log__c, Tag__c = tagNameToId.get(tagName)));
                 }
-
-                // // Add log entry-specific tags
-                // SObject logTagAssignment = logTagAssignmentObject.newSObject();
-                // logTagAssignment.put(logTagAssignmentLogLookup, logEntry.Log__c);
-                // logTagAssignment.put(logTagAssignmentTagLookup, tagNameToId.get(tagName));
-                // tagAssignments.add(logTagAssignment);
-
-                // // Add all tags to the parent log as well
-                // tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
-                // SObject logEntryTagAssignment = logEntryTagAssignmentObject.newSObject();
-                // logEntryTagAssignment.put(logEntryTagAssignmentLogEntryLookup, logEntry.Id);
-                // logEntryTagAssignment.put(logEntryTagAssignmentTagLookup, tagNameToId.get(tagName));
-                // tagAssignments.add(logEntryTagAssignment);
             }
         }
         insert new List<SObject>(tagAssignments);
