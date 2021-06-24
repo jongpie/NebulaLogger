@@ -220,8 +220,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             this.logEntries.add(logEntry);
 
             if (logEntryEvent.Tags__c != null) {
-                this.tagNames.addAll(logEntryEvent.Tags__c.split(','));
-                this.logEntryToTagNames.put(logEntry, LogEntryEvent.Tags__c.split(','));
+                this.tagNames.addAll(logEntryEvent.Tags__c.split('\n'));
+                this.logEntryToTagNames.put(logEntry, LogEntryEvent.Tags__c.split('\n'));
             }
         }
 System.debug('this.tagNames==' + this.tagNames);

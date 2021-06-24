@@ -52,8 +52,8 @@ global inherited sharing class FlowCollectionLogEntry {
     /**
      * @description Optionally provide a list of topics to dynamically assign to the log entry
      */
-    @InvocableVariable(required=false label='(Optional) Topics')
-    public List<String> tags;
+    @InvocableVariable(required=false label='(Optional) Tags')
+    global List<String> tags;
 
     /**
      * @description Optionally provide a list of topics to dynamically assign to the log entry
