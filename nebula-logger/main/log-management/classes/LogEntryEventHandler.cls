@@ -144,11 +144,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         upsert TRANSACTION_ID_TO_LOG.values() Schema.Log__c.TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (
-            this.shouldCallStatusApi == true &&
-            recentLogWithApiReleaseDetails == null &&
-            getCountOfOpenJobs() == 0
-        ) {
+        if (this.shouldCallStatusApi == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
     }
@@ -281,14 +277,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         // Query for existing tags/topics
         Map<String, Id> tagNameToId = new Map<String, Id>();
         List<SObject> tags;
-System.debug('this.tagNames==' + this.tagNames);
+        System.debug('this.tagNames==' + this.tagNames);
         String tagQuery = 'SELECT Id, Name FROM ' + tagObject + ' WHERE Name IN :tagNames';
         for (SObject tag : Database.query(tagQuery)) {
-System.debug('queried tag==' + tag);
+            System.debug('queried tag==' + tag);
             tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
         }
-System.debug('tagQuery==' + tagQuery);
-System.debug('tagNameToId==' + tagNameToId);
+        System.debug('tagQuery==' + tagQuery);
+        System.debug('tagNameToId==' + tagNameToId);
         // Create any new tags/topics
         List<SObject> tagsToCreate = new List<SObject>();
         for (String tagName : this.tagNames) {
@@ -306,7 +302,7 @@ System.debug('tagNameToId==' + tagNameToId);
                 tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
             }
         }
-System.debug('tagsToCreate==' + tagsToCreate);
+        System.debug('tagsToCreate==' + tagsToCreate);
         // Assign the tags to the records
         Set<SObject> tagAssignments = new Set<SObject>();
         for (Id logEntryId : this.logEntryIdToTagNames.keySet()) {
@@ -326,7 +322,7 @@ System.debug('tagsToCreate==' + tagsToCreate);
             }
         }
         insert new List<SObject>(tagAssignments);
-System.debug('tagAssignments==' + tagAssignments);
+        System.debug('tagAssignments==' + tagAssignments);
     }
 
     // Private static methods
