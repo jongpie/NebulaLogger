@@ -149,7 +149,7 @@
     <allowInChatterGroups>true</allowInChatterGroups>
     <compactLayoutAssignment>LoggerTagCompactLayout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>Custom tags used by Logger for labeling Log__c and LogEntry__c records</description>
+    <description>Custom tags used by Logger for tagging Log__c and LogEntry__c records</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>true</enableFeeds>
