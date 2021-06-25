@@ -21,8 +21,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
-    private Map<Id, LogEntry__c> logEntryIdToLogEntry = new Map<Id, LogEntry__c>();
-    private Map<Id, List<String>> logEntryIdToTagNames = new Map<Id, List<String>>();
+    // private Map<Id, LogEntry__c> logEntryIdToLogEntry = new Map<Id, LogEntry__c>();
+    private Map<LogEntry__c, List<String>> logEntryToTagNames = new Map<LogEntry__c, List<String>>();
     private Set<String> tagNames = new Set<String>();
 
     public LogEntryEventHandler() {
@@ -217,14 +217,24 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             );
 
             this.logEntries.add(logEntry);
-            this.logEntryIdToLogEntry.put(logEntry.Id, logEntry);
-
+            // this.logEntryIdToLogEntry.put(logEntry.Id, logEntry);
             if (logEntryEvent.Tags__c != null) {
                 this.tagNames.addAll(logEntryEvent.Tags__c.split('\n'));
-                this.logEntryIdToTagNames.put(logEntry.Id, LogEntryEvent.Tags__c.split('\n'));
+                this.logEntryToTagNames.put(logEntry, LogEntryEvent.Tags__c.split('\n'));
             }
+
         }
         insert this.logEntries;
+
+        // this.logEntryIdToLogEntry.putAll(new Map<Id, String>( this.logEntries ));
+        // this.logEntryIdToLogEntry = new Map<Id, LogEntry__c>( this.logEntries );
+        // TODO avoid a second loop
+        // for (LogEntry__c logEntry : this.logEntries) {
+        //     if (logEntryEvent.Tags__c != null) {
+        //         this.tagNames.addAll(logEntryEvent.Tags__c.split('\n'));
+        //         this.logEntryToTagNames.put(logEntry, LogEntryEvent.Tags__c.split('\n'));
+        //     }
+        // }
     }
 
     private void appendRuleBasedTags() {
@@ -255,13 +265,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                         ruleTags.add(configuredTag.deleteWhitespace());
                     }
                     this.tagNames.addAll(ruleTags);
-                    List<String> logEntryTags = logEntryIdToTagNames.get(logEntry.Id);
+                    List<String> logEntryTags = logEntryToTagNames.get(logEntry);
                     if (logEntryTags == null) {
                         logEntryTags = new List<String>();
                     }
                     logEntryTags.addAll(ruleTags);
 
-                    this.logEntryIdToTagNames.put(logEntry.Id, logEntryTags);
+                    this.logEntryToTagNames.put(logEntry, logEntryTags);
                     this.tagNames.addAll(logEntryTags);
                 }
             }
@@ -291,13 +301,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         // Create any new tags/topics
         List<SObject> tagsToCreate = new List<SObject>();
         for (String tagName : this.tagNames) {
-            if (tagNameToId.containsKey(tagName) == true) {
-                continue;
+            if (tagNameToId.containsKey(tagName) == false) {
+                SObject tag = tagObject.newSObject();
+                tag.put('Name', tagName);
+                tagsToCreate.add(tag);
             }
 
-            SObject tag = tagObject.newSObject();
-            tag.put('Name', tagName);
-            tagsToCreate.add(tag);
         }
         if (!tagsToCreate.isEmpty()) {
             insert tagsToCreate;
@@ -308,12 +317,17 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         System.debug('tagsToCreate==' + tagsToCreate);
         // Assign the tags to the records
         Set<SObject> tagAssignments = new Set<SObject>();
-        for (Id logEntryId : this.logEntryIdToTagNames.keySet()) {
-            // if (this.logEntryIdToTagNames.containsKey(logEntry) == false) {
+        for (LogEntry__c logEntry : this.logEntryToTagNames.keySet()) {
+            // if (this.logEntryToTagNames.containsKey(logEntry) == false) {
             //     continue;
             // }
-            LogEntry__c logEntry = this.logEntryIdToLogEntry.get(logEntryId);
-            for (String tagName : this.logEntryIdToTagNames.get(logEntryId)) {
+            // System.debug('logEntryId: ' + logEntryId);
+            // System.debug('this.logEntryIdToLogEntry: ' + this.logEntryIdToLogEntry);
+            // LogEntry__c logEntry = this.logEntryIdToLogEntry.get(logEntryId);
+            System.debug('logEntry: ' + logEntry);
+            for (String tagName : this.logEntryToTagNames.get(logEntry)) {
+                System.debug('applying tag: ' + tagName);
+                System.debug('tagNameToId.get(tagName): ' + tagNameToId.get(tagName));
                 if (useTopics == true) {
                     // Add the topic for the LogEntry__c & the parent Log__c
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
@@ -338,8 +352,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static Log__c getRecentLogWithApiReleaseDetails() {
-        // Query for recent logs created only today - the status API should be called...
-        // ...at least once per day to make sure that status details are still accurate.
+        // Query for recent logs created only today - the status API should be called
+        // at least once per day to make sure that status details are still accurate.
         // This query should make a callout approximately every 4 hours.
         Datetime fourHoursAgo = System.now().addMinutes(-4 * 60);
 
