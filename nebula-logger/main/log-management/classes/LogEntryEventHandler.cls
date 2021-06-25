@@ -9,6 +9,7 @@
  */
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
+    private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
 
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
@@ -52,6 +53,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             when AFTER_INSERT {
                 this.upsertLogs();
                 this.insertLogEntries();
+                this.appendRuleBasedTags();
                 this.insertTags();
             }
         }
@@ -224,8 +226,45 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 this.logEntryToTagNames.put(logEntry, LogEntryEvent.Tags__c.split('\n'));
             }
         }
-System.debug('this.tagNames==' + this.tagNames);
         insert this.logEntries;
+    }
+
+    private void appendRuleBasedTags() {
+        for (LogEntry__c logEntry : this.logEntries) {
+            for (LogEntryTagRule__mdt rule : TAG_ASSIGNMENT_RULES) {
+                Boolean matches;
+                Object fieldValue = logEntry.get(rule.SObjectField__r.QualifiedApiName);
+                switch on rule.FieldOperation__c {
+                    when 'CONTAINS' {
+                        matches = String.valueOf(fieldValue).contains(rule.FieldValue__c);
+                    }
+                    when 'EQUALS' {
+                        matches = fieldValue == rule.FieldValue__c;
+                    }
+                    when 'MATCHES_REGEX' {
+                        Pattern compiledPattern = Pattern.compile(rule.FieldValue__c);
+                        Matcher matcher = compiledPattern.matcher(String.valueOf(fieldValue));
+                        matches = matcher.matches();
+                    }
+                    when 'STARTS_WITH' {
+                        matches = String.valueOf(fieldValue).startsWith(rule.FieldValue__c);
+                    }
+                }
+
+                if (matches == true) {
+                    List<String> ruleTags = rule.Tags__c.split('\n');
+                    // this.topicNames.addAll(ruleTags);
+                    // Set<String> logEntryTopics = logEntryIdToTopics.get(logEntry.Id);
+                    // if (logEntryTopics == null) {
+                    //     logEntryTopics = new Set<String>();
+                    // }
+                    // logEntryTopics.addAll(ruleTags);
+
+                    // this.logEntryIdToTopics.put(logEntry.Id, logEntryTopics);
+                    // this.topicNames.addAll(logEntryTopics);
+                }
+            }
+        }
     }
 
     private void insertTags() {
@@ -239,6 +278,7 @@ System.debug('this.tagNames==' + this.tagNames);
 
         // Query for existing tags/topics
         Map<String, Id> tagNameToId = new Map<String, Id>();
+        List<SObject> tags;
         String tagQuery = 'SELECT Id, Name FROM ' + tagObject + ' WHERE Name IN :this.tagNames';
         for (SObject tag : Database.query(tagQuery)) {
             tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
@@ -246,7 +286,7 @@ System.debug('this.tagNames==' + this.tagNames);
         // Create any new tags/topics
         List<SObject> tagsToCreate = new List<SObject>();
         for (String tagName : this.tagNames) {
-            if (tagNameToId.get(tagName) != null) {
+            if (tagNameToId.containsKey(tagName) == true) {
                 continue;
             }
 
@@ -270,13 +310,12 @@ System.debug('this.tagNames==' + this.tagNames);
 
             for (String tagName : this.logEntryToTagNames.get(logEntry)) {
                 if (useTopics == true) {
-                    // Add the topic for the log entry
+                    // Add the topic for the LogEntry__c & the parent Log__c
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
-                    // Add the topic to the parent log
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
                 } else {
-                    // Add a LogEntryTag__c record that links to both the LogEntry__c and the Log__c
-                    tagAssignments.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Log__c = logEntry.Log__c, Tag__c = tagNameToId.get(tagName)));
+                    // Add a LogEntryTag__c record that links to the LogEntry__c - the handler class will also related it to the parent Log__c
+                    tagAssignments.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tagNameToId.get(tagName)));
                 }
             }
         }
@@ -284,6 +323,14 @@ System.debug('this.tagNames==' + this.tagNames);
     }
 
     // Private static methods
+    private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
+        return [
+            SELECT Id, SObjectField__r.QualifiedApiName, FieldOperation__c, FieldValue__c, Tags__c
+            FROM LogEntryTagRule__mdt
+            WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
+        ];
+    }
+
     private static Log__c getRecentLogWithApiReleaseDetails() {
         // Query for recent logs created only today - the status API should be called...
         // ...at least once per day to make sure that status details are still accurate.
