@@ -21,7 +21,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
-    private Map<LogEntry__c, List<String>> logEntryToTagNames = new Map<LogEntry__c, List<String>>();
+    private Map<Id, LogEntry__c> logEntryIdToLogEntry = new Map<Id, LogEntry__c>();
+    private Map<Id, List<String>> logEntryIdToTagNames = new Map<Id, List<String>>();
     private Set<String> tagNames = new Set<String>();
 
     public LogEntryEventHandler() {
@@ -220,10 +221,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             );
 
             this.logEntries.add(logEntry);
+            this.logEntryIdToLogEntry.put(logEntry.Id, logEntry);
 
             if (logEntryEvent.Tags__c != null) {
                 this.tagNames.addAll(logEntryEvent.Tags__c.split('\n'));
-                this.logEntryToTagNames.put(logEntry, LogEntryEvent.Tags__c.split('\n'));
+                this.logEntryIdToTagNames.put(logEntry.Id, LogEntryEvent.Tags__c.split('\n'));
             }
         }
         insert this.logEntries;
@@ -279,10 +281,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         // Query for existing tags/topics
         Map<String, Id> tagNameToId = new Map<String, Id>();
         List<SObject> tags;
-        String tagQuery = 'SELECT Id, Name FROM ' + tagObject + ' WHERE Name IN :this.tagNames';
+System.debug('this.tagNames==' + this.tagNames);
+        String tagQuery = 'SELECT Id, Name FROM ' + tagObject + ' WHERE Name IN :tagNames';
         for (SObject tag : Database.query(tagQuery)) {
+System.debug('queried tag==' + tag);
             tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
         }
+System.debug('tagQuery==' + tagQuery);
+System.debug('tagNameToId==' + tagNameToId);
         // Create any new tags/topics
         List<SObject> tagsToCreate = new List<SObject>();
         for (String tagName : this.tagNames) {
@@ -300,15 +306,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
             }
         }
-
+System.debug('tagsToCreate==' + tagsToCreate);
         // Assign the tags to the records
         Set<SObject> tagAssignments = new Set<SObject>();
-        for (LogEntry__c logEntry : this.logEntryToTagNames.keySet()) {
-            if (this.logEntryToTagNames.containsKey(logEntry) == false) {
-                continue;
-            }
-
-            for (String tagName : this.logEntryToTagNames.get(logEntry)) {
+        for (Id logEntryId : this.logEntryIdToTagNames.keySet()) {
+            // if (this.logEntryIdToTagNames.containsKey(logEntry) == false) {
+            //     continue;
+            // }
+            LogEntry__c logEntry = this.logEntryIdToLogEntry.get(logEntryId);
+            for (String tagName : this.logEntryIdToTagNames.get(logEntryId)) {
                 if (useTopics == true) {
                     // Add the topic for the LogEntry__c & the parent Log__c
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
@@ -320,6 +326,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
         }
         insert new List<SObject>(tagAssignments);
+System.debug('tagAssignments==' + tagAssignments);
     }
 
     // Private static methods
