@@ -250,16 +250,19 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 }
 
                 if (matches == true) {
-                    List<String> ruleTags = rule.Tags__c.split('\n');
-                    // this.topicNames.addAll(ruleTags);
-                    // Set<String> logEntryTopics = logEntryIdToTopics.get(logEntry.Id);
-                    // if (logEntryTopics == null) {
-                    //     logEntryTopics = new Set<String>();
-                    // }
-                    // logEntryTopics.addAll(ruleTags);
+                    List<String> ruleTags = new List<String>();
+                    for (String configuredTag : rule.Tags__c.split('\n')) {
+                        ruleTags.add(configuredTag.deleteWhitespace());
+                    }
+                    this.tagNames.addAll(ruleTags);
+                    List<String> logEntryTags = logEntryIdToTagNames.get(logEntry.Id);
+                    if (logEntryTags == null) {
+                        logEntryTags = new List<String>();
+                    }
+                    logEntryTags.addAll(ruleTags);
 
-                    // this.logEntryIdToTopics.put(logEntry.Id, logEntryTopics);
-                    // this.topicNames.addAll(logEntryTopics);
+                    this.logEntryIdToTagNames.put(logEntry.Id, logEntryTags);
+                    this.tagNames.addAll(logEntryTags);
                 }
             }
         }
