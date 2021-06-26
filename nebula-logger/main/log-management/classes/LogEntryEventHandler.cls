@@ -9,6 +9,7 @@
  */
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
+    private static Boolean TAGGING_IS_ENABLED = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_EnableTagging', true);
     private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
 
     // Trigger-based variables - tests can override these with mock objects
@@ -238,6 +239,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void appendRuleBasedTags() {
+        if (TAGGING_IS_ENABLED == false) {
+            return;
+        }
+
         for (LogEntry__c logEntry : this.logEntries) {
             for (LogEntryTagRule__mdt rule : TAG_ASSIGNMENT_RULES) {
                 Boolean matches;
@@ -259,6 +264,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                     }
                 }
 
+                System.debug('matches==' + matches);
                 if (matches == true) {
                     List<String> ruleTags = new List<String>();
                     for (String configuredTag : rule.Tags__c.split('\n')) {
@@ -279,7 +285,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void insertTags() {
-        if (this.tagNames.isEmpty()) {
+        if (TAGGING_IS_ENABLED == false || this.tagNames.isEmpty()) {
             return;
         }
 
@@ -323,9 +329,18 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             // }
             // System.debug('logEntryId: ' + logEntryId);
             // System.debug('this.logEntryIdToLogEntry: ' + this.logEntryIdToLogEntry);
+            System.debug('this.logEntryToTagNames: ' + this.logEntryToTagNames);
             // LogEntry__c logEntry = this.logEntryIdToLogEntry.get(logEntryId);
             System.debug('logEntry: ' + logEntry);
-            for (String tagName : this.logEntryToTagNames.get(logEntry)) {
+            System.debug('this.logEntryToTagNames.get(logEntry): ' + this.logEntryToTagNames.get(logEntry));
+            List<String> logEntryTagNames = this.logEntryToTagNames.get(logEntry);
+            System.debug('logEntryTagNames==' + logEntryTagNames);
+            if (logEntryToTagNames == null || logEntryToTagNames.isEmpty()) {
+                Logger.debug('nothing, continuing');
+                continue;
+            }
+            System.debug('logEntryToTagNames==' + logEntryToTagNames);
+            for (String tagName : logEntryTagNames) {
                 System.debug('applying tag: ' + tagName);
                 System.debug('tagNameToId.get(tagName): ' + tagNameToId.get(tagName));
                 if (useTopics == true) {
