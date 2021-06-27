@@ -170,11 +170,11 @@
         <excludedStandardButtons>New</excludedStandardButtons>
         <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
-        <excludedStandardButtons>IsotopeSubscription</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>Import</excludedStandardButtons>
         <excludedStandardButtons>MassChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
-        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>IsotopeSubscription</excludedStandardButtons>
         <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Timestamp__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>LoggingLevelWithImage__c</lookupDialogsAdditionalFields>

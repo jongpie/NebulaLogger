@@ -163,6 +163,7 @@
     <nameField>
         <displayFormat>LET-{00000}</displayFormat>
         <label>Log Entry Tag Number</label>
+        <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
