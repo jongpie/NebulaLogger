@@ -414,27 +414,11 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Sets a list of strings on the `LogEntryEvent__e` record.
-     *              Depending on your org's configuration, tags are either stored as `LoggerTag__c & `LogEntryTag__c` records,
-     *              or as `Topic` & `TopicAssignment` records
-     * @param  tags The list of strings to use as tags for the current entry
-     * @return      The same instance of `LogEntryEventBuilder`, useful for chaining methods
-     */
-    global LogEntryEventBuilder setTags(List<String> tags) {
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        this.tags = tags;
-        return this;
-    }
-
-    /**
      * @description Deprecated - use `setTags(List<String> tags)` instead.
      *              This method will be removed in a future release
      */
     public LogEntryEventBuilder setTopics(List<String> tags) {
-        return this.setTags(tags);
+        return this.addTags(tags);
     }
 
     /**

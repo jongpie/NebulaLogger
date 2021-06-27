@@ -78,7 +78,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.setRecord(UserInfo.getUserId()).getLogEntryEvent());
         System.assertEquals(null, builder.setRecord(new User(Id = UserInfo.getUserId())).getLogEntryEvent());
         System.assertEquals(null, builder.setRecord(new List<User>{new User(Id = UserInfo.getUserId())}).getLogEntryEvent());
-        System.assertEquals(null, builder.setTags(new List<String>{'tag-1', 'tag-2'}).getLogEntryEvent());
+        System.assertEquals(null, builder.addTags(new List<String>{'tag-1', 'tag-2'}).getLogEntryEvent());
         System.assertEquals(null, builder.parseStackTrace(new DmlException().getStackTraceString()).getLogEntryEvent());
     }
 
@@ -788,7 +788,7 @@ private class LogEntryEventBuilder_Tests {
         Test.startTest();
 
         List<String> tags = new List<String>{ 'some-tag', 'another One', 'here\'s one more!' };
-        builder.setTags(tags);
+        builder.addTags(tags);
 
         Test.stopTest();
 
@@ -804,7 +804,7 @@ private class LogEntryEventBuilder_Tests {
         Test.startTest();
 
         List<String> tags = new List<String>{ 'duplicate-tag', 'duplicate-tag', 'another One' };
-        builder.setTags(tags);
+        builder.addTags(tags);
 
         Test.stopTest();
 
