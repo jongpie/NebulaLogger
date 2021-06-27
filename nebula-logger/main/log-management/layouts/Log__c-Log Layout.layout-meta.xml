@@ -366,8 +366,6 @@
     <relatedLists>
         <fields>LogEntry__c</fields>
         <fields>Tag__c</fields>
-        <fields>CREATEDBY_USER</fields>
-        <fields>CREATED_DATE</fields>
         <relatedList>LogEntryTag__c.Log__c</relatedList>
         <sortField>Tag__c</sortField>
         <sortOrder>Asc</sortOrder>

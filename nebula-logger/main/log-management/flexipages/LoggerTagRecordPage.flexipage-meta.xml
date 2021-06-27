@@ -55,20 +55,7 @@
                 <componentName>force:relatedListSingleContainer</componentName>
             </componentInstance>
         </itemInstances>
-        <name>main</name>
-        <type>Region</type>
-    </flexiPageRegions>
-    <flexiPageRegions>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>context</name>
-                    <value>RECORD</value>
-                </componentInstanceProperties>
-                <componentName>forceChatter:exposedFeed</componentName>
-            </componentInstance>
-        </itemInstances>
-        <name>Facet-3f929281-8a85-40dd-a972-85c72bfb0a9e</name>
+        <name>Facet-3ff5eda5-3bf7-449e-8883-eec9aa54946c</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -77,7 +64,7 @@
                 <componentName>force:detailPanel</componentName>
             </componentInstance>
         </itemInstances>
-        <name>Facet-19f38c53-1a27-4a0f-acb0-e7d3c8ff9bb2</name>
+        <name>Facet-fd13f2bc-5b6c-4c19-95cb-3b17d4b83b85</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -89,11 +76,11 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-3f929281-8a85-40dd-a972-85c72bfb0a9e</value>
+                    <value>Facet-3ff5eda5-3bf7-449e-8883-eec9aa54946c</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
-                    <value>Standard.Tab.feed</value>
+                    <value>Tagged Log Entries</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
             </componentInstance>
@@ -102,7 +89,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-19f38c53-1a27-4a0f-acb0-e7d3c8ff9bb2</value>
+                    <value>Facet-fd13f2bc-5b6c-4c19-95cb-3b17d4b83b85</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>title</name>
@@ -111,7 +98,7 @@
                 <componentName>flexipage:tab</componentName>
             </componentInstance>
         </itemInstances>
-        <name>Facet-d6a9f44f-9e17-4e14-86b0-f2a462ed304f</name>
+        <name>Facet-2ba13eb9-c7a3-4ab5-b0ae-019c556a6133</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -119,9 +106,22 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>tabs</name>
-                    <value>Facet-d6a9f44f-9e17-4e14-86b0-f2a462ed304f</value>
+                    <value>Facet-2ba13eb9-c7a3-4ab5-b0ae-019c556a6133</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>main</name>
+        <type>Region</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>context</name>
+                    <value>RECORD</value>
+                </componentInstanceProperties>
+                <componentName>forceChatter:exposedFeed</componentName>
             </componentInstance>
         </itemInstances>
         <name>sidebar</name>
