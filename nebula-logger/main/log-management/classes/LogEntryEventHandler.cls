@@ -221,10 +221,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             this.logEntries.add(logEntry);
             if (logEntryEvent.Tags__c != null) {
-                this.tagNames.addAll(logEntryEvent.Tags__c.split('\n'));
-                this.logEntryKeyToTagNames.put(this.getLogEntryKey(logEntry), logEntryEvent.Tags__c.split('\n'));
-            }
+                String logEntryKey = getLogEntryKey(logEntry);
+                List<String> logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
 
+                this.tagNames.addAll(logEntryTagNames);
+                this.logEntryKeyToTagNames.put(logEntryKey, logEntryTagNames);
+            }
         }
         insert this.logEntries;
     }
@@ -235,22 +237,21 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : this.logEntries) {
+            String logEntryKey = getLogEntryKey(logEntry);
+
             for (LogEntryTagRule__mdt rule : TAG_ASSIGNMENT_RULES) {
                 Boolean ruleCriteriaMet = ruleCriteriaMet(logEntry, rule);
 
-                if (ruleCriteriaMet(logEntry, rule) == true) {
-                    List<String> configuredTagNames = new List<String>();
-                    for (String configuredTagName : rule.Tags__c.split('\n')) {
-                        configuredTagNames.add(configuredTagName.deleteWhitespace());
-                    }
+                if (ruleCriteriaMet == true) {
+                    List<String> configuredTagNames = getTagNames(rule.Tags__c);
                     this.tagNames.addAll(configuredTagNames);
-                    List<String> logEntryTags = logEntryKeyToTagNames.get(this.getLogEntryKey(logEntry));
+                    List<String> logEntryTags = logEntryKeyToTagNames.get(logEntryKey);
                     if (logEntryTags == null) {
                         logEntryTags = new List<String>();
                     }
                     logEntryTags.addAll(configuredTagNames);
 
-                    this.logEntryKeyToTagNames.put(this.getLogEntryKey(logEntry), logEntryTags);
+                    this.logEntryKeyToTagNames.put(logEntryKey, logEntryTags);
                     this.tagNames.addAll(logEntryTags);
                 }
             }
@@ -262,14 +263,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Schema.SObjectType tagObject = TAG_USING_TOPICS == true ? Schema.Topic.SObjectType : Schema.LoggerTag__c.SObjectType;
-        Map<String, Id> tagNameToId = getTagNameToId(tagObject);
-        this.tagNames.addAll(new Set<String>(tagNameToId.keySet()));
+        Schema.SObjectType tagSObjectType = TAG_USING_TOPICS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
+        Map<String, Id> tagNameToId = getTagNameToId(tagSObjectType);
+        this.tagNames.addAll(tagNameToId.keySet());
 
         // Assign the tags to the records
         Set<SObject> tagAssignments = new Set<SObject>();
         for (LogEntry__c logEntry : this.logEntries) {
-            String logEntryKey = this.getLogEntryKey(logEntry);
+            String logEntryKey = getLogEntryKey(logEntry);
+
             List<String> logEntryTagNames = this.logEntryKeyToTagNames.get(logEntryKey);
             if (logEntryTagNames == null || logEntryKeyToTagNames.isEmpty()) {
                 continue;
@@ -289,29 +291,28 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         insert new List<SObject>(tagAssignments);
     }
 
-    private Map<String, Id> getTagNameToId(Schema.SObjectType tagObject) {
+    private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
         Map<String, Id> tagNameToId = new Map<String, Id>();
-        List<SObject> tags;
-        String tagQuery = 'SELECT Id, Name FROM ' + tagObject + ' WHERE Name IN :tagNames';
+
+        String tagQuery = 'SELECT Id, Name FROM ' + tagSObjectType + ' WHERE Name IN :tagNames';
         for (SObject tag : Database.query(tagQuery)) {
             tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
         }
+        tagNameToId.putAll(this.insertMissingTags(tagSObjectType, tagNameToId));
 
-        tagNameToId.putAll(this.insertMissingTags(tagObject, tagNameToId));
         return tagNameToId;
     }
 
-    private Map<String, Id> insertMissingTags(Schema.SObjectType tagObject, Map<String, Id> existingTagNameToId) {
+    private Map<String, Id> insertMissingTags(Schema.SObjectType tagSObjectType, Map<String, Id> existingTagNameToId) {
         Map<String, Id> missingTagNameToId = new Map<String, Id>();
 
         List<SObject> missingTagsToCreate = new List<SObject>();
         for (String tagName : this.tagNames) {
             if (existingTagNameToId.containsKey(tagName) == false) {
-                SObject tag = tagObject.newSObject();
+                SObject tag = tagSObjectType.newSObject();
                 tag.put('Name', tagName);
                 missingTagsToCreate.add(tag);
             }
-
         }
 
         if (!missingTagsToCreate.isEmpty()) {
@@ -324,13 +325,25 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return missingTagNameToId;
     }
 
-    private String getLogEntryKey(LogEntry__c logEntry) {
+    // Private static methods
+    private static String getLogEntryKey(LogEntry__c logEntry) {
         // TODO - after upgrading all metadata to v52.0, switch to using the new EventUuid field for platform events
         // https://releasenotes.docs.salesforce.com/en-us/summer21/release-notes/rn_batch_platform_event.htm
         return logEntry.Log__r.TransactionId__c + logEntry.TransactionEntryNumber__c;
     }
 
-    // Private static methods
+    private static List<String> getTagNames(String tagsString) {
+        List<String> cleanedTagNames = new List<String>();
+
+        for (String tagName : tagsString.split('\n')) {
+            if (String.isNotBlank(tagName) == true) {
+                cleanedTagNames.add(tagName.trim());
+            }
+        }
+
+        return cleanedTagNames;
+    }
+
     private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
         return [
             SELECT Id, SObjectField__r.QualifiedApiName, FieldOperation__c, FieldValue__c, Tags__c

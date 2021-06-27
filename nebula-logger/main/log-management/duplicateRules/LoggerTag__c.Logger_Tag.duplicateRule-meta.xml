@@ -2,7 +2,7 @@
 <DuplicateRule xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionOnInsert>Block</actionOnInsert>
     <actionOnUpdate>Block</actionOnUpdate>
-    <alertText>That tag already exists</alertText>
+    <alertText>The specified tag name already exists</alertText>
     <description>Duplicate rule for Logger Tag records.</description>
     <duplicateRuleFilter xsi:nil="true"/>
     <duplicateRuleMatchRules>
