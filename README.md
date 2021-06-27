@@ -352,7 +352,7 @@ Nebula Logger supports dynamically tagging/labeling your `LogEntry__c` records v
 
 ### Adding Tags in Apex
 
-// TODO LogEntryEventBuilder.addTag(), addTags(), setTags();
+// TODO LogEntryEventBuilder.addTag(String tagName) and addTags(List<String> tagNames)
 
 ### Adding Tags in Flow
 
