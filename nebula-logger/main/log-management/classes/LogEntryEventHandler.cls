@@ -346,7 +346,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
         return [
-            SELECT Id, SObjectField__r.QualifiedApiName, FieldOperation__c, FieldValue__c, Tags__c
+            SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
             FROM LogEntryTagRule__mdt
             WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
         ];
@@ -354,23 +354,21 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private static Boolean ruleCriteriaMet(LogEntry__c logEntry, LogEntryTagRule__mdt rule) {
         Boolean ruleCriteriaMet = false;
-        String configuredFieldValue = rule.FieldValue__c;
         String logEntryFieldValue = String.valueOf(logEntry.get(rule.SObjectField__r.QualifiedApiName));
+        String ruleComparisonValue = rule.ComparisonValue__c;
 
-        switch on rule.FieldOperation__c {
+        switch on rule.ComparisonType__c {
             when 'CONTAINS' {
-                ruleCriteriaMet = logEntryFieldValue.contains(configuredFieldValue);
+                ruleCriteriaMet = logEntryFieldValue.containsIgnoreCase(ruleComparisonValue);
             }
             when 'EQUALS' {
-                ruleCriteriaMet = logEntryFieldValue == configuredFieldValue;
+                ruleCriteriaMet = logEntryFieldValue == ruleComparisonValue;
             }
             when 'MATCHES_REGEX' {
-                Pattern compiledPattern = Pattern.compile(configuredFieldValue);
-                Matcher matcher = compiledPattern.matcher(logEntryFieldValue);
-                ruleCriteriaMet = matcher.matches();
+                ruleCriteriaMet = Pattern.compile(ruleComparisonValue).matcher(logEntryFieldValue).matches();
             }
             when 'STARTS_WITH' {
-                ruleCriteriaMet = logEntryFieldValue.startsWith(configuredFieldValue);
+                ruleCriteriaMet = logEntryFieldValue.startsWith(ruleComparisonValue);
             }
         }
 

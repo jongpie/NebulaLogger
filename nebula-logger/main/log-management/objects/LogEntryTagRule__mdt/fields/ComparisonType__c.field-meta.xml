@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>FieldOperation__c</fullName>
+    <fullName>ComparisonType__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>Field Operation</label>
+    <label>Comparison Type</label>
     <required>true</required>
     <type>Picklist</type>
     <valueSet>

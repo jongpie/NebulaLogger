@@ -6,8 +6,8 @@
     <columns>IsEnabled__c</columns>
     <columns>SObjectType__c</columns>
     <columns>SObjectField__c</columns>
-    <columns>FieldOperation__c</columns>
-    <columns>FieldValue__c</columns>
+    <columns>ComparisonType__c</columns>
+    <columns>ComparisonValue__c</columns>
     <columns>Tags__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>

@@ -41,11 +41,11 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>FieldOperation__c</field>
+                <field>ComparisonType__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>FieldValue__c</field>
+                <field>ComparisonValue__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
