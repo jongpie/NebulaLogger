@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <inlineHelpText>1 or more tags to assign - each tag should be listed on a separate line</inlineHelpText>
-    <label>Tags</label>
+    <label>Tag(s) to Apply</label>
     <length>32768</length>
     <type>LongTextArea</type>
     <visibleLines>5</visibleLines>
