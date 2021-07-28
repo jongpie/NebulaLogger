@@ -32,8 +32,8 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         // so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
 
-        if ( this.currentSObjectType == null) {
-             this.currentSObjectType = this.getInitialSObjectType();
+        if (this.currentSObjectType == null) {
+            this.currentSObjectType = this.getInitialSObjectType();
         }
 
         if (this.isSystemDebuggingEnabled) {
@@ -134,16 +134,24 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                         SELECT Id
                         FROM LogEntryTag__c
                         WHERE LogEntry__r.Log__r.LogRetentionDate__c <= :System.today() AND LogEntry__r.Log__r.LogRetentionDate__c != NULL
+                        ORDER BY LogEntry__r.Log__r.LogRetentionDate__c, LogEntry__r.Log__c
                     ]
                 );
             }
             when LogEntry__c logEntry {
                 queryLocator = Database.getQueryLocator(
-                    [SELECT Id FROM LogEntry__c WHERE Log__r.LogRetentionDate__c <= :System.today() AND Log__r.LogRetentionDate__c != NULL]
+                    [
+                        SELECT Id
+                        FROM LogEntry__c
+                        WHERE Log__r.LogRetentionDate__c <= :System.today() AND Log__r.LogRetentionDate__c != NULL
+                        ORDER BY Log__r.LogRetentionDate__c, Log__c
+                    ]
                 );
             }
             when Log__c log {
-                queryLocator = Database.getQueryLocator([SELECT Id FROM Log__c WHERE LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL]);
+                queryLocator = Database.getQueryLocator(
+                    [SELECT Id FROM Log__c WHERE LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL ORDER BY LogRetentionDate__c]
+                );
             }
         }
 
