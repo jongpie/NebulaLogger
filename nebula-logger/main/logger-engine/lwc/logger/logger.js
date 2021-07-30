@@ -5,10 +5,12 @@
 
 import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogController.getSettings';
-import saveComponentLogEntries from '@salesforce/apex/ComponentLogController.saveComponentLogEntries';
 
 export default class Logger extends LightningElement {
+    _transactionId = Math.floor(Math.random() * Date.now());
+    
     componentLogEntries = [];
     settings;
     settingsError;
@@ -28,77 +30,79 @@ export default class Logger extends LightningElement {
     }
 
     @api
-    getDefaultLogEntryOptions() {
-        return {
-            exception: null,
-            recordId : null,
-            record: null,
-            topics: []
-        };
-    }
-
-    @api
-    error(message, logEntryOptions) {
-        console.log('running error(message, logEntryOptions)');
-
-        let logEntry = this.createNewComponentLogEntry('ERROR', message, logEntryOptions);
-        if(logEntry) {
-            console.error(logEntry.message);
-            console.error(logEntry);
+    error(message) {
+        const loggingLevel = 'ERROR';
+        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
+            console.error(logEntryBuilder.message);
+            console.error(logEntryBuilder);
+            return logEntryBuilder;
         }
     };
 
     @api
-    warn(message, logEntryOptions) {
-        let logEntry = this.createNewComponentLogEntry('WARN', message, logEntryOptions);
-        if(logEntry) {
-            console.warn(logEntry.message);
-            console.warn(logEntry);
+    warn(message) {
+        const loggingLevel = 'WARN';
+        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
+            console.warn(logEntryBuilder.message);
+            console.warn(logEntryBuilder);
+            return logEntryBuilder;
         }
     };
 
     @api
-    info(message, logEntryOptions) {
-        let logEntry = this.createNewComponentLogEntry('INFO', message, logEntryOptions);
-        if(logEntry) {
-            console.info(logEntry.message);
-            console.info(logEntry);
+    info(message) {
+        const loggingLevel = 'INFO';
+        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
+            console.info(logEntryBuilder.message);
+            console.info(logEntryBuilder);
+            return logEntryBuilder;
         }
     };
 
     @api
-    debug(message, logEntryOptions) {
-        let logEntry = this.createNewComponentLogEntry('DEBUG', message, logEntryOptions);
-        if(logEntry) {
-            console.debug(logEntry.message);
-            console.debug(logEntry);
+    debug(message) {
+        const loggingLevel = 'DEBUG';
+        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
+            console.debug(logEntryBuilder.message);
+            console.debug(logEntryBuilder);
+            return logEntryBuilder;
         }
     };
 
     @api
-    fine(message, logEntryOptions) {
-        let logEntry = this.createNewComponentLogEntry('FINE', message, logEntryOptions);
-        if(logEntry) {
-            console.debug(logEntry.message);
-            console.debug(logEntry);
+    fine(message) {
+        const loggingLevel = 'FINE';
+        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
+            console.debug(logEntryBuilder.message);
+            console.debug(logEntryBuilder);
+            return logEntryBuilder;
         }
     };
 
     @api
-    finer(message, logEntryOptions) {
-        let logEntry = this.createNewComponentLogEntry('FINER', message, logEntryOptions);
-        if(logEntry) {
-            console.debug(logEntry.message);
-            console.debug(logEntry);
+    finer(message) {
+        const loggingLevel = 'FINER';
+        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
+            console.debug(logEntryBuilder.message);
+            console.debug(logEntryBuilder);
+            return logEntryBuilder;
         }
     };
 
     @api
-    finest(message, logEntryOptions) {
-        let logEntry = this.createNewComponentLogEntry('FINEST', message, logEntryOptions);
-        if(logEntry) {
-            console.debug(logEntry.message);
-            console.debug(logEntry);
+    finest(message) {
+        const loggingLevel = 'FINEST';
+        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
+            console.debug(logEntryBuilder.message);
+            console.debug(logEntryBuilder);
+            return logEntryBuilder;
         }
     };
 
@@ -148,59 +152,26 @@ export default class Logger extends LightningElement {
     };
 
     // Private functions
-    meetsUserLoggingLevel(logEntryLoggingLevel) {
+    _meetsUserLoggingLevel(logEntryLoggingLevel) {
         // console.info('entry level name is ' + logEntryLoggingLevel);
         let logEntryLoggingLevelOrdinal = this.settings.supportedLoggingLevels[logEntryLoggingLevel];
         // console.info('entry level ordinal is ' + logEntryLoggingLevelOrdinal);
         return this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
     }
 
-    createNewComponentLogEntry(loggingLevel, message, logEntryOptions) {
-        // console.log('running createNewComponentLogEntry');
-
+    _registerNewLogEntry(loggingLevel, message) {
         if(this.settings.isEnabled == false) {
             return null;
         }
 
-        if(this.meetsUserLoggingLevel(loggingLevel) == false) {
-            // console.log('this.meetsUserLoggingLevel(loggingLevel)==' + this.meetsUserLoggingLevel(loggingLevel));
+        if(this._meetsUserLoggingLevel(loggingLevel) == false) {
+            // console.log('this._meetsUserLoggingLevel(loggingLevel)==' + this._meetsUserLoggingLevel(loggingLevel));
             return null;
         }
 
-        if (typeof logEntryOptions == 'undefined') {
-            logEntryOptions = this.getDefaultLogEntryOptions();
-        }
-        logEntryOptions = Object.assign(this.getDefaultLogEntryOptions(), logEntryOptions);
+        const logEntryBuilder = newLogEntry(this._transactionId, loggingLevel).setMessage(message);
+        this.componentLogEntries.push(logEntryBuilder);
 
-        let componentLogEntry = {
-            //componentError : logEntryOptions.exception, // TODO create object for JS errors & SF-specific errors
-            loggingLevel: loggingLevel,
-            message: message,
-            // recordId: logEntryOptions.recordId,
-            // record: logEntryOptions.record,
-            stack: new Error().stack,
-            timestamp: new Date().toISOString(),
-            topics: [] //logEntryOptions.topics
-        };
-
-        // TODO remove this toast before finishing (or make it configurable?)
-        let variant;
-        if(componentLogEntry.loggingLevel == 'ERROR') {
-            variant = 'error';
-        } else if (componentLogEntry.loggingLevel == 'WARN') {
-            variant = 'warning';
-        } else {
-            variant = 'success';
-        }
-        const newEntryEvent = new ShowToastEvent({
-            title: componentLogEntry.loggingLevel,
-            message: componentLogEntry.message,
-            variant: variant,
-        });
-        this.dispatchEvent(newEntryEvent);
-
-        this.componentLogEntries.push(componentLogEntry);
-        return componentLogEntry;
+        return logEntryBuilder;
     }
-
 }

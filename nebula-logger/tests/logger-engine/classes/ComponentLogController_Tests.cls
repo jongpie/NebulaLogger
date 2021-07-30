@@ -61,7 +61,7 @@ private class ComponentLogController_Tests {
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
         componentLogEntry.timestamp = System.now().addDays(- 1 / 24);
-        componentLogEntry.topics = new List<String>{'some topic', 'one more topic'};
+        componentLogEntry.tags = new List<String>{'some tag', 'one more tag'};
 
         componentLogEntries.add(componentLogEntry);
 

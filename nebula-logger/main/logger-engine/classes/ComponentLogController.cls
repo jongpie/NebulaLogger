@@ -49,6 +49,8 @@ public inherited sharing class ComponentLogController {
 
     public class ComponentLogEntry {
         @AuraEnabled
+        public String transactionId { get; set; }
+        @AuraEnabled
         public String loggingLevel { get; set; }
         @AuraEnabled
         public String message { get; set; }
@@ -63,7 +65,7 @@ public inherited sharing class ComponentLogController {
         @AuraEnabled
         public ComponentError componentError { get; set; }
         @AuraEnabled
-        public List<String> topics { get; set; }
+        public List<String> tags { get; set; }
     }
 
     public class ComponentError {
@@ -100,8 +102,8 @@ public inherited sharing class ComponentLogController {
                     if (componentLogEntry.record != null) {
                         logEntryEventBuilder.setRecordId(componentLogEntry.record);
                     }
-                    if (componentLogEntry.topics != null) {
-                        logEntryEventBuilder.setTopics(componentLogEntry.topics);
+                    if (componentLogEntry.tags != null) {
+                        logEntryEventBuilder.setTopics(componentLogEntry.tags);
                     }
 
                     logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
