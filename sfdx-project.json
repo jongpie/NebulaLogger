@@ -28,10 +28,6 @@
         },
         {
             "path": "extra-tests",
-            "default": false
-        },
-        {
-            "path": "force-app",
             "default": true
         }
     ],
