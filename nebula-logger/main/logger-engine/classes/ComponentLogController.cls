@@ -4,6 +4,48 @@
 //------------------------------------------------------------------------------------------------//
 
 public inherited sharing class ComponentLogController {
+    @AuraEnabled(cacheable=true)
+    public static ComponentLoggerSettings getSettings() {
+        try {
+            return new ComponentLoggerSettings();
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static String saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
+        System.debug('componentLogEntries=' + componentLogEntries);
+
+        try {
+            for (ComponentLogEntry componentLogEntry : componentLogEntries) {
+                LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
+
+                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, componentLogEntry.message);
+
+                if (logEntryEventBuilder.shouldSave()) {
+                    if (componentLogEntry.recordId != null) {
+                        logEntryEventBuilder.setRecordId(componentLogEntry.recordId);
+                    }
+                    if (componentLogEntry.record != null) {
+                        logEntryEventBuilder.setRecordId(componentLogEntry.record);
+                    }
+                    if (componentLogEntry.tags != null) {
+                        logEntryEventBuilder.setTopics(componentLogEntry.tags);
+                    }
+
+                    logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
+                    logEntryEventBuilder.parseStackTrace(componentLogEntry.stack);
+                    logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
+                }
+            }
+            Logger.saveLog();
+            return Logger.getTransactionId();
+        } catch (Exception apexException) {
+            throw new AuraHandledException(apexException.getMessage());
+        }
+    }
+
     public class ComponentLoggerSettings {
         @AuraEnabled
         public Boolean isEnabled { get; set; }
@@ -74,47 +116,5 @@ public inherited sharing class ComponentLogController {
         public Integer lineNumber;
         public Integer message;
         public Integer stack;
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static ComponentLoggerSettings getSettings() {
-        try {
-            return new ComponentLoggerSettings();
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
-    }
-
-    @AuraEnabled
-    public static String saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
-        System.debug('componentLogEntries=' + componentLogEntries);
-
-        try {
-            for (ComponentLogEntry componentLogEntry : componentLogEntries) {
-                LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
-
-                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, componentLogEntry.message);
-
-                if (logEntryEventBuilder.shouldSave()) {
-                    if (componentLogEntry.recordId != null) {
-                        logEntryEventBuilder.setRecordId(componentLogEntry.recordId);
-                    }
-                    if (componentLogEntry.record != null) {
-                        logEntryEventBuilder.setRecordId(componentLogEntry.record);
-                    }
-                    if (componentLogEntry.tags != null) {
-                        logEntryEventBuilder.setTopics(componentLogEntry.tags);
-                    }
-
-                    logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
-                    logEntryEventBuilder.parseStackTrace(componentLogEntry.stack);
-                    logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
-                }
-            }
-            Logger.saveLog();
-            return Logger.getTransactionId();
-        } catch (Exception apexException) {
-            throw new AuraHandledException(apexException.getMessage());
-        }
     }
 }

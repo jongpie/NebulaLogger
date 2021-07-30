@@ -10,7 +10,7 @@ import getSettings from '@salesforce/apex/ComponentLogController.getSettings';
 
 export default class Logger extends LightningElement {
     _transactionId = Math.floor(Math.random() * Date.now());
-    
+
     componentLogEntries = [];
     settings;
     settingsError;
@@ -32,79 +32,79 @@ export default class Logger extends LightningElement {
     @api
     error(message) {
         const loggingLevel = 'ERROR';
-        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
             console.error(logEntryBuilder.message);
             console.error(logEntryBuilder);
             return logEntryBuilder;
         }
-    };
+    }
 
     @api
     warn(message) {
         const loggingLevel = 'WARN';
-        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
             console.warn(logEntryBuilder.message);
             console.warn(logEntryBuilder);
             return logEntryBuilder;
         }
-    };
+    }
 
     @api
     info(message) {
         const loggingLevel = 'INFO';
-        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
             console.info(logEntryBuilder.message);
             console.info(logEntryBuilder);
             return logEntryBuilder;
         }
-    };
+    }
 
     @api
     debug(message) {
         const loggingLevel = 'DEBUG';
-        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
             console.debug(logEntryBuilder.message);
             console.debug(logEntryBuilder);
             return logEntryBuilder;
         }
-    };
+    }
 
     @api
     fine(message) {
         const loggingLevel = 'FINE';
-        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
             console.debug(logEntryBuilder.message);
             console.debug(logEntryBuilder);
             return logEntryBuilder;
         }
-    };
+    }
 
     @api
     finer(message) {
         const loggingLevel = 'FINER';
-        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
             console.debug(logEntryBuilder.message);
             console.debug(logEntryBuilder);
             return logEntryBuilder;
         }
-    };
+    }
 
     @api
     finest(message) {
         const loggingLevel = 'FINEST';
-        if(this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
             console.debug(logEntryBuilder.message);
             console.debug(logEntryBuilder);
             return logEntryBuilder;
         }
-    };
+    }
 
     @api
     getBufferSize() {
@@ -118,38 +118,38 @@ export default class Logger extends LightningElement {
 
     @api
     saveLog() {
-        if(this.getBufferSize() == 0) {
+        if (this.getBufferSize() == 0) {
             // No need to call Apex if there aren't any entries to save
             const noEntriesToastEvent = new ShowToastEvent({
                 title: 'Saving Skipped',
                 message: 'No entries logged, ignoring call to saveLog()',
-                variant: 'info',
+                variant: 'info'
             });
             this.dispatchEvent(noEntriesToastEvent);
 
             return;
         }
         saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
-            .then((result) => {
+            .then(result => {
                 // TODO cleanup
                 // this.message = result;
                 // this.error = undefined;
                 const saveEntriesToastEvent = new ShowToastEvent({
                     title: 'Success',
                     message: 'Saved ' + this.getBufferSize() + ' log entries',
-                    variant: 'success',
+                    variant: 'success'
                 });
                 this.dispatchEvent(saveEntriesToastEvent);
                 this.flushBuffer();
             })
-            .catch((error) => {
+            .catch(error => {
                 alert('error' + JSON.stringify(error));
                 console.error(error);
                 // TODO cleanup
                 // this.message = undefined;
                 // this.error = error;
             });
-    };
+    }
 
     // Private functions
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
@@ -160,11 +160,11 @@ export default class Logger extends LightningElement {
     }
 
     _registerNewLogEntry(loggingLevel, message) {
-        if(this.settings.isEnabled == false) {
+        if (this.settings.isEnabled == false) {
             return null;
         }
 
-        if(this._meetsUserLoggingLevel(loggingLevel) == false) {
+        if (this._meetsUserLoggingLevel(loggingLevel) == false) {
             // console.log('this._meetsUserLoggingLevel(loggingLevel)==' + this._meetsUserLoggingLevel(loggingLevel));
             return null;
         }

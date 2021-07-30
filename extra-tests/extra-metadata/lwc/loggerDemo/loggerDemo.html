@@ -10,53 +10,20 @@
 
     <lightning-card title="Nebula Logger for Lightning Components" icon-name="custom:custom19">
         <div class="slds-var-m-around_medium">
-            <lightning-input
-                label="Example Log Message"
-                value={message}
-                onchange={messageChange}
-            ></lightning-input>
-            <lightning-input
-                label="Comma-separated Topics"
-                value={topicsString}
-                onchange={topicsStringChange}
-            ></lightning-input>
+            <lightning-input label="Example Log Message" value={message} onchange={messageChange}></lightning-input>
+            <lightning-input label="Comma-separated Topics" value={topicsString} onchange={topicsStringChange}></lightning-input>
             <div class="slds-button-group" role="group">
-                <lightning-button
-                    label="Log ERROR"
-                    onclick={logError}
-                ></lightning-button>
-                <lightning-button
-                    label="Log WARN"
-                    onclick={logWarn}
-                ></lightning-button>
-                <lightning-button
-                    label="Log INFO"
-                    onclick={logInfo}
-                ></lightning-button>
-                <lightning-button
-                    label="Log DEBUG"
-                    onclick={logDebug}
-                ></lightning-button>
+                <lightning-button label="Log ERROR" onclick={logError}></lightning-button>
+                <lightning-button label="Log WARN" onclick={logWarn}></lightning-button>
+                <lightning-button label="Log INFO" onclick={logInfo}></lightning-button>
+                <lightning-button label="Log DEBUG" onclick={logDebug}></lightning-button>
             </div>
-            <br>
+            <br />
             <div class="slds-button-group" role="group">
-                <lightning-button
-                    label="Log FINE"
-                    onclick={logFine}
-                ></lightning-button>
-                <lightning-button
-                    label="Log FINER"
-                    onclick={logFiner}
-                ></lightning-button>
-                <lightning-button
-                    label="Log FINER"
-                    onclick={logFiner}
-                ></lightning-button>
-                <lightning-button
-                    label="Save Log"
-                    variant="brand"
-                    onclick={saveLog}
-                ></lightning-button>
+                <lightning-button label="Log FINE" onclick={logFine}></lightning-button>
+                <lightning-button label="Log FINER" onclick={logFiner}></lightning-button>
+                <lightning-button label="Log FINER" onclick={logFiner}></lightning-button>
+                <lightning-button label="Save Log" variant="brand" onclick={saveLog}></lightning-button>
             </div>
         </div>
     </lightning-card>

@@ -10,7 +10,7 @@ const LogEntryBuilder = class {
 
         this.stack = new Error().stack;
         this.timestamp = new Date().toISOString();
-        this.tags = []; 
+        this.tags = [];
     }
 
     setMessage(message) {
@@ -42,4 +42,3 @@ const LogEntryBuilder = class {
 export function newLogEntry(transactionId, loggingLevel) {
     return new LogEntryBuilder(transactionId, loggingLevel);
 }
-    
