@@ -25,13 +25,13 @@ public inherited sharing class FlowLogger {
         public String message;
         public String faultMessage;
         public String loggingLevelName;
-        public List<String> tags;
+        public String tagsString;
         public List<String> topics; // TODO: deprecated, remove in a future release
         public Boolean saveLog = false;
         public DateTime timestamp;
 
         // Private member variables
-        private LoggingLevel loggingLevel;
+        private LoggingLevel entryLoggingLevel;
         private LogEntryEventBuilder logEntryEventBuilder;
         private LogEntryEvent__e logEntryEvent;
 
@@ -43,14 +43,18 @@ public inherited sharing class FlowLogger {
             // Set the logging level if it's blank
             if (String.isBlank(this.loggingLevelName)) {
                 if (String.isNotBlank(this.faultMessage)) {
-                    this.loggingLevelName = 'ERROR';
+                    this.loggingLevelName = LoggingLevel.ERROR.name();
                 } else {
-                    this.loggingLevelName = 'DEBUG';
+                    this.loggingLevelName = LoggingLevel.DEBUG.name();
                 }
             }
 
-            this.loggingLevel = Logger.getLoggingLevel(this.loggingLevelName);
-            this.logEntryEventBuilder = Logger.newEntry(this.loggingLevel, this.message).setTopics(this.topics).addTags(this.tags);
+            // In Flow, using comma-separated String is easier than List<String>
+            // but LogEntryEventBuilder.addTags() uses List<String>, so FlowLogger handles the conversion work
+            List<String> parsedTags = this.tagsString?.replace(', ', '').replace(' ,', ',').split(',');
+
+            this.entryLoggingLevel = Logger.getLoggingLevel(this.loggingLevelName);
+            this.logEntryEventBuilder = Logger.newEntry(this.entryLoggingLevel, this.message).addTags(this.topics).addTags(parsedTags);
             this.logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
             if (this.logEntryEventBuilder.shouldSave() == false) {

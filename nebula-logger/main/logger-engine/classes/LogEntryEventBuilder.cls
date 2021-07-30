@@ -414,7 +414,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     /**
-     * @description Deprecated - use `setTags(List<String> tags)` instead.
+     * @description Deprecated - use `addTags(List<String> tags)` instead.
      *              This method will be removed in a future release
      */
     public LogEntryEventBuilder setTopics(List<String> tags) {

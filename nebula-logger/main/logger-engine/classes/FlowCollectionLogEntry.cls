@@ -50,13 +50,13 @@ global inherited sharing class FlowCollectionLogEntry {
     global String loggingLevelName;
 
     /**
-     * @description Optionally provide a list of topics to dynamically assign to the log entry
+     * @description Optionally provide a comma-separated String of tags to dynamically assign to the log entry
      */
-    @InvocableVariable(required=false label='(Optional) Tags')
-    global List<String> tags;
+    @InvocableVariable(required=false label='(Optional) Tags (comma-separated)')
+    global String tagsString;
 
     /**
-     * @description Optionally provide a list of topics to dynamically assign to the log entry
+     * @description Optionally provide a comma-separated String of tags to dynamically assign to the log entry
      */
     @InvocableVariable(required=false label='DEPRECATED: Use \'Tags\' Instead')
     public List<String> topics;

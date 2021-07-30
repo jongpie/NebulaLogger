@@ -26,6 +26,17 @@ private class LogBatchPurger_Tests {
             logEntries.add(logEntry);
         }
         insert logEntries;
+
+
+        LoggerTag__c tag = new LoggerTag__c(Name = 'My important tag');
+        insert tag;
+
+        List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
+        for (LogEntry__c logEntry : logEntries) {
+            LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
+            logEntryTags.add(logEntryTag);
+        }
+        insert logEntryTags;
     }
 
     @isTest

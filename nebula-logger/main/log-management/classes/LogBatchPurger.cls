@@ -113,10 +113,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         return [SELECT COUNT() FROM LogEntry__c WHERE Log__r.LogRetentionDate__c <= :System.today() AND Log__r.LogRetentionDate__c != NULL];
     }
 
-    private Integer getLogCount() {
-        return [SELECT COUNT() FROM Log__c WHERE LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL];
-    }
-
     /**
      * @description Determines which of the 3 Logger objects (LogEntryTag__c, LogEntry__c or Log__c) should be deleted next.
      *              Records for each SObject type are deleted in separate instances of the LogBatchPurger job,
