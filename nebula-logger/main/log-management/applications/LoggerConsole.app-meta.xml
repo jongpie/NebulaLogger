@@ -12,12 +12,16 @@
     <navType>Console</navType>
     <tabs>Log__c</tabs>
     <tabs>LogEntry__c</tabs>
+    <tabs>LogEntryTag__c</tabs>
     <tabs>LoggerTag__c</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LoggerConsoleUtilityBar</utilityBar>
     <workspaceConfig>
+        <mappings>
+            <tab>LogEntryTag__c</tab>
+        </mappings>
         <mappings>
             <fieldName>Log__c</fieldName>
             <tab>LogEntry__c</tab>
