@@ -170,17 +170,13 @@
     <pluralLabel>Log Entry Tags</pluralLabel>
     <searchLayouts>
         <customTabListAdditionalFields>LogEntry__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Log__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Tag__c</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>LogEntry__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Log__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Tag__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LogEntry__c</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>Log__c</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Tag__c</lookupPhoneDialogsAdditionalFields>
         <searchFilterFields>NAME</searchFilterFields>
         <searchFilterFields>LogEntry__c</searchFilterFields>
-        <searchFilterFields>Log__c</searchFilterFields>
         <searchFilterFields>Tag__c</searchFilterFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>

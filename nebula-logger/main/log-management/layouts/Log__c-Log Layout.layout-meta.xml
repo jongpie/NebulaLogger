@@ -364,13 +364,6 @@
         <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
-        <fields>LogEntry__c</fields>
-        <fields>Tag__c</fields>
-        <relatedList>LogEntryTag__c.Log__c</relatedList>
-        <sortField>Tag__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
-    <relatedLists>
         <excludeButtons>MassChangeOwner</excludeButtons>
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>

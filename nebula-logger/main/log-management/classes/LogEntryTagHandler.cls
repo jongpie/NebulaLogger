@@ -37,7 +37,6 @@ public without sharing class LogEntryTagHandler extends LoggerSObjectHandler {
         switch on this.triggerOperationType {
             when BEFORE_INSERT, BEFORE_UPDATE {
                 this.setUniqueIdField();
-                this.setLogField();
             }
         }
 
@@ -50,16 +49,4 @@ public without sharing class LogEntryTagHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void setLogField() {
-        // Auto-set the Log__c lookup field - this lets the LogEntryTag__c record show as related to both the LogEntry__c and Log__c
-        List<Id> logEntryIds = new List<Id>();
-        for (LogEntryTag__c logEntryTag : this.logEntryTags) {
-            logEntryIds.add(logEntryTag.LogEntry__c);
-        }
-        Map<Id, LogEntry__c> logEntryIdToRecord = new Map<Id, LogEntry__c>([SELECT Id, Log__c FROM LogEntry__c WHERE Id IN :logEntryIds]);
-
-        for (LogEntryTag__c logEntryTag : this.logEntryTags) {
-            logEntryTag.Log__c = logEntryIdToRecord.get(logEntryTag.LogEntry__c).Log__c;
-        }
-    }
 }
