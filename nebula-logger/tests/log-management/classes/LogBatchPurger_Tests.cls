@@ -40,6 +40,28 @@ private class LogBatchPurger_Tests {
         insert logEntryTags;
     }
 
+
+    @isTest
+    static void it_should_throw_exception_when_user_does_not_have_delete_access() {
+        Integer originalCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+
+        User standardUser = createStandardUser();
+        System.runAs(standardUser) {
+            System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
+
+            try {
+                Test.startTest();
+                Database.executeBatch(new LogBatchPurger());
+                Test.stopTest();
+            } catch(NoAccessException ex) {
+                System.assertEquals(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
+
+            }
+        }
+        Integer updatedCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(originalCountOfLogEntries, updatedCountOfLogEntries);
+    }
+
     @isTest
     static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_enabled() {
         LoggerSettings__c settings = Logger.getUserSettings();
@@ -152,5 +174,20 @@ private class LogBatchPurger_Tests {
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(1, logs.size(), logs);
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size(), logEntries);
+    }
+
+    private static User createStandardUser() {
+        Profile standardUserProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
+        return new User(
+            Alias = 'log_xyz',
+            Email = 'logger_xyz@test.com.net.org',
+            EmailEncodingKey = 'ISO-8859-1',
+            LanguageLocaleKey = 'en_US',
+            LastName = 'Logger test user',
+            LocaleSidKey = 'en_US',
+            ProfileId = standardUserProfile.Id,
+            TimeZoneSidKey = 'America/Los_Angeles',
+            Username = 'logger_xyz@test.com.net.org'
+        );
     }
 }

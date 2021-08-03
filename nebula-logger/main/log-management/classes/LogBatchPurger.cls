@@ -9,14 +9,14 @@
  * @see LogBatchPurgeScheduler
  */
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
+    @TestVisible
+    private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
+
     private final Boolean isSystemDebuggingEnabled;
 
     private SObjectType currentSObjectType;
     private String originalTransactionId;
     private Integer totalProcessedRecords;
-
-    private class LogBatchPurgerException extends Exception {
-    }
 
     global LogBatchPurger() {
         this.isSystemDebuggingEnabled = Logger.getUserSettings()?.EnableSystemMessages__c == true;
@@ -24,8 +24,10 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     }
 
     global Database.QueryLocator start(Database.BatchableContext batchableContext) {
-        if (!Schema.Log__c.SObjectType.getDescribe().isDeletable()) {
-            throw new LogBatchPurgerException('User does not have access to delete logs');
+        if (Schema.Log__c.SObjectType.getDescribe().isDeletable() == false) {
+            NoAccessException noDeleteAccessException = new NoAccessException();
+            noDeleteAccessException.setMessage(NO_DELETE_ACCESS_EXCEPTION_MESSAGE);
+            throw noDeleteAccessException;
         }
 
         // Each batchable method runs in a separate transaction,
@@ -45,10 +47,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     }
 
     global void execute(Database.BatchableContext batchableContext, List<SObject> loggerRecords) {
-        if (!Schema.Log__c.SObjectType.getDescribe().isDeletable()) {
-            throw new LogBatchPurgerException('User does not have access to delete logs');
-        }
-
         try {
             this.totalProcessedRecords += loggerRecords.size();
             this.hardDelete(loggerRecords);
