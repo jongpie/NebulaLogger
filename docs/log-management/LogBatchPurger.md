@@ -12,9 +12,15 @@ Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :Sy
 
 ---
 
+### Constructors
+
+#### `LogBatchPurger()`
+
+---
+
 ### Methods
 
-#### `execute(Database.BatchableContext batchableContext, List<Log__c> logsToDelete)` → `void`
+#### `execute(Database.BatchableContext batchableContext, List<SObject> loggerRecords)` → `void`
 
 #### `finish(Database.BatchableContext batchableContext)` → `void`
 

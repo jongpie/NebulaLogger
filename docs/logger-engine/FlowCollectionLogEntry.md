@@ -46,11 +46,15 @@ The records to relate to this log entry - the records' JSON is automatically add
 
 Optionally choose to save any pending log entries
 
+#### `tagsString` → `String`
+
+Optionally provide a comma-separated String of tags to dynamically assign to the log entry
+
 #### `timestamp` → `DateTime`
 
 #### `topics` → `List<String>`
 
-Optionally provide a list of topics to dynamically assign to the log entry
+Optionally provide a comma-separated String of tags to dynamically assign to the log entry
 
 ---
 
