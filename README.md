@@ -375,7 +375,7 @@ Admins can configure rule-based tagging to append additional tags. Thess tags ar
 
 1. Logger SObject: currently, only the "Log Entry" (`LogEntry__c`) object is supported.
 2. Field: the SObject's field that should be evaluated. Only 1 field can be selected per rule.
-3. Comparison Operation: the operation you want to use to compare the field's value. Currently supported options are: `CONTAINS`, `EQUALS`, `MATCHES_REGEX`, and `STARTS_WITH`.
+3. Comparison Type: the type of operation you want to use to compare the field's value. Currently supported options are: `CONTAINS`, `EQUALS`, `MATCHES_REGEX`, and `STARTS_WITH`.
 4. Comparison Value: the comparison value that should be used for the selected field operation.
 5. Tags: a list of tag names that should be dynamically applied to any matching `LogEntry__c` records. When specifying multiple tags, put each tag on a separate line within the Tags field.
 6. Is Enabled: only enabled rules are used by Logger - this is a handy way to easily enable/disable a particular rule without having to entirely delete it
