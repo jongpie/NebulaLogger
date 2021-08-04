@@ -178,8 +178,8 @@ jobs:
 
     #         - name: 'Generate Docs'
     #           run: npm run docs:generate
-              # TODO need to commit & push any changes to ./docs/*
+    # TODO need to commit & push any changes to ./docs/*
 
-              # TODO uncomment
-          # - name: 'Create unlocked package version'
-          #   run: npm run package:version:create:unlocked
+    # TODO uncomment
+    # - name: 'Create unlocked package version'
+    #   run: npm run package:version:create:unlocked

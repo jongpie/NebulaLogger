@@ -48,5 +48,4 @@ public without sharing class LogEntryTagHandler extends LoggerSObjectHandler {
             logEntryTag.UniqueId__c = logEntryTag.LogEntry__c + '' + logEntryTag.Tag__c;
         }
     }
-
 }

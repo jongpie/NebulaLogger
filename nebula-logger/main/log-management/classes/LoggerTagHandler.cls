@@ -47,6 +47,5 @@ public without sharing class LoggerTagHandler extends LoggerSObjectHandler {
         for (LoggerTag__c loggerTag : this.loggerTags) {
             loggerTag.UniqueId__c = loggerTag.Name;
         }
-
     }
 }
