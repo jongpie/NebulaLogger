@@ -348,15 +348,41 @@ Within Flow (and Process Builder), there are 4 invocable actions that you can us
 
 ## Tagging Your Log Entries
 
-Nebula Logger supports dynamically tagging/labeling your `LogEntry__c` records via Apex and Flow. Tags can then be stored using one of the two supported modes (discussed below).
+Nebula Logger supports dynamically tagging/labeling your `LogEntry__c` records via Apex, Flow, and configurable CMDT records in `LogEntryTagRule__mdt`. Tags can then be stored using one of the two supported modes (discussed below).
 
 ### Adding Tags in Apex
 
-// TODO LogEntryEventBuilder.addTag(String tagName) and addTags(List<String> tagNames)
+Apex developers can use 2 new methods in `LogEntryBuilder` to add tags - `LogEntryEventBuilder.addTag(String)` and `LogEntryEventBuilder.addTags(List<String>)`.
+
+```java
+// Use addTag(String tagName) for adding 1 tag at a time
+Logger.debug('my log message').addTag('some tag').addTag('another tag');
+
+// Use addTags(List<String> tagNames) for adding a list of tags in 1 method call
+List<String> myTags = new List<String>{'some tag', 'another tag'};
+Logger.debug('my log message').addTags(myTags);
+```
 
 ### Adding Tags in Flow
 
-// TODO example screenshot of Flow builder setting tags
+Flow builders can use the `Tags` property to specify a comma-separated list of tags to apply to the log entry. This feature is available for all 3 Flow classes: `FlowLogEntry`, `FlowRecordLogEntry` and `FlowCollectionLogEntry`.
+
+![Flow Logging with Tags](./content/flow-builder-log-with-tags.png)
+
+### Adding Tags Using the CMDT object `LogEntryTagRule__mdt`
+
+Admins can configure rule-based tagging to append additional tags. Thess tags are added on top of any tags added via Apex and/or Flow. Rules can be set up by configuring a rule with these fields set:
+
+1. Logger SObject: currently, only the "Log Entry" (`LogEntry__c`) object is supported.
+2. Field: the SObject's field that should be evaluated. Only 1 field can be selected per rule.
+3. Comparison Operation: the operation you want to use to compare the field's value. Currently supported options are: `CONTAINS`, `EQUALS`, `MATCHES_REGEX`, and `STARTS_WITH`.
+4. Comparison Value: the comparison value that should be used for the selected field operation.
+5. Tags: a list of tag names that should be dynamically applied to any matching `LogEntry__c` records. When specifying multiple tags, put each tag on a separate line within the Tags field.
+6. Is Enabled: only enabled rules are used by Logger - this is a handy way to easily enable/disable a particular rule without having to entirely delete it
+
+Below is an example of what a rule looks like once configured. Based on this rule, any `LogEntry__c` records that contain "My Important Text" in the `Message__c` field will automatically have 2 tags added - "Really important tag" and "A tag with an emoji, whynot?! 🔥"
+
+![Tag Rule Example](./content/tag-rule-example.png)
 
 ### Choosing a Tagging Mode
 
@@ -396,7 +422,7 @@ Once you've implementing log entry tagging within Apex or Flow, you can choose h
             <td>
                 <ul>
                     <li>Access to the <code>LoggerTag__c</code> object can be granted/restricted using standard Salesforce object and record-sharing functionality (OWD, sharing rules, profiles, permission sets, etc). By default, <code>LoggerTag__c</code> OWD is set to 'public read-only' for internal users and 'private' for external users</li>
-                    <li>Since <code>LogEntryTag__c</code> is junction object, access to these records is controlled by a user's access to the related <code>LogEntry__c</code> and <code>LoggerTag__c</code> records</li>
+                    <li>Since <code>LogEntryTag__c</code> is a junction object, access to these records is controlled by a user's access to the related <code>LogEntry__c</code> and <code>LoggerTag__c</code> records</li>
                 </ul>
             </td>
             <td>

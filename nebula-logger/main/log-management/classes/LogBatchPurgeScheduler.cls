@@ -9,7 +9,7 @@
  * @see LogBatchPurger
  */
 global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
-    private Integer batchSize;
+    private final Integer batchSize;
 
     global LogBatchPurgeScheduler() {
         this(200);

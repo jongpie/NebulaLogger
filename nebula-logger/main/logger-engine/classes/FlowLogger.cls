@@ -51,7 +51,7 @@ public inherited sharing class FlowLogger {
 
             // In Flow, using comma-separated String is easier than List<String>
             // but LogEntryEventBuilder.addTags() uses List<String>, so FlowLogger handles the conversion work
-            List<String> parsedTags = this.tagsString?.replace(', ', ',').replace(' ,', ',').split(',');
+            List<String> parsedTags = this.tagsString?.replaceAll('( ,)|(,)|(, )', ',').split(',');
 
             this.entryLoggingLevel = Logger.getLoggingLevel(this.loggingLevelName);
             this.logEntryEventBuilder = Logger.newEntry(this.entryLoggingLevel, this.message).addTags(this.topics).addTags(parsedTags);

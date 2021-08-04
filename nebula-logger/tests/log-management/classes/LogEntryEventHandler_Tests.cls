@@ -257,7 +257,7 @@ private class LogEntryEventHandler_Tests {
 
     @isTest
     static void it_should_create_tag_records_when_enabled() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED);
+        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -293,7 +293,7 @@ private class LogEntryEventHandler_Tests {
 
     @isTest
     static void it_should_reuse_existing_tag_records() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED);
+        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         String testTagName = 'Some tag!';
         LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
@@ -331,7 +331,7 @@ private class LogEntryEventHandler_Tests {
 
     @isTest
     static void it_should_append_tags_for_contains_rule() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED);
+        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -371,7 +371,7 @@ private class LogEntryEventHandler_Tests {
 
     @isTest
     static void it_should_append_tags_for_equals_rule() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED);
+        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -411,7 +411,7 @@ private class LogEntryEventHandler_Tests {
 
     @isTest
     static void it_should_append_tags_for_regex_rule() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED);
+        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         String zipCodeRegEx = '(^[0-9]{4}?[0-9]$|^[0-9]{4}?[0-9]-[0-9]{4}$)';
 
@@ -453,7 +453,7 @@ private class LogEntryEventHandler_Tests {
 
     @isTest
     static void it_should_append_tags_for_startsWith_rule() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED);
+        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -839,14 +839,14 @@ private class LogEntryEventHandler_Tests {
 
         System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c);
         System.assertEquals(logEntryEvent.Locale__c, log.Locale__c);
-        //System.assertEquals(logEntryEvent.CreatedById, log.LoggedBy__c);
+        System.assertEquals(UserInfo.getUserId(), log.LoggedBy__c);
         System.assertEquals(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c);
         System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c);
         System.assertEquals(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c);
         System.assertEquals(logEntryEvent.LoginType__c, log.LoginType__c);
         System.assertEquals(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c);
         System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c);
-        //System.assertEquals(logEntryEvent.CreatedById, log.OwnerId);
+        System.assertEquals(UserInfo.getUserId(), log.OwnerId);
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);

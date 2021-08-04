@@ -264,7 +264,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
-        // Orgs can be configured to either use LoggerTag__c and LogEntryTag__c (default), or use Topic & TopicAssignment
+        // Orgs can be configured to either use LoggerTag__c & LogEntryTag__c (default), or use Topic & TopicAssignment
         Schema.SObjectType tagSObjectType = TAG_USING_TOPICS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
         Map<String, Id> tagNameToId = getTagNameToId(tagSObjectType);
         this.tagNames.addAll(tagNameToId.keySet());

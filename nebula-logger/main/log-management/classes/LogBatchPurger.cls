@@ -33,10 +33,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         // Each batchable method runs in a separate transaction,
         // so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
-
-        if (this.currentSObjectType == null) {
-            this.currentSObjectType = this.getInitialSObjectType();
-        }
+        this.currentSObjectType = this.getInitialSObjectType();
 
         if (this.isSystemDebuggingEnabled) {
             Logger.info('Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
