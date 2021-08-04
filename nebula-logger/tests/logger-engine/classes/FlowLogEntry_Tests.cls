@@ -187,7 +187,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
 
         List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(tags.size(), logEntryTags.size());
+        System.assertEquals(tags.size(), logEntryTags.size(), logEntryTags);
         Set<String> tagsSet = new Set<String>(tags);
         for (LogEntryTag__c logEntryTag : logEntryTags) {
             System.assert(tagsSet.contains(logEntryTag.Tag__r.Name));

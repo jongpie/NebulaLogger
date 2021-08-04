@@ -207,10 +207,10 @@ private class FlowRecordLogEntry_Tests {
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
         List<String> tags = new List<String>{ 'first tag', 'SECOND TAG' };
-        FlowLogEntry flowRecordEntry = createFlowLogEntry();
-        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
-        flowRecordEntry.tagsString = String.join(tags, ', ');
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowRecordEntry });
+        FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
+        flowEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
+        flowEntry.tagsString = String.join(tags, ', ');
+        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -219,12 +219,12 @@ private class FlowRecordLogEntry_Tests {
         Test.stopTest();
 
         LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
-        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
-        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals(flowEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
 
         List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(tags.size(), logEntryTags.size());
+        System.assertEquals(tags.size(), logEntryTags.size(), logEntryTags);
         Set<String> tagsSet = new Set<String>(tags);
         for (LogEntryTag__c logEntryTag : logEntryTags) {
             System.assert(tagsSet.contains(logEntryTag.Tag__r.Name));

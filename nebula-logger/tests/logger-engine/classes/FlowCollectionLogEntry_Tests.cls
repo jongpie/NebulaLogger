@@ -210,10 +210,10 @@ private class FlowCollectionLogEntry_Tests {
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
         List<String> tags = new List<String>{ 'first tag', 'SECOND TAG' };
-        FlowLogEntry flowCollectionEntry = createFlowLogEntry();
+        FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
         flowCollectionEntry.tagsString = String.join(tags, ', ');
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowCollectionEntry });
+        FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowCollectionEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -227,7 +227,7 @@ private class FlowCollectionLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
 
         List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(tags.size(), logEntryTags.size());
+        System.assertEquals(tags.size(), logEntryTags.size(), logEntryTags);
         Set<String> tagsSet = new Set<String>(tags);
         for (LogEntryTag__c logEntryTag : logEntryTags) {
             System.assert(tagsSet.contains(logEntryTag.Tag__r.Name));
