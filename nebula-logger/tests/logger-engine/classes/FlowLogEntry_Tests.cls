@@ -2,31 +2,32 @@
 // This file is part of the Nebula Logger project, released under the MIT License.                //
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
+
 @isTest
 private class FlowLogEntry_Tests {
     static FlowLogEntry createFlowLogEntry() {
-        FlowLogEntry flowRecordEntry = new FlowLogEntry();
-        flowRecordEntry.flowName = 'MyFlowOrProcessBuilder';
-        flowRecordEntry.message = 'my test message';
-        flowRecordEntry.saveLog = false;
+        FlowLogEntry flowEntry = new FlowLogEntry();
+        flowEntry.flowName = 'MyFlowOrProcessBuilder';
+        flowEntry.message = 'my test message';
+        flowEntry.saveLog = false;
 
-        return flowRecordEntry;
+        return flowEntry;
     }
 
     @isTest
     static void it_should_save_entry_when_logging_level_met() {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
+        LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
 
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowLogEntry flowRecordEntry = createFlowLogEntry();
-        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowRecordEntry });
+        FlowLogEntry flowEntry = createFlowLogEntry();
+        flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -35,26 +36,26 @@ private class FlowLogEntry_Tests {
         Test.stopTest();
 
         LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
-        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
-        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals(flowEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
     }
 
     @isTest
     static void it_should_auto_save_entry_when_saveLog_is_true() {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
+        LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
 
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowLogEntry flowRecordEntry = createFlowLogEntry();
-        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
-        flowRecordEntry.saveLog = true;
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowRecordEntry });
+        FlowLogEntry flowEntry = createFlowLogEntry();
+        flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
+        flowEntry.saveLog = true;
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
 
         Test.stopTest();
 
@@ -64,25 +65,25 @@ private class FlowLogEntry_Tests {
             ORDER BY CreatedDate
             LIMIT 1
         ];
-        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
-        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals(flowEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
     }
 
     @isTest
     static void it_should_not_save_entry_when_logging_level_not_met() {
         LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
-        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() > flowRecordEntryLoggingLevel.ordinal());
+        LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() > flowEntryLoggingLevel.ordinal());
 
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowLogEntry flowRecordEntry = createFlowLogEntry();
-        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
-        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowRecordEntry });
+        FlowLogEntry flowEntry = createFlowLogEntry();
+        flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
 
         System.assertEquals(0, Logger.getBufferSize());
 
@@ -155,5 +156,41 @@ private class FlowLogEntry_Tests {
         System.assertEquals(expectedEntryLoggingLevel.name(), logEntry.LoggingLevel__c);
         System.assertEquals(flowEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
+    }
+
+    @isTest
+    static void it_should_add_tags_to_log_entry() {
+        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
+
+        Test.startTest();
+
+        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
+
+        List<String> tags = new List<String>{ 'first tag', 'SECOND TAG' };
+        FlowLogEntry flowEntry = createFlowLogEntry();
+        flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
+        flowEntry.tagsString = String.join(tags, ', ');
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
+
+        System.assertEquals(1, Logger.getBufferSize());
+
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        System.assertEquals(flowEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+
+        List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+        System.assertEquals(tags.size(), logEntryTags.size());
+        Set<String> tagsSet = new Set<String>(tags);
+        for (LogEntryTag__c logEntryTag : logEntryTags) {
+            System.assert(tagsSet.contains(logEntryTag.Tag__r.Name));
+        }
     }
 }

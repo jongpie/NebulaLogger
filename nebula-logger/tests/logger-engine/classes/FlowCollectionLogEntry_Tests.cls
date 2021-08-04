@@ -2,6 +2,7 @@
 // This file is part of the Nebula Logger project, released under the MIT License.                //
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
+
 @isTest
 private class FlowCollectionLogEntry_Tests {
     static FlowCollectionLogEntry createFlowCollectionLogEntry() {
@@ -196,5 +197,40 @@ private class FlowCollectionLogEntry_Tests {
         System.assertEquals(expectedEntryLoggingLevel.name(), logEntry.LoggingLevel__c);
         System.assertEquals(flowEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
+    }
+    @isTest
+    static void it_should_add_tags_to_log_entry() {
+        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
+
+        Test.startTest();
+
+        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
+
+        List<String> tags = new List<String>{ 'first tag', 'SECOND TAG' };
+        FlowLogEntry flowCollectionEntry = createFlowLogEntry();
+        flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
+        flowCollectionEntry.tagsString = String.join(tags, ', ');
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowCollectionEntry });
+
+        System.assertEquals(1, Logger.getBufferSize());
+
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        System.assertEquals(flowCollectionEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowCollectionEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+
+        List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+        System.assertEquals(tags.size(), logEntryTags.size());
+        Set<String> tagsSet = new Set<String>(tags);
+        for (LogEntryTag__c logEntryTag : logEntryTags) {
+            System.assert(tagsSet.contains(logEntryTag.Tag__r.Name));
+        }
     }
 }

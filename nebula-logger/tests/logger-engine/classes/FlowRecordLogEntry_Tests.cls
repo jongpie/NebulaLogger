@@ -2,6 +2,7 @@
 // This file is part of the Nebula Logger project, released under the MIT License.                //
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
+
 @isTest
 private class FlowRecordLogEntry_Tests {
     static FlowRecordLogEntry createFlowRecordLogEntry() {
@@ -135,11 +136,11 @@ private class FlowRecordLogEntry_Tests {
         Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
-        System.assertEquals(null, flowEntry.faultMessage);
-        System.assertEquals(null, flowEntry.loggingLevelName);
+        FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
+        System.assertEquals(null, flowRecordEntry.faultMessage);
+        System.assertEquals(null, flowRecordEntry.loggingLevelName);
 
-        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowEntry });
+        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -156,7 +157,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(null, logEntry.ExceptionMessage__c);
         System.assertEquals(null, logEntry.ExceptionType__c);
         System.assertEquals(expectedEntryLoggingLevel.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, logEntry.Message__c);
+        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
     }
 
@@ -169,11 +170,11 @@ private class FlowRecordLogEntry_Tests {
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
         Logger.getUserSettings().EnableSystemMessages__c = false;
 
-        FlowRecordLogEntry flowEntry = createFlowRecordLogEntry();
-        flowEntry.faultMessage = 'Whoops, a Flow error has occurred.';
-        System.assertEquals(null, flowEntry.loggingLevelName);
+        FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
+        flowRecordEntry.faultMessage = 'Whoops, a Flow error has occurred.';
+        System.assertEquals(null, flowRecordEntry.loggingLevelName);
 
-        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowEntry });
+        FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
 
         System.assertEquals(1, Logger.getBufferSize());
 
@@ -187,10 +188,46 @@ private class FlowRecordLogEntry_Tests {
             ORDER BY CreatedDate
             LIMIT 1
         ];
-        System.assertEquals(flowEntry.faultMessage, logEntry.ExceptionMessage__c);
+        System.assertEquals(flowRecordEntry.faultMessage, logEntry.ExceptionMessage__c);
         System.assertEquals('Flow.FaultError', logEntry.ExceptionType__c);
         System.assertEquals(expectedEntryLoggingLevel.name(), logEntry.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, logEntry.Message__c);
+        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
+    }
+
+    @isTest
+    static void it_should_add_tags_to_log_entry() {
+        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
+
+        Test.startTest();
+
+        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        Logger.getUserSettings().EnableSystemMessages__c = false;
+
+        List<String> tags = new List<String>{ 'first tag', 'SECOND TAG' };
+        FlowLogEntry flowRecordEntry = createFlowLogEntry();
+        flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
+        flowRecordEntry.tagsString = String.join(tags, ', ');
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowRecordEntry });
+
+        System.assertEquals(1, Logger.getBufferSize());
+
+        Logger.saveLog();
+
+        Test.stopTest();
+
+        LogEntry__c logEntry = [SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c FROM LogEntry__c ORDER BY CreatedDate LIMIT 1];
+        System.assertEquals(flowRecordEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowRecordEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+
+        List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
+        System.assertEquals(tags.size(), logEntryTags.size());
+        Set<String> tagsSet = new Set<String>(tags);
+        for (LogEntryTag__c logEntryTag : logEntryTags) {
+            System.assert(tagsSet.contains(logEntryTag.Tag__r.Name));
+        }
     }
 }
