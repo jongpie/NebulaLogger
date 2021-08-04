@@ -9,11 +9,12 @@
  */
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
-    private static Boolean TAGGING_IS_ENABLED = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_EnableTagging', true);
+    @TestVisible
+    private static final Boolean TAGGING_IS_ENABLED = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_EnableTagging', true);
+    @TestVisible
+    private static final Boolean TAG_USING_TOPICS = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
+    @TestVisible
     private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
-
-    // Orgs can be configured to either use LoggerTag__c and LogEntryTag__c (default), or use Topic & TopicAssignment
-    Boolean TAG_USING_TOPICS = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
 
     // Trigger-based variables - tests can override these with mock objects
     @testVisible
@@ -263,6 +264,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
+        // Orgs can be configured to either use LoggerTag__c and LogEntryTag__c (default), or use Topic & TopicAssignment
         Schema.SObjectType tagSObjectType = TAG_USING_TOPICS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
         Map<String, Id> tagNameToId = getTagNameToId(tagSObjectType);
         this.tagNames.addAll(tagNameToId.keySet());
@@ -345,19 +347,27 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
-        return [
+        List<LogEntryTagRule__mdt> tagAssignmentRules = [
             SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
             FROM LogEntryTagRule__mdt
             WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
         ];
+        for (LogEntryTagRule__mdt rule : tagAssignmentRules) {
+            rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
+        }
+        if (Test.isRunningTest() == true) {
+            // During tests, only use mock records - tests can add mock records using LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add()
+            tagAssignmentRules.clear();
+        }
+        return tagAssignmentRules;
     }
 
     private static Boolean ruleCriteriaMet(LogEntry__c logEntry, LogEntryTagRule__mdt rule) {
         Boolean ruleCriteriaMet = false;
-        String logEntryFieldValue = String.valueOf(logEntry.get(rule.SObjectField__r.QualifiedApiName));
+        String logEntryFieldValue = String.valueOf(logEntry.get(rule.SObjectField__c));
         String ruleComparisonValue = rule.ComparisonValue__c;
 
-        switch on rule.ComparisonType__c {
+        switch on rule?.ComparisonType__c.toUpperCase() {
             when 'CONTAINS' {
                 ruleCriteriaMet = logEntryFieldValue.containsIgnoreCase(ruleComparisonValue);
             }
