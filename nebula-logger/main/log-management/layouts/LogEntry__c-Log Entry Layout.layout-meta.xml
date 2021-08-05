@@ -41,6 +41,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>EpochTimestamp__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>Trigger__c</field>
             </layoutItems>
         </layoutColumns>
