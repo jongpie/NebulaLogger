@@ -369,7 +369,7 @@ Flow builders can use the `Tags` property to specify a comma-separated list of t
 
 ![Flow Logging with Tags](./content/flow-builder-log-with-tags.png)
 
-### Adding Tags Using Custom Metadata Records
+### Adding Tags with Custom Metadata Records
 
 Admins can configure tagging rules to append additional tags using the custom metadata type `LogEntryTagRule__mdt`.
 
@@ -455,7 +455,7 @@ Once you've implementing log entry tagging within Apex or Flow, you can choose h
 
 ### Logger Console App
 
-The Logger Console app provides access to `Log__c` and `LogEntry__c` object tabs (for any users with the correct access).
+The Logger Console app provides access to the tabs for Logger's objects: `Log__c`, `LogEntry__c`, `LogEntryTag__c` and `LoggerTag__c` (for any users with the correct access).
 
 ![Logger Console app](./content/logger-console-app.png)
 

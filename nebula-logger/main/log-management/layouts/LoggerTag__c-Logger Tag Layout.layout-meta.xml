@@ -93,6 +93,7 @@
         <fields>LogEntry__c.Message__c</fields>
         <fields>LogEntry__c.Origin__c</fields>
         <fields>LogEntry__c.RecordDetailedLink__c</fields>
+        <fields>NAME</fields>
         <fields>LogEntry__c.Timestamp__c</fields>
         <relatedList>LogEntryTag__c.Tag__c</relatedList>
         <sortField>LogEntry__c.Timestamp__c</sortField>
@@ -104,7 +105,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h21000002sXUy</masterLabel>
+        <masterLabel>00hS0000004cTgm</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

@@ -171,6 +171,11 @@
     <searchLayouts>
         <customTabListAdditionalFields>LogEntry__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Tag__c</customTabListAdditionalFields>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>IsotopeSubscription</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons>Import</excludedStandardButtons>
         <lookupDialogsAdditionalFields>LogEntry__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Tag__c</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>LogEntry__c</lookupPhoneDialogsAdditionalFields>

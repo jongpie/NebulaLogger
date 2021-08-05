@@ -246,9 +246,6 @@
     </platformActionList>
     <relatedLists>
         <fields>LoggerTag__c.NAME</fields>
-        <fields>LoggerTag__c.TotalLogEntries__c</fields>
-        <fields>CREATEDBY_USER</fields>
-        <fields>CREATED_DATE</fields>
         <relatedList>LogEntryTag__c.LogEntry__c</relatedList>
         <sortField>LoggerTag__c.NAME</sortField>
         <sortOrder>Asc</sortOrder>
@@ -259,7 +256,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h21000002sXUr</masterLabel>
+        <masterLabel>00hS0000004cTgf</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
