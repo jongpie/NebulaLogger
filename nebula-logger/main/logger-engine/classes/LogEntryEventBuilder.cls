@@ -68,15 +68,8 @@ global with sharing class LogEntryEventBuilder {
             TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
         );
 
-        // TODO add check to see if the class's namespace == the org's namespace
-        //if (!hasNamespacePrefix()) {
         DmlException stackTraceException = new DmlException();
         this.parseStackTrace(stackTraceException.getStackTraceString());
-        //}
-
-        Database.DmlOptions dmlOptions = new Database.DmlOptions();
-        dmlOptions.allowFieldTruncation = true;
-        this.logEntryEvent.setOptions(dmlOptions);
     }
 
     /**
@@ -107,7 +100,9 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.Message__c = message;
+        String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
+        this.logEntryEvent.Message__c = truncatedMessage;
+        this.logEntryEvent.MessageTruncated__c = message != truncatedMessage;
 
         return this;
     }
@@ -146,6 +141,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
@@ -163,6 +159,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResult);
         this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
@@ -180,6 +177,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResult);
         this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
@@ -200,6 +198,7 @@ global with sharing class LogEntryEventBuilder {
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
@@ -217,6 +216,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResult);
         this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
@@ -234,6 +234,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(deleteResults);
         this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
@@ -251,6 +252,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(mergeResults);
         this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
@@ -268,6 +270,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(saveResults);
         this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
@@ -285,6 +288,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(upsertResults);
         this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName();
 
@@ -302,6 +306,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.DatabaseResultJson__c = JSON.serializePretty(undeleteResults);
         this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
@@ -311,8 +316,6 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Deprecated - use `setRecord(Id recordId)` instead
      */
-    // TODO before publishing managed package version, uncomment @Deprecated
-    // @Deprecated
     global LogEntryEventBuilder setRecordId(Id recordId) {
         return this.setRecord(recordId);
     }
@@ -320,8 +323,6 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Deprecated - use `setRecord(SObject record)` instead
      */
-    // TODO before publishing managed package version, uncomment @Deprecated
-    // @Deprecated
     global LogEntryEventBuilder setRecordId(SObject record) {
         return this.setRecord(record);
     }
@@ -355,6 +356,7 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = record.Id;
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.RecordJson__c = JSON.serializePretty(record);
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
@@ -377,6 +379,7 @@ global with sharing class LogEntryEventBuilder {
         String sobjectTypeName = sobjectType?.getDescribe().getName();
 
         this.logEntryEvent.RecordCollectionType__c = 'List';
+        // TODO call truncateFieldValue() for the serialized String
         this.logEntryEvent.RecordJson__c = JSON.serializePretty(records);
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
         this.logEntryEvent.RecordSObjectType__c = sobjectTypeName;
@@ -687,11 +690,6 @@ global with sharing class LogEntryEventBuilder {
         return new List<String>{ Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
     }
 
-    // TODO move namespace methods to separate Namespace class (again) if other classes end up needing this info
-    /* private static Boolean hasNamespacePrefix() {
-        return String.isNotBlank(NAMESPACE_PREFIX);
-    } */
-
     private static String getNamespacePrefix() {
         String className = LogEntryEventBuilder.class.getName();
         String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
@@ -719,10 +717,6 @@ global with sharing class LogEntryEventBuilder {
             'Share' => 'Record Share Object'
         };
     }
-
-    // private static String getPrefixWithDelimiter(String delimiter) {
-    //     return String.isBlank(getPrefix()) ? '' : getPrefix() + delimiter;
-    // }
 
     private static Organization getOrganization() {
         return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
@@ -790,5 +784,16 @@ global with sharing class LogEntryEventBuilder {
         tags = new List<String>(new Set<String>(tags));
 
         return String.escapeSingleQuotes(String.join(tags, '\n'));
+    }
+
+    private static String truncateFieldValue(Schema.SObjectField field, String value) {
+        Integer fieldMaxLength = field.getDescribe().getLength();
+        if (String.isEmpty(value)) {
+            return value;
+        } else if (value.length() <= fieldMaxLength) {
+            return value;
+        }
+
+        return value.left(fieldMaxLength);
     }
 }

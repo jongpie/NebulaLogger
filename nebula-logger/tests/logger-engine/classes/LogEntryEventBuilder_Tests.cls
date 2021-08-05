@@ -102,6 +102,7 @@ private class LogEntryEventBuilder_Tests {
     @isTest
     static void it_should_set_message_fields_for_logMessage() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         Test.startTest();
@@ -111,12 +112,14 @@ private class LogEntryEventBuilder_Tests {
 
         Test.stopTest();
 
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
         System.assertEquals(logMessage.getMessage(), builder.getLogEntryEvent().Message__c);
     }
 
     @isTest
     static void it_should_set_message_fields_for_string() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         Test.startTest();
@@ -126,7 +129,48 @@ private class LogEntryEventBuilder_Tests {
 
         Test.stopTest();
 
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
         System.assertEquals(message, builder.getLogEntryEvent().Message__c);
+    }
+    
+    @isTest
+    static void it_should_truncate_message_for_long_logMessage() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(null, builder.getLogEntryEvent().Message__c);
+        
+        Test.startTest();
+        
+        Integer maxMessageLength = Schema.LogEntry__c.Message__c.getDescribe().getLength();
+        String baseMessage = 'z'.repeat(LogEntryEvent__e.Message__c.getDescribe().getLength() + 1);
+        LogMessage logMessage = new LogMessage(baseMessage, 'something else');
+        builder.setMessage(logMessage);
+        System.assert(logMessage.getMessage().length() > maxMessageLength, 'Test message length should exceed the field length');
+        builder.setMessage(logMessage);
+        
+        Test.stopTest();
+        
+        System.assertEquals(true, builder.getLogEntryEvent().MessageTruncated__c, 'Message should have been truncated');
+        System.assertEquals(logMessage.getMessage().left(maxMessageLength), builder.getLogEntryEvent().Message__c);
+    }
+    
+    @isTest
+    static void it_should_truncate_message_for_long_string() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(null, builder.getLogEntryEvent().Message__c);
+        
+        Test.startTest();
+        
+        Integer maxMessageLength = Schema.LogEntry__c.Message__c.getDescribe().getLength();
+        String message = 'z'.repeat(LogEntryEvent__e.Message__c.getDescribe().getLength() + 1);
+        System.assert(message.length() > maxMessageLength, 'Test message length should exceed the field length');
+        builder.setMessage(message);
+        
+        Test.stopTest();
+        
+        System.assertEquals(true, builder.getLogEntryEvent().MessageTruncated__c, 'Message should have been truncated');
+        System.assertEquals(message.left(maxMessageLength), builder.getLogEntryEvent().Message__c);
     }
 
     @isTest

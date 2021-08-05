@@ -44,6 +44,7 @@
     <columns>
         <field>FK_$LogEntry__c.OriginLocation__c</field>
     </columns>
+    <description>Detailed report for the LogEntryTag__c object</description>
     <filter>
         <criteriaItems>
             <column>FK_$LogEntry__c.LoggingLevel__c</column>

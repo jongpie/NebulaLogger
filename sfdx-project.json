@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionName": "Plugin Framework Enhancements",
-            "versionNumber": "4.5.2.0",
-            "versionDescription": "Optimizations & new developer features for the plugin framework",
+            "versionNumber": "4.6.0.0",
+            "versionName": "Tagging System Overhaul",
+            "versionDescription": "New features & objects for tagging log entries",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {

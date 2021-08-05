@@ -9,10 +9,10 @@
             "default": true,
             "definitionFile": "config/project-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "versionName": "Code Stability & Bugfixes",
-            "versionNumber": "4.5.0.0",
-            "ancestorVersion": "4.4.0.2",
-            "versionDescription": "Code stability & bugfixes for the managed package. Unlocked package only: new logger plugin framework",
+            "ancestorVersion": "4.5.0.0",
+            "versionNumber": "4.6.0.0",
+            "versionName": "Tagging System Overhaul",
+            "versionDescription": "New features & objects for tagging log entries",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
