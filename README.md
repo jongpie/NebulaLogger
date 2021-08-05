@@ -348,7 +348,7 @@ Within Flow (and Process Builder), there are 4 invocable actions that you can us
 
 ## Tagging Your Log Entries
 
-Nebula Logger supports dynamically tagging/labeling your `LogEntry__c` records via Apex, Flow, and configurable CMDT records in `LogEntryTagRule__mdt`. Tags can then be stored using one of the two supported modes (discussed below).
+Nebula Logger supports dynamically tagging/labeling your `LogEntry__c` records via Apex, Flow, and custom metadata records in `LogEntryTagRule__mdt`. Tags can then be stored using one of the two supported modes (discussed below).
 
 ### Adding Tags in Apex
 
@@ -369,16 +369,24 @@ Flow builders can use the `Tags` property to specify a comma-separated list of t
 
 ![Flow Logging with Tags](./content/flow-builder-log-with-tags.png)
 
-### Adding Tags Using the CMDT object `LogEntryTagRule__mdt`
+### Adding Tags Using Custom Metadata Records
 
-Admins can configure rule-based tagging to append additional tags. Thess tags are added on top of any tags added via Apex and/or Flow. Rules can be set up by configuring a rule with these fields set:
+Admins can configure tagging rules to append additional tags using the custom metadata type `LogEntryTagRule__mdt`.
 
-1. Logger SObject: currently, only the "Log Entry" (`LogEntry__c`) object is supported.
-2. Field: the SObject's field that should be evaluated. Only 1 field can be selected per rule.
+-   Rule-based tags are only added when `LogEntry__c` records are created (not on update).
+-   Rule-based tags are added in addition to any tags that have been added via Apex and/or Flow.
+-   Each rule is configured to apply tags based on the value of a single field on `LogEntry__c` (e.g., `LogEntry__c.Message__c`).
+-   Each rule can only evaluate 1 field, but multiple rules can evaluate the same field.
+-   A single rule can apply mulitple tags. When specifying multiple tags, put each tag on a separate line within the Tags field (`LogEntryTagRule__mdt.Tags__c`).
+
+Rules can be set up by configuring a custom metadata record with these fields configured:
+
+1. Logger SObject: currently, only the "Log Entry" object (`LogEntry__c`) is supported.
+2. Field: the SObject's field that should be evaluated - for example, `LogEntry__c.Message__c`. Only 1 field can be selected per rule, but multiple rules can use the same field.
 3. Comparison Type: the type of operation you want to use to compare the field's value. Currently supported options are: `CONTAINS`, `EQUALS`, `MATCHES_REGEX`, and `STARTS_WITH`.
 4. Comparison Value: the comparison value that should be used for the selected field operation.
-5. Tags: a list of tag names that should be dynamically applied to any matching `LogEntry__c` records. When specifying multiple tags, put each tag on a separate line within the Tags field.
-6. Is Enabled: only enabled rules are used by Logger - this is a handy way to easily enable/disable a particular rule without having to entirely delete it
+5. Tags: a list of tag names that should be dynamically applied to any matching `LogEntry__c` records.
+6. Is Enabled: only enabled rules are used by Logger - this is a handy way to easily enable/disable a particular rule without having to entirely delete it.
 
 Below is an example of what a rule looks like once configured. Based on this rule, any `LogEntry__c` records that contain "My Important Text" in the `Message__c` field will automatically have 2 tags added - "Really important tag" and "A tag with an emoji, whynot?! 🔥"
 
@@ -406,7 +414,7 @@ Once you've implementing log entry tagging within Apex or Flow, you can choose h
             <td>Data Model</td>
             <td>
                 <ul>
-                    <li><code>LoggerTag__c</code>: this represents the actual tag you want to apply to your log entry record. Tags are unique, based on the field <code>LoggerTag__c.Name</code> - uniqueness is enforced using duplicate rules. The logging system will automatically create <code>LoggerTag__c</code> records if a matching record does not already exist in your org.</li>
+                    <li><code>LoggerTag__c</code>: this represents the actual tag you want to apply to your log entry record. Tags are unique, based on the field <code>LoggerTag__c.Name</code>. The logging system will automatically create <code>LoggerTag__c</code> records if a matching record does not already exist in your org.</li>
                     <li><code>LogEntryTag__c</code>: a junction object between <code>LoggerTag__c</code> and <code>LogEntry__c</code></li>
                 </ul>
             </td>
