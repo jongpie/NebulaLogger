@@ -43,6 +43,13 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         return this.getQueryLocator(this.currentSObjectType);
     }
 
+    global void execute(Database.BatchableContext batchableContext, List<Log__c> logRecords) {
+        // Legacy support: this batch job originally used this method, but List<SObject> is now used
+        // However, the original method can't be removed from the managed package, so this is just
+        // here for backwards compatability
+        this.execute(batchableContext, (List<SObject>) logRecords);
+    }
+
     global void execute(Database.BatchableContext batchableContext, List<SObject> loggerRecords) {
         try {
             this.totalProcessedRecords += loggerRecords.size();

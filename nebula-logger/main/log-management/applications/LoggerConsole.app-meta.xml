@@ -23,6 +23,7 @@
     <utilityBar>LoggerConsoleUtilityBar</utilityBar>
     <workspaceConfig>
         <mappings>
+            <fieldName>LogEntry__c</fieldName>
             <tab>LogEntryTag__c</tab>
         </mappings>
         <mappings>
