@@ -358,9 +358,9 @@
         <fields>Message__c</fields>
         <fields>RecordDetailedLink__c</fields>
         <fields>LoggingLevelWithImage__c</fields>
-        <fields>Timestamp__c</fields>
+        <fields>TransactionEntryNumber__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
-        <sortField>Timestamp__c</sortField>
+        <sortField>TransactionEntryNumber__c</sortField>
         <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
