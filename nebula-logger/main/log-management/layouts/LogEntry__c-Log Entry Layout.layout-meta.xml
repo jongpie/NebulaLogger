@@ -29,6 +29,10 @@
                 <behavior>Readonly</behavior>
                 <field>Timestamp__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>EpochTimestamp__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -41,7 +45,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>EpochTimestamp__c</field>
+                <field>TransactionEntryNumber__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>

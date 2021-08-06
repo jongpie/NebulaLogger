@@ -53,6 +53,15 @@
                 <fieldItem>Record.Timestamp__c</fieldItem>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.EpochTimestamp__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-cb40f95d-9915-4ba5-815c-f3e53bcc4001</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -81,7 +90,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.EpochTimestamp__c</fieldItem>
+                <fieldItem>Record.TransactionEntryNumber__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
