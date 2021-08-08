@@ -32,7 +32,7 @@
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "test": "npm run test:lwc && npm run test:apex",
-        "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
+        "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage"
     },
     "repository": {
@@ -71,7 +71,8 @@
         "lint-staged": "latest",
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
-        "pwsh": "latest"
+        "pwsh": "latest",
+        "sfdx-cli": "latest"
     },
     "dependencies": {},
     "husky": {

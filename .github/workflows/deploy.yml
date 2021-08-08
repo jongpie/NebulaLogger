@@ -58,11 +58,12 @@ jobs:
 
             # Install Salesforce CLI
             - name: Install Salesforce CLI
-              run: |
-                  wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-                  mkdir sfdx-cli
-                  tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-                  ./sfdx-cli/install
+              run: npm install sfdx-cli --global
+              # run: |
+              #     wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+              #     mkdir sfdx-cli
+              #     tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+              #     ./sfdx-cli/install
 
             # Start local testing
             # TODO uncomment
@@ -79,7 +80,7 @@ jobs:
 
               # Upload code coverage data for LWC
             - name: 'Upload code coverage for LWC to Codecov.io'
-              uses: codecov/codecov-action@v2
+              uses: codecov/codecov-action@v2.0.2
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   flags: LWC
@@ -103,11 +104,12 @@ jobs:
 
             # Install Salesforce CLI
             - name: Install Salesforce CLI
-              run: |
-                  wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-                  mkdir sfdx-cli
-                  tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-                  ./sfdx-cli/install
+              run: npm install sfdx-cli --global
+              # run: |
+              #     wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+              #     mkdir sfdx-cli
+              #     tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+              #     ./sfdx-cli/install
 
             # Start remote testing
 
@@ -146,9 +148,13 @@ jobs:
             - name: 'Run Apex Tests'
               run: npm run test:apex
 
+            # Delete test files that Codecov is unable to parse
+            - name: 'Delete unsupported code coverage files'
+              run: rm ./tests/apex/test-result-707*-codecoverage.json
+
               # Upload code coverage data for Apex
             - name: 'Upload code coverage for Apex to Codecov.io'
-              uses: codecov/codecov-action@v2
+              uses: codecov/codecov-action@v2.0.2
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   flags: Apex
