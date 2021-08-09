@@ -1,0 +1,19 @@
+<template>
+    <template if:true={records}>
+        <lightning-card title={title} icon-name="standard:bundle_config">
+            <lightning-datatable
+                columns={columns}
+                data={records}
+                default-sort-direction={defaultSortDirection}
+                hide-checkbox-column
+                key-field="Id"
+                onsave={handleSave}
+                onsort={handleSort}
+                show-row-number-column
+                sorted-by={sortedBy}
+                sorted-direction={sortedDirection}
+            >
+            </lightning-datatable>
+        </lightning-card>
+    </template>
+</template>

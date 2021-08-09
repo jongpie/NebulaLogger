@@ -6,6 +6,41 @@
                 <componentName>console:history</componentName>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>eager</name>
+                    <type>decorator</type>
+                    <value>false</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>height</name>
+                    <type>decorator</type>
+                    <value>480</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>icon</name>
+                    <type>decorator</type>
+                    <value>settings</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <type>decorator</type>
+                    <value>Settings</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>scrollable</name>
+                    <type>decorator</type>
+                    <value>true</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>width</name>
+                    <type>decorator</type>
+                    <value>1200</value>
+                </componentInstanceProperties>
+                <componentName>loggerSettingsManager</componentName>
+            </componentInstance>
+        </itemInstances>
         <name>utilityItems</name>
         <type>Region</type>
     </flexiPageRegions>
