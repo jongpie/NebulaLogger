@@ -3,19 +3,19 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogEntryEventHandler_Tests {
     private static final String MOCK_RELEASE_NUMBER = '230.12.2';
     private static final String MOCK_RELEASE_VERSION = 'Spring \'21 Patch 12.2';
 
-    @isTest
+    @IsTest
     static void it_should_return_the_logEntryEvent_sobjectType() {
         Test.startTest();
         System.assertEquals(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_run_handler_when_disabled_via_configuration() {
         LoggerSObjectHandler__mdt logEntryEventHandlerConfiguration = getMockConfiguration();
         logEntryEventHandlerConfiguration.IsEnabled__c = false;
@@ -44,7 +44,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(0, logCount);
     }
 
-    @isTest
+    @IsTest
     static void it_should_gracefully_skip_execution_when_logEntryEvents_list_is_empty() {
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         System.assert(logEntryEvents.isEmpty());
@@ -54,7 +54,7 @@ private class LogEntryEventHandler_Tests {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_normalize_simple_event_data_into_log_and_log_entry() {
         String transactionId = '123-456-789-0';
 
@@ -81,7 +81,7 @@ private class LogEntryEventHandler_Tests {
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
-    @isTest
+    @IsTest
     static void it_should_normalize_complex_event_data_into_log_and_log_entry() {
         String transactionId = '123-456-789-0';
         User currentUser = getCurrentUser();
@@ -174,7 +174,7 @@ private class LogEntryEventHandler_Tests {
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
-    @isTest
+    @IsTest
     static void it_should_normalize_event_data_for_multiple_transactions_into_multiple_logs() {
         List<String> transactionIds = new List<String>{ '123-456', '789-0' };
         System.assertEquals(2, transactionIds.size());
@@ -218,7 +218,7 @@ private class LogEntryEventHandler_Tests {
     // TODO - testing topics is tricky. Within the unlocked package, we can test it,
     // but for people that prefer using the unpackaged metadata + don't use topics,
     // the tests would fail. Need to further investigate ways to handle this
-    // @isTest
+    // @IsTest
     // static void it_should_create_topic_and_topicAssignment_records_when_enabled() {
     //     String transactionId = '123-456-789-0';
 
@@ -255,7 +255,7 @@ private class LogEntryEventHandler_Tests {
     //     }
     // }
 
-    @isTest
+    @IsTest
     static void it_should_create_tag_records_when_enabled() {
         System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
@@ -291,7 +291,7 @@ private class LogEntryEventHandler_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     static void it_should_reuse_existing_tag_records() {
         System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
@@ -329,7 +329,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(tag.Name, logEntryTag.Tag__r.Name);
     }
 
-    @isTest
+    @IsTest
     static void it_should_append_tags_for_contains_rule() {
         System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
@@ -369,7 +369,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(configuredTagName, logEntryTag.Tag__r.Name);
     }
 
-    @isTest
+    @IsTest
     static void it_should_append_tags_for_equals_rule() {
         System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
@@ -409,7 +409,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(configuredTagName, logEntryTag.Tag__r.Name);
     }
 
-    @isTest
+    @IsTest
     static void it_should_append_tags_for_regex_rule() {
         System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
@@ -451,7 +451,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(configuredTagName, logEntryTag.Tag__r.Name);
     }
 
-    @isTest
+    @IsTest
     static void it_should_append_tags_for_startsWith_rule() {
         System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
@@ -491,7 +491,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(configuredTagName, logEntryTag.Tag__r.Name);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
         LoggerSObjectHandlerParameter__mdt mockCallStatusApiParameter = new LoggerSObjectHandlerParameter__mdt(
@@ -532,7 +532,7 @@ private class LogEntryEventHandler_Tests {
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_api_release_number_and_api_release_version_from_recent_record() {
         Log__c recentLog = new Log__c(
             ApiReleaseNumber__c = 'QWERTY',
@@ -588,7 +588,7 @@ private class LogEntryEventHandler_Tests {
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
         LoggerSObjectHandlerParameter__mdt mockCallStatusApiParameter = new LoggerSObjectHandlerParameter__mdt(
@@ -624,7 +624,7 @@ private class LogEntryEventHandler_Tests {
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
-    @isTest
+    @IsTest
     static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
         Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
         LoggerSObjectHandlerParameter__mdt mockCallStatusApiParameter = new LoggerSObjectHandlerParameter__mdt(

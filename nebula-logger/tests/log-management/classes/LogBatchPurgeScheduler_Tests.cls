@@ -3,11 +3,11 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogBatchPurgeScheduler_Tests {
     private static final String TEST_CRON_EXPRESSION = '0 0 23 * * ?';
 
-    @isTest
+    @IsTest
     static void it_should_schedule_job() {
         Test.startTest();
 

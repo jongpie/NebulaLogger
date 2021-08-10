@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogHandler_Tests {
     private static final String HIGH_PRIORITY = Schema.Log__c.Priority__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String MEDIUM_PRIORITY = Schema.Log__c.Priority__c.getDescribe().getPicklistValues().get(1).getValue();
@@ -52,14 +52,14 @@ private class LogHandler_Tests {
         LogHandler.logStatusByName = logStatusByName;
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_the_log_sobjectType() {
         Test.startTest();
         System.assertEquals(Schema.Log__c.SObjectType, new LogHandler().getSObjectType());
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_run_handler_when_disabled_via_configuration() {
         LoggerSObjectHandler__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.IsEnabled__c = false;
@@ -82,7 +82,7 @@ private class LogHandler_Tests {
         System.assertEquals(false, log.IsClosed__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_org_release_cycle_on_insert() {
         String expectedReleaseCycle = 'Preview Instance';
         String mockOrgInstance = 'ABC-123';
@@ -102,7 +102,7 @@ private class LogHandler_Tests {
         System.assertEquals(expectedReleaseCycle, log.OrganizationInstanceReleaseCycle__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_clear_closed_status_fields_when_open() {
         Log__c log = new Log__c(
             ClosedBy__c = UserInfo.getUserId(),
@@ -124,7 +124,7 @@ private class LogHandler_Tests {
         System.assertEquals(false, log.IsResolved__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_closed_status_fields_when_closed() {
         Log__c log = new Log__c(
             ClosedBy__c = null,
@@ -145,7 +145,7 @@ private class LogHandler_Tests {
         System.assertEquals(true, log.IsClosed__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_keep_existing_retention_date_when_populated() {
         Integer defaultDaysToRetainLog = 10;
 
@@ -167,7 +167,7 @@ private class LogHandler_Tests {
         System.assertEquals(retentionDate, log.LogRetentionDate__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_retention_date_when_configured() {
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
@@ -187,7 +187,7 @@ private class LogHandler_Tests {
         System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_have_null_retention_date_when_no_retention_configured() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultNumberOfDaysToRetainLogs__c = null;
@@ -204,7 +204,7 @@ private class LogHandler_Tests {
         System.assertEquals(null, log.LogRetentionDate__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_priority_to_high_when_there_are_errors() {
         Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
         insert log;
@@ -219,7 +219,7 @@ private class LogHandler_Tests {
         System.assertEquals(HIGH_PRIORITY, log.Priority__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_priority_to_medium_when_there_are_warnings() {
         Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
         insert log;
@@ -234,7 +234,7 @@ private class LogHandler_Tests {
         System.assertEquals(MEDIUM_PRIORITY, log.Priority__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_grant_read_access_to_user_when_access_level_is_read() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'Read';
@@ -254,7 +254,7 @@ private class LogHandler_Tests {
         System.assertEquals(log.LoggedBy__c, logShares.get(0).UserOrGroupId);
     }
 
-    @isTest
+    @IsTest
     static void it_should_grant_edit_access_to_user_when_access_level_is_edit() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'Edit';
@@ -274,7 +274,7 @@ private class LogHandler_Tests {
         System.assertEquals(log.LoggedBy__c, logShares.get(0).UserOrGroupId);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_grant_access_to_user_when_access_level_is_null() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = null;
@@ -290,7 +290,7 @@ private class LogHandler_Tests {
         System.assertEquals(0, logShares.size(), logShares);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_grant_access_to_user_when_access_level_is_an_unknown_string() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'FAKE LEVEL';
@@ -306,7 +306,7 @@ private class LogHandler_Tests {
         System.assertEquals(0, logShares.size(), logShares);
     }
 
-    @isTest
+    @IsTest
     static void it_should_run_apex_plugin_when_configured() {
         String expectedProfileName = 'Some String';
 

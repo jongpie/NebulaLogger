@@ -3,9 +3,9 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LoggerInstallHandler_Tests {
-    @isTest
+    @IsTest
     static void it_should_initialize_logger_settings_when_installed() {
         // Quick sanity check to make sure there are no existing records
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
@@ -31,7 +31,7 @@ private class LoggerInstallHandler_Tests {
         System.assertEquals(orgDefaults.Id, loggerSettings.get(0).Id);
     }
 
-    @isTest
+    @IsTest
     static void it_should_update_defaultSaveMethod_when_null() {
         // DefaultSaveMethod__c was added in a later release as a required field, so some orgs may not have it set
         // Verify the install handler correctly updates any null values

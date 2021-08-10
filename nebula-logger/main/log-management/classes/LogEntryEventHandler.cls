@@ -17,7 +17,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
 
     // Trigger-based variables - tests can override these with mock objects
-    @testVisible
+    @TestVisible
     private List<LogEntryEvent__e> logEntryEvents {
         get {
             return (List<LogEntryEvent__e>) this.triggerNew;

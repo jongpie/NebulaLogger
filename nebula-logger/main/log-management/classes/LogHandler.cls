@@ -8,7 +8,7 @@
  * @description Manages setting fields on `Log__c` before insert & before update
  */
 public without sharing class LogHandler extends LoggerSObjectHandler {
-    @testVisible
+    @TestVisible
     private static Map<String, LogStatus__mdt> logStatusByName = loadActiveLogStatuses();
 
     private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
@@ -23,14 +23,14 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     // Trigger-based variables - tests can override these with mock objects
-    @testVisible
+    @TestVisible
     private List<Log__c> logs {
         get {
             return (List<Log__c>) this.triggerNew;
         }
     }
 
-    @testVisible
+    @TestVisible
     private Map<Id, Log__c> oldLogsById {
         get {
             return (Map<Id, Log__c>) this.triggerOldMap;

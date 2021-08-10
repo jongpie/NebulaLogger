@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class RelatedLogEntriesController_Tests {
     private static final Integer TOTAL_LOG_ENTRIES = 10;
     private static final Integer TOTAL_RELATED_LOG_ENTRIES = 7;
@@ -34,7 +34,7 @@ private class RelatedLogEntriesController_Tests {
         insert logEntries;
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_matching_logEntryQueryResult() {
         Id recordId = UserInfo.getUserId();
         String fieldSetName = getFieldSetName();
@@ -66,7 +66,7 @@ private class RelatedLogEntriesController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_matching_logEntryQueryResult_when_search_provided() {
         Id recordId = UserInfo.getUserId();
         String fieldSetName = getFieldSetName();

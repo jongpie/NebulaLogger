@@ -20,7 +20,7 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
     private static LoggerSettings__c userSettings;
 
-    @testVisible
+    @TestVisible
     private static SaveMethod transactionSaveMethod {
         get {
             if (transactionSaveMethod == null) {
@@ -2762,7 +2762,7 @@ global with sharing class Logger {
         }
     }
 
-    @testVisible
+    @TestVisible
     private class RestResponseException extends Exception {
     }
 
@@ -2781,7 +2781,7 @@ global with sharing class Logger {
      * This code is based on the Apex UUID project, released under the MIT License.            *
      * See LICENSE file or go to https://github.com/jongpie/ApexUuid for full license details. *
      ******************************************************************************************/
-    @testVisible
+    @TestVisible
     private without sharing class Uuid {
         private final String HEX_CHARACTERS = '0123456789abcdef';
         private final String HEX_PREFIX = '0x';

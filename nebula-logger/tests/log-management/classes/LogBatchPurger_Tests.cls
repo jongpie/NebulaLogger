@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogBatchPurger_Tests {
     private static final Integer NUMBER_OF_LOG_ENTRIES = 10;
 
@@ -41,7 +41,7 @@ private class LogBatchPurger_Tests {
     }
 
 
-    @isTest
+    @IsTest
     static void it_should_throw_exception_when_user_does_not_have_delete_access() {
         Integer originalCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
 
@@ -62,7 +62,7 @@ private class LogBatchPurger_Tests {
         System.assertEquals(originalCountOfLogEntries, updatedCountOfLogEntries);
     }
 
-    @isTest
+    @IsTest
     static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_enabled() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
@@ -95,7 +95,7 @@ private class LogBatchPurger_Tests {
         System.assertEquals(0, logEntries.size(), logEntries);
     }
 
-    @isTest
+    @IsTest
     static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_disabled() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
@@ -126,7 +126,7 @@ private class LogBatchPurger_Tests {
         System.assertEquals(0, logEntries.size(), logEntries);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_delete_a_log_before_scheduled_deletion_date() {
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
@@ -151,7 +151,7 @@ private class LogBatchPurger_Tests {
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_delete_a_log_without_a_scheduled_deletion_date() {
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];

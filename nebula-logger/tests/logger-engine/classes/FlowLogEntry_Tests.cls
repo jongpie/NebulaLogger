@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class FlowLogEntry_Tests {
     static FlowLogEntry createFlowLogEntry() {
         FlowLogEntry flowEntry = new FlowLogEntry();
@@ -14,7 +14,7 @@ private class FlowLogEntry_Tests {
         return flowEntry;
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_entry_when_logging_level_met() {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
@@ -41,7 +41,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_auto_save_entry_when_saveLog_is_true() {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
@@ -70,7 +70,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_save_entry_when_logging_level_not_met() {
         LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
@@ -90,7 +90,7 @@ private class FlowLogEntry_Tests {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_use_debug_as_default_level_when_faultMessage_is_null() {
         LoggingLevel expectedEntryLoggingLevel = LoggingLevel.DEBUG;
 
@@ -124,7 +124,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_use_error_as_default_level_when_faultMessage_is_not_null() {
         LoggingLevel expectedEntryLoggingLevel = LoggingLevel.ERROR;
 
@@ -158,7 +158,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals('Flow', logEntry.OriginType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_tags_to_log_entry() {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;

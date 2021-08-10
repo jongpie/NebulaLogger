@@ -509,12 +509,12 @@ public class LoggerParameter {
     }
 
     // Private testVisible methods
-    @testVisible
+    @TestVisible
     private void setMockParameter(LoggerSObjectHandlerParameter__mdt parameter) {
         this.mockParameterByDeveloperName.put(parameter.DeveloperName, parameter);
     }
 
-    @testVisible
+    @TestVisible
     private void setMockParameter(LoggerSObjectHandlerPluginParameter__mdt parameter) {
         this.mockParameterByDeveloperName.put(parameter.DeveloperName, parameter);
     }

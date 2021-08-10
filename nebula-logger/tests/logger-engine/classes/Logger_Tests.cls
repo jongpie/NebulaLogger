@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class Logger_Tests {
     // Helper classes
     private class Logger_TestsException extends Exception {
@@ -206,7 +206,7 @@ private class Logger_Tests {
         upsert settings;
     }
 
-    @isTest
+    @IsTest
     static void it_should_auto_create_org_default_settings_when_not_configured() {
         delete [SELECT Id FROM LoggerSettings__c];
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
@@ -223,14 +223,14 @@ private class Logger_Tests {
         System.assertEquals(orgDefaults.Id, existingSettings.get(0).Id);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_transaction_id() {
         String transactionId = Logger.getTransactionId();
         System.assert(String.isNotBlank(transactionId));
         System.assertEquals(System.Request.getCurrent().getRequestId(), transactionId);
     }
 
-    @isTest
+    @IsTest
     static void it_should_generate_a_valid_uuid() {
         Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
 
@@ -240,7 +240,7 @@ private class Logger_Tests {
         System.assert(matcher.matches(), 'Generated UUID=' + uuid.getValue());
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_transaction_entry_number() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
@@ -249,21 +249,21 @@ private class Logger_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_parent_transaction_id() {
         String expectedParentTransactionId = 'imagineThisWereAGuid';
         Logger.setParentLogTransactionId(expectedParentTransactionId);
         System.assertEquals(expectedParentTransactionId, Logger.getParentLogTransactionId());
     }
 
-    @isTest
+    @IsTest
     static void it_should_ignore_parent_transaction_id_when_set_to_current_transaction_id() {
         String currentTransactionId = Logger.getTransactionId();
         Logger.setParentLogTransactionId(currentTransactionId);
         System.assertEquals(null, Logger.getParentLogTransactionId());
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_quiddity_level() {
         List<Quiddity> acceptableDefaultQuidditiesForTests = new List<Quiddity>{ Quiddity.RUNTEST_ASYNC, Quiddity.RUNTEST_DEPLOY, Quiddity.RUNTEST_SYNC };
         System.assertEquals(true, acceptableDefaultQuidditiesForTests.contains(Logger.getCurrentQuiddity()));
@@ -271,7 +271,7 @@ private class Logger_Tests {
         System.assertEquals(System.Request.getCurrent().getQuiddity(), Logger.getCurrentQuiddity());
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_user_logging_level() {
         LoggingLevel expectedValue = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = expectedValue.name();
@@ -283,7 +283,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_enabled() {
         Boolean expectedValue = true;
 
@@ -298,7 +298,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_provided_logging_level_is_enabled() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Boolean expectedValue = true;
@@ -315,7 +315,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_error_logging_level_is_enabled() {
         Boolean expectedValue = true;
 
@@ -331,7 +331,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_warn_logging_level_is_enabled() {
         Boolean expectedValue = true;
 
@@ -347,7 +347,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_info_logging_level_is_enabled() {
         Boolean expectedValue = true;
 
@@ -363,7 +363,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_debug_logging_level_is_enabled() {
         Boolean expectedValue = true;
 
@@ -379,7 +379,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_fine_logging_level_is_enabled() {
         Boolean expectedValue = true;
 
@@ -395,7 +395,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_finer_logging_level_is_enabled() {
         Boolean expectedValue = true;
 
@@ -411,7 +411,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_finest_logging_level_is_enabled() {
         Boolean expectedValue = true;
 
@@ -427,7 +427,7 @@ private class Logger_Tests {
         System.assertEquals(expectedValue, returnedValue);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_true_when_saving_is_suspended() {
         System.assertEquals(false, Logger.isSavingSuspended());
 
@@ -438,7 +438,7 @@ private class Logger_Tests {
         System.assertEquals(true, Logger.isSavingSuspended());
     }
 
-    @isTest
+    @IsTest
     static void it_should_suspend_saving() {
         Integer countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfExistingLogEntries);
@@ -459,7 +459,7 @@ private class Logger_Tests {
         System.assertEquals(0, countOfExistingLogEntries);
     }
 
-    @isTest
+    @IsTest
     static void it_should_resume_saving() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -498,7 +498,7 @@ private class Logger_Tests {
         System.assertEquals(1, Limits.getDmlStatements());
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = null];
         User currentUser = new User(Id = UserInfo.getUserId(), TimeZoneSidKey = UserInfo.getTimeZone().getId());
@@ -536,7 +536,7 @@ private class Logger_Tests {
         System.assertEquals(originalTimestamp, logEntry.Timestamp__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_the_buffer_size() {
         System.assertEquals(0, Logger.getBufferSize());
 
@@ -552,7 +552,7 @@ private class Logger_Tests {
         System.assertEquals(2, Logger.getBufferSize());
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_via_event_bus_when_defaulted() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -582,7 +582,7 @@ private class Logger_Tests {
         System.assertEquals(2, countOfLogEntries);
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_via_event_bus_when_specified() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -608,7 +608,7 @@ private class Logger_Tests {
         System.assertEquals(2, countOfLogEntries);
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_via_queueable_when_defaulted() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -640,7 +640,7 @@ private class Logger_Tests {
         System.assertEquals(2, countOfLogEntries);
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_via_queueable_when_specified() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -668,7 +668,7 @@ private class Logger_Tests {
         System.assertEquals(2, countOfLogEntries);
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_via_rest_api_when_defaulted() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
 
@@ -697,7 +697,7 @@ private class Logger_Tests {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_via_rest_api_when_specified() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
 
@@ -722,7 +722,7 @@ private class Logger_Tests {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_throw_exception_when_save_via_rest_api_fails() {
         Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
 
@@ -751,7 +751,7 @@ private class Logger_Tests {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_via_synchronous_dml_when_defaulted() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -782,7 +782,7 @@ private class Logger_Tests {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_via_synchronous_dml_when_specified() {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -809,7 +809,7 @@ private class Logger_Tests {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_flush_buffer() {
         System.assertEquals(0, Logger.getBufferSize());
 
@@ -830,7 +830,7 @@ private class Logger_Tests {
     }
 
     // Start ERROR methods for LogMessage
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -854,7 +854,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -878,7 +878,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -902,7 +902,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -926,7 +926,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -950,7 +950,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -974,7 +974,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -998,7 +998,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1022,7 +1022,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1046,7 +1046,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1070,7 +1070,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1094,7 +1094,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1118,7 +1118,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1142,7 +1142,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1166,7 +1166,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_exception() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1188,7 +1188,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_recordId_and_exception() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1210,7 +1210,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1232,7 +1232,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_record_and_exception() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1254,7 +1254,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1276,7 +1276,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1300,7 +1300,7 @@ private class Logger_Tests {
     // End ERROR methods for LogMessage
 
     // Start ERROR methods for String
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1324,7 +1324,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1348,7 +1348,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1372,7 +1372,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1396,7 +1396,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1420,7 +1420,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1444,7 +1444,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1468,7 +1468,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1492,7 +1492,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1516,7 +1516,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1540,7 +1540,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1564,7 +1564,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1588,7 +1588,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1612,7 +1612,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1636,7 +1636,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_exception() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1658,7 +1658,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_recordId_and_exception() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1680,7 +1680,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1702,7 +1702,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_record_and_exception() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1724,7 +1724,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1746,7 +1746,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1769,7 +1769,7 @@ private class Logger_Tests {
     }
 
     // Start WARN methods for LogMessage
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1793,7 +1793,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1817,7 +1817,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1841,7 +1841,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1865,7 +1865,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1889,7 +1889,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1913,7 +1913,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1937,7 +1937,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1961,7 +1961,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -1985,7 +1985,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2009,7 +2009,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_exception() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2031,7 +2031,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_recordId_and_exception() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2053,7 +2053,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2075,7 +2075,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_record_and_exception() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2097,7 +2097,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2119,7 +2119,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2143,7 +2143,7 @@ private class Logger_Tests {
     // End WARN methods for LogMessage
 
     // Start WARN methods for String
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2167,7 +2167,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2191,7 +2191,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2215,7 +2215,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2239,7 +2239,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2263,7 +2263,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2287,7 +2287,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2311,7 +2311,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2335,7 +2335,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2359,7 +2359,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2383,7 +2383,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_exception() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2405,7 +2405,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_recordId_and_exception() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2427,7 +2427,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2449,7 +2449,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_record_and_exception() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2471,7 +2471,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2493,7 +2493,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_warn_entry_for_string_message() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
@@ -2517,7 +2517,7 @@ private class Logger_Tests {
     // End WARN methods for String
 
     // Start INFO methods for LogMessage
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2541,7 +2541,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2565,7 +2565,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2589,7 +2589,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2613,7 +2613,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2637,7 +2637,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2661,7 +2661,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2685,7 +2685,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2709,7 +2709,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2733,7 +2733,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2755,7 +2755,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2777,7 +2777,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2800,7 +2800,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2824,7 +2824,7 @@ private class Logger_Tests {
     // End INFO methods for LogMessage
 
     // Start INFO methods for String
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2848,7 +2848,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2872,7 +2872,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2896,7 +2896,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2920,7 +2920,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2944,7 +2944,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2968,7 +2968,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -2992,7 +2992,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -3016,7 +3016,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -3040,7 +3040,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -3062,7 +3062,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -3084,7 +3084,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -3107,7 +3107,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -3131,7 +3131,7 @@ private class Logger_Tests {
     // End INFO methods for String
 
     // Start DEBUG methods for LogMessage
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3155,7 +3155,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3179,7 +3179,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3203,7 +3203,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3227,7 +3227,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3251,7 +3251,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3275,7 +3275,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3299,7 +3299,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3323,7 +3323,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3347,7 +3347,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3369,7 +3369,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3391,7 +3391,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3414,7 +3414,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3438,7 +3438,7 @@ private class Logger_Tests {
     // End DEBUG methods for LogMessage
 
     // Start DEBUG methods for String
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3462,7 +3462,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3486,7 +3486,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3510,7 +3510,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3534,7 +3534,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3558,7 +3558,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3582,7 +3582,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3606,7 +3606,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3630,7 +3630,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3654,7 +3654,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3676,7 +3676,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3698,7 +3698,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3721,7 +3721,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
@@ -3745,7 +3745,7 @@ private class Logger_Tests {
     // End DEBUG methods for String
 
     // Start FINE methods for LogMessage
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3769,7 +3769,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3793,7 +3793,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3817,7 +3817,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3841,7 +3841,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3865,7 +3865,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3889,7 +3889,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3913,7 +3913,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3937,7 +3937,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3961,7 +3961,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -3983,7 +3983,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4005,7 +4005,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4028,7 +4028,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4052,7 +4052,7 @@ private class Logger_Tests {
     // End FINE methods for LogMessage
 
     // Start FINE methods for String
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4076,7 +4076,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4100,7 +4100,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4124,7 +4124,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4148,7 +4148,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4172,7 +4172,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4196,7 +4196,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4220,7 +4220,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4244,7 +4244,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4268,7 +4268,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4290,7 +4290,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4312,7 +4312,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4335,7 +4335,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
@@ -4359,7 +4359,7 @@ private class Logger_Tests {
     // End FINE methods for String
 
     // Start FINER methods for LogMessage
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4383,7 +4383,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4407,7 +4407,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4431,7 +4431,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4455,7 +4455,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4479,7 +4479,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4503,7 +4503,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4527,7 +4527,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4551,7 +4551,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4575,7 +4575,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4597,7 +4597,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4619,7 +4619,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4642,7 +4642,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4666,7 +4666,7 @@ private class Logger_Tests {
     // End FINER methods for LogMessage
 
     // Start FINER methods for String
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4690,7 +4690,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4714,7 +4714,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4738,7 +4738,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4762,7 +4762,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4786,7 +4786,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4810,7 +4810,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4834,7 +4834,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4858,7 +4858,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4882,7 +4882,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4904,7 +4904,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4926,7 +4926,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4949,7 +4949,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
@@ -4973,7 +4973,7 @@ private class Logger_Tests {
     // End FINER methods for String
 
     // Start FINEST methods for LogMessage
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -4997,7 +4997,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5021,7 +5021,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5045,7 +5045,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5069,7 +5069,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5093,7 +5093,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5117,7 +5117,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5141,7 +5141,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5165,7 +5165,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5189,7 +5189,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5211,7 +5211,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5233,7 +5233,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5256,7 +5256,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5280,7 +5280,7 @@ private class Logger_Tests {
     // End FINEST methods for LogMessage
 
     // Start FINEST methods for String
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_deleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5304,7 +5304,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_saveResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5328,7 +5328,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_undeleteResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5352,7 +5352,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_upsertResult_when_insert() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5376,7 +5376,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_upsertResult_when_update() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5400,7 +5400,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_deleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5424,7 +5424,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_saveResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5448,7 +5448,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_undeleteResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5472,7 +5472,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_upsertResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5496,7 +5496,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_recordId() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5518,7 +5518,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_record() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5540,7 +5540,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_recordList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5563,7 +5563,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
@@ -5587,7 +5587,7 @@ private class Logger_Tests {
     // End FINEST methods for String
 
     // Start newEntry for LogMessage test methods
-    @isTest
+    @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldSave_override() {
         LoggingLevel userLoggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(userLoggingLevel);
@@ -5613,7 +5613,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldNotSave_override() {
         LoggingLevel userLoggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(userLoggingLevel);
@@ -5633,7 +5633,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent());
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -5658,7 +5658,7 @@ private class Logger_Tests {
     // End newEntry for LogMessage test methods
 
     // Start newEntry for String test methods
-    @isTest
+    @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_string_and_shouldSave_override() {
         LoggingLevel userLoggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(userLoggingLevel);
@@ -5684,7 +5684,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_add_a_new_entry_for_loggingLevel_with_string_and_shouldNotSave_override() {
         LoggingLevel userLoggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(userLoggingLevel);
@@ -5704,7 +5704,7 @@ private class Logger_Tests {
         System.assertEquals(null, entryBuilder.getLogEntryEvent());
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_string() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
@@ -5729,7 +5729,7 @@ private class Logger_Tests {
     // End newEntry for String test methods
 
     // Start tests for utility methods
-    @isTest
+    @IsTest
     static void it_should_return_logging_levels_for_string_names() {
         System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
         System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
@@ -5742,7 +5742,7 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_log_when_id_provided() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -5754,7 +5754,7 @@ private class Logger_Tests {
         System.assertEquals(log.Id, returnedLog.Id);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_log_when_transaction_id_provided() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;

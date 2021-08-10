@@ -7,9 +7,9 @@
  * @group Extra Tests
  * @description Additional integration tests for logging from an instance of `Messaging.InboundEmailHandler`
  */
-@isTest
+@IsTest
 private class Logger_Tests_InboundEmailHandler {
-    @isTest
+    @IsTest
     private static void it_should_save_logs_when_running_email_service() {
         // Create a new email and envelope object
         Messaging.InboundEnvelope envelope = new Messaging.InboundEnvelope();

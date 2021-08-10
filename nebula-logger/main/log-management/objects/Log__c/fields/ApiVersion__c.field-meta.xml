@@ -24,9 +24,9 @@
                 <label>v52.0 - Summer &apos;21 Release</label>
             </value>
             <value>
-                <fullName>v52.0</fullName>
+                <fullName>v51.0</fullName>
                 <default>false</default>
-                <label>v52.0 - Spring &apos;21 Release</label>
+                <label>v51.0 - Spring &apos;21 Release</label>
             </value>
         </valueSetDefinition>
     </valueSet>

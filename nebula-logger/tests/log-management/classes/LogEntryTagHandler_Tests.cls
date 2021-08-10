@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogEntryTagHandler_Tests {
     @TestSetup
     static void setupData() {
@@ -19,7 +19,7 @@ private class LogEntryTagHandler_Tests {
         insert new LoggerTag__c(Name = 'Some tag');
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_unique_id_when_enabled() {
         LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
         LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
@@ -31,7 +31,7 @@ private class LogEntryTagHandler_Tests {
         System.assertEquals(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_set_unique_id_when_disabled() {
         LoggerSObjectHandler__mdt loggerTagHandlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = false, SObjectType__c = LogEntryTag__c.SObjectType.getDescribe().getName());
         LoggerSObjectHandler.setMockConfiguration(Schema.LogEntryTag__c.SObjectType, loggerTagHandlerConfiguration);
@@ -46,7 +46,7 @@ private class LogEntryTagHandler_Tests {
         System.assertEquals(null, logEntryTag.UniqueId__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_insert_duplicate_tag() {
         LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
         LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
