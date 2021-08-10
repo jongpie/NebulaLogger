@@ -3,14 +3,10 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-public inherited sharing class ComponentLogController {
+public inherited sharing class ComponentLogger {
     @AuraEnabled(cacheable=true)
-    public static ComponentLoggerSettings getSettings() {
-        try {
-            return new ComponentLoggerSettings();
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+    public static LoggerSettings getSettings() {
+        return new LoggerSettings();
     }
 
     @AuraEnabled
@@ -20,24 +16,15 @@ public inherited sharing class ComponentLogController {
         try {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
+                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, componentLogEntry.message)
+                    .setRecord(componentLogEntry.recordId)
+                    .setRecord(componentLogEntry.record)
+                    .parseStackTrace(componentLogEntry.stack)
+                    .addTags(componentLogEntry.tags);
 
-                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, componentLogEntry.message);
-
-                if (logEntryEventBuilder.shouldSave()) {
-                    if (componentLogEntry.recordId != null) {
-                        logEntryEventBuilder.setRecordId(componentLogEntry.recordId);
-                    }
-                    if (componentLogEntry.record != null) {
-                        logEntryEventBuilder.setRecordId(componentLogEntry.record);
-                    }
-                    if (componentLogEntry.tags != null) {
-                        logEntryEventBuilder.setTopics(componentLogEntry.tags);
-                    }
-
-                    logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
-                    logEntryEventBuilder.parseStackTrace(componentLogEntry.stack);
-                    logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
-                }
+                // Set some additional fields - these fields don't have setter methods
+                logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
+                logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
             }
             Logger.saveLog();
             return Logger.getTransactionId();
@@ -46,7 +33,7 @@ public inherited sharing class ComponentLogController {
         }
     }
 
-    public class ComponentLoggerSettings {
+    public class LoggerSettings {
         @AuraEnabled
         public Boolean isEnabled { get; set; }
         @AuraEnabled
@@ -54,7 +41,7 @@ public inherited sharing class ComponentLogController {
         @AuraEnabled
         public ComponentLoggingLevel userLoggingLevel { get; set; }
 
-        private ComponentLoggerSettings() {
+        private LoggerSettings() {
             this.isEnabled = Logger.isEnabled();
             this.supportedLoggingLevels = getSupportedLoggingLevels();
             this.userLoggingLevel = getUserLoggingLevel();
@@ -91,8 +78,6 @@ public inherited sharing class ComponentLogController {
 
     public class ComponentLogEntry {
         @AuraEnabled
-        public String transactionId { get; set; }
-        @AuraEnabled
         public String loggingLevel { get; set; }
         @AuraEnabled
         public String message { get; set; }
@@ -104,17 +89,17 @@ public inherited sharing class ComponentLogController {
         public String stack { get; set; }
         @AuraEnabled
         public Datetime timestamp { get; set; }
-        @AuraEnabled
-        public ComponentError componentError { get; set; }
+        // @AuraEnabled
+        // public ComponentError componentError { get; set; }
         @AuraEnabled
         public List<String> tags { get; set; }
     }
 
-    public class ComponentError {
-        public Integer columnNumber;
-        public Integer fileName;
-        public Integer lineNumber;
-        public Integer message;
-        public Integer stack;
-    }
+    // public class ComponentError {
+    //     public Integer columnNumber;
+    //     public Integer fileName;
+    //     public Integer lineNumber;
+    //     public Integer message;
+    //     public Integer stack;
+    // }
 }

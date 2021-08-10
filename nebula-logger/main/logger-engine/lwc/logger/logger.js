@@ -6,11 +6,9 @@
 import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { newLogEntry } from './logEntryBuilder';
-import getSettings from '@salesforce/apex/ComponentLogController.getSettings';
+import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 
 export default class Logger extends LightningElement {
-    _transactionId = Math.floor(Math.random() * Date.now());
-
     componentLogEntries = [];
     settings;
     settingsError;
@@ -106,9 +104,13 @@ export default class Logger extends LightningElement {
         }
     }
 
+    // @api
+    // getBufferSize() {
+    //     return this.componentLogEntries.length;
+    // }
     @api
-    getBufferSize() {
-        return this.componentLogEntries.length;
+    getBuffer() {
+        return this.componentLogEntries;
     }
 
     @api
@@ -160,17 +162,11 @@ export default class Logger extends LightningElement {
     }
 
     _registerNewLogEntry(loggingLevel, message) {
-        if (this.settings.isEnabled == false) {
-            return null;
-        }
+        const logEntryBuilder = newLogEntry(loggingLevel).setMessage(message);
 
-        if (this._meetsUserLoggingLevel(loggingLevel) == false) {
-            // console.log('this._meetsUserLoggingLevel(loggingLevel)==' + this._meetsUserLoggingLevel(loggingLevel));
-            return null;
+        if (this.settings.isEnabled == true && this._meetsUserLoggingLevel(loggingLevel) == true) {
+            this.componentLogEntries.push(logEntryBuilder);
         }
-
-        const logEntryBuilder = newLogEntry(this._transactionId, loggingLevel).setMessage(message);
-        this.componentLogEntries.push(logEntryBuilder);
 
         return logEntryBuilder;
     }

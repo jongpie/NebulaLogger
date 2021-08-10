@@ -4,17 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @isTest
-private class ComponentLogController_Tests {
-    static FlowLogEntry createFlowLogEntry() {
-        FlowLogEntry flowEntry = new FlowLogEntry();
-        flowEntry.flowName = 'my test message';
-        flowEntry.message = 'MyFlowOrProcessBuilder';
-        flowEntry.saveLog = true;
-        flowEntry.loggingLevelName = 'DEBUG';
-
-        return flowEntry;
-    }
-
+private class ComponentLogger_Tests {
     @isTest
     static void it_should_return_logger_settings() {
         LoggerSettings__c loggerSettings = LoggerSettings__c.getInstance();
@@ -23,7 +13,7 @@ private class ComponentLogController_Tests {
         upsert loggerSettings;
 
         Test.startTest();
-        ComponentLogController.ComponentLoggerSettings componentLoggerSettings = ComponentLogController.getSettings();
+        ComponentLogger.LoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
         Test.stopTest();
 
         System.assertEquals(loggerSettings.IsEnabled__c, componentLoggerSettings.isEnabled);
@@ -51,12 +41,12 @@ private class ComponentLogController_Tests {
         upsert LoggerSettings__c.getInstance();
         System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
 
-        List<ComponentLogController.ComponentLogEntry> componentLogEntries = new List<ComponentLogController.ComponentLogEntry>();
+        List<ComponentLogger.ComponentLogEntry> componentLogEntries = new List<ComponentLogger.ComponentLogEntry>();
 
         User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
 
-        ComponentLogController.ComponentLogEntry componentLogEntry = new ComponentLogController.ComponentLogEntry();
-        componentLogEntry.loggingLevel = 'INFO';
+        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
@@ -66,7 +56,7 @@ private class ComponentLogController_Tests {
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
-        ComponentLogController.saveComponentLogEntries(componentLogEntries);
+        ComponentLogger.saveComponentLogEntries(componentLogEntries);
         Test.stopTest();
 
         List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c, RecordId__c, RecordJson__c, RecordSObjectType__c, Timestamp__c FROM LogEntry__c];
@@ -77,16 +67,16 @@ private class ComponentLogController_Tests {
         System.assertEquals(componentLogEntry.loggingLevel, logEntry.LoggingLevel__c);
         System.assertEquals(componentLogEntry.message, logEntry.Message__c);
         System.assertEquals(componentLogEntry.recordId, logEntry.RecordId__c);
-        System.assertEquals(Json.serializePretty(currentUser), logEntry.RecordJson__c);
+        System.assertEquals(JSON.serializePretty(currentUser), logEntry.RecordJson__c);
         System.assertEquals(Schema.SObjectType.User.getName(), logEntry.RecordSObjectType__c);
-        //System.assertEquals(componentLogEntry.timestmap, logEntry.timestmap__c); // FIXME timestamps aren't currently 100% accurate until #85 is resolved
+        System.assertEquals(componentLogEntry.timestamp, logEntry.Timestamp__c);
     }
 
     @isTest
     static void it_should_return_aura_exception_when_it_breaks() {
         Test.startTest();
         try {
-            ComponentLogController.saveComponentLogEntries(null);
+            ComponentLogger.saveComponentLogEntries(null);
             System.assert(false, 'This assert shouldn\'t run since this is a negative test');
         } catch(Exception apexException) {
             System.assertEquals(AuraHandledException.class.getName(), apexException.getTypeName());

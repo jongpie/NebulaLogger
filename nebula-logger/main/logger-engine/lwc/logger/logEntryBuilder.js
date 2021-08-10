@@ -4,8 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 const LogEntryBuilder = class {
-    constructor(transactionId, loggingLevel) {
-        this.transactionId = transactionId;
+    constructor(loggingLevel) {
         this.loggingLevel = loggingLevel;
 
         this.stack = new Error().stack;
@@ -39,6 +38,6 @@ const LogEntryBuilder = class {
     }
 };
 
-export function newLogEntry(transactionId, loggingLevel) {
-    return new LogEntryBuilder(transactionId, loggingLevel);
+export function newLogEntry(loggingLevel) {
+    return new LogEntryBuilder(loggingLevel);
 }
