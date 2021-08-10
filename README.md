@@ -3,7 +3,7 @@
 [![Deployment](https://github.com/jongpie/NebulaLogger/actions/workflows/deploy.yml/badge.svg)](https://github.com/jongpie/NebulaLogger/actions/workflows/deploy.yml)
 [![codecov](https://codecov.io/gh/jongpie/NebulaLogger/branch/main/graph/badge.svg?token=1DJPDRM3N4)](https://codecov.io/gh/jongpie/NebulaLogger)
 
-Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
+Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
 [![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kgeQAA)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
@@ -13,13 +13,13 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Features
 
-1. Easily add log entries via Apex, Flow & Process Builder to generate 1 consolidate log
+1. Easily add log entries via Apex, Lightning Components (web & aura), Flow & Process Builder to generate 1 consolidate log
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
 5. View related log entries on any Lighting SObject flexipage by adding the 'Related Log Entries' component in App Builder
-6. Dynamically assign Topics to `Log__c` and `LogEntry__c` records for tagging/labeling your logs (not currently available in the managed package)
-7. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow
+6. Dynamically assign tags to `Log__c` and `LogEntry__c` records for tagging/labeling your logs 
+7. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow (not currently available in the managed package)
 8. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
 
 Learn more about the design and history of the project on [Joys Of Apex blog post](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
@@ -117,6 +117,16 @@ This results in 1 `Log__c` record with several related `LogEntry__c` records.
 ![Apex Log Results](./content/apex-log.png)
 
 ---
+### Logger for Lightning Components: Quick Start
+
+For lightning component developers, the `logger` component... // TODO
+
+```java
+// TODO: lwc sample code and aura sample code
+```
+
+
+---
 
 ### Logger for Flow & Process Builder: Quick Start
 
@@ -134,8 +144,9 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ---
 
-### All Together: Apex & Flow in One Log
+### All Together: Apex, Lightning Components & Flow in One Log
 
+// TODO - incorporate details + screenshots for lwc/aura
 After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.
 
 ```java
@@ -327,6 +338,12 @@ The class `LogMessage` provides the ability to generate string messages on deman
     ```
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
+
+---
+
+## Features for Lightning Component Developers
+
+Within lightning web components and aura components)...//TODO
 
 ---
 

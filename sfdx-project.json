@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.3.0",
-            "versionName": "More metadata data",
-            "versionDescription": "Added several new LogEntry__c fields to track details about Apex classes and Flows",
+            "versionNumber": "4.6.4.0",
+            "versionName": "Logger for lwc and aura",
+            "versionDescription": "Re-introduced a lightning component for frontend logging",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
