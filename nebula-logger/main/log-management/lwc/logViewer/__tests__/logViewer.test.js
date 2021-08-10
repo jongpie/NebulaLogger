@@ -60,13 +60,15 @@ describe('Logger JSON Viewer lwc tests', () => {
         getLogAdapter.emit(mockGetLog);
 
         // Resolve a promise to wait for a rerender of the new content
-        return flushPromises().then(() => {
-            logViewer.shadowRoot.querySelector('lightning-button-stateful').click();
-        }).then(() => {
-            const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
+        return flushPromises()
+            .then(() => {
+                logViewer.shadowRoot.querySelector('lightning-button-stateful').click();
+            })
+            .then(() => {
+                const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
 
-            const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('pre').textContent);
-            expect(clipboardContent).toEqual(mockGetLog);
-        });
+                const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('pre').textContent);
+                expect(clipboardContent).toEqual(mockGetLog);
+            });
     });
 });

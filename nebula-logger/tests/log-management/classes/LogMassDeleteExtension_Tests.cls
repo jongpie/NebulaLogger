@@ -107,8 +107,8 @@ private class LogMassDeleteExtension_Tests {
         PageReference pageReference = Page.LogMassDelete;
         Test.setCurrentPage(pageReference);
 
-        User chatterUser = [SELECT Id FROM User WHERE Profile.Name = 'Chatter Free User' LIMIT 1];
-        System.runAs(chatterUser) {
+        User standardUser = LoggerTestUtils.createStandardUser();
+        System.runAs(standardUser) {
             System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
 
             String deleteAccessError = 'You do not have access to delete logs records';

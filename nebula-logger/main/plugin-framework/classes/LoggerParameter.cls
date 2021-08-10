@@ -422,7 +422,7 @@ public class LoggerParameter {
      *                                Returns the supplied `defaultValue` when no matching parameter is found, the parameter is disabled, or the parameter value is null
      */
     public List<Long> getLongList(String parameterDeveloperName, List<Long> defaultValue) {
-        List<Long> parameterValue = (List<Long>) this.castParameterValue(parameterDeveloperName,  List<Long>.class);
+        List<Long> parameterValue = (List<Long>) this.castParameterValue(parameterDeveloperName, List<Long>.class);
         return parameterValue != null ? parameterValue : defaultValue;
     }
 
@@ -446,7 +446,7 @@ public class LoggerParameter {
      *                                Returns the supplied `defaultValue` when no matching parameter is found, the parameter is disabled, or the parameter value is null
      */
     public SObject getSObject(String parameterDeveloperName, SObject defaultValue) {
-        SObject parameterValue = (SObject) this.castParameterValue(parameterDeveloperName,  SObject.class);
+        SObject parameterValue = (SObject) this.castParameterValue(parameterDeveloperName, SObject.class);
         return parameterValue != null ? parameterValue : defaultValue;
     }
 
@@ -470,7 +470,7 @@ public class LoggerParameter {
      *                                Returns the supplied `defaultValue` when no matching parameter is found, the parameter is disabled, or the parameter value is null
      */
     public List<SObject> getSObjectList(String parameterDeveloperName, List<SObject> defaultValue) {
-        List<SObject> parameterValue = (List<SObject>) this.castParameterValue(parameterDeveloperName,  List<SObject>.class);
+        List<SObject> parameterValue = (List<SObject>) this.castParameterValue(parameterDeveloperName, List<SObject>.class);
         return parameterValue != null ? parameterValue : defaultValue;
     }
 

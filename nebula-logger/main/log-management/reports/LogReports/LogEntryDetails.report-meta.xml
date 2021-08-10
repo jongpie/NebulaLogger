@@ -34,10 +34,6 @@
         <field>LogEntry__c.Timestamp__c</field>
     </columns>
     <columns>
-        <aggregateTypes>Sum</aggregateTypes>
-        <field>LogEntry__c.EpochTimestamp__c</field>
-    </columns>
-    <columns>
         <field>LogEntry__c.LoggingLevelWithImage__c</field>
     </columns>
     <columns>
@@ -45,6 +41,10 @@
     </columns>
     <columns>
         <field>LogEntry__c.Message__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>LogEntry__c.MessageTruncated__c</field>
     </columns>
     <columns>
         <field>LogEntry__c.OriginType__c</field>
@@ -82,6 +82,7 @@
     <columns>
         <field>LogEntry__c.ExceptionStackTrace__c</field>
     </columns>
+    <description>Detailed report for the LogEntry__c object</description>
     <filter>
         <criteriaItems>
             <column>LogEntry__c.Timestamp__c</column>

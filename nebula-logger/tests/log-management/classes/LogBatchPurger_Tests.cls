@@ -2,6 +2,7 @@
 // This file is part of the Nebula Logger project, released under the MIT License.                //
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
+
 @isTest
 private class LogBatchPurger_Tests {
     private static final Integer NUMBER_OF_LOG_ENTRIES = 10;
@@ -26,6 +27,39 @@ private class LogBatchPurger_Tests {
             logEntries.add(logEntry);
         }
         insert logEntries;
+
+
+        LoggerTag__c tag = new LoggerTag__c(Name = 'My important tag');
+        insert tag;
+
+        List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
+        for (LogEntry__c logEntry : logEntries) {
+            LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
+            logEntryTags.add(logEntryTag);
+        }
+        insert logEntryTags;
+    }
+
+
+    @isTest
+    static void it_should_throw_exception_when_user_does_not_have_delete_access() {
+        Integer originalCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+
+        User standardUser = LoggerTestUtils.createStandardUser();
+        System.runAs(standardUser) {
+            System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
+
+            try {
+                Test.startTest();
+                Database.executeBatch(new LogBatchPurger());
+                Test.stopTest();
+            } catch(NoAccessException ex) {
+                System.assertEquals(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
+
+            }
+        }
+        Integer updatedCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(originalCountOfLogEntries, updatedCountOfLogEntries);
     }
 
     @isTest
@@ -55,10 +89,10 @@ private class LogBatchPurger_Tests {
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
-        logs = [SELECT Id FROM Log__c];
-        logEntries = [SELECT Id FROM LogEntry__c];
-        System.assertEquals(1, logs.size(), logs);
-        System.assertEquals(6, logEntries.size(), logEntries);
+        logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
+        logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
+        System.assertEquals(0, logs.size(), logs);
+        System.assertEquals(0, logEntries.size(), logEntries);
     }
 
     @isTest
@@ -86,24 +120,9 @@ private class LogBatchPurger_Tests {
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
-        logs = [SELECT Id FROM Log__c];
-        logEntries = [SELECT Id FROM LogEntry__c];
+        logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
+        logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(0, logs.size(), logs);
-        System.assertEquals(0, logEntries.size(), logEntries);
-    }
-
-    @isTest
-    static void it_should_continue_deleting_logs_even_when_current_count_greater_than_limits() {
-        List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
-        LogBatchPurger.MAX_RECORDS_DELETED = logsToDelete.size() / 2;
-
-        Test.startTest();
-        new LogBatchPurger().execute(null, logsToDelete);
-        Test.stopTest();
-
-        logsToDelete = [SELECT Id FROM Log__c];
-        List<LogEntry__c>  logEntries = [SELECT Id FROM LogEntry__c];
-        System.assertEquals(0, logsToDelete.size(), logsToDelete);
         System.assertEquals(0, logEntries.size(), logEntries);
     }
 
@@ -126,8 +145,8 @@ private class LogBatchPurger_Tests {
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
-        logs = [SELECT Id FROM Log__c];
-        logEntries = [SELECT Id FROM LogEntry__c];
+        logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
+        logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(1, logs.size());
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
     }
@@ -151,8 +170,8 @@ private class LogBatchPurger_Tests {
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
-        logs = [SELECT Id FROM Log__c];
-        logEntries = [SELECT Id FROM LogEntry__c];
+        logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
+        logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(1, logs.size(), logs);
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size(), logEntries);
     }

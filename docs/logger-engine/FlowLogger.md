@@ -44,6 +44,8 @@ Handles some common logic used by `FlowLogEntry`, `FlowRecordLogEntry` and `Flow
 
 ###### `saveLog` → `Boolean`
 
+###### `tagsString` → `String`
+
 ###### `timestamp` → `DateTime`
 
 ###### `topics` → `List<String>`

@@ -56,6 +56,10 @@ Dynamically returns `LogEntry__c` field sets in App Builder when configuring the
 
 Manages setting fields on `LogEntry__c` before insert & before update
 
+### [LogEntryTagHandler](log-management/LogEntryTagHandler)
+
+Handles trigger events for the `LogEntryTag__c` object
+
 ### [LogHandler](log-management/LogHandler)
 
 Manages setting fields on `Log__c` before insert & before update
@@ -67,6 +71,10 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 ### [LoggerSObjectHandler](log-management/LoggerSObjectHandler)
 
 Abstract class used by trigger handlers for shared logic
+
+### [LoggerTagHandler](log-management/LoggerTagHandler)
+
+Handles trigger events for the `LoggerTag__c` object
 
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 

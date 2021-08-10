@@ -1,12 +1,12 @@
 {
     "name": "nebula-logger",
-    "version": "4.5.2",
+    "version": "4.6.0",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "scripts": {
         "deploy": "npm run deploy:logger && npm run deploy:managedpackage && npm run deploy:extratests",
         "deploy:logger": "sfdx force:source:deploy --sourcepath ./nebula-logger/",
         "deploy:extratests": "sfdx force:source:deploy --sourcepath ./extra-tests/",
-        "deploy:managedpackage": "sfdx force:source:deploy --sourcepath ./packages/managed-package/metadata",
+        "deploy:managedpackage": "sfdx force:source:deploy --sourcepath ./managed-package/managed-package-metadata",
         "devhub:details": "pwsh ./scripts/get-devhub-org-details.ps1",
         "devhub:limits": "pwsh ./scripts/get-devhub-org-limits.ps1",
         "devhub:open": "pwsh ./scripts/open-devhub-org.ps1",
@@ -32,7 +32,7 @@
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "test": "npm run test:lwc && npm run test:apex",
-        "test:apex": "sfdx force:apex:test:run --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
+        "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage"
     },
     "repository": {
@@ -71,7 +71,8 @@
         "lint-staged": "latest",
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
-        "pwsh": "latest"
+        "pwsh": "latest",
+        "sfdx-cli": "latest"
     },
     "dependencies": {},
     "husky": {

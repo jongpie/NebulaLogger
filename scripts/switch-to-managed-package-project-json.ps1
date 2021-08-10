@@ -3,7 +3,7 @@
 
 $rootProject = "./sfdx-project.json"
 $unlockedProject = "./unlocked-sfdx-project.json"
-$managedProject = "./packages/managed-package/sfdx-project.json"
+$managedProject = "./managed-package/sfdx-project.json"
 
 Write-Output "Switching to managed package's version of sfdx-project.json"
 Write-Output "Copying $rootProject to $unlockedProject"

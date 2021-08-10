@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Value__c</fullName>
     <description>The value used by the plugin for this parameter. Since custom metadata type (CMDT) records can be deployed between orgs, you can either:

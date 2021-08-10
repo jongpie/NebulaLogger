@@ -3,11 +3,6 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>macros:macroUtilityItem</componentName>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
                 <componentName>console:history</componentName>
             </componentInstance>
         </itemInstances>

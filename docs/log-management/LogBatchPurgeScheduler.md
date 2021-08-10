@@ -12,6 +12,14 @@ Schedulable class used to schedule the batch job `LogBatchPurger`
 
 ---
 
+### Constructors
+
+#### `LogBatchPurgeScheduler()`
+
+#### `LogBatchPurgeScheduler(Integer batchSize)`
+
+---
+
 ### Methods
 
 #### `execute(SchedulableContext schedulableContext)` → `void`

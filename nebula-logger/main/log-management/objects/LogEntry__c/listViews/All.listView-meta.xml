@@ -10,6 +10,7 @@
     <columns>OriginLocation__c</columns>
     <columns>RecordDetailedLink__c</columns>
     <columns>Timestamp__c</columns>
+    <columns>EpochTimestamp__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>
