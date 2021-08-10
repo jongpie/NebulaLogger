@@ -249,6 +249,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         notification.fields.add(orgApiVersion);
 
         List<String> topicNames = new List<String>();
+        // TODO - dynamically get either LogEntryTag__c or TopicAssignment (based on handler parameter)
         for (TopicAssignment topicAssignment : log.TopicAssignments) {
             topicNames.add(topicAssignment.Topic.Name);
         }

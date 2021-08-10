@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement, api, wire } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent'; // TODO remove toast message
 import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 
@@ -104,14 +104,14 @@ export default class Logger extends LightningElement {
         }
     }
 
-    // @api
-    // getBufferSize() {
-    //     return this.componentLogEntries.length;
-    // }
     @api
-    getBuffer() {
-        return this.componentLogEntries;
+    getBufferSize() {
+        return this.componentLogEntries.length;
     }
+    // @api
+    // getBuffer() {
+    //     return this.componentLogEntries;
+    // }
 
     @api
     flushBuffer() {

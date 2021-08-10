@@ -9,56 +9,56 @@ const LOGGER_NAME = 'c-logger';
 
 export default class LoggerDemo extends LightningElement {
     message = 'Hello, world!';
-    topicsString = 'Topic-one, Another topic here';
+    tagsString = 'Tag-one, Another tag here';
 
     messageChange(event) {
         this.message = event.target.value;
     }
 
-    topicsStringChange(event) {
-        this.topicsString = event.target.value;
+    tagsStringChange(event) {
+        this.tagsString = event.target.value;
     }
 
     logError() {
         console.log('running logError for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.error(this.message, { exception: new Error('boo it broke'), recordId: '001zzzzzzz', topics: this.topicsString.split(',') });
+        logger.error(this.message, { exception: new Error('boo it broke'), recordId: '001zzzzzzz', tags: this.tagsString.split(',') });
     }
 
     logWarn() {
         console.log('running logWarn for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.warn(this.message, { topics: this.topicsString.split(',') });
+        logger.warn(this.message, { tags: this.tagsString.split(',') });
     }
 
     logInfo() {
         console.log('running logInfo for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.info(this.message, { topics: this.topicsString.split(',') });
+        logger.info(this.message, { tags: this.tagsString.split(',') });
     }
 
     logDebug() {
         console.log('running logDebug for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.debug(this.message, { topics: this.topicsString.split(',') });
+        logger.debug(this.message, { tags: this.tagsString.split(',') });
     }
 
     logFine() {
         console.log('running logFine for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.fine(this.message, { topics: this.topicsString.split(',') });
+        logger.fine(this.message, { tags: this.tagsString.split(',') });
     }
 
     logFiner() {
         console.log('running logFiner for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.finer(this.message, { topics: this.topicsString.split(',') });
+        logger.finer(this.message, { tags: this.tagsString.split(',') });
     }
 
     logFinest() {

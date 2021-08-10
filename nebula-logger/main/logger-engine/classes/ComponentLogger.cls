@@ -5,8 +5,8 @@
 
 public inherited sharing class ComponentLogger {
     @AuraEnabled(cacheable=true)
-    public static LoggerSettings getSettings() {
-        return new LoggerSettings();
+    public static ComponentLoggerSettings getSettings() {
+        return new ComponentLoggerSettings();
     }
 
     @AuraEnabled
@@ -33,7 +33,7 @@ public inherited sharing class ComponentLogger {
         }
     }
 
-    public class LoggerSettings {
+    public class ComponentLoggerSettings {
         @AuraEnabled
         public Boolean isEnabled { get; set; }
         @AuraEnabled
@@ -41,7 +41,7 @@ public inherited sharing class ComponentLogger {
         @AuraEnabled
         public ComponentLoggingLevel userLoggingLevel { get; set; }
 
-        private LoggerSettings() {
+        private ComponentLoggerSettings() {
             this.isEnabled = Logger.isEnabled();
             this.supportedLoggingLevels = getSupportedLoggingLevels();
             this.userLoggingLevel = getUserLoggingLevel();
@@ -102,4 +102,6 @@ public inherited sharing class ComponentLogger {
     //     public Integer message;
     //     public Integer stack;
     // }
+
+    // public class ComponentLoggerSaveResult {}
 }

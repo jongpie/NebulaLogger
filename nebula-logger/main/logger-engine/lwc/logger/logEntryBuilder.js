@@ -9,7 +9,7 @@ const LogEntryBuilder = class {
 
         this.stack = new Error().stack;
         this.timestamp = new Date().toISOString();
-        this.tags = [];
+        this.tags = new Set();
     }
 
     setMessage(message) {
@@ -33,7 +33,7 @@ const LogEntryBuilder = class {
     }
 
     addTag(tag) {
-        this.tags.push(tag);
+        this.tags.add(tag);
         return this;
     }
 };

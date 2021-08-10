@@ -13,7 +13,7 @@ private class ComponentLogger_Tests {
         upsert loggerSettings;
 
         Test.startTest();
-        ComponentLogger.LoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
+        ComponentLogger.ComponentLoggerSettings componentLoggerSettings = ComponentLogger.getSettings();
         Test.stopTest();
 
         System.assertEquals(loggerSettings.IsEnabled__c, componentLoggerSettings.isEnabled);
