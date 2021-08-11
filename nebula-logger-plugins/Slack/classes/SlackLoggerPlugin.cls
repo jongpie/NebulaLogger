@@ -8,9 +8,9 @@
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
-    @testVisible
+    @TestVisible
     private static String endpoint;
-    @testVisible
+    @TestVisible
     private static LoggingLevel notificationLoggingLevel;
 
     static {

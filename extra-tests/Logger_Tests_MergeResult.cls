@@ -9,7 +9,7 @@
  *              Since merging is only supported on some standard objects, there's not a good way to test merging...
  *              ...from within the normal tests, and each org might have additional required fields, VR, etc on the std objects
  */
-@isTest
+@IsTest
 private class Logger_Tests_MergeResult {
     static String getMessage() {
         return 'Hello, world';
@@ -33,7 +33,7 @@ private class Logger_Tests_MergeResult {
         return new List<Database.MergeResult>{ getMergeResult() };
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -58,7 +58,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -82,7 +82,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -107,7 +107,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -132,7 +132,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_warn_entry_for_logMessage_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -157,7 +157,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_warn_entry_for_logMessage_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -181,7 +181,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_warn_entry_for_string_message_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -206,7 +206,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_warn_entry_for_string_message_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -231,7 +231,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -256,7 +256,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -280,7 +280,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -305,7 +305,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -330,7 +330,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -355,7 +355,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -379,7 +379,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -404,7 +404,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -429,7 +429,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -454,7 +454,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -478,7 +478,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -503,7 +503,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -528,7 +528,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -553,7 +553,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -577,7 +577,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -602,7 +602,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -627,7 +627,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -652,7 +652,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -676,7 +676,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_mergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -701,7 +701,7 @@ private class Logger_Tests_MergeResult {
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_mergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();

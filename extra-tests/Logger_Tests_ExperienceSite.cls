@@ -7,7 +7,7 @@
  * @group Extra Tests
  * @description Additional integration tests for orgs with Experience Sites (Communities) enabled
  */
-@isTest
+@IsTest
 private class Logger_Tests_ExperienceSite {
     private static final String GUEST_USER_PROFILE_NAME = 'Logger Test Site Profile';
     private static final String LOG_CREATOR_PERMISSION_SET_NAME = 'LoggerLogCreator';
@@ -24,7 +24,7 @@ private class Logger_Tests_ExperienceSite {
         insert permissionSetAssignment;
     }
 
-    @isTest
+    @IsTest
     private static void it_should_fail_to_save_log_when_assigned_to_guest_user() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -43,7 +43,7 @@ private class Logger_Tests_ExperienceSite {
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     private static void it_should_save_log_for_guest_user() {
         Profile loggerSiteProfile = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name);

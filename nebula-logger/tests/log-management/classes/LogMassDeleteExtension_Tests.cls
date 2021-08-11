@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogMassDeleteExtension_Tests {
     @TestSetup
     static void setupData() {
@@ -15,7 +15,7 @@ private class LogMassDeleteExtension_Tests {
         insert logs;
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_deletable_logs() {
         List<Log__c> logs = [SELECT Id, Name FROM Log__c];
 
@@ -49,7 +49,7 @@ private class LogMassDeleteExtension_Tests {
         System.assertEquals(expectedDeletableLogs.size(), returnedDeletableLogs.size());
     }
 
-    @isTest
+    @IsTest
     static void it_should_delete_selected_log_records() {
         List<Log__c> logs = [SELECT Id, Name FROM Log__c];
         List<Log__c> logsToDelete = new List<Log__c>();
@@ -87,7 +87,7 @@ private class LogMassDeleteExtension_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     static void it_should_add_error_to_page_when_user_does_not_have_delete_access() {
         List<Log__c> logs = [SELECT Id, Name FROM Log__c];
         List<Log__c> logsToDelete = new List<Log__c>();

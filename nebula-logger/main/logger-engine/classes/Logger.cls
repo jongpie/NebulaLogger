@@ -20,7 +20,7 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
     private static LoggerSettings__c userSettings;
 
-    @testVisible
+    @TestVisible
     private static SaveMethod transactionSaveMethod {
         get {
             if (transactionSaveMethod == null) {
@@ -2735,7 +2735,7 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
-        private final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v51.0';
+        private final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
         private final String COMPOSITE_ENDPOINT = '/composite/sobjects';
 
         public void insertRecords(List<SObject> records) {
@@ -2757,13 +2757,9 @@ global with sharing class Logger {
             Integer statusCode = response.getStatusCode();
             if (statusCode >= 400) {
                 String errorMessage = 'Saving via REST API failed. Received request status code ' + statusCode + ', status message: ' + response.getStatus();
-                throw new RestResponseException(errorMessage);
+                throw new CalloutException(errorMessage);
             }
         }
-    }
-
-    @testVisible
-    private class RestResponseException extends Exception {
     }
 
     // Inner class that matches the format expected by the REST API for saving SObjects
@@ -2781,7 +2777,7 @@ global with sharing class Logger {
      * This code is based on the Apex UUID project, released under the MIT License.            *
      * See LICENSE file or go to https://github.com/jongpie/ApexUuid for full license details. *
      ******************************************************************************************/
-    @testVisible
+    @TestVisible
     private without sharing class Uuid {
         private final String HEX_CHARACTERS = '0123456789abcdef';
         private final String HEX_PREFIX = '0x';

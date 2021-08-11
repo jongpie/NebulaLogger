@@ -11,7 +11,7 @@ public without sharing class LoggerTagHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     // Trigger-based variables - tests can override these with mock objects
-    @testVisible
+    @TestVisible
     private List<LoggerTag__c> loggerTags {
         get {
             return (List<LoggerTag__c>) this.triggerNew;

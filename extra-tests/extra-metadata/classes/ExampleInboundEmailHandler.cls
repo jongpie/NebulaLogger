@@ -1,5 +1,5 @@
 global with sharing class ExampleInboundEmailHandler implements Messaging.InboundEmailHandler {
-    @testVisible
+    @TestVisible
     private static String logEntryMessage = 'Testing logging from InboundEmailHandler';
 
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope env) {

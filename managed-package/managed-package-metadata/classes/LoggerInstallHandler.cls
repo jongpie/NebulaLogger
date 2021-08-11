@@ -8,8 +8,12 @@
  * @description Automatically enables org default settings when installing the managed package
  */
 global without sharing class LoggerInstallHandler implements InstallHandler {
-    @testVisible
-    private List<LoggerSettings__c> settingsWithouDefaultSaveMethod = [SELECT Id, DefaultSaveMethod__c FROM LoggerSettings__c WHERE DefaultSaveMethod__c = null];
+    @TestVisible
+    private List<LoggerSettings__c> settingsWithouDefaultSaveMethod = [
+        SELECT Id, DefaultSaveMethod__c
+        FROM LoggerSettings__c
+        WHERE DefaultSaveMethod__c = NULL
+    ];
 
     /**
      * @description Automatically enables org default settings when installing the managed package

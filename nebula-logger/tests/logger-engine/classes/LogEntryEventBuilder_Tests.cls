@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogEntryEventBuilder_Tests {
     private static Organization getOrganization() {
         return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
@@ -55,7 +55,7 @@ private class LogEntryEventBuilder_Tests {
         return new LogMessage('The current date is {0}', System.today());
     }
 
-    @isTest
+    @IsTest
     static void it_should_short_circuit_when_not_enabled() {
         Boolean shouldSave = false;
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG, shouldSave);
@@ -83,7 +83,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.parseStackTrace(new DmlException().getStackTraceString()).getLogEntryEvent());
     }
 
-    @isTest
+    @IsTest
     static void it_should_short_circuit_when_enabled_logging_level_above_called_level() {
         Boolean shouldSave = false;
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
@@ -91,7 +91,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent());
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_short_circuit_when_enabledl() {
         Boolean shouldSave = true;
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
@@ -99,7 +99,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertNotEquals(null, builder.getLogEntryEvent());
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_message_fields_for_logMessage() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
@@ -116,7 +116,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(logMessage.getMessage(), builder.getLogEntryEvent().Message__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_message_fields_for_string() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
@@ -133,7 +133,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(message, builder.getLogEntryEvent().Message__c);
     }
     
-    @isTest
+    @IsTest
     static void it_should_truncate_message_for_long_logMessage() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
@@ -154,7 +154,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(logMessage.getMessage().left(maxMessageLength), builder.getLogEntryEvent().Message__c);
     }
     
-    @isTest
+    @IsTest
     static void it_should_truncate_message_for_long_string() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
@@ -173,7 +173,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(message.left(maxMessageLength), builder.getLogEntryEvent().Message__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_exception_fields_for_dmlException() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().ExceptionMessage__c);
@@ -190,7 +190,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(dmlException.getTypeName(), builder.getLogEntryEvent().ExceptionType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_successful_deleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -211,7 +211,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_failed_deleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -236,7 +236,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
-    // @isTest
+    // @IsTest
     // static void it_should_set_database_result_fields_for_failed_mergeResult() {
     //     Database.MergeResult mergeResult = Database.merge(new Account(Name='Expcted'), new Account(Name='Failure'), false);
     //     System.assertEquals(false, mergeResult.isSuccess());
@@ -253,7 +253,7 @@ private class LogEntryEventBuilder_Tests {
     //     System.assertEquals(Database.MergeResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     // }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_successful_saveResult() {
         Database.SaveResult saveResult = Database.insert(new Log__c(TransactionId__c = '1234'), false);
         System.assertEquals(true, saveResult.isSuccess());
@@ -271,7 +271,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_failed_saveResult() {
         Database.SaveResult saveResult = Database.insert(new Account(), false);
         System.assertEquals(false, saveResult.isSuccess());
@@ -289,7 +289,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_successful_undeleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -311,7 +311,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_failed_undeleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -335,7 +335,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_successful_upsertResult_when_insert() {
         // UpsertResult for a new record insert
         Database.UpsertResult upsertResult = Database.upsert(new Log__c(TransactionId__c = '1234'), false);
@@ -354,7 +354,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UpsertResult.class.getName() + '.Insert', logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_failed_upsertResult_when_insert() {
         // UpsertResult for a new record insert
         Database.UpsertResult upsertResult = Database.upsert(new Account(), false);
@@ -373,7 +373,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UpsertResult.class.getName() + '.Insert', logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_successful_upsertResult_when_update() {
         // UpsertResult for an existing record update
         Log__c log = new Log__c(TransactionId__c = '1234');
@@ -396,7 +396,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UpsertResult.class.getName() + '.Update', logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_failed_upsertResult_when_update() {
         // UpsertResult for an existing record update
         Log__c log = new Log__c(TransactionId__c = '1234');
@@ -426,7 +426,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UpsertResult.class.getName() + '.Update', logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_list_of_successful_deleteResult() {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 5; i++) {
@@ -453,7 +453,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_list_of_failed_deleteResult() {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 5; i++) {
@@ -484,7 +484,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
-    // @isTest
+    // @IsTest
     // static void it_should_set_database_result_fields_for_list_of_failed_mergeResult() {
     //     Database.MergeResult mergeResult = Database.merge(new Account(Name='Expcted'), new Account(Name='Failure'), false);
     //     System.assertEquals(false, mergeResult.isSuccess());
@@ -501,7 +501,7 @@ private class LogEntryEventBuilder_Tests {
     //     System.assertEquals(Database.MergeResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     // }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_list_of_successful_saveResult() {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 5; i++) {
@@ -526,7 +526,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_list_of_failed_saveResult() {
         List<Account> accounts = new List<Account>();
         for (Integer i = 0; i < 5; i++) {
@@ -551,7 +551,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_list_of_successful_undeleteResult() {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 5; i++) {
@@ -579,7 +579,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_list_of_failed_undeleteResult() {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 5; i++) {
@@ -609,7 +609,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_list_of_successful_upsertResult_when_insert() {
         // UpsertResult for a new record insert
         List<Log__c> logs = new List<Log__c>();
@@ -635,7 +635,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UpsertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_database_result_fields_for_list_of_failed_upsertResult_when_insert() {
         // UpsertResult for a new record insert
         List<Account> accounts = new List<Account>();
@@ -661,7 +661,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Database.UpsertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_record_fields_for_recordId_when_standard_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -685,7 +685,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_record_fields_for_recordId_when_custom_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -709,7 +709,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Log__c.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_record_fields_for_recordId_when_custom_metadata_type() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -732,7 +732,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(LogStatus__mdt.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_record_fields_for_record_when_standard_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -756,7 +756,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_record_fields_for_record_when_custom_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -780,7 +780,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(Log__c.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_record_fields_for_record_when_custom_metadata_type() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -802,7 +802,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(LogStatus__mdt.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_record_fields_for_list_of_records() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -825,7 +825,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(User.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_tags_string_for_list_of_tags() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().Tags__c);
@@ -841,7 +841,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(expectedTagsString, builder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_deduplicate_tags() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().Tags__c);
@@ -857,7 +857,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(expectedTagsString, builder.getLogEntryEvent().Tags__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_stack_trace_and_origin_location_for_stack_trace_string() {
         DmlException stackTraceHandler = new DmlException();
 
@@ -879,7 +879,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(expectedStackTrace, builder.getLogEntryEvent().StackTrace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_set_stack_trace_and_origin_location_for_invalid_stack_trace_string() {
         final String invalidStackTrace = '()';
 
@@ -896,7 +896,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().StackTrace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_value_of_shouldSave_when_true() {
         Test.startTest();
         Boolean shouldSave = true;
@@ -906,7 +906,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(shouldSave, builder.shouldSave());
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_value_of_shouldSave_when_false() {
         Test.startTest();
         Boolean shouldSave = false;
@@ -916,7 +916,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(shouldSave, builder.shouldSave());
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_detailed_fields() {
         Test.startTest();
         Boolean shouldSave = true;

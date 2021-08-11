@@ -3,9 +3,9 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogEntryFieldSetPicklist_Tests {
-    @isTest
+    @IsTest
     static void it_should_return_null_for_default_value() {
         // Admins should choose a field set, so always return null for the default
         Test.startTest();
@@ -15,7 +15,7 @@ private class LogEntryFieldSetPicklist_Tests {
         System.assertEquals(null, instance.getDefaultValue());
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_all_field_sets_as_values() {
         Map<String, FieldSet> expectedFieldSets = Schema.SObjectType.LogEntry__c.fieldSets.getMap();
 

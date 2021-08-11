@@ -5,7 +5,7 @@
 
 // TODO: need to improve plugin framework to make it easier for plugins to test by making it easier
 //       to mock CMDT records & instances of LoggerSObjectHandlerPlugin
-@isTest
+@IsTest
 private class SlackLoggerPlugin_Tests {
     public class SuccessCalloutMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest request) {
@@ -62,7 +62,7 @@ private class SlackLoggerPlugin_Tests {
         ];
     }
 
-    @isTest
+    @IsTest
     static void it_should_push_a_log_when_logging_level_is_met() {
         SuccessCalloutMock calloutMock = new SuccessCalloutMock();
 
@@ -112,7 +112,7 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(System.today(), log.SlackNotificationDate__c.date());
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_push_a_log_when_logging_level_is_not_met() {
         SuccessCalloutMock calloutMock = new SuccessCalloutMock();
 

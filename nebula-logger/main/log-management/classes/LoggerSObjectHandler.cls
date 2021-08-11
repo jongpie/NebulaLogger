@@ -49,12 +49,12 @@ public abstract class LoggerSObjectHandler {
     }
 
     // Private static testVisible methods
-    @testVisible
+    @TestVisible
     private static void setMockConfiguration(Schema.SObjectType sobjectType, LoggerSObjectHandler__mdt configuration) {
         configurationBySObjectType.put(sobjectType, configuration);
     }
 
-    @testVisible
+    @TestVisible
     private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerSObjectHandlerPlugin__mdt plugin) {
         List<LoggerSObjectHandlerPlugin__mdt> plugins = pluginsBySObjectType.get(sobjectType);
         if (plugins == null) {
@@ -64,15 +64,15 @@ public abstract class LoggerSObjectHandler {
         pluginsBySObjectType.put(sobjectType, plugins);
     }
 
-    @testVisible
+    @TestVisible
     protected TriggerOperation triggerOperationType;
-    @testVisible
+    @TestVisible
     protected List<SObject> triggerNew;
-    @testVisible
+    @TestVisible
     protected Map<Id, SObject> triggerNewMap;
-    @testVisible
+    @TestVisible
     protected List<SObject> triggerOld;
-    @testVisible
+    @TestVisible
     protected Map<Id, SObject> triggerOldMap;
 
     private LoggerSObjectHandler__mdt handlerConfiguration;

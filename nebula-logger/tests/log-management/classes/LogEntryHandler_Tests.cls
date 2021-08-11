@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogEntryHandler_Tests {
 
     public class LogEntryPluginTest extends LoggerSObjectHandlerPlugin {
@@ -36,14 +36,14 @@ private class LogEntryHandler_Tests {
         Test.setCreatedDate(log.Id, System.now().addDays(-8));
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_the_logEntry_sobjectType() {
         Test.startTest();
         System.assertEquals(Schema.LogEntry__c.SObjectType, new LogEntryHandler().getSObjectType());
         Test.stopTest();
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_run_handler_when_disabled_via_configuration() {
         String currentUserJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
 
@@ -69,7 +69,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(false, logEntry.HasRecordJson__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_save_log_entry_without_related_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -83,7 +83,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(null, logEntry.RecordId__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_populate_related_record_fields_on_log_entry_with_related_user_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         User currentUser = [SELECT Id, Username FROM User WHERE Id = :UserInfo.getUserId()];
@@ -99,7 +99,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(currentUser.Username, logEntry.RecordName__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_populate_related_record_fields_on_log_entry_with_related_profile_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         Profile currentProfile = [SELECT Id, Name, Description FROM Profile WHERE Id = :UserInfo.getProfileId()];
@@ -115,7 +115,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(currentProfile.Name, logEntry.RecordName__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_hasRecordJson_to_true_when_populated() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -131,7 +131,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(recordJson, logEntry.RecordJson__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_hasRecordJson_to_true_when_updated() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -153,7 +153,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(recordJson, logEntry.RecordJson__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_hasExceptionStackTrace_to_false_when_null() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -168,7 +168,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(null, logEntry.ExceptionStackTrace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_hasExceptionStackTrace_to_true_when_populated() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -184,7 +184,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(stackTrace, logEntry.ExceptionStackTrace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_hasExceptionStackTrace_to_true_when_updated() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -206,7 +206,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(stackTrace, logEntry.ExceptionStackTrace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_hasStackTrace_to_false_when_null() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -221,7 +221,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(null, logEntry.StackTrace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_hasStackTrace_to_true_when_populated() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -237,7 +237,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(stackTrace, logEntry.StackTrace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_set_hasStackTrace_to_true_when_updated() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 
@@ -259,7 +259,7 @@ private class LogEntryHandler_Tests {
         System.assertEquals(stackTrace, logEntry.StackTrace__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_run_apex_plugin_when_configured() {
         String expectedMessage = 'Some String';
 

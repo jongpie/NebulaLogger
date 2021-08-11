@@ -39,8 +39,8 @@ on:
             - 'sfdx-project.json'
 
 jobs:
-    lwc-local-tests:
-        name: 'LWC Local Tests'
+    local-tests:
+        name: 'Local Tests'
         runs-on: ubuntu-latest
         environment: Test
         steps:
@@ -152,7 +152,7 @@ jobs:
             # - name: 'Delete unsupported code coverage files'
             #   run: rm ./tests/apex/test-result-707*-codecoverage.json
 
-              # Upload code coverage data for Apex
+            # Upload code coverage data for Apex
             # - name: 'Upload code coverage for Apex to Codecov.io'
             #   uses: codecov/codecov-action@v2.0.2
             #   with:
@@ -166,7 +166,7 @@ jobs:
     # TODO finish auto-creation & promotion of unlocked package + committing changes to docs
     # create-package-version:
     #     name: 'Create Package Version'
-    #     needs: [lwc-local-tests, scratch-org-tests]
+    #     needs: [local-tests, scratch-org-tests]
     #     runs-on: ubuntu-latest
     #     environment: Test
     #     steps:

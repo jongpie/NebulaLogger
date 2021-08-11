@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogMessage_Tests {
     public class CustomLogMessage extends LogMessage {
         private String inputString;
@@ -15,7 +15,7 @@ private class LogMessage_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     static void it_should_support_extending_LogMessage_class() {
         String expectedMessage = 'The current time is: ' + System.now();
 
@@ -29,7 +29,7 @@ private class LogMessage_Tests {
         System.assertEquals(expectedMessage, returnedMessage);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_formatted_message_when_1_object_list_parameter_provided() {
         String unformattedMessage = 'my string with 1 input: {0}';
         List<Object> arguments = new List<Object>{ System.now() };
@@ -42,7 +42,7 @@ private class LogMessage_Tests {
         System.assertEquals(expectedMessage, returnedMessage);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_formatted_message_when_1_object_parameter_provided() {
         String unformattedMessage = 'my string with 1 input: {0}';
         Datetime argument1 = System.now();
@@ -55,7 +55,7 @@ private class LogMessage_Tests {
         System.assertEquals(expectedMessage, returnedMessage);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_formatted_message_when_2_object_parameters_provided() {
         String unformattedMessage = 'my string with 1 input: {0}';
         Datetime argument1 = System.now();
@@ -69,7 +69,7 @@ private class LogMessage_Tests {
         System.assertEquals(expectedMessage, returnedMessage);
     }
 
-    @isTest
+    @IsTest
     static void it_should_return_formatted_message_when_3_object_parameters_provided() {
         String unformattedMessage = 'my string with 1 input: {0} and then {1} and finally {2}';
         Datetime argument1 = System.now();

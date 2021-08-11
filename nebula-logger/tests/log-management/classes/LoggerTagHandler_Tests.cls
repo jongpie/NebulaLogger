@@ -3,10 +3,10 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LoggerTagHandler_Tests {
 
-    @isTest
+    @IsTest
     static void it_should_set_unique_id_when_enabled() {
         LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
         insert tag;
@@ -15,7 +15,7 @@ private class LoggerTagHandler_Tests {
         System.assertEquals(tag.Name, tag.UniqueId__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_set_unique_id_when_disabled() {
         LoggerSObjectHandler__mdt loggerTagHandlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = false, SObjectType__c = LoggerTag__c.SObjectType.getDescribe().getName());
         LoggerSObjectHandler.setMockConfiguration(Schema.LoggerTag__c.SObjectType, loggerTagHandlerConfiguration);
@@ -27,7 +27,7 @@ private class LoggerTagHandler_Tests {
         System.assertEquals(null, tag.UniqueId__c);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_insert_duplicate_tag() {
         LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
         insert tag;

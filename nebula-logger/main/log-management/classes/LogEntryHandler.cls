@@ -9,7 +9,7 @@
  */
 public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     // Trigger-based variables - tests can override these with mock objects
-    @testVisible
+    @TestVisible
     private List<LogEntry__c> logEntries {
         get {
             return (List<LogEntry__c>) this.triggerNew;

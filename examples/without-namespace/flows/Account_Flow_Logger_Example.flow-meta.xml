@@ -81,7 +81,7 @@
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>51.0</apiVersion>
+    <apiVersion>52.0</apiVersion>
     <assignments>
         <description>An example field update</description>
         <name>Update_Account</name>

@@ -3,9 +3,9 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class FlowLogger_Tests {
-    @isTest
+    @IsTest
     static void it_should_add_entry_to_logger_buffer() {
         LoggingLevel entryLoggingLevel = LoggingLevel.DEBUG;
 
@@ -33,7 +33,7 @@ private class FlowLogger_Tests {
         System.assertEquals(1, [SELECT COUNT() FROM LogEntry__c]);
     }
 
-    @isTest
+    @IsTest
     static void it_should_auto_save_entry_when_saveLog_is_true() {
         LoggingLevel entryLoggingLevel = LoggingLevel.DEBUG;
 

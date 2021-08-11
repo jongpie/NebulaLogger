@@ -3,9 +3,9 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LogHandler_Tests_Flow {
-    @isTest
+    @IsTest
     static void it_should_run_flow_plugin_when_configured() {
         // Assumption: the Flow LogHandler_Tests_Flow makes an update to the current user's FirstName
         // The specific action within the Flow isn't that important - we just want to make sure...

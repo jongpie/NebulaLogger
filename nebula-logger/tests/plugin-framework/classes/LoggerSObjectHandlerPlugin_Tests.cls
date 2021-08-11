@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@isTest
+@IsTest
 private class LoggerSObjectHandlerPlugin_Tests {
     private static String PLUGIN_LOG_STATUS = 'On Hold';
 
@@ -25,7 +25,7 @@ private class LoggerSObjectHandlerPlugin_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     static void it_should_execute_plugin_logic() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         System.assertEquals(null, log.Status__c);
