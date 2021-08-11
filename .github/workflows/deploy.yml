@@ -152,7 +152,7 @@ jobs:
             # - name: 'Delete unsupported code coverage files'
             #   run: rm ./tests/apex/test-result-707*-codecoverage.json
 
-              # Upload code coverage data for Apex
+            # Upload code coverage data for Apex
             # - name: 'Upload code coverage for Apex to Codecov.io'
             #   uses: codecov/codecov-action@v2.0.2
             #   with:
