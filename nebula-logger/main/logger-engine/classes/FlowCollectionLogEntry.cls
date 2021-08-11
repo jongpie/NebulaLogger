@@ -17,7 +17,7 @@ global inherited sharing class FlowCollectionLogEntry {
      * @description The name of the Flow creating the log entry.
      *   Due to Salesforce limitations, this cannot be automatically determined
      */
-    @InvocableVariable(required=true label='Flow or Process Builder Name')
+    @InvocableVariable(required=true label='Flow API Name')
     global String flowName;
 
     /**
@@ -48,6 +48,12 @@ global inherited sharing class FlowCollectionLogEntry {
      */
     @InvocableVariable(required=false label='(Optional) Logging Level')
     global String loggingLevelName;
+
+    /**
+     * @description Optionally specify a Flow interview GUID for a paused Flow
+     */
+    @InvocableVariable(required=false label='(Optional) Flow Interview GUID')
+    public String flowInterviewGuid; // TODO update to global for the managed package
 
     /**
      * @description Optionally provide a comma-separated String of tags to dynamically assign to the log entry

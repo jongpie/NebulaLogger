@@ -25,6 +25,7 @@ public inherited sharing class FlowLogger {
         public String message;
         public String faultMessage;
         public String loggingLevelName;
+        public String flowInterviewGuid; // TODO update to global for the managed package
         public String tagsString;
         public List<String> topics; // TODO: deprecated, remove in a future release
         public Boolean saveLog = false;
@@ -61,8 +62,10 @@ public inherited sharing class FlowLogger {
                 return this.logEntryEventBuilder;
             }
 
+            this.logEntryEvent.FlowInterviewGuid__c = this.flowInterviewGuid;
             this.logEntryEvent.OriginLocation__c = this.flowName;
             this.logEntryEvent.OriginType__c = 'Flow';
+            this.logEntryEvent.StackTrace__c = null;
             this.logEntryEvent.Timestamp__c = this.timestamp;
 
             if (String.isNotBlank(this.faultMessage)) {

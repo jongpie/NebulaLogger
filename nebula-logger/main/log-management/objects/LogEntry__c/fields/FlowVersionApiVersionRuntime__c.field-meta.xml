@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FlowVersionApiVersionRuntime__c</fullName>
+    <description
+    >For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowdefinitionview.htm</description>
+    <externalId>false</externalId>
+    <inlineHelpText
+    >The API version for running the flow. This value determines which versioned run-time behavior improvements are adopted by the flow version.</inlineHelpText>
+    <label>Flow API Version Runtime</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>v52.0</fullName>
+                <default>false</default>
+                <label>v52.0</label>
+            </value>
+            <value>
+                <fullName>v53.0</fullName>
+                <default>false</default>
+                <label>v53.0</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

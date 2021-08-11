@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FlowVersionRunInMode__c</fullName>
+    <description
+    >For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowdefinitionview.htm</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The mode that the flow runs in.</inlineHelpText>
+    <label>Flow Run-In Mode</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>DefaultMode</fullName>
+                <default>false</default>
+                <label>DefaultMode</label>
+            </value>
+            <value>
+                <fullName>SystemModeWithSharing</fullName>
+                <default>false</default>
+                <label>SystemModeWithSharing</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
