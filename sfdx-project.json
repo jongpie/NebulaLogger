@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.0.0",
-            "versionName": "Tagging System Overhaul",
-            "versionDescription": "New features & objects for tagging log entries",
+            "versionNumber": "4.6.1.0",
+            "versionName": "Spring '21 Upgrade",
+            "versionDescription": "Upgraded metadata to API v52.0 + added LogEntry__c.EventUuid__c",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {

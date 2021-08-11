@@ -26,7 +26,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
-    private Map<String, List<String>> logEntryKeyToTagNames = new Map<String, List<String>>();
+    private Map<String, List<String>> logEntryEventUuidToTagNames = new Map<String, List<String>>();
     private Set<String> tagNames = new Set<String>();
 
     public LogEntryEventHandler() {
@@ -165,6 +165,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
                 DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
                 EpochTimestamp__c = logEntryEvent.EpochTimestamp__c,
+                EventUuid__c = logEntryEvent.EventUuid,
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,
@@ -222,11 +223,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             this.logEntries.add(logEntry);
             if (logEntryEvent.Tags__c != null) {
-                String logEntryKey = getLogEntryKey(logEntry);
                 List<String> logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
 
                 this.tagNames.addAll(logEntryTagNames);
-                this.logEntryKeyToTagNames.put(logEntryKey, logEntryTagNames);
+                this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
             }
         }
         insert this.logEntries;
@@ -238,21 +238,19 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : this.logEntries) {
-            String logEntryKey = getLogEntryKey(logEntry);
-
             for (LogEntryTagRule__mdt rule : TAG_ASSIGNMENT_RULES) {
                 Boolean ruleCriteriaMet = ruleCriteriaMet(logEntry, rule);
 
                 if (ruleCriteriaMet == true) {
                     List<String> configuredTagNames = getTagNames(rule.Tags__c);
                     this.tagNames.addAll(configuredTagNames);
-                    List<String> logEntryTags = logEntryKeyToTagNames.get(logEntryKey);
+                    List<String> logEntryTags = logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
                     if (logEntryTags == null) {
                         logEntryTags = new List<String>();
                     }
                     logEntryTags.addAll(configuredTagNames);
 
-                    this.logEntryKeyToTagNames.put(logEntryKey, logEntryTags);
+                    this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTags);
                     this.tagNames.addAll(logEntryTags);
                 }
             }
@@ -272,10 +270,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         // Assign the tags to the records
         Set<SObject> tagAssignments = new Set<SObject>();
         for (LogEntry__c logEntry : this.logEntries) {
-            String logEntryKey = getLogEntryKey(logEntry);
-
-            List<String> logEntryTagNames = this.logEntryKeyToTagNames.get(logEntryKey);
-            if (logEntryTagNames == null || logEntryKeyToTagNames.isEmpty()) {
+            List<String> logEntryTagNames = this.logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
+            if (logEntryTagNames == null || logEntryEventUuidToTagNames.isEmpty()) {
                 continue;
             }
 
@@ -328,12 +324,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     // Private static methods
-    private static String getLogEntryKey(LogEntry__c logEntry) {
-        // TODO - after upgrading all metadata to v52.0, switch to using the new EventUuid field for platform events
-        // https://releasenotes.docs.salesforce.com/en-us/summer21/release-notes/rn_batch_platform_event.htm
-        return logEntry.Log__r.TransactionId__c + logEntry.TransactionEntryNumber__c;
-    }
-
     private static List<String> getTagNames(String tagsString) {
         List<String> cleanedTagNames = new List<String>();
 
