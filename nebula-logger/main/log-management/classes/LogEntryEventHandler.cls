@@ -58,6 +58,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             when AFTER_INSERT {
                 this.upsertLogs();
                 this.generateLogEntries();
+                this.setApexClassFields();
                 this.setFlowDefinitionFields();
                 this.setFlowVersionFields();
                 this.setFlowInterviewFields();
@@ -232,6 +233,51 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 this.tagNames.addAll(logEntryTagNames);
                 this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
             }
+        }
+    }
+
+    private void setApexClassFields() {
+        List<String> apexClassNames = new List<String>();
+        List<LogEntry__c> apexLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.OriginType__c == 'Apex') {
+                // OriginLocation__c contains the class name + method name. Examples:
+                // MyClass.someMethod
+                // MyClass.MyInnerClass.someMethod
+                String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
+                apexClassNames.add(apexClassName);
+                apexLogEntries.add(logEntry);
+            }
+        }
+
+        if (apexClassNames.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, ApexClass> classNameToApexClass = new Map<String, ApexClass>();
+        for (ApexClass apexClass : [
+            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
+            FROM ApexClass
+            WHERE Name IN :apexClassNames
+        ]) {
+            classNameToApexClass.put(apexClass.Name, apexClass);
+        }
+
+        for (LogEntry__c logEntry : apexLogEntries) {
+            String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
+            ApexClass apexClass = classNameToApexClass.get(apexClassName);
+            if (apexClass == null) {
+                continue;
+            }
+
+            logEntry.ApexClassApiVersion__c = 'v' + apexClass.ApiVersion;
+            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
+            // logEntry.ApexClassCreatedById__c = apexClass.CreatedById;
+            logEntry.ApexClassCreatedDate__c = apexClass.CreatedDate;
+            logEntry.ApexClassId__c = apexClass.Id;
+            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
+            // logEntry.ApexClassLastModifiedById__c = apexClass.LastModifiedById;
+            logEntry.ApexClassLastModifiedDate__c = apexClass.LastModifiedDate;
         }
     }
 

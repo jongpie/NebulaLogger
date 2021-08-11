@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>FlowVersionApiVersionRuntime__c</fullName>
+    <fullName>ApexClassApiVersion__c</fullName>
     <description
-    >For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowdefinitionview.htm</description>
+    >For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_apexclass.htm</description>
     <externalId>false</externalId>
-    <inlineHelpText
-    >The API version for running the flow. This value determines which versioned run-time behavior improvements are adopted by the flow version.</inlineHelpText>
-    <label>Flow API Version Runtime</label>
+    <inlineHelpText>The API version for this class. Every class has an API version specified at creation.</inlineHelpText>
+    <label>Apex Class API Version</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
