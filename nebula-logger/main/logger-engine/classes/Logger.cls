@@ -2757,13 +2757,9 @@ global with sharing class Logger {
             Integer statusCode = response.getStatusCode();
             if (statusCode >= 400) {
                 String errorMessage = 'Saving via REST API failed. Received request status code ' + statusCode + ', status message: ' + response.getStatus();
-                throw new RestResponseException(errorMessage);
+                throw new CalloutException(errorMessage);
             }
         }
-    }
-
-    @TestVisible
-    private class RestResponseException extends Exception {
     }
 
     // Inner class that matches the format expected by the REST API for saving SObjects

@@ -428,7 +428,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 response.getStatusCode() +
                 ', status message: ' +
                 response.getStatus();
-            throw new StatusApiResponseException(errorMessage);
+            throw new CalloutException(errorMessage);
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
@@ -456,9 +456,5 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private class StatusApiResponse {
         public String releaseNumber { get; set; }
         public String releaseVersion { get; set; }
-    }
-
-    @TestVisible
-    private class StatusApiResponseException extends Exception {
     }
 }

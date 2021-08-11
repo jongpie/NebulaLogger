@@ -654,7 +654,7 @@ private class LogEntryEventHandler_Tests {
             Test.stopTest();
             System.assert(false, 'Exception expected, this assert should not run');
         } catch (Exception ex) {
-            System.assertEquals(LogEntryEventHandler.StatusApiResponseException.class.getName(), ex.getTypeName());
+            System.assertEquals(CalloutException.class.getName(), ex.getTypeName());
 
             String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
             System.assert(ex.getMessage().contains(expectedErrorMessage));

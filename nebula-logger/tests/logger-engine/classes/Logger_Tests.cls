@@ -6,9 +6,6 @@
 @IsTest
 private class Logger_Tests {
     // Helper classes
-    private class Logger_TestsException extends Exception {
-    }
-
     private class SuccessCalloutMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest request) {
             HttpResponse response = new HttpResponse();
@@ -741,7 +738,7 @@ private class Logger_Tests {
         try {
             Logger.saveLog(Logger.SaveMethod.REST);
         } catch (Exception ex) {
-            System.assertEquals(ex.getTypeName(), Logger.RestResponseException.class.getName());
+            System.assertEquals(CalloutException.class.getName(), ex.getTypeName());
         }
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(0, Limits.getQueueableJobs());
