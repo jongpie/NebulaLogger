@@ -165,7 +165,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     private void setFlowVersionFields() {
-        // https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowversionview.htm
         List<String> flowActiveVersionIds = new List<String>();
         List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
@@ -204,7 +203,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     private void setFlowInterviewFields() {
-        // https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowversionview.htm
         List<String> flowInterviewGuids = new List<String>();
         List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
         for (LogEntry__c logEntry : this.logEntries) {
