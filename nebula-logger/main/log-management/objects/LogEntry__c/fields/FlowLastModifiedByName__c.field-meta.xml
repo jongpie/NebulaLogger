@@ -4,7 +4,7 @@
     <description
     >For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowdefinitionview.htm</description>
     <externalId>false</externalId>
-    <inlineHelpText>The user who last updated this flow definition.</inlineHelpText>
+    <inlineHelpText>The name of the user who last updated this flow definition.</inlineHelpText>
     <label>Flow Last Modified By</label>
     <length>255</length>
     <required>false</required>

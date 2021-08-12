@@ -38,16 +38,17 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         switch on this.triggerOperationType {
             when BEFORE_INSERT {
                 this.setCheckboxFields();
-
-                // Only set the record names on initial insert - the RecordName__c field is then...
-                // a snapshot of the record's name at the time that the log entry was created
+                this.setApexClassFields();
+                this.setFlowDefinitionFields();
+                this.setFlowVersionFields();
+                this.setFlowInterviewFields();
                 this.setRecordNames();
             }
             when BEFORE_UPDATE {
-                // Realistically, these checkbox fields probably only need to be set on insert...
-                // ...but some admins & devs might decide to update/append data in some of the related fields...
-                // ...and it conceptually feels weird for there to be scenarios where these fields could be inaccurate,
-                // ...so keep them up to date just to be safe
+                // Realistically, these checkbox fields probably only need to be set on insert
+                // but some admins & devs might decide to update/append data in some of the related fields
+                // and it conceptually feels weird for there to be scenarios where these fields could be inaccurate,
+                // so keep them up to date just to be safe
                 this.setCheckboxFields();
             }
         }
@@ -63,6 +64,174 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
             logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
             logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
+        }
+    }
+
+    private void setApexClassFields() {
+        List<String> apexClassNames = new List<String>();
+        List<LogEntry__c> apexLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.OriginType__c == 'Apex') {
+                // OriginLocation__c contains the class name + method name. Examples:
+                // MyClass.someMethod
+                // MyClass.MyInnerClass.someMethod
+                String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
+                apexClassNames.add(apexClassName);
+                apexLogEntries.add(logEntry);
+            }
+        }
+
+        if (apexClassNames.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, ApexClass> classNameToApexClass = new Map<String, ApexClass>();
+        for (ApexClass apexClass : [
+            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
+            FROM ApexClass
+            WHERE Name IN :apexClassNames
+        ]) {
+            classNameToApexClass.put(apexClass.Name, apexClass);
+        }
+
+        for (LogEntry__c logEntry : apexLogEntries) {
+            String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
+            ApexClass apexClass = classNameToApexClass.get(apexClassName);
+            if (apexClass == null) {
+                continue;
+            }
+
+            logEntry.ApexClassApiVersion__c = 'v' + apexClass.ApiVersion;
+            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
+            // logEntry.ApexClassCreatedById__c = apexClass.CreatedById;
+            logEntry.ApexClassCreatedDate__c = apexClass.CreatedDate;
+            logEntry.ApexClassId__c = apexClass.Id;
+            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
+            // logEntry.ApexClassLastModifiedById__c = apexClass.LastModifiedById;
+            logEntry.ApexClassLastModifiedDate__c = apexClass.LastModifiedDate;
+        }
+    }
+
+    private void setFlowDefinitionFields() {
+        List<String> flowApiNames = new List<String>();
+        List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.OriginType__c == 'Flow') {
+                flowApiNames.add(logEntry.OriginLocation__c);
+                flowLogEntries.add(logEntry);
+            }
+        }
+
+        if (flowApiNames.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, FlowDefinitionView> flowApiNameToDefinition = new Map<String, FlowDefinitionView>();
+        for (
+            FlowDefinitionView flowDefinition : [
+                SELECT
+                    ActiveVersionId,
+                    ApiName,
+                    Description,
+                    DurableId,
+                    Label,
+                    LastModifiedBy, // This is a text field of the person's name - it's NOT a lookup to User :'(
+                    LastModifiedDate,
+                    ManageableState,
+                    ProcessType,
+                    TriggerType
+                FROM FlowDefinitionView
+                WHERE ApiName IN :flowApiNames AND IsActive = TRUE
+            ]
+        ) {
+            flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
+        }
+
+        for (LogEntry__c logEntry : flowLogEntries) {
+            FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginLocation__c);
+            if (flowDefinition == null) {
+                continue;
+            }
+
+            logEntry.FlowActiveVersionId__c = flowDefinition.ActiveVersionId;
+            logEntry.FlowDescription__c = flowDefinition.Description;
+            logEntry.FlowDurableId__c = flowDefinition.DurableId;
+            logEntry.FlowLabel__c = flowDefinition.Label;
+            logEntry.FlowLastModifiedByName__c = flowDefinition.LastModifiedBy;
+            logEntry.FlowLastModifiedDate__c = flowDefinition.LastModifiedDate;
+            logEntry.FlowProcessType__c = flowDefinition.ProcessType;
+            logEntry.FlowTriggerType__c = flowDefinition.TriggerType;
+        }
+    }
+
+    private void setFlowVersionFields() {
+        // https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowversionview.htm
+        List<String> flowActiveVersionIds = new List<String>();
+        List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (String.isNotBlank(logEntry.FlowActiveVersionId__c)) {
+                flowActiveVersionIds.add(logEntry.FlowActiveVersionId__c);
+                flowLogEntries.add(logEntry);
+            }
+        }
+
+        if (flowActiveVersionIds.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, FlowVersionView> flowDurableId = new Map<String, FlowVersionView>();
+        for (FlowVersionView flowVersionView : [
+            SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber
+            FROM FlowVersionView
+            WHERE DurableId IN :flowActiveVersionIds
+        ]) {
+            // Filtering on Status in SOQL seems to always return 0 results, so filter in code instead
+            if (flowVersionView.Status == 'Active') {
+                flowDurableId.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
+            }
+        }
+
+        for (LogEntry__c logEntry : flowLogEntries) {
+            FlowVersionView flowVersionView = flowDurableId.get(logEntry.FlowDurableId__c);
+            if (flowVersionView == null) {
+                continue;
+            }
+
+            logEntry.FlowVersionApiVersionRuntime__c = 'v' + flowVersionView.ApiVersionRuntime + '.0';
+            logEntry.FlowVersionRunInMode__c = flowVersionView.RunInMode;
+            logEntry.FlowVersionNumber__c = flowVersionView.VersionNumber;
+        }
+    }
+
+    private void setFlowInterviewFields() {
+        // https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_flowversionview.htm
+        List<String> flowInterviewGuids = new List<String>();
+        List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (String.isNotBlank(logEntry.FlowInterviewGuid__c)) {
+                flowInterviewGuids.add(logEntry.FlowInterviewGuid__c);
+                flowLogEntries.add(logEntry);
+            }
+        }
+
+        if (flowInterviewGuids.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, FlowInterview> flowInterviewGuidToInterview = new Map<String, FlowInterview>();
+        for (FlowInterview flowInterview : [SELECT CurrentElement, Guid, InterviewLabel, PauseLabel FROM FlowInterview WHERE Guid IN :flowInterviewGuids]) {
+            flowInterviewGuidToInterview.put(flowInterview.Guid, flowInterview);
+        }
+
+        for (LogEntry__c logEntry : flowLogEntries) {
+            FlowInterview flowInterview = flowInterviewGuidToInterview.get(logEntry.FlowDurableId__c);
+            if (flowInterview == null) {
+                continue;
+            }
+
+            logEntry.FlowInterviewCurrentElement__c = flowInterview.CurrentElement;
+            logEntry.FlowInterviewLabel__c = flowInterview.InterviewLabel;
+            logEntry.FlowInterviewPauseLabel__c = flowInterview.PauseLabel;
         }
     }
 

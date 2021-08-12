@@ -6,9 +6,10 @@ public with sharing class ExampleClassWithLogging {
 
     public void doSomething() {
         Logger.info('running doSomething() method!');
-        // Logger.saveLog();
 
         new ExampleInnerClass().doAnInnerSomething();
+
+        Logger.saveLog();
     }
 
     public class ExampleInnerClass {
@@ -19,7 +20,6 @@ public with sharing class ExampleClassWithLogging {
 
         public void doAnInnerSomething() {
             Logger.info('running doAnInnerSomething() method!');
-            Logger.saveLog();
         }
     }
 }

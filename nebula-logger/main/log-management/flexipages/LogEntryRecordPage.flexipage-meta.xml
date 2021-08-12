@@ -827,6 +827,19 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
+                    <value>Facet-3a75f17f-589a-49f4-bdec-38f730e94676</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Message Information</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
                     <value>Facet-1183159e-efc6-4047-808d-9d19653cb973</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
@@ -841,19 +854,6 @@
                         <rightValue>Apex</rightValue>
                     </criteria>
                 </visibilityRule>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>columns</name>
-                    <value>Facet-3a75f17f-589a-49f4-bdec-38f730e94676</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <value>Message Information</value>
-                </componentInstanceProperties>
-                <componentName>flexipage:fieldSection</componentName>
             </componentInstance>
         </itemInstances>
         <itemInstances>

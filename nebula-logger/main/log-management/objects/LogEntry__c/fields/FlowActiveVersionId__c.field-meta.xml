@@ -4,7 +4,7 @@
     <description>The ID of the active flow version.</description>
     <externalId>false</externalId>
     <inlineHelpText>The ID of the active flow version.</inlineHelpText>
-    <label>FlowActiveVersionId</label>
+    <label>Flow Active Version ID</label>
     <length>18</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
