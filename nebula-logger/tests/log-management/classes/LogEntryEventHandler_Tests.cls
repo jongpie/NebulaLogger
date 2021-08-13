@@ -837,16 +837,18 @@ private class LogEntryEventHandler_Tests {
             orgEnvironmentType = 'Production';
         }
 
+        Id logOwnerId = logEntryEvent.LoggedById__c == null ? UserInfo.getUserId() : logEntryEvent.LoggedById__c;
+
         System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c);
         System.assertEquals(logEntryEvent.Locale__c, log.Locale__c);
-        System.assertEquals(UserInfo.getUserId(), log.LoggedBy__c);
+        System.assertEquals(logEntryEvent.LoggedById__c, log.LoggedBy__c);
         System.assertEquals(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c);
         System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c);
         System.assertEquals(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c);
         System.assertEquals(logEntryEvent.LoginType__c, log.LoginType__c);
         System.assertEquals(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c);
         System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c);
-        System.assertEquals(UserInfo.getUserId(), log.OwnerId);
+        System.assertEquals(logOwnerId, log.OwnerId);
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
