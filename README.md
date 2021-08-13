@@ -5,7 +5,7 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kfMQAQ)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kgPQAQ)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
@@ -90,9 +90,6 @@ After deploying Nebula Logger to your org, there are a few additional configurat
     -   `LoggerAdmin` provides view-all and modify-all access to all log records.
 -   Customize the default settings in `LoggerSettings__c`
     -   You can customize settings at the org, profile and user levels
--   Unlocked Package Only: Enable Salesforce Topics for the `Log__c` and `LogEntry__c` objects for tagging/labeling. See [Salesforce Help](https://help.salesforce.com/articleView?id=sf.collab_topics_records_admin.htm) for more details.
-    -   Currently, enabling Topics for objects must still be done using the Salesforce Classic UI. Once enabled, Topics can then be used from withing Lightning Experience.
-    -   Once enabled, Topics can be added via Apex and Flow and then used as list view filters (and more) for the object `Log__c`.
 
 ---
 
