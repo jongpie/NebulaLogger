@@ -201,7 +201,16 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ApexClassId__c</fieldItem>
+                <fieldItem>Record.ApexClassName__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ApexMethodName__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -213,7 +222,7 @@
                 <fieldItem>Record.ApexClassApiVersion__c</fieldItem>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-6f8917ff-9a83-4588-9b22-7d2cc1bd6a86</name>
+        <name>Facet-eb0dd886-ca25-4094-b405-b0653a844c4c</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -221,7 +230,16 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ApexClassId__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexClassCreatedDate__c</fieldItem>
             </fieldInstance>
@@ -230,12 +248,12 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
-                    <value>none</value>
+                    <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexClassLastModifiedDate__c</fieldItem>
             </fieldInstance>
         </itemInstances>
-        <name>Facet-78fe226b-b1a2-49d9-8cd3-15b2a55372d0</name>
+        <name>Facet-a59c58c4-ed12-445a-b526-b1fdb0225dfd</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -243,7 +261,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-6f8917ff-9a83-4588-9b22-7d2cc1bd6a86</value>
+                    <value>Facet-eb0dd886-ca25-4094-b405-b0653a844c4c</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
             </componentInstance>
@@ -252,12 +270,12 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>body</name>
-                    <value>Facet-78fe226b-b1a2-49d9-8cd3-15b2a55372d0</value>
+                    <value>Facet-a59c58c4-ed12-445a-b526-b1fdb0225dfd</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
             </componentInstance>
         </itemInstances>
-        <name>Facet-1183159e-efc6-4047-808d-9d19653cb973</name>
+        <name>Facet-a417c39b-b395-4d13-a87d-2d5bbb9d9d77</name>
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
@@ -840,7 +858,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>columns</name>
-                    <value>Facet-1183159e-efc6-4047-808d-9d19653cb973</value>
+                    <value>Facet-a417c39b-b395-4d13-a87d-2d5bbb9d9d77</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>label</name>

@@ -263,7 +263,8 @@ private class LogEntryHandler_Tests {
     static void it_should_set_apex_class_details() {
         String exampleTopLevelClassName = Logger.class.getName();
         String exampleInnerClassName = Logger.QueueableSaver.class.getName();
-        String exampleInnerClassMethodName = exampleInnerClassName + '.execute';
+        String methodName = 'execute';
+        String exampleInnerClassMethodName = exampleInnerClassName + '. ' + methodName;
         ApexClass apexClass = [SELECT Id, ApiVersion, CreatedDate, LastModifiedDate FROM ApexClass WHERE Name = :exampleTopLevelClassName];
 
 
@@ -272,16 +273,26 @@ private class LogEntryHandler_Tests {
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleInnerClassMethodName, OriginType__c = 'Apex');
         insert logEntry;
         logEntry = [
-            SELECT Id, ApexClassApiVersion__c,
-            ApexClassCreatedDate__c,
-            ApexClassId__c,
-            ApexClassLastModifiedDate__c, OriginLocation__c FROM LogEntry__c WHERE OriginType__c = 'Apex' LIMIT 1
+            SELECT
+                Id,
+                ApexClassApiVersion__c,
+                ApexClassCreatedDate__c,
+                ApexClassId__c,
+                ApexClassLastModifiedDate__c,
+                ApexClassName__c,
+                ApexMethodName__c,
+                OriginLocation__c
+            FROM LogEntry__c
+            WHERE OriginType__c = 'Apex'
+            LIMIT 1
         ];
         System.assertEquals(exampleInnerClassMethodName, logEntry.OriginLocation__c);
         System.assertEquals('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
         System.assertEquals(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
         System.assertEquals(apexClass.Id, logEntry.ApexClassId__c);
         System.assertEquals(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
+        System.assertEquals(exampleInnerClassName, logEntry.ApexClassName__c);
+        System.assertEquals(methodName, logEntry.ApexMethodName__c);
     }
 
     @IsTest

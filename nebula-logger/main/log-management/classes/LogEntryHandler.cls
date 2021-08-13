@@ -95,20 +95,22 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         for (LogEntry__c logEntry : apexLogEntries) {
-            String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
-            ApexClass apexClass = classNameToApexClass.get(apexClassName);
-            if (apexClass == null) {
+            String topLevelApexClassName = logEntry.OriginLocation__c?.substringBefore('.');
+            ApexClass topLevelApexClass = classNameToApexClass.get(topLevelApexClassName);
+            if (topLevelApexClass == null) {
                 continue;
             }
 
-            logEntry.ApexClassApiVersion__c = 'v' + apexClass.ApiVersion;
             // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
-            // logEntry.ApexClassCreatedById__c = apexClass.CreatedById;
-            logEntry.ApexClassCreatedDate__c = apexClass.CreatedDate;
-            logEntry.ApexClassId__c = apexClass.Id;
-            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
+            // logEntry.ApexClassCreatedById__c = topLevelApexClass.CreatedById;
             // logEntry.ApexClassLastModifiedById__c = apexClass.LastModifiedById;
-            logEntry.ApexClassLastModifiedDate__c = apexClass.LastModifiedDate;
+
+            logEntry.ApexClassApiVersion__c = 'v' + topLevelApexClass.ApiVersion;
+            logEntry.ApexClassCreatedDate__c = topLevelApexClass.CreatedDate;
+            logEntry.ApexClassId__c = topLevelApexClass.Id;
+            logEntry.ApexClassLastModifiedDate__c = topLevelApexClass.LastModifiedDate;
+            logEntry.ApexClassName__c = logEntry.OriginLocation__c?.substringBeforeLast('.');
+            logEntry.ApexMethodName__c = logEntry.OriginLocation__c?.substringAfterLast('.');
         }
     }
 
