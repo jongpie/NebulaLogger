@@ -14,8 +14,8 @@
         <groupingColumn>Log__c.StartTime__c</groupingColumn>
         <legendPosition>Right</legendPosition>
         <location>CHART_BOTTOM</location>
-        <secondaryGroupingColumn>LogEntry__c.LoggingLevel__c</secondaryGroupingColumn>
-        <showAxisLabels>true</showAxisLabels>
+        <secondaryGroupingColumn>Log__c.LoggedByUsernameLink__c</secondaryGroupingColumn>
+        <showAxisLabels>false</showAxisLabels>
         <showPercentage>false</showPercentage>
         <showTotal>false</showTotal>
         <showValues>false</showValues>
@@ -45,10 +45,6 @@
     <columns>
         <aggregateTypes>Sum</aggregateTypes>
         <field>LogEntry__c.MessageTruncated__c</field>
-    </columns>
-    <columns>
-        <aggregateTypes>Sum</aggregateTypes>
-        <field>LogEntry__c.MessageMasked__c</field>
     </columns>
     <columns>
         <field>LogEntry__c.OriginType__c</field>
@@ -86,7 +82,7 @@
     <columns>
         <field>LogEntry__c.ExceptionStackTrace__c</field>
     </columns>
-    <description>Detailed report for the LogEntry__c object</description>
+    <description>Summary report for the LogEntry__c object</description>
     <filter>
         <criteriaItems>
             <column>LogEntry__c.Timestamp__c</column>
@@ -98,20 +94,20 @@
     </filter>
     <format>Summary</format>
     <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>CUST_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Log__c.LoggedByUsernameLink__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
         <field>Log__c.StartTime__c</field>
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
-    <groupingsDown>
-        <dateGranularity>Day</dateGranularity>
-        <field>LogEntry__c.LoggingLevel__c</field>
-        <sortOrder>Asc</sortOrder>
-    </groupingsDown>
-    <groupingsDown>
-        <dateGranularity>Day</dateGranularity>
-        <field>LogEntry__c.OriginType__c</field>
-        <sortOrder>Asc</sortOrder>
-    </groupingsDown>
-    <name>Log Entry Details</name>
+    <name>Log Entry Summary</name>
     <params>
         <name>co</name>
         <value>1</value>

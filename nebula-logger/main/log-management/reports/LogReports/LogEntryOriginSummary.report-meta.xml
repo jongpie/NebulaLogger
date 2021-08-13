@@ -8,17 +8,15 @@
             <axisBinding>y</axisBinding>
             <column>RowCount</column>
         </chartSummaries>
-        <chartType>VerticalColumnStacked</chartType>
+        <chartType>HorizontalBar</chartType>
         <enableHoverLabels>false</enableHoverLabels>
         <expandOthers>true</expandOthers>
-        <groupingColumn>Log__c.StartTime__c</groupingColumn>
-        <legendPosition>Right</legendPosition>
+        <groupingColumn>LogEntry__c.Origin__c</groupingColumn>
         <location>CHART_BOTTOM</location>
-        <secondaryGroupingColumn>LogEntry__c.LoggingLevel__c</secondaryGroupingColumn>
-        <showAxisLabels>true</showAxisLabels>
+        <showAxisLabels>false</showAxisLabels>
         <showPercentage>false</showPercentage>
         <showTotal>false</showTotal>
-        <showValues>false</showValues>
+        <showValues>true</showValues>
         <size>Medium</size>
         <summaryAxisRange>Auto</summaryAxisRange>
         <textColor>#000000</textColor>
@@ -45,16 +43,6 @@
     <columns>
         <aggregateTypes>Sum</aggregateTypes>
         <field>LogEntry__c.MessageTruncated__c</field>
-    </columns>
-    <columns>
-        <aggregateTypes>Sum</aggregateTypes>
-        <field>LogEntry__c.MessageMasked__c</field>
-    </columns>
-    <columns>
-        <field>LogEntry__c.OriginType__c</field>
-    </columns>
-    <columns>
-        <field>LogEntry__c.OriginLocation__c</field>
     </columns>
     <columns>
         <field>LogEntry__c.Trigger__c</field>
@@ -86,7 +74,7 @@
     <columns>
         <field>LogEntry__c.ExceptionStackTrace__c</field>
     </columns>
-    <description>Detailed report for the LogEntry__c object</description>
+    <description>Summary report for the LogEntry__c object, focused on OriginType__c and OriginLocation__c</description>
     <filter>
         <criteriaItems>
             <column>LogEntry__c.Timestamp__c</column>
@@ -98,7 +86,8 @@
     </filter>
     <format>Summary</format>
     <groupingsDown>
-        <field>Log__c.StartTime__c</field>
+        <dateGranularity>Day</dateGranularity>
+        <field>LogEntry__c.Origin__c</field>
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <groupingsDown>
@@ -106,12 +95,7 @@
         <field>LogEntry__c.LoggingLevel__c</field>
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
-    <groupingsDown>
-        <dateGranularity>Day</dateGranularity>
-        <field>LogEntry__c.OriginType__c</field>
-        <sortOrder>Asc</sortOrder>
-    </groupingsDown>
-    <name>Log Entry Details</name>
+    <name>Log Entry Origin Summary</name>
     <params>
         <name>co</name>
         <value>1</value>
