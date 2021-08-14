@@ -50,12 +50,6 @@ global inherited sharing class FlowCollectionLogEntry {
     global String loggingLevelName;
 
     /**
-     * @description Optionally specify a Flow interview GUID for a paused Flow
-     */
-    @InvocableVariable(required=false label='(Optional) Flow Interview GUID')
-    public String flowInterviewGuid; // TODO update to global for the managed package
-
-    /**
      * @description Optionally provide a comma-separated String of tags to dynamically assign to the log entry
      */
     @InvocableVariable(required=false label='(Optional) Tags (comma-separated)')

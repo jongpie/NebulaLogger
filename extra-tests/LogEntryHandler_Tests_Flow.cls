@@ -31,12 +31,6 @@ private class LogEntryHandler_Tests_Flow {
         System.assertEquals('v' + flowVersion.ApiVersionRuntime + '.0', logEntry.FlowVersionApiVersionRuntime__c);
         System.assertEquals(flowVersion.RunInMode, logEntry.FlowVersionRunInMode__c);
         System.assertEquals(flowVersion.VersionNumber, logEntry.FlowVersionNumber__c);
-
-        // TODO: test setting of FlowInterview fields on LogEntry__c
-        // FlowInterview flowInterview = getFlowInterview(logEntry.FlowInterviewGuid__c);
-        // System.assertEquals(flowInterview.CurrentElement, logEntry.FlowInterviewCurrentElement__c);
-        // System.assertEquals(flowInterview.InterviewLabel, logEntry.FlowInterviewLabel__c);
-        // System.assertEquals(flowInterview.PauseLabel, logEntry.FlowInterviewPauseLabel__c);
     }
 
     private static LogEntry__c getFlowLogEntry() {
@@ -45,10 +39,6 @@ private class LogEntryHandler_Tests_Flow {
                 FlowActiveVersionId__c,
                 FlowDescription__c,
                 FlowDurableId__c,
-                FlowInterviewCurrentElement__c,
-                FlowInterviewGuid__c,
-                FlowInterviewLabel__c,
-                FlowInterviewPauseLabel__c,
                 FlowLabel__c,
                 FlowLastModifiedByName__c,
                 FlowLastModifiedDate__c,
@@ -76,7 +66,4 @@ private class LogEntryHandler_Tests_Flow {
         return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId = :flowActiveVersionId];
     }
 
-    private static FlowInterview getFlowInterview(String flowInterviewGuid) {
-        return [SELECT CurrentElement, Guid, InterviewLabel, PauseLabel FROM FlowInterview WHERE Guid = :flowInterviewGuid];
-    }
 }

@@ -41,7 +41,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 this.setApexClassFields();
                 this.setFlowDefinitionFields();
                 this.setFlowVersionFields();
-                this.setFlowInterviewFields();
                 this.setRecordNames();
             }
             when BEFORE_UPDATE {
@@ -210,37 +209,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.FlowVersionApiVersionRuntime__c = 'v' + flowVersionView.ApiVersionRuntime + '.0';
             logEntry.FlowVersionRunInMode__c = flowVersionView.RunInMode;
             logEntry.FlowVersionNumber__c = flowVersionView.VersionNumber;
-        }
-    }
-
-    private void setFlowInterviewFields() {
-        List<String> flowInterviewGuids = new List<String>();
-        List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
-        for (LogEntry__c logEntry : this.logEntries) {
-            if (String.isNotBlank(logEntry.FlowInterviewGuid__c)) {
-                flowInterviewGuids.add(logEntry.FlowInterviewGuid__c);
-                flowLogEntries.add(logEntry);
-            }
-        }
-
-        if (flowInterviewGuids.isEmpty() == true) {
-            return;
-        }
-
-        Map<String, FlowInterview> flowInterviewGuidToInterview = new Map<String, FlowInterview>();
-        for (FlowInterview flowInterview : [SELECT CurrentElement, Guid, InterviewLabel, PauseLabel FROM FlowInterview WHERE Guid IN :flowInterviewGuids]) {
-            flowInterviewGuidToInterview.put(flowInterview.Guid, flowInterview);
-        }
-
-        for (LogEntry__c logEntry : flowLogEntries) {
-            FlowInterview flowInterview = flowInterviewGuidToInterview.get(logEntry.FlowDurableId__c);
-            if (flowInterview == null) {
-                continue;
-            }
-
-            logEntry.FlowInterviewCurrentElement__c = flowInterview.CurrentElement;
-            logEntry.FlowInterviewLabel__c = flowInterview.InterviewLabel;
-            logEntry.FlowInterviewPauseLabel__c = flowInterview.PauseLabel;
         }
     }
 
