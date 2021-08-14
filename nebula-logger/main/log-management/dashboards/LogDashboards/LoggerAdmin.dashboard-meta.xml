@@ -24,12 +24,44 @@
             <operator>equals</operator>
             <values>THIS_WEEK</values>
         </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>TODAY</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>LAST_N_DAYS:3</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>YESTERDAY</values>
+        </dashboardFilterOptions>
         <name>Log Entry: Timestamp</name>
     </dashboardFilters>
     <dashboardFilters>
         <dashboardFilterOptions>
             <operator>equals</operator>
+            <values>ERROR</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>ERROR,WARN</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
             <values>ERROR,WARN,INFO</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>ERROR,WARN,INFO,DEBUG</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>ERROR,WARN,INFO,DEBUG,FINE</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>ERROR,WARN,INFO,DEBUG,FINE,FINER</values>
         </dashboardFilterOptions>
         <name>Log Entry: Logging Level</name>
     </dashboardFilters>
@@ -42,7 +74,7 @@
                 <chartAxisRange>Auto</chartAxisRange>
                 <componentType>Bar</componentType>
                 <dashboardFilterColumns>
-                    <column>Log__c.ClosedDate__c</column>
+                    <column>Log__c.StartTime__c</column>
                 </dashboardFilterColumns>
                 <dashboardFilterColumns>
                     <column>LogEntry__c.LoggingLevel__c</column>
@@ -114,7 +146,7 @@
                 <chartAxisRange>Auto</chartAxisRange>
                 <componentType>Bar</componentType>
                 <dashboardFilterColumns>
-                    <column>Log__c.ClosedDate__c</column>
+                    <column>Log__c.StartTime__c</column>
                 </dashboardFilterColumns>
                 <dashboardFilterColumns>
                     <column>LogEntry__c.LoggingLevel__c</column>
@@ -143,7 +175,10 @@
                 <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
                 <componentType>FlexTable</componentType>
                 <dashboardFilterColumns>
-                    <column>Log__c.ClosedDate__c</column>
+                    <column>Log__c.StartTime__c</column>
+                </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.LoggingLevel__c</column>
                 </dashboardFilterColumns>
                 <flexComponentProperties>
                     <flexTableColumn>
@@ -191,7 +226,6 @@
     </dashboardGridLayout>
     <dashboardType>LoggedInUser</dashboardType>
     <isGridLayout>true</isGridLayout>
-    <runningUser>test-lqeuuhldh9tr@example.com</runningUser>
     <textColor>#000000</textColor>
     <title>Logger Admin Dashboard</title>
     <titleColor>#000000</titleColor>
