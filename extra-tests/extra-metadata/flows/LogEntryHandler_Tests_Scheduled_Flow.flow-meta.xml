@@ -1,17 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Log_Current_User</name>
-        <label>Log Current User</label>
+        <name>Log_Organization_Record</name>
+        <label>Log Organization Record</label>
         <locationX>176</locationX>
-        <locationY>278</locationY>
+        <locationY>276</locationY>
         <actionName>FlowRecordLogEntry</actionName>
         <actionType>apex</actionType>
         <dataTypeMappings>
             <typeName>T__record</typeName>
-            <typeValue>User</typeValue>
+            <typeValue>Organization</typeValue>
         </dataTypeMappings>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>flowInterviewGuid</name>
+            <value>
+                <elementReference>$Flow.InterviewGuid</elementReference>
+            </value>
+        </inputParameters>
         <inputParameters>
             <name>loggingLevelName</name>
             <value>
@@ -27,33 +33,33 @@
         <inputParameters>
             <name>tagsString</name>
             <value>
-                <stringValue>example flow, some other tag</stringValue>
+                <stringValue>scheduled flow</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
             <name>flowName</name>
             <value>
-                <stringValue>LogEntryHandler_Tests_Flow</stringValue>
+                <stringValue>LogEntryHandler_Tests_Scheduled_Flow</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
             <name>message</name>
             <value>
-                <stringValue>Example of logging a User record</stringValue>
+                <stringValue>logging something from within a scheduled flow</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
             <name>record</name>
             <value>
-                <elementReference>Get_Current_User</elementReference>
+                <elementReference>$Record</elementReference>
             </value>
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>50.0</apiVersion>
-    <description>An auto-launched Flow used to help test the Apex class LogEntryHandler</description>
-    <interviewLabel>LogEntryHandler_Tests_Flow {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>LogEntryHandler Tests for Flow</label>
+    <apiVersion>52.0</apiVersion>
+    <description>A scheduled Flow used in tests to verify that LogEntryHandler automatically logs details about the Flow (metadata data)</description>
+    <interviewLabel>LogEntryHandler_Tests_Scheduled_Flow {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>LogEntryHandler_Tests_Scheduled_Flow</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -73,38 +79,19 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordLookups>
-        <name>Get_Current_User</name>
-        <label>Get Current User</label>
-        <locationX>176</locationX>
-        <locationY>158</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Log_Current_User</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$User.Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>User</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>Username</queriedFields>
-        <queriedFields>Email</queriedFields>
-        <queriedFields>LanguageLocaleKey</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <runInMode>DefaultMode</runInMode>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Current_User</targetReference>
+            <targetReference>Log_Organization_Record</targetReference>
         </connector>
+        <object>Organization</object>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2021-08-01</startDate>
+            <startTime>00:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
 </Flow>
