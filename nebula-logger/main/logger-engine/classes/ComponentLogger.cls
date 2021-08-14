@@ -19,18 +19,67 @@ public inherited sharing class ComponentLogger {
                 LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, componentLogEntry.message)
                     .setRecord(componentLogEntry.recordId)
                     .setRecord(componentLogEntry.record)
-                    .parseStackTrace(componentLogEntry.stack)
                     .addTags(componentLogEntry.tags);
 
-                // Set some additional fields - these fields don't have setter methods
-                logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
-                logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
+                if (logEntryEventBuilder.shouldSave() == true) {
+                    // Set some additional fields - these fields don't have setter methods in LogEntryEventBuilder
+                    logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
+                    logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
+                    setStackTraceDetails(logEntryEventBuilder.getLogEntryEvent(), componentLogEntry.stack);
+                }
             }
             Logger.saveLog();
             return Logger.getTransactionId();
         } catch (Exception apexException) {
             throw new AuraHandledException(apexException.getMessage());
         }
+    }
+
+    private static void setStackTraceDetails(LogEntryEvent__e logEntryEvent, String stackTraceString) {
+        if (String.isBlank(stackTraceString) == true) {
+            return;
+        }
+
+        String ignoredLineContent = '/c/logger.js';
+        String moduleContent = '/n/modules/';
+        Boolean moduleFound = false;
+        List<String> stackTraceLines = new List<String>();
+        for (String currentStackTraceLine : stackTraceString.split('\n')) {
+            if (currentStackTraceLine.contains(ignoredLineContent) == true) {
+                continue;
+            } else if (moduleFound == false && currentStackTraceLine.contains(moduleContent) == true) {
+                moduleFound = true;
+            }
+
+            if (moduleFound == true) {
+                stackTraceLines.add(currentStackTraceLine);
+            }
+        }
+
+        if (stackTraceLines.isEmpty() == true) {
+            return;
+        }
+
+        stackTraceString = String.join(stackTraceLines, '\n');
+        if (String.isNotBlank(stackTraceString)) {
+            String componentName = stackTraceLines.get(0).substringAfterLast(moduleContent).substringBefore('.js');
+            String componentFunction = stackTraceLines.get(0).substringBefore('@');
+            String originLocation = componentName + '.' + componentFunction;
+
+            logEntryEvent.OriginLocation__c = originLocation;
+            logEntryEvent.StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
+        }
+    }
+
+    private static String truncateFieldValue(Schema.SObjectField field, String value) {
+        Integer fieldMaxLength = field.getDescribe().getLength();
+        if (String.isEmpty(value)) {
+            return value;
+        } else if (value.length() <= fieldMaxLength) {
+            return value;
+        }
+
+        return value.left(fieldMaxLength);
     }
 
     public class ComponentLoggerSettings {

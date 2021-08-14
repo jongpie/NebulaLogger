@@ -7,6 +7,7 @@ import { LightningElement, api, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent'; // TODO remove toast message
 import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
+import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 
 export default class Logger extends LightningElement {
     componentLogEntries = [];
@@ -147,6 +148,7 @@ export default class Logger extends LightningElement {
             .catch(error => {
                 alert('error' + JSON.stringify(error));
                 console.error(error);
+                console.error(this.componentLogEntries);
                 // TODO cleanup
                 // this.message = undefined;
                 // this.error = error;
