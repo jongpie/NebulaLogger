@@ -807,6 +807,100 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_not_set_user_fields_when_anonymous_mode_enabled() {
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+
+        Logger.getUserSettings().AnonymousMode__c = true;
+        Logger.debug('test log entry');
+        Logger.debug('another test log entry');
+
+        Test.startTest();
+        Logger.saveLog();
+        Test.stopTest();
+
+        Log__c log = [
+            SELECT
+                Id,
+                Locale__c,
+                LoggedBy__c,
+                LoggedByUsername__c,
+                LoggedByUsernameLink__c,
+                LoginApplication__c,
+                LoginBrowser__c,
+                LoginHistoryId__c,
+                LoginPlatform__c,
+                LoginType__c,
+                LogoutUrl__c,
+                NetworkId__c,
+                NetworkLoginUrl__c,
+                NetworkLogoutUrl__c,
+                NetworkName__c,
+                NetworkSelfRegistrationUrl__c,
+                NetworkUrlPathPrefix__c,
+                OrganizationDomainUrl__c,
+                OrganizationEnvironmentType__c,
+                OrganizationId__c,
+                OrganizationInstanceName__c,
+                OrganizationName__c,
+                OrganizationNamespacePrefix__c,
+                OrganizationType__c,
+                ProfileId__c,
+                ProfileName__c,
+                SessionId__c,
+                SessionSecurityLevel__c,
+                SessionType__c,
+                SourceIp__c,
+                ThemeDisplayed__c,
+                TimeZoneId__c,
+                TimeZoneName__c,
+                UserLicenseDefinitionKey__c,
+                UserLicenseId__c,
+                UserLicenseName__c,
+                UserLoggingLevel__c,
+                UserLoggingLevelOrdinal__c,
+                UserRoleId__c,
+                UserRoleName__c,
+                UserType__c
+            FROM Log__c
+        ];
+
+        System.assertEquals('Anonymous', log.LoggedByUsernameLink__c);
+        System.assertEquals(null, log.NetworkName__c);
+        System.assertEquals(null, log.NetworkLoginUrl__c);
+        System.assertEquals(null, log.NetworkLogoutUrl__c);
+        System.assertEquals(null, log.NetworkSelfRegistrationUrl__c);
+        System.assertEquals(null, log.NetworkUrlPathPrefix__c);
+        System.assertEquals(null, log.LoggedBy__c);
+        System.assertEquals(null, log.LoggedByUsername__c);
+        System.assertEquals(null, log.ProfileName__c);
+        System.assertEquals(null, log.UserLicenseDefinitionKey__c);
+        System.assertEquals(null, log.UserLicenseId__c);
+        System.assertEquals(null, log.UserLicenseName__c);
+        System.assertEquals(null, log.UserRoleName__c);
+        System.assertEquals(null, log.Locale__c);
+        System.assertEquals(null, log.NetworkId__c);
+        System.assertEquals(null, log.LoginHistoryId__c);
+        System.assertEquals(null, log.LoginApplication__c);
+        System.assertEquals(null, log.LoginBrowser__c);
+        System.assertEquals(null, log.LoginPlatform__c);
+        System.assertEquals(null, log.LoginType__c);
+        System.assertEquals(null, log.LogoutUrl__c);
+        System.assertEquals(null, log.ProfileId__c);
+        System.assertEquals(null, log.SessionId__c);
+        System.assertEquals(null, log.SessionSecurityLevel__c);
+        System.assertEquals(null, log.SessionType__c);
+        System.assertEquals(null, log.SourceIp__c);
+        System.assertEquals(null, log.TimeZoneId__c);
+        System.assertEquals(null, log.TimeZoneName__c);
+        System.assertEquals(null, log.UserLoggingLevel__c);
+        System.assertEquals(null, log.UserLoggingLevelOrdinal__c);
+        System.assertEquals(null, log.UserRoleId__c);
+        System.assertEquals(null, log.UserType__c);
+        System.assertEquals(null, log.ThemeDisplayed__c);
+    }
+
+    @IsTest
     static void it_should_flush_buffer() {
         System.assertEquals(0, Logger.getBufferSize());
 

@@ -41,25 +41,56 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
+        String orgEnvironmentType;
+        if (ORGANIZATION.IsSandbox == true && ORGANIZATION.TrialExpirationDate != null) {
+            orgEnvironmentType = 'Scratch Org';
+        } else if (ORGANIZATION.IsSandbox == true) {
+            orgEnvironmentType = 'Sandbox';
+        } else {
+            orgEnvironmentType = 'Production';
+        }
+
         this.logEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = API_VERSION,
+            LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries(),
             LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries(),
+            LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls(),
             LimitsAsyncCallsUsed__c = Limits.getAsyncCalls(),
+            LimitsCalloutsMax__c = Limits.getLimitCallouts(),
             LimitsCalloutsUsed__c = Limits.getCallouts(),
+            LimitsCpuTimeMax__c = Limits.getLimitCpuTime(),
             LimitsCpuTimeUsed__c = Limits.getCpuTime(),
+            LimitsDmlRowsMax__c = Limits.getLimitDmlRows(),
             LimitsDmlRowsUsed__c = Limits.getDmlRows(),
+            LimitsDmlStatementsMax__c = Limits.getLimitDmlStatements(),
             LimitsDmlStatementsUsed__c = Limits.getDmlStatements(),
+            LimitsEmailInvocationsMax__c = Limits.getLimitEmailInvocations(),
             LimitsEmailInvocationsUsed__c = Limits.getEmailInvocations(),
+            LimitsFutureCallsMax__c = Limits.getLimitFutureCalls(),
             LimitsFutureCallsUsed__c = Limits.getFutureCalls(),
+            LimitsHeapSizeMax__c = Limits.getLimitHeapSize(),
             LimitsHeapSizeUsed__c = Limits.getHeapSize(),
+            LimitsMobilePushApexCallsMax__c = Limits.getLimitMobilePushApexCalls(),
             LimitsMobilePushApexCallsUsed__c = Limits.getMobilePushApexCalls(),
+            LimitsQueueableJobsMax__c = Limits.getLimitQueueableJobs(),
             LimitsQueueableJobsUsed__c = Limits.getQueueableJobs(),
+            LimitsSoqlQueriesMax__c = Limits.getLimitQueries(),
             LimitsSoqlQueriesUsed__c = Limits.getQueries(),
+            LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows(),
             LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows(),
+            LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows(),
             LimitsSoqlQueryRowsUsed__c = Limits.getQueryRows(),
+            LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries(),
             LimitsSoslSearchesUsed__c = Limits.getSoslQueries(),
             LoggingLevel__c = entryLoggingLevel.NAME(),
             LoggingLevelOrdinal__c = entryLoggingLevel.ORDINAL(),
+            OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm(),
+            OrganizationEnvironmentType__c = orgEnvironmentType,
+            OrganizationId__c = ORGANIZATION.Id,
+            OrganizationInstanceName__c = ORGANIZATION.InstanceName,
+            OrganizationName__c = ORGANIZATION.Name,
+            OrganizationNamespacePrefix__c = ORGANIZATION.NamespacePrefix,
+            OrganizationType__c = ORGANIZATION.OrganizationType,
             OriginType__c = ORIGIN_TYPE_APEX,
             Timestamp__c = System.now(),
             EpochTimestamp__c = System.now().getTime(),
@@ -482,8 +513,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         // Lazy-loading of some details to help minimize Apex heap size usage until needed
-        if (this.detailsAreSet == false) {
-            this.setOrganizationDetails();
+        if (this.detailsAreSet == false && Logger.getUserSettings().AnonymousMode__c == false) {
             this.setNetworkDetails();
             this.setUserDetails();
             this.setUserSessionDetails();
@@ -503,25 +533,6 @@ global with sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
-    private void setOrganizationDetails() {
-        String orgEnvironmentType;
-        if (ORGANIZATION.IsSandbox == true && ORGANIZATION.TrialExpirationDate != null) {
-            orgEnvironmentType = 'Scratch Org';
-        } else if (ORGANIZATION.IsSandbox == true) {
-            orgEnvironmentType = 'Sandbox';
-        } else {
-            orgEnvironmentType = 'Production';
-        }
-
-        this.logEntryEvent.OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm();
-        this.logEntryEvent.OrganizationEnvironmentType__c = orgEnvironmentType;
-        this.logEntryEvent.OrganizationId__c = ORGANIZATION.Id;
-        this.logEntryEvent.OrganizationInstanceName__c = ORGANIZATION.InstanceName;
-        this.logEntryEvent.OrganizationName__c = ORGANIZATION.Name;
-        this.logEntryEvent.OrganizationNamespacePrefix__c = ORGANIZATION.NamespacePrefix;
-        this.logEntryEvent.OrganizationType__c = ORGANIZATION.OrganizationType;
-    }
-
     private void setNetworkDetails() {
         if (NETWORK_SITE == null) {
             return;
@@ -535,12 +546,41 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setUserDetails() {
+        this.logEntryEvent.LoggedById__c = USER.Id;
         this.logEntryEvent.LoggedByUsername__c = USER.Username;
         this.logEntryEvent.ProfileName__c = USER.Profile.Name;
         this.logEntryEvent.UserLicenseDefinitionKey__c = USER.Profile.UserLicense.LicenseDefinitionKey;
         this.logEntryEvent.UserLicenseId__c = USER.Profile.UserLicenseId;
         this.logEntryEvent.UserLicenseName__c = USER.Profile.UserLicense.Name;
         this.logEntryEvent.UserRoleName__c = USER.UserRole?.Name;
+    }
+
+    private void setUserSessionDetails() {
+        LoggingLevel userLoggingLevel = Logger.getUserLoggingLevel();
+
+        this.logEntryEvent.Locale__c = UserInfo.getLocale();
+        this.logEntryEvent.NetworkId__c = Network.getNetworkId();
+        this.logEntryEvent.LoginHistoryId__c = AUTH_SESSION?.LoginHistoryId;
+        this.logEntryEvent.LoginApplication__c = AUTH_SESSION?.LoginHistory.Application;
+        this.logEntryEvent.LoginBrowser__c = AUTH_SESSION?.LoginHistory.Browser;
+        this.logEntryEvent.LoginPlatform__c = AUTH_SESSION?.LoginHistory.Platform;
+        this.logEntryEvent.LoginType__c = AUTH_SESSION?.LoginType;
+        this.logEntryEvent.LogoutUrl__c = AUTH_SESSION?.LogoutUrl;
+        this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
+        this.logEntryEvent.SessionId__c = AUTH_SESSION?.Id;
+        this.logEntryEvent.SessionSecurityLevel__c = AUTH_SESSION?.SessionSecurityLevel;
+        this.logEntryEvent.SessionType__c = AUTH_SESSION?.SessionType;
+        this.logEntryEvent.SourceIp__c = AUTH_SESSION?.SourceIp;
+        this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
+        this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
+        this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
+        this.logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
+        this.logEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
+        this.logEntryEvent.UserType__c = UserInfo.getUserType();
+
+        if (this.logEntryEvent.SessionType__c != 'Oauth2') {
+            this.logEntryEvent.ThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
+        }
     }
 
     private String getSObjectClassification(Schema.SObjectType sobjectType) {
@@ -586,49 +626,6 @@ global with sharing class LogEntryEventBuilder {
             namespace = null;
         }
         return namespace;
-    }
-
-    private void setUserSessionDetails() {
-        LoggingLevel userLoggingLevel = Logger.getUserLoggingLevel();
-
-        this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
-        this.logEntryEvent.LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls();
-        this.logEntryEvent.LimitsCalloutsMax__c = Limits.getLimitCallouts();
-        this.logEntryEvent.LimitsCpuTimeMax__c = Limits.getLimitCpuTime();
-        this.logEntryEvent.LimitsDmlRowsMax__c = Limits.getLimitDmlRows();
-        this.logEntryEvent.LimitsDmlStatementsMax__c = Limits.getLimitDmlStatements();
-        this.logEntryEvent.LimitsEmailInvocationsMax__c = Limits.getLimitEmailInvocations();
-        this.logEntryEvent.LimitsFutureCallsMax__c = Limits.getLimitFutureCalls();
-        this.logEntryEvent.LimitsHeapSizeMax__c = Limits.getLimitHeapSize();
-        this.logEntryEvent.LimitsMobilePushApexCallsMax__c = Limits.getLimitMobilePushApexCalls();
-        this.logEntryEvent.LimitsQueueableJobsMax__c = Limits.getLimitQueueableJobs();
-        this.logEntryEvent.LimitsSoqlQueriesMax__c = Limits.getLimitQueries();
-        this.logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows();
-        this.logEntryEvent.LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows();
-        this.logEntryEvent.LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries();
-        this.logEntryEvent.Locale__c = UserInfo.getLocale();
-        this.logEntryEvent.NetworkId__c = Network.getNetworkId();
-        this.logEntryEvent.LoginHistoryId__c = AUTH_SESSION?.LoginHistoryId;
-        this.logEntryEvent.LoginApplication__c = AUTH_SESSION?.LoginHistory.Application;
-        this.logEntryEvent.LoginBrowser__c = AUTH_SESSION?.LoginHistory.Browser;
-        this.logEntryEvent.LoginPlatform__c = AUTH_SESSION?.LoginHistory.Platform;
-        this.logEntryEvent.LoginType__c = AUTH_SESSION?.LoginType;
-        this.logEntryEvent.LogoutUrl__c = AUTH_SESSION?.LogoutUrl;
-        this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        this.logEntryEvent.SessionId__c = AUTH_SESSION?.Id;
-        this.logEntryEvent.SessionSecurityLevel__c = AUTH_SESSION?.SessionSecurityLevel;
-        this.logEntryEvent.SessionType__c = AUTH_SESSION?.SessionType;
-        this.logEntryEvent.SourceIp__c = AUTH_SESSION?.SourceIp;
-        this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
-        this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
-        this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
-        this.logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
-        this.logEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
-        this.logEntryEvent.UserType__c = UserInfo.getUserType();
-
-        if (this.logEntryEvent.SessionType__c != 'Oauth2') {
-            this.logEntryEvent.ThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
-        }
     }
 
     // Private static methods
