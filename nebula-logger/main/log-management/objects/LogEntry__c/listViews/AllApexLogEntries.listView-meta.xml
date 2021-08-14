@@ -7,8 +7,8 @@
     <columns>LoggedByUsernameLink__c</columns>
     <columns>Message__c</columns>
     <columns>ApexClassName__c</columns>
+    <columns>ApexInnerClassName__c</columns>
     <columns>ApexMethodName__c</columns>
-    <columns>ApexClassApiVersion__c</columns>
     <columns>Timestamp__c</columns>
     <filterScope>Everything</filterScope>
     <filters>

@@ -91,6 +91,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>ApexInnerClassName__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>ApexMethodName__c</field>
             </layoutItems>
             <layoutItems>

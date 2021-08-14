@@ -101,6 +101,14 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 continue;
             }
 
+            String methodName = logEntry.OriginLocation__c.substringAfterLast('.');
+            String innerApexClassName = logEntry.OriginLocation__c.substringAfter(topLevelApexClassName + '.').substringBeforeLast('.');
+            if (innerApexClassName == topLevelApexClassName || innerApexClassName == methodName) {
+                innerApexClassName = null;
+            } else if(innerApexClassName.startsWith(topLevelApexClassName + '.')) {
+                innerApexClassName = innerApexClassName.substringAfter(topLevelApexClassName + '.');
+            }
+
             // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
             // logEntry.ApexClassCreatedById__c = topLevelApexClass.CreatedById;
             // logEntry.ApexClassLastModifiedById__c = apexClass.LastModifiedById;
@@ -109,8 +117,9 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ApexClassCreatedDate__c = topLevelApexClass.CreatedDate;
             logEntry.ApexClassId__c = topLevelApexClass.Id;
             logEntry.ApexClassLastModifiedDate__c = topLevelApexClass.LastModifiedDate;
-            logEntry.ApexClassName__c = logEntry.OriginLocation__c?.substringBeforeLast('.');
-            logEntry.ApexMethodName__c = logEntry.OriginLocation__c?.substringAfterLast('.');
+            logEntry.ApexClassName__c = topLevelApexClassName;
+            logEntry.ApexInnerClassName__c = innerApexClassName;
+            logEntry.ApexMethodName__c = methodName;
         }
     }
 
