@@ -213,11 +213,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntryEvent__e.FlowInterviewGuid__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntryEvent__e.LimitsAggregateQueriesMax__c</field>
         <readable>true</readable>
     </fieldPermissions>

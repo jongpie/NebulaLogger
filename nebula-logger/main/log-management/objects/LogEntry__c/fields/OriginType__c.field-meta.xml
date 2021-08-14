@@ -20,7 +20,7 @@
                 <fullName>Flow</fullName>
                 <color>#FFCC33</color>
                 <default>false</default>
-                <label>Flow/Process Builder</label>
+                <label>Flow</label>
             </value>
             <value>
                 <fullName>Component</fullName>

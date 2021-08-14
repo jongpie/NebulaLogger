@@ -29,7 +29,7 @@
         "package:version:list:managed:released": "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:list --json --verbose --released --orderby PatchVersion --packages \"Nebula Logger - Managed Package\" && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
         "package:version:list:unlocked": "sfdx force:package:version:list --json --verbose --orderby PatchVersion --packages \"Nebula Logger - Unlocked Package\"",
         "package:version:list:unlocked:released": "sfdx force:package:version:list --json --verbose --released --orderby PatchVersion --packages \"Nebula Logger - Unlocked Package\"",
-        "permset:assign": "sfdx force:user:permset:assign --permsetname LoggerAdmin",
+        "permset:assign:admin": "sfdx force:user:permset:assign --permsetname LoggerAdmin",
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "test": "npm run test:lwc && npm run test:apex",

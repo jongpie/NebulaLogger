@@ -302,6 +302,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>LimitsPublishImmediateDmlStatements__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>LimitsQueueableJobs__c</field>
             </layoutItems>
             <layoutItems>

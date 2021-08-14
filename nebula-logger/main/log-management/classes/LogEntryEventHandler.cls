@@ -189,6 +189,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 LimitsHeapSizeUsed__c = logEntryEvent.LimitsHeapSizeUsed__c,
                 LimitsMobilePushApexCallsMax__c = logEntryEvent.LimitsMobilePushApexCallsMax__c,
                 LimitsMobilePushApexCallsUsed__c = logEntryEvent.LimitsMobilePushApexCallsUsed__c,
+                LimitsPublishImmediateDmlStatementsMax__c = logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c,
+                LimitsPublishImmediateDmlStatementsUsed__c = logEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c,
                 LimitsQueueableJobsMax__c = logEntryEvent.LimitsQueueableJobsMax__c,
                 LimitsQueueableJobsUsed__c = logEntryEvent.LimitsQueueableJobsUsed__c,
                 LimitsSoqlQueriesMax__c = logEntryEvent.LimitsSoqlQueriesMax__c,

@@ -9,8 +9,8 @@
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
             "versionNumber": "4.6.3.0",
-            "versionName": "Anonymous Logs",
-            "versionDescription": "Logs can now be anonymous - user-specific data is not stored",
+            "versionName": "More metadata data",
+            "versionDescription": "Added several new LogEntry__c fields to track details about Apex classes and Flows",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {

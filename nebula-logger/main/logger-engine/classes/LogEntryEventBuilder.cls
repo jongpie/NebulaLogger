@@ -74,6 +74,8 @@ global with sharing class LogEntryEventBuilder {
             LimitsMobilePushApexCallsUsed__c = Limits.getMobilePushApexCalls(),
             LimitsQueueableJobsMax__c = Limits.getLimitQueueableJobs(),
             LimitsQueueableJobsUsed__c = Limits.getQueueableJobs(),
+            LimitsPublishImmediateDmlStatementsMax__c = Limits.getLimitPublishImmediateDML(),
+            LimitsPublishImmediateDmlStatementsUsed__c = Limits.getPublishImmediateDML(),
             LimitsSoqlQueriesMax__c = Limits.getLimitQueries(),
             LimitsSoqlQueriesUsed__c = Limits.getQueries(),
             LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows(),
@@ -123,12 +125,10 @@ global with sharing class LogEntryEventBuilder {
      */
     global LogEntryEventBuilder setMessage(String message) {
         if (this.shouldSave == true || Test.isRunningTest() == true) {
-            // Always run System.debug statement in tests, even if Logger is disabled
-            // This way, if Salesforce's debug logs have been configured in Dev Console
-            // the debug statements will always be generated (in Dev Console, unit test logs, and so on)
+            // To help with debugging unit tests, always run System.debug statement in a test context
             System.debug(this.entryLoggingLevel, message);
         }
-        
+
         if (this.shouldSave == false) {
             return this;
         }
