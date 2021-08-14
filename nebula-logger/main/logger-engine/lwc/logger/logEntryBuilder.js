@@ -33,7 +33,9 @@ const LogEntryBuilder = class {
     }
 
     addTag(tag) {
-        this.tags.add(tag);
+        this.tags.push(tag);
+        // Deduplicate
+        this.tags = Array.from(new Set(this.tags));
         return this;
     }
 };

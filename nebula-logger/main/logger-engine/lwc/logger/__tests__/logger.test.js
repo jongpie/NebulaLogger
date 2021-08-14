@@ -252,10 +252,10 @@ describe('Logger lwc tests', () => {
             for (let i = 0; i < mockTags.length; i++) {
                 logEntry.addTag(mockTags[i]);
             }
-            expect(logEntry.tags.size).toEqual(1);
+            expect(logEntry.tags.length).toEqual(1);
         });
     });
-    it('saves log entries', async () => {
+    it('flushes buffer after saving log entries', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
 
@@ -263,7 +263,13 @@ describe('Logger lwc tests', () => {
 
         // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
-            expect('TODO - write this test').toEqual('DONE');
+            logger.info('example INFO log entry');
+            logger.debug('example DEBUG log entry');
+            expect(logger.getBufferSize()).toBe(2);
+
+            logger.saveLog();
+        }).then(() => {
+            expect(logger.getBufferSize()).toBe(0);
         });
     });
 });

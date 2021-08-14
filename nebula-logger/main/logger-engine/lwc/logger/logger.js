@@ -4,7 +4,6 @@
 //------------------------------------------------------------------------------------------------//
 
 import { LightningElement, api, wire } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent'; // TODO remove toast message
 import { newLogEntry } from './logEntryBuilder';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
@@ -123,26 +122,16 @@ export default class Logger extends LightningElement {
     saveLog() {
         if (this.getBufferSize() == 0) {
             // No need to call Apex if there aren't any entries to save
-            const noEntriesToastEvent = new ShowToastEvent({
-                title: 'Saving Skipped',
-                message: 'No entries logged, ignoring call to saveLog()',
-                variant: 'info'
-            });
-            this.dispatchEvent(noEntriesToastEvent);
-
+            console.log('No entries logged, ignoring call to saveLog()');
             return;
         }
+
         saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
             .then(result => {
                 // TODO cleanup
                 // this.message = result;
                 // this.error = undefined;
-                const saveEntriesToastEvent = new ShowToastEvent({
-                    title: 'Success',
-                    message: 'Saved ' + this.getBufferSize() + ' log entries',
-                    variant: 'success'
-                });
-                this.dispatchEvent(saveEntriesToastEvent);
+                console.log('Saved ' + this.getBufferSize() + ' log entries');
                 this.flushBuffer();
             })
             .catch(error => {

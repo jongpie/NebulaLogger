@@ -21,11 +21,11 @@ public inherited sharing class ComponentLogger {
                     .setRecord(componentLogEntry.record)
                     .addTags(componentLogEntry.tags);
 
+                setStackTraceDetails(logEntryEventBuilder, componentLogEntry.stack);
                 if (logEntryEventBuilder.shouldSave() == true) {
                     // Set some additional fields - these fields don't have setter methods in LogEntryEventBuilder
-                    logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
+
                     logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
-                    setStackTraceDetails(logEntryEventBuilder.getLogEntryEvent(), componentLogEntry.stack);
                 }
             }
             Logger.saveLog();
@@ -35,40 +35,39 @@ public inherited sharing class ComponentLogger {
         }
     }
 
-    private static void setStackTraceDetails(LogEntryEvent__e logEntryEvent, String stackTraceString) {
-        if (String.isBlank(stackTraceString) == true) {
-            return;
-        }
+    private static void setStackTraceDetails(LogEntryEventBuilder logEntryEventBuilder, String stackTraceString) {
+        String originLocation;
+        String originType;
 
-        String ignoredLineContent = '/c/logger.js';
-        String moduleContent = '/n/modules/';
-        Boolean moduleFound = false;
-        List<String> stackTraceLines = new List<String>();
-        for (String currentStackTraceLine : stackTraceString.split('\n')) {
-            if (currentStackTraceLine.contains(ignoredLineContent) == true) {
-                continue;
-            } else if (moduleFound == false && currentStackTraceLine.contains(moduleContent) == true) {
-                moduleFound = true;
+        if (String.isNotBlank(stackTraceString) == true) {
+            String loggerComponentReferenceToIgnore = '/c/logger.js';
+            String moduleContent = '/n/modules/';
+            Boolean moduleFound = false;
+
+            List<String> stackTraceLines = new List<String>();
+            for (String currentStackTraceLine : stackTraceString.split('\n')) {
+                if (currentStackTraceLine.contains(loggerComponentReferenceToIgnore) == true) {
+                    continue;
+                } else if (moduleFound == false && currentStackTraceLine.contains(moduleContent) == true) {
+                    moduleFound = true;
+                }
+
+                if (moduleFound == true) {
+                    stackTraceLines.add(currentStackTraceLine);
+                }
             }
 
-            if (moduleFound == true) {
-                stackTraceLines.add(currentStackTraceLine);
+            stackTraceString = String.join(stackTraceLines, '\n');
+            if (String.isNotBlank(stackTraceString)) {
+                String componentName = stackTraceLines.get(0).substringAfterLast(moduleContent).substringBefore('.js');
+                String componentFunction = stackTraceLines.get(0).substringBefore('@');
+                originLocation = componentName + '.' + componentFunction;
             }
         }
 
-        if (stackTraceLines.isEmpty() == true) {
-            return;
-        }
-
-        stackTraceString = String.join(stackTraceLines, '\n');
-        if (String.isNotBlank(stackTraceString)) {
-            String componentName = stackTraceLines.get(0).substringAfterLast(moduleContent).substringBefore('.js');
-            String componentFunction = stackTraceLines.get(0).substringBefore('@');
-            String originLocation = componentName + '.' + componentFunction;
-
-            logEntryEvent.OriginLocation__c = originLocation;
-            logEntryEvent.StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
-        }
+        logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
+        logEntryEventBuilder.getLogEntryEvent().OriginLocation__c = originLocation;
+        logEntryEventBuilder.getLogEntryEvent().StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);
     }
 
     private static String truncateFieldValue(Schema.SObjectField field, String value) {
@@ -144,6 +143,7 @@ public inherited sharing class ComponentLogger {
         public List<String> tags { get; set; }
     }
 
+    // TODO: future release, finish implementing ComponentError as an exception on LogEntry__c
     // public class ComponentError {
     //     public Integer columnNumber;
     //     public Integer fileName;
@@ -151,6 +151,4 @@ public inherited sharing class ComponentLogger {
     //     public Integer message;
     //     public Integer stack;
     // }
-
-    // public class ComponentLoggerSaveResult {}
 }
