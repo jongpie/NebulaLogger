@@ -7,7 +7,11 @@
     &apos;Anonymous&apos;,
     HYPERLINK(
         LoggedBy__c,
-        IF(ISBLANK(LoggedByUsername__c), LoggedBy__r.Username, LoggedByUsername__c),
+        IF(
+            ISPICKVAL(UserType__c, &apos;AutomatedProcess&apos;),
+            TRIM(LoggedBy__r.FirstName + &apos; &apos; + LoggedBy__r.LastName),
+            LoggedByUsername__c
+        ),
         &apos;_top&apos;
     )
 )</formula>

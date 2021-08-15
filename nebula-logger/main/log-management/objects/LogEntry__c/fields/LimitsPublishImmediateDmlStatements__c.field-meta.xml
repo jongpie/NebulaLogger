@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <formula>TEXT(LimitsPublishImmediateDmlStatementsUsed__c) + &apos; / &apos; + TEXT(LimitsPublishImmediateDmlStatementsMax__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Publish Immediate DML Statments</label>
+    <label>Publish Immediate DML Statements</label>
     <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Text</type>
