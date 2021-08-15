@@ -11,7 +11,6 @@ import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveCompon
 export default class Logger extends LightningElement {
     componentLogEntries = [];
     settings;
-    settingsError;
 
     @wire(getSettings)
     wiredSettings({ error, data }) {
@@ -20,10 +19,6 @@ export default class Logger extends LightningElement {
             console.log(data);
 
             this.settings = data;
-            this.settingsError = undefined;
-        } else if (error) {
-            this.settings = undefined;
-            this.settingsError = error;
         }
     }
 
@@ -108,10 +103,6 @@ export default class Logger extends LightningElement {
     getBufferSize() {
         return this.componentLogEntries.length;
     }
-    // @api
-    // getBuffer() {
-    //     return this.componentLogEntries;
-    // }
 
     @api
     flushBuffer() {
@@ -120,42 +111,32 @@ export default class Logger extends LightningElement {
 
     @api
     saveLog() {
-        if (this.getBufferSize() == 0) {
-            // No need to call Apex if there aren't any entries to save
-            console.log('No entries logged, ignoring call to saveLog()');
-            return;
+        if (this.getBufferSize() > 0) {
+            saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
+                .then(result => {
+                    // TODO cleanup
+                    // this.message = result;
+                    // this.error = undefined;
+                    console.log('Saved ' + this.getBufferSize() + ' log entries');
+                    this.flushBuffer();
+                })
+                .catch(error => {
+                    console.error(error);
+                    console.error(this.componentLogEntries);
+                });
         }
-
-        saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
-            .then(result => {
-                // TODO cleanup
-                // this.message = result;
-                // this.error = undefined;
-                console.log('Saved ' + this.getBufferSize() + ' log entries');
-                this.flushBuffer();
-            })
-            .catch(error => {
-                alert('error' + JSON.stringify(error));
-                console.error(error);
-                console.error(this.componentLogEntries);
-                // TODO cleanup
-                // this.message = undefined;
-                // this.error = error;
-            });
     }
 
     // Private functions
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
-        // console.info('entry level name is ' + logEntryLoggingLevel);
         let logEntryLoggingLevelOrdinal = this.settings.supportedLoggingLevels[logEntryLoggingLevel];
-        // console.info('entry level ordinal is ' + logEntryLoggingLevelOrdinal);
         return this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
     }
 
     _registerNewLogEntry(loggingLevel, message) {
         const logEntryBuilder = newLogEntry(loggingLevel).setMessage(message);
 
-        if (this.settings.isEnabled == true && this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this.settings && this.settings.isEnabled == true && this._meetsUserLoggingLevel(loggingLevel) == true) {
             this.componentLogEntries.push(logEntryBuilder);
         }
 

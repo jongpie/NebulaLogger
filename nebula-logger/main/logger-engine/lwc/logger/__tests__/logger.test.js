@@ -37,12 +37,10 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const message = 'component log entry with loggingLevel ERROR';
             const logEntry = logger.error(message);
 
-            // const logEntries = logger.getBuffer();
             expect(logger.getBufferSize()).toEqual(1);
             expect(logEntry.loggingLevel).toEqual('ERROR');
             expect(logEntry.message).toEqual(message);
@@ -54,7 +52,6 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const message = 'component log entry with loggingLevel WARN';
             const logEntry = logger.warn(message);
@@ -71,12 +68,10 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const message = 'component log entry with loggingLevel INFO';
             const logEntry = logger.info(message);
 
-            // const logEntries = logger.getBuffer();
             expect(logger.getBufferSize()).toEqual(1);
             expect(logEntry.loggingLevel).toEqual('INFO');
             expect(logEntry.message).toEqual(message);
@@ -88,12 +83,10 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const message = 'component log entry with loggingLevel DEBUG';
             const logEntry = logger.debug(message);
 
-            // const logEntries = logger.getBuffer();
             expect(logger.getBufferSize()).toEqual(1);
             expect(logEntry.loggingLevel).toEqual('DEBUG');
             expect(logEntry.message).toEqual(message);
@@ -105,12 +98,10 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const message = 'component log entry with loggingLevel FINE';
             const logEntry = logger.fine(message);
 
-            // const logEntries = logger.getBuffer();
             expect(logger.getBufferSize()).toEqual(1);
             expect(logEntry.loggingLevel).toEqual('FINE');
             expect(logEntry.message).toEqual(message);
@@ -122,12 +113,10 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const message = 'component log entry with loggingLevel FINER';
             const logEntry = logger.finer(message);
 
-            // const logEntries = logger.getBuffer();
             expect(logger.getBufferSize()).toEqual(1);
             expect(logEntry.loggingLevel).toEqual('FINER');
             expect(logEntry.message).toEqual(message);
@@ -139,12 +128,10 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const message = 'component log entry with loggingLevel FINEST';
             const logEntry = logger.finest(message);
 
-            // const logEntries = logger.getBuffer();
             expect(logger.getBufferSize()).toEqual(1);
             expect(logEntry.loggingLevel).toEqual('FINEST');
             expect(logEntry.message).toEqual(message);
@@ -156,7 +143,6 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const numberOfLogEntries = 3;
             for (let i = 0; i < numberOfLogEntries; i++) {
@@ -174,7 +160,6 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.recordId).toBeFalsy();
@@ -190,7 +175,6 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.record).toBeFalsy();
@@ -207,7 +191,6 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.exception).toBeFalsy();
@@ -223,7 +206,6 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.recordId).toBeFalsy();
@@ -241,7 +223,6 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.recordId).toBeFalsy();
@@ -261,7 +242,6 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        // Resolve a promise to wait for a rerender of the new content
         return flushPromises().then(() => {
             logger.info('example INFO log entry');
             logger.debug('example DEBUG log entry');
