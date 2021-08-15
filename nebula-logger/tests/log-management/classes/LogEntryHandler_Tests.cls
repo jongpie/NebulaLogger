@@ -260,6 +260,109 @@ private class LogEntryHandler_Tests {
     }
 
     @IsTest
+    static void it_should_set_skip_setting_apex_class_details_when_origin_location_is_null() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = null, OriginType__c = 'Apex');
+        insert logEntry;
+        logEntry = [
+            SELECT
+                Id,
+                ApexClassApiVersion__c,
+                ApexClassCreatedDate__c,
+                ApexClassId__c,
+                ApexClassLastModifiedDate__c,
+                ApexClassName__c,
+                ApexInnerClassName__c,
+                ApexMethodName__c,
+                OriginLocation__c,
+                OriginType__c
+            FROM LogEntry__c
+            WHERE OriginType__c = 'Apex'
+            LIMIT 1
+        ];
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(null, logEntry.OriginLocation__c);
+        System.assertEquals(null, logEntry.ApexClassApiVersion__c);
+        System.assertEquals(null, logEntry.ApexClassCreatedDate__c);
+        System.assertEquals(null, logEntry.ApexClassId__c);
+        System.assertEquals(null, logEntry.ApexClassLastModifiedDate__c);
+        System.assertEquals(null, logEntry.ApexClassName__c);
+        System.assertEquals(null, logEntry.ApexInnerClassName__c);
+        System.assertEquals(null, logEntry.ApexMethodName__c);
+    }
+
+    @IsTest
+    static void it_should_set_apex_class_details_for_top_level_class() {
+        String exampleTopLevelClassName = 'Logger';
+        String methodName = 'saveLog';
+        String exampleTopLevelClassMethodName = exampleTopLevelClassName + '. ' + methodName;
+        ApexClass apexClass = [SELECT Id, ApiVersion, CreatedDate, LastModifiedDate FROM ApexClass WHERE Name = :exampleTopLevelClassName];
+
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleTopLevelClassMethodName, OriginType__c = 'Apex');
+        insert logEntry;
+        logEntry = [
+            SELECT
+                Id,
+                ApexClassApiVersion__c,
+                ApexClassCreatedDate__c,
+                ApexClassId__c,
+                ApexClassLastModifiedDate__c,
+                ApexClassName__c,
+                ApexInnerClassName__c,
+                ApexMethodName__c,
+                OriginLocation__c
+            FROM LogEntry__c
+            WHERE OriginType__c = 'Apex'
+            LIMIT 1
+        ];
+        System.assertEquals(exampleTopLevelClassMethodName, logEntry.OriginLocation__c);
+        System.assertEquals('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
+        System.assertEquals(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
+        System.assertEquals(apexClass.Id, logEntry.ApexClassId__c);
+        System.assertEquals(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
+        System.assertEquals(exampleTopLevelClassName, logEntry.ApexClassName__c);
+        System.assertEquals(null, logEntry.ApexInnerClassName__c);
+        System.assertEquals(methodName, logEntry.ApexMethodName__c);
+    }
+
+    @IsTest
+    static void it_should_set_apex_class_details_for_inner_class() {
+        String exampleTopLevelClassName = 'Logger';
+        String exampleInnerClassName = 'QueueableSaver';
+        String methodName = 'execute';
+        String exampleInnerClassMethodName = exampleTopLevelClassName + '.' + exampleInnerClassName + '.' + methodName;
+        ApexClass apexClass = [SELECT Id, ApiVersion, CreatedDate, LastModifiedDate FROM ApexClass WHERE Name = :exampleTopLevelClassName];
+
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleInnerClassMethodName, OriginType__c = 'Apex');
+        insert logEntry;
+        logEntry = [
+            SELECT
+                Id,
+                ApexClassApiVersion__c,
+                ApexClassCreatedDate__c,
+                ApexClassId__c,
+                ApexClassLastModifiedDate__c,
+                ApexClassName__c,
+                ApexInnerClassName__c,
+                ApexMethodName__c,
+                OriginLocation__c
+            FROM LogEntry__c
+            WHERE OriginType__c = 'Apex'
+            LIMIT 1
+        ];
+        System.assertEquals(exampleInnerClassMethodName, logEntry.OriginLocation__c);
+        System.assertEquals('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
+        System.assertEquals(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
+        System.assertEquals(apexClass.Id, logEntry.ApexClassId__c);
+        System.assertEquals(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
+        System.assertEquals(exampleTopLevelClassName, logEntry.ApexClassName__c);
+        System.assertEquals(exampleInnerClassName, logEntry.ApexInnerClassName__c);
+        System.assertEquals(methodName, logEntry.ApexMethodName__c);
+    }
+
+    @IsTest
     static void it_should_run_apex_plugin_when_configured() {
         String expectedMessage = 'Some String';
 

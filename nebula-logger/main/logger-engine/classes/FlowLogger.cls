@@ -63,6 +63,7 @@ public inherited sharing class FlowLogger {
 
             this.logEntryEvent.OriginLocation__c = this.flowName;
             this.logEntryEvent.OriginType__c = 'Flow';
+            this.logEntryEvent.StackTrace__c = null;
             this.logEntryEvent.Timestamp__c = this.timestamp;
 
             if (String.isNotBlank(this.faultMessage)) {

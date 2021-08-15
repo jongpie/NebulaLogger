@@ -17,7 +17,7 @@ global inherited sharing class FlowRecordLogEntry {
      * @description The name of the Flow creating the log entry.
      *   Due to Salesforce limitations, this cannot be automatically determined
      */
-    @InvocableVariable(required=true label='Flow or Process Builder Name')
+    @InvocableVariable(required=true label='Flow API Name')
     global String flowName;
 
     /**

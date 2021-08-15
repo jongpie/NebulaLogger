@@ -1,11 +1,108 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>52.0</apiVersion>
+    <actionCalls>
+        <name>Log_user_after_updating</name>
+        <label>Log user after updating</label>
+        <locationX>176</locationX>
+        <locationY>638</locationY>
+        <actionName>FlowRecordLogEntry</actionName>
+        <actionType>apex</actionType>
+        <dataTypeMappings>
+            <typeName>T__record</typeName>
+            <typeValue>User</typeValue>
+        </dataTypeMappings>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>loggingLevelName</name>
+            <value>
+                <stringValue>INFO</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>saveLog</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>tagsString</name>
+            <value>
+                <stringValue>flow tag</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>flowName</name>
+            <value>
+                <stringValue>LogHandler_Tests_Flow</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>message</name>
+            <value>
+                <stringValue>Logging user after updating</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>record</name>
+            <value>
+                <elementReference>Get_current_user</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
+        <name>Log_user_before_updating</name>
+        <label>Log user before updating</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <actionName>FlowRecordLogEntry</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Update_user_s_first_name</targetReference>
+        </connector>
+        <dataTypeMappings>
+            <typeName>T__record</typeName>
+            <typeValue>User</typeValue>
+        </dataTypeMappings>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>loggingLevelName</name>
+            <value>
+                <stringValue>INFO</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>tagsString</name>
+            <value>
+                <stringValue>flow tag</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>flowName</name>
+            <value>
+                <stringValue>LogHandler_Tests_Flow</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>message</name>
+            <value>
+                <stringValue>Logging user before updating</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>record</name>
+            <value>
+                <elementReference>Get_current_user</elementReference>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>49.0</apiVersion>
     <assignments>
         <name>Update_user_s_first_name</name>
         <label>Update user&apos;s first name</label>
         <locationX>176</locationX>
-        <locationY>278</locationY>
+        <locationY>398</locationY>
         <assignmentItems>
             <assignToReference>Get_current_user.FirstName</assignToReference>
             <operator>Assign</operator>
@@ -46,7 +143,7 @@
         <locationY>158</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Update_user_s_first_name</targetReference>
+            <targetReference>Log_user_before_updating</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -64,9 +161,13 @@
         <name>Save_current_user</name>
         <label>Save current user</label>
         <locationX>176</locationX>
-        <locationY>398</locationY>
+        <locationY>518</locationY>
+        <connector>
+            <targetReference>Log_user_after_updating</targetReference>
+        </connector>
         <inputReference>Get_current_user</inputReference>
     </recordUpdates>
+    <runInMode>DefaultMode</runInMode>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
@@ -75,14 +176,6 @@
         </connector>
     </start>
     <status>Active</status>
-    <variables>
-        <name>triggerOld</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Log__c</objectType>
-    </variables>
     <variables>
         <description>Used by test class to verify that the Flow ran successfully</description>
         <name>ranSuccessfully</name>
@@ -96,6 +189,14 @@
     </variables>
     <variables>
         <name>records</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Log__c</objectType>
+    </variables>
+    <variables>
+        <name>triggerOld</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>true</isInput>

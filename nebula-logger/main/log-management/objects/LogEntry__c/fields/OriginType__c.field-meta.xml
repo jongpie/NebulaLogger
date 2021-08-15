@@ -9,7 +9,7 @@
     <type>Picklist</type>
     <valueSet>
         <valueSetDefinition>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
             <value>
                 <fullName>Apex</fullName>
                 <color>#333333</color>
@@ -17,16 +17,16 @@
                 <label>Apex</label>
             </value>
             <value>
-                <fullName>Flow</fullName>
-                <color>#FFCC33</color>
-                <default>false</default>
-                <label>Flow/Process Builder</label>
-            </value>
-            <value>
                 <fullName>Component</fullName>
                 <color>#A845DC</color>
                 <default>false</default>
                 <label>Component</label>
+            </value>
+            <value>
+                <fullName>Flow</fullName>
+                <color>#FFCC33</color>
+                <default>false</default>
+                <label>Flow</label>
             </value>
         </valueSetDefinition>
     </valueSet>

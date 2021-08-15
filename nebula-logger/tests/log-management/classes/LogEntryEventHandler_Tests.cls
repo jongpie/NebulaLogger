@@ -112,6 +112,8 @@ private class LogEntryEventHandler_Tests {
             LimitsHeapSizeUsed__c = 123,
             LimitsMobilePushApexCallsMax__c = 987,
             LimitsMobilePushApexCallsUsed__c = 123,
+            LimitsPublishImmediateDmlStatementsMax__c = 987,
+            LimitsPublishImmediateDmlStatementsUsed__c = 123,
             LimitsQueueableJobsMax__c = 987,
             LimitsQueueableJobsUsed__c = 123,
             LimitsSoqlQueriesMax__c = 987,
@@ -782,6 +784,8 @@ private class LogEntryEventHandler_Tests {
                         LimitsHeapSizeUsed__c,
                         LimitsMobilePushApexCallsMax__c,
                         LimitsMobilePushApexCallsUsed__c,
+                        LimitsPublishImmediateDmlStatementsMax__c,
+                        LimitsPublishImmediateDmlStatementsUsed__c,
                         LimitsQueueableJobsMax__c,
                         LimitsQueueableJobsUsed__c,
                         LimitsSoqlQueriesMax__c,
@@ -905,6 +909,8 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.LimitsHeapSizeUsed__c, logEntry.LimitsHeapSizeUsed__c);
         System.assertEquals(logEntryEvent.LimitsMobilePushApexCallsMax__c, logEntry.LimitsMobilePushApexCallsMax__c);
         System.assertEquals(logEntryEvent.LimitsMobilePushApexCallsUsed__c, logEntry.LimitsMobilePushApexCallsUsed__c);
+        System.assertEquals(logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c, logEntry.LimitsPublishImmediateDmlStatementsMax__c);
+        System.assertEquals(logEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c, logEntry.LimitsPublishImmediateDmlStatementsUsed__c);
         System.assertEquals(logEntryEvent.LimitsQueueableJobsMax__c, logEntry.LimitsQueueableJobsMax__c);
         System.assertEquals(logEntryEvent.LimitsQueueableJobsUsed__c, logEntry.LimitsQueueableJobsUsed__c);
         System.assertEquals(logEntryEvent.LimitsSoqlQueriesMax__c, logEntry.LimitsSoqlQueriesMax__c);
