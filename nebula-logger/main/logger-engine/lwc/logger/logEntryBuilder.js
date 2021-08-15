@@ -27,15 +27,25 @@ const LogEntryBuilder = class {
         return this;
     }
 
-    setException(exception) {
-        this.exception = exception;
+    setError(error) {
+        this.error = {};
+        this.error.message = error.message;
+        this.error.stack = error.stack;
+        this.error.type = error.name;
         return this;
     }
 
     addTag(tag) {
         this.tags.push(tag);
-        // Deduplicate
+        // Deduplicate the list of tags
         this.tags = Array.from(new Set(this.tags));
+        return this;
+    }
+
+    addTags(tags) {
+        for (let i = 0; i < tags.length; i++) {
+            this.addTag(tags[i]);
+        }
         return this;
     }
 };

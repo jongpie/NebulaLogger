@@ -16,6 +16,11 @@
                 <label>Flow.FaultError</label>
             </value>
             <value>
+                <fullName>JavaScript.Error</fullName>
+                <default>false</default>
+                <label>JavaScript.Error</label>
+            </value>
+            <value>
                 <fullName>System.AsyncException</fullName>
                 <default>false</default>
                 <label>System.AsyncException</label>

@@ -49,7 +49,7 @@ private class ComponentLogger_Tests {
     }
 
     @isTest
-    static void it_should_return_save_componentLogEntries() {
+    static void it_should_save_component_log_entry() {
         upsert LoggerSettings__c.getInstance();
         System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
 
@@ -80,6 +80,48 @@ private class ComponentLogger_Tests {
         System.assertEquals(JSON.serializePretty(currentUser), logEntry.RecordJson__c);
         System.assertEquals(Schema.SObjectType.User.getName(), logEntry.RecordSObjectType__c);
         System.assertEquals(componentLogEntry.timestamp, logEntry.Timestamp__c);
+    }
+
+    @isTest
+    static void it_should_save_component_log_entry_with_javascript_error() {
+        upsert LoggerSettings__c.getInstance();
+        System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
+
+        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+
+        List<ComponentLogger.ComponentLogEntry> componentLogEntries = new List<ComponentLogger.ComponentLogEntry>();
+        ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
+        mockComponentError.message = 'some javascript error message';
+        mockComponentError.stack = 'some \nstack \ntrace \nstring';
+        mockComponentError.type = 'ReferenceError';
+
+        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        componentLogEntry.error = mockComponentError;
+        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.message = 'hello, world';
+        componentLogEntry.recordId = currentUser.Id;
+        componentLogEntry.record = currentUser;
+        componentLogEntry.timestamp = System.now().addDays(- 1 / 24);
+        componentLogEntry.tags = new List<String>{'some tag', 'one more tag'};
+        componentLogEntries.add(componentLogEntry);
+
+        Test.startTest();
+        ComponentLogger.saveComponentLogEntries(componentLogEntries);
+        Test.stopTest();
+
+        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c, ExceptionMessage__c,
+        ExceptionStackTrace__c,
+        ExceptionType__c, Timestamp__c FROM LogEntry__c];
+        System.assertEquals(1, logEntries.size());
+
+        LogEntry__c logEntry = logEntries.get(0);
+
+        System.assertEquals(componentLogEntry.loggingLevel, logEntry.LoggingLevel__c);
+        System.assertEquals(componentLogEntry.message, logEntry.Message__c);
+        System.assertEquals(componentLogEntry.timestamp, logEntry.Timestamp__c);
+        System.assertEquals(componentLogEntry.error.message, logEntry.ExceptionMessage__c);
+        System.assertEquals(componentLogEntry.error.stack, logEntry.ExceptionStackTrace__c);
+        System.assertEquals(ComponentLogger.EXCEPTION_TYPE_PREFIX + componentLogEntry.error.type, logEntry.ExceptionType__c);
     }
 
     @isTest

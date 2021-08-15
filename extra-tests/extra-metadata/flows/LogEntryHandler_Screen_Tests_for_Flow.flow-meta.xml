@@ -9,12 +9,6 @@
         <actionType>apex</actionType>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
-            <name>flowInterviewGuid</name>
-            <value>
-                <elementReference>$Flow.InterviewGuid</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
             <name>loggingLevelName</name>
             <value>
                 <stringValue>INFO</stringValue>
@@ -61,12 +55,6 @@
             <typeValue>User</typeValue>
         </dataTypeMappings>
         <flowTransactionModel>Automatic</flowTransactionModel>
-        <inputParameters>
-            <name>flowInterviewGuid</name>
-            <value>
-                <elementReference>$Flow.InterviewGuid</elementReference>
-            </value>
-        </inputParameters>
         <inputParameters>
             <name>loggingLevelName</name>
             <value>

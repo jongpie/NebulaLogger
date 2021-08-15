@@ -23,7 +23,13 @@ export default class LoggerDemo extends LightningElement {
         console.log('running logError for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.error(this.message, { exception: new Error('boo it broke'), recordId: '001zzzzzzz', tags: this.tagsString.split(',') });
+        let someError;
+        try {
+            missingVariable / 0;
+        } catch(e) {
+            someError = e;
+        }
+        logger.error(this.message).setError(someError).addTag('lwc logging demo');
     }
 
     logWarn() {

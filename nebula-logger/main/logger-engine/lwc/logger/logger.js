@@ -114,9 +114,6 @@ export default class Logger extends LightningElement {
         if (this.getBufferSize() > 0) {
             saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
                 .then(result => {
-                    // TODO cleanup
-                    // this.message = result;
-                    // this.error = undefined;
                     console.log('Saved ' + this.getBufferSize() + ' log entries');
                     this.flushBuffer();
                 })

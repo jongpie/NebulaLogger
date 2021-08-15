@@ -6,6 +6,10 @@ layout: default
 
 ## Logger Engine
 
+### [ComponentLogger](logger-engine/ComponentLogger)
+
+Controller classs used by the light web component `c/logger`
+
 ### [FlowCollectionLogEntry](logger-engine/FlowCollectionLogEntry)
 
 Handles adding new log entries in Flow for a particular `SObject` record collection

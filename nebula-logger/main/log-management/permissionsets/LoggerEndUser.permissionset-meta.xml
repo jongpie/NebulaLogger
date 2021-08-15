@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
+        <apexClass>ComponentLogger</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>FlowCollectionLogEntry</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -33,8 +37,8 @@
         <enabled>true</enabled>
     </classAccesses>
     <description>Provides access to:
-  - Generate log entries via Apex, Flow and Process Builder.
-  - View shared logs &amp; log entries</description>
+  - Generate log entries via Apex, Lightning Components, Flow and Process Builder.
+  - View shared logs &amp; log entries, based on OWD &amp; sharing rules</description>
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.ComponentApiName__c</field>

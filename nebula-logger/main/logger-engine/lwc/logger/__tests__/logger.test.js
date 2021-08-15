@@ -46,7 +46,7 @@ describe('Logger lwc tests', () => {
             expect(logEntry.message).toEqual(message);
         });
     });
-    it('logs an WARN entry', async () => {
+    it('logs a WARN entry', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
 
@@ -77,7 +77,7 @@ describe('Logger lwc tests', () => {
             expect(logEntry.message).toEqual(message);
         });
     });
-    it('logs an DEBUG entry', async () => {
+    it('logs a DEBUG entry', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
 
@@ -92,7 +92,7 @@ describe('Logger lwc tests', () => {
             expect(logEntry.message).toEqual(message);
         });
     });
-    it('logs an FINE entry', async () => {
+    it('logs a FINE entry', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
 
@@ -107,7 +107,7 @@ describe('Logger lwc tests', () => {
             expect(logEntry.message).toEqual(message);
         });
     });
-    it('logs an FINER entry', async () => {
+    it('logs a FINER entry', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
 
@@ -122,7 +122,7 @@ describe('Logger lwc tests', () => {
             expect(logEntry.message).toEqual(message);
         });
     });
-    it('logs an FINEST entry', async () => {
+    it('logs a FINEST entry', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
 
@@ -185,7 +185,7 @@ describe('Logger lwc tests', () => {
             expect(logEntry.record).toEqual(mockUserRecord);
         });
     });
-    it('sets exception', async () => {
+    it('sets error', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
 
@@ -193,11 +193,22 @@ describe('Logger lwc tests', () => {
 
         return flushPromises().then(() => {
             const logEntry = logger.info('example log entry');
-            expect(logEntry.exception).toBeFalsy();
+            expect(logEntry.error).toBeFalsy();
 
-            const mockException = new Error();
-            logEntry.setException(mockException);
-            expect(logEntry.exception).toEqual(mockException);
+            let error;
+            try {
+                missingVariable / 0;
+            } catch(e) {
+                error = e;
+            }
+            expect(error).toBeTruthy();
+            expect(error.message).toBeTruthy();
+            expect(error.stack).toBeTruthy();
+
+            logEntry.setError(error);
+            expect(logEntry.error.message).toEqual(error.message);
+            expect(logEntry.error.stack).toEqual(error.stack);
+            expect(logEntry.error.type).toEqual('ReferenceError');
         });
     });
     it('adds tags', async () => {
@@ -211,9 +222,7 @@ describe('Logger lwc tests', () => {
             expect(logEntry.recordId).toBeFalsy();
 
             const mockTags = ['first tag', 'second tag', 'third tag'];
-            for (let i = 0; i < mockTags.length; i++) {
-                logEntry.addTag(mockTags[i]);
-            }
+            logEntry.addTags(mockTags);
             expect(logEntry.tags.length).toEqual(mockTags.length);
         });
     });
