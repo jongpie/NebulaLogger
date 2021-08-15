@@ -260,6 +260,38 @@ private class LogEntryHandler_Tests {
     }
 
     @IsTest
+    static void it_should_set_skip_setting_apex_class_details_when_origin_location_is_null() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = null, OriginType__c = 'Apex');
+        insert logEntry;
+        logEntry = [
+            SELECT
+                Id,
+                ApexClassApiVersion__c,
+                ApexClassCreatedDate__c,
+                ApexClassId__c,
+                ApexClassLastModifiedDate__c,
+                ApexClassName__c,
+                ApexInnerClassName__c,
+                ApexMethodName__c,
+                OriginLocation__c,
+                OriginType__c
+            FROM LogEntry__c
+            WHERE OriginType__c = 'Apex'
+            LIMIT 1
+        ];
+        System.assertEquals('Apex', logEntry.OriginType__c);
+        System.assertEquals(null, logEntry.OriginLocation__c);
+        System.assertEquals(null, logEntry.ApexClassApiVersion__c);
+        System.assertEquals(null, logEntry.ApexClassCreatedDate__c);
+        System.assertEquals(null, logEntry.ApexClassId__c);
+        System.assertEquals(null, logEntry.ApexClassLastModifiedDate__c);
+        System.assertEquals(null, logEntry.ApexClassName__c);
+        System.assertEquals(null, logEntry.ApexInnerClassName__c);
+        System.assertEquals(null, logEntry.ApexMethodName__c);
+    }
+
+    @IsTest
     static void it_should_set_apex_class_details_for_top_level_class() {
         String exampleTopLevelClassName = 'Logger';
         String methodName = 'saveLog';

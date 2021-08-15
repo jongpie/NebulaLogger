@@ -8,16 +8,40 @@ private class LogEntryHandler_Tests_Flow {
     private static final String EXAMPLE_FLOW_API_NAME = 'LogEntryHandler_Tests_Flow';
 
     @IsTest
+    static void it_should_set_skip_setting_flow_details_when_origin_location_is_null() {
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = null, OriginType__c = 'Flow');
+        insert logEntry;
+        logEntry = getLogEntry();
+
+        System.assertEquals(null, logEntry.OriginLocation__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+        System.assertEquals(null, logEntry.FlowActiveVersionId__c);
+        System.assertEquals(null, logEntry.FlowDescription__c);
+        System.assertEquals(null, logEntry.FlowDurableId__c);
+        System.assertEquals(null, logEntry.FlowLabel__c);
+        System.assertEquals(null, logEntry.FlowLastModifiedByName__c);
+        System.assertEquals(null, logEntry.FlowLastModifiedDate__c);
+        System.assertEquals(null, logEntry.FlowProcessType__c);
+        System.assertEquals(null, logEntry.FlowTriggerType__c);
+        System.assertEquals(null, logEntry.FlowVersionApiVersionRuntime__c);
+        System.assertEquals(null, logEntry.FlowVersionNumber__c);
+        System.assertEquals(null, logEntry.FlowVersionRunInMode__c);
+    }
+
+    @IsTest
     static void it_should_set_flow_details() {
-        Test.startTest();
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
-        Flow.Interview exampleFlow = Flow.Interview.createInterview(EXAMPLE_FLOW_API_NAME, new Map<String, Object>());
-        exampleFlow.start();
-        Test.stopTest();
-
-        LogEntry__c logEntry = getFlowLogEntry();
-
         FlowDefinitionView flowDefinition = getFlowDefinition();
+        FlowVersionView flowVersion = getFlowVersion(flowDefinition.ActiveVersionId);
+
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = flowDefinition.ApiName, OriginType__c = 'Flow');
+        insert logEntry;
+        logEntry = getLogEntry();
+
+        System.assertEquals('Flow', logEntry.OriginType__c);
         System.assertEquals(flowDefinition.ActiveVersionId, logEntry.FlowActiveVersionId__c);
         System.assertEquals(flowDefinition.Description, logEntry.FlowDescription__c);
         System.assertEquals(flowDefinition.DurableId, logEntry.FlowDurableId__c);
@@ -26,14 +50,12 @@ private class LogEntryHandler_Tests_Flow {
         System.assertEquals(flowDefinition.LastModifiedDate, logEntry.FlowLastModifiedDate__c);
         System.assertEquals(flowDefinition.ProcessType, logEntry.FlowProcessType__c);
         System.assertEquals(flowDefinition.TriggerType, logEntry.FlowTriggerType__c);
-
-        FlowVersionView flowVersion = getFlowVersion(flowDefinition.ActiveVersionId);
         System.assertEquals('v' + flowVersion.ApiVersionRuntime + '.0', logEntry.FlowVersionApiVersionRuntime__c);
         System.assertEquals(flowVersion.RunInMode, logEntry.FlowVersionRunInMode__c);
         System.assertEquals(flowVersion.VersionNumber, logEntry.FlowVersionNumber__c);
     }
 
-    private static LogEntry__c getFlowLogEntry() {
+    private static LogEntry__c getLogEntry() {
         return [
             SELECT
                 FlowActiveVersionId__c,
@@ -46,7 +68,9 @@ private class LogEntryHandler_Tests_Flow {
                 FlowTriggerType__c,
                 FlowVersionApiVersionRuntime__c,
                 FlowVersionNumber__c,
-                FlowVersionRunInMode__c
+                FlowVersionRunInMode__c,
+                OriginLocation__c,
+                OriginType__c
             FROM LogEntry__c
             // WHERE OriginType__c = 'Flow'
             ORDER BY CreatedDate
