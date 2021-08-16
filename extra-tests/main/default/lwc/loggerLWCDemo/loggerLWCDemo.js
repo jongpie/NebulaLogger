@@ -7,7 +7,7 @@ import { LightningElement } from 'lwc';
 
 const LOGGER_NAME = 'c-logger';
 
-export default class LoggerDemo extends LightningElement {
+export default class loggerLWCDemo extends LightningElement {
     message = 'Hello, world!';
     tagsString = 'Tag-one, Another tag here';
 

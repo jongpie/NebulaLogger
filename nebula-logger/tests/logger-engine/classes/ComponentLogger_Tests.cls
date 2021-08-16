@@ -126,7 +126,7 @@ private class ComponentLogger_Tests {
 
     @isTest
     static void it_should_parse_component_stack_trace() {
-        String expectedComponentApiName = 'c/loggerDemo';
+        String expectedComponentApiName = 'c/loggerLWCDemo';
         String expectedComponentFunctionName = 'logInfo';
 
         List<ComponentLogger.ComponentLogEntry> componentLogEntries = new List<ComponentLogger.ComponentLogEntry>();
@@ -157,7 +157,7 @@ private class ComponentLogger_Tests {
     }
 
     private static String getMockComponentStackTrace() {
-        // This is a copy of an actual stack trace generated from c/loggerDemo
+        // This is a copy of an actual stack trace generated from c/loggerLWCDemo
         return 'LogEntryBuilder@https://enterprise-customization-3023.lightning.force.com/lightning/n/modules/c/logger.js:20:22'
             + '\nnewLogEntry@https://enterprise-customization-3023.lightning.force.com/lightning/n/modules/c/logger.js:52:14'
             + '\n_registerNewLogEntry@https://enterprise-customization-3023.lightning.force.com/lightning/n/modules/c/logger.js:217:44'
@@ -165,7 +165,7 @@ private class ComponentLogger_Tests {
             + '\ncallHook@https://static.lightning.force.com/cs1/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_proddebug.js:20075:37'
             + '\ncreateMethodCaller/<@https://static.lightning.force.com/cs1/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_proddebug.js:8551:14'
             + '\ncreateFilteredMethodStateless/<.value<@https://static.lightning.force.com/cs1/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_proddebug.js:25688:49'
-            + '\nlogInfo@https://enterprise-customization-3023.lightning.force.com/lightning/n/modules/c/loggerDemo.js:180:16'
+            + '\nlogInfo@https://enterprise-customization-3023.lightning.force.com/lightning/n/modules/c/loggerLWCDemo.js:180:16'
             + '\ncallHook@https://static.lightning.force.com/cs1/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_proddebug.js:20075:37'
             + '\ninvokeEventListener/<@https://static.lightning.force.com/cs1/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_proddebug.js:10653:15'
             + '\nrunWithBoundaryProtection@https://static.lightning.force.com/cs1/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_proddebug.js:11346:7'

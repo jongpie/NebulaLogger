@@ -1,0 +1,11 @@
+<aura:component implements="force:appHostable">
+    <c:logger aura:id="logger" />
+
+    <aura:attribute name="logMessage" type="String" default="Something to log" />
+
+
+    <div>
+        <h1>Aura Logging Example</h1>
+        <lightning:input value="{!v.logMessage}" />
+    </div>
+</aura:component>
