@@ -27,7 +27,7 @@
             "default": false
         },
         {
-            "path": "extra-tests",
+            "path": "nebula-logger-recipes",
             "default": true
         }
     ],
