@@ -1,7 +1,12 @@
 ({
-    logSomething : function(component, event, helper) {
-        var logger = component.find('logger');
-        logger.info('Logging from an aura component').addTag('aura cmp');
-        logger.save();
+    saveLogExample : function(component, event, helper) {
+        console.log('start of aura cmp\'s saveLog function');
+
+        const logger = component.find('logger');
+        console.log(logger);
+        logger.fine('Logging from an aura component').addTag('aura cmp');
+        const entry = logger.info(component.get('{!v.logMessage}'));
+        console.log('stack==' + entry.stack);
+        logger.saveLog();
     }
 })

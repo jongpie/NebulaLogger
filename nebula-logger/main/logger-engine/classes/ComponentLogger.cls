@@ -67,33 +67,47 @@ public inherited sharing class ComponentLogger {
     private static void setStackTraceDetails(LogEntryEventBuilder logEntryEventBuilder, String stackTraceString) {
         String originLocation;
         String originType;
+        Boolean isAuraComponent = false;
 
         if (String.isNotBlank(stackTraceString) == true) {
             String loggerComponentReferenceToIgnore = '/c/logger.js';
-            String moduleContent = '/n/modules/';
-            Boolean moduleFound = false;
+            String auraComponentContent = '/n/components/';
+            String lwcModuleContent = '/n/modules/';
+            Boolean parentComponentFound = false;
 
             List<String> stackTraceLines = new List<String>();
             for (String currentStackTraceLine : stackTraceString.split('\n')) {
                 if (currentStackTraceLine.contains(loggerComponentReferenceToIgnore) == true) {
                     continue;
-                } else if (moduleFound == false && currentStackTraceLine.contains(moduleContent) == true) {
-                    moduleFound = true;
+                } else if (parentComponentFound == false && currentStackTraceLine.contains(auraComponentContent) == true) {
+                    isAuraComponent = true;
+                    parentComponentFound = true;
+                } else if (parentComponentFound == false && currentStackTraceLine.contains(lwcModuleContent) == true) {
+                    parentComponentFound = true;
                 }
 
-                if (moduleFound == true) {
+                if (parentComponentFound == true) {
                     stackTraceLines.add(currentStackTraceLine);
                 }
             }
 
             stackTraceString = String.join(stackTraceLines, '\n');
             if (String.isNotBlank(stackTraceString)) {
-                String componentName = stackTraceLines.get(0).substringAfterLast(moduleContent).substringBefore('.js');
-                String componentFunction = stackTraceLines.get(0).substringBefore('@');
+                String componentName;
+                String componentFunction;
+                if (isAuraComponent == true) {
+                    componentName = stackTraceLines.get(0).substringAfterLast(auraComponentContent).substringBefore('.js');
+                    componentFunction = stackTraceLines.get(0).substringBefore(' (').substringAfter('at ');
+                } else {
+                    componentName = stackTraceLines.get(0).substringAfterLast(lwcModuleContent).substringBefore('.js');
+                    componentFunction = stackTraceLines.get(0).substringBefore(' (').substringAfter('at ').substringAfter('.');
+                }
+
                 originLocation = componentName + '.' + componentFunction;
             }
         }
 
+        logEntryEventBuilder.getLogEntryEvent().ComponentType__c = isAuraComponent == true ? 'Aura' : 'Web';
         logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
         logEntryEventBuilder.getLogEntryEvent().OriginLocation__c = originLocation;
         logEntryEventBuilder.getLogEntryEvent().StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);

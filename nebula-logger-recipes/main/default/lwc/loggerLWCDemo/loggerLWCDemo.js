@@ -19,7 +19,7 @@ export default class loggerLWCDemo extends LightningElement {
         this.tagsString = event.target.value;
     }
 
-    logError() {
+    logErrorExample() {
         console.log('running logError for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
@@ -29,52 +29,53 @@ export default class loggerLWCDemo extends LightningElement {
         } catch(e) {
             someError = e;
         }
-        logger.error(this.message).setError(someError).addTag('lwc logging demo');
+        const entry = logger.error(this.message).setError(someError).addTag('lwc logging demo');
+        console.log('stack==' + entry.stack);
     }
 
-    logWarn() {
+    logWarnExample() {
         console.log('running logWarn for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
         logger.warn(this.message, { tags: this.tagsString.split(',') });
     }
 
-    logInfo() {
+    logInfoExample() {
         console.log('running logInfo for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
         logger.info(this.message, { tags: this.tagsString.split(',') });
     }
 
-    logDebug() {
+    logDebugExample() {
         console.log('running logDebug for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
         logger.debug(this.message, { tags: this.tagsString.split(',') });
     }
 
-    logFine() {
+    logFineExample() {
         console.log('running logFine for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
         logger.fine(this.message, { tags: this.tagsString.split(',') });
     }
 
-    logFiner() {
+    logFinerExample() {
         console.log('running logFiner for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
         logger.finer(this.message, { tags: this.tagsString.split(',') });
     }
 
-    logFinest() {
+    logFinestExample() {
         console.log('running logFinest for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
         logger.finest(this.message);
     }
 
-    saveLog() {
+    saveLogExample() {
         console.log('running saveLog for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);

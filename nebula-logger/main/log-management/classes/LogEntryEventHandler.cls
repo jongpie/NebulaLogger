@@ -161,6 +161,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 : logEntryEvent.Timestamp__c;
 
             LogEntry__c logEntry = new LogEntry__c(
+                ComponentType__c = logEntryEvent.ComponentType__c,
                 DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
                 DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
                 DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,

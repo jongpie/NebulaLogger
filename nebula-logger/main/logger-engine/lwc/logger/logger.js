@@ -69,6 +69,7 @@ export default class Logger extends LightningElement {
 
     @api
     saveLog() {
+        console.info('running logger.saveLog()');
         if (this.getBufferSize() > 0) {
             saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
                 .then(result => {
