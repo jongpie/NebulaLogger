@@ -24,79 +24,37 @@ export default class Logger extends LightningElement {
 
     @api
     error(message) {
-        const loggingLevel = 'ERROR';
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
-            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
-            console.error(logEntryBuilder.message);
-            console.error(logEntryBuilder);
-            return logEntryBuilder;
-        }
+        return this._newEntry('ERROR', message);
     }
 
     @api
     warn(message) {
-        const loggingLevel = 'WARN';
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
-            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
-            console.warn(logEntryBuilder.message);
-            console.warn(logEntryBuilder);
-            return logEntryBuilder;
-        }
+        return this._newEntry('WARN', message);
     }
 
     @api
     info(message) {
-        const loggingLevel = 'INFO';
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
-            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
-            console.info(logEntryBuilder.message);
-            console.info(logEntryBuilder);
-            return logEntryBuilder;
-        }
+        return this._newEntry('INFO', message);
     }
 
     @api
     debug(message) {
-        const loggingLevel = 'DEBUG';
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
-            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
-            console.debug(logEntryBuilder.message);
-            console.debug(logEntryBuilder);
-            return logEntryBuilder;
-        }
+        return this._newEntry('DEBUG', message);
     }
 
     @api
     fine(message) {
-        const loggingLevel = 'FINE';
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
-            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
-            console.debug(logEntryBuilder.message);
-            console.debug(logEntryBuilder);
-            return logEntryBuilder;
-        }
+        return this._newEntry('FINE', message);
     }
 
     @api
     finer(message) {
-        const loggingLevel = 'FINER';
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
-            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
-            console.debug(logEntryBuilder.message);
-            console.debug(logEntryBuilder);
-            return logEntryBuilder;
-        }
+        return this._newEntry('FINER', message);
     }
 
     @api
     finest(message) {
-        const loggingLevel = 'FINEST';
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
-            const logEntryBuilder = this._registerNewLogEntry(loggingLevel, message);
-            console.debug(logEntryBuilder.message);
-            console.debug(logEntryBuilder);
-            return logEntryBuilder;
-        }
+        return this._newEntry('FINEST', message);
     }
 
     @api
@@ -127,13 +85,14 @@ export default class Logger extends LightningElement {
     // Private functions
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
         let logEntryLoggingLevelOrdinal = this.settings.supportedLoggingLevels[logEntryLoggingLevel];
-        return this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
+        return this.settings && this.settings.isEnabled == true && this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
     }
 
-    _registerNewLogEntry(loggingLevel, message) {
-        const logEntryBuilder = newLogEntry(loggingLevel).setMessage(message);
+    _newEntry(loggingLevel, message) {
+        const shouldSave = this._meetsUserLoggingLevel(loggingLevel);
 
-        if (this.settings && this.settings.isEnabled == true && this._meetsUserLoggingLevel(loggingLevel) == true) {
+        const logEntryBuilder = newLogEntry(loggingLevel, shouldSave).setMessage(message);
+        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             this.componentLogEntries.push(logEntryBuilder);
         }
 

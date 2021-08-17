@@ -1,5 +1,5 @@
 {
-    "userLoggingLevel": { "ordinal": 2, "name": "FINEST" },
+    "isEnabled": true,
     "supportedLoggingLevels": { "FINEST": 2, "FINER": 3, "FINE": 4, "DEBUG": 5, "INFO": 6, "WARN": 7, "ERROR": 8 },
-    "isEnabled": true
+    "userLoggingLevel": { "ordinal": 2, "name": "FINEST" }
 }

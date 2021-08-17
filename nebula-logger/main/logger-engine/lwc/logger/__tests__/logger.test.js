@@ -4,15 +4,8 @@ import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
 import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 
-// Mock data
 const mockGetSettings = require('./data/getLoggerSettings.json');
-
-// Register a test wire adapter
 const getSettingsAdapter = registerApexTestWireAdapter(getSettings);
-
-function flushPromises() {
-    return new Promise(resolve => setTimeout(resolve, 0));
-}
 
 jest.mock(
     '@salesforce/apex/ComponentLogger.getSettings',
@@ -37,7 +30,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const message = 'component log entry with loggingLevel ERROR';
             const logEntry = logger.error(message);
 
@@ -52,7 +45,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const message = 'component log entry with loggingLevel WARN';
             const logEntry = logger.warn(message);
 
@@ -68,7 +61,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const message = 'component log entry with loggingLevel INFO';
             const logEntry = logger.info(message);
 
@@ -83,7 +76,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const message = 'component log entry with loggingLevel DEBUG';
             const logEntry = logger.debug(message);
 
@@ -98,7 +91,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const message = 'component log entry with loggingLevel FINE';
             const logEntry = logger.fine(message);
 
@@ -113,7 +106,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const message = 'component log entry with loggingLevel FINER';
             const logEntry = logger.finer(message);
 
@@ -128,7 +121,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const message = 'component log entry with loggingLevel FINEST';
             const logEntry = logger.finest(message);
 
@@ -143,7 +136,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const numberOfLogEntries = 3;
             for (let i = 0; i < numberOfLogEntries; i++) {
                 const logEntry = logger.info('entry number: ' + i);
@@ -160,7 +153,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.recordId).toBeFalsy();
 
@@ -175,7 +168,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.record).toBeFalsy();
 
@@ -191,7 +184,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.error).toBeFalsy();
 
@@ -217,7 +210,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.recordId).toBeFalsy();
 
@@ -232,7 +225,7 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.recordId).toBeFalsy();
 
@@ -245,13 +238,13 @@ describe('Logger lwc tests', () => {
             expect(logEntry.tags.length).toEqual(1);
         });
     });
-    it('flushes buffer after saving log entries', async () => {
+    it('saves log entries and flushes buffer', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return flushPromises().then(() => {
+        return Promise.resolve().then(() => {
             logger.info('example INFO log entry');
             logger.debug('example DEBUG log entry');
             expect(logger.getBufferSize()).toBe(2);
@@ -259,6 +252,194 @@ describe('Logger lwc tests', () => {
             logger.saveLog();
         }).then(() => {
             expect(logger.getBufferSize()).toBe(0);
+        });
+    });
+    it('still works for ERROR when disabled', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+
+        mockGetSettings.isEnabled = false;
+        getSettingsAdapter.emit(mockGetSettings);
+
+        return Promise.resolve().then(() => {
+            const logEntry = logger.error('example ERROR log entry')
+                .setMessage('some message')
+                .setRecordId('some_record_Id')
+                .setRecord({Id: 'some_record_Id'})
+                .setError(new TypeError('oops'))
+                .addTag('a tag')
+                .addTags(['a second tag', 'a third tag']);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logEntry.loggingLevel).toEqual(undefined);
+            expect(logEntry.shouldSave).toEqual(false);
+            expect(logEntry.recordId).toEqual(undefined);
+            expect(logEntry.record).toEqual(undefined);
+            expect(logEntry.error).toEqual(undefined);
+            expect(logEntry.stack).toEqual(undefined);
+            expect(logEntry.timestamp).toEqual(undefined);
+            expect(logEntry.tags).toEqual(undefined);
+        });
+    });
+    it('still works for WARN when disabled', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+
+        mockGetSettings.isEnabled = false;
+        getSettingsAdapter.emit(mockGetSettings);
+
+        return Promise.resolve().then(() => {
+            const logEntry = logger.warn('example WARN log entry')
+                .setMessage('some message')
+                .setRecordId('some_record_Id')
+                .setRecord({Id: 'some_record_Id'})
+                .setError(new TypeError('oops'))
+                .addTag('a tag')
+                .addTags(['a second tag', 'a third tag']);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logEntry.loggingLevel).toEqual(undefined);
+            expect(logEntry.shouldSave).toEqual(false);
+            expect(logEntry.recordId).toEqual(undefined);
+            expect(logEntry.record).toEqual(undefined);
+            expect(logEntry.error).toEqual(undefined);
+            expect(logEntry.stack).toEqual(undefined);
+            expect(logEntry.timestamp).toEqual(undefined);
+            expect(logEntry.tags).toEqual(undefined);
+        });
+    });
+    it('still works for INFO when disabled', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+
+        mockGetSettings.isEnabled = false;
+        getSettingsAdapter.emit(mockGetSettings);
+
+        return Promise.resolve().then(() => {
+            const logEntry = logger.info('example INFO log entry')
+                .setMessage('some message')
+                .setRecordId('some_record_Id')
+                .setRecord({Id: 'some_record_Id'})
+                .setError(new TypeError('oops'))
+                .addTag('a tag')
+                .addTags(['a second tag', 'a third tag']);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logEntry.loggingLevel).toEqual(undefined);
+            expect(logEntry.shouldSave).toEqual(false);
+            expect(logEntry.recordId).toEqual(undefined);
+            expect(logEntry.record).toEqual(undefined);
+            expect(logEntry.error).toEqual(undefined);
+            expect(logEntry.stack).toEqual(undefined);
+            expect(logEntry.timestamp).toEqual(undefined);
+            expect(logEntry.tags).toEqual(undefined);
+        });
+    });
+    it('still works for DEBUG when disabled', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+
+        mockGetSettings.isEnabled = false;
+        getSettingsAdapter.emit(mockGetSettings);
+
+        return Promise.resolve().then(() => {
+            const logEntry = logger.debug('example DEBUG log entry')
+                .setMessage('some message')
+                .setRecordId('some_record_Id')
+                .setRecord({Id: 'some_record_Id'})
+                .setError(new TypeError('oops'))
+                .addTag('a tag')
+                .addTags(['a second tag', 'a third tag']);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logEntry.loggingLevel).toEqual(undefined);
+            expect(logEntry.shouldSave).toEqual(false);
+            expect(logEntry.recordId).toEqual(undefined);
+            expect(logEntry.record).toEqual(undefined);
+            expect(logEntry.error).toEqual(undefined);
+            expect(logEntry.stack).toEqual(undefined);
+            expect(logEntry.timestamp).toEqual(undefined);
+            expect(logEntry.tags).toEqual(undefined);
+        });
+    });
+    it('still works for FINE when disabled', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+
+        mockGetSettings.isEnabled = false;
+        getSettingsAdapter.emit(mockGetSettings);
+
+        return Promise.resolve().then(() => {
+            const logEntry = logger.fine('example FINE log entry')
+                .setMessage('some message')
+                .setRecordId('some_record_Id')
+                .setRecord({Id: 'some_record_Id'})
+                .setError(new TypeError('oops'))
+                .addTag('a tag')
+                .addTags(['a second tag', 'a third tag']);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logEntry.loggingLevel).toEqual(undefined);
+            expect(logEntry.shouldSave).toEqual(false);
+            expect(logEntry.recordId).toEqual(undefined);
+            expect(logEntry.record).toEqual(undefined);
+            expect(logEntry.error).toEqual(undefined);
+            expect(logEntry.stack).toEqual(undefined);
+            expect(logEntry.timestamp).toEqual(undefined);
+            expect(logEntry.tags).toEqual(undefined);
+        });
+    });
+    it('still works for FINER when disabled', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+
+        mockGetSettings.isEnabled = false;
+        getSettingsAdapter.emit(mockGetSettings);
+
+        return Promise.resolve().then(() => {
+            const logEntry = logger.finer('example FINER log entry')
+                .setMessage('some message')
+                .setRecordId('some_record_Id')
+                .setRecord({Id: 'some_record_Id'})
+                .setError(new TypeError('oops'))
+                .addTag('a tag')
+                .addTags(['a second tag', 'a third tag']);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logEntry.loggingLevel).toEqual(undefined);
+            expect(logEntry.shouldSave).toEqual(false);
+            expect(logEntry.recordId).toEqual(undefined);
+            expect(logEntry.record).toEqual(undefined);
+            expect(logEntry.error).toEqual(undefined);
+            expect(logEntry.stack).toEqual(undefined);
+            expect(logEntry.timestamp).toEqual(undefined);
+            expect(logEntry.tags).toEqual(undefined);
+        });
+    });
+    it('still works for FINEST when disabled', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+
+        mockGetSettings.isEnabled = false;
+        getSettingsAdapter.emit(mockGetSettings);
+
+        return Promise.resolve().then(() => {
+            const logEntry = logger.finest('example FINEST log entry')
+                .setMessage('some message')
+                .setRecordId('some_record_Id')
+                .setRecord({Id: 'some_record_Id'})
+                .setError(new TypeError('oops'))
+                .addTag('a tag')
+                .addTags(['a second tag', 'a third tag']);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logger.getBufferSize()).toEqual(0);
+            expect(logEntry.loggingLevel).toEqual(undefined);
+            expect(logEntry.shouldSave).toEqual(false);
+            expect(logEntry.recordId).toEqual(undefined);
+            expect(logEntry.record).toEqual(undefined);
+            expect(logEntry.error).toEqual(undefined);
+            expect(logEntry.stack).toEqual(undefined);
+            expect(logEntry.timestamp).toEqual(undefined);
+            expect(logEntry.tags).toEqual(undefined);
         });
     });
 });

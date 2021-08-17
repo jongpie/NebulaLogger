@@ -4,41 +4,55 @@
 //------------------------------------------------------------------------------------------------//
 
 const LogEntryBuilder = class {
-    constructor(loggingLevel) {
-        this.loggingLevel = loggingLevel;
+    constructor(loggingLevel, shouldSave) {
+        this.shouldSave = shouldSave;
 
-        this.stack = new Error().stack;
-        this.timestamp = new Date().toISOString();
-        this.tags = [];
+        if (this.shouldSave == true) {
+            this.loggingLevel = loggingLevel;
+            this.stack = new Error().stack;
+            this.timestamp = new Date().toISOString();
+            this.tags = [];
+        }
     }
 
     setMessage(message) {
-        this.message = message;
+        if (this.shouldSave == true) {
+            this.message = message;
+            this._logToConsole();
+        }
         return this;
     }
 
     setRecordId(recordId) {
-        this.recordId = recordId;
+        if (this.shouldSave == true) {
+            this.recordId = recordId;
+        }
         return this;
     }
 
     setRecord(record) {
-        this.record = record;
+        if (this.shouldSave == true) {
+            this.record = record;
+        }
         return this;
     }
 
     setError(error) {
-        this.error = {};
-        this.error.message = error.message;
-        this.error.stack = error.stack;
-        this.error.type = error.name;
+        if (this.shouldSave == true) {
+            this.error = {};
+            this.error.message = error.message;
+            this.error.stack = error.stack;
+            this.error.type = error.name;
+        }
         return this;
     }
 
     addTag(tag) {
-        this.tags.push(tag);
-        // Deduplicate the list of tags
-        this.tags = Array.from(new Set(this.tags));
+        if (this.shouldSave == true) {
+            this.tags.push(tag);
+            // Deduplicate the list of tags
+            this.tags = Array.from(new Set(this.tags));
+        }
         return this;
     }
 
@@ -48,8 +62,29 @@ const LogEntryBuilder = class {
         }
         return this;
     }
+
+    _logToConsole() {
+        switch(this.loggingLevel) {
+            case 'ERROR':
+                console.error(this.message);
+                console.error(this);
+                break;
+            case 'WARN':
+                console.warn(this.message);
+                console.warn(this);
+                break;
+            case 'INFO':
+                console.info(this.message);
+                console.info(this);
+                break;
+            default:
+                console.debug(this.message);
+                console.debug(this);
+                break;
+        }
+    }
 };
 
-export function newLogEntry(loggingLevel) {
-    return new LogEntryBuilder(loggingLevel);
+export function newLogEntry(loggingLevel, shouldSave) {
+    return new LogEntryBuilder(loggingLevel, shouldSave);
 }
