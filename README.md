@@ -13,7 +13,7 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Features
 
-1. Easily add log entries via Apex, Lightning Components (web & aura), Flow & Process Builder to generate 1 consolidate log
+1. Easily add log entries via Apex, Lightning Components (lwc & aura), Flow & Process Builder to generate 1 consolidate log
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
@@ -120,7 +120,7 @@ This results in 1 `Log__c` record with several related `LogEntry__c` records.
 
 ### Logger for Lightning Components: Quick Start
 
-For lightning component developers, the `logger` web component provides very similar functionality that is offered in Apex. Simply embed the `logger` lwc in your component, and call the desired logging methods within your code.
+For lightning component developers, the `logger` lwc provides very similar functionality that is offered in Apex. Simply embed the `logger` lwc in your component, and call the desired logging methods within your code.
 
 ```javascript
 // For lwc, retrieve logger from your component's template
@@ -170,7 +170,6 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ### All Together: Apex, Lightning Components & Flow in One Log
 
-// TODO - incorporate details + screenshots for lwc/aura
 After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.
 
 ```java
@@ -239,7 +238,7 @@ public with sharing class BatchableLoggerExample implements Database.Batchable<S
         Logger.setParentLogTransactionId(this.originalTransactionId);
 
         for (Account account : scope) {
-            // TODO add your batch job's logic
+            // Add your batch job's logic here
 
             // Then log the result
             Logger.info('Processed an account record', account);
@@ -290,7 +289,7 @@ public with sharing class QueueableLoggerExample implements Queueable {
         Logger.info('this.numberOfJobsToChain==' + this.numberOfJobsToChain);
         Logger.info('this.parentLogTransactionId==' + this.parentLogTransactionId);
 
-        // TODO add your queueable job's logic
+        // Add your queueable job's logic here
 
         Logger.saveLog();
 
@@ -367,19 +366,19 @@ For more details, check out the `LogMessage` class [documentation](https://jongp
 
 ## Features for Lightning Component Developers
 
-For lightning component developers, the included `logger` web component can be used in other web & aura components for frontend logging. Similar to `Logger` and `LogEntryBuilder` Apex classes, the web component has both `logger` and `logEntryBuilder` classes. This provides a fluent API for javascript developers so they can chain the method calls.
+For lightning component developers, the included `logger` lwc can be used in other lwc & aura components for frontend logging. Similar to `Logger` and `LogEntryBuilder` Apex classes, the lwc has both `logger` and `logEntryBuilder` classes. This provides a fluent API for javascript developers so they can chain the method calls.
 
 Once you've incorporated `logger` into your lightning components, you can see your `LogEntry__c` records using the included list view "All Component Log Entries'.
 
 ![Component Log Entries List View](./content/component-entries-list-view.png)
 
-Each `LogEntry__c` record automatically stores the component's type ('Aura' or 'Web'), the component name, and the component function that called `logger`. This information is shown in the section "Lightning Component Information"
+Each `LogEntry__c` record automatically stores the component's type ('Aura' or 'LWC'), the component name, and the component function that called `logger`. This information is shown in the section "Lightning Component Information"
 
 ![Component Log Entry Record](./content/component-entry-record-detail.png)
 
 #### Example LWC Usage
 
-To use the logger component, it has to be added to your web component's markup:
+To use the logger component, it has to be added to your lwc's markup:
 
 ```html
 <template>
@@ -389,7 +388,7 @@ To use the logger component, it has to be added to your web component's markup:
 </template>
 ```
 
-Once you've added logger to your markup, you can call it in your web component's controller:
+Once you've added logger to your markup, you can call it in your lwc's controller:
 
 ```javascript
 import { LightningElement } from 'lwc';
@@ -600,7 +599,7 @@ Everyone loves JSON - so to make it easy to see a JSON version of a `Log__c` rec
 
 ### View Related Log Entries on a Record Page
 
-Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
+Within App Builder, admins can add the 'Related Log Entries' lightning web component (lwc) to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
 
 -   The component automatically shows any related log entries, based on `LogEntry__c.RecordId__c == :recordId`
 -   Users can search the list of log entries for a particular record using the component's built-insearch box. The component dynamically searches all related log entries using SOSL.

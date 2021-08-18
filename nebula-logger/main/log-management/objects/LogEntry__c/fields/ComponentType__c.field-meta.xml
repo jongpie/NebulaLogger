@@ -17,9 +17,9 @@
                 <label>Aura</label>
             </value>
             <value>
-                <fullName>Web</fullName>
+                <fullName>LWC</fullName>
                 <default>false</default>
-                <label>Web</label>
+                <label>LWC</label>
             </value>
         </valueSetDefinition>
     </valueSet>

@@ -5,7 +5,7 @@
 
 /**
  * @group Logger Engine
- * @description Controller classs used by the light web component `c/logger`
+ * @description Controller class used by the light web component `c/logger`
  * @see Logger
  * @see LogEntryEventBuilder
  */
@@ -29,8 +29,6 @@ public inherited sharing class ComponentLogger {
      */
     @AuraEnabled
     public static String saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
-        System.debug('componentLogEntries=' + componentLogEntries);
-
         try {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
@@ -39,13 +37,9 @@ public inherited sharing class ComponentLogger {
                     .setRecord(componentLogEntry.record)
                     .addTags(componentLogEntry.tags);
 
+                logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
                 setComponentErrorDetails(logEntryEventBuilder, componentLogEntry.error);
                 setStackTraceDetails(logEntryEventBuilder, componentLogEntry.stack);
-                if (logEntryEventBuilder.shouldSave() == true) {
-                    // Set some additional fields - these fields don't have setter methods in LogEntryEventBuilder
-
-                    logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
-                }
             }
             Logger.saveLog();
             return Logger.getTransactionId();
@@ -107,7 +101,7 @@ public inherited sharing class ComponentLogger {
             }
         }
 
-        logEntryEventBuilder.getLogEntryEvent().ComponentType__c = isAuraComponent == true ? 'Aura' : 'Web';
+        logEntryEventBuilder.getLogEntryEvent().ComponentType__c = isAuraComponent == true ? 'Aura' : 'LWC';
         logEntryEventBuilder.getLogEntryEvent().OriginType__c = 'Component';
         logEntryEventBuilder.getLogEntryEvent().OriginLocation__c = originLocation;
         logEntryEventBuilder.getLogEntryEvent().StackTrace__c = truncateFieldValue(Schema.LogEntryEvent__e.StackTrace__c, stackTraceString);

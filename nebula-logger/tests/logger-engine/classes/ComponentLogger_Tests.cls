@@ -160,7 +160,7 @@ private class ComponentLogger_Tests {
 
     @IsTest
     static void it_should_parse_web_component_stack_trace() {
-        String expectedComponentType = 'Web';
+        String expectedComponentType = 'LWC';
         String expectedComponentApiName = 'c/loggerLWCDemo';
         String expectedComponentFunctionName = 'saveLogWebExample';
 

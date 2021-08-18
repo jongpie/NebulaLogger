@@ -8,7 +8,7 @@ layout: default
 
 ### [ComponentLogger](logger-engine/ComponentLogger)
 
-Controller classs used by the light web component `c/logger`
+Controller class used by the light web component `c/logger`
 
 ### [FlowCollectionLogEntry](logger-engine/FlowCollectionLogEntry)
 
