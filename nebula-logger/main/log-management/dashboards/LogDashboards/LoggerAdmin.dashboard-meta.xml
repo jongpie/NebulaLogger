@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
     <backgroundEndColor>#FFFFFF</backgroundEndColor>
     <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
@@ -8,6 +8,14 @@
     <dashboardChartTheme>dark</dashboardChartTheme>
     <dashboardColorPalette>unity</dashboardColorPalette>
     <dashboardFilters>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>TODAY</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>LAST_N_DAYS:3</values>
+        </dashboardFilterOptions>
         <dashboardFilterOptions>
             <operator>equals</operator>
             <values>LAST_N_DAYS:7</values>
@@ -22,19 +30,11 @@
         </dashboardFilterOptions>
         <dashboardFilterOptions>
             <operator>equals</operator>
-            <values>THIS_WEEK</values>
+            <values>LAST_N_DAYS:60</values>
         </dashboardFilterOptions>
         <dashboardFilterOptions>
             <operator>equals</operator>
-            <values>TODAY</values>
-        </dashboardFilterOptions>
-        <dashboardFilterOptions>
-            <operator>equals</operator>
-            <values>LAST_N_DAYS:3</values>
-        </dashboardFilterOptions>
-        <dashboardFilterOptions>
-            <operator>equals</operator>
-            <values>YESTERDAY</values>
+            <values>LAST_90_DAYS</values>
         </dashboardFilterOptions>
         <name>Log Entry: Timestamp</name>
     </dashboardFilters>
@@ -65,6 +65,21 @@
         </dashboardFilterOptions>
         <name>Log Entry: Logging Level</name>
     </dashboardFilters>
+    <dashboardFilters>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Apex</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Component</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Flow</values>
+        </dashboardFilterOptions>
+        <name>Origin Type</name>
+    </dashboardFilters>
     <dashboardGridLayout>
         <dashboardGridComponents>
             <colSpan>8</colSpan>
@@ -79,12 +94,15 @@
                 <dashboardFilterColumns>
                     <column>LogEntry__c.LoggingLevel__c</column>
                 </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.OriginType__c</column>
+                </dashboardFilterColumns>
                 <displayUnits>Auto</displayUnits>
                 <drillEnabled>false</drillEnabled>
                 <drillToDetailEnabled>false</drillToDetailEnabled>
                 <enableHover>false</enableHover>
                 <expandOthers>false</expandOthers>
-                <groupingSortProperties />
+                <groupingSortProperties/>
                 <header>Log Entry Daily Summary</header>
                 <report>LogReports/LogEntryDailySummary</report>
                 <showPercentage>false</showPercentage>
@@ -112,6 +130,9 @@
                 </dashboardFilterColumns>
                 <dashboardFilterColumns>
                     <column>FK_$LogEntry__c.LoggingLevel__c</column>
+                </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>FK_$LogEntry__c.OriginType__c</column>
                 </dashboardFilterColumns>
                 <decimalPrecision>-1</decimalPrecision>
                 <displayUnits>Auto</displayUnits>
@@ -142,8 +163,12 @@
             <colSpan>8</colSpan>
             <columnIndex>0</columnIndex>
             <dashboardComponent>
-                <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+                <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
                 <chartAxisRange>Auto</chartAxisRange>
+                <chartSummary>
+                    <axisBinding>y</axisBinding>
+                    <column>RowCount</column>
+                </chartSummary>
                 <componentType>Bar</componentType>
                 <dashboardFilterColumns>
                     <column>Log__c.StartTime__c</column>
@@ -151,22 +176,34 @@
                 <dashboardFilterColumns>
                     <column>LogEntry__c.LoggingLevel__c</column>
                 </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.OriginType__c</column>
+                </dashboardFilterColumns>
+                <decimalPrecision>-1</decimalPrecision>
                 <displayUnits>Auto</displayUnits>
                 <drillEnabled>false</drillEnabled>
                 <drillToDetailEnabled>false</drillToDetailEnabled>
                 <enableHover>false</enableHover>
                 <expandOthers>false</expandOthers>
-                <groupingSortProperties />
+                <groupingColumn>LogEntry__c.Origin__c</groupingColumn>
+                <groupingSortProperties>
+                    <groupingSorts>
+                        <groupingLevel>g1</groupingLevel>
+                        <sortColumn>RowCount</sortColumn>
+                        <sortOrder>d</sortOrder>
+                    </groupingSorts>
+                </groupingSortProperties>
                 <header>Log Entry Origin Summary</header>
+                <legendPosition>Bottom</legendPosition>
                 <report>LogReports/LogEntryOriginSummary</report>
                 <showPercentage>false</showPercentage>
                 <showPicturesOnCharts>false</showPicturesOnCharts>
-                <showValues>false</showValues>
+                <showValues>true</showValues>
                 <sortBy>RowLabelAscending</sortBy>
-                <useReportChart>true</useReportChart>
+                <useReportChart>false</useReportChart>
             </dashboardComponent>
             <rowIndex>9</rowIndex>
-            <rowSpan>9</rowSpan>
+            <rowSpan>12</rowSpan>
         </dashboardGridComponents>
         <dashboardGridComponents>
             <colSpan>4</colSpan>
@@ -180,7 +217,11 @@
                 <dashboardFilterColumns>
                     <column>LogEntry__c.LoggingLevel__c</column>
                 </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.OriginType__c</column>
+                </dashboardFilterColumns>
                 <flexComponentProperties>
+                    <decimalPrecision>-1</decimalPrecision>
                     <flexTableColumn>
                         <reportColumn>Log__c.LoggedByUsernameLink__c</reportColumn>
                         <showSubTotal>true</showSubTotal>
@@ -188,7 +229,7 @@
                         <type>grouping</type>
                     </flexTableColumn>
                     <flexTableColumn>
-                        <reportColumn>Log__c.UserLoggingLevel__c</reportColumn>
+                        <reportColumn>LogEntry__c.LoggingLevelWithImage__c</reportColumn>
                         <showSubTotal>true</showSubTotal>
                         <showTotal>true</showTotal>
                         <type>grouping</type>
@@ -212,20 +253,22 @@
                     </groupingSorts>
                     <groupingSorts>
                         <groupingLevel>g2</groupingLevel>
-                        <sortOrder>a</sortOrder>
+                        <sortColumn>RowCount</sortColumn>
+                        <sortOrder>d</sortOrder>
                     </groupingSorts>
                 </groupingSortProperties>
-                <header>Most Log Entries by User</header>
-                <report>LogReports/LogDetails</report>
+                <header>Log Entry Summary</header>
+                <report>LogReports/LogEntrySummary</report>
             </dashboardComponent>
             <rowIndex>9</rowIndex>
-            <rowSpan>9</rowSpan>
+            <rowSpan>12</rowSpan>
         </dashboardGridComponents>
         <numberOfColumns>12</numberOfColumns>
         <rowHeight>36</rowHeight>
     </dashboardGridLayout>
     <dashboardType>LoggedInUser</dashboardType>
     <isGridLayout>true</isGridLayout>
+    <runningUser>test-t8j76db3qzft@example.com</runningUser>
     <textColor>#000000</textColor>
     <title>Logger Admin Dashboard</title>
     <titleColor>#000000</titleColor>
