@@ -39,6 +39,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             when BEFORE_INSERT {
                 this.setCheckboxFields();
                 this.setApexClassFields();
+                this.setComponentFields();
                 this.setFlowDefinitionFields();
                 this.setFlowVersionFields();
                 this.setRecordNames();
@@ -119,6 +120,15 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             logEntry.ApexClassName__c = topLevelApexClassName;
             logEntry.ApexInnerClassName__c = innerApexClassName;
             logEntry.ApexMethodName__c = methodName;
+        }
+    }
+
+    private void setComponentFields() {
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.OriginType__c == 'Component' && String.isNotBlank(logEntry.OriginLocation__c)) {
+                logEntry.ComponentApiName__c = logEntry.OriginLocation__c.substringBefore('.');
+                logEntry.ComponentFunctionName__c = logEntry.OriginLocation__c.substringAfterLast('.');
+            }
         }
     }
 

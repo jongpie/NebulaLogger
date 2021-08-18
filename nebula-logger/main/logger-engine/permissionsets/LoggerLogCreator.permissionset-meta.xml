@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <classAccesses>
+        <apexClass>ComponentLogger</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>FlowCollectionLogEntry</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -24,7 +28,7 @@
         <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Provides access to generate log entries via Apex, Flow and Process Builder</description>
+    <description>Provides access to generate log entries via Apex, Lightning Components, Flow and Process Builder</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Logger: Log Creator</label>
     <objectPermissions>

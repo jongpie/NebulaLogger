@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#F47536</headerColor>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>An app to demo Logger&apos;s functionality</description>
+    <formFactors>Small</formFactors>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>Logger Recipes</label>
+    <navType>Standard</navType>
+    <tabs>Logger_lwc_demo</tabs>
+    <tabs>LoggerAuraDemo</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>Logger_Recipes_UtilityBar</utilityBar>
+</CustomApplication>

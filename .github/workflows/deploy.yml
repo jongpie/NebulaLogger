@@ -21,7 +21,7 @@ on:
             - './**/README.md'
             - 'sfdx-project.json'
     pull_request:
-        types: [opened, edited, synchronize, reopened]
+        types: [opened, synchronize, reopened]
         paths-ignore:
             - 'content/**'
             - 'docs/**'

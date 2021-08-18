@@ -300,6 +300,63 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.ComponentType__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ComponentApiName__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-dc259053-1bb7-4620-814d-e4f04eca75c2</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ComponentFunctionName__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <name>Facet-91b743b5-7408-4da0-9cf3-e3fbd695545d</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-dc259053-1bb7-4620-814d-e4f04eca75c2</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>body</name>
+                    <value>Facet-91b743b5-7408-4da0-9cf3-e3fbd695545d</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:column</componentName>
+            </componentInstance>
+        </itemInstances>
+        <name>Facet-6b39517d-52f9-42f2-bf33-d392592baaa4</name>
+        <type>Facet</type>
+    </flexiPageRegions>
+    <flexiPageRegions>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.FlowLabel__c</fieldItem>
             </fieldInstance>
         </itemInstances>
@@ -828,6 +885,26 @@
                         <leftValue>{!Record.OriginType__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Apex</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentInstanceProperties>
+                    <name>columns</name>
+                    <value>Facet-6b39517d-52f9-42f2-bf33-d392592baaa4</value>
+                </componentInstanceProperties>
+                <componentInstanceProperties>
+                    <name>label</name>
+                    <value>Lightning Component Information</value>
+                </componentInstanceProperties>
+                <componentName>flexipage:fieldSection</componentName>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.OriginType__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Component</rightValue>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

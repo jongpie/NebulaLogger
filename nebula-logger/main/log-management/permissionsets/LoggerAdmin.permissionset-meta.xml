@@ -5,6 +5,10 @@
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>ComponentLogger</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>FlowCollectionLogEntry</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -115,6 +119,21 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.ApexMethodName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ComponentApiName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ComponentFunctionName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.ComponentType__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

@@ -63,6 +63,26 @@ Boolean
 
 The `Boolean` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
 
+#### `getBooleanList(String parameterDeveloperName)` → `List<Boolean>`
+
+Returns the configured value of the field `Value__c` as a `List<Boolean>`
+
+##### Parameters
+
+| Param                    | Description                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| `parameterDeveloperName` | The developer name of the instance of `LoggerSObjectHandlerPluginParameter_t` |
+
+##### Return
+
+**Type**
+
+List<Boolean>
+
+**Description**
+
+The `List<Boolean>` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
+
 #### `getBooleanList(String parameterDeveloperName, List<Boolean> defaultValue)` → `List<Boolean>`
 
 Returns the configured value of the field `Value__c` as a `List<Boolean>`
@@ -84,27 +104,7 @@ List<Boolean>
 
 The `List<Boolean>` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
 
-#### `getBooleanList(String parameterDeveloperName)` → `List<Boolean>`
-
-Returns the configured value of the field `Value__c` as a `List<Boolean>`
-
-##### Parameters
-
-| Param                    | Description                                                                   |
-| ------------------------ | ----------------------------------------------------------------------------- |
-| `parameterDeveloperName` | The developer name of the instance of `LoggerSObjectHandlerPluginParameter_t` |
-
-##### Return
-
-**Type**
-
-List<Boolean>
-
-**Description**
-
-The `List<Boolean>` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
-
-#### `getDate(String parameterDeveloperName, Date defaultValue)` → `Date`
+#### `getDate(String parameterDeveloperName)` → `Date`
 
 Returns the configured value of the field `Value__c` as a `Date`
 
@@ -113,7 +113,6 @@ Returns the configured value of the field `Value__c` as a `Date`
 | Param                    | Description                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------- |
 | `parameterDeveloperName` | The developer name of the instance of `LoggerSObjectHandlerPluginParameter_t` |
-| `defaultValue`           | A default value to return instead of null                                     |
 
 ##### Return
 
@@ -125,7 +124,7 @@ Date
 
 The `Date` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
 
-#### `getDate(String parameterDeveloperName)` → `Date`
+#### `getDate(String parameterDeveloperName, Date defaultValue)` → `Date`
 
 Returns the configured value of the field `Value__c` as a `Date`
 
@@ -134,6 +133,7 @@ Returns the configured value of the field `Value__c` as a `Date`
 | Param                    | Description                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------- |
 | `parameterDeveloperName` | The developer name of the instance of `LoggerSObjectHandlerPluginParameter_t` |
+| `defaultValue`           | A default value to return instead of null                                     |
 
 ##### Return
 
@@ -227,6 +227,26 @@ Datetime
 
 The `Datetime` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
 
+#### `getDatetimeList(String parameterDeveloperName)` → `List<Datetime>`
+
+Returns the configured value of the field `Value__c` as a `List<Datetime>`
+
+##### Parameters
+
+| Param                    | Description                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------- |
+| `parameterDeveloperName` | The developer name of the instance of `LoggerSObjectHandlerPluginParameter_t` |
+
+##### Return
+
+**Type**
+
+List<Datetime>
+
+**Description**
+
+The `List<Datetime>` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
+
 #### `getDatetimeList(String parameterDeveloperName, List<Datetime> defaultValue)` → `List<Datetime>`
 
 Returns the configured value of the field `Value__c` as a `List<Datetime>`
@@ -248,27 +268,7 @@ List<Datetime>
 
 The `List<Datetime>` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
 
-#### `getDatetimeList(String parameterDeveloperName)` → `List<Datetime>`
-
-Returns the configured value of the field `Value__c` as a `List<Datetime>`
-
-##### Parameters
-
-| Param                    | Description                                                                   |
-| ------------------------ | ----------------------------------------------------------------------------- |
-| `parameterDeveloperName` | The developer name of the instance of `LoggerSObjectHandlerPluginParameter_t` |
-
-##### Return
-
-**Type**
-
-List<Datetime>
-
-**Description**
-
-The `List<Datetime>` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
-
-#### `getDecimal(String parameterDeveloperName, Decimal defaultValue)` → `Decimal`
+#### `getDecimal(String parameterDeveloperName)` → `Decimal`
 
 Returns the configured value of the field `Value__c` as a `Decimal`
 
@@ -277,7 +277,6 @@ Returns the configured value of the field `Value__c` as a `Decimal`
 | Param                    | Description                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------- |
 | `parameterDeveloperName` | The developer name of the instance of `LoggerSObjectHandlerPluginParameter_t` |
-| `defaultValue`           | A default value to return instead of null                                     |
 
 ##### Return
 
@@ -289,7 +288,7 @@ Decimal
 
 The `Decimal` value configured in the matching instance of either `LoggerSObjectHandlerParameter_t` (for LoggerParameter.Handler)
 
-#### `getDecimal(String parameterDeveloperName)` → `Decimal`
+#### `getDecimal(String parameterDeveloperName, Decimal defaultValue)` → `Decimal`
 
 Returns the configured value of the field `Value__c` as a `Decimal`
 
@@ -298,6 +297,7 @@ Returns the configured value of the field `Value__c` as a `Decimal`
 | Param                    | Description                                                                   |
 | ------------------------ | ----------------------------------------------------------------------------- |
 | `parameterDeveloperName` | The developer name of the instance of `LoggerSObjectHandlerPluginParameter_t` |
+| `defaultValue`           | A default value to return instead of null                                     |
 
 ##### Return
 

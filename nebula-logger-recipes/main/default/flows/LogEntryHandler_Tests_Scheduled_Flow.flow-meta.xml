@@ -13,12 +13,6 @@
         </dataTypeMappings>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
-            <name>flowInterviewGuid</name>
-            <value>
-                <elementReference>$Flow.InterviewGuid</elementReference>
-            </value>
-        </inputParameters>
-        <inputParameters>
             <name>loggingLevelName</name>
             <value>
                 <stringValue>INFO</stringValue>

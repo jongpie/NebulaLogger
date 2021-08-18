@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AllComponentLogEntries</fullName>
+    <columns>NAME</columns>
+    <columns>Log__c</columns>
+    <columns>LoggingLevelWithImage__c</columns>
+    <columns>LoggedByUsernameLink__c</columns>
+    <columns>Message__c</columns>
+    <columns>ComponentType__c</columns>
+    <columns>ComponentApiName__c</columns>
+    <columns>ComponentFunctionName__c</columns>
+    <columns>Timestamp__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>OriginType__c</field>
+        <operation>equals</operation>
+        <value>Component</value>
+    </filters>
+    <label>All Component Log Entries</label>
+</ListView>

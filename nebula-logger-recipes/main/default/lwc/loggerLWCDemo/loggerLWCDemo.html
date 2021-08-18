@@ -1,0 +1,30 @@
+<!--
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+-->
+
+<template>
+    <c-logger></c-logger>
+
+    <lightning-card title="Nebula Logger for Lightning Components" icon-name="custom:custom19">
+        <div class="slds-var-m-around_medium">
+            <lightning-input label="Example Log Message" value={message} onchange={messageChange}></lightning-input>
+            <lightning-input label="Comma-Separated Tags" value={tagsString} onchange={tagsStringChange}></lightning-input>
+            <div class="slds-button-group" role="group">
+                <lightning-button label="Log ERROR" onclick={logErrorExample}></lightning-button>
+                <lightning-button label="Log WARN" onclick={logWarnExample}></lightning-button>
+                <lightning-button label="Log INFO" onclick={logInfoExample}></lightning-button>
+                <lightning-button label="Log DEBUG" onclick={logDebugExample}></lightning-button>
+            </div>
+            <br />
+            <div class="slds-button-group" role="group">
+                <lightning-button label="Log FINE" onclick={logFineExample}></lightning-button>
+                <lightning-button label="Log FINER" onclick={logFinerExample}></lightning-button>
+                <lightning-button label="Log FINER" onclick={logFinerExample}></lightning-button>
+                <lightning-button label="Save Log" variant="brand" onclick={saveLogExample}></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

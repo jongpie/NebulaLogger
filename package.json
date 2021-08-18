@@ -1,11 +1,11 @@
 {
     "name": "nebula-logger",
-    "version": "4.6.3",
+    "version": "4.6.4",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "scripts": {
         "deploy": "npm run deploy:logger && npm run deploy:managedpackage && npm run deploy:extratests",
         "deploy:logger": "sfdx force:source:deploy --sourcepath ./nebula-logger/",
-        "deploy:extratests": "sfdx force:source:deploy --sourcepath ./extra-tests/",
+        "deploy:extratests": "sfdx force:source:deploy --sourcepath ./nebula-logger-recipes/",
         "deploy:managedpackage": "sfdx force:source:deploy --sourcepath ./managed-package/managed-package-metadata",
         "devhub:details": "pwsh ./scripts/get-devhub-org-details.ps1",
         "devhub:limits": "pwsh ./scripts/get-devhub-org-limits.ps1",

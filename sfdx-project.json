@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.3.0",
-            "versionName": "More metadata data",
-            "versionDescription": "Added several new LogEntry__c fields to track details about Apex classes and Flows",
+            "versionNumber": "4.6.4.0",
+            "versionName": "Logger for lwc and aura",
+            "versionDescription": "Re-introduced a lightning component for frontend logging",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
@@ -27,7 +27,7 @@
             "default": false
         },
         {
-            "path": "extra-tests",
+            "path": "nebula-logger-recipes",
             "default": true
         }
     ],
@@ -46,6 +46,7 @@
         "Nebula Logger - Unlocked Package@4.6.1-0-summer-21-upgrade": "04t5Y0000015kfMQAQ",
         "Nebula Logger - Unlocked Package@4.6.2-0-anonymous-logs": "04t5Y0000015kgPQAQ",
         "Nebula Logger - Unlocked Package@4.6.3-0-more-metadata-data": "04t5Y0000015kgeQAA",
+        "Nebula Logger - Unlocked Package@4.6.4-0-logger-for-lwc-and-aura": "04t5Y0000015kgjQAA",
         "Nebula Logger Plugin - Slack": "0Ho5e000000oM3pCAE",
         "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ",
         "Nebula Logger Plugin - Slack@0.9.1-0-beta-release-round-2": "04t5e00000065xiAAA"

@@ -3,9 +3,9 @@
 [![Deployment](https://github.com/jongpie/NebulaLogger/actions/workflows/deploy.yml/badge.svg)](https://github.com/jongpie/NebulaLogger/actions/workflows/deploy.yml)
 [![codecov](https://codecov.io/gh/jongpie/NebulaLogger/branch/main/graph/badge.svg?token=1DJPDRM3N4)](https://codecov.io/gh/jongpie/NebulaLogger)
 
-Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.
+Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kgeQAA)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kgjQAA)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
@@ -13,13 +13,13 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Features
 
-1. Easily add log entries via Apex, Flow & Process Builder to generate 1 consolidate log
+1. Easily add log entries via Apex, Lightning Components (lwc & aura), Flow & Process Builder to generate 1 consolidate log
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
 5. View related log entries on any Lighting SObject flexipage by adding the 'Related Log Entries' component in App Builder
-6. Dynamically assign Topics to `Log__c` and `LogEntry__c` records for tagging/labeling your logs (not currently available in the managed package)
-7. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow
+6. Dynamically assign tags to `Log__c` and `LogEntry__c` records for tagging/labeling your logs
+7. Plugin framework: easily build or install plugins that enhance the `Log__c` and `LogEntry__c` objects, using Apex or Flow (not currently available in the managed package)
 8. Event-Driven Integrations with [Platform Events](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_intro.htm), an event-driven messaging architecture. External integrations can subscribe to log events using the `LogEntryEvent__e` object - see more details at [the Platform Events Developer Guide site](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_subscribe_cometd.htm)
 
 Learn more about the design and history of the project on [Joys Of Apex blog post](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
@@ -118,6 +118,40 @@ This results in 1 `Log__c` record with several related `LogEntry__c` records.
 
 ---
 
+### Logger for Lightning Components: Quick Start
+
+For lightning component developers, the `logger` lwc provides very similar functionality that is offered in Apex. Simply embed the `logger` lwc in your component, and call the desired logging methods within your code.
+
+```javascript
+// For lwc, retrieve logger from your component's template
+const logger = this.template.querySelector('c-logger');
+
+logger.error('Hello, world!').addTag('some important tag');
+logger.warn('Hello, world!');
+logger.info('Hello, world!');
+logger.debug('Hello, world!');
+logger.fine('Hello, world!');
+logger.finer('Hello, world!');
+logger.finest('Hello, world!');
+logger.saveLog();
+```
+
+```javascript
+// For aura, retrieve logger from your component's markup
+const logger = component.find('logger');
+
+logger.error('Hello, world!').addTag('some important tag');
+logger.warn('Hello, world!');
+logger.info('Hello, world!');
+logger.debug('Hello, world!');
+logger.fine('Hello, world!');
+logger.finer('Hello, world!');
+logger.finest('Hello, world!');
+logger.saveLog();
+```
+
+---
+
 ### Logger for Flow & Process Builder: Quick Start
 
 Within Flow & Process Builder, you can select 1 of the several Logging actions
@@ -134,7 +168,7 @@ This results in a `Log__c` record with related `LogEntry__c` records.
 
 ---
 
-### All Together: Apex & Flow in One Log
+### All Together: Apex, Lightning Components & Flow in One Log
 
 After incorporating Logger into your Flows & Apex code (including controllers, trigger framework, etc.), you'll have a unified transaction log of all your declarative & custom code automations.
 
@@ -204,7 +238,7 @@ public with sharing class BatchableLoggerExample implements Database.Batchable<S
         Logger.setParentLogTransactionId(this.originalTransactionId);
 
         for (Account account : scope) {
-            // TODO add your batch job's logic
+            // Add your batch job's logic here
 
             // Then log the result
             Logger.info('Processed an account record', account);
@@ -255,7 +289,7 @@ public with sharing class QueueableLoggerExample implements Queueable {
         Logger.info('this.numberOfJobsToChain==' + this.numberOfJobsToChain);
         Logger.info('this.parentLogTransactionId==' + this.parentLogTransactionId);
 
-        // TODO add your queueable job's logic
+        // Add your queueable job's logic here
 
         Logger.saveLog();
 
@@ -327,6 +361,86 @@ The class `LogMessage` provides the ability to generate string messages on deman
     ```
 
 For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
+
+---
+
+## Features for Lightning Component Developers
+
+For lightning component developers, the included `logger` lwc can be used in other lwc & aura components for frontend logging. Similar to `Logger` and `LogEntryBuilder` Apex classes, the lwc has both `logger` and `logEntryBuilder` classes. This provides a fluent API for javascript developers so they can chain the method calls.
+
+Once you've incorporated `logger` into your lightning components, you can see your `LogEntry__c` records using the included list view "All Component Log Entries'.
+
+![Component Log Entries List View](./content/component-entries-list-view.png)
+
+Each `LogEntry__c` record automatically stores the component's type ('Aura' or 'LWC'), the component name, and the component function that called `logger`. This information is shown in the section "Lightning Component Information"
+
+![Component Log Entry Record](./content/component-entry-record-detail.png)
+
+#### Example LWC Usage
+
+To use the logger component, it has to be added to your lwc's markup:
+
+```html
+<template>
+    <c-logger></c-logger>
+
+    <div>My component</div>
+</template>
+```
+
+Once you've added logger to your markup, you can call it in your lwc's controller:
+
+```javascript
+import { LightningElement } from 'lwc';
+
+export default class LoggerDemo extends LightningElement {
+    logSomeStuff() {
+        const logger = this.template.querySelector('c-logger');
+
+        logger.error('Hello, world!').addTag('some important tag');
+        logger.warn('Hello, world!');
+        logger.info('Hello, world!');
+        logger.debug('Hello, world!');
+        logger.fine('Hello, world!');
+        logger.finer('Hello, world!');
+        logger.finest('Hello, world!');
+
+        logger.saveLog();
+    }
+}
+```
+
+#### Example Aura Usage
+
+To use the logger component, it has to be added to your aura component's markup:
+
+```html
+<aura:component implements="force:appHostable">
+    <c:logger aura:id="logger" />
+
+    <div>My component</div>
+</aura:component>
+```
+
+Once you've added logger to your markup, you can call it in your aura component's controller:
+
+```javascript
+({
+    logSomeStuff: function (component, event, helper) {
+        const logger = component.find('logger');
+
+        logger.error('Hello, world!').addTag('some important tag');
+        logger.warn('Hello, world!');
+        logger.info('Hello, world!');
+        logger.debug('Hello, world!');
+        logger.fine('Hello, world!');
+        logger.finer('Hello, world!');
+        logger.finest('Hello, world!');
+
+        logger.saveLog();
+    }
+});
+```
 
 ---
 
@@ -485,7 +599,7 @@ Everyone loves JSON - so to make it easy to see a JSON version of a `Log__c` rec
 
 ### View Related Log Entries on a Record Page
 
-Within App Builder, admins can add the 'Related Log Entries' lightning web component to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
+Within App Builder, admins can add the 'Related Log Entries' lightning web component (lwc) to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
 
 -   The component automatically shows any related log entries, based on `LogEntry__c.RecordId__c == :recordId`
 -   Users can search the list of log entries for a particular record using the component's built-insearch box. The component dynamically searches all related log entries using SOSL.
