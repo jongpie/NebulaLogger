@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CustomConditionLogicNotApplicable</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+  NOT(ISPICKVAL(ConditionLogicType__c, &apos;Custom&apos;)),
+  NOT(ISBLANK(CustomConditionLogic__c))
+)</errorConditionFormula>
+    <errorDisplayField>CustomConditionLogic__c</errorDisplayField>
+    <errorMessage>Custom Condition Logic can only be populated when Condition Logic = &apos;Custom&apos;</errorMessage>
+</ValidationRule>
