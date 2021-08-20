@@ -3,106 +3,20 @@
  * See LICENSE file or go to https://github.com/jongpie/RecordValidationRules for full license details. *
  *******************************************************************************************************/
 
-@isTest
+@IsTest
 private class FilteredEventLoggerPlugin_Tests {
-    /* static LogEntryEventFilter__mdt createMockRule() {
-        return new LogEntryEventFilter__mdt(
-            ConditionLogicType__c = 'AND',
-            CustomConditionLogic__c = null,
-            ErrorMessage__c = 'Whoops, an error occurred',
-            IsActive__c = true
-        );
-    }
-
-    static LogEntryEventFilterCondition__mdt createMockRuleCondition(String fieldPath, String operator, String valueType, Object value) {
-        String valueString = value instanceof String ? (String) value : JSON.serialize(value);
-        return new LogEntryEventFilterCondition__mdt(
-            FieldPath__c = fieldPath,
-            Operator__c = operator,
-            SortOrder__c = null,
-            Value__c = valueString,
-            ValueType__c = valueType
-        );
-    }
 
     // Simpler tests - each test is for 1 field with a different data type
-    @isTest
-    static void validateForRuleWithBooleanFieldAndAllOperators() {
-        String fieldPath = Schema.User.IsActive.getDescribe().getName();
-        Boolean fieldValue = true;
-        User record = new User();
-        record.put(fieldPath, fieldValue);
-
-        Map<String, Boolean> operatorToValue = new Map<String, Boolean>{ 'EQUAL_TO' => true, 'NOT_EQUAL_TO' => false };
-        for (String operator : operatorToValue.keySet()) {
-            Boolean value = operatorToValue.get(operator);
-
-            LogEntryEventFilter__mdt rule = createMockRule();
-            LogEntryEventFilterCondition__mdt condition = createMockRuleCondition(fieldPath, operator, 'Value', value);
-            List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{ condition };
-
-            RecordValidator validator = new RecordValidator(record).setRule(rule, conditions);
-            List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-            System.assertEquals(1, results.size(), 'Expected 1 validation rule result: ' + results);
-
-            RecordValidator.ValidationRuleResult result = results.get(0);
-            System.assertEquals(true, result.hasError, result);
-            System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-            try {
-                validator.validate();
-                System.assert(false, 'Exception expected on line above');
-            } catch (RecordValidator.RecordValidatorException ex) {
-                System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-            }
-        }
-    }
-
-    @isTest
-    static void validateForRuleWithDateFieldAndAllOperators() {
-        String fieldPath = Schema.Opportunity.CloseDate.getDescribe().getName();
-        Date fieldValue = System.today();
-        Opportunity record = new Opportunity(CloseDate = fieldValue);
-
-        Map<String, Date> operatorToValue = new Map<String, Date>{
-            'EQUAL_TO' => fieldValue,
-            'NOT_EQUAL_TO' => fieldValue.addDays(10),
-            'LESS_THAN' => fieldValue.addDays(10),
-            'LESS_THAN_OR_EQUAL_TO' => fieldValue.addDays(10),
-            'GREATER_THAN' => fieldValue.addDays(-10),
-            'GREATER_THAN_OR_EQUAL_TO' => fieldValue.addDays(-10)
-        };
-        for (String operator : operatorToValue.keySet()) {
-            Date value = operatorToValue.get(operator);
-
-            LogEntryEventFilter__mdt rule = createMockRule();
-            LogEntryEventFilterCondition__mdt condition = createMockRuleCondition(fieldPath, operator, 'Value', value);
-            List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{ condition };
-
-            RecordValidator validator = new RecordValidator(record).setRule(rule, conditions);
-            List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-            System.assertEquals(1, results.size(), 'Expected 1 validation rule result: ' + results);
-
-            RecordValidator.ValidationRuleResult result = results.get(0);
-            System.assertEquals(true, result.hasError, result);
-            System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-            try {
-                validator.validate();
-                System.assert(false, 'Exception expected on line above');
-            } catch (RecordValidator.RecordValidatorException ex) {
-                System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-            }
-        }
-    }
-
-    @isTest
-    static void validateForRuleWithDatetimeFieldAndAllOperators() {
-        String fieldPath = Schema.Event.ActivityDatetime.getDescribe().getName();
+    @IsTest
+    static void filterDatetimeFieldAndAllOperators() {
+        String fieldPath = Schema.LogEntryEvent__e.Timestamp__c.getDescribe().getName();
         Datetime fieldValue = System.now().addDays(-3);
-        Event record = new Event();
-        record.put(fieldPath, fieldValue);
+        LogEntryEvent__e matchingEvent = getTestLogEntryEvent();
+        matchingEvent.put(fieldPath, fieldValue);
 
+        Integer expectedPublishImmediateDml = 0;
+        LogEntryEventFilter__mdt filter = createMockFilter();
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ matchingEvent };
         Map<String, Datetime> operatorToValue = new Map<String, Datetime>{
             'EQUAL_TO' => fieldValue,
             'NOT_EQUAL_TO' => fieldValue.addDays(10),
@@ -114,34 +28,32 @@ private class FilteredEventLoggerPlugin_Tests {
         for (String operator : operatorToValue.keySet()) {
             Datetime value = operatorToValue.get(operator);
 
-            LogEntryEventFilter__mdt rule = createMockRule();
-            LogEntryEventFilterCondition__mdt condition = createMockRuleCondition(fieldPath, operator, 'Value', value);
+            LogEntryEventFilterCondition__mdt condition = createMockFilterCondition(fieldPath, operator, 'Value', value);
             List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{ condition };
 
-            RecordValidator validator = new RecordValidator(record).setRule(rule, conditions);
-            List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-            System.assertEquals(1, results.size(), 'Expected 1 validation rule result: ' + results);
+            FilteredEventLoggerPlugin plugin = new FilteredEventLoggerPlugin();
+            plugin.filtersByDeveloperName.put(filter.DeveloperName, filter);
+            plugin.conditionsByFilterDeveloperName.put(filter.DeveloperName, conditions);
 
-            RecordValidator.ValidationRuleResult result = results.get(0);
-            System.assertEquals(true, result.hasError, result);
-            System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-            try {
-                validator.validate();
-                System.assert(false, 'Exception expected on line above');
-            } catch (RecordValidator.RecordValidatorException ex) {
-                System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-            }
+            System.assertEquals(expectedPublishImmediateDml, Limits.getPublishImmediateDml());
+            plugin.execute(TriggerOperation.AFTER_INSERT, logEntryEvents, null, null, null);
+            expectedPublishImmediateDml++;
+            List<FilteredLogEntryEvent__e> results = plugin.filteredLogEntryEvents;
+            System.assertEquals(1, results.size(), 'Expected 1 filtered log entry event: ' + results);
+            System.assertEquals(expectedPublishImmediateDml, Limits.getPublishImmediateDml());
         }
     }
 
-    @isTest
-    static void validateForRuleWithDecimalFieldAndAllOperators() {
-        String fieldPath = Schema.Account.AnnualRevenue.getDescribe().getName();
-        Decimal fieldValue = 123000.9876;
-        Account record = new Account();
-        record.put(fieldPath, fieldValue);
+    @IsTest
+    static void filterWithDecimalFieldAndAllOperators() {
+        String fieldPath = Schema.LogEntryEvent__e.LimitsCpuTimeUsed__c.getDescribe().getName();
+        Decimal fieldValue = 12345;
+        LogEntryEvent__e matchingEvent = getTestLogEntryEvent();
+        matchingEvent.put(fieldPath, fieldValue);
 
+        Integer expectedPublishImmediateDml = 0;
+        LogEntryEventFilter__mdt filter = createMockFilter();
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ matchingEvent };
         Map<String, Decimal> operatorToValue = new Map<String, Decimal>{
             'EQUAL_TO' => fieldValue,
             'NOT_EQUAL_TO' => fieldValue + 10.99,
@@ -153,34 +65,32 @@ private class FilteredEventLoggerPlugin_Tests {
         for (String operator : operatorToValue.keySet()) {
             Decimal value = operatorToValue.get(operator);
 
-            LogEntryEventFilter__mdt rule = createMockRule();
-            LogEntryEventFilterCondition__mdt condition = createMockRuleCondition(fieldPath, operator, 'Value', value);
+            LogEntryEventFilterCondition__mdt condition = createMockFilterCondition(fieldPath, operator, 'Value', value);
             List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{ condition };
 
-            RecordValidator validator = new RecordValidator(record).setRule(rule, conditions);
-            List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-            System.assertEquals(1, results.size(), 'Expected 1 validation rule result: ' + results);
+            FilteredEventLoggerPlugin plugin = new FilteredEventLoggerPlugin();
+            plugin.filtersByDeveloperName.put(filter.DeveloperName, filter);
+            plugin.conditionsByFilterDeveloperName.put(filter.DeveloperName, conditions);
 
-            RecordValidator.ValidationRuleResult result = results.get(0);
-            System.assertEquals(true, result.hasError, result);
-            System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-            try {
-                validator.validate();
-                System.assert(false, 'Exception expected on line above');
-            } catch (RecordValidator.RecordValidatorException ex) {
-                System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-            }
+            System.assertEquals(expectedPublishImmediateDml, Limits.getPublishImmediateDml());
+            plugin.execute(TriggerOperation.AFTER_INSERT, logEntryEvents, null, null, null);
+            expectedPublishImmediateDml++;
+            List<FilteredLogEntryEvent__e> results = plugin.filteredLogEntryEvents;
+            System.assertEquals(1, results.size(), 'Expected 1 filtered log entry event: ' + results);
+            System.assertEquals(expectedPublishImmediateDml, Limits.getPublishImmediateDml());
         }
     }
 
-    @isTest
-    static void validateForRuleWithStringFieldAndAllOperators() {
-        String fieldPath = Schema.Account.Name.getDescribe().getName();
-        String fieldValue = 'Some account';
-        Account record = new Account();
-        record.put(fieldPath, fieldValue);
+    @IsTest
+    static void filterWithStringFieldAndAllOperators() {
+        String fieldPath = Schema.LogEntryEvent__e.Message__c.getDescribe().getName();
+        String fieldValue = 'Some message! Hello!';
+        LogEntryEvent__e matchingEvent = getTestLogEntryEvent();
+        matchingEvent.put(fieldPath, fieldValue);
 
+        Integer expectedPublishImmediateDml = 0;
+        LogEntryEventFilter__mdt filter = createMockFilter();
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ matchingEvent };
         Map<String, String> operatorToValue = new Map<String, String>{
             'EQUAL_TO' => fieldValue,
             'NOT_EQUAL_TO' => 'something else',
@@ -191,210 +101,165 @@ private class FilteredEventLoggerPlugin_Tests {
         for (String operator : operatorToValue.keySet()) {
             String value = operatorToValue.get(operator);
 
-            LogEntryEventFilter__mdt rule = createMockRule();
-            LogEntryEventFilterCondition__mdt condition = createMockRuleCondition(fieldPath, operator, 'Value', value);
+            LogEntryEventFilterCondition__mdt condition = createMockFilterCondition(fieldPath, operator, 'Value', value);
             List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{ condition };
 
-            RecordValidator validator = new RecordValidator(record).setRule(rule, conditions);
-            List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-            System.assertEquals(1, results.size(), 'Expected 1 validation rule result: ' + results);
+            FilteredEventLoggerPlugin plugin = new FilteredEventLoggerPlugin();
+            plugin.filtersByDeveloperName.put(filter.DeveloperName, filter);
+            plugin.conditionsByFilterDeveloperName.put(filter.DeveloperName, conditions);
 
-            RecordValidator.ValidationRuleResult result = results.get(0);
-            System.assertEquals(true, result.hasError, result);
-            System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-            try {
-                validator.validate();
-                System.assert(false, 'Exception expected on line above');
-            } catch (RecordValidator.RecordValidatorException ex) {
-                System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-            }
-        }
-    }
-
-    @isTest
-    static void validateForRuleWithTimeFieldAndAllOperators() {
-        String fieldPath = Schema.ContactPointAddress.BestTimeToContactStartTime.getDescribe().getName();
-        Time fieldValue = Time.newInstance(9, 0, 0, 0);
-        ContactPointAddress record = new ContactPointAddress();
-        record.put(fieldPath, fieldValue);
-
-        Map<String, Time> operatorToValue = new Map<String, Time>{
-            'EQUAL_TO' => fieldValue,
-            'NOT_EQUAL_TO' => Time.newInstance(0, 0, 1, 0),
-            'LESS_THAN' => Time.newInstance(23, 0, 0, 0),
-            'LESS_THAN_OR_EQUAL_TO' => Time.newInstance(23, 0, 0, 0),
-            'GREATER_THAN' => Time.newInstance(0, 0, 0, 10),
-            'GREATER_THAN_OR_EQUAL_TO' => Time.newInstance(0, 0, 0, 10)
-        };
-        for (String operator : operatorToValue.keySet()) {
-            Time value = operatorToValue.get(operator);
-
-            LogEntryEventFilter__mdt rule = createMockRule();
-            LogEntryEventFilterCondition__mdt condition = createMockRuleCondition(fieldPath, operator, 'Value', value);
-            List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{ condition };
-
-            RecordValidator validator = new RecordValidator(record).setRule(rule, conditions);
-            List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-            System.assertEquals(1, results.size(), 'Expected 1 validation rule result: ' + results);
-
-            RecordValidator.ValidationRuleResult result = results.get(0);
-            System.assertEquals(true, result.hasError, result);
-            System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-            try {
-                validator.validate();
-                System.assert(false, 'Exception expected on line above');
-            } catch (RecordValidator.RecordValidatorException ex) {
-                System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-            }
+            System.assertEquals(expectedPublishImmediateDml, Limits.getPublishImmediateDml());
+            plugin.execute(TriggerOperation.AFTER_INSERT, logEntryEvents, null, null, null);
+            expectedPublishImmediateDml++;
+            List<FilteredLogEntryEvent__e> results = plugin.filteredLogEntryEvents;
+            System.assertEquals(1, results.size(), 'Expected 1 filtered log entry event: ' + results);
+            System.assertEquals(expectedPublishImmediateDml, Limits.getPublishImmediateDml());
         }
     }
 
     // More complex tests
-    @isTest
-    static void validateForRuleWithOneBooleanFieldPathCondition() {
-        Boolean managerIsActive = false;
-        User manager = new User(IsActive = managerIsActive);
-        User user = new User(Id = UserInfo.getUserId(), Manager = manager);
+    @IsTest
+    static void filterWithOneRegexFieldCondition() {
+        String matchingMessage = '123';
+        String nonMatchingMessage = 'something';
+        LogEntryEvent__e matchingEvent = getTestLogEntryEvent();
+        matchingEvent.Message__c = matchingMessage;
 
-        LogEntryEventFilter__mdt rule = createMockRule();
-        LogEntryEventFilterCondition__mdt condition = createMockRuleCondition('Manager.IsActive', 'EQUAL_TO', 'Value', managerIsActive);
+        LogEntryEvent__e nonMatchingEvent = getTestLogEntryEvent();
+        nonMatchingEvent.Message__c = nonMatchingMessage;
+
+        LogEntryEventFilter__mdt filter = createMockFilter();
+        LogEntryEventFilterCondition__mdt condition = createMockFilterCondition('Message__c', '^[0-9]+$', 'RegEx', matchingMessage);
         List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{ condition };
 
-        RecordValidator validator = new RecordValidator(user).setRule(rule, conditions);
-        List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-        System.assertEquals(1, results.size(), 'Expected 1 validation rule result');
-
-        RecordValidator.ValidationRuleResult result = results.get(0);
-        System.assertEquals(true, result.hasError, result);
-        System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-        try {
-            validator.validate();
-            System.assert(false, 'Exception expected on line above');
-        } catch (RecordValidator.RecordValidatorException ex) {
-            System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-        }
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ matchingEvent, nonMatchingEvent };
+        FilteredEventLoggerPlugin plugin = createAndTestPlugin(logEntryEvents, 1, filter, conditions);
+        FilteredLogEntryEvent__e filteredEvent = plugin.filteredLogEntryEvents.get(0);
+        System.assertEquals(matchingEvent.Message__c, filteredEvent.Message__c);
+        System.assertNotEquals(nonMatchingEvent.Message__c, filteredEvent.Message__c);
     }
 
-    @isTest
-    static void validateForRuleWithOneRegexFieldCondition() {
-        String accountName = '123';
-        Account account = new Account(Name = 'Test account');
-        account.Name = accountName;
+    @IsTest
+    static void filterWithAndConditions() {
+        String message = 'Some message';
+        String matchingTag = '### An example tag to use for a CMDT filter condition';
+        LogEntryEvent__e matchingEvent = getTestLogEntryEvent();
+        matchingEvent.Message__c = message;
+        matchingEvent.Tags__c = matchingEvent.Tags__c + '\n' + matchingTag;
 
-        LogEntryEventFilter__mdt rule = createMockRule();
-        LogEntryEventFilterCondition__mdt condition = createMockRuleCondition('Name', '^[0-9]+$', 'RegEx', accountName);
-        List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{ condition };
+        LogEntryEvent__e nonMatchingEvent = getTestLogEntryEvent();
+        nonMatchingEvent.Message__c = message;
+        System.assert(nonMatchingEvent.Tags__c.contains(matchingTag) == false, 'The non-matching event should not have the matching tag');
 
-        RecordValidator validator = new RecordValidator(account).setRule(rule, conditions);
-        List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-        System.assertEquals(1, results.size(), 'Expected 1 validation rule result');
-
-        RecordValidator.ValidationRuleResult result = results.get(0);
-        System.assertEquals(true, result.hasError, result);
-        System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-        try {
-            validator.validate();
-            System.assert(false, 'Exception expected on line above');
-        } catch (RecordValidator.RecordValidatorException ex) {
-            System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-        }
-    }
-
-    @isTest
-    static void validateForRuleWithAndConditions() {
-        String accountName = 'Some account';
-        Integer accountAnnualRevenue = 123000;
-        Account account = new Account(Name = 'Test account');
-        account.Name = accountName;
-        account.AnnualRevenue = accountAnnualRevenue;
-
-        LogEntryEventFilter__mdt rule = createMockRule();
+        LogEntryEventFilter__mdt filter = createMockFilter();
         List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{
-            createMockRuleCondition('Name', 'EQUAL_TO', 'Value', accountName),
-            createMockRuleCondition('AnnualRevenue', 'GREATER_THAN_OR_EQUAL_TO', 'Value', accountAnnualRevenue)
+            createMockFilterCondition('Message__c', 'EQUAL_TO', 'Value', message),
+            createMockFilterCondition('Tags__c', 'CONTAINS', 'Value', matchingTag)
         };
 
-        RecordValidator validator = new RecordValidator(account).setRule(rule, conditions);
-        List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-        System.assertEquals(1, results.size(), 'Expected 1 validation rule result');
-
-        RecordValidator.ValidationRuleResult result = results.get(0);
-        System.assertEquals(true, result.hasError, result);
-        System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-        try {
-            validator.validate();
-            System.assert(false, 'Exception expected on line above');
-        } catch (RecordValidator.RecordValidatorException ex) {
-            System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-        }
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ matchingEvent, nonMatchingEvent };
+        FilteredEventLoggerPlugin plugin = createAndTestPlugin(logEntryEvents, 1, filter, conditions);
+        FilteredLogEntryEvent__e filteredEvent = plugin.filteredLogEntryEvents.get(0);
+        System.assertEquals(matchingEvent.Message__c, filteredEvent.Message__c);
+        System.assertEquals(matchingEvent.Tags__c, filteredEvent.Tags__c);
+        System.assertEquals(matchingEvent.Message__c, filteredEvent.Message__c);
+        System.assertNotEquals(nonMatchingEvent.Tags__c, filteredEvent.Tags__c);
     }
 
-    @isTest
-    static void validateForRuleWithOrConditions() {
-        String accountName1 = 'Some account';
-        String accountName2 = 'another account';
-        Account account = new Account(Name = 'Test account');
-        account.Name = accountName1;
+    @IsTest
+    static void filterWithOrConditions() {
+        String message1 = 'Some message';
+        String message2 = 'another message';
+        LogEntryEvent__e matchingEvent = getTestLogEntryEvent();
+        matchingEvent.Message__c = message1;
 
-        LogEntryEventFilter__mdt rule = createMockRule();
-        rule.ConditionLogicType__c = 'OR';
+        LogEntryEvent__e nonMatchingEvent = getTestLogEntryEvent();
+        nonMatchingEvent.Message__c = 'this message does not meet the filter conditions';
+        System.assertNotEquals(message1, nonMatchingEvent.Message__c);
+        System.assertNotEquals(message2, nonMatchingEvent.Message__c);
+
+        LogEntryEventFilter__mdt filter = createMockFilter();
+        filter.ConditionLogicType__c = 'OR';
         List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{
-            createMockRuleCondition('Name', 'EQUAL_TO', 'Value', accountName1),
-            createMockRuleCondition('Name', 'EQUAL_TO', 'Value', accountName2)
+            createMockFilterCondition('Message__c', 'EQUAL_TO', 'Value', message1),
+            createMockFilterCondition('Message__c', 'EQUAL_TO', 'Value', message2)
         };
 
-        RecordValidator validator = new RecordValidator(account).setRule(rule, conditions);
-        List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-        System.assertEquals(1, results.size(), 'Expected 1 validation rule result');
-
-        RecordValidator.ValidationRuleResult result = results.get(0);
-        System.assertEquals(true, result.hasError, result);
-        System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
-
-        try {
-            validator.validate();
-            System.assert(false, 'Exception expected on line above');
-        } catch (RecordValidator.RecordValidatorException ex) {
-            System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-        }
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ matchingEvent, nonMatchingEvent };
+        FilteredEventLoggerPlugin plugin = createAndTestPlugin(logEntryEvents, 1, filter, conditions);
+        FilteredLogEntryEvent__e filteredEvent = plugin.filteredLogEntryEvents.get(0);
+        System.assertEquals(matchingEvent.Message__c, filteredEvent.Message__c);
+        System.assertNotEquals(nonMatchingEvent.Message__c, filteredEvent.Message__c);
     }
 
-    @isTest
+    @IsTest
     static void validateForRuleWithCustomConditions() {
-        String accountName1 = 'Some account';
-        String accountName2 = 'another account';
-        Integer accountAnnualRevenue = 123000;
-        Account account = new Account(Name = 'Test account');
-        account.Name = accountName1;
-        account.AnnualRevenue = accountAnnualRevenue;
+        String message1 = 'Some message';
+        String message2 = 'another message';
+        Integer matchingCpuTimeUsed = 123000;
+        Integer nonMatchingCpuTimeUsed = 5;
+        LogEntryEvent__e matchingEvent = getTestLogEntryEvent();
+        matchingEvent.Message__c = message1;
+        matchingEvent.LimitsCpuTimeUsed__c = matchingCpuTimeUsed;
 
-        LogEntryEventFilter__mdt rule = createMockRule();
-        rule.ConditionLogicType__c = 'Custom';
-        rule.CustomConditionLogic__c = '((1 OR 2) AND 3)';
+        LogEntryEvent__e nonMatchingEvent = getTestLogEntryEvent();
+        nonMatchingEvent.Message__c = message1;
+        nonMatchingEvent.LimitsCpuTimeUsed__c = nonMatchingCpuTimeUsed;
+
+        LogEntryEventFilter__mdt filter = createMockFilter();
+        filter.ConditionLogicType__c = 'Custom';
+        filter.CustomConditionLogic__c = '((1 OR 2) AND 3)';
         List<LogEntryEventFilterCondition__mdt> conditions = new List<LogEntryEventFilterCondition__mdt>{
-            createMockRuleCondition('Name', 'EQUAL_TO', 'Value', accountName1),
-            createMockRuleCondition('Name', 'EQUAL_TO', 'Value', accountName2),
-            createMockRuleCondition('AnnualRevenue', 'GREATER_THAN_OR_EQUAL_TO', 'Value', accountAnnualRevenue)
+            createMockFilterCondition('Message__c', 'EQUAL_TO', 'Value', message1),
+            createMockFilterCondition('Message__c', 'EQUAL_TO', 'Value', message2),
+            createMockFilterCondition('LimitsCpuTimeUsed__c', 'GREATER_THAN_OR_EQUAL_TO', 'Value', matchingCpuTimeUsed)
         };
 
-        RecordValidator validator = new RecordValidator(account).setRule(rule, conditions);
-        List<RecordValidator.ValidationRuleResult> results = validator.validate(false);
-        System.assertEquals(1, results.size(), 'Expected 1 validation rule result');
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ matchingEvent, nonMatchingEvent };
+        createAndTestPlugin(logEntryEvents, 1, filter, conditions);
+    }
 
-        RecordValidator.ValidationRuleResult result = results.get(0);
-        System.assertEquals(true, result.hasError, result);
-        System.assertEquals(rule.ErrorMessage__c, result.errorMessage, result);
+    // Helper methods
+    static LogEntryEvent__e getTestLogEntryEvent() {
+        List<String> tags = new List<String>{ 'a tag', 'a tag #2: another tag', 'tag #3: the final tagging', 'tag #4: now it\'s getting excessive' };
+        return new LogEntryEvent__e(
+            Message__c = 'Some message',
+            Tags__c = String.join(tags, '\n'),
+            Timestamp__c = System.now(),
+            TransactionId__c = '1234'
+        );
+    }
 
-        try {
-            validator.validate();
-            System.assert(false, 'Exception expected on line above');
-        } catch (RecordValidator.RecordValidatorException ex) {
-            System.assert(ex.getMessage().contains(rule.ErrorMessage__c), ex);
-        }
-    } */
+    static LogEntryEventFilter__mdt createMockFilter() {
+        return new LogEntryEventFilter__mdt(
+            ConditionLogicType__c = 'AND',
+            CustomConditionLogic__c = null,
+            IsActive__c = true
+        );
+    }
+
+    static LogEntryEventFilterCondition__mdt createMockFilterCondition(String fieldPath, String operator, String valueType, Object value) {
+        String valueString = value instanceof String ? (String) value : JSON.serialize(value);
+        return new LogEntryEventFilterCondition__mdt(
+            FieldPath__c = fieldPath,
+            Operator__c = operator,
+            SortOrder__c = null,
+            Value__c = valueString,
+            ValueType__c = valueType
+        );
+    }
+
+    static FilteredEventLoggerPlugin createAndTestPlugin(List<LogEntryEvent__e> logEntryEvents, Integer expectedMatches, LogEntryEventFilter__mdt filter, List<LogEntryEventFilterCondition__mdt> conditions) {
+        FilteredEventLoggerPlugin plugin = new FilteredEventLoggerPlugin();
+        plugin.filtersByDeveloperName.put(filter.DeveloperName, filter);
+        plugin.conditionsByFilterDeveloperName.put(filter.DeveloperName, conditions);
+
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        plugin.execute(TriggerOperation.AFTER_INSERT, logEntryEvents, null, null, null);
+        List<FilteredLogEntryEvent__e> results = plugin.filteredLogEntryEvents;
+        System.assertEquals(expectedMatches, results.size(), 'Expected 1 filtered log entry event: ' + results);
+        System.assertEquals(1, Limits.getPublishImmediateDml());
+
+        return plugin;
+    }
 }

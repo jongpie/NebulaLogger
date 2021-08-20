@@ -1,22 +1,27 @@
-//------------------------------------------------------------------------------------------------//
-// This file is part of the Nebula Logger project, released under the MIT License.                //
-// A lot of this class's code originated in https://github.com/jongpie/ApexValidationRules        //
-// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
-//------------------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                           //
+// The core functionality of this plugin's code originated in https://github.com/jongpie/ApexValidationRules //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.               //
+//-----------------------------------------------------------------------------------------------------------//
 
 /**
  * @group Plugins
  * @description Optional plugin for publishing a filtered list of `LogEntryEvent__e` records as `FilteredLogEntryEvent__e` records
  */
 public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHandlerPlugin {
+    // TODO reimplement or remove
     // private static final List<LogEntryEventFilter__mdt> QUERIED_FILTERS = new List<LogEntryEventFilter__mdt>();
 
+    @TestVisible
     private final Map<String, LogEntryEventFilter__mdt> filtersByDeveloperName = new Map<String, LogEntryEventFilter__mdt>();
+    @TestVisible
     private final Map<String, List<LogEntryEventFilterCondition__mdt>> conditionsByFilterDeveloperName = new Map<String, List<LogEntryEventFilterCondition__mdt>>();
+    @TestVisible
+    private List<FilteredLogEntryEvent__e> filteredLogEntryEvents = new List<FilteredLogEntryEvent__e>();
 
-    private List<SObject> records;
-    private Schema.SObjectType sobjectType;
-    private String languageLocaleKey = UserInfo.getLanguage();
+    public FilteredEventLoggerPlugin() {
+        this.loadConfiguredFilters();
+    }
 
     public override void execute(
         TriggerOperation triggerOperationType,
@@ -34,8 +39,9 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
     }
 
     private void createFilteredLogEntryEvents(List<LogEntryEvent__e> logEntryEvents) {
-        List<FilteredLogEntryEvent__e> filteredLogEntryEvents = new List<FilteredLogEntryEvent__e>();
+        System.debug('starting createFilteredLogEntryEvents==' + logEntryEvents);
         for (FilterResult filterResult : this.runFilters(logEntryEvents)) {
+            System.debug('filterResult==' + filterResult);
             if (filterResult.matchesFilter == true) {
                 // The proper way to do this is to map each individual field from LogEntryEvent__e to FilteredLogEntryEvent__e
                 // But the field names should match betwen objects, so a one-liner of JSON serialize/deserialize does it automatically
@@ -43,10 +49,10 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
                     JSON.serialize(filterResult.record),
                     FilteredLogEntryEvent__e.class
                 );
-                filteredLogEntryEvents.add(filteredEvent);
+                this.filteredLogEntryEvents.add(filteredEvent);
             }
         }
-        EventBus.publish(filteredLogEntryEvents);
+        EventBus.publish(this.filteredLogEntryEvents);
     }
 
     // Private methods
@@ -66,10 +72,6 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
     }
 
     private List<FilterResult> runFilters(List<LogEntryEvent__e> logEntryEvents) {
-        if (this.filtersByDeveloperName.isEmpty()) {
-            this.loadConfiguredFilters();
-        }
-
         List<FilterResult> results = new List<FilterResult>();
         for (SObject record : logEntryEvents) {
             for (String filterDeveloperName : this.filtersByDeveloperName.keySet()) {
@@ -83,6 +85,7 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
         return results;
     }
 
+    @TestVisible
     private class FilterResult {
         public SObject record { get; private set; }
         public List<String> conditions { get; private set; }
@@ -139,7 +142,6 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
                 } else if (!character.isNumeric() && hasFoundNumbers) {
                     hasFoundNumbers = false;
                     Integer foundNumber = Integer.valueOf(foundNumberString) - 1;
-                    System.debug('foundNumber==' + foundNumber);
 
                     parsedCharacters.add('{' + foundNumber + '}');
                     foundNumberString = '';
@@ -149,7 +151,6 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
                     foundNumberString += character;
                 } else if (hasFoundNumbers && !character.isNumeric() && !String.isBlank(foundNumberString)) {
                     Integer foundNumber = Integer.valueOf(foundNumberString) - 1;
-                    System.debug('foundNumber==' + foundNumber);
 
                     parsedCharacters.add('{' + foundNumber + '}');
                     foundNumberString = '';
@@ -161,16 +162,17 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
         }
     }
 
+    @TestVisible
     private class FilterConditionResult {
         private Boolean matchesFilter;
         private SObject record;
         private LogEntryEventFilterCondition__mdt filerCondition;
-        private String sobjectApiName;
+        private Schema.SObjectType sobjectType;
 
         private FilterConditionResult(SObject record, LogEntryEventFilterCondition__mdt filerCondition) {
+            this.sobjectType = record.getSObjectType();
             this.record = record;
             this.filerCondition = filerCondition;
-            this.sobjectApiName = this.record.getSObjectType().getDescribe().getName();
 
             this.matchesFilter = this.matchesFilter();
         }
@@ -191,29 +193,20 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
                 return this.matchesRegEx();
             }
 
-            Schema.SObjectField field = new FieldPath(this.sobjectApiName, this.filerCondition.FieldPath__c).getField();
+            Schema.SObjectField field = new FieldPath(this.sobjectType, this.filerCondition.FieldPath__c).getField();
 
             Object recordFieldValue = this.getFieldValue();
             Object comparisonValue = this.getComparisonValue();
 
             switch on field.getDescribe().getSoapType() {
-                when BOOLEAN {
-                    return this.compareBoolean((Boolean) recordFieldValue, this.getAsBoolean(comparisonValue));
-                }
                 when DOUBLE, INTEGER {
                     return this.compareDecimal((Decimal) recordFieldValue, this.getAsDecimal(comparisonValue));
-                }
-                when DATE {
-                    return this.compareDate((Date) recordFieldValue, this.getAsDate(comparisonValue));
                 }
                 when DATETIME {
                     return this.compareDatetime((Datetime) recordFieldValue, this.getAsDatetime(comparisonValue));
                 }
                 when STRING, ID {
                     return this.compareString((String) recordFieldValue, String.valueOf(comparisonValue));
-                }
-                when TIME {
-                    return this.compareTime((Time) recordFieldValue, this.getAsTime(comparisonValue));
                 }
                 when else {
                     throw new IllegalArgumentException('Could not process field path: ' + this.filerCondition.FieldPath__c);
@@ -227,13 +220,13 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
         }
 
         private Object getFieldValue() {
-            return new FieldPath(this.sobjectApiName, this.filerCondition.FieldPath__c).getValue(this.record);
+            return new FieldPath(this.sobjectType, this.filerCondition.FieldPath__c).getValue(this.record);
         }
 
         private Object getComparisonValue() {
             switch on this.filerCondition.ValueType__c {
                 when 'Field' {
-                    return new FieldPath(this.sobjectApiName, this.filerCondition.Value__c).getValue(this.record);
+                    return new FieldPath(this.sobjectType, this.filerCondition.Value__c).getValue(this.record);
                 }
                 when 'RegEx' {
                     return this.filerCondition.Value__c;
@@ -249,27 +242,6 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
 
         // Helper methods for dealing with converting field values & strings
         // (stored in CMDT) to the appropriate data type
-        private Boolean getAsBoolean(Object booleanValue) {
-            if (booleanValue == null) {
-                return null;
-            } else if (booleanValue instanceof Boolean) {
-                return (Boolean) booleanValue;
-            } else {
-                return Boolean.valueOf(booleanValue);
-            }
-        }
-
-        private Date getAsDate(Object dateValue) {
-            if (dateValue == null) {
-                return null;
-            } else if (dateValue instanceof Date) {
-                return (Date) dateValue;
-            } else {
-                String dateString = (String) dateValue;
-                return (Date) JSON.deserialize(dateString, Date.class);
-            }
-        }
-
         private Datetime getAsDatetime(Object datetimeValue) {
             if (datetimeValue == null) {
                 return null;
@@ -292,62 +264,11 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
             }
         }
 
-        private Time getAsTime(Object timeValue) {
-            if (timeValue == null) {
-                return null;
-            } else if (timeValue instanceof Time) {
-                return (Time) timeValue;
-            } else {
-                String timeString = (String) timeValue;
-                return (Time) JSON.deserialize(timeString, Time.class);
-            }
-        }
-
         // In Apex, you can't use comparison operators on instances of Object, so several private methods are used for each data type
         // Example of what you can't do in Apex:
         //          Object today = System.today();
         //          Object yesterday = System.today().addDays(-1);
         //          System.assert(today > yesterday); // This line cannot execute since it's comparing Object
-        private Boolean compareBoolean(Boolean recordFieldValue, Boolean comparisonValue) {
-            switch on this.filerCondition.Operator__c {
-                when 'EQUAL_TO' {
-                    return recordFieldValue == comparisonValue;
-                }
-                when 'NOT_EQUAL_TO' {
-                    return recordFieldValue != comparisonValue;
-                }
-                when else {
-                    throw new IllegalArgumentException('Unsupported operator for Boolean: ' + this.filerCondition.Operator__c);
-                }
-            }
-        }
-
-        private Boolean compareDate(Date recordFieldValue, Date comparisonValue) {
-            switch on this.filerCondition.Operator__c {
-                when 'EQUAL_TO' {
-                    return recordFieldValue == comparisonValue;
-                }
-                when 'NOT_EQUAL_TO' {
-                    return recordFieldValue != comparisonValue;
-                }
-                when 'LESS_THAN' {
-                    return recordFieldValue < comparisonValue;
-                }
-                when 'LESS_THAN_OR_EQUAL_TO' {
-                    return recordFieldValue <= comparisonValue;
-                }
-                when 'GREATER_THAN' {
-                    return recordFieldValue > comparisonValue;
-                }
-                when 'GREATER_THAN_OR_EQUAL_TO' {
-                    return recordFieldValue >= comparisonValue;
-                }
-                when else {
-                    throw new IllegalArgumentException('Unsupported operator for Date: ' + this.filerCondition.Operator__c);
-                }
-            }
-        }
-
         private Boolean compareDatetime(Datetime recordFieldValue, Datetime comparisonValue) {
             switch on this.filerCondition.Operator__c {
                 when 'EQUAL_TO' {
@@ -422,32 +343,6 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
                 }
             }
         }
-
-        private Boolean compareTime(Time recordFieldValue, Time comparisonValue) {
-            switch on this.filerCondition.Operator__c {
-                when 'EQUAL_TO' {
-                    return recordFieldValue == comparisonValue;
-                }
-                when 'NOT_EQUAL_TO' {
-                    return recordFieldValue != comparisonValue;
-                }
-                when 'LESS_THAN' {
-                    return recordFieldValue < comparisonValue;
-                }
-                when 'LESS_THAN_OR_EQUAL_TO' {
-                    return recordFieldValue <= comparisonValue;
-                }
-                when 'GREATER_THAN' {
-                    return recordFieldValue > comparisonValue;
-                }
-                when 'GREATER_THAN_OR_EQUAL_TO' {
-                    return recordFieldValue >= comparisonValue;
-                }
-                when else {
-                    throw new IllegalArgumentException('Unsupported operator for Time: ' + this.filerCondition.Operator__c);
-                }
-            }
-        }
     }
 
     // Credit goes to this StackExchange post for the original BooleanExpression class -
@@ -509,9 +404,7 @@ public without sharing class FilteredEventLoggerPlugin extends LoggerSObjectHand
         private String fieldPath;
         private Schema.SObjectType sobjectType;
 
-        public FieldPath(String sobjectApiName, String fieldPath) {
-            Schema.SObjectType sobjectType = Schema.getGlobalDescribe().get(sobjectApiName);
-
+        public FieldPath(Schema.SObjectType sobjectType, String fieldPath) {
             this.fieldChain = this.getFieldChain(sobjectType, fieldPath);
             this.fieldPath = fieldPath;
 
