@@ -1,7 +1,10 @@
 # Filtered Log Entry Events plugin for Nebula Logger
 
-[![Install Unlocked Package](./../../content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=TODO)
+This plugin requires v4.6.0 (or newer) of the Nebula Logger unlocked package.
 
+[![Install Unlocked Package](./../../content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kgtQAA)
+
+---
 
 Currently, platform events have a 24-hour limit for the number of delivered event notifications across all CometD clients. When this limit is exceeded, no additional notifications are sent to external systems that have subscribed to platform events in your org. Based on the [Platform Event Allocations](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm) docs, the current limits are:
 
@@ -22,9 +25,13 @@ A duplicate of the `LogEntryEvent__e` platform event object, `FilteredLogEntryEv
 
 ![Platform Event Objects](./content/filtered-and-unfiltered-platform-event-objects.png)
 
+---
+
 ## `LogEntryEventFilter__mdt` custom metadata type
 
-A filter rule to apply to `LogEntryEvent__e` platform events - any matching events will be duplicated & published as a `FilteredLogEntryEvent__e` platform events. Each filter consists of 1 or more conditions, stored in LogEntryEventFilterCondition\_\_mdt
+A filter to apply to `LogEntryEvent__e` platform events - any matching events will be duplicated & published as `FilteredLogEntryEvent__e` platform events. Each filter consists of 1 or more conditions, stored in LogEntryEventFilterCondition\_\_mdt
+
+---
 
 ## `LogEntryEventFilterCondition__mdt` custom metadata type
 

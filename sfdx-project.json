@@ -18,7 +18,7 @@
             "path": "nebula-logger-plugins/Filtered-Log-Entry-Events",
             "dependencies": [
                 {
-                    "package": "Nebula Logger - Unlocked Package@4.5.2-0-plugin-framework-enhancements"
+                    "package": "Nebula Logger - Unlocked Package@4.6.0-0-tagging-system-overhaul"
                 }
             ],
             "versionName": "Beta Release",
@@ -61,6 +61,7 @@
         "Nebula Logger - Unlocked Package@4.6.3-0-more-metadata-data": "04t5Y0000015kgeQAA",
         "Nebula Logger - Unlocked Package@4.6.4-0-logger-for-lwc-and-aura": "04t5Y0000015kgjQAA",
         "Nebula Logger Plugin - Filtered Log Entry Events": "0Ho5Y000000blMcSAI",
+        "Nebula Logger Plugin - Filtered Log Entry Events@0.9.0-0": "04t5Y0000015kgtQAA",
         "Nebula Logger Plugin - Slack": "0Ho5e000000oM3pCAE",
         "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ",
         "Nebula Logger Plugin - Slack@0.9.1-0-beta-release-round-2": "04t5e00000065xiAAA"
