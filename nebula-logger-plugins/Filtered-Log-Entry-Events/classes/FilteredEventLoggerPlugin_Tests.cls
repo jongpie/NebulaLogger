@@ -5,7 +5,6 @@
 
 @IsTest
 private class FilteredEventLoggerPlugin_Tests {
-
     // Simpler tests - each test is for 1 field with a different data type
     @IsTest
     static void filterDatetimeFieldAndAllOperators() {
@@ -222,20 +221,11 @@ private class FilteredEventLoggerPlugin_Tests {
     // Helper methods
     static LogEntryEvent__e getTestLogEntryEvent() {
         List<String> tags = new List<String>{ 'a tag', 'a tag #2: another tag', 'tag #3: the final tagging', 'tag #4: now it\'s getting excessive' };
-        return new LogEntryEvent__e(
-            Message__c = 'Some message',
-            Tags__c = String.join(tags, '\n'),
-            Timestamp__c = System.now(),
-            TransactionId__c = '1234'
-        );
+        return new LogEntryEvent__e(Message__c = 'Some message', Tags__c = String.join(tags, '\n'), Timestamp__c = System.now(), TransactionId__c = '1234');
     }
 
     static LogEntryEventFilter__mdt createMockFilter() {
-        return new LogEntryEventFilter__mdt(
-            ConditionLogicType__c = 'AND',
-            CustomConditionLogic__c = null,
-            IsActive__c = true
-        );
+        return new LogEntryEventFilter__mdt(ConditionLogicType__c = 'AND', CustomConditionLogic__c = null, IsActive__c = true);
     }
 
     static LogEntryEventFilterCondition__mdt createMockFilterCondition(String fieldPath, String operator, String valueType, Object value) {
@@ -249,7 +239,12 @@ private class FilteredEventLoggerPlugin_Tests {
         );
     }
 
-    static FilteredEventLoggerPlugin createAndTestPlugin(List<LogEntryEvent__e> logEntryEvents, Integer expectedMatches, LogEntryEventFilter__mdt filter, List<LogEntryEventFilterCondition__mdt> conditions) {
+    static FilteredEventLoggerPlugin createAndTestPlugin(
+        List<LogEntryEvent__e> logEntryEvents,
+        Integer expectedMatches,
+        LogEntryEventFilter__mdt filter,
+        List<LogEntryEventFilterCondition__mdt> conditions
+    ) {
         FilteredEventLoggerPlugin plugin = new FilteredEventLoggerPlugin();
         plugin.filtersByDeveloperName.put(filter.DeveloperName, filter);
         plugin.conditionsByFilterDeveloperName.put(filter.DeveloperName, conditions);

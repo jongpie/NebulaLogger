@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Filtered Log Entry Events</label>
+    <protected>false</protected>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Provides a way for external systems to subscribe to a subset of LogEntryEvent__e platform events. Filters can be configured using the custom metadata types LogEntryEventFilter__mdt and LogEntryEventFilterCondition__mdt. This is useful in situations where the 24-hour limit is exceeded for the number of delivered event notifications.
+
+Event Delivery details &amp;amp; limits can be found at: https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_event_limits.htm
+
+Long term, platform event channels will potentially replace the need for this:
+https://help.salesforce.com/s/articleView?language=en_US&amp;amp;type=5&amp;amp;release=232&amp;amp;id=release-notes.rn_platform_events_filtering_pilot.htm</value>
+    </values>
+    <values>
+        <field>ExecutionOrder__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>PluginApiName__c</field>
+        <value xsi:type="xsd:string">FilteredEventLoggerPlugin</value>
+    </values>
+    <values>
+        <field>PluginType__c</field>
+        <value xsi:type="xsd:string">Apex</value>
+    </values>
+    <values>
+        <field>SObjectHandler__c</field>
+        <value xsi:type="xsd:string">LogEntryEventHandler</value>
+    </values>
+</CustomMetadata>

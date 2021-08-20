@@ -3,7 +3,8 @@
     <fullName>FieldPath__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <label>Field Path</label>
+    <inlineHelpText>The API name of the LogEntryEvent__e field. Note: parent field, such as CreatedBy.Name, are not supported.</inlineHelpText>
+    <label>Field</label>
     <length>255</length>
     <required>true</required>
     <type>Text</type>
