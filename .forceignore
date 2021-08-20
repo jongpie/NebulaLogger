@@ -6,6 +6,7 @@ nebula-logger/main/default/**
 
 # Directory/package-specific README files
 **/README.md
+**/content/**
 
 # LWC configuration files
 **/jsconfig.json

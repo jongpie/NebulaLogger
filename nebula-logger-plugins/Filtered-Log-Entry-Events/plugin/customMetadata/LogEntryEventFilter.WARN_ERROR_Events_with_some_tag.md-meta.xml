@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>WARN &amp; ERROR Events with some tag</label>
+    <protected>false</protected>
+    <values>
+        <field>ConditionLogicType__c</field>
+        <value xsi:type="xsd:string">Custom</value>
+    </values>
+    <values>
+        <field>CustomConditionLogic__c</field>
+        <value xsi:type="xsd:string">(1 OR 2) AND 3</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>
