@@ -575,6 +575,16 @@ The Logger Console app provides access to the tabs for Logger's objects: `Log__c
 
 ![Logger Console app](./content/logger-console-app.png)
 
+### Logger Admin Dashboard
+
+To help monitor logs in your org, the Logger Console app's homepage displays the included dashboard 'Logger Admin' - it displays several report charts to quickly see summary info about your logs. The dashboard supports filtering on:
+
+-   Timestamp: based on `LogEntry__c.Timestamp__c`
+-   Logging Level: based on `LogEntry__c.LoggingLevel__c`
+-   Origin Type: based on `LogEntry__c.OriginType__c`
+
+![Logger Console Home](./content/logger-console-app-home.png)
+
 ### Log's 'Manage' Quick Action
 
 To help development and support teams better manage logs (and any underlying code or config issues), some fields on `Log__c` are provided to track the owner, priority and status of a log. These fields are optional, but are helpful in critical environments (production, QA sandboxes, UAT sandboxes, etc.) for monitoring ongoing user activities.
