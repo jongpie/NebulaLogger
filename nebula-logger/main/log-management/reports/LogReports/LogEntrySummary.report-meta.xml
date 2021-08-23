@@ -34,7 +34,7 @@
         <field>LogEntry__c.Timestamp__c</field>
     </columns>
     <columns>
-        <field>LogEntry__c.LoggingLevelWithImage__c</field>
+        <field>LogEntry__c.LoggingLevel__c</field>
     </columns>
     <columns>
         <field>Log__c.LoggedBy__c</field>
@@ -83,15 +83,6 @@
         <field>LogEntry__c.ExceptionStackTrace__c</field>
     </columns>
     <description>Summary report for the LogEntry__c object</description>
-    <filter>
-        <criteriaItems>
-            <column>LogEntry__c.Timestamp__c</column>
-            <columnToColumn>false</columnToColumn>
-            <isUnlocked>true</isUnlocked>
-            <operator>equals</operator>
-            <value>THIS_WEEK</value>
-        </criteriaItems>
-    </filter>
     <format>Summary</format>
     <groupingsDown>
         <dateGranularity>Day</dateGranularity>

@@ -78,15 +78,6 @@
         <field>LogEntry__c.ExceptionStackTrace__c</field>
     </columns>
     <description>Summary report for the LogEntry__c object, focused on OriginType__c and OriginLocation__c</description>
-    <filter>
-        <criteriaItems>
-            <column>LogEntry__c.Timestamp__c</column>
-            <columnToColumn>false</columnToColumn>
-            <isUnlocked>true</isUnlocked>
-            <operator>equals</operator>
-            <value>THIS_WEEK</value>
-        </criteriaItems>
-    </filter>
     <format>Summary</format>
     <groupingsDown>
         <dateGranularity>Day</dateGranularity>

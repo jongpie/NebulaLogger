@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
     <backgroundEndColor>#FFFFFF</backgroundEndColor>
     <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
@@ -36,7 +36,7 @@
             <operator>equals</operator>
             <values>LAST_90_DAYS</values>
         </dashboardFilterOptions>
-        <name>Log Entry: Timestamp</name>
+        <name>Timestamp</name>
     </dashboardFilters>
     <dashboardFilters>
         <dashboardFilterOptions>
@@ -63,7 +63,7 @@
             <operator>equals</operator>
             <values>ERROR,WARN,INFO,DEBUG,FINE,FINER</values>
         </dashboardFilterOptions>
-        <name>Log Entry: Logging Level</name>
+        <name>Logging Level</name>
     </dashboardFilters>
     <dashboardFilters>
         <dashboardFilterOptions>
@@ -89,7 +89,7 @@
                 <chartAxisRange>Auto</chartAxisRange>
                 <componentType>Bar</componentType>
                 <dashboardFilterColumns>
-                    <column>Log__c.StartTime__c</column>
+                    <column>LogEntry__c.Timestamp__c</column>
                 </dashboardFilterColumns>
                 <dashboardFilterColumns>
                     <column>LogEntry__c.LoggingLevel__c</column>
@@ -102,7 +102,7 @@
                 <drillToDetailEnabled>false</drillToDetailEnabled>
                 <enableHover>false</enableHover>
                 <expandOthers>false</expandOthers>
-                <groupingSortProperties/>
+                <groupingSortProperties />
                 <header>Log Entry Daily Summary</header>
                 <report>LogReports/LogEntryDailySummary</report>
                 <showPercentage>false</showPercentage>
@@ -126,7 +126,7 @@
                 </chartSummary>
                 <componentType>Donut</componentType>
                 <dashboardFilterColumns>
-                    <column>CUST_CREATED_DATE</column>
+                    <column>FK_$LogEntry__c.Timestamp__c</column>
                 </dashboardFilterColumns>
                 <dashboardFilterColumns>
                     <column>FK_$LogEntry__c.LoggingLevel__c</column>
@@ -144,11 +144,13 @@
                 <groupingSortProperties>
                     <groupingSorts>
                         <groupingLevel>g1</groupingLevel>
+                        <sortColumn>RowCount</sortColumn>
                         <sortOrder>d</sortOrder>
                     </groupingSorts>
                 </groupingSortProperties>
-                <header>Top Logger Tags</header>
+                <header>Log Entry Tag Details</header>
                 <legendPosition>Right</legendPosition>
+                <maxValuesDisplayed>20</maxValuesDisplayed>
                 <report>LogReports/LogEntryTagDetails</report>
                 <showPercentage>true</showPercentage>
                 <showTotal>true</showTotal>
@@ -171,7 +173,7 @@
                 </chartSummary>
                 <componentType>Bar</componentType>
                 <dashboardFilterColumns>
-                    <column>Log__c.StartTime__c</column>
+                    <column>LogEntry__c.Timestamp__c</column>
                 </dashboardFilterColumns>
                 <dashboardFilterColumns>
                     <column>LogEntry__c.LoggingLevel__c</column>
@@ -212,7 +214,7 @@
                 <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
                 <componentType>FlexTable</componentType>
                 <dashboardFilterColumns>
-                    <column>Log__c.StartTime__c</column>
+                    <column>LogEntry__c.Timestamp__c</column>
                 </dashboardFilterColumns>
                 <dashboardFilterColumns>
                     <column>LogEntry__c.LoggingLevel__c</column>
@@ -229,7 +231,7 @@
                         <type>grouping</type>
                     </flexTableColumn>
                     <flexTableColumn>
-                        <reportColumn>LogEntry__c.LoggingLevelWithImage__c</reportColumn>
+                        <reportColumn>LogEntry__c.LoggingLevel__c</reportColumn>
                         <showSubTotal>true</showSubTotal>
                         <showTotal>true</showTotal>
                         <type>grouping</type>
@@ -253,8 +255,7 @@
                     </groupingSorts>
                     <groupingSorts>
                         <groupingLevel>g2</groupingLevel>
-                        <sortColumn>RowCount</sortColumn>
-                        <sortOrder>d</sortOrder>
+                        <sortOrder>a</sortOrder>
                     </groupingSorts>
                 </groupingSortProperties>
                 <header>Log Entry Summary</header>

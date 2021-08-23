@@ -80,15 +80,6 @@
         <field>LogEntry__c.ExceptionStackTrace__c</field>
     </columns>
     <description>Daily summary report for the LogEntry__c object</description>
-    <filter>
-        <criteriaItems>
-            <column>LogEntry__c.Timestamp__c</column>
-            <columnToColumn>false</columnToColumn>
-            <isUnlocked>true</isUnlocked>
-            <operator>equals</operator>
-            <value>THIS_WEEK</value>
-        </criteriaItems>
-    </filter>
     <format>Summary</format>
     <groupingsDown>
         <field>Log__c.StartTime__c</field>
