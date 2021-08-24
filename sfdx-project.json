@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.4.0",
-            "versionName": "Logger for lwc and aura",
-            "versionDescription": "Re-introduced a lightning component for frontend logging",
+            "versionNumber": "4.6.5.0",
+            "versionName": "Internal trigger handler optimizations",
+            "versionDescription": "Refactored trigger handler to manage more shared logic",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
@@ -47,6 +47,7 @@
         "Nebula Logger - Unlocked Package@4.6.2-0-anonymous-logs": "04t5Y0000015kgPQAQ",
         "Nebula Logger - Unlocked Package@4.6.3-0-more-metadata-data": "04t5Y0000015kgeQAA",
         "Nebula Logger - Unlocked Package@4.6.4-0-logger-for-lwc-and-aura": "04t5Y0000015kgjQAA",
+        "Nebula Logger - Unlocked Package@4.6.5-0-internal-trigger-handler-optimizations": "04t5Y0000015kh3QAA",
         "Nebula Logger Plugin - Slack": "0Ho5e000000oM3pCAE",
         "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ",
         "Nebula Logger Plugin - Slack@0.9.1-0-beta-release-round-2": "04t5e00000065xiAAA"

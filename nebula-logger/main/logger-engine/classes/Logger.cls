@@ -2499,7 +2499,7 @@ global with sharing class Logger {
         // This gives us a chance to run the handler class & handler plugins before insert,
         // allowing the plugins to make further changes to the `LogEntryEvent__e` records
         // So, execute the handler, which internally then executes any plugins
-        new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents).execute();
+        new LogEntryEventHandler().executeBeforeInsert(logEntryEvents);
 
         // Now that the plugins have run, double check to make sure that saving should still happen
         if (getBufferSize() == 0) {
@@ -2525,7 +2525,7 @@ global with sharing class Logger {
                 }
             }
             when SYNCHRONOUS_DML {
-                new LogEntryEventHandler(TriggerOperation.AFTER_INSERT, logEntryEvents).execute();
+                new LogEntryEventHandler().executeAfterInsert(logEntryEvents);
             }
         }
 

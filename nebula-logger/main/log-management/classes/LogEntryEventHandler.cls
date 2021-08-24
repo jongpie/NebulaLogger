@@ -16,27 +16,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     @TestVisible
     private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
 
-    // Trigger-based variables - tests can override these with mock objects
     @TestVisible
-    private List<LogEntryEvent__e> logEntryEvents {
-        get {
-            return (List<LogEntryEvent__e>) this.triggerNew;
-        }
-    }
+    private List<LogEntryEvent__e> logEntryEvents;
 
     private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
     private Map<String, List<String>> logEntryEventUuidToTagNames = new Map<String, List<String>>();
     private Set<String> tagNames = new Set<String>();
-
-    public LogEntryEventHandler() {
-    }
-
-    public LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents) {
-        // Override the variables provided by LoggerSObjectHandler
-        this.triggerOperationType = triggerOperationType;
-        this.triggerNew = logEntryEvents;
-    }
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -46,24 +32,19 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return Schema.LogEntryEvent__e.SObjectType;
     }
 
-    /**
-     * @description Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
-     */
-    public override void execute() {
-        if (this.isEnabled() == false) {
-            return;
-        }
+    // Public method so it can be called from Logger - this is unique to LogEntryEventHandler
+    public override void executeBeforeInsert(List<SObject> triggerNew) {
+        this.logEntryEvents = (List<LogEntryEvent__e>) triggerNew;
+    }
 
-        switch on this.triggerOperationType {
-            when AFTER_INSERT {
-                this.upsertLogs();
-                this.insertLogEntries();
-                this.appendRuleBasedTags();
-                this.insertLogEntryTags();
-            }
-        }
+    // Public method so it can be called from Logger - this is unique to LogEntryEventHandler
+    public override void executeAfterInsert(List<SObject> triggerNew) {
+        this.logEntryEvents = (List<LogEntryEvent__e>) triggerNew;
 
-        this.executePlugins();
+        this.upsertLogs();
+        this.insertLogEntries();
+        this.appendRuleBasedTags();
+        this.insertLogEntryTags();
     }
 
     private void upsertLogs() {
@@ -71,10 +52,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         // ...try to query recent logs first to see if there is a recent log with the details already populated
         Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
 
-        // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
-        // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
-
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
+            // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
+            // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
             if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
                 continue;
             }

@@ -8,16 +8,8 @@
  * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
 public without sharing class LogEntryHandler extends LoggerSObjectHandler {
-    // Trigger-based variables - tests can override these with mock objects
     @TestVisible
-    private List<LogEntry__c> logEntries {
-        get {
-            return (List<LogEntry__c>) this.triggerNew;
-        }
-    }
-
-    public LogEntryHandler() {
-    }
+    private List<LogEntry__c> logEntries;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -27,34 +19,25 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         return Schema.LogEntry__c.SObjectType;
     }
 
-    /**
-     * @description Runs the trigger handler's logic for the `LogEntry__c` custom object
-     */
-    public override void execute() {
-        if (this.isEnabled() == false) {
-            return;
-        }
+    protected override void executeBeforeInsert(List<SObject> triggerNew) {
+        this.logEntries = (List<LogEntry__c>) triggerNew;
 
-        switch on this.triggerOperationType {
-            when BEFORE_INSERT {
-                this.setCheckboxFields();
-                this.setApexClassFields();
-                this.setComponentFields();
-                this.setFlowDefinitionFields();
-                this.setFlowVersionFields();
-                this.setRecordNames();
-            }
-            when BEFORE_UPDATE {
-                // Realistically, these checkbox fields probably only need to be set on insert
-                // but some admins & devs might decide to update/append data in some of the related fields
-                // and it conceptually feels weird for there to be scenarios where these fields could be inaccurate,
-                // so keep them up to date just to be safe
-                this.setCheckboxFields();
-            }
-        }
+        this.setCheckboxFields();
+        this.setApexClassFields();
+        this.setComponentFields();
+        this.setFlowDefinitionFields();
+        this.setFlowVersionFields();
+        this.setRecordNames();
+    }
 
-        // Run any plugins configured in the LoggerSObjectHandlerPlugin__mdt custom metadata type
-        this.executePlugins();
+    protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
+        this.logEntries = (List<LogEntry__c>) triggerNewMap.values();
+
+        // Realistically, these checkbox fields probably only need to be set on insert
+        // but some admins & devs might decide to update/append data in some of the related fields
+        // and it conceptually feels weird for there to be scenarios where these fields could be inaccurate,
+        // so keep them up to date just to be safe
+        this.setCheckboxFields();
     }
 
     private void setCheckboxFields() {

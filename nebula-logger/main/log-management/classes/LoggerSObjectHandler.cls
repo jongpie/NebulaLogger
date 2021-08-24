@@ -48,7 +48,7 @@ public abstract class LoggerSObjectHandler {
         }
     }
 
-    // Private static testVisible methods
+    // Private static TestVisible methods
     @TestVisible
     private static void setMockConfiguration(Schema.SObjectType sobjectType, LoggerSObjectHandler__mdt configuration) {
         configurationBySObjectType.put(sobjectType, configuration);
@@ -65,15 +65,15 @@ public abstract class LoggerSObjectHandler {
     }
 
     @TestVisible
-    protected TriggerOperation triggerOperationType;
+    private TriggerOperation triggerOperationType;
     @TestVisible
-    protected List<SObject> triggerNew;
+    private List<SObject> triggerNew;
     @TestVisible
-    protected Map<Id, SObject> triggerNewMap;
+    private Map<Id, SObject> triggerNewMap;
     @TestVisible
-    protected List<SObject> triggerOld;
+    private List<SObject> triggerOld;
     @TestVisible
-    protected Map<Id, SObject> triggerOldMap;
+    private Map<Id, SObject> triggerOldMap;
 
     private LoggerSObjectHandler__mdt handlerConfiguration;
     private List<LoggerSObjectHandlerPlugin__mdt> plugins;
@@ -81,7 +81,7 @@ public abstract class LoggerSObjectHandler {
     public LoggerSObjectHandler() {
         this.setConfigurations();
 
-        if (this.handlerConfiguration.IsEnabled__c == true) {
+        if (this.isEnabled() == true) {
             this.triggerOperationType = Trigger.operationType;
             this.triggerNew = Trigger.new;
             this.triggerNewMap = Trigger.newMap;
@@ -99,17 +99,72 @@ public abstract class LoggerSObjectHandler {
     /**
      * @description Runs the handler class's logic
      */
-    public abstract void execute();
+    public void execute() {
+        if (this.isEnabled() == false) {
+            return;
+        }
 
-    /**
-     * @description Indicates if the current SObject Handler is enabled, based on `LoggerSObjectHandler__mdt.IsEnabled__c`
-     * @return   The `Boolean` value (`true` == enabled, `false` == disabled)
-     */
-    protected Boolean isEnabled() {
+        switch on this.triggerOperationType {
+            when BEFORE_INSERT {
+                this.executeBeforeInsert(this.triggerNew);
+            }
+            when BEFORE_UPDATE {
+                this.executeBeforeUpdate(this.triggerNewMap, this.triggerOldMap);
+            }
+            when BEFORE_DELETE {
+                this.executeBeforeDelete(this.triggerNewMap);
+            }
+            when AFTER_INSERT {
+                // Platform Events don't have an ID field, thus Trigger.newMap doesn't work for LogEntryEvent__e
+                // For custom objects, Map<Id, SObject> is more convenient since it provides both the keys & values
+                // 2 AFTER_INSERT methods are used here in the framework, with the expectation that only 1 will be implemented per handler class
+                this.executeAfterInsert(this.triggerNew);
+                this.executeAfterInsert(this.triggerNewMap);
+            }
+            when AFTER_UPDATE {
+                this.executeAfterUpdate(this.triggerNewMap, this.triggerOldMap);
+            }
+            when AFTER_DELETE {
+                this.executeAfterDelete(this.triggerNewMap);
+            }
+            when AFTER_UNDELETE {
+                this.executeAfterUndelete(this.triggerNewMap);
+            }
+        }
+
+        this.executePlugins();
+    }
+
+    protected virtual void executeBeforeInsert(List<SObject> triggerNew) {
+    }
+
+    protected virtual void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
+    }
+
+    protected virtual void executeBeforeDelete(Map<Id, SObject> triggerNewMap) {
+    }
+
+    // executeAfterInsert(List<SObject triggerNew) is used for LogEntryEvent__e, which does not have an ID field
+    protected virtual void executeAfterInsert(List<SObject> triggerNew) {
+    }
+
+    protected virtual void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
+    }
+
+    protected virtual void executeAfterUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
+    }
+
+    protected virtual void executeAfterDelete(Map<Id, SObject> triggerNewMap) {
+    }
+
+    protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
+    }
+
+    private Boolean isEnabled() {
         return this.handlerConfiguration.IsEnabled__c;
     }
 
-    protected void executePlugins() {
+    private void executePlugins() {
         if (this.plugins == null || this.plugins.isEmpty() == true) {
             return;
         }
