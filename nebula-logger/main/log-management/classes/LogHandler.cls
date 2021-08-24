@@ -22,23 +22,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return logStatusByName;
     }
 
-    // Trigger-based variables - tests can override these with mock objects
     @TestVisible
-    private List<Log__c> logs {
-        get {
-            return (List<Log__c>) this.triggerNew;
-        }
-    }
+    private List<Log__c> logs;
 
     @TestVisible
-    private Map<Id, Log__c> oldLogsById {
-        get {
-            return (Map<Id, Log__c>) this.triggerOldMap;
-        }
-    }
-
-    public LogHandler() {
-    }
+    private Map<Id, Log__c> oldLogsById;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -48,33 +36,28 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return Schema.Log__c.SObjectType;
     }
 
-    /**
-     * @description Runs the trigger handler's logic for the `Log__c` custom object
-     */
-    public override void execute() {
-        if (this.isEnabled() == false) {
-            return;
-        }
+    protected override void executeBeforeInsert(List<SObject> triggerNew) {
+        this.logs = (List<Log__c>) triggerNew;
 
-        switch on this.triggerOperationType {
-            when BEFORE_INSERT {
-                this.setOrgReleaseCycle();
-                this.setClosedStatusFields();
-                // The log retention date field should support being manually changed, so only auto-set it on insert
-                this.setLogRetentionDate();
-            }
-            when BEFORE_UPDATE {
-                this.setClosedStatusFields();
-                // Priority logic relies on roll-up fields, so only run on update (after log entries are inserted)
-                this.setPriority();
-            }
-            when AFTER_INSERT {
-                this.shareLogsWithLoggingUsers();
-            }
-        }
+        this.setOrgReleaseCycle();
+        this.setClosedStatusFields();
+        // The log retention date field should support being manually changed, so only auto-set it on insert
+        this.setLogRetentionDate();
+    }
 
-        // Run any plugins configured in the LoggerSObjectHandlerPlugin__mdt custom metadata type
-        this.executePlugins();
+    protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
+        this.logs = (List<Log__c>) triggerNewMap.values();
+        this.oldLogsById = (Map<Id, Log__c>) triggerOldMap;
+
+        this.setClosedStatusFields();
+        // Priority logic relies on roll-up fields, so only run on update (after log entries are inserted)
+        this.setPriority();
+    }
+
+    protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
+        this.logs = (List<Log__c>) triggerNewMap.values();
+
+        this.shareLogsWithLoggingUsers();
     }
 
     private void setOrgReleaseCycle() {

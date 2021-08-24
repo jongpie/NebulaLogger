@@ -10,13 +10,8 @@
 public without sharing class LoggerTagHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
-    // Trigger-based variables - tests can override these with mock objects
     @TestVisible
-    private List<LoggerTag__c> loggerTags {
-        get {
-            return (List<LoggerTag__c>) this.triggerNew;
-        }
-    }
+    private List<LoggerTag__c> loggerTags;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -26,21 +21,16 @@ public without sharing class LoggerTagHandler extends LoggerSObjectHandler {
         return Schema.LoggerTag__c.SObjectType;
     }
 
-    /**
-     * @description Runs the trigger handler's logic for the `LoggerTag__c` custom object
-     */
-    public override void execute() {
-        if (this.isEnabled() == false) {
-            return;
-        }
+    protected override void executeBeforeInsert(List<SObject> triggerNew) {
+        this.loggerTags = (List<LoggerTag__c>) triggerNew;
 
-        switch on this.triggerOperationType {
-            when BEFORE_INSERT, BEFORE_UPDATE {
-                this.setUniqueIdField();
-            }
-        }
+        this.setUniqueIdField();
+    }
 
-        this.executePlugins();
+    protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
+        this.loggerTags = (List<LoggerTag__c>) triggerNewMap.values();
+
+        this.setUniqueIdField();
     }
 
     private void setUniqueIdField() {

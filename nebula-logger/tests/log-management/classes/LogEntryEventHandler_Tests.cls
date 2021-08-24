@@ -50,7 +50,8 @@ private class LogEntryEventHandler_Tests {
         System.assert(logEntryEvents.isEmpty());
 
         Test.startTest();
-        new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents).execute();
+        new LogEntryEventHandler().executeBeforeInsert(logEntryEvents);
+        new LogEntryEventHandler().executeAfterInsert(logEntryEvents);
         Test.stopTest();
     }
 
