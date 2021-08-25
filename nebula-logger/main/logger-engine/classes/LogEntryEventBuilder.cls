@@ -379,7 +379,7 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = record.Id;
-        this.logEntryEvent.RecordJson__c = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(record));
+        this.logEntryEvent.RecordJson__c = getJson(record);
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
@@ -401,7 +401,7 @@ global with sharing class LogEntryEventBuilder {
         String sobjectTypeName = sobjectType?.getDescribe().getName();
 
         this.logEntryEvent.RecordCollectionType__c = 'List';
-        this.logEntryEvent.RecordJson__c = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
+        this.logEntryEvent.RecordJson__c = getJson(records);
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
         this.logEntryEvent.RecordSObjectType__c = sobjectTypeName;
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
@@ -760,6 +760,26 @@ global with sharing class LogEntryEventBuilder {
         }
 
         return true;
+    }
+
+    private static String getJson(SObject record) {
+        SObject localRecord = record.clone(false, false, false, false); // TODO
+        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true) {
+            SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, new List<SObject>{ localRecord });
+            localRecord = securityDecision.getRecords().get(0);
+        }
+
+        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(localRecord));
+    }
+
+    private static String getJson(List<SObject> records) {
+        List<SObject> localRecords = records.clone();// TODO false, false, false, false);
+        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true) {
+            SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, localRecords);
+            localRecords = securityDecision.getRecords();
+        }
+
+        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(localRecords));
     }
 
     private static String getTagsString(List<String> tags) {
