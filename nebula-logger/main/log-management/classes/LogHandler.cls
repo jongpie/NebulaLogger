@@ -151,6 +151,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         // For each log record, share the record with the user that created the log (Log__c.LoggedBy__c)
         List<Log__Share> logShares = new List<Log__Share>();
         for (Log__c log : this.logs) {
+            // Anonymous logs don't have a user set for LoggedBy__c, so there's no one to share the record with
+            if (log.LoggedBy__c == null) {
+                continue;
+            }
+
             // Load the logging user's settings
             User loggingUser = new User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);

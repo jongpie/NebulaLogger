@@ -806,6 +806,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String sanitizeMessage(String message) {
+        if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
+            return message;
+        }
+
         for (LogEntryDataMaskRule__mdt dataMaskRule : DATA_MASK_RULES) {
             Integer numberOfCharactersToDisplay = Integer.valueOf(dataMaskRule.NumberOfCharactersToDisplay__c);
             Pattern dataMaskPattern = Pattern.compile(dataMaskRule.MessageRegEx__c);

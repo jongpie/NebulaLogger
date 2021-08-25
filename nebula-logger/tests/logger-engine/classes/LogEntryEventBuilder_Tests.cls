@@ -134,7 +134,8 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_apply_credit_card_number_data_mask_rule() {
+    static void it_should_apply_credit_card_number_data_mask_rule_when_enabled() {
+        Logger.getUserSettings().ApplyDataMaskRules__c = true;
         LogEntryEventBuilder.DATA_MASK_RULES.add(new LogEntryDataMaskRule__mdt(
             MaskCharacter__c = '*',
             MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}',
@@ -151,7 +152,8 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_apply_social_security_number_data_mask_rule() {
+    static void it_should_apply_social_security_number_data_mask_rule_when_enabled() {
+        Logger.getUserSettings().ApplyDataMaskRules__c = true;
         LogEntryEventBuilder.DATA_MASK_RULES.add(new LogEntryDataMaskRule__mdt(
             MaskCharacter__c = 'X',
             MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}',
@@ -165,6 +167,38 @@ private class LogEntryEventBuilder_Tests {
 
         System.assertNotEquals(message, builder.getLogEntryEvent().Message__c);
         System.assertEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
+    }
+
+    @IsTest
+    static void it_should_not_apply_credit_card_number_data_mask_rule_when_disabled() {
+        Logger.getUserSettings().ApplyDataMaskRules__c = false;
+        LogEntryEventBuilder.DATA_MASK_RULES.add(new LogEntryDataMaskRule__mdt(
+            MaskCharacter__c = '*',
+            MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}',
+            NumberOfCharactersToDisplay__c = 4
+        ));
+        String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
+        
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        builder.setMessage(message);
+
+        System.assertEquals(message, builder.getLogEntryEvent().Message__c);
+    }
+
+    @IsTest
+    static void it_should_not_apply_social_security_number_data_mask_rule_when_disabled() {
+        Logger.getUserSettings().ApplyDataMaskRules__c = false;
+        LogEntryEventBuilder.DATA_MASK_RULES.add(new LogEntryDataMaskRule__mdt(
+            MaskCharacter__c = 'X',
+            MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}',
+            NumberOfCharactersToDisplay__c = 4
+        ));
+        String message = 'Something, something, something and in case you want to steal my identity, my social is 909-03-4642 and something else';
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        builder.setMessage(message);
+
+        System.assertEquals(message, builder.getLogEntryEvent().Message__c);
     }
 
     @IsTest
