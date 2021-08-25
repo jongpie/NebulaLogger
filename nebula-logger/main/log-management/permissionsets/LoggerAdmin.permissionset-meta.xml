@@ -58,6 +58,10 @@
     </classAccesses>
     <customMetadataTypeAccesses>
         <enabled>true</enabled>
+        <name>LogEntryDataMaskRule__mdt</name>
+    </customMetadataTypeAccesses>
+    <customMetadataTypeAccesses>
+        <enabled>true</enabled>
         <name>LogEntryTagRule__mdt</name>
     </customMetadataTypeAccesses>
     <customMetadataTypeAccesses>

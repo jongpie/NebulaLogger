@@ -11,6 +11,8 @@
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final AuthSession AUTH_SESSION = getAuthSession();
+    @TestVisible
+    private static final List<LogEntryDataMaskRule__mdt> DATA_MASK_RULES = getDataMaskRules();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final SObject NETWORK_SITE = getNetwork();
@@ -111,7 +113,7 @@ global with sharing class LogEntryEventBuilder {
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(LogMessage logMessage) {
-        if (this.shouldSave == false) {
+        if (this.shouldSave == false && Test.isRunningTest() == false) {
             return this;
         }
 
@@ -124,18 +126,19 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(String message) {
+        String sanitizedMessage;
         if (this.shouldSave == true || Test.isRunningTest() == true) {
+            sanitizedMessage = sanitizeMessage(message);
             // To help with debugging unit tests, always run System.debug statement in a test context
-            System.debug(this.entryLoggingLevel, message);
+            System.debug(this.entryLoggingLevel, sanitizedMessage);
         }
 
         if (this.shouldSave == false) {
             return this;
         }
 
-        String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
-        this.logEntryEvent.Message__c = truncatedMessage;
-        this.logEntryEvent.MessageTruncated__c = message != truncatedMessage;
+        this.logEntryEvent.Message__c = sanitizedMessage;
+        this.logEntryEvent.MessageTruncated__c = sanitizedMessage.length() < message.length();
 
         return this;
     }
@@ -673,6 +676,14 @@ global with sharing class LogEntryEventBuilder {
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
+    private static List<LogEntryDataMaskRule__mdt> getDataMaskRules() {
+        List<LogEntryDataMaskRule__mdt> rules = LogEntryDataMaskRule__mdt.getAll().values();
+        if (Test.isRunningTest() == true) {
+            rules.clear();
+        }
+        return rules;
+    }
+
     private static List<String> getIgnoredClasses() {
         return new List<String>{ FlowLogger.class.getName(), Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
     }
@@ -773,7 +784,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String getJson(List<SObject> records) {
-        List<SObject> localRecords = records.clone();// TODO false, false, false, false);
+        List<SObject> localRecords = records.clone(); // TODO false, false, false, false);
         if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true) {
             SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, localRecords);
             localRecords = securityDecision.getRecords();
@@ -791,6 +802,30 @@ global with sharing class LogEntryEventBuilder {
         tags = new List<String>(new Set<String>(tags));
 
         return String.escapeSingleQuotes(String.join(tags, '\n'));
+    }
+
+    private static String sanitizeMessage(String message) {
+        for (LogEntryDataMaskRule__mdt dataMaskRule : DATA_MASK_RULES) {
+
+            Integer numberOfCharactersToDisplay = Integer.valueOf(dataMaskRule.NumberOfCharactersToDisplay__c);
+            Pattern dataMaskPattern = Pattern.compile(dataMaskRule.MessageRegEx__c);
+
+            Matcher dataMaskPatternMatcher = dataMaskPattern.matcher(message);
+            while (dataMaskPatternMatcher.find() == true) {
+                String matchingSubstring = message.substring(dataMaskPatternMatcher.start(), dataMaskPatternMatcher.end());
+
+                String substringToMask = matchingSubstring.substring(0, matchingSubstring.length() - numberOfCharactersToDisplay);
+                String mask = '';
+                for (Integer i = 0; i < substringToMask.length(); i++) {
+                    mask += dataMaskRule.MaskCharacter__c;
+                }
+                String maskedSubstring = mask + matchingSubstring.substring(matchingSubstring.length() - numberOfCharactersToDisplay);
+
+                message = message.replace(matchingSubstring, maskedSubstring);
+            }
+        }
+
+        return truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
     }
 
     private static String truncateFieldValue(Schema.SObjectField field, String value) {

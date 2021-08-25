@@ -1761,6 +1761,9 @@
         <readable>false</readable>
     </fieldPermissions>
     <layoutAssignments>
+        <layout>LogEntryDataMaskRule__mdt-Log Entry Data Mask Rule Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>LogEntryTagRule__mdt-Logger Tag Rule Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
