@@ -775,23 +775,23 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String getJson(SObject record) {
-        SObject localRecord = record.clone(true, true, true, true); // TODO - stripInaccessible() won't work for AggregateResult
-        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true && record.getSObectType() != Schema.AggregateResult.SObjectType) {
-            SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, new List<SObject>{ localRecord });
-            localRecord = securityDecision.getRecords().get(0);
-        }
-
-        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(localRecord));
+        SObject strippedRecord = stripInaccessible(new List<SObject>{ record }).get(0);
+        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecord));
     }
 
     private static String getJson(List<SObject> records) {
-        List<SObject> localRecords = records.deepClone(true, true, true); // TODO skip for aggregate result
-        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true) {
+        List<SObject> strippedRecords = stripInaccessible(records);
+        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecords));
+    }
+
+    private static List<SObject> stripInaccessible(List<SObject> records) {
+        List<SObject> localRecords;
+        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true && records.getSObjectType() != Schema.AggregateResult.SObjectType) {
+            localRecords = records.deepClone(true, true, true);
             SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, localRecords);
             localRecords = securityDecision.getRecords();
         }
-
-        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(localRecords));
+        return localRecords != null ? localRecords : records;
     }
 
     private static String getTagsString(List<String> tags) {
