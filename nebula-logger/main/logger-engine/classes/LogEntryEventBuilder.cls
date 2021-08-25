@@ -679,6 +679,7 @@ global with sharing class LogEntryEventBuilder {
     private static List<LogEntryDataMaskRule__mdt> getDataMaskRules() {
         List<LogEntryDataMaskRule__mdt> rules = LogEntryDataMaskRule__mdt.getAll().values();
         if (Test.isRunningTest() == true) {
+            // Tests will only mocked CMDT records
             rules.clear();
         }
         return rules;
@@ -774,8 +775,8 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String getJson(SObject record) {
-        SObject localRecord = record.clone(false, false, false, false); // TODO
-        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true) {
+        SObject localRecord = record.clone(true, true, true, true); // TODO - stripInaccessible() won't work for AggregateResult
+        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true && record.getSObectType() != Schema.AggregateResult.SObjectType) {
             SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, new List<SObject>{ localRecord });
             localRecord = securityDecision.getRecords().get(0);
         }
@@ -784,7 +785,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String getJson(List<SObject> records) {
-        List<SObject> localRecords = records.clone(); // TODO false, false, false, false);
+        List<SObject> localRecords = records.deepClone(true, true, true); // TODO skip for aggregate result
         if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true) {
             SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, localRecords);
             localRecords = securityDecision.getRecords();
@@ -806,7 +807,6 @@ global with sharing class LogEntryEventBuilder {
 
     private static String sanitizeMessage(String message) {
         for (LogEntryDataMaskRule__mdt dataMaskRule : DATA_MASK_RULES) {
-
             Integer numberOfCharactersToDisplay = Integer.valueOf(dataMaskRule.NumberOfCharactersToDisplay__c);
             Pattern dataMaskPattern = Pattern.compile(dataMaskRule.MessageRegEx__c);
 
