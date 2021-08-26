@@ -815,21 +815,16 @@ global with sharing class LogEntryEventBuilder {
                 continue;
             }
 
-            Integer numberOfCharactersToKeepUnmasked = Integer.valueOf(dataMaskRule.NumberOfCharactersToKeepUnmasked__c);
             Pattern dataMaskPattern = Pattern.compile(dataMaskRule.MessageRegEx__c);
-
             Matcher dataMaskPatternMatcher = dataMaskPattern.matcher(message);
             while (dataMaskPatternMatcher.find() == true) {
                 String matchingSubstring = message.substring(dataMaskPatternMatcher.start(), dataMaskPatternMatcher.end());
 
-                String substringToMask = matchingSubstring.substring(0, matchingSubstring.length() - numberOfCharactersToKeepUnmasked);
-                String mask = '';
-                Integer maskLength = dataMaskRule.MaskedTextLength__c != null ? Integer.valueOf(dataMaskRule.MaskedTextLength__c) : substringToMask.length();
+                String maskedSubstring = '';
+                Integer maskLength = dataMaskRule.MaskedTextLength__c != null ? Integer.valueOf(dataMaskRule.MaskedTextLength__c) : matchingSubstring.length();
                 for (Integer i = 0; i < maskLength; i++) {
-                    mask += dataMaskRule.MaskCharacter__c;
+                    maskedSubstring += dataMaskRule.MaskCharacter__c;
                 }
-                String maskedSubstring = mask + matchingSubstring.substring(matchingSubstring.length() - numberOfCharactersToKeepUnmasked);
-
                 message = message.replace(matchingSubstring, maskedSubstring);
             }
         }

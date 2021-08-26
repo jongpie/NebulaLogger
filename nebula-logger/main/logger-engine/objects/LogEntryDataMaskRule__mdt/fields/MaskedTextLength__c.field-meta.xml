@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText
-    >Optional: When not set, the masked text will be the same length as the original text. When &apos;set, the masked text will be set to the exact length specified, regardless of the length of the original text.</inlineHelpText>
+    >Optional: When not set, the masked text will be the same length as the original text. When set, the masked text will be set to the exact length specified, regardless of the length of the original text.</inlineHelpText>
     <label>Masked Text Length</label>
     <precision>3</precision>
     <required>false</required>

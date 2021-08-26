@@ -20,10 +20,6 @@
     </values>
     <values>
         <field>MessageRegEx__c</field>
-        <value xsi:type="xsd:string">\d{3}[- ]*\d{2}[- ]*\d{4}</value>
-    </values>
-    <values>
-        <field>NumberOfCharactersToKeepUnmasked__c</field>
-        <value xsi:type="xsd:double">4.0</value>
+        <value xsi:type="xsd:string">\d{3}[- ]*\d{2}[- ]*(?=(\d{4}))</value>
     </values>
 </CustomMetadata>

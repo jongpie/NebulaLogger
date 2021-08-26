@@ -40,10 +40,6 @@
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>NumberOfCharactersToKeepUnmasked__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>MaskedTextLength__c</field>
             </layoutItems>

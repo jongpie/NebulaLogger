@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>AmericanExpress Credit Card Number</label>
+    <label>American Express Credit Card Number</label>
     <protected>false</protected>
     <values>
         <field>IsEnabled__c</field>
@@ -20,10 +20,6 @@
     </values>
     <values>
         <field>MessageRegEx__c</field>
-        <value xsi:type="xsd:string">3[47]\d{2}[- ]*\d{6}[- ]*\d{5}</value>
-    </values>
-    <values>
-        <field>NumberOfCharactersToKeepUnmasked__c</field>
-        <value xsi:type="xsd:double">4.0</value>
+        <value xsi:type="xsd:string">3[47]\d{2}[- ]*\d{6}[- ]*(?=(\d{5}))</value>
     </values>
 </CustomMetadata>

@@ -142,8 +142,7 @@ private class LogEntryEventBuilder_Tests {
                 IsEnabled__c = true,
                 MaskCharacter__c = '*',
                 MaskedTextLength__c = maskedTextLength,
-                MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}',
-                NumberOfCharactersToKeepUnmasked__c = 4
+                MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*(?=(\\d{4}))'
             )
         );
         String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
@@ -164,8 +163,7 @@ private class LogEntryEventBuilder_Tests {
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
                 MaskCharacter__c = 'X',
-                MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}',
-                NumberOfCharactersToKeepUnmasked__c = 4
+                MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*(?=(\\d{4}))'
             )
         );
         String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
@@ -185,8 +183,7 @@ private class LogEntryEventBuilder_Tests {
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
                 MaskCharacter__c = '*',
-                MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}',
-                NumberOfCharactersToKeepUnmasked__c = 4
+                MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}'
             )
         );
         String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
@@ -204,8 +201,7 @@ private class LogEntryEventBuilder_Tests {
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
                 MaskCharacter__c = 'X',
-                MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}',
-                NumberOfCharactersToKeepUnmasked__c = 4
+                MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}'
             )
         );
         String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
