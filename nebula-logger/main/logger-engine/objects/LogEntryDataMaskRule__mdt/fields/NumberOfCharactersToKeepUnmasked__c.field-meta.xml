@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>NumberOfCharactersToDisplay__c</fullName>
+    <fullName>NumberOfCharactersToKeepUnmasked__c</fullName>
     <defaultValue>0</defaultValue>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>Number of Characters to Display</label>
+    <inlineHelpText
+    >The number of characters from the original text to keep unmasked, starting from the right. For example, credit card numbers typically have the first 12 characters masked and the last 4 characters are left unmasked.</inlineHelpText>
+    <label>Characters to Keep Unmasked</label>
     <precision>3</precision>
     <required>true</required>
     <scale>0</scale>

@@ -137,8 +137,9 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        Boolean messageTruncated = String.isNotBlank(message) && message.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
         this.logEntryEvent.Message__c = sanitizedMessage;
-        this.logEntryEvent.MessageTruncated__c = sanitizedMessage.length() < message.length();
+        this.logEntryEvent.MessageTruncated__c = messageTruncated;
 
         return this;
     }
@@ -785,13 +786,12 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static List<SObject> stripInaccessible(List<SObject> records) {
-        List<SObject> localRecords;
-        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == true && records.getSObjectType() != Schema.AggregateResult.SObjectType) {
-            localRecords = records.deepClone(true, true, true);
-            SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, localRecords);
-            localRecords = securityDecision.getRecords();
+        if (Logger.getUserSettings().StripInaccessibleRecordFields__c == false || records.getSObjectType() == Schema.AggregateResult.SObjectType) {
+            return records;
         }
-        return localRecords != null ? localRecords : records;
+
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records);
+        return securityDecision.getRecords();
     }
 
     private static String getTagsString(List<String> tags) {
@@ -811,19 +811,24 @@ global with sharing class LogEntryEventBuilder {
         }
 
         for (LogEntryDataMaskRule__mdt dataMaskRule : DATA_MASK_RULES) {
-            Integer numberOfCharactersToDisplay = Integer.valueOf(dataMaskRule.NumberOfCharactersToDisplay__c);
+            if (dataMaskRule.IsEnabled__c == false) {
+                continue;
+            }
+
+            Integer numberOfCharactersToKeepUnmasked = Integer.valueOf(dataMaskRule.NumberOfCharactersToKeepUnmasked__c);
             Pattern dataMaskPattern = Pattern.compile(dataMaskRule.MessageRegEx__c);
 
             Matcher dataMaskPatternMatcher = dataMaskPattern.matcher(message);
             while (dataMaskPatternMatcher.find() == true) {
                 String matchingSubstring = message.substring(dataMaskPatternMatcher.start(), dataMaskPatternMatcher.end());
 
-                String substringToMask = matchingSubstring.substring(0, matchingSubstring.length() - numberOfCharactersToDisplay);
+                String substringToMask = matchingSubstring.substring(0, matchingSubstring.length() - numberOfCharactersToKeepUnmasked);
                 String mask = '';
-                for (Integer i = 0; i < substringToMask.length(); i++) {
+                Integer maskLength = dataMaskRule.MaskedTextLength__c != null ? Integer.valueOf(dataMaskRule.MaskedTextLength__c) : substringToMask.length();
+                for (Integer i = 0; i < maskLength; i++) {
                     mask += dataMaskRule.MaskCharacter__c;
                 }
-                String maskedSubstring = mask + matchingSubstring.substring(matchingSubstring.length() - numberOfCharactersToDisplay);
+                String maskedSubstring = mask + matchingSubstring.substring(matchingSubstring.length() - numberOfCharactersToKeepUnmasked);
 
                 message = message.replace(matchingSubstring, maskedSubstring);
             }
