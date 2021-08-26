@@ -8,6 +8,11 @@
     "settings": {
         "communitiesSettings": {
             "enableNetworksEnabled": true
+        },
+        "userManagementSettings": {
+            "enableEnhancedPermsetMgmt": true,
+            "enableEnhancedProfileMgmt": true,
+            "enableNewProfileUI": true
         }
     }
 }

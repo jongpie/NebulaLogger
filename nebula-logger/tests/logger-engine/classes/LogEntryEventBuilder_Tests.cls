@@ -168,8 +168,8 @@ private class LogEntryEventBuilder_Tests {
                 NumberOfCharactersToKeepUnmasked__c = 4
             )
         );
-        String message = 'Something, something, something and in case you want to steal my identity, my social is 909-03-4642 and something else';
-        String expectedSanitizedMessage = 'Something, something, something and in case you want to steal my identity, my social is XXXXXXX4642 and something else';
+        String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
+        String expectedSanitizedMessage = 'Something, something, something and in case you want to steal my identity, my social is XXXXXXX9999 and something else';
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
@@ -208,7 +208,7 @@ private class LogEntryEventBuilder_Tests {
                 NumberOfCharactersToKeepUnmasked__c = 4
             )
         );
-        String message = 'Something, something, something and in case you want to steal my identity, my social is 909-03-4642 and something else';
+        String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
