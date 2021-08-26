@@ -680,7 +680,7 @@ global with sharing class LogEntryEventBuilder {
     private static List<LogEntryDataMaskRule__mdt> getDataMaskRules() {
         List<LogEntryDataMaskRule__mdt> rules = LogEntryDataMaskRule__mdt.getAll().values();
         if (Test.isRunningTest() == true) {
-            // Tests will only mocked CMDT records
+            // Tests will only use mock CMDT records
             rules.clear();
         }
         return rules;

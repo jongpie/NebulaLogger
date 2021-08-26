@@ -173,7 +173,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             );
             logShares.add(logShare);
         }
-        List<Database.SaveResult> saveResults = Database.insert(logShares, false);
-        System.debug('saveResults==' + saveResults);
+        Database.insert(logShares, false);
     }
 }
