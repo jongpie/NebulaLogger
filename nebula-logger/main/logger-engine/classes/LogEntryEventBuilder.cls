@@ -790,7 +790,7 @@ global with sharing class LogEntryEventBuilder {
             return records;
         }
 
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records);
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records, false);
         return securityDecision.getRecords();
     }
 

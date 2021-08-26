@@ -7,12 +7,7 @@
 .settings/
 .sfdx/
 .vscode/
-examples/
-nebula-logger/main/default/
-nebula-logger/managed-package/
-packages/
 scripts/
-tests/
 
 # NPM
 node_modules/

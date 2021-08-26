@@ -78,8 +78,8 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.setRecordId(new User(Id = UserInfo.getUserId())).getLogEntryEvent());
         System.assertEquals(null, builder.setRecord(UserInfo.getUserId()).getLogEntryEvent());
         System.assertEquals(null, builder.setRecord(new User(Id = UserInfo.getUserId())).getLogEntryEvent());
-        System.assertEquals(null, builder.setRecord(new List<User>{new User(Id = UserInfo.getUserId())}).getLogEntryEvent());
-        System.assertEquals(null, builder.addTags(new List<String>{'tag-1', 'tag-2'}).getLogEntryEvent());
+        System.assertEquals(null, builder.setRecord(new List<User>{ new User(Id = UserInfo.getUserId()) }).getLogEntryEvent());
+        System.assertEquals(null, builder.addTags(new List<String>{ 'tag-1', 'tag-2' }).getLogEntryEvent());
         System.assertEquals(null, builder.parseStackTrace(new DmlException().getStackTraceString()).getLogEntryEvent());
     }
 
@@ -137,13 +137,15 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_apply_credit_card_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
         Integer maskedTextLength = 50;
-        LogEntryEventBuilder.DATA_MASK_RULES.add(new LogEntryDataMaskRule__mdt(
-            IsEnabled__c = true,
-            MaskCharacter__c = '*',
-            MaskedTextLength__c = maskedTextLength,
-            MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}',
-            NumberOfCharactersToKeepUnmasked__c = 4
-        ));
+        LogEntryEventBuilder.DATA_MASK_RULES.add(
+            new LogEntryDataMaskRule__mdt(
+                IsEnabled__c = true,
+                MaskCharacter__c = '*',
+                MaskedTextLength__c = maskedTextLength,
+                MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}',
+                NumberOfCharactersToKeepUnmasked__c = 4
+            )
+        );
         String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
         String expectedMaskText = '*'.repeat(maskedTextLength);
         String expectedSanitizedMessage = 'Something, something, something credit card ' + expectedMaskText + '3333 and something else';
@@ -158,12 +160,14 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_apply_social_security_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
-        LogEntryEventBuilder.DATA_MASK_RULES.add(new LogEntryDataMaskRule__mdt(
-            IsEnabled__c = true,
-            MaskCharacter__c = 'X',
-            MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}',
-            NumberOfCharactersToKeepUnmasked__c = 4
-        ));
+        LogEntryEventBuilder.DATA_MASK_RULES.add(
+            new LogEntryDataMaskRule__mdt(
+                IsEnabled__c = true,
+                MaskCharacter__c = 'X',
+                MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}',
+                NumberOfCharactersToKeepUnmasked__c = 4
+            )
+        );
         String message = 'Something, something, something and in case you want to steal my identity, my social is 909-03-4642 and something else';
         String expectedSanitizedMessage = 'Something, something, something and in case you want to steal my identity, my social is XXXXXXX4642 and something else';
 
@@ -177,12 +181,14 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_not_apply_credit_card_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
-        LogEntryEventBuilder.DATA_MASK_RULES.add(new LogEntryDataMaskRule__mdt(
-            IsEnabled__c = true,
-            MaskCharacter__c = '*',
-            MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}',
-            NumberOfCharactersToKeepUnmasked__c = 4
-        ));
+        LogEntryEventBuilder.DATA_MASK_RULES.add(
+            new LogEntryDataMaskRule__mdt(
+                IsEnabled__c = true,
+                MaskCharacter__c = '*',
+                MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}',
+                NumberOfCharactersToKeepUnmasked__c = 4
+            )
+        );
         String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -194,12 +200,14 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_not_apply_social_security_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
-        LogEntryEventBuilder.DATA_MASK_RULES.add(new LogEntryDataMaskRule__mdt(
-            IsEnabled__c = true,
-            MaskCharacter__c = 'X',
-            MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}',
-            NumberOfCharactersToKeepUnmasked__c = 4
-        ));
+        LogEntryEventBuilder.DATA_MASK_RULES.add(
+            new LogEntryDataMaskRule__mdt(
+                IsEnabled__c = true,
+                MaskCharacter__c = 'X',
+                MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}',
+                NumberOfCharactersToKeepUnmasked__c = 4
+            )
+        );
         String message = 'Something, something, something and in case you want to steal my identity, my social is 909-03-4642 and something else';
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -875,6 +883,67 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(JSON.serializePretty(status), builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Custom Metadata Type Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
         System.assertEquals(LogStatus__mdt.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
+    static void it_should_strip_inaccessible_fields_for_record_when_enabled() {
+        User standardUser = LoggerTestUtils.createStandardUser();
+        AccountBrand mockAccountBrand = new AccountBrand(
+            Id = LoggerTestUtils.mockId(Schema.AccountBrand.SObjectType),
+            CompanyName = 'Some Company, Inc.',
+            Email = 'some.one@some.company.com',
+            Name = 'Something',
+            Phone = '510-555-1234'
+        );
+        // The 'standard user' profile doesn't have access to AccountBrand,
+        // so stripAccessible will remove everything except the ID field
+        AccountBrand strippedAccountBrand = new AccountBrand(Id = mockAccountBrand.Id);
+
+        LogEntryEventBuilder builder;
+        System.runAs(standardUser) {
+            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
+
+            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrand);
+        }
+
+        System.assertNotEquals(JSON.serializePretty(mockAccountBrand), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(strippedAccountBrand), builder.getLogEntryEvent().RecordJson__c);
+    }
+
+    @IsTest
+    static void it_should_strip_inaccessible_fields_for_records_when_enabled() {
+        User standardUser = LoggerTestUtils.createStandardUser();
+        List<AccountBrand> mockAccountBrands = new List<AccountBrand>();
+        List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
+        for (Integer i = 0; i < 5; i++) {
+            AccountBrand mockAccountBrand = new AccountBrand(
+                Id = LoggerTestUtils.mockId(Schema.AccountBrand.SObjectType),
+                CompanyName = 'Some Company, Inc.',
+                Email = 'some.one.number_' + i + '@some.company.com',
+                Name = 'Something',
+                Phone = '510-555-1234'
+            );
+            mockAccountBrands.add(mockAccountBrand);
+
+            // The 'standard user' profile doesn't have access to AccountBrand,
+            // so stripAccessible will remove everything except the ID field
+            AccountBrand strippedAccountBrand = new AccountBrand(Id = mockAccountBrand.Id);
+            strippedAccountBrands.add(strippedAccountBrand);
+        }
+
+        LogEntryEventBuilder builder;
+        System.runAs(standardUser) {
+            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
+
+            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrands);
+        }
+
+        System.assertNotEquals(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(JSON.serializePretty(strippedAccountBrands), builder.getLogEntryEvent().RecordJson__c);
     }
 
     @IsTest
