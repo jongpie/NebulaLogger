@@ -819,12 +819,8 @@ global with sharing class LogEntryEventBuilder {
             Matcher dataMaskPatternMatcher = dataMaskPattern.matcher(message);
             while (dataMaskPatternMatcher.find() == true) {
                 String matchingSubstring = message.substring(dataMaskPatternMatcher.start(), dataMaskPatternMatcher.end());
-
-                String maskedSubstring = '';
                 Integer maskLength = dataMaskRule.MaskedTextLength__c != null ? Integer.valueOf(dataMaskRule.MaskedTextLength__c) : matchingSubstring.length();
-                for (Integer i = 0; i < maskLength; i++) {
-                    maskedSubstring += dataMaskRule.MaskCharacter__c;
-                }
+                String maskedSubstring = dataMaskRule.MaskCharacter__c.repeat(maskLength);
                 message = message.replace(matchingSubstring, maskedSubstring);
             }
         }
