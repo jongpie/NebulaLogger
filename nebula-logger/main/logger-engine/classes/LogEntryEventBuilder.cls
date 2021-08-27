@@ -12,7 +12,6 @@ global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
-    private static final String ORGANIZATION_ENVIRONMENT_TYPE = getOrganizationEnvironmentType();
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
 
@@ -54,6 +53,16 @@ global with sharing class LogEntryEventBuilder {
                 CACHED_ORGANIZATION = queryOrganization();
             }
             return CACHED_ORGANIZATION;
+        }
+        set;
+    }
+
+    private static final String CACHED_ORGANIZATION_ENVIRONMENT_TYPE {
+        get {
+            if (CACHED_ORGANIZATION_ENVIRONMENT_TYPE == null) {
+                CACHED_ORGANIZATION_ENVIRONMENT_TYPE = getOrganizationEnvironmentType();
+            }
+            return CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
         }
         set;
     }
@@ -621,7 +630,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows();
         this.logEntryEvent.LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries();
         this.logEntryEvent.OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm();
-        this.logEntryEvent.OrganizationEnvironmentType__c = ORGANIZATION_ENVIRONMENT_TYPE;
+        this.logEntryEvent.OrganizationEnvironmentType__c = CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
         this.logEntryEvent.OrganizationId__c = CACHED_ORGANIZATION.Id;
         this.logEntryEvent.OrganizationInstanceName__c = CACHED_ORGANIZATION.InstanceName;
         this.logEntryEvent.OrganizationName__c = CACHED_ORGANIZATION.Name;

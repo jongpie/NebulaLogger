@@ -25,10 +25,6 @@ private class Logger_Tests {
     }
 
     // Helper methods
-    static User getCurrentUser() {
-        return new User(Id = UserInfo.getUserId());
-    }
-
     static void setUserLoggingLevel(LoggingLevel loggingLevel) {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
     }
@@ -177,13 +173,15 @@ private class Logger_Tests {
     static String getOriginLocation() {
         String originLocation;
         for (String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('Logger_Tests.getOriginLocation'))
+            if (currentStackTraceLine.contains('Logger_Tests.getOriginLocation')) {
                 continue;
-            if (currentStackTraceLine.contains('.LogEntryEventBuilder.'))
+            }
+            if (currentStackTraceLine.contains('.LogEntryEventBuilder.')) {
                 continue;
-            if (currentStackTraceLine.contains('.Logger.'))
+            }
+            if (currentStackTraceLine.contains('.Logger.')) {
                 continue;
-
+            }
             originLocation = currentStackTraceLine.substringBefore(':');
             if (originLocation.startsWith('Class.')) {
                 originLocation = originLocation.substringAfter('Class.');
@@ -194,7 +192,7 @@ private class Logger_Tests {
         return originLocation;
     }
 
-    @testSetup
+    @TestSetup
     static void setup() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
         settings.IsEnabled__c = true;

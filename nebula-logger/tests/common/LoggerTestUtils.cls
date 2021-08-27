@@ -5,8 +5,8 @@
 
 @IsTest
 public class LoggerTestUtils {
-    private static Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
-    private static Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
+    private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
+    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
 
     public static AggregateResult createMockAggregateResult() {
         Map<String, Object> defaultMockAggregateKeyValues = new Map<String, Object>{
@@ -49,4 +49,49 @@ public class LoggerTestUtils {
             Username = 'logger_xyz@test.com.net.org'
         );
     }
+
+    public static Organization getOrganization() {
+        return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+    }
+
+    public static String getOrganizationEnvironmentType() {
+        Organization organization = getOrganization();
+
+        String orgEnvironmentType;
+        if (organization.IsSandbox == true && organization.TrialExpirationDate != null) {
+            orgEnvironmentType = 'Scratch Org';
+        } else if (organization.IsSandbox == true) {
+            orgEnvironmentType = 'Sandbox';
+        } else {
+            orgEnvironmentType = 'Production';
+        }
+        return orgEnvironmentType;
+    }
+
+    public static SObject getNetwork() {
+        if (Network.getNetworkId() == null) {
+            return null;
+        }
+
+        String networkApiName = 'Network';
+        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
+        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
+
+        if (!networksEnabled) {
+            return null;
+        }
+
+        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
+
+        return Database.query(queryString);
+    }
+
+    public static User getUser() {
+        return [
+            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ];
+    }
+
 }

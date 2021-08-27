@@ -5,48 +5,6 @@
 
 @IsTest
 private class LogEntryEventBuilder_Tests {
-    private static Organization getOrganization() {
-        return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
-    }
-
-    private static String getOrganizationEnvironmentType(Organization organization) {
-        String orgEnvironmentType;
-        if (organization.IsSandbox == true && organization.TrialExpirationDate != null) {
-            orgEnvironmentType = 'Scratch Org';
-        } else if (organization.IsSandbox == true) {
-            orgEnvironmentType = 'Sandbox';
-        } else {
-            orgEnvironmentType = 'Production';
-        }
-        return orgEnvironmentType;
-    }
-
-    private static SObject getNetwork() {
-        if (Network.getNetworkId() == null) {
-            return null;
-        }
-
-        String networkApiName = 'Network';
-        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
-        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
-
-        if (!networksEnabled) {
-            return null;
-        }
-
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
-
-        return Database.query(queryString);
-    }
-
-    private static User getUser() {
-        return [
-            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
-    }
-
     static String getMessage() {
         return 'Hello, world';
     }
@@ -56,9 +14,8 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_short_circuit_when_not_enabled() {
-        Boolean shouldSave = false;
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG, shouldSave);
+    static void it_should_short_circuit_when_disabled() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG, false);
 
         // Run all public and global methods to make sure no errors occur when not enabled (it's happened before)
         System.assertEquals(null, builder.setMessage(getLogMessage()).getLogEntryEvent());
@@ -84,18 +41,24 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_short_circuit_when_enabled_logging_level_above_called_level() {
-        Boolean shouldSave = false;
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
+    static void it_should_not_run_queries_when_logging_disabled() {
+        Logger.getUserSettings().IsEnabled__c = false;
+        System.assertEquals(false, Logger.isEnabled());
+        System.assertEquals(0, Limits.getQueries());
 
+        new LogEntryEventBuilder(LoggingLevel.FINE, false).setMessage('some message').getLogEntryEvent();
+        System.assertEquals(0, Limits.getQueries());
+    }
+
+    @IsTest
+    static void it_should_short_circuit_when_enabled_logging_level_above_called_level() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, false);
         System.assertEquals(null, builder.getLogEntryEvent());
     }
 
     @IsTest
     static void it_should_not_short_circuit_when_enabledl() {
-        Boolean shouldSave = true;
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
-
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, true);
         System.assertNotEquals(null, builder.getLogEntryEvent());
     }
 
@@ -106,12 +69,8 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
-        Test.startTest();
-
         LogMessage logMessage = new LogMessage('The time is {0}', System.now());
         builder.setMessage(logMessage);
-
-        Test.stopTest();
 
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
         System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
@@ -125,12 +84,8 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
-        Test.startTest();
-
         String message = 'The time is ' + String.valueOf(System.now());
         builder.setMessage(message);
-
-        Test.stopTest();
 
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
         System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
@@ -149,10 +104,10 @@ private class LogEntryEventBuilder_Tests {
                 MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*(?=(\\d{4}))'
             )
         );
+
         String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
         String expectedMaskText = '*'.repeat(maskedTextLength);
         String expectedSanitizedMessage = 'Something, something, something credit card ' + expectedMaskText + '3333 and something else';
-
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
@@ -165,15 +120,11 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_apply_social_security_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
         LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(
-                IsEnabled__c = true,
-                MaskCharacter__c = 'X',
-                MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*(?=(\\d{4}))'
-            )
+            new LogEntryDataMaskRule__mdt(IsEnabled__c = true, MaskCharacter__c = 'X', MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*(?=(\\d{4}))')
         );
+
         String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
         String expectedSanitizedMessage = 'Something, something, something and in case you want to steal my identity, my social is XXXXXXX9999 and something else';
-
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
@@ -186,14 +137,10 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_apply_credit_card_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
         LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(
-                IsEnabled__c = true,
-                MaskCharacter__c = '*',
-                MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}'
-            )
+            new LogEntryDataMaskRule__mdt(IsEnabled__c = true, MaskCharacter__c = '*', MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}')
         );
-        String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
 
+        String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
@@ -204,14 +151,10 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_apply_social_security_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
         LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(
-                IsEnabled__c = true,
-                MaskCharacter__c = 'X',
-                MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}'
-            )
+            new LogEntryDataMaskRule__mdt(IsEnabled__c = true, MaskCharacter__c = 'X', MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}')
         );
-        String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
 
+        String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
@@ -225,16 +168,12 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
-        Test.startTest();
-
         Integer maxMessageLength = Schema.LogEntry__c.Message__c.getDescribe().getLength();
         String baseMessage = 'z'.repeat(LogEntryEvent__e.Message__c.getDescribe().getLength() + 1);
         LogMessage logMessage = new LogMessage(baseMessage, 'something else');
         builder.setMessage(logMessage);
         System.assert(logMessage.getMessage().length() > maxMessageLength, 'Test message length should exceed the field length');
         builder.setMessage(logMessage);
-
-        Test.stopTest();
 
         System.assertEquals(true, builder.getLogEntryEvent().MessageTruncated__c, 'Message should have been truncated');
         System.assertEquals(logMessage.getMessage().left(maxMessageLength), builder.getLogEntryEvent().Message__c);
@@ -247,14 +186,10 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
-        Test.startTest();
-
         Integer maxMessageLength = Schema.LogEntry__c.Message__c.getDescribe().getLength();
         String message = 'z'.repeat(LogEntryEvent__e.Message__c.getDescribe().getLength() + 1);
         System.assert(message.length() > maxMessageLength, 'Test message length should exceed the field length');
         builder.setMessage(message);
-
-        Test.stopTest();
 
         System.assertEquals(true, builder.getLogEntryEvent().MessageTruncated__c, 'Message should have been truncated');
         System.assertEquals(message.left(maxMessageLength), builder.getLogEntryEvent().Message__c);
@@ -266,12 +201,8 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().ExceptionMessage__c);
         System.assertEquals(null, builder.getLogEntryEvent().ExceptionType__c);
 
-        Test.startTest();
-
         DmlException dmlException = new DmlException('Test DML exception');
         builder.setExceptionDetails(dmlException);
-
-        Test.stopTest();
 
         System.assertEquals(dmlException.getMessage(), builder.getLogEntryEvent().ExceptionMessage__c);
         System.assertEquals(dmlException.getTypeName(), builder.getLogEntryEvent().ExceptionType__c);
@@ -286,40 +217,28 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(true, deleteResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(deleteResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(deleteResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(deleteResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.DeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
     static void it_should_set_database_result_fields_for_failed_deleteResult() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
-
         // Delete the log twice to trigger a DeleteResult error
         delete log;
-
         Database.DeleteResult deleteResult = Database.delete(log, false);
         System.assertEquals(false, deleteResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(deleteResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(deleteResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(deleteResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.DeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
@@ -346,16 +265,11 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(true, saveResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(saveResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(saveResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(saveResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.SaveResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -364,16 +278,11 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(false, saveResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(saveResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(saveResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(saveResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.SaveResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -386,16 +295,11 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(true, undeleteResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(undeleteResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(undeleteResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(undeleteResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -410,16 +314,11 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(false, undeleteResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(undeleteResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(undeleteResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(undeleteResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -429,16 +328,11 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(true, upsertResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(upsertResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(upsertResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UpsertResult.class.getName() + '.Insert', logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(upsertResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName() + '.Insert', builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -448,16 +342,11 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(false, upsertResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(upsertResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(upsertResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UpsertResult.class.getName() + '.Insert', logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(upsertResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName() + '.Insert', builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -471,16 +360,11 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(true, upsertResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(upsertResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(upsertResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UpsertResult.class.getName() + '.Update', logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(upsertResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName() + '.Update', builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -501,16 +385,11 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(false, upsertResult.isSuccess());
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(upsertResult);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('Single', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(upsertResult), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UpsertResult.class.getName() + '.Update', logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(upsertResult), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName() + '.Update', builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -528,16 +407,11 @@ private class LogEntryEventBuilder_Tests {
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(deleteResults);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(deleteResults), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(deleteResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.DeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -558,16 +432,11 @@ private class LogEntryEventBuilder_Tests {
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(deleteResults);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(deleteResults), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.DeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(deleteResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.DeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
@@ -601,16 +470,11 @@ private class LogEntryEventBuilder_Tests {
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(saveResults);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(saveResults), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(saveResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.SaveResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -626,16 +490,11 @@ private class LogEntryEventBuilder_Tests {
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(saveResults);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(saveResults), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.SaveResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(saveResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.SaveResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -654,16 +513,11 @@ private class LogEntryEventBuilder_Tests {
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(undeleteResults);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(undeleteResults), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(undeleteResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -684,16 +538,11 @@ private class LogEntryEventBuilder_Tests {
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(undeleteResults);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(undeleteResults), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UndeleteResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(undeleteResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UndeleteResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -710,16 +559,11 @@ private class LogEntryEventBuilder_Tests {
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(upsertResults);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(upsertResults), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UpsertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(upsertResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -736,16 +580,11 @@ private class LogEntryEventBuilder_Tests {
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-
-        Test.startTest();
         builder.setDatabaseResult(upsertResults);
-        Test.stopTest();
 
-        LogEntryEvent__e logEntryEvent = builder.getLogEntryEvent();
-
-        System.assertEquals('List', logEntryEvent.DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(upsertResults), logEntryEvent.DatabaseResultJson__c);
-        System.assertEquals(Database.UpsertResult.class.getName(), logEntryEvent.DatabaseResultType__c);
+        System.assertEquals('List', builder.getLogEntryEvent().DatabaseResultCollectionType__c);
+        System.assertEquals(JSON.serializePretty(upsertResults), builder.getLogEntryEvent().DatabaseResultJson__c);
+        System.assertEquals(Database.UpsertResult.class.getName(), builder.getLogEntryEvent().DatabaseResultType__c);
     }
 
     @IsTest
@@ -757,12 +596,8 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Test.startTest();
-
         Id currentUserId = UserInfo.getUserId();
         builder.setRecordId(currentUserId);
-
-        Test.stopTest();
 
         System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(currentUserId, builder.getLogEntryEvent().RecordId__c);
@@ -781,13 +616,9 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Test.startTest();
-
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         builder.setRecordId(log.Id);
-
-        Test.stopTest();
 
         System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(log.Id, builder.getLogEntryEvent().RecordId__c);
@@ -993,12 +824,8 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Test.startTest();
-
         List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
         builder.setRecord(users);
-
-        Test.stopTest();
 
         System.assertEquals('List', builder.getLogEntryEvent().RecordCollectionType__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -1012,12 +839,8 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().Tags__c);
 
-        Test.startTest();
-
         List<String> tags = new List<String>{ 'some-tag', 'another One', 'here\'s one more!' };
         builder.addTags(tags);
-
-        Test.stopTest();
 
         String expectedTagsString = String.escapeSingleQuotes(String.join(tags, '\n'));
         System.assertEquals(expectedTagsString, builder.getLogEntryEvent().Tags__c);
@@ -1028,12 +851,8 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().Tags__c);
 
-        Test.startTest();
-
         List<String> tags = new List<String>{ 'duplicate-tag', 'duplicate-tag', 'another One' };
         builder.addTags(tags);
-
-        Test.stopTest();
 
         String expectedTagsString = 'duplicate-tag\nanother One';
         System.assertEquals(expectedTagsString, builder.getLogEntryEvent().Tags__c);
@@ -1043,14 +862,10 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_stack_trace_and_origin_location_for_stack_trace_string() {
         DmlException stackTraceHandler = new DmlException();
 
-        Boolean shouldSave = true;
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, true);
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
-
-        Test.startTest();
         builder.parseStackTrace(stackTraceHandler.getStackTraceString());
-        Test.stopTest();
 
         String expectedOriginLocation = stackTraceHandler.getStackTraceString().split('\n').get(0).substringBefore(':').substringAfter('Class.');
         String expectedStackTrace = stackTraceHandler.getStackTraceString();
@@ -1066,14 +881,10 @@ private class LogEntryEventBuilder_Tests {
         String anonymousApexOriginLocation = 'AnonymousBlock';
         String anonymousApexStackTraceString = 'AnonymousBlock: line 9, column 1';
 
-        Boolean shouldSave = true;
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, true);
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
-
-        Test.startTest();
         builder.parseStackTrace(anonymousApexStackTraceString);
-        Test.stopTest();
 
         System.assertNotEquals(null, builder.getLogEntryEvent().OriginLocation__c);
         System.assertEquals(anonymousApexOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
@@ -1089,10 +900,7 @@ private class LogEntryEventBuilder_Tests {
         // Clear out any auto-set values
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
-
-        Test.startTest();
         builder.parseStackTrace(invalidStackTrace);
-        Test.stopTest();
 
         System.assertEquals(null, builder.getLogEntryEvent().OriginLocation__c);
         System.assertEquals(null, builder.getLogEntryEvent().StackTrace__c);
@@ -1100,36 +908,25 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_return_value_of_shouldSave_when_true() {
-        Test.startTest();
-        Boolean shouldSave = true;
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, shouldSave);
-        Test.stopTest();
-
-        System.assertEquals(shouldSave, builder.shouldSave());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(true, builder.shouldSave());
     }
 
     @IsTest
     static void it_should_return_value_of_shouldSave_when_false() {
-        Test.startTest();
-        Boolean shouldSave = false;
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, shouldSave);
-        Test.stopTest();
-
-        System.assertEquals(shouldSave, builder.shouldSave());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, false);
+        System.assertEquals(false, builder.shouldSave());
     }
 
     @IsTest
     static void it_should_set_detailed_fields() {
-        Test.startTest();
-        Boolean shouldSave = true;
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, shouldSave);
-        Test.stopTest();
-
         // Get expected data
-        Organization organization = getOrganization();
-        String organizationEnvironmentType = getOrganizationEnvironmentType(organization);
-        SObject networkSite = getNetwork();
-        User user = getUser();
+        Organization organization = LoggerTestUtils.getOrganization();
+        String organizationEnvironmentType = LoggerTestUtils.getOrganizationEnvironmentType();
+        SObject networkSite = LoggerTestUtils.getNetwork();
+        User user = LoggerTestUtils.getUser();
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
 
         // Verify organization fields
         System.assertEquals(Url.getOrgDomainUrl().toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
