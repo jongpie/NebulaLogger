@@ -48,7 +48,7 @@
     </columns>
     <columns>
         <aggregateTypes>Sum</aggregateTypes>
-        <field>LogEntry__c.MessageSanitized__c</field>
+        <field>LogEntry__c.MessageDataMasked__c</field>
     </columns>
     <columns>
         <field>LogEntry__c.OriginType__c</field>

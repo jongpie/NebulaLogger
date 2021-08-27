@@ -66,14 +66,14 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_message_fields_for_logMessage() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
-        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageDataMasked__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         LogMessage logMessage = new LogMessage('The time is {0}', System.now());
         builder.setMessage(logMessage);
 
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
-        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageDataMasked__c);
         System.assertEquals(logMessage.getMessage(), builder.getLogEntryEvent().Message__c);
     }
 
@@ -81,14 +81,14 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_message_fields_for_string() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
-        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageDataMasked__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         String message = 'The time is ' + String.valueOf(System.now());
         builder.setMessage(message);
 
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
-        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageDataMasked__c);
         System.assertEquals(message, builder.getLogEntryEvent().Message__c);
     }
 
@@ -111,7 +111,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
-        System.assertEquals(true, builder.getLogEntryEvent().MessageSanitized__c);
+        System.assertEquals(true, builder.getLogEntryEvent().MessageDataMasked__c);
         System.assertNotEquals(message, builder.getLogEntryEvent().Message__c);
         System.assertEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
     }
@@ -128,7 +128,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
-        System.assertEquals(true, builder.getLogEntryEvent().MessageSanitized__c);
+        System.assertEquals(true, builder.getLogEntryEvent().MessageDataMasked__c);
         System.assertNotEquals(message, builder.getLogEntryEvent().Message__c);
         System.assertEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
     }
@@ -165,7 +165,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_truncate_message_for_long_logMessage() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
-        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageDataMasked__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         Integer maxMessageLength = Schema.LogEntry__c.Message__c.getDescribe().getLength();
@@ -183,7 +183,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_truncate_message_for_long_string() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
-        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageDataMasked__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         Integer maxMessageLength = Schema.LogEntry__c.Message__c.getDescribe().getLength();

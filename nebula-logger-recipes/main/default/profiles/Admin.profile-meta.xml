@@ -487,7 +487,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntryEvent__e.MessageSanitized__c</field>
+        <field>LogEntryEvent__e.MessageDataMasked__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1217,7 +1217,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.MessageSanitized__c</field>
+        <field>LogEntry__c.MessageDataMasked__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

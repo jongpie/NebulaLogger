@@ -186,7 +186,7 @@ global with sharing class LogEntryEventBuilder {
 
         Boolean messageTruncated = String.isNotBlank(message) && message.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
         this.logEntryEvent.Message__c = sanitizedMessage;
-        this.logEntryEvent.MessageSanitized__c = messageSanitized;
+        this.logEntryEvent.MessageDataMasked__c = messageSanitized;
         this.logEntryEvent.MessageTruncated__c = messageTruncated;
 
         return this;

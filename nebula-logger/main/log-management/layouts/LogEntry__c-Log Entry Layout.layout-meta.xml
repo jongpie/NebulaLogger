@@ -74,7 +74,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>MessageSanitized__c</field>
+                <field>MessageDataMasked__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>

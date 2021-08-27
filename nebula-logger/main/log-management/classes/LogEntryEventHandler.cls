@@ -186,7 +186,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 LoggingLevel__c = logEntryEvent.LoggingLevel__c,
                 LoggingLevelOrdinal__c = logEntryEvent.LoggingLevelOrdinal__c,
                 Message__c = logEntryEvent.Message__c,
-                MessageSanitized__c = logEntryEvent.MessageSanitized__c,
+                MessageDataMasked__c = logEntryEvent.MessageDataMasked__c,
                 MessageTruncated__c = logEntryEvent.MessageTruncated__c,
                 Name = null, // Salesforce will auto-set the record ID as the name when null
                 OriginLocation__c = logEntryEvent.OriginLocation__c,
