@@ -30,7 +30,7 @@ global with sharing class LogEntryEventBuilder {
     private static final List<LogEntryDataMaskRule__mdt> CACHED_DATA_MASK_RULES {
         get {
             if (CACHED_DATA_MASK_RULES == null) {
-                CACHED_DATA_MASK_RULES = getDataMaskRules();
+                CACHED_DATA_MASK_RULES = loadDataMaskRules();
             }
             return CACHED_DATA_MASK_RULES;
         }
@@ -99,47 +99,24 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.logEntryEvent = new LogEntryEvent__e(
-            ApiVersion__c = API_VERSION,
-            LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries(),
             LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries(),
-            LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls(),
             LimitsAsyncCallsUsed__c = Limits.getAsyncCalls(),
-            LimitsCalloutsMax__c = Limits.getLimitCallouts(),
             LimitsCalloutsUsed__c = Limits.getCallouts(),
-            LimitsCpuTimeMax__c = Limits.getLimitCpuTime(),
             LimitsCpuTimeUsed__c = Limits.getCpuTime(),
-            LimitsDmlRowsMax__c = Limits.getLimitDmlRows(),
             LimitsDmlRowsUsed__c = Limits.getDmlRows(),
-            LimitsDmlStatementsMax__c = Limits.getLimitDmlStatements(),
             LimitsDmlStatementsUsed__c = Limits.getDmlStatements(),
-            LimitsEmailInvocationsMax__c = Limits.getLimitEmailInvocations(),
             LimitsEmailInvocationsUsed__c = Limits.getEmailInvocations(),
-            LimitsFutureCallsMax__c = Limits.getLimitFutureCalls(),
             LimitsFutureCallsUsed__c = Limits.getFutureCalls(),
-            LimitsHeapSizeMax__c = Limits.getLimitHeapSize(),
             LimitsHeapSizeUsed__c = Limits.getHeapSize(),
-            LimitsMobilePushApexCallsMax__c = Limits.getLimitMobilePushApexCalls(),
             LimitsMobilePushApexCallsUsed__c = Limits.getMobilePushApexCalls(),
-            LimitsQueueableJobsMax__c = Limits.getLimitQueueableJobs(),
             LimitsQueueableJobsUsed__c = Limits.getQueueableJobs(),
-            LimitsPublishImmediateDmlStatementsMax__c = Limits.getLimitPublishImmediateDML(),
             LimitsPublishImmediateDmlStatementsUsed__c = Limits.getPublishImmediateDML(),
-            LimitsSoqlQueriesMax__c = Limits.getLimitQueries(),
             LimitsSoqlQueriesUsed__c = Limits.getQueries(),
-            LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows(),
             LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows(),
-            LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows(),
             LimitsSoqlQueryRowsUsed__c = Limits.getQueryRows(),
-            LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries(),
             LimitsSoslSearchesUsed__c = Limits.getSoslQueries(),
             LoggingLevel__c = entryLoggingLevel.NAME(),
             LoggingLevelOrdinal__c = entryLoggingLevel.ORDINAL(),
-            OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm(),
-            OrganizationId__c = CACHED_ORGANIZATION.Id,
-            OrganizationInstanceName__c = CACHED_ORGANIZATION.InstanceName,
-            OrganizationName__c = CACHED_ORGANIZATION.Name,
-            OrganizationNamespacePrefix__c = CACHED_ORGANIZATION.NamespacePrefix,
-            OrganizationType__c = CACHED_ORGANIZATION.OrganizationType,
             OriginType__c = 'Apex',
             Timestamp__c = System.now(),
             EpochTimestamp__c = System.now().getTime(),
@@ -186,7 +163,7 @@ global with sharing class LogEntryEventBuilder {
 
         Boolean messageTruncated = String.isNotBlank(message) && message.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
         this.logEntryEvent.Message__c = sanitizedMessage;
-        this.logEntryEvent.MessageDataMasked__c = messageSanitized;
+        this.logEntryEvent.MessageMasked__c = messageSanitized;
         this.logEntryEvent.MessageTruncated__c = messageTruncated;
 
         return this;
@@ -693,7 +670,7 @@ global with sharing class LogEntryEventBuilder {
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
-    private static List<LogEntryDataMaskRule__mdt> getDataMaskRules() {
+    private static List<LogEntryDataMaskRule__mdt> loadDataMaskRules() {
         List<LogEntryDataMaskRule__mdt> activeDataMaskRules = new List<LogEntryDataMaskRule__mdt>();
         for (LogEntryDataMaskRule__mdt dataMaskRule : LogEntryDataMaskRule__mdt.getAll().values()) {
             if (dataMaskRule.IsEnabled__c == true) {

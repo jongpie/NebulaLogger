@@ -168,7 +168,7 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.MessageDataMasked__c</fieldItem>
+                <fieldItem>Record.MessageMasked__c</fieldItem>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
