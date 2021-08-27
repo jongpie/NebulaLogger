@@ -851,7 +851,7 @@ global with sharing class LogEntryEventBuilder {
 
     private static AuthSession queryAuthSession() {
         if (String.isBlank(UserInfo.getSessionId())) {
-            return null;
+            return new AuthSession();
         }
 
         // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
@@ -872,12 +872,7 @@ global with sharing class LogEntryEventBuilder {
             FROM AuthSession
             WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
         ];
-
-        if (sessions.isEmpty()) {
-            return null;
-        } else {
-            return sessions.get(0);
-        }
+        return sessions.isEmpty() ? new AuthSession() : sessions.get(0);
     }
 
     private static SObject queryNetwork() {

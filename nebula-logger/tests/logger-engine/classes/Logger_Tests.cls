@@ -239,7 +239,6 @@ private class Logger_Tests {
     static void it_should_set_transaction_entry_number() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
-
             System.assertEquals(i + 1, builder.getLogEntryEvent().TransactionEntryNumber__c);
         }
     }
