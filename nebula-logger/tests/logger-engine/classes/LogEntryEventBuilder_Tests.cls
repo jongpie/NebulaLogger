@@ -907,6 +907,9 @@ private class LogEntryEventBuilder_Tests {
         System.runAs(standardUser) {
             System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
             System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.Email.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible());
 
             Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrand);
@@ -941,6 +944,9 @@ private class LogEntryEventBuilder_Tests {
         System.runAs(standardUser) {
             System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
             System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.Email.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible());
 
             Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrands);
@@ -957,9 +963,6 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
-
             Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAggregateResult);
         }
@@ -974,9 +977,6 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
-
             Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAggregateResults);
         }
