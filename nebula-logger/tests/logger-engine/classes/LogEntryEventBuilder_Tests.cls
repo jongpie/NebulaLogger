@@ -95,19 +95,16 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_apply_credit_card_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
-        Integer maskedTextLength = 50;
         LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
-                MaskCharacter__c = '*',
-                MaskedTextLength__c = maskedTextLength,
-                MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*(?=(\\d{4}))'
+                MessageRegEx__c = '(4\\d{3})[- ]*(\\d{4})[- ]*(\\d{4})[- ]*(\\d{4})',
+                ReplacementRegEx__c = '****-****-****-$4'
             )
         );
 
-        String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
-        String expectedMaskText = '*'.repeat(maskedTextLength);
-        String expectedSanitizedMessage = 'Something, something, something credit card ' + expectedMaskText + '3333 and something else';
+        String message = 'Something, something, something credit card 4000 1111 2222 3333 and something else';
+        String expectedSanitizedMessage = 'Something, something, something credit card ****-****-****-3333 and something else';
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
@@ -120,11 +117,15 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_apply_social_security_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
         LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(IsEnabled__c = true, MaskCharacter__c = 'X', MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*(?=(\\d{4}))')
+            new LogEntryDataMaskRule__mdt(
+                IsEnabled__c = true,
+                MessageRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
+                ReplacementRegEx__c = 'XXX-XX-$3'
+            )
         );
 
-        String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
-        String expectedSanitizedMessage = 'Something, something, something and in case you want to steal my identity, my social is XXXXXXX9999 and something else';
+        String message = 'Something, something, something and in case you want to steal my identity, my social is 400 11 9999 and something else';
+        String expectedSanitizedMessage = 'Something, something, something and in case you want to steal my identity, my social is XXX-XX-9999 and something else';
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
@@ -137,7 +138,11 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_apply_credit_card_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
         LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(IsEnabled__c = true, MaskCharacter__c = '*', MessageRegEx__c = '\\d{4}[- ]*\\d{4}[- ]*\\d{4}[- ]*\\d{4}')
+            new LogEntryDataMaskRule__mdt(
+                IsEnabled__c = true,
+                MessageRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
+                ReplacementRegEx__c = 'XXX-XX-$3'
+            )
         );
 
         String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
@@ -151,7 +156,11 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_apply_social_security_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
         LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(IsEnabled__c = true, MaskCharacter__c = 'X', MessageRegEx__c = '\\d{3}[- ]*\\d{2}[- ]*\\d{4}')
+            new LogEntryDataMaskRule__mdt(
+                IsEnabled__c = true,
+                MessageRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
+                ReplacementRegEx__c = 'XXX-XX-$3'
+            )
         );
 
         String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';

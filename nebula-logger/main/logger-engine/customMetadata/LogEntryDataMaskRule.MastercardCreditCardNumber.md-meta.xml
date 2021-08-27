@@ -11,15 +11,11 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>MaskCharacter__c</field>
-        <value xsi:type="xsd:string">*</value>
-    </values>
-    <values>
-        <field>MaskedTextLength__c</field>
-        <value xsi:type="xsd:double">12.0</value>
-    </values>
-    <values>
         <field>MessageRegEx__c</field>
         <value xsi:type="xsd:string">5\d{3}[- ]*\d{4}[- ]*\d{4}[- ]*(?=(\d{4}))</value>
+    </values>
+    <values>
+        <field>ReplacementRegEx__c</field>
+        <value xsi:type="xsd:string">****-****-****-$4</value>
     </values>
 </CustomMetadata>

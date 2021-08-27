@@ -5,8 +5,7 @@
     <columns>DeveloperName</columns>
     <columns>IsEnabled__c</columns>
     <columns>MessageRegEx__c</columns>
-    <columns>MaskCharacter__c</columns>
-    <columns>MaskedTextLength__c</columns>
+    <columns>ReplacementRegEx__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

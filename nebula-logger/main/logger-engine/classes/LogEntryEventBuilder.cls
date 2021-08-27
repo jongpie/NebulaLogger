@@ -149,10 +149,8 @@ global with sharing class LogEntryEventBuilder {
      */
     global LogEntryEventBuilder setMessage(String message) {
         String sanitizedMessage;
-        Boolean messageSanitized;
         if (this.shouldSave == true || Test.isRunningTest() == true) {
             sanitizedMessage = sanitizeMessage(message);
-            messageSanitized = sanitizedMessage != message;
             // To help with debugging unit tests, always run System.debug statement in a test context
             System.debug(this.entryLoggingLevel, sanitizedMessage);
         }
@@ -161,6 +159,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        Boolean messageSanitized = sanitizedMessage != message;
         Boolean messageTruncated = String.isNotBlank(message) && message.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
         this.logEntryEvent.Message__c = sanitizedMessage;
         this.logEntryEvent.MessageMasked__c = messageSanitized;
@@ -882,16 +881,8 @@ global with sharing class LogEntryEventBuilder {
         }
 
         for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES) {
-            Pattern dataMaskPattern = Pattern.compile(dataMaskRule.MessageRegEx__c);
-            Matcher dataMaskPatternMatcher = dataMaskPattern.matcher(message);
-            while (dataMaskPatternMatcher.find() == true) {
-                String matchingSubstring = message.substring(dataMaskPatternMatcher.start(), dataMaskPatternMatcher.end());
-                Integer maskLength = dataMaskRule.MaskedTextLength__c != null ? Integer.valueOf(dataMaskRule.MaskedTextLength__c) : matchingSubstring.length();
-                String maskedSubstring = dataMaskRule.MaskCharacter__c.repeat(maskLength);
-                message = message.replace(matchingSubstring, maskedSubstring);
-            }
+            message = message.replaceAll(dataMaskRule.MessageRegEx__c, dataMaskRule.ReplacementRegEx__c);
         }
-
         return truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
     }
 
