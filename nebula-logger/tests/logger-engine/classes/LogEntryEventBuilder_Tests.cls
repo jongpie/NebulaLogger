@@ -103,6 +103,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_message_fields_for_logMessage() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         Test.startTest();
@@ -113,6 +114,7 @@ private class LogEntryEventBuilder_Tests {
         Test.stopTest();
 
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(logMessage.getMessage(), builder.getLogEntryEvent().Message__c);
     }
 
@@ -120,6 +122,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_message_fields_for_string() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         Test.startTest();
@@ -130,6 +133,7 @@ private class LogEntryEventBuilder_Tests {
         Test.stopTest();
 
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(message, builder.getLogEntryEvent().Message__c);
     }
 
@@ -137,7 +141,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_apply_credit_card_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
         Integer maskedTextLength = 50;
-        LogEntryEventBuilder.DATA_MASK_RULES.add(
+        LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
                 MaskCharacter__c = '*',
@@ -152,6 +156,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
+        System.assertEquals(true, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertNotEquals(message, builder.getLogEntryEvent().Message__c);
         System.assertEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
     }
@@ -159,7 +164,7 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_apply_social_security_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
-        LogEntryEventBuilder.DATA_MASK_RULES.add(
+        LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
                 MaskCharacter__c = 'X',
@@ -172,6 +177,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message);
 
+        System.assertEquals(true, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertNotEquals(message, builder.getLogEntryEvent().Message__c);
         System.assertEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
     }
@@ -179,7 +185,7 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_not_apply_credit_card_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
-        LogEntryEventBuilder.DATA_MASK_RULES.add(
+        LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
                 MaskCharacter__c = '*',
@@ -197,7 +203,7 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_not_apply_social_security_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
-        LogEntryEventBuilder.DATA_MASK_RULES.add(
+        LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
                 MaskCharacter__c = 'X',
@@ -216,6 +222,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_truncate_message_for_long_logMessage() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         Test.startTest();
@@ -237,6 +244,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_truncate_message_for_long_string() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageSanitized__c);
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         Test.startTest();
@@ -885,7 +893,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_strip_inaccessible_fields_for_record_when_enabled() {
         User standardUser = LoggerTestUtils.createStandardUser();
         AccountBrand mockAccountBrand = new AccountBrand(
-            Id = LoggerTestUtils.mockId(Schema.AccountBrand.SObjectType),
+            Id = LoggerTestUtils.createMockId(Schema.AccountBrand.SObjectType),
             CompanyName = 'Some Company, Inc.',
             Email = 'some.one@some.company.com',
             Name = 'Something',
@@ -915,7 +923,7 @@ private class LogEntryEventBuilder_Tests {
         List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
         for (Integer i = 0; i < 5; i++) {
             AccountBrand mockAccountBrand = new AccountBrand(
-                Id = LoggerTestUtils.mockId(Schema.AccountBrand.SObjectType),
+                Id = LoggerTestUtils.createMockId(Schema.AccountBrand.SObjectType),
                 CompanyName = 'Some Company, Inc.',
                 Email = 'some.one.number_' + i + '@some.company.com',
                 Name = 'Something',
@@ -940,6 +948,40 @@ private class LogEntryEventBuilder_Tests {
 
         System.assertNotEquals(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(JSON.serializePretty(strippedAccountBrands), builder.getLogEntryEvent().RecordJson__c);
+    }
+
+    @IsTest
+    static void it_should_skip_stripping_inaccessible_fields_for_aggregate_result() {
+        User standardUser = LoggerTestUtils.createStandardUser();
+        AggregateResult mockAggregateResult = LoggerTestUtils.createMockAggregateResult();
+
+        LogEntryEventBuilder builder;
+        System.runAs(standardUser) {
+            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
+
+            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAggregateResult);
+        }
+
+        System.assertEquals(JSON.serializePretty(mockAggregateResult), builder.getLogEntryEvent().RecordJson__c);
+    }
+
+    @IsTest
+    static void it_should_skip_stripping_inaccessible_fields_for_aggregate_results() {
+        User standardUser = LoggerTestUtils.createStandardUser();
+        List<AggregateResult> mockAggregateResults = new List<AggregateResult>{ LoggerTestUtils.createMockAggregateResult() };
+
+        LogEntryEventBuilder builder;
+        System.runAs(standardUser) {
+            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
+
+            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAggregateResults);
+        }
+
+        System.assertEquals(JSON.serializePretty(mockAggregateResults), builder.getLogEntryEvent().RecordJson__c);
     }
 
     @IsTest
@@ -1017,6 +1059,26 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(expectedOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
         System.assertNotEquals(null, builder.getLogEntryEvent().StackTrace__c);
         System.assertEquals(expectedStackTrace, builder.getLogEntryEvent().StackTrace__c);
+    }
+
+    @IsTest
+    static void it_should_set_stack_trace_and_origin_location_for_anonymous_apex_stack_trace_string() {
+        String anonymousApexOriginLocation = 'AnonymousBlock';
+        String anonymousApexStackTraceString = 'AnonymousBlock: line 9, column 1';
+
+        Boolean shouldSave = true;
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, shouldSave);
+        builder.getLogEntryEvent().OriginLocation__c = null;
+        builder.getLogEntryEvent().StackTrace__c = null;
+
+        Test.startTest();
+        builder.parseStackTrace(anonymousApexStackTraceString);
+        Test.stopTest();
+
+        System.assertNotEquals(null, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertEquals(anonymousApexOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertNotEquals(null, builder.getLogEntryEvent().StackTrace__c);
+        System.assertEquals(anonymousApexStackTraceString, builder.getLogEntryEvent().StackTrace__c);
     }
 
     @IsTest

@@ -166,6 +166,15 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.MessageSanitized__c</fieldItem>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.StackTrace__c</fieldItem>
@@ -881,10 +890,15 @@
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
                 <visibilityRule>
+                    <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
                         <leftValue>{!Record.OriginType__c}</leftValue>
                         <operator>EQUAL</operator>
                         <rightValue>Apex</rightValue>
+                    </criteria>
+                    <criteria>
+                        <leftValue>{!Record.ApexClassName__c}</leftValue>
+                        <operator>NE</operator>
                     </criteria>
                 </visibilityRule>
             </componentInstance>

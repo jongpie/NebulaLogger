@@ -487,6 +487,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntryEvent__e.MessageSanitized__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntryEvent__e.MessageTruncated__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -1208,6 +1213,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.LoggingLevel__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.MessageSanitized__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

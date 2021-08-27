@@ -480,6 +480,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.MessageSanitized__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.MessageTruncated__c</field>
         <readable>true</readable>
     </fieldPermissions>

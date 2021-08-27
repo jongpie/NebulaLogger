@@ -74,6 +74,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>MessageSanitized__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>StackTrace__c</field>
             </layoutItems>
         </layoutColumns>

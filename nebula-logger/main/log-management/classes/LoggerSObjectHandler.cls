@@ -42,7 +42,8 @@ public abstract class LoggerSObjectHandler {
         }
 
         if (Test.isRunningTest() == true) {
-            // Test shouldn't rely on the actual CMDT rules in the org - clear the loaded values, and defaults will be used
+            // Tests shouldn't rely on the actual CMDT rules in the org
+            // Clear the org's loaded records during tests, and mock via setMockConfiguration()
             configurationBySObjectType.clear();
             pluginsBySObjectType.clear();
         }

@@ -109,7 +109,7 @@ public inherited sharing class ComponentLogger {
 
     private static String truncateFieldValue(Schema.SObjectField field, String value) {
         Integer fieldMaxLength = field.getDescribe().getLength();
-        if (String.isEmpty(value)) {
+        if (String.isBlank(value)) {
             return value;
         } else if (value.length() <= fieldMaxLength) {
             return value;
