@@ -16,7 +16,7 @@ global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
 
     // These constants all involve queries and/or increasing heap size, so custom getters are used for lazy-loading
-    // This avoids unnecessarily running the queries when logging is disabled, etc.
+    // This avoids unnecessarily consuming resources when logging is disabled, etc.
     private static final AuthSession CACHED_AUTH_SESSION {
         get {
             if (CACHED_AUTH_SESSION == null) {
@@ -83,6 +83,7 @@ global with sharing class LogEntryEventBuilder {
     private Boolean detailsAreSet = false;
     private Boolean shouldSave;
     private Set<String> tags = new Set<String>();
+    private Boolean tagDetailsAreSet = true;
 
     /**
      * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
@@ -448,6 +449,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.tags.add(tag);
+        this.tagDetailsAreSet = false;
         return this;
     }
 
@@ -555,7 +557,13 @@ global with sharing class LogEntryEventBuilder {
             this.detailsAreSet = true;
         }
 
-        this.setTagsDetails();
+        // getLogEntryEvent() and addTag() could both be called multiple times
+        // for the same instance of LogEntryBuilder, so tags are set (if needed)
+        // each time getLogEntryEvent() is called, whereas methods executed above (using Boolean
+        // this.detailsAreSet) only need to be run once
+        if (this.tagDetailsAreSet == false) {
+            this.setTagsDetails();
+        }
 
         // Salesforce does not provide precise datetimes in Apex triggers for platform events
         // Set the string value of timestamp to a second field as a workaround
@@ -580,7 +588,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setTagsDetails() {
-        if (this.tags.isEmpty() == true) {
+        if (this.tags.isEmpty() == true || this.tagDetailsAreSet == true) {
             return;
         }
 
@@ -658,7 +666,7 @@ global with sharing class LogEntryEventBuilder {
         CACHED_DATA_MASK_RULES.add(dataMaskRule);
     }
 
-    // Private helper methods
+    // Private static helper methods
     private static String getApiVersion() {
         // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
         // Serializing any SObject w/ an ID will include the API version
@@ -772,6 +780,10 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static Map<String, String> getSObjectSuffixToClassification() {
+        // TODO add sample metadata for external object + picklist value + test
+        // Example: MyExternalObject__x
+        // '__mdt' => 'External Object'
+
         return new Map<String, String>{
             // Example: MyBigObject__b
             '__b' => 'Big Object',
@@ -810,19 +822,6 @@ global with sharing class LogEntryEventBuilder {
         }
 
         return true;
-    }
-
-    private static List<SObject> stripInaccessible(List<SObject> records) {
-        if (
-            Logger.getUserSettings().StripInaccessibleRecordFields__c == false ||
-            records == null ||
-            records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType
-        ) {
-            return records;
-        }
-
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records, false);
-        return securityDecision.getRecords();
     }
 
     private static AuthSession queryAuthSession() {
@@ -884,6 +883,19 @@ global with sharing class LogEntryEventBuilder {
             message = message.replaceAll(dataMaskRule.MessageRegEx__c, dataMaskRule.ReplacementRegEx__c);
         }
         return truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
+    }
+
+    private static List<SObject> stripInaccessible(List<SObject> records) {
+        if (
+            Logger.getUserSettings().StripInaccessibleRecordFields__c == false ||
+            records == null ||
+            records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType
+        ) {
+            return records;
+        }
+
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records, false);
+        return securityDecision.getRecords();
     }
 
     private static String truncateFieldValue(Schema.SObjectField field, String value) {
