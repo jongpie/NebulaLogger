@@ -22,7 +22,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>ApplyToMessageField__c</field>
+                <field>ApplyToMessage__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>

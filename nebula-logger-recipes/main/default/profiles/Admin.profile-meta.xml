@@ -217,6 +217,21 @@
     <custom>false</custom>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntryDataMaskRule__mdt.ApplyToMessage__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntryDataMaskRule__mdt.ApplyToRecordJson__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntryDataMaskRule__mdt.IsEnabled__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntryEvent__e.ApiVersion__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -1259,6 +1274,11 @@
         <editable>false</editable>
         <field>LogEntry__c.RecordId__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntry__c.RecordJsonMasked__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>

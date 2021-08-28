@@ -194,6 +194,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 RecordCollectionType__c = logEntryEvent.RecordCollectionType__c,
                 RecordId__c = logEntryEvent.RecordId__c,
                 RecordJson__c = logEntryEvent.RecordJson__c,
+                RecordJsonMasked__c = logEntryEvent.RecordJsonMasked__c,
                 RecordSObjectClassification__c = logEntryEvent.RecordSObjectClassification__c,
                 RecordSObjectType__c = logEntryEvent.RecordSObjectType__c,
                 RecordSObjectTypeNamespace__c = logEntryEvent.RecordSObjectTypeNamespace__c,

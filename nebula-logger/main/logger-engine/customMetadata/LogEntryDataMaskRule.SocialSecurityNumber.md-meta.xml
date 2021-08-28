@@ -3,7 +3,7 @@
     <label>Social Security Number</label>
     <protected>false</protected>
     <values>
-        <field>ApplyToMessageField__c</field>
+        <field>ApplyToMessage__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>

@@ -406,9 +406,14 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        String recordJson = getJson(record);
+        String cleanedRecordJson = applyDataMaskRules(recordJson);
+        Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
         this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = record.Id;
-        this.logEntryEvent.RecordJson__c = getJson(record);
+        this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+        this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());

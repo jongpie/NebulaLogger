@@ -13,6 +13,26 @@ private class LogEntryEventBuilder_Tests {
         return new LogMessage('The current date is {0}', System.today());
     }
 
+    static LogEntryDataMaskRule__mdt getCreditCardNumberDataMaskRule() {
+        return new LogEntryDataMaskRule__mdt(
+            IsEnabled__c = true,
+            ApplyToMessage__c = true,
+            ApplyToRecordJson__c = true,
+            SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
+            ReplacementRegEx__c = 'XXX-XX-$3'
+        );
+    }
+
+    static LogEntryDataMaskRule__mdt getSocialSecurityNumberDataMaskRule() {
+        return new LogEntryDataMaskRule__mdt(
+            IsEnabled__c = true,
+            ApplyToMessage__c = true,
+            ApplyToRecordJson__c = true,
+            SensitiveDataRegEx__c = '(4\\d{3})[- ]*(\\d{4})[- ]*(\\d{4})[- ]*(\\d{4})',
+            ReplacementRegEx__c = '****-****-****-$4'
+        );
+    }
+
     @IsTest
     static void it_should_short_circuit_when_disabled() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG, false);
@@ -95,13 +115,7 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_apply_credit_card_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
-        LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(
-                IsEnabled__c = true,
-                SensitiveDataRegEx__c = '(4\\d{3})[- ]*(\\d{4})[- ]*(\\d{4})[- ]*(\\d{4})',
-                ReplacementRegEx__c = '****-****-****-$4'
-            )
-        );
+        LogEntryEventBuilder.addMockDataMaskRule(getCreditCardNumberDataMaskRule());
 
         String message = 'Something, something, something credit card 4000 1111 2222 3333 and something else';
         String expectedSanitizedMessage = 'Something, something, something credit card ****-****-****-3333 and something else';
@@ -116,34 +130,31 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_apply_social_security_number_data_mask_rule_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
-        LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(
-                IsEnabled__c = true,
-                SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
-                ReplacementRegEx__c = 'XXX-XX-$3'
-            )
-        );
+        LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+        System.assertEquals(true, rule.ApplyToMessage__c);
+        System.assertEquals(true, rule.ApplyToRecordJson__c);
+        LogEntryEventBuilder.addMockDataMaskRule(rule);
 
         String message = 'Something, something, something and in case you want to steal my identity, my social is 400 11 9999 and something else';
         String expectedSanitizedMessage = 'Something, something, something and in case you want to steal my identity, my social is XXX-XX-9999 and something else';
+        Account account = new Account(Name = message);
+        String accountJson = JSON.serializePretty(account);
+        String expectedSanitizedAccountJson = JSON.serializePretty(new Account(Name = expectedSanitizedMessage));
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-        builder.setMessage(message);
+        builder.setMessage(message).setRecord(account);
 
         System.assertEquals(true, builder.getLogEntryEvent().MessageMasked__c);
         System.assertNotEquals(message, builder.getLogEntryEvent().Message__c);
         System.assertEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
+        System.assertEquals(true, builder.getLogEntryEvent().RecordJsonMasked__c);
+        System.assertNotEquals(accountJson, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(expectedSanitizedAccountJson, builder.getLogEntryEvent().RecordJson__c);
     }
 
     @IsTest
     static void it_should_not_apply_credit_card_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
-        LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(
-                IsEnabled__c = true,
-                SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
-                ReplacementRegEx__c = 'XXX-XX-$3'
-            )
-        );
+        LogEntryEventBuilder.addMockDataMaskRule(getCreditCardNumberDataMaskRule());
 
         String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -155,13 +166,7 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_not_apply_social_security_number_data_mask_rule_when_disabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
-        LogEntryEventBuilder.addMockDataMaskRule(
-            new LogEntryDataMaskRule__mdt(
-                IsEnabled__c = true,
-                SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
-                ReplacementRegEx__c = 'XXX-XX-$3'
-            )
-        );
+        LogEntryEventBuilder.addMockDataMaskRule(getSocialSecurityNumberDataMaskRule());
 
         String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
