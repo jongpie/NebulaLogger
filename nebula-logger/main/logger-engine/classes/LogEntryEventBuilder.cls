@@ -149,21 +149,21 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(String message) {
-        String sanitizedMessage;
+        String cleanedMessage;
         if (this.shouldSave == true || Test.isRunningTest() == true) {
-            sanitizedMessage = sanitizeMessage(message);
+            cleanedMessage = applyDataMaskRules(message);
             // To help with debugging unit tests, always run System.debug statement in a test context
-            System.debug(this.entryLoggingLevel, sanitizedMessage);
+            System.debug(this.entryLoggingLevel, cleanedMessage);
         }
 
         if (this.shouldSave == false) {
             return this;
         }
 
-        Boolean messageSanitized = sanitizedMessage != message;
-        Boolean messageTruncated = String.isNotBlank(message) && message.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
-        this.logEntryEvent.Message__c = sanitizedMessage;
-        this.logEntryEvent.MessageMasked__c = messageSanitized;
+        Boolean messageMasked = cleanedMessage != message;
+        Boolean messageTruncated = String.isNotBlank(cleanedMessage) && cleanedMessage.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
+        this.logEntryEvent.Message__c = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
+        this.logEntryEvent.MessageMasked__c = messageMasked;
         this.logEntryEvent.MessageTruncated__c = messageTruncated;
 
         return this;
@@ -666,6 +666,17 @@ global with sharing class LogEntryEventBuilder {
         CACHED_DATA_MASK_RULES.add(dataMaskRule);
     }
 
+    private static String applyDataMaskRules(String dataInput) {
+        if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
+            return dataInput;
+        }
+
+        for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES) {
+            dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+        }
+        return dataInput;
+    }
+
     // Private static helper methods
     private static String getApiVersion() {
         // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
@@ -872,17 +883,6 @@ global with sharing class LogEntryEventBuilder {
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
-    }
-
-    private static String sanitizeMessage(String message) {
-        if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
-            return message;
-        }
-
-        for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES) {
-            message = message.replaceAll(dataMaskRule.MessageRegEx__c, dataMaskRule.ReplacementRegEx__c);
-        }
-        return truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
     }
 
     private static List<SObject> stripInaccessible(List<SObject> records) {

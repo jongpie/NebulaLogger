@@ -98,7 +98,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
-                MessageRegEx__c = '(4\\d{3})[- ]*(\\d{4})[- ]*(\\d{4})[- ]*(\\d{4})',
+                SensitiveDataRegEx__c = '(4\\d{3})[- ]*(\\d{4})[- ]*(\\d{4})[- ]*(\\d{4})',
                 ReplacementRegEx__c = '****-****-****-$4'
             )
         );
@@ -119,7 +119,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
-                MessageRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
+                SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
                 ReplacementRegEx__c = 'XXX-XX-$3'
             )
         );
@@ -140,7 +140,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
-                MessageRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
+                SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
                 ReplacementRegEx__c = 'XXX-XX-$3'
             )
         );
@@ -158,7 +158,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.addMockDataMaskRule(
             new LogEntryDataMaskRule__mdt(
                 IsEnabled__c = true,
-                MessageRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
+                SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
                 ReplacementRegEx__c = 'XXX-XX-$3'
             )
         );
