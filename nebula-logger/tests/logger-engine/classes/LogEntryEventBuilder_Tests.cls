@@ -13,23 +13,13 @@ private class LogEntryEventBuilder_Tests {
         return new LogMessage('The current date is {0}', System.today());
     }
 
-    static LogEntryDataMaskRule__mdt getCreditCardNumberDataMaskRule() {
+    static LogEntryDataMaskRule__mdt getSocialSecurityNumberDataMaskRule() {
         return new LogEntryDataMaskRule__mdt(
             IsEnabled__c = true,
             ApplyToMessage__c = true,
             ApplyToRecordJson__c = true,
             SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
             ReplacementRegEx__c = 'XXX-XX-$3'
-        );
-    }
-
-    static LogEntryDataMaskRule__mdt getSocialSecurityNumberDataMaskRule() {
-        return new LogEntryDataMaskRule__mdt(
-            IsEnabled__c = true,
-            ApplyToMessage__c = true,
-            ApplyToRecordJson__c = true,
-            SensitiveDataRegEx__c = '(4\\d{3})[- ]*(\\d{4})[- ]*(\\d{4})[- ]*(\\d{4})',
-            ReplacementRegEx__c = '****-****-****-$4'
         );
     }
 
@@ -113,66 +103,93 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_apply_credit_card_number_data_mask_rule_when_enabled() {
-        Logger.getUserSettings().ApplyDataMaskRules__c = true;
-        LogEntryEventBuilder.addMockDataMaskRule(getCreditCardNumberDataMaskRule());
-
-        String message = 'Something, something, something credit card 4000 1111 2222 3333 and something else';
-        String expectedSanitizedMessage = 'Something, something, something credit card ****-****-****-3333 and something else';
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-        builder.setMessage(message);
-
-        System.assertEquals(true, builder.getLogEntryEvent().MessageMasked__c);
-        System.assertNotEquals(message, builder.getLogEntryEvent().Message__c);
-        System.assertEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
-    }
-
-    @IsTest
-    static void it_should_apply_social_security_number_data_mask_rule_when_enabled() {
+    static void it_should_apply_data_mask_rule_to_message_when_enabled() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
-        System.assertEquals(true, rule.ApplyToMessage__c);
-        System.assertEquals(true, rule.ApplyToRecordJson__c);
+        rule.ApplyToMessage__c = true;
+        rule.ApplyToRecordJson__c = false;
         LogEntryEventBuilder.addMockDataMaskRule(rule);
 
-        String message = 'Something, something, something and in case you want to steal my identity, my social is 400 11 9999 and something else';
-        String expectedSanitizedMessage = 'Something, something, something and in case you want to steal my identity, my social is XXX-XX-9999 and something else';
+        String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
+        String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
         Account account = new Account(Name = message);
         String accountJson = JSON.serializePretty(account);
-        String expectedSanitizedAccountJson = JSON.serializePretty(new Account(Name = expectedSanitizedMessage));
+        String expectedSanitizedAccountJson = JSON.serializePretty(new Account(Name = message));
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         builder.setMessage(message).setRecord(account);
 
         System.assertEquals(true, builder.getLogEntryEvent().MessageMasked__c);
         System.assertNotEquals(message, builder.getLogEntryEvent().Message__c);
         System.assertEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
+        System.assertEquals(false, builder.getLogEntryEvent().RecordJsonMasked__c);
+        System.assertEquals(accountJson, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(expectedSanitizedAccountJson, builder.getLogEntryEvent().RecordJson__c);
+    }
+
+    @IsTest
+    static void it_should_apply_data_mask_rule_to_record_json_when_enabled() {
+        Logger.getUserSettings().ApplyDataMaskRules__c = true;
+        LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+        rule.ApplyToMessage__c = false;
+        rule.ApplyToRecordJson__c = true;
+        LogEntryEventBuilder.addMockDataMaskRule(rule);
+
+        String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
+        String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
+        Account account = new Account(Name = message);
+        String accountJson = JSON.serializePretty(account);
+        String expectedSanitizedAccountJson = JSON.serializePretty(new Account(Name = expectedSanitizedMessage));
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        builder.setMessage(message).setRecord(account);
+
+        System.assertEquals(false, builder.getLogEntryEvent().MessageMasked__c);
+        System.assertEquals(message, builder.getLogEntryEvent().Message__c);
+        System.assertNotEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
         System.assertEquals(true, builder.getLogEntryEvent().RecordJsonMasked__c);
         System.assertNotEquals(accountJson, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(expectedSanitizedAccountJson, builder.getLogEntryEvent().RecordJson__c);
     }
 
     @IsTest
-    static void it_should_not_apply_credit_card_number_data_mask_rule_when_disabled() {
-        Logger.getUserSettings().ApplyDataMaskRules__c = false;
-        LogEntryEventBuilder.addMockDataMaskRule(getCreditCardNumberDataMaskRule());
+    static void it_should_not_data_mask_rule_when_disabled_for_message_and_json() {
+        Logger.getUserSettings().ApplyDataMaskRules__c = true;
+        LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+        rule.ApplyToMessage__c = false;
+        rule.ApplyToRecordJson__c = false;
+        LogEntryEventBuilder.addMockDataMaskRule(rule);
 
-        String message = 'Something, something, something credit card 4000-1111-2222-3333 and something else';
+        String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
+        String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
+        Account account = new Account(Name = message);
+        String accountJson = JSON.serializePretty(account);
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-        builder.setMessage(message);
+        builder.setMessage(message).setRecord(account);
 
+        System.assertEquals(false, builder.getLogEntryEvent().MessageMasked__c);
         System.assertEquals(message, builder.getLogEntryEvent().Message__c);
+        System.assertEquals(false, builder.getLogEntryEvent().RecordJsonMasked__c);
+        System.assertEquals(accountJson, builder.getLogEntryEvent().RecordJson__c);
     }
 
     @IsTest
-    static void it_should_not_apply_social_security_number_data_mask_rule_when_disabled() {
+    static void it_should_not_data_mask_rule_when_disabled_for_user() {
         Logger.getUserSettings().ApplyDataMaskRules__c = false;
-        LogEntryEventBuilder.addMockDataMaskRule(getSocialSecurityNumberDataMaskRule());
+        LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+        rule.ApplyToMessage__c = true;
+        rule.ApplyToRecordJson__c = true;
+        LogEntryEventBuilder.addMockDataMaskRule(rule);
 
-        String message = 'Something, something, something and in case you want to steal my identity, my social is 400-11-9999 and something else';
+        String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
+        String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
+        Account account = new Account(Name = message);
+        String accountJson = JSON.serializePretty(account);
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
-        builder.setMessage(message);
+        builder.setMessage(message).setRecord(account);
 
+        System.assertEquals(false, builder.getLogEntryEvent().MessageMasked__c);
         System.assertEquals(message, builder.getLogEntryEvent().Message__c);
+        System.assertEquals(false, builder.getLogEntryEvent().RecordJsonMasked__c);
+        System.assertEquals(accountJson, builder.getLogEntryEvent().RecordJson__c);
     }
 
     @IsTest

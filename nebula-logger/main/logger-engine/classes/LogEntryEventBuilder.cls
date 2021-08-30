@@ -151,7 +151,7 @@ global with sharing class LogEntryEventBuilder {
     global LogEntryEventBuilder setMessage(String message) {
         String cleanedMessage;
         if (this.shouldSave == true || Test.isRunningTest() == true) {
-            cleanedMessage = applyDataMaskRules(message);
+            cleanedMessage = applyDataMaskRules(message, true, false);
             // To help with debugging unit tests, always run System.debug statement in a test context
             System.debug(this.entryLoggingLevel, cleanedMessage);
         }
@@ -407,7 +407,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         String recordJson = getJson(record);
-        String cleanedRecordJson = applyDataMaskRules(recordJson);
+        String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
         Boolean recordJsonMasked = cleanedRecordJson != recordJson;
 
         this.logEntryEvent.RecordCollectionType__c = 'Single';
@@ -671,13 +671,15 @@ global with sharing class LogEntryEventBuilder {
         CACHED_DATA_MASK_RULES.add(dataMaskRule);
     }
 
-    private static String applyDataMaskRules(String dataInput) {
+    private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
         if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
             return dataInput;
         }
 
         for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES) {
-            dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+            if ((applyToMessage && dataMaskRule.ApplyToMessage__c) == true || (applyToRecordJson && dataMaskRule.ApplyToRecordJson__c) == true) {
+                dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+            }
         }
         return dataInput;
     }
