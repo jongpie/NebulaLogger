@@ -1,0 +1,35 @@
+<template>
+    <lightning-card title={title} class="slds-p-around_medium">
+        <div slot="actions">
+            <lightning-input placeholder="Filter Messages" type="text" value={messageFilter} onchange={handleMessageFilterChange}></lightning-input>
+            <lightning-input placeholder="Max Events" type="number" value={maxEvents} onchange={handleMaxEventsChange}></lightning-input>
+            <lightning-button label="Clear" name="clear" onclick={onClear}></lightning-button>
+            <lightning-button-stateful
+                label-when-off="Enable Streaming"
+                label-when-on="Streaming Enabled"
+                label-when-hover="Toggle Streaming"
+                icon-name-when-off="utility:add"
+                icon-name-when-on="utility:check"
+                icon-name-when-hover="utility:close"
+                selected={isStreamEnabled}
+                onclick={onToggleStream}
+                variant={streamButtonVariant}
+            >
+            </lightning-button-stateful>
+        </div>
+        <template for:each={logEntryEvents} for:item="logEntryEvent">
+            <lightning-card key={logEntryEvent.key}>
+                <p slot="title">Tranaction Entry: {logEntryEvent.key}</p>
+                <ul>
+                    <p key={logEntryEvent.key}>Timestamp: {logEntryEvent.Timestamp__c}</p>
+                    <li key={logEntryEvent.key}>Logged By: {logEntryEvent.LoggedByUsername__c}</li>
+                    <li key={logEntryEvent.key}>Logging Level: {logEntryEvent.LoggingLevel__c}</li>
+                    <li key={logEntryEvent.key}>Origin Type: {logEntryEvent.OriginType__c}</li>
+                    <li key={logEntryEvent.key}>Origin Location: {logEntryEvent.OriginLocation__c}</li>
+                    <li>Message: <code key={logEntryEvent.key}>{logEntryEvent.Message__c}</code></li>
+                    <li>Stack Trace: <code key={logEntryEvent.key}>{logEntryEvent.StackTrace__c}</code></li>
+                </ul>
+            </lightning-card>
+        </template>
+    </lightning-card>
+</template>
