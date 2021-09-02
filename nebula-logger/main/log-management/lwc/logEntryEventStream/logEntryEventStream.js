@@ -3,6 +3,7 @@ import { subscribe, unsubscribe } from 'lightning/empApi';
 
 export default class LogEntryEventStreamer extends LightningElement {
     channel = '/event/LogEntryEvent__e'; // TODO need to support namespace in managed package
+    loggingLevelFilter;
     messageFilter;
     maxEvents = 20;
     logEntryEvents = [];
@@ -11,11 +12,23 @@ export default class LogEntryEventStreamer extends LightningElement {
     _subscription = {};
 
     get title() {
-        return this.logEntryEvents.length + ' Messages';
+        return this.logEntryEvents.length + ' Log Entry Events';
     }
 
     get streamButtonVariant() {
         return this.isStreamEnabled ? 'success' : 'brand';
+    }
+
+    get loggingLevelOptions() {
+        return [
+            { label: 'ERROR', value: 'ERROR' },
+            { label: 'WARN', value: 'WARN' },
+            { label: 'INFO', value: 'INFO' },
+            { label: 'DEBUG', value: 'DEBUG' },
+            { label: 'FINE', value: 'FINE' },
+            { label: 'FINER', value: 'FINER' },
+            { label: 'FINEST', value: 'FINEST' }
+        ];
     }
 
     connectedCallback() {
@@ -34,6 +47,10 @@ export default class LogEntryEventStreamer extends LightningElement {
 
     cancelSubscription() {
         unsubscribe(this._subscription);
+    }
+
+    handleLoggingLevelFilterChange(event) {
+        this.handleLoggingLevelFilterChange = event.target.value;
     }
 
     handleMessageFilterChange(event) {
@@ -61,9 +78,9 @@ export default class LogEntryEventStreamer extends LightningElement {
         let newEvent = response.data.payload;
         newEvent.key = newEvent.TransactionId__c + '__' + newEvent.TransactionEntryNumber__c;
         console.log('newEvent:', JSON.stringify(newEvent));
-        if (!this.messageFilter || newEvent.Message__c.includes(this.messageFilter)) {
+        // if (!this.messageFilter || newEvent.Message__c.includes(this.messageFilter)) {
             this.logEntryEvents.unshift(newEvent);
-        }
+        // }
         while (this.logEntryEvents.length > this.maxEvents) {
             this.logEntryEvents.pop();
         }

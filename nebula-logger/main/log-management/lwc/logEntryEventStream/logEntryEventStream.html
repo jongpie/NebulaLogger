@@ -1,35 +1,91 @@
 <template>
-    <lightning-card title={title} class="slds-p-around_medium">
-        <div slot="actions">
-            <lightning-input placeholder="Filter Messages" type="text" value={messageFilter} onchange={handleMessageFilterChange}></lightning-input>
-            <lightning-input placeholder="Max Events" type="number" value={maxEvents} onchange={handleMaxEventsChange}></lightning-input>
-            <lightning-button label="Clear" name="clear" onclick={onClear}></lightning-button>
-            <lightning-button-stateful
-                label-when-off="Enable Streaming"
-                label-when-on="Streaming Enabled"
-                label-when-hover="Toggle Streaming"
-                icon-name-when-off="utility:add"
-                icon-name-when-on="utility:check"
-                icon-name-when-hover="utility:close"
-                selected={isStreamEnabled}
-                onclick={onToggleStream}
-                variant={streamButtonVariant}
-            >
-            </lightning-button-stateful>
-        </div>
-        <template for:each={logEntryEvents} for:item="logEntryEvent">
-            <lightning-card key={logEntryEvent.key}>
-                <p slot="title">Tranaction Entry: {logEntryEvent.key}</p>
-                <ul>
-                    <p key={logEntryEvent.key}>Timestamp: {logEntryEvent.Timestamp__c}</p>
-                    <li key={logEntryEvent.key}>Logged By: {logEntryEvent.LoggedByUsername__c}</li>
-                    <li key={logEntryEvent.key}>Logging Level: {logEntryEvent.LoggingLevel__c}</li>
-                    <li key={logEntryEvent.key}>Origin Type: {logEntryEvent.OriginType__c}</li>
-                    <li key={logEntryEvent.key}>Origin Location: {logEntryEvent.OriginLocation__c}</li>
-                    <li>Message: <code key={logEntryEvent.key}>{logEntryEvent.Message__c}</code></li>
-                    <li>Stack Trace: <code key={logEntryEvent.key}>{logEntryEvent.StackTrace__c}</code></li>
-                </ul>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-3">
+            <lightning-card title={title} class="slds-p-around_medium">
+                <div slot="actions">
+                    <lightning-button label="Clear" name="clear" onclick={onClear} variant="destructive"></lightning-button>
+                    <!-- <lightning-input placeholder="Filter Messages" type="text" value={messageFilter} onchange={handleMessageFilterChange}></lightning-input>
+                    <lightning-input placeholder="Max Events" type="number" value={maxEvents} onchange={handleMaxEventsChange}></lightning-input>
+                    <lightning-button-stateful
+                        label-when-off="Enable Streaming"
+                        label-when-on="Streaming Enabled"
+                        label-when-hover="Toggle Streaming"
+                        icon-name-when-off="utility:add"
+                        icon-name-when-on="utility:check"
+                        icon-name-when-hover="utility:close"
+                        selected={isStreamEnabled}
+                        onclick={onToggleStream}
+                        variant={streamButtonVariant}
+                    >
+                    </lightning-button-stateful> -->
+                </div>
+                <template for:each={logEntryEvents} for:item="logEntryEvent">
+                    <lightning-card key={logEntryEvent.key}>
+                        <p slot="title">Tranaction Entry: {logEntryEvent.key}</p>
+                        <ul>
+                            <p key={logEntryEvent.key}>Timestamp: {logEntryEvent.Timestamp__c}</p>
+                            <li key={logEntryEvent.key}>Logged By: {logEntryEvent.LoggedByUsername__c}</li>
+                            <li key={logEntryEvent.key}>Logging Level: {logEntryEvent.LoggingLevel__c}</li>
+                            <li key={logEntryEvent.key}>Origin Type: {logEntryEvent.OriginType__c}</li>
+                            <li key={logEntryEvent.key}>Origin Location: {logEntryEvent.OriginLocation__c}</li>
+                            <li>Message: <code key={logEntryEvent.key}>{logEntryEvent.Message__c}</code></li>
+                            <li>Stack Trace: <code key={logEntryEvent.key}>{logEntryEvent.StackTrace__c}</code></li>
+                        </ul>
+                    </lightning-card>
+                </template>
             </lightning-card>
-        </template>
-    </lightning-card>
+        </div>
+        <div class="slds-col slds-size_1-of-3">
+            <lightning-card title="Stream Settings" class="slds-m-around_medium slds-p-around_medium">
+                <div slot="actions">
+                    <lightning-button-group>
+                        <!-- <lightning-button label="Clear" name="clear" onclick={onClear}></lightning-button> -->
+                        <lightning-button-stateful
+                            icon-name-when-hover="utility:close"
+                            icon-name-when-off="utility:add"
+                            icon-name-when-on="utility:check"
+                            label-when-hover="Toggle Streaming"
+                            label-when-off="Enable Streaming"
+                            label-when-on="Streaming Enabled"
+                            onclick={onToggleStream}
+                            selected={isStreamEnabled}
+                            variant={streamButtonVariant}
+                        >
+                        </lightning-button-stateful>
+                    </lightning-button-group>
+                </div>
+                <lightning-dual-listbox
+                    field-level-help="Select your preferred logging levels"
+                    label="Select Logging Levels"
+                    name="loggingLevels"
+                    onchange={handleLoggingLevelFilterChange}
+                    options={loggingLevelOptions}
+                    selected-label="Selected"
+                    source-label="Available"
+                    value={loggingLevelFilter}
+                ></lightning-dual-listbox>
+                <lightning-combobox
+                    label="Minimum Logging Level"
+                    onchange={handleLoggingLevelFilterChange}
+                    options={loggingLevelOptions}
+                    placeholder="Select Logging Level"
+                    value={loggingLevelFilter}
+                ></lightning-combobox>
+                <lightning-input
+                    label="Message Filter"
+                    onchange={handleMessageFilterChange}
+                    placeholder="Filter Log Entry Event Messages"
+                    type="text"
+                    value={messageFilter}
+                ></lightning-input>
+                <lightning-input
+                    label="Max Number of Events to Display"
+                    onchange={handleMaxEventsChange}
+                    placeholder="Max Events"
+                    type="number"
+                    value={maxEvents}
+                ></lightning-input>
+            </lightning-card>
+        </div>
+    </div>
 </template>
