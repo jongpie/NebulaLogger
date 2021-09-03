@@ -5,7 +5,7 @@ export default class LogEntryEventStreamer extends LightningElement {
     channel = '/event/LogEntryEvent__e'; // TODO need to support namespace in managed package
     loggingLevelFilter;
     messageFilter;
-    maxEvents = 20;
+    maxEvents = 50;
     logEntryEvents = [];
     isStreamEnabled = true;
 
@@ -21,13 +21,14 @@ export default class LogEntryEventStreamer extends LightningElement {
 
     get loggingLevelOptions() {
         return [
-            { label: 'ERROR', value: 'ERROR' },
-            { label: 'WARN', value: 'WARN' },
-            { label: 'INFO', value: 'INFO' },
-            { label: 'DEBUG', value: 'DEBUG' },
-            { label: 'FINE', value: 'FINE' },
-            { label: 'FINER', value: 'FINER' },
-            { label: 'FINEST', value: 'FINEST' }
+            { label: '--SELECT--', value: '' },
+            { label: 'ERROR', value: '8' },
+            { label: 'WARN', value: '7' },
+            { label: 'INFO', value: '6' },
+            { label: 'DEBUG', value: '5' },
+            { label: 'FINE', value: '4' },
+            { label: 'FINER', value: '3' },
+            { label: 'FINEST', value: '2' }
         ];
     }
 
@@ -40,7 +41,7 @@ export default class LogEntryEventStreamer extends LightningElement {
     }
 
     createSubscription() {
-        subscribe(this.channel, -1, this.messageCallback.bind(this)).then(response => {
+        subscribe(this.channel, -1, this.subscriptionCallback.bind(this)).then(response => {
             this._subscription = response;
         });
     }
@@ -50,7 +51,7 @@ export default class LogEntryEventStreamer extends LightningElement {
     }
 
     handleLoggingLevelFilterChange(event) {
-        this.handleLoggingLevelFilterChange = event.target.value;
+        this.loggingLevelFilter = event.target.value;
     }
 
     handleMessageFilterChange(event) {
@@ -74,16 +75,43 @@ export default class LogEntryEventStreamer extends LightningElement {
         }
     }
 
-    messageCallback = function (response) {
-        let newEvent = response.data.payload;
+    subscriptionCallback(response) {
+        const newEvent = response.data.payload;
+        // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
+        // but it doesn't seem to be populated via empApi, so use a synthetic key instead
         newEvent.key = newEvent.TransactionId__c + '__' + newEvent.TransactionEntryNumber__c;
+
         console.log('newEvent:', JSON.stringify(newEvent));
-        // if (!this.messageFilter || newEvent.Message__c.includes(this.messageFilter)) {
-            this.logEntryEvents.unshift(newEvent);
-        // }
-        while (this.logEntryEvents.length > this.maxEvents) {
-            this.logEntryEvents.pop();
+
+        const updatedLogEntryEvents = [... this.logEntryEvents];
+        if (this._meetsLoggingLevelFilter(newEvent) && this._meetsMessageFilter(newEvent)) {
+            console.log('event meets filter criteria!');
+            updatedLogEntryEvents.unshift(newEvent);
         }
+
+        while (updatedLogEntryEvents.length > this.maxEvents) {
+            updatedLogEntryEvents.pop();
+        }
+        this.logEntryEvents = updatedLogEntryEvents;
         console.log('this.logEntryEvents:', JSON.stringify(this.logEntryEvents));
     };
+
+    // Private functions
+    _meetsLoggingLevelFilter(logEntryEvent) {
+        // TODO fix logging level filtering + comparison of oridinals
+        if (!this.loggingLevelFilter || newEvent.LoggingLevelOrdinal__c >= Number(loggingLevelFilter)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    _meetsMessageFilter(logEntryEvent) {
+        // TODO support for regex searches in Message__c
+        if (!this.messageFilter || logEntryEvent.Message__c.contains(this.messageFilter)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
