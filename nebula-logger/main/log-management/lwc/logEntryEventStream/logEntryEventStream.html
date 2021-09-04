@@ -1,6 +1,6 @@
 <template>
     <div class="slds-grid slds-gutters">
-        <div class="slds-col slds-size_1-of-3">
+        <div class="slds-col slds-size_1-of-4">
             <lightning-card title="Stream Settings" class="slds-m-around_medium slds-p-around_medium">
                 <div slot="actions">
                     <lightning-button-stateful
@@ -20,7 +20,7 @@
                     <lightning-input
                         label="Max Number of Events to Display"
                         onchange={handleMaxEventsChange}
-                        placeholder="Max Events"
+                        placeholder="Specify Max Events"
                         type="number"
                         value={maxEvents}
                     ></lightning-input>
@@ -31,6 +31,25 @@
                         placeholder="Select Logging Level"
                         value={loggingLevelFilter}
                     ></lightning-combobox>
+                    <lightning-combobox
+                        label="Origin Type"
+                        onchange={handleLoggingLevelFilterChange}
+                        options={loggingLevelOptions}
+                        placeholder="Select Origin Type"
+                        value={loggingLevelFilter}
+                    ></lightning-combobox>
+                    <lightning-input
+                        label="Origin Location"
+                        onchange={handleLoggingLevelFilterChange}
+                        placeholder="Specify Origin Location"
+                        value={loggingLevelFilter}
+                    ></lightning-input>
+                    <lightning-input
+                        label="Logged By"
+                        onchange={handleLoggingLevelFilterChange}
+                        placeholder="Specify Username"
+                        value={loggingLevelFilter}
+                    ></lightning-input>
                     <lightning-textarea
                         label="Message Filter"
                         onchange={handleMessageFilterChange}
@@ -40,26 +59,48 @@
                 </div>
             </lightning-card>
         </div>
-        <div class="slds-col slds-size_2-of-3">
+        <div class="slds-col slds-size_3-of-4">
             <lightning-card title={title} class="slds-p-around_medium">
                 <div slot="actions">
                     <lightning-button label="Clear" name="clear" onclick={onClear} variant="destructive"></lightning-button>
                 </div>
-                <div class="slds-p-horizontal_small">
+                <div class="slds-m-top_medium slds-p-horizontal_medium event-stream">
                     <template for:each={logEntryEvents} for:item="logEntryEvent">
-                        <lightning-card key={logEntryEvent.key}>
-                            <p slot="title">Tranaction Entry: {logEntryEvent.key}</p>
-                            <ul class="slds-list_dotted">
-                                <li key={logEntryEvent.key}>Timestamp: {logEntryEvent.Timestamp__c}</li>
-                                <li key={logEntryEvent.key}>Logged By: {logEntryEvent.LoggedByUsername__c}</li>
-                                <li key={logEntryEvent.key}>Logging Level: {logEntryEvent.LoggingLevel__c}</li>
-                                <li key={logEntryEvent.key}>Origin Type: {logEntryEvent.OriginType__c}</li>
-                                <li key={logEntryEvent.key}>Origin Location: {logEntryEvent.OriginLocation__c}</li>
-                                <li>Message: <code key={logEntryEvent.key}>{logEntryEvent.Message__c}</code></li>
-                                <li>Stack Trace: <code key={logEntryEvent.key}>{logEntryEvent.StackTrace__c}</code></li>
-                            </ul>
-                        </lightning-card>
-                        <hr key={logEntryEvent.key}></hr>
+                        <table key={logEntryEvent.key} class="slds-list_dotted">
+                            <tr key={logEntryEvent.key}>
+                                <td>Log Entry Event Key</td>
+                                <td>{logEntryEvent.key}</td>
+                            </tr>
+                            <tr key={logEntryEvent.key}>
+                                <td>Timestamp</td>
+                                <td>{logEntryEvent.Timestamp__c}</td>
+                            </tr>
+                            <tr key={logEntryEvent.key}>
+                                <td>Logged By</td>
+                                <td>{logEntryEvent.LoggedByUsername__c}</td>
+                            </tr>
+                            <tr key={logEntryEvent.key}>
+                                <td>Logging Level</td>
+                                <td>{logEntryEvent.LoggingLevel__c}</td>
+                            </tr>
+                            <tr key={logEntryEvent.key}>
+                                <td>Origin Type</td>
+                                <td>{logEntryEvent.OriginType__c}</td>
+                            </tr>
+                            <tr key={logEntryEvent.key}>
+                                <td>Origin Location</td>
+                                <td>{logEntryEvent.OriginLocation__c}</td>
+                            </tr>
+                            <tr key={logEntryEvent.key}>
+                                <td>Message</td>
+                                <td><code key={logEntryEvent.key}>{logEntryEvent.Message__c}</code></td>
+                            </tr>
+                            <tr key={logEntryEvent.key}>
+                                <td>Stack Trace</td>
+                                <td><code key={logEntryEvent.key}>{logEntryEvent.StackTrace__c}</code></td>
+                            </tr>
+                        </table>
+                        <hr key={logEntryEvent.key} />
                     </template>
                 </div>
             </lightning-card>
