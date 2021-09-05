@@ -60,9 +60,21 @@
             </lightning-card>
         </div>
         <div class="slds-col slds-size_3-of-4">
-            <lightning-card title={title} class="slds-p-around_medium">
+            <lightning-card title={title} class="slds-p-around_medium" data-id="event-stream-console">
                 <div slot="actions">
-                    <lightning-button label="Clear" name="clear" onclick={onClear} variant="destructive"></lightning-button>
+                    <lightning-button-group >
+                        <lightning-button label="Clear" icon-name="utility:delete" name="clear" onclick={onClear} variant="destructive"></lightning-button>
+                        <lightning-button-stateful
+                            icon-name-when-off="utility:expand"
+                            icon-name-when-on="utility:contract"
+                            label-when-off="Expand"
+                            label-when-on="Contract"
+                            onclick={onToggleExpand}
+                            selected={isExpanded}
+                            variant="brand"
+                        >
+                        </lightning-button-stateful>
+                    </lightning-button-group>
                 </div>
                 <div class="slds-m-top_medium slds-p-horizontal_medium event-stream">
                     <template for:each={logEntryEvents} for:item="logEntryEvent">

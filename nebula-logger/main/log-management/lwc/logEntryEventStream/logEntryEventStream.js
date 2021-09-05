@@ -7,6 +7,7 @@ export default class LogEntryEventStreamer extends LightningElement {
     messageFilter;
     maxEvents = 50;
     logEntryEvents = [];
+    isExpanded = false;
     isStreamEnabled = true;
 
     _subscription = {};
@@ -33,7 +34,7 @@ export default class LogEntryEventStreamer extends LightningElement {
     }
 
     connectedCallback() {
-        document.title = 'Log Entry Event Stream'
+        document.title = 'Log Entry Event Stream';
         this.createSubscription();
     }
 
@@ -67,6 +68,12 @@ export default class LogEntryEventStreamer extends LightningElement {
         this.logEntryEvents = [];
     }
 
+    onToggleExpand() {
+        let consoleBlock = this.template.querySelector('[data-id="event-stream-console"]');
+        consoleBlock.className = this.isExpanded ? '' : 'expanded';
+        this.isExpanded = !this.isExpanded;
+    }
+
     onToggleStream() {
         this.isStreamEnabled = !this.isStreamEnabled;
         if (this.isStreamEnabled) {
@@ -84,7 +91,7 @@ export default class LogEntryEventStreamer extends LightningElement {
 
         console.log('newEvent:', JSON.stringify(newEvent));
 
-        const updatedLogEntryEvents = [... this.logEntryEvents];
+        const updatedLogEntryEvents = [...this.logEntryEvents];
         if (this._meetsLoggingLevelFilter(newEvent) && this._meetsMessageFilter(newEvent)) {
             console.log('event meets filter criteria!');
             updatedLogEntryEvents.unshift(newEvent);
@@ -95,7 +102,7 @@ export default class LogEntryEventStreamer extends LightningElement {
         }
         this.logEntryEvents = updatedLogEntryEvents;
         console.log('this.logEntryEvents:', JSON.stringify(this.logEntryEvents));
-    };
+    }
 
     // Private functions
     _meetsLoggingLevelFilter(logEntryEvent) {
