@@ -66,41 +66,12 @@
                 </div>
                 <div class="slds-m-top_medium slds-p-horizontal_medium event-stream">
                     <template for:each={logEntryEvents} for:item="logEntryEvent">
-                        <table key={logEntryEvent.key} class="slds-list_dotted">
-                            <tr key={logEntryEvent.key}>
-                                <td>Log Entry Event Key</td>
-                                <td>{logEntryEvent.key}</td>
-                            </tr>
-                            <tr key={logEntryEvent.key}>
-                                <td>Timestamp</td>
-                                <td>{logEntryEvent.Timestamp__c}</td>
-                            </tr>
-                            <tr key={logEntryEvent.key}>
-                                <td>Logged By</td>
-                                <td>{logEntryEvent.LoggedByUsername__c}</td>
-                            </tr>
-                            <tr key={logEntryEvent.key}>
-                                <td>Logging Level</td>
-                                <td>{logEntryEvent.LoggingLevel__c}</td>
-                            </tr>
-                            <tr key={logEntryEvent.key}>
-                                <td>Origin Type</td>
-                                <td>{logEntryEvent.OriginType__c}</td>
-                            </tr>
-                            <tr key={logEntryEvent.key}>
-                                <td>Origin Location</td>
-                                <td>{logEntryEvent.OriginLocation__c}</td>
-                            </tr>
-                            <tr key={logEntryEvent.key}>
-                                <td>Message</td>
-                                <td><code key={logEntryEvent.key}>{logEntryEvent.Message__c}</code></td>
-                            </tr>
-                            <tr key={logEntryEvent.key}>
-                                <td>Stack Trace</td>
-                                <td><code key={logEntryEvent.key}>{logEntryEvent.StackTrace__c}</code></td>
-                            </tr>
-                        </table>
-                        <hr key={logEntryEvent.key} />
+                        <div key={logEntryEvent.key} class="event-stream-entry">
+                            <span key={logEntryEvent.key} class="timestamp">{logEntryEvent.Timestamp__c}</span>
+                            <span key={logEntryEvent.key} class="logged-by">{logEntryEvent.LoggedByUsername__c} - {logEntryEvent.key}</span>
+                            <span key={logEntryEvent.key} class="logging-level">{logEntryEvent.LoggingLevel__c}</span>
+                            <span key={logEntryEvent.key} class="message">{logEntryEvent.Message__c}</span>
+                        </div>
                     </template>
                 </div>
             </lightning-card>

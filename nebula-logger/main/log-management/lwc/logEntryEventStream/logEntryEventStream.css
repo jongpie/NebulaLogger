@@ -1,7 +1,39 @@
 .event-stream {
-    background-color: rgb(22, 50, 92);
+    background-color: #1a1a1a;
+    /* background-color: rgb(22, 50, 92); */
     color: white;
+    font-family: 'Lucida Console', 'Courier New', monospace;
+    text-indent: -32px;
+    padding-left: 32px;
     height: calc(100vh - 300px);
+    margin-right: 8px;
     overflow-x: hidden;
     overflow-y: scroll;
+
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.event-stream-entry {
+    font-family: 'Lucida Console', 'Courier New', monospace;
+    margin: 4px 0;
+}
+
+.timestamp {
+    color: darkgrey;
+    margin-right: 8px;
+}
+
+.logged-by {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.logging-level {
+    background-color: dimgray;
+    color: white;
+    margin-right: 8px;
+    padding: 4px;
 }

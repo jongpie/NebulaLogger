@@ -33,6 +33,7 @@ export default class LogEntryEventStreamer extends LightningElement {
     }
 
     connectedCallback() {
+        document.title = 'Log Entry Event Stream'
         this.createSubscription();
     }
 
