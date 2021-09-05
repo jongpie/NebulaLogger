@@ -2,14 +2,19 @@ import { LightningElement, track, api } from 'lwc';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 
 export default class LogEntryEventStreamer extends LightningElement {
-    channel = '/event/LogEntryEvent__e'; // TODO need to support namespace in managed package
-    loggingLevelFilter;
-    messageFilter;
-    maxEvents = 50;
     logEntryEvents = [];
     isExpanded = false;
     isStreamEnabled = true;
 
+    // Filters
+    loggedByFilter;
+    loggingLevelFilter;
+    messageFilter;
+    originTypeFilter;
+    originLocationFilter;
+    maxEvents = 50;
+
+    _channel = '/event/LogEntryEvent__e'; // TODO need to support namespace in managed package
     _subscription = {};
 
     get title() {
@@ -33,6 +38,15 @@ export default class LogEntryEventStreamer extends LightningElement {
         ];
     }
 
+    get originTypeOptions() {
+        return [
+            { label: '--SELECT--', value: '' },
+            { label: 'Apex', value: 'Apex' },
+            { label: 'Component', value: 'Component' },
+            { label: 'Flow', value: 'Flow' }
+        ];
+    }
+
     connectedCallback() {
         document.title = 'Log Entry Event Stream';
         this.createSubscription();
@@ -43,7 +57,7 @@ export default class LogEntryEventStreamer extends LightningElement {
     }
 
     createSubscription() {
-        subscribe(this.channel, -1, this.subscriptionCallback.bind(this)).then(response => {
+        subscribe(this._channel, -1, this.subscriptionCallback.bind(this)).then(response => {
             this._subscription = response;
         });
     }
@@ -84,17 +98,24 @@ export default class LogEntryEventStreamer extends LightningElement {
     }
 
     subscriptionCallback(response) {
-        const newEvent = response.data.payload;
+        const logEntryEvent = response.data.payload;
         // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
         // but it doesn't seem to be populated via empApi, so use a synthetic key instead
-        newEvent.key = newEvent.TransactionId__c + '__' + newEvent.TransactionEntryNumber__c;
+        logEntryEvent.key = logEntryEvent.TransactionId__c + '__' + logEntryEvent.TransactionEntryNumber__c;
 
-        console.log('newEvent:', JSON.stringify(newEvent));
+        console.log('logEntryEvent:', JSON.stringify(logEntryEvent));
 
         const updatedLogEntryEvents = [...this.logEntryEvents];
-        if (this._meetsLoggingLevelFilter(newEvent) && this._meetsMessageFilter(newEvent)) {
+
+        if (
+            this._meetsLoggedByFilter(logEntryEvent) &&
+            this._meetsLoggingLevelFilter(logEntryEvent) &&
+            this._meetsMessageFilter(logEntryEvent) &&
+            this._meetsOriginLocationFilter(logEntryEvent) &&
+            this._meetsOriginTypeFilter(logEntryEvent)
+        ) {
             console.log('event meets filter criteria!');
-            updatedLogEntryEvents.unshift(newEvent);
+            updatedLogEntryEvents.unshift(logEntryEvent);
         }
 
         while (updatedLogEntryEvents.length > this.maxEvents) {
@@ -105,9 +126,16 @@ export default class LogEntryEventStreamer extends LightningElement {
     }
 
     // Private functions
+    _meetsLoggedByFilter(logEntryEvent) {
+        if (!this.loggedByFilter || logEntryEvent.LoggedByUsername__c.includes(this.loggedByFilter)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     _meetsLoggingLevelFilter(logEntryEvent) {
-        // TODO fix logging level filtering + comparison of oridinals
-        if (!this.loggingLevelFilter || newEvent.LoggingLevelOrdinal__c >= Number(loggingLevelFilter)) {
+        if (!this.loggingLevelFilter || Number(logEntryEvent.LoggingLevelOrdinal__c) >= Number(this.loggingLevelFilter)) {
             return true;
         } else {
             return false;
@@ -116,7 +144,25 @@ export default class LogEntryEventStreamer extends LightningElement {
 
     _meetsMessageFilter(logEntryEvent) {
         // TODO support for regex searches in Message__c
-        if (!this.messageFilter || logEntryEvent.Message__c.contains(this.messageFilter)) {
+        if (!this.messageFilter || logEntryEvent.Message__c.includes(this.messageFilter)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    _meetsOriginLocationFilter(logEntryEvent) {
+        // TODO support for regex searches in OriginLocation__c
+        if (!this.originLocationFilter || logEntryEvent.OriginLocation__c.includes(this.originLocationFilter)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    _meetsOriginTypeFilter(logEntryEvent) {
+        // TODO support for regex searches in Message__c
+        if (!this.originTypeFilter || logEntryEvent.OriginType__c == this.originTypeFilter) {
             return true;
         } else {
             return false;

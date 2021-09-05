@@ -34,26 +34,26 @@
                     <lightning-combobox
                         label="Origin Type"
                         onchange={handleLoggingLevelFilterChange}
-                        options={loggingLevelOptions}
+                        options={originTypeOptions}
                         placeholder="Select Origin Type"
-                        value={loggingLevelFilter}
+                        value={originTypeFilter}
                     ></lightning-combobox>
                     <lightning-input
                         label="Origin Location"
                         onchange={handleLoggingLevelFilterChange}
                         placeholder="Specify Origin Location"
-                        value={loggingLevelFilter}
+                        value={originLocationFilter}
                     ></lightning-input>
                     <lightning-input
                         label="Logged By"
                         onchange={handleLoggingLevelFilterChange}
                         placeholder="Specify Username"
-                        value={loggingLevelFilter}
+                        value={loggedByFilter}
                     ></lightning-input>
                     <lightning-textarea
-                        label="Message Filter"
+                        label="Message"
                         onchange={handleMessageFilterChange}
-                        placeholder="Filter Log Entry Event Messages"
+                        placeholder="Message Contains"
                         value={messageFilter}
                     ></lightning-textarea>
                 </div>
@@ -81,6 +81,7 @@
                         <div key={logEntryEvent.key} class="event-stream-entry">
                             <span key={logEntryEvent.key} class="timestamp">{logEntryEvent.Timestamp__c}</span>
                             <span key={logEntryEvent.key} class="logged-by">{logEntryEvent.LoggedByUsername__c} - {logEntryEvent.key}</span>
+                            <span key={logEntryEvent.key} class="origin">{logEntryEvent.OriginType__c}.{logEntryEvent.OriginLocation__c} </span>
                             <span key={logEntryEvent.key} class="logging-level">{logEntryEvent.LoggingLevel__c}</span>
                             <span key={logEntryEvent.key} class="message">{logEntryEvent.Message__c}</span>
                         </div>

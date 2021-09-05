@@ -38,9 +38,13 @@
 }
 
 .logged-by {
-    background-color: black;
-    color: white;
+    color: #45c65a;
     font-weight: bold;
+    margin-right: 8px;
+}
+
+.origin {
+    color: cornflowerblue;
     margin-right: 8px;
 }
 
