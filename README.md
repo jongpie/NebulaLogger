@@ -594,6 +594,14 @@ Everyone loves JSON - so to make it easy to see a JSON version of a `Log__c` rec
 
 ---
 
+### Real-Time Monitoring with Log Entry Event Stream
+
+Within Logger Console app, the Log Entry Event Stream tab provides real-time monitoring of `LogEntryEvent__e` platform events. Simply open the tab to start monitoring, and use the filters to further refine with `LogEntryEvent__e` records display in the stream.
+
+![Log Entry Event Stream](./content/log-entry-event-stream.png)
+
+---
+
 ### View Related Log Entries on a Record Page
 
 Within App Builder, admins can add the 'Related Log Entries' lightning web component (lwc) to any record page. Admins can also control which columns are displayed be creating & selecting a field set on `LogEntry__c` with the desired fields.
