@@ -5,7 +5,7 @@
 
 /**
  * @group Log Management
- * @description Controller class for the component RelatedLogEntries
+ * @description Controller class for the lightning web component `related-log-entries`
  */
 public with sharing class RelatedLogEntriesController {
     private static final SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;

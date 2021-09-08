@@ -8,14 +8,6 @@ Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__
 
 ---
 
-### Constructors
-
-#### `LogEntryEventHandler()`
-
-#### `LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents)`
-
----
-
 ### Properties
 
 #### `releaseNumber` → `String`
@@ -26,9 +18,9 @@ Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__
 
 ### Methods
 
-#### `execute()` → `void`
+#### `executeAfterInsert(List<SObject> triggerNew)` → `void`
 
-Runs the trigger handler's logic for the `LogEntryEvent__e` platform event object
+#### `executeBeforeInsert(List<SObject> triggerNew)` → `void`
 
 #### `getSObjectType()` → `SObjectType`
 

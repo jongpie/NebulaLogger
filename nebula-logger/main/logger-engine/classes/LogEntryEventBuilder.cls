@@ -568,6 +568,7 @@ global with sharing class LogEntryEventBuilder {
         // this.detailsAreSet) only need to be run once
         if (this.tagDetailsAreSet == false) {
             this.setTagsDetails();
+            this.tagDetailsAreSet = true;
         }
 
         // Salesforce does not provide precise datetimes in Apex triggers for platform events
@@ -800,7 +801,7 @@ global with sharing class LogEntryEventBuilder {
     private static Map<String, String> getSObjectSuffixToClassification() {
         // TODO add sample metadata for external object + picklist value + test
         // Example: MyExternalObject__x
-        // '__mdt' => 'External Object'
+        // '__x' => 'External Object'
 
         return new Map<String, String>{
             // Example: MyBigObject__b

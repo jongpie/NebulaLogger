@@ -5,7 +5,7 @@
 
 /**
  * @group Logger Engine
- * @description Controller class used by the light web component `c/logger`
+ * @description Controller class used by the lightning web component `logger`
  * @see Logger
  * @see LogEntryEventBuilder
  */

@@ -4,7 +4,7 @@ layout: default
 
 ## RelatedLogEntriesController class
 
-Controller class for the component RelatedLogEntries
+Controller class for the lightning web component `related-log-entries`
 
 ---
 
