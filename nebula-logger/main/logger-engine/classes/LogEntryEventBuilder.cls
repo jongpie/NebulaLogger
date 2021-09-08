@@ -23,6 +23,9 @@ global with sharing class LogEntryEventBuilder {
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
 
+    @TestVisible
+    private String debugMessage = '';
+
     private Boolean detailsAreSet = false;
     private Boolean shouldSave;
     private List<String> tags = new List<String>();
@@ -97,8 +100,8 @@ global with sharing class LogEntryEventBuilder {
             Timestamp__c = System.now(),
             EpochTimestamp__c = System.now().getTime(),
             TriggerIsExecuting__c = Trigger.isExecuting,
-            TriggerOperationType__c = Trigger.operationType == null ? null : Trigger.operationType.name(),
-            TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
+            TriggerOperationType__c = Trigger.operationType?.name(),
+            TriggerSObjectType__c = Trigger.new?.getSObjectType().getDescribe().getName()
         );
 
         DmlException stackTraceException = new DmlException();
@@ -124,11 +127,6 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(String message) {
-        if (this.shouldSave == true || Test.isRunningTest() == true) {
-            // To help with debugging unit tests, always run System.debug statement in a test context
-            System.debug(this.entryLoggingLevel, message);
-        }
-
         if (this.shouldSave == false) {
             return this;
         }
@@ -136,6 +134,7 @@ global with sharing class LogEntryEventBuilder {
         String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
         this.logEntryEvent.Message__c = truncatedMessage;
         this.logEntryEvent.MessageTruncated__c = message != truncatedMessage;
+        this.logToApexDebug(message);
 
         return this;
     }
@@ -628,6 +627,28 @@ global with sharing class LogEntryEventBuilder {
             namespace = null;
         }
         return namespace;
+    }
+
+    private void logToApexDebug(String message) {
+        if (this.shouldSave == true || Test.isRunningTest() == true) {
+            // To help with debugging unit tests, always run System.debug statement in a test context
+            String template = Logger.getUserSettings()?.SystemLogMessageFormat__c;
+            if (String.isNotBlank(template)) {
+                List<String> possibleReplacements = template.split('\\{');
+                for (String possibleReplacement : possibleReplacements) {
+                    if (String.isBlank(possibleReplacement)) {
+                        continue;
+                    }
+                    String logEntryFieldName = possibleReplacement.substringBefore('}');
+                    template = template.replace('{' + logEntryFieldName + '}', String.valueOf(this.logEntryEvent.get(logEntryFieldName)));
+
+                }
+                this.debugMessage = template;
+            } else {
+                this.debugMessage = message;
+            }
+            System.debug(this.entryLoggingLevel, this.debugMessage);
+        }
     }
 
     // Private static methods
