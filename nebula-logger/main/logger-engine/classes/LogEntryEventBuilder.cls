@@ -671,6 +671,7 @@ global with sharing class LogEntryEventBuilder {
         CACHED_DATA_MASK_RULES.add(dataMaskRule);
     }
 
+    // Private static helper methods
     private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
         if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
             return dataInput;
@@ -684,7 +685,6 @@ global with sharing class LogEntryEventBuilder {
         return dataInput;
     }
 
-    // Private static helper methods
     private static String getApiVersion() {
         // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
         // Serializing any SObject w/ an ID will include the API version
