@@ -127,15 +127,13 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(String message) {
-        if (this.shouldSave == false) {
-            return this;
+        // To help with debugging unit tests, always run System.debug statement in a test context
+        if (this.shouldSave == true || Test.isRunningTest() == true) {
+            String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
+            this.logEntryEvent.Message__c = truncatedMessage;
+            this.logEntryEvent.MessageTruncated__c = message != truncatedMessage;
+            this.logToApexDebug(message);
         }
-
-        String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
-        this.logEntryEvent.Message__c = truncatedMessage;
-        this.logEntryEvent.MessageTruncated__c = message != truncatedMessage;
-        this.logToApexDebug(message);
-
         return this;
     }
 
@@ -630,25 +628,21 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void logToApexDebug(String message) {
-        if (this.shouldSave == true || Test.isRunningTest() == true) {
-            // To help with debugging unit tests, always run System.debug statement in a test context
-            String template = Logger.getUserSettings()?.SystemLogMessageFormat__c;
-            if (String.isNotBlank(template)) {
-                List<String> possibleReplacements = template.split('\\{');
-                for (String possibleReplacement : possibleReplacements) {
-                    if (String.isBlank(possibleReplacement)) {
-                        continue;
-                    }
-                    String logEntryFieldName = possibleReplacement.substringBefore('}');
-                    template = template.replace('{' + logEntryFieldName + '}', String.valueOf(this.logEntryEvent.get(logEntryFieldName)));
-
+        String template = Logger.getUserSettings()?.SystemLogMessageFormat__c;
+        if (String.isNotBlank(template)) {
+            List<String> possibleReplacements = template.split('\\{');
+            for (String possibleReplacement : possibleReplacements) {
+                if (String.isBlank(possibleReplacement)) {
+                    continue;
                 }
-                this.debugMessage = template;
-            } else {
-                this.debugMessage = message;
+                String logEntryFieldName = possibleReplacement.substringBefore('}');
+                template = template.replace('{' + logEntryFieldName + '}', String.valueOf(this.logEntryEvent.get(logEntryFieldName)));
             }
-            System.debug(this.entryLoggingLevel, this.debugMessage);
+            this.debugMessage = template;
+        } else {
+            this.debugMessage = message;
         }
+        System.debug(this.entryLoggingLevel, this.debugMessage);
     }
 
     // Private static methods
