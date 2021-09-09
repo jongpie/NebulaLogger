@@ -128,7 +128,7 @@ global with sharing class LogEntryEventBuilder {
      */
     global LogEntryEventBuilder setMessage(String message) {
         // To help with debugging unit tests, always run System.debug statement in a test context
-        if (this.shouldSave == true || Test.isRunningTest() == true) {
+        if ((this.shouldSave == true || Test.isRunningTest() == true) && this.logEntryEvent != null) {
             String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
             this.logEntryEvent.Message__c = truncatedMessage;
             this.logEntryEvent.MessageTruncated__c = message != truncatedMessage;
