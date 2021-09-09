@@ -5,7 +5,7 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kh3QAA)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015khXQAQ)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
@@ -17,6 +17,7 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
+    - In addition to the required fields on this Custom Setting record, `LoggerSettings__c` ships with `SystemLogMessageFormat__c`, which uses Handlebars-esque syntax to refer to fields on the `LogEntryEvent__e` Platform Event. You can use curly braces to denote merge field logic, eg: `{OriginLocation__c}\n{Message__c}` - this will output the contents of `LogEntryEvent__e.OriginLocation__c`, a line break, and then the contents of `LogEntryEvent__e.Message__c`
 5. Automatically mask sensitive data by configuring `LogEntryDataMaskRule__mdt` custom metadata rules
 6. View related log entries on any Lighting SObject flexipage by adding the 'Related Log Entries' component in App Builder
 7. Dynamically assign tags to `Log__c` and `LogEntry__c` records for tagging/labeling your logs
@@ -57,7 +58,7 @@ You can choose to install the unlocked package, you can deploy the metadata from
         </tr>
         <tr>
             <td>Apex Debug Statements</td>
-            <td><code>System.debug()</code> is automatically called</td>
+            <td><code>System.debug()</code> is automatically called - the output can be configured with LoggerSettings__c.SystemLogMessageFormat__c to use any field on LogEntryEvent__e</td>
             <td>Requires adding your own calls for <code>System.debug()</code> due to Salesforce limitations with managed packages</td>
         </tr>
         <tr>

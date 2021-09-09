@@ -977,4 +977,22 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(USER.Profile.UserLicense.Name, builder.getLogEntryEvent().UserLicenseName__c);
         System.assertEquals(USER.UserRole?.Name, builder.getLogEntryEvent().UserRoleName__c);
     }
+
+    @IsTest
+    static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
+        LoggerSettings__c settings = Logger.getUserSettings();
+        settings.SystemLogMessageFormat__c = '{OriginLocation__c}\n{Message__c}: {LoggingLevel__c}';
+
+        DebugStringExample example = new DebugStringExample();
+        LogEntryEventBuilder builder = example.myMethod();
+
+        System.assertEquals(DebugStringExample.class.getName() + '.myMethod' + '\n' + example.loggingString + ': ' + LoggingLevel.DEBUG.name(), builder.debugMessage);
+    }
+
+    private class DebugStringExample {
+        public final String loggingString = 'Inside DebugStringExample.myMethod !';
+        public LogEntryEventBuilder myMethod() {
+            return Logger.debug(loggingString);
+        }
+    }
 }

@@ -80,6 +80,9 @@ global with sharing class LogEntryEventBuilder {
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
 
+    @TestVisible
+    private String debugMessage = '';
+
     private Boolean detailsAreSet = false;
     private Boolean shouldSave;
     private Set<String> tags = new Set<String>();
@@ -122,8 +125,8 @@ global with sharing class LogEntryEventBuilder {
             Timestamp__c = System.now(),
             EpochTimestamp__c = System.now().getTime(),
             TriggerIsExecuting__c = Trigger.isExecuting,
-            TriggerOperationType__c = Trigger.operationType == null ? null : Trigger.operationType.name(),
-            TriggerSObjectType__c = Trigger.new == null ? null : String.valueOf(Trigger.new.getSObjectType())
+            TriggerOperationType__c = Trigger.operationType?.name(),
+            TriggerSObjectType__c = Trigger.new?.getSObjectType().getDescribe().getName()
         );
 
         DmlException stackTraceException = new DmlException();
@@ -149,23 +152,18 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(String message) {
-        String cleanedMessage;
-        if (this.shouldSave == true || Test.isRunningTest() == true) {
-            cleanedMessage = applyDataMaskRules(message, true, false);
-            // To help with debugging unit tests, always run System.debug statement in a test context
-            System.debug(this.entryLoggingLevel, cleanedMessage);
+        // To help with debugging unit tests, always run System.debug statement in a test context
+        if ((this.shouldSave == true || Test.isRunningTest() == true) && this.logEntryEvent != null) {            
+            String cleanedMessage = applyDataMaskRules(message, true, false);
+            Boolean messageMasked = cleanedMessage != message;
+            String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
+            Boolean messageTruncated = String.isNotBlank(cleanedMessage) && cleanedMessage.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
+            
+            this.logEntryEvent.Message__c = truncatedMessage;
+            this.logEntryEvent.MessageMasked__c = messageMasked;
+            this.logEntryEvent.MessageTruncated__c = messageTruncated;
+            this.logToApexDebug(message);
         }
-
-        if (this.shouldSave == false) {
-            return this;
-        }
-
-        Boolean messageMasked = cleanedMessage != message;
-        Boolean messageTruncated = String.isNotBlank(cleanedMessage) && cleanedMessage.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
-        this.logEntryEvent.Message__c = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
-        this.logEntryEvent.MessageMasked__c = messageMasked;
-        this.logEntryEvent.MessageTruncated__c = messageTruncated;
-
         return this;
     }
 
@@ -581,6 +579,28 @@ global with sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
+    private void logToApexDebug(String message) {
+        String template = Logger.getUserSettings()?.SystemLogMessageFormat__c;
+        if (String.isNotBlank(template)) {
+            List<String> possibleReplacements = template.split('\\{');
+            for (String possibleReplacement : possibleReplacements) {
+                if (String.isBlank(possibleReplacement)) {
+                    continue;
+                }
+                String logEntryFieldName = possibleReplacement.substringBefore('}');
+                Object logEntryFieldValue = this.logEntryEvent.get(logEntryFieldName); 
+                if (logEntryFieldValue == null) {
+                    logEntryFieldValue = '(null)';
+                }
+                template = template.replace('{' + logEntryFieldName + '}', String.valueOf(logEntryFieldValue));
+            }
+            this.debugMessage = template;
+        } else {
+            this.debugMessage = message;
+        }
+        System.debug(this.entryLoggingLevel, this.debugMessage);
+    }
+
     private void setNetworkDetails() {
         if (CACHED_NETWORK_SITE == null) {
             return;
@@ -666,13 +686,12 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
-    // Private static TestVisible methods
+    // Private static helper methods
     @TestVisible
     private static void addMockDataMaskRule(LogEntryDataMaskRule__mdt dataMaskRule) {
         CACHED_DATA_MASK_RULES.add(dataMaskRule);
     }
 
-    // Private static helper methods
     private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
         if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
             return dataInput;
@@ -714,9 +733,6 @@ global with sharing class LogEntryEventBuilder {
     private static List<String> getIgnoredClasses() {
         return new List<String>{
             ComponentLogger.class.getName(),
-            FlowLogEntry.class.getName(),
-            FlowRecordLogEntry.class.getName(),
-            FlowCollectionLogEntry.class.getName(),
             FlowLogger.class.getName(),
             Logger.class.getName(),
             LogMessage.class.getName(),
