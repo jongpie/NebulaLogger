@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <inlineHelpText>Flow definition information, specified by the org’s admin.</inlineHelpText>
     <label>Flow Description</label>
-    <length>4000</length>
+    <length>131072</length>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
