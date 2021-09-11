@@ -1,6 +1,6 @@
 ({
-    saveLogExample : function(component, event, helper) {
-        console.log('start of aura cmp\'s saveLog function');
+    saveLogExample: function (component, event, helper) {
+        console.log("start of aura cmp's saveLog function");
 
         const logger = component.find('logger');
         console.log(logger);
@@ -9,4 +9,4 @@
         console.log('stack==' + entry.stack);
         logger.saveLog();
     }
-})
+});

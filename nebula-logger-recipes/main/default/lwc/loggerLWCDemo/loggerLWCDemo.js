@@ -26,7 +26,7 @@ export default class loggerLWCDemo extends LightningElement {
         let someError;
         try {
             missingVariable / 0;
-        } catch(e) {
+        } catch (e) {
             someError = e;
         }
         const entry = logger.error(this.message).setError(someError).addTag('lwc logging demo');

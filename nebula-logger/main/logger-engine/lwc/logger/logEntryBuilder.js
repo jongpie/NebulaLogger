@@ -64,7 +64,7 @@ const LogEntryBuilder = class {
     }
 
     _logToConsole() {
-        switch(this.loggingLevel) {
+        switch (this.loggingLevel) {
             case 'ERROR':
                 console.error(this.message);
                 console.error(this);

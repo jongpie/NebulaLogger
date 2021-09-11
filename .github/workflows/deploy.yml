@@ -1,4 +1,4 @@
-# Unique name for this workflow
+# Pipeline for Nebula Logger
 name: Deployment
 
 on:
@@ -39,12 +39,11 @@ on:
             - 'sfdx-project.json'
 
 jobs:
-    local-tests:
-        name: 'Local Tests'
+    code-quality-tests:
+        name: 'Code Quality Tests'
         runs-on: ubuntu-latest
         environment: Test
         steps:
-            # Checkout the code
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
@@ -56,29 +55,45 @@ jobs:
             - name: 'Install npm'
               run: npm install
 
-            # Install Salesforce CLI
-            - name: Install Salesforce CLI
-              run: npm install sfdx-cli --global
-              # run: |
-              #     wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-              #     mkdir sfdx-cli
-              #     tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-              #     ./sfdx-cli/install
+            - name: 'Prettier code formatting verification'
+              run: npm run prettier:verify
 
-            # Start local testing
-            # TODO uncomment
-            # Prettier formatting
-            # - name: 'Code formatting verification with Prettier'
-            #   run: npm run prettier:verify
-            # TODO uncomment
+            # TODO setup ESLint plugin - https://github.com/salesforce/eslint-plugin-lwc
             # Lint LWC
             # - name: 'Lint Lightning Web Components'
             #   run: npm run lint:lwc
             # LWC unit tests
+
+            # TODO setup apex-scanner and PMD rules - https://github.com/forcedotcom/sfdx-scanner
+            # - name: Install & run SFDX Scanner
+            #   run: |
+            #       sfdx plugins:install @salesforce/sfdx-scanner
+            #       sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3
+
+    lwc-tests:
+        name: 'LWC Tests'
+        runs-on: ubuntu-latest
+        environment: Test
+        steps:
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+
+            - name: 'Setup node'
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '14'
+
+            - name: 'Install npm'
+              run: npm install
+
+            - name: Install Salesforce CLI
+              run: npm install sfdx-cli --global
+
             - name: 'Run LWC Tests'
               run: npm run test:lwc
 
               # Upload code coverage data for LWC
+              # TODO Fix Apex codecov issues & uncomment
             # - name: 'Upload code coverage for LWC to Codecov.io'
             #   uses: codecov/codecov-action@v2.0.2
             #   with:
@@ -90,7 +105,6 @@ jobs:
         runs-on: ubuntu-latest
         environment: Test
         steps:
-            # Checkout the code
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
@@ -102,18 +116,9 @@ jobs:
             - name: 'Install npm'
               run: npm install
 
-            # Install Salesforce CLI
             - name: Install Salesforce CLI
               run: npm install sfdx-cli --global
-              # run: |
-              #     wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-              #     mkdir sfdx-cli
-              #     tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-              #     ./sfdx-cli/install
 
-            # Start remote testing
-
-            # Store secrets for dev hubs
             - name: 'Populate DevHub Auth Files'
               shell: bash
               run: |
@@ -142,8 +147,8 @@ jobs:
               with:
                   args: '120'
 
-            - name: 'Deploy Metadata'
-              run: npm run deploy
+            - name: 'Push Metadata'
+              run: sfdx force:source:push
 
             - name: 'Run Apex Tests'
               run: npm run test:apex
@@ -153,6 +158,7 @@ jobs:
             #   run: rm ./tests/apex/test-result-707*-codecoverage.json
 
             # Upload code coverage data for Apex
+            # TODO Fix Apex codecov issues & uncomment
             # - name: 'Upload code coverage for Apex to Codecov.io'
             #   uses: codecov/codecov-action@v2.0.2
             #   with:
@@ -166,7 +172,7 @@ jobs:
     # TODO finish auto-creation & promotion of unlocked package + committing changes to docs
     # create-package-version:
     #     name: 'Create Package Version'
-    #     needs: [local-tests, scratch-org-tests]
+    #     needs: [code-quality-tests, lwc-tests, scratch-org-tests]
     #     runs-on: ubuntu-latest
     #     environment: Test
     #     steps:
