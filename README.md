@@ -30,7 +30,7 @@ Learn more about the design and history of the project on [Joys Of Apex blog pos
 
 ## Installing
 
-You can choose to install the unlocked package, you can deploy the metadata from this repo to your org, or you can install the managed package. The metadata is the same in all 3 options, but there are some differences in using the 3 versions. All examples in README are for the unlocked package/unpackaged metadata (no namespace) - simply add the `Nebula` namespace from the examples if you are using the managed package.
+Nebula Logger is available as both an unlocked package and a managed package. The metadata is the same in both packages, but there are some differences in the available functionality & features. All examples in `README` are for the unlocked package (no namespace) - simply add the `Nebula` namespace to the examples if you are using the managed package.
 
 <table>
     <thead>
@@ -58,7 +58,7 @@ You can choose to install the unlocked package, you can deploy the metadata from
         </tr>
         <tr>
             <td>Apex Debug Statements</td>
-            <td><code>System.debug()</code> is automatically called - the output can be configured with LoggerSettings__c.SystemLogMessageFormat__c to use any field on LogEntryEvent__e</td>
+            <td><code>System.debug()</code> is automatically called - the output can be configured with <code>LoggerSettings__c.SystemLogMessageFormat__c</code> to use any field on <code>LogEntryEvent__e</code></td>
             <td>Requires adding your own calls for <code>System.debug()</code> due to Salesforce limitations with managed packages</td>
         </tr>
         <tr>
@@ -67,13 +67,8 @@ You can choose to install the unlocked package, you can deploy the metadata from
             <td>Requires calling <code>parseStackTrace()</code> due to Salesforce limitations with managed packages. For example:<br><code>Logger.debug('my message').parseStackTrace(new DmlException().getStackTrace());</code></td>
         </tr>
         <tr>
-            <td>Assign Topics (Tagging/Labeling System)</td>
-            <td>Provide <code>List&lt;String&gt; topics</code> in Apex or Flow to dynamically assign Salesforce Topics to <code>Log__c</code> and <code>LogEntry__c</code> records</td>
-            <td>This functionality is not currently available in the managed package</td>
-        </tr>
-        <tr>
             <td>Logger Plugin Framework</td>
-            <td>Leverage Apex or Flow to build your own "plugins" for Logger - to add your own automation to the <code>Log__c</code> or <code>LogEntry__c</code> objects. The logger system will then automatically run your plugins after each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
+            <td>Leverage Apex or Flow to build your own "plugins" for Logger - easily add your own automation to the any of the included objects: <code>LogEntryEvent__e</code>, <code>Log__c</code>, <code>LogEntry__c</code>, <code>LogEntryTag__c</code> and <code>LoggerTag__c</code>. The logger system will then automatically run your plugins for each trigger event (BEFORE_INSERT, BEFORE_UPDATE, AFTER_INSERT, AFTER_UPDATE, and so on).</td>
             <td>This functionality is not currently available in the managed package</td>
         </tr>
     </tbody>
@@ -86,7 +81,7 @@ You can choose to install the unlocked package, you can deploy the metadata from
 After deploying Nebula Logger to your org, there are a few additional configuration changes needed...
 
 -   Assign permission set(s) to users
-    -   `LoggerLogCreator` provides the minimum access needed for users to generate logs via Apex, Flow or Process Builder
+    -   `LoggerLogCreator` provides the minimum access needed for users to generate logs via Apex, Lightning Components, Flow or Process Builder
     -   `LoggerEndUser` provides access to generate logs, as well as read-only access to any log records shared with the user.
     -   `LoggerLogViewer` provides view-all access (read-only) to all log records. This does **not** provide access to generate logs.
     -   `LoggerAdmin` provides view-all and modify-all access to all log records.
@@ -337,7 +332,7 @@ Logger.debug('my string').setRecord(currentUser);
 Logger.saveLog();
 ```
 
-### Using LogMessage to Improve CPU Usage for String Formatting
+### Using LogMessage for Dynamically-Generated Strings
 
 The class `LogMessage` provides the ability to generate string messages on demand, using `String.format()`. This provides 2 benefits:
 

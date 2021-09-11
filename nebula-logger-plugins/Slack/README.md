@@ -1,8 +1,8 @@
 # Slack plugin for Nebula Logger
 
-Adds a Slack integration for Nebula Logger. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
+Adds a Slack integration for the unlocked package edition of Nebula Logger. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
 
-[![Install Unlocked Package](./.content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5e00000065xiAAA)
+[![Install Unlocked Package](./.content/btn-install-unlocked-package-plugin.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5e00000065xiAAA)
 
 ![Slack plugin: notification](./.content/slack-plugin-notification.png)
 
