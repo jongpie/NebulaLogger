@@ -1,5 +1,5 @@
 ({
-    saveLogExample: function (component, event, helper) {
+    saveLogExample: function (component) {
         console.log("start of aura cmp's saveLog function");
 
         const logger = component.find('logger');
