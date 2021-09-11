@@ -58,11 +58,8 @@ jobs:
             - name: 'Prettier code formatting verification'
               run: npm run prettier:verify
 
-            # TODO setup ESLint plugin - https://github.com/salesforce/eslint-plugin-lwc
-            # Lint LWC
-            # - name: 'Lint Lightning Web Components'
-            #   run: npm run lint:lwc
-            # LWC unit tests
+            - name: 'Lint Lightning Components'
+              run: npm run lint:lwc
 
             # TODO setup apex-scanner and PMD rules - https://github.com/forcedotcom/sfdx-scanner
             # - name: Install & run SFDX Scanner
@@ -148,7 +145,7 @@ jobs:
                   args: '120'
 
             - name: 'Push Metadata'
-              run: sfdx force:source:push
+              run: sfdx force:source:push --forceoverwrite
 
             - name: 'Run Apex Tests'
               run: npm run test:apex

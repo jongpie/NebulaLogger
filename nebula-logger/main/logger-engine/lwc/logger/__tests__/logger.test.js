@@ -1,7 +1,6 @@
 import { createElement } from 'lwc';
 import Logger from 'c/logger';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
-import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 
 const mockGetSettings = require('./data/getLoggerSettings.json');
@@ -139,7 +138,7 @@ describe('Logger lwc tests', () => {
         return Promise.resolve().then(() => {
             const numberOfLogEntries = 3;
             for (let i = 0; i < numberOfLogEntries; i++) {
-                const logEntry = logger.info('entry number: ' + i);
+                logger.info('entry number: ' + i);
             }
 
             expect(logger.getBufferSize()).toEqual(numberOfLogEntries);
@@ -188,12 +187,7 @@ describe('Logger lwc tests', () => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.error).toBeFalsy();
 
-            let error;
-            try {
-                missingVariable / 0;
-            } catch (e) {
-                error = e;
-            }
+            let error = new TypeError('oops');
             expect(error).toBeTruthy();
             expect(error.message).toBeTruthy();
             expect(error.stack).toBeTruthy();
@@ -201,7 +195,7 @@ describe('Logger lwc tests', () => {
             logEntry.setError(error);
             expect(logEntry.error.message).toEqual(error.message);
             expect(logEntry.error.stack).toEqual(error.stack);
-            expect(logEntry.error.type).toEqual('ReferenceError');
+            expect(logEntry.error.type).toEqual('TypeError');
         });
     });
     it('adds tags', async () => {

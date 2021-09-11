@@ -7,7 +7,7 @@ import { LightningElement } from 'lwc';
 
 const LOGGER_NAME = 'c-logger';
 
-export default class loggerLWCDemo extends LightningElement {
+export default class LoggerLWCDemo extends LightningElement {
     message = 'Hello, world!';
     tagsString = 'Tag-one, Another tag here';
 
@@ -23,12 +23,7 @@ export default class loggerLWCDemo extends LightningElement {
         console.log('running logError for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        let someError;
-        try {
-            missingVariable / 0;
-        } catch (e) {
-            someError = e;
-        }
+        const someError = new TypeError('oops');
         const entry = logger.error(this.message).setError(someError).addTag('lwc logging demo');
         console.log('stack==' + entry.stack);
     }
