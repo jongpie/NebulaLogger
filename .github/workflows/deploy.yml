@@ -89,13 +89,11 @@ jobs:
             - name: 'Run LWC Tests'
               run: npm run test:lwc
 
-              # Upload code coverage data for LWC
-              # TODO Fix Apex codecov issues & uncomment
-            # - name: 'Upload code coverage for LWC to Codecov.io'
-            #   uses: codecov/codecov-action@v2.0.2
-            #   with:
-            #       token: ${{ secrets.CODECOV_TOKEN }}
-            #       flags: LWC
+            - name: 'Upload LWC code coverage to Codecov.io'
+              uses: codecov/codecov-action@v2.0.2
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  flags: LWC
 
     scratch-org-tests:
         name: 'Scratch Org Tests'
@@ -151,16 +149,14 @@ jobs:
               run: npm run test:apex
 
             # Delete test files that Codecov is unable to parse
-            # - name: 'Delete unsupported code coverage files'
-            #   run: rm ./tests/apex/test-result-707*-codecoverage.json
+            - name: 'Delete unsupported code coverage files'
+              run: rm ./tests/apex/test-result-707*-codecoverage.json
 
-            # Upload code coverage data for Apex
-            # TODO Fix Apex codecov issues & uncomment
-            # - name: 'Upload code coverage for Apex to Codecov.io'
-            #   uses: codecov/codecov-action@v2.0.2
-            #   with:
-            #       token: ${{ secrets.CODECOV_TOKEN }}
-            #       flags: Apex
+            - name: 'Upload Apex test code coverage to Codecov.io'
+              uses: codecov/codecov-action@v2.0.2
+              with:
+                  token: ${{ secrets.CODECOV_TOKEN }}
+                  flags: Apex
 
             - name: 'Delete Scratch Org'
               run: npm run org:delete:noprompt
