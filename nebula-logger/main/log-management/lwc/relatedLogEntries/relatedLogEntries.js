@@ -53,7 +53,7 @@ export default class RelatedLogEntries extends LightningElement {
     // Parse the Apex results & add any UI-specific attributes based on field metadata
     processResult(queryResult) {
         if (queryResult.fieldSet == undefined) {
-            return;
+            return null;
         }
 
         queryResult = Object.assign({}, queryResult); // clone queryResult
@@ -89,7 +89,7 @@ export default class RelatedLogEntries extends LightningElement {
                 };
 
                 // Add the link to each log entry record
-                for (var j = 0; j < records.length; j++) {
+                for (let j = 0; j < records.length; j++) {
                     let record = Object.assign({}, records[j]); //cloning object
 
                     let parentObject = record[field.relationshipName];
@@ -111,7 +111,7 @@ export default class RelatedLogEntries extends LightningElement {
                 };
 
                 // Add the link to each log entry record
-                for (var j = 0; j < records.length; j++) {
+                for (let j = 0; j < records.length; j++) {
                     let record = Object.assign({}, records[j]); //cloning object
                     record[displayFieldName] = record[field.fieldName];
                     record[field.fieldName] = '/' + record.Id;

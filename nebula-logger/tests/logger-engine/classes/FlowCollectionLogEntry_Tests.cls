@@ -153,7 +153,17 @@ private class FlowCollectionLogEntry_Tests {
         Test.stopTest();
 
         LogEntry__c logEntry = [
-            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c
+            SELECT
+                Id,
+                ExceptionMessage__c,
+                ExceptionType__c,
+                LoggingLevel__c,
+                Message__c,
+                OriginType__c,
+                OriginLocation__c,
+                RecordId__c,
+                RecordCollectionType__c,
+                RecordJson__c
             FROM LogEntry__c
             ORDER BY CreatedDate
             LIMIT 1
@@ -187,7 +197,17 @@ private class FlowCollectionLogEntry_Tests {
         Test.stopTest();
 
         LogEntry__c logEntry = [
-            SELECT Id, ExceptionMessage__c, ExceptionType__c, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c
+            SELECT
+                Id,
+                ExceptionMessage__c,
+                ExceptionType__c,
+                LoggingLevel__c,
+                Message__c,
+                OriginType__c,
+                OriginLocation__c,
+                RecordId__c,
+                RecordCollectionType__c,
+                RecordJson__c
             FROM LogEntry__c
             ORDER BY CreatedDate
             LIMIT 1

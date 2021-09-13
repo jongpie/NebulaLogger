@@ -214,7 +214,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
             }
         }
-        insert this.logEntries;
+        Database.DmlOptions dmlOptions = new Database.DmlOptions();
+        dmlOptions.AllowFieldTruncation = true;
+        Database.insert(this.logEntries, dmlOptions);
     }
 
     private void appendRuleBasedTags() {

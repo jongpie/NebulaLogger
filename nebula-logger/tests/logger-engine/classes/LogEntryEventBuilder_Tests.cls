@@ -986,7 +986,15 @@ private class LogEntryEventBuilder_Tests {
         DebugStringExample example = new DebugStringExample();
         LogEntryEventBuilder builder = example.myMethod();
 
-        System.assertEquals(DebugStringExample.class.getName() + '.myMethod' + '\n' + example.loggingString + ': ' + LoggingLevel.DEBUG.name(), builder.debugMessage);
+        System.assertEquals(
+            DebugStringExample.class.getName() +
+            '.myMethod' +
+            '\n' +
+            example.loggingString +
+            ': ' +
+            LoggingLevel.DEBUG.name(),
+            builder.debugMessage
+        );
     }
 
     private class DebugStringExample {

@@ -5,7 +5,6 @@
 
 @IsTest
 private class LogEntryHandler_Tests {
-
     public class LogEntryPluginTest extends LoggerSObjectHandlerPlugin {
         public override void execute(
             TriggerOperation triggerOperationType,
@@ -56,7 +55,7 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.setMockConfiguration(Schema.LogEntry__c.SObjectType,  logEntryHandlerConfiguration);
+        LoggerSObjectHandler.setMockConfiguration(Schema.LogEntry__c.SObjectType, logEntryHandlerConfiguration);
 
         insert logEntry;
 

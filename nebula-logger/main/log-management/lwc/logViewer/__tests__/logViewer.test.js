@@ -65,8 +65,6 @@ describe('Logger JSON Viewer lwc tests', () => {
                 logViewer.shadowRoot.querySelector('lightning-button-stateful').click();
             })
             .then(() => {
-                const inputButton = logViewer.shadowRoot.querySelector('lightning-button-stateful');
-
                 const clipboardContent = JSON.parse(logViewer.shadowRoot.querySelector('pre').textContent);
                 expect(clipboardContent).toEqual(mockGetLog);
             });

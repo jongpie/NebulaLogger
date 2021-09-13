@@ -1,7 +1,6 @@
 import { createElement } from 'lwc';
 import Logger from 'c/logger';
 import getSettings from '@salesforce/apex/ComponentLogger.getSettings';
-import saveComponentLogEntries from '@salesforce/apex/ComponentLogger.saveComponentLogEntries';
 import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 
 const mockGetSettings = require('./data/getLoggerSettings.json');
@@ -139,7 +138,7 @@ describe('Logger lwc tests', () => {
         return Promise.resolve().then(() => {
             const numberOfLogEntries = 3;
             for (let i = 0; i < numberOfLogEntries; i++) {
-                const logEntry = logger.info('entry number: ' + i);
+                logger.info('entry number: ' + i);
             }
 
             expect(logger.getBufferSize()).toEqual(numberOfLogEntries);
@@ -188,12 +187,7 @@ describe('Logger lwc tests', () => {
             const logEntry = logger.info('example log entry');
             expect(logEntry.error).toBeFalsy();
 
-            let error;
-            try {
-                missingVariable / 0;
-            } catch(e) {
-                error = e;
-            }
+            let error = new TypeError('oops');
             expect(error).toBeTruthy();
             expect(error.message).toBeTruthy();
             expect(error.stack).toBeTruthy();
@@ -201,7 +195,7 @@ describe('Logger lwc tests', () => {
             logEntry.setError(error);
             expect(logEntry.error.message).toEqual(error.message);
             expect(logEntry.error.stack).toEqual(error.stack);
-            expect(logEntry.error.type).toEqual('ReferenceError');
+            expect(logEntry.error.type).toEqual('TypeError');
         });
     });
     it('adds tags', async () => {
@@ -244,15 +238,17 @@ describe('Logger lwc tests', () => {
 
         getSettingsAdapter.emit(mockGetSettings);
 
-        return Promise.resolve().then(() => {
-            logger.info('example INFO log entry');
-            logger.debug('example DEBUG log entry');
-            expect(logger.getBufferSize()).toBe(2);
+        return Promise.resolve()
+            .then(() => {
+                logger.info('example INFO log entry');
+                logger.debug('example DEBUG log entry');
+                expect(logger.getBufferSize()).toBe(2);
 
-            logger.saveLog();
-        }).then(() => {
-            expect(logger.getBufferSize()).toBe(0);
-        });
+                logger.saveLog();
+            })
+            .then(() => {
+                expect(logger.getBufferSize()).toBe(0);
+            });
     });
     it('still works for ERROR when disabled', async () => {
         const logger = createElement('c-logger', { is: Logger });
@@ -262,10 +258,11 @@ describe('Logger lwc tests', () => {
         getSettingsAdapter.emit(mockGetSettings);
 
         return Promise.resolve().then(() => {
-            const logEntry = logger.error('example ERROR log entry')
+            const logEntry = logger
+                .error('example ERROR log entry')
                 .setMessage('some message')
                 .setRecordId('some_record_Id')
-                .setRecord({Id: 'some_record_Id'})
+                .setRecord({ Id: 'some_record_Id' })
                 .setError(new TypeError('oops'))
                 .addTag('a tag')
                 .addTags(['a second tag', 'a third tag']);
@@ -288,10 +285,11 @@ describe('Logger lwc tests', () => {
         getSettingsAdapter.emit(mockGetSettings);
 
         return Promise.resolve().then(() => {
-            const logEntry = logger.warn('example WARN log entry')
+            const logEntry = logger
+                .warn('example WARN log entry')
                 .setMessage('some message')
                 .setRecordId('some_record_Id')
-                .setRecord({Id: 'some_record_Id'})
+                .setRecord({ Id: 'some_record_Id' })
                 .setError(new TypeError('oops'))
                 .addTag('a tag')
                 .addTags(['a second tag', 'a third tag']);
@@ -315,10 +313,11 @@ describe('Logger lwc tests', () => {
         getSettingsAdapter.emit(mockGetSettings);
 
         return Promise.resolve().then(() => {
-            const logEntry = logger.info('example INFO log entry')
+            const logEntry = logger
+                .info('example INFO log entry')
                 .setMessage('some message')
                 .setRecordId('some_record_Id')
-                .setRecord({Id: 'some_record_Id'})
+                .setRecord({ Id: 'some_record_Id' })
                 .setError(new TypeError('oops'))
                 .addTag('a tag')
                 .addTags(['a second tag', 'a third tag']);
@@ -342,10 +341,11 @@ describe('Logger lwc tests', () => {
         getSettingsAdapter.emit(mockGetSettings);
 
         return Promise.resolve().then(() => {
-            const logEntry = logger.debug('example DEBUG log entry')
+            const logEntry = logger
+                .debug('example DEBUG log entry')
                 .setMessage('some message')
                 .setRecordId('some_record_Id')
-                .setRecord({Id: 'some_record_Id'})
+                .setRecord({ Id: 'some_record_Id' })
                 .setError(new TypeError('oops'))
                 .addTag('a tag')
                 .addTags(['a second tag', 'a third tag']);
@@ -369,10 +369,11 @@ describe('Logger lwc tests', () => {
         getSettingsAdapter.emit(mockGetSettings);
 
         return Promise.resolve().then(() => {
-            const logEntry = logger.fine('example FINE log entry')
+            const logEntry = logger
+                .fine('example FINE log entry')
                 .setMessage('some message')
                 .setRecordId('some_record_Id')
-                .setRecord({Id: 'some_record_Id'})
+                .setRecord({ Id: 'some_record_Id' })
                 .setError(new TypeError('oops'))
                 .addTag('a tag')
                 .addTags(['a second tag', 'a third tag']);
@@ -396,10 +397,11 @@ describe('Logger lwc tests', () => {
         getSettingsAdapter.emit(mockGetSettings);
 
         return Promise.resolve().then(() => {
-            const logEntry = logger.finer('example FINER log entry')
+            const logEntry = logger
+                .finer('example FINER log entry')
                 .setMessage('some message')
                 .setRecordId('some_record_Id')
-                .setRecord({Id: 'some_record_Id'})
+                .setRecord({ Id: 'some_record_Id' })
                 .setError(new TypeError('oops'))
                 .addTag('a tag')
                 .addTags(['a second tag', 'a third tag']);
@@ -423,10 +425,11 @@ describe('Logger lwc tests', () => {
         getSettingsAdapter.emit(mockGetSettings);
 
         return Promise.resolve().then(() => {
-            const logEntry = logger.finest('example FINEST log entry')
+            const logEntry = logger
+                .finest('example FINEST log entry')
                 .setMessage('some message')
                 .setRecordId('some_record_Id')
-                .setRecord({Id: 'some_record_Id'})
+                .setRecord({ Id: 'some_record_Id' })
                 .setError(new TypeError('oops'))
                 .addTag('a tag')
                 .addTags(['a second tag', 'a third tag']);

@@ -347,12 +347,14 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(new LogEntryTagRule__mdt(
-            SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
-            ComparisonType__c = 'CONTAINS',
-            ComparisonValue__c = logEntryEvent.Message__c.substring(1, 4),
-            Tags__c = configuredTagName
-        ));
+        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(
+            new LogEntryTagRule__mdt(
+                SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+                ComparisonType__c = 'CONTAINS',
+                ComparisonValue__c = logEntryEvent.Message__c.substring(1, 4),
+                Tags__c = configuredTagName
+            )
+        );
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
@@ -387,12 +389,14 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(new LogEntryTagRule__mdt(
-            SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
-            ComparisonType__c = 'EQUALS',
-            ComparisonValue__c = logEntryEvent.Message__c,
-            Tags__c = configuredTagName
-        ));
+        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(
+            new LogEntryTagRule__mdt(
+                SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+                ComparisonType__c = 'EQUALS',
+                ComparisonValue__c = logEntryEvent.Message__c,
+                Tags__c = configuredTagName
+            )
+        );
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
@@ -429,12 +433,14 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(new LogEntryTagRule__mdt(
-            SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
-            ComparisonType__c = 'MATCHES_REGEX',
-            ComparisonValue__c = zipCodeRegEx,
-            Tags__c = configuredTagName
-        ));
+        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(
+            new LogEntryTagRule__mdt(
+                SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+                ComparisonType__c = 'MATCHES_REGEX',
+                ComparisonValue__c = zipCodeRegEx,
+                Tags__c = configuredTagName
+            )
+        );
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
@@ -469,12 +475,14 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(new LogEntryTagRule__mdt(
-            SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
-            ComparisonType__c = 'STARTS_WITH',
-            ComparisonValue__c = logEntryEvent.Message__c.left(3),
-            Tags__c = configuredTagName
-        ));
+        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(
+            new LogEntryTagRule__mdt(
+                SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
+                ComparisonType__c = 'STARTS_WITH',
+                ComparisonValue__c = logEntryEvent.Message__c.left(3),
+                Tags__c = configuredTagName
+            )
+        );
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
@@ -537,17 +545,10 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_set_api_release_number_and_api_release_version_from_recent_record() {
-        Log__c recentLog = new Log__c(
-            ApiReleaseNumber__c = 'QWERTY',
-            ApiReleaseVersion__c = 'ASDF',
-            TransactionId__c = 'ABC-XYZ'
-        );
+        Log__c recentLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'ABC-XYZ');
         insert recentLog;
 
-        insert new LogEntry__c(
-            Log__c = recentLog.Id,
-            Timestamp__c = System.now().addHours(-1)
-        );
+        insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
 
         LoggerSObjectHandlerParameter__mdt mockCallStatusApiParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'LogEntryEventHandler_CallStatusApi',
@@ -599,7 +600,6 @@ private class LogEntryEventHandler_Tests {
             Value__c = 'false'
         );
         LoggerParameter.Handler.setMockParameter(mockCallStatusApiParameter);
-
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(

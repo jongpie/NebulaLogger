@@ -16,6 +16,8 @@ export default class Logger extends LightningElement {
     wiredSettings({ error, data }) {
         if (data) {
             this.settings = data;
+        } else if (error) {
+            console.error(error);
         }
     }
 
@@ -68,9 +70,7 @@ export default class Logger extends LightningElement {
     saveLog() {
         if (this.getBufferSize() > 0) {
             saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
-                .then(result => {
-                    this.flushBuffer();
-                })
+                .then(this.flushBuffer())
                 .catch(error => {
                     console.error(error);
                     console.error(this.componentLogEntries);

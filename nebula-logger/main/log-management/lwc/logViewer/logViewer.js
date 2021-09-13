@@ -5,7 +5,7 @@
 import { api, LightningElement, track, wire } from 'lwc';
 import getLog from '@salesforce/apex/Logger.getLog';
 
-export default class LogJSONViewer extends LightningElement {
+export default class LogViewer extends LightningElement {
     // TODO: recordId is a reserved keyword in LWC that only works if the component has been inserted by means of Flexipage
     // onto a record page. We can rename this variable (probably) once LWC quick actions are GA'd
     @api

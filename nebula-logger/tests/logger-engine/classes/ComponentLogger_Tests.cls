@@ -23,13 +23,16 @@ private class ComponentLogger_Tests {
         System.assertEquals(userLoggingLevel.name(), componentLoggerSettings.userLoggingLevel.name);
         System.assertEquals(userLoggingLevel.ordinal(), componentLoggerSettings.userLoggingLevel.ordinal);
 
-        for(LoggingLevel currentLoggingLevel : LoggingLevel.values()) {
+        for (LoggingLevel currentLoggingLevel : LoggingLevel.values()) {
             // We don't care about logging level NONE, or the secret/undocumented INTERNAL logging level
-            if(currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
+            if (currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
                 continue;
             }
 
-            System.assert(componentLoggerSettings.supportedLoggingLevels.containsKey(currentLoggingLevel.name()), 'Cmp settings did not contain level: ' + currentLoggingLevel);
+            System.assert(
+                componentLoggerSettings.supportedLoggingLevels.containsKey(currentLoggingLevel.name()),
+                'Cmp settings did not contain level: ' + currentLoggingLevel
+            );
 
             Integer returnedOrdinal = componentLoggerSettings.supportedLoggingLevels.get(currentLoggingLevel.name());
             System.assertEquals(currentLoggingLevel.ordinal(), returnedOrdinal);
@@ -42,7 +45,7 @@ private class ComponentLogger_Tests {
         try {
             ComponentLogger.saveComponentLogEntries(null);
             System.assert(false, 'This assert shouldn\'t run since this is a negative test');
-        } catch(Exception apexException) {
+        } catch (Exception apexException) {
             System.assertEquals(AuraHandledException.class.getName(), apexException.getTypeName());
         }
         Test.stopTest();
@@ -61,15 +64,18 @@ private class ComponentLogger_Tests {
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
-        componentLogEntry.timestamp = System.now().addDays(- 1 / 24);
-        componentLogEntry.tags = new List<String>{'some tag', 'one more tag'};
+        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
+        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
         ComponentLogger.saveComponentLogEntries(componentLogEntries);
         Test.stopTest();
 
-        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c, RecordId__c, RecordJson__c, RecordSObjectType__c, Timestamp__c FROM LogEntry__c];
+        List<LogEntry__c> logEntries = [
+            SELECT Id, LoggingLevel__c, Message__c, RecordId__c, RecordJson__c, RecordSObjectType__c, Timestamp__c
+            FROM LogEntry__c
+        ];
         System.assertEquals(1, logEntries.size());
 
         LogEntry__c logEntry = logEntries.get(0);
@@ -101,17 +107,18 @@ private class ComponentLogger_Tests {
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
-        componentLogEntry.timestamp = System.now().addDays(- 1 / 24);
-        componentLogEntry.tags = new List<String>{'some tag', 'one more tag'};
+        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
+        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
         ComponentLogger.saveComponentLogEntries(componentLogEntries);
         Test.stopTest();
 
-        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c, ExceptionMessage__c,
-        ExceptionStackTrace__c,
-        ExceptionType__c, Timestamp__c FROM LogEntry__c];
+        List<LogEntry__c> logEntries = [
+            SELECT Id, LoggingLevel__c, Message__c, ExceptionMessage__c, ExceptionStackTrace__c, ExceptionType__c, Timestamp__c
+            FROM LogEntry__c
+        ];
         System.assertEquals(1, logEntries.size());
 
         LogEntry__c logEntry = logEntries.get(0);
@@ -135,7 +142,7 @@ private class ComponentLogger_Tests {
         componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.stack = getMockAuraComponentStackTrace();
-        componentLogEntry.timestamp = System.now().addDays(- 1 / 24);
+        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
@@ -143,7 +150,19 @@ private class ComponentLogger_Tests {
         ComponentLogger.saveComponentLogEntries(componentLogEntries);
         Test.stopTest();
 
-        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c, ComponentApiName__c, ComponentFunctionName__c, ComponentType__c, OriginLocation__c, OriginType__c, Timestamp__c FROM LogEntry__c];
+        List<LogEntry__c> logEntries = [
+            SELECT
+                Id,
+                LoggingLevel__c,
+                Message__c,
+                ComponentApiName__c,
+                ComponentFunctionName__c,
+                ComponentType__c,
+                OriginLocation__c,
+                OriginType__c,
+                Timestamp__c
+            FROM LogEntry__c
+        ];
         System.assertEquals(1, logEntries.size());
 
         LogEntry__c logEntry = logEntries.get(0);
@@ -169,7 +188,7 @@ private class ComponentLogger_Tests {
         componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.stack = getMockWebComponentStackTrace();
-        componentLogEntry.timestamp = System.now().addDays(- 1 / 24);
+        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
@@ -177,7 +196,19 @@ private class ComponentLogger_Tests {
         ComponentLogger.saveComponentLogEntries(componentLogEntries);
         Test.stopTest();
 
-        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c, Message__c, ComponentApiName__c, ComponentFunctionName__c, ComponentType__c, OriginLocation__c, OriginType__c, Timestamp__c FROM LogEntry__c];
+        List<LogEntry__c> logEntries = [
+            SELECT
+                Id,
+                LoggingLevel__c,
+                Message__c,
+                ComponentApiName__c,
+                ComponentFunctionName__c,
+                ComponentType__c,
+                OriginLocation__c,
+                OriginType__c,
+                Timestamp__c
+            FROM LogEntry__c
+        ];
         System.assertEquals(1, logEntries.size());
 
         LogEntry__c logEntry = logEntries.get(0);
@@ -194,31 +225,31 @@ private class ComponentLogger_Tests {
 
     private static String getMockAuraComponentStackTrace() {
         // This is a copy of an actual stack trace generated from c/loggerAuraDemo
-        return 'Error'
-            + '\nat new eval (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:237)'
-            + '\nat i (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:139)'
-            + '\nat g._newEntry (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:2208)'
-            + '\nat g.info (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:1446)'
-            + '\nat callHook (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:80204)'
-            + '\nat HTMLElement.<anonymous> (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:12:12752)'
-            + '\nat a.<computed> [as info] (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:455:415)'
-            + '\nat Object.info (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:135617)'
-            + '\nat saveLogAuraExample (https://ability-enterprise-5142.lightning.force.com/lightning/n/components/c/loggerAuraDemo.js:16:30)'
-            + '\nat J.Uc (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:537:177)';
+        return 'Error' +
+            '\nat new eval (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:237)' +
+            '\nat i (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:139)' +
+            '\nat g._newEntry (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:2208)' +
+            '\nat g.info (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:1446)' +
+            '\nat callHook (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:80204)' +
+            '\nat HTMLElement.<anonymous> (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:12:12752)' +
+            '\nat a.<computed> [as info] (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:455:415)' +
+            '\nat Object.info (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:135617)' +
+            '\nat saveLogAuraExample (https://ability-enterprise-5142.lightning.force.com/lightning/n/components/c/loggerAuraDemo.js:16:30)' +
+            '\nat J.Uc (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:537:177)';
     }
 
     private static String getMockWebComponentStackTrace() {
         // This is a copy of an actual stack trace generated from c/loggerLWCDemo
-        return 'Error'
-            + '\nat new eval (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:237)'
-            + '\nat i (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:139)'
-            + '\nat g._newEntry (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:2208)'
-            + '\nat g.error (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:1365)'
-            + '\nat callHook (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:80204)'
-            + '\nat HTMLElement.<anonymous> (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:12:12752)'
-            + '\nat Proxy.<anonymous> (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:135933)'
-            + '\nat p.saveLogWebExample (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/loggerLWCDemo.js:4:2399)'
-            + '\nat callHook (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:80204)'
-            + '\nat https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:12:24297';
+        return 'Error' +
+            '\nat new eval (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:237)' +
+            '\nat i (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:139)' +
+            '\nat g._newEntry (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:2208)' +
+            '\nat g.error (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/logger.js:4:1365)' +
+            '\nat callHook (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:80204)' +
+            '\nat HTMLElement.<anonymous> (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:12:12752)' +
+            '\nat Proxy.<anonymous> (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:135933)' +
+            '\nat p.saveLogWebExample (https://ability-enterprise-5142.lightning.force.com/lightning/n/modules/c/loggerLWCDemo.js:4:2399)' +
+            '\nat callHook (https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:37:80204)' +
+            '\nat https://static.lightning.force.com/cs10/auraFW/javascript/YeF9IbuOAuhiq8yQ65xJFA/aura_prod.js:12:24297';
     }
 }

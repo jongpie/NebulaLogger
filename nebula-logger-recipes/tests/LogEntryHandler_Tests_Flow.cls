@@ -89,5 +89,4 @@ private class LogEntryHandler_Tests_Flow {
     private static FlowVersionView getFlowVersion(Id flowActiveVersionId) {
         return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId = :flowActiveVersionId];
     }
-
 }

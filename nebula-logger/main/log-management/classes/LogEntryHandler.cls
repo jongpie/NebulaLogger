@@ -88,7 +88,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             String innerApexClassName = logEntry.OriginLocation__c.substringAfter(topLevelApexClassName + '.').substringBeforeLast('.');
             if (innerApexClassName == topLevelApexClassName || innerApexClassName == methodName) {
                 innerApexClassName = null;
-            } else if(innerApexClassName.startsWith(topLevelApexClassName + '.')) {
+            } else if (innerApexClassName.startsWith(topLevelApexClassName + '.')) {
                 innerApexClassName = innerApexClassName.substringAfter(topLevelApexClassName + '.');
             }
 
