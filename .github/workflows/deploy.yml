@@ -163,6 +163,47 @@ jobs:
               run: npm run org:delete:noprompt
               if: ${{ always() }}
 
+    create-and-install-test-package-version:
+        name: 'Create & Install Test Package Version'
+        needs: [lwc-tests, scratch-org-tests]
+        if: ${{ github.event_name == 'pull_request' }}
+        runs-on: ubuntu-latest
+        environment: Test
+        steps:
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+
+            - name: 'Setup node'
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '14'
+
+            - name: 'Install npm'
+              run: npm install
+
+            - name: Install Salesforce CLI
+              run: npm install sfdx-cli --global
+
+            - name: 'Populate Org Auth Files'
+              shell: bash
+              run: |
+                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
+                  echo ${{ env.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }} > ./NEBULA_PKG_DEMO_SANDBOX_SFDX_URL.txt
+              env:
+                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+                  NEBULA_PKG_DEMO_SANDBOX_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
+
+            - name: 'Authorize Orgs'
+              run: |
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./NEBULA_PKG_DEMO_SANDBOX_SFDX_URL.txt --setalias nebula-logger-package-demo
+
+            - name: 'Create & Install Unvalidated Package Version'
+              run: npx pwsh ./scripts/create-and-install-unvalidated-package-version.ps1 -targetusername nebula-logger-package-demo
+
+            - name: 'Reinstall Latest Released Package Version'
+              run: npx pwsh ./scripts/install-latest-released-unlocked-package-version.ps1 -targetusername nebula-logger-package-demo
+
     # TODO finish auto-creation & promotion of unlocked package + committing changes to docs
     # create-package-version:
     #     name: 'Create Package Version'
