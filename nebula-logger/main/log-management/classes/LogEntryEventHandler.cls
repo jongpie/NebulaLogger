@@ -7,6 +7,7 @@
  * @group Log Management
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
+@SuppressWarnings('PMD.ApexCRUDViolation')
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
     @TestVisible
@@ -276,6 +277,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         insert new List<SObject>(tagAssignments);
     }
 
+    @SuppressWarnings('PMD.ApexSOQLInjection')
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
         Map<String, Id> tagNameToId = new Map<String, Id>();
 
@@ -396,7 +398,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     @future(callout=true)
     private static void setStatusApiDetails() {
-        System.debug('Running setStatusApiDetails()');
+        System.debug('Running setStatusApiDetails()', LoggingLevel.DEBUG);
 
         Organization organization = [SELECT InstanceName FROM Organization];
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
@@ -419,7 +421,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        System.debug('statusApiResponse==' + statusApiResponse);
+        System.debug('statusApiResponse==' + statusApiResponse, LoggingLevel.DEBUG);
 
         List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : [
@@ -434,7 +436,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             logsToUpdate.add(log);
         }
-        System.debug('logsToUpdate==' + logsToUpdate);
+        System.debug('logsToUpdate==' + logsToUpdate, LoggingLevel.DEBUG);
         update logsToUpdate;
     }
 

@@ -159,7 +159,6 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.addMockDataMaskRule(rule);
 
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
-        String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
         Account account = new Account(Name = message);
         String accountJson = JSON.serializePretty(account);
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -180,7 +179,6 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder.addMockDataMaskRule(rule);
 
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
-        String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
         Account account = new Account(Name = message);
         String accountJson = JSON.serializePretty(account);
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -887,7 +885,7 @@ private class LogEntryEventBuilder_Tests {
         // Get expected data
         Organization organization = LoggerTestUtils.getOrganization();
         String organizationEnvironmentType = LoggerTestUtils.getOrganizationEnvironmentType();
-        SObject networkSite = LoggerTestUtils.getNetwork();
+        LoggerTestUtils.getNetwork();
         User user = LoggerTestUtils.getUser();
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);

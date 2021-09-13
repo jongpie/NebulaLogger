@@ -61,11 +61,10 @@ jobs:
             - name: 'Prettier code formatting verification'
               run: npm run prettier:verify
 
-            # TODO setup apex-scanner and PMD rules - https://github.com/forcedotcom/sfdx-scanner
-            # - name: Install & run SFDX Scanner
-            #   run: |
-            #       sfdx plugins:install @salesforce/sfdx-scanner
-            #       sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3
+            - name: Install & run SFDX Scanner
+              run: |
+                  sfdx plugins:install @salesforce/sfdx-scanner
+                  sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3
 
     lwc-tests:
         name: 'LWC Tests'

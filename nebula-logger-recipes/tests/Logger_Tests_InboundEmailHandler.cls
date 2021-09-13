@@ -18,7 +18,6 @@ private class Logger_Tests_InboundEmailHandler {
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         email.plainTextBody = 'Example email content';
         email.fromAddress = 'test@test.com';
-        String contactEmail = 'someone@salesforce.com';
         email.subject = 'My example email';
 
         // Create an instance of the example handler class

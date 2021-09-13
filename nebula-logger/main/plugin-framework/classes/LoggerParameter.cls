@@ -9,6 +9,9 @@
  *              and casts the parameters to common data types
  */
 public class LoggerParameter {
+    private SObjectType configurationSObjectType;
+    private Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
+
     /**
      * @description An instance of `LoggerParameter` that loads SObject Handler parameters from the object `LoggerSObjectHandlerParameter__mdt`
      */
@@ -34,9 +37,6 @@ public class LoggerParameter {
         }
         set;
     }
-
-    private SObjectType configurationSObjectType;
-    private Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
 
     private LoggerParameter(Schema.SObjectType configurationSObjectType) {
         this.configurationSObjectType = configurationSObjectType;

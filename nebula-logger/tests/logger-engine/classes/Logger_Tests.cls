@@ -69,6 +69,7 @@ private class Logger_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
         }
         insert logs;
 
@@ -94,6 +95,7 @@ private class Logger_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
         }
 
         return Database.insert(logs, false);
@@ -135,6 +137,7 @@ private class Logger_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
         }
 
         return Database.upsert(logs, false);
@@ -163,6 +166,7 @@ private class Logger_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
         }
         insert logs;
         delete logs;

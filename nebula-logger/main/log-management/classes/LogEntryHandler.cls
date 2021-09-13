@@ -205,6 +205,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
     }
 
+    @SuppressWarnings('PMD.OperationWithLimitsInLoop')
     private void setRecordNames() {
         // Assumption - only valid record IDs will be populated in LogEntry__c.RecordId__c
         // If that changes, then extra checks may be needed before casting to Id, using getSObjectType(), etc.

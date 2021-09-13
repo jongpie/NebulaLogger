@@ -832,7 +832,6 @@ private class LogEntryEventHandler_Tests {
 
     private static void validateLogFields(LogEntryEvent__e logEntryEvent, Log__c log) {
         Organization org = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
-        User currentUser = getCurrentUser();
         String orgEnvironmentType;
         if (org.IsSandbox == true && org.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';

@@ -60,7 +60,6 @@ public inherited sharing class ComponentLogger {
 
     private static void setStackTraceDetails(LogEntryEventBuilder logEntryEventBuilder, String stackTraceString) {
         String originLocation;
-        String originType;
         Boolean isAuraComponent = false;
 
         if (String.isNotBlank(stackTraceString) == true) {

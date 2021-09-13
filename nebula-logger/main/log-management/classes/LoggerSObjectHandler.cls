@@ -7,9 +7,24 @@
  * @group Log Management
  * @description Abstract class used by trigger handlers for shared logic
  */
-public abstract class LoggerSObjectHandler {
+@SuppressWarnings('PMD.ApexCRUDViolation')
+public without sharing abstract class LoggerSObjectHandler {
     private static Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType;
     private static Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType;
+
+    @TestVisible
+    private TriggerOperation triggerOperationType;
+    @TestVisible
+    private List<SObject> triggerNew;
+    @TestVisible
+    private Map<Id, SObject> triggerNewMap;
+    @TestVisible
+    private List<SObject> triggerOld;
+    @TestVisible
+    private Map<Id, SObject> triggerOldMap;
+
+    private LoggerSObjectHandler__mdt handlerConfiguration;
+    private List<LoggerSObjectHandlerPlugin__mdt> plugins;
 
     static {
         // When using CMDT's getAll(), it does not return relationship fields for EntityDefinition fields or child CMDT objects...
@@ -64,20 +79,6 @@ public abstract class LoggerSObjectHandler {
         plugins.add(plugin);
         pluginsBySObjectType.put(sobjectType, plugins);
     }
-
-    @TestVisible
-    private TriggerOperation triggerOperationType;
-    @TestVisible
-    private List<SObject> triggerNew;
-    @TestVisible
-    private Map<Id, SObject> triggerNewMap;
-    @TestVisible
-    private List<SObject> triggerOld;
-    @TestVisible
-    private Map<Id, SObject> triggerOldMap;
-
-    private LoggerSObjectHandler__mdt handlerConfiguration;
-    private List<LoggerSObjectHandlerPlugin__mdt> plugins;
 
     public LoggerSObjectHandler() {
         this.setConfigurations();
