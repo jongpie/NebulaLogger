@@ -90,11 +90,11 @@ jobs:
             - name: 'Run LWC Tests'
               run: npm run test:lwc
 
-            - name: 'Upload LWC code coverage to Codecov.io'
-              uses: codecov/codecov-action@v2.0.2
-              with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  flags: LWC
+            # - name: 'Upload LWC code coverage to Codecov.io'
+            #   uses: codecov/codecov-action@v2.0.2
+            #   with:
+            #       token: ${{ secrets.CODECOV_TOKEN }}
+            #       flags: LWC
 
     scratch-org-tests:
         name: 'Scratch Org Tests'
@@ -154,11 +154,11 @@ jobs:
             - name: 'Delete unsupported code coverage files'
               run: rm ./tests/apex/test-result-707*-codecoverage.json
 
-            - name: 'Upload Apex test code coverage to Codecov.io'
-              uses: codecov/codecov-action@v2.0.2
-              with:
-                  token: ${{ secrets.CODECOV_TOKEN }}
-                  flags: Apex
+            # - name: 'Upload Apex test code coverage to Codecov.io'
+            #   uses: codecov/codecov-action@v2.0.2
+            #   with:
+            #       token: ${{ secrets.CODECOV_TOKEN }}
+            #       flags: Apex
 
             - name: 'Delete Scratch Org'
               run: npm run org:delete:noprompt
