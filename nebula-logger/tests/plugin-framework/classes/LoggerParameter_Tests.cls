@@ -39,7 +39,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_boolean_list_parameter_for_handler() {
-        List<Boolean> parameterValue = new List<Boolean>{true, false, true, true};
+        List<Boolean> parameterValue = new List<Boolean>{ true, false, true, true };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyBooleanList',
             IsEnabled__c = true,
@@ -53,7 +53,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_boolean_list_parameter_for_plugin() {
-        List<Boolean> parameterValue = new List<Boolean>{true, false, true, true};
+        List<Boolean> parameterValue = new List<Boolean>{ true, false, true, true };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyBooleanList',
             IsEnabled__c = true,
@@ -95,7 +95,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_date_list_parameter_for_handler() {
-        List<Date> parameterValue = new List<Date>{System.today(), System.today().addDays(10)};
+        List<Date> parameterValue = new List<Date>{ System.today(), System.today().addDays(10) };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyDateList',
             IsEnabled__c = true,
@@ -109,7 +109,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_date_list_parameter_for_plugin() {
-        List<Date> parameterValue = new List<Date>{System.today(), System.today().addDays(10)};
+        List<Date> parameterValue = new List<Date>{ System.today(), System.today().addDays(10) };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyDateList',
             IsEnabled__c = true,
@@ -151,7 +151,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_datetime_list_parameter_for_handler() {
-        List<Datetime> parameterValue = new List<Datetime>{System.now(), System.now().addDays(10)};
+        List<Datetime> parameterValue = new List<Datetime>{ System.now(), System.now().addDays(10) };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyDatetimeList',
             IsEnabled__c = true,
@@ -165,7 +165,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_datetime_list_parameter_for_plugin() {
-        List<Datetime> parameterValue = new List<Datetime>{System.now(), System.now().addDays(10)};
+        List<Datetime> parameterValue = new List<Datetime>{ System.now(), System.now().addDays(10) };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyDatetimeList',
             IsEnabled__c = true,
@@ -207,7 +207,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_decimal_list_parameter_for_handler() {
-        List<Decimal> parameterValue = new List<Decimal>{123.45, 678.09};
+        List<Decimal> parameterValue = new List<Decimal>{ 123.45, 678.09 };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyDecimalList',
             IsEnabled__c = true,
@@ -221,7 +221,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_decimal_list_parameter_for_plugin() {
-        List<Decimal> parameterValue = new List<Decimal>{123.45, 678.09};
+        List<Decimal> parameterValue = new List<Decimal>{ 123.45, 678.09 };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyDecimalList',
             IsEnabled__c = true,
@@ -263,7 +263,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_double_list_parameter_for_handler() {
-        List<Double> parameterValue = new List<Double>{123.45, 678.09};
+        List<Double> parameterValue = new List<Double>{ 123.45, 678.09 };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyDoubleList',
             IsEnabled__c = true,
@@ -277,7 +277,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_double_list_parameter_for_plugin() {
-        List<Double> parameterValue = new List<Double>{123.45, 678.09};
+        List<Double> parameterValue = new List<Double>{ 123.45, 678.09 };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyDoubleList',
             IsEnabled__c = true,
@@ -319,7 +319,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_id_list_parameter_for_handler() {
-        List<Id> parameterValue = new List<Id>{UserInfo.getUserId()};
+        List<Id> parameterValue = new List<Id>{ UserInfo.getUserId() };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyIdList',
             IsEnabled__c = true,
@@ -333,7 +333,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_id_list_parameter_for_plugin() {
-        List<Id> parameterValue = new List<Id>{UserInfo.getUserId()};
+        List<Id> parameterValue = new List<Id>{ UserInfo.getUserId() };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyIdList',
             IsEnabled__c = true,
@@ -375,7 +375,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_integer_list_parameter_for_handler() {
-        List<Integer> parameterValue = new List<Integer>{12345, 67809};
+        List<Integer> parameterValue = new List<Integer>{ 12345, 67809 };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyIntegerList',
             IsEnabled__c = true,
@@ -389,7 +389,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_integer_list_parameter_for_plugin() {
-        List<Integer> parameterValue = new List<Integer>{12345, 67809};
+        List<Integer> parameterValue = new List<Integer>{ 12345, 67809 };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyIntegerList',
             IsEnabled__c = true,
@@ -431,7 +431,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_long_list_parameter_for_handler() {
-        List<Long> parameterValue = new List<Long>{12345, 67809};
+        List<Long> parameterValue = new List<Long>{ 12345, 67809 };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyLongList',
             IsEnabled__c = true,
@@ -445,7 +445,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_long_list_parameter_for_plugin() {
-        List<Long> parameterValue = new List<Long>{12345, 67809};
+        List<Long> parameterValue = new List<Long>{ 12345, 67809 };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyLongList',
             IsEnabled__c = true,
@@ -487,7 +487,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_sobject_list_parameter_for_handler() {
-        List<SObject> parameterValue = new List<SObject>{getUserRecord()};
+        List<SObject> parameterValue = new List<SObject>{ getUserRecord() };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MySObjectList',
             IsEnabled__c = true,
@@ -501,7 +501,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_sobject_list_parameter_for_plugin() {
-        List<SObject> parameterValue = new List<SObject>{getUserRecord()};
+        List<SObject> parameterValue = new List<SObject>{ getUserRecord() };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MySObjectList',
             IsEnabled__c = true,
@@ -543,7 +543,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_string_list_parameter_for_handler() {
-        List<String> parameterValue = new List<String>{'Hello', 'Goodbye'};
+        List<String> parameterValue = new List<String>{ 'Hello', 'Goodbye' };
         LoggerSObjectHandlerParameter__mdt mockParameter = new LoggerSObjectHandlerParameter__mdt(
             DeveloperName = 'MyStringList',
             IsEnabled__c = true,
@@ -557,7 +557,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_string_list_parameter_for_plugin() {
-        List<String> parameterValue = new List<String>{'Hello', 'Goodbye'};
+        List<String> parameterValue = new List<String>{ 'Hello', 'Goodbye' };
         LoggerSObjectHandlerPluginParameter__mdt mockParameter = new LoggerSObjectHandlerPluginParameter__mdt(
             DeveloperName = 'MyStringList',
             IsEnabled__c = true,

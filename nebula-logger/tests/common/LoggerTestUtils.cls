@@ -93,5 +93,4 @@ public class LoggerTestUtils {
             WHERE Id = :UserInfo.getUserId()
         ];
     }
-
 }

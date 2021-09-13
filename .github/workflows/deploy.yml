@@ -55,11 +55,11 @@ jobs:
             - name: 'Install npm'
               run: npm install
 
-            - name: 'Prettier code formatting verification'
-              run: npm run prettier:verify
-
             - name: 'Lint Lightning Components'
               run: npm run lint:lwc
+
+            - name: 'Prettier code formatting verification'
+              run: npm run prettier:verify
 
             # TODO setup apex-scanner and PMD rules - https://github.com/forcedotcom/sfdx-scanner
             # - name: Install & run SFDX Scanner
@@ -69,6 +69,7 @@ jobs:
 
     lwc-tests:
         name: 'LWC Tests'
+        needs: [code-quality-tests]
         runs-on: ubuntu-latest
         environment: Test
         steps:
@@ -97,6 +98,7 @@ jobs:
 
     scratch-org-tests:
         name: 'Scratch Org Tests'
+        needs: [code-quality-tests]
         runs-on: ubuntu-latest
         environment: Test
         steps:

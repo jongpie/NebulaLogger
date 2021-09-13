@@ -153,12 +153,13 @@ global with sharing class LogEntryEventBuilder {
      */
     global LogEntryEventBuilder setMessage(String message) {
         // To help with debugging unit tests, always run System.debug statement in a test context
-        if ((this.shouldSave == true || Test.isRunningTest() == true) && this.logEntryEvent != null) {            
+        if ((this.shouldSave == true || Test.isRunningTest() == true) && this.logEntryEvent != null) {
             String cleanedMessage = applyDataMaskRules(message, true, false);
             Boolean messageMasked = cleanedMessage != message;
             String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
-            Boolean messageTruncated = String.isNotBlank(cleanedMessage) && cleanedMessage.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
-            
+            Boolean messageTruncated =
+                String.isNotBlank(cleanedMessage) && cleanedMessage.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
+
             this.logEntryEvent.Message__c = truncatedMessage;
             this.logEntryEvent.MessageMasked__c = messageMasked;
             this.logEntryEvent.MessageTruncated__c = messageTruncated;
@@ -588,7 +589,7 @@ global with sharing class LogEntryEventBuilder {
                     continue;
                 }
                 String logEntryFieldName = possibleReplacement.substringBefore('}');
-                Object logEntryFieldValue = this.logEntryEvent.get(logEntryFieldName); 
+                Object logEntryFieldValue = this.logEntryEvent.get(logEntryFieldName);
                 if (logEntryFieldValue == null) {
                     logEntryFieldValue = '(null)';
                 }

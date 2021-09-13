@@ -33,7 +33,10 @@ private class LogEntryTagHandler_Tests {
 
     @IsTest
     static void it_should_not_set_unique_id_when_disabled() {
-        LoggerSObjectHandler__mdt loggerTagHandlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = false, SObjectType__c = LogEntryTag__c.SObjectType.getDescribe().getName());
+        LoggerSObjectHandler__mdt loggerTagHandlerConfiguration = new LoggerSObjectHandler__mdt(
+            IsEnabled__c = false,
+            SObjectType__c = LogEntryTag__c.SObjectType.getDescribe().getName()
+        );
         LoggerSObjectHandler.setMockConfiguration(Schema.LogEntryTag__c.SObjectType, loggerTagHandlerConfiguration);
 
         LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
@@ -58,7 +61,7 @@ private class LogEntryTagHandler_Tests {
         try {
             insert duplicateLogEntryTag;
             System.assert(false, 'Exception expected on previous line');
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             String expectedDuplicateError = 'DUPLICATE_VALUE, duplicate value found';
             System.assert(ex.getMessage().contains(expectedDuplicateError), ex.getMessage());
         }

@@ -5,7 +5,6 @@
 
 @IsTest
 private class LoggerTagHandler_Tests {
-
     @IsTest
     static void it_should_set_unique_id_when_enabled() {
         LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
@@ -17,7 +16,10 @@ private class LoggerTagHandler_Tests {
 
     @IsTest
     static void it_should_not_set_unique_id_when_disabled() {
-        LoggerSObjectHandler__mdt loggerTagHandlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = false, SObjectType__c = LoggerTag__c.SObjectType.getDescribe().getName());
+        LoggerSObjectHandler__mdt loggerTagHandlerConfiguration = new LoggerSObjectHandler__mdt(
+            IsEnabled__c = false,
+            SObjectType__c = LoggerTag__c.SObjectType.getDescribe().getName()
+        );
         LoggerSObjectHandler.setMockConfiguration(Schema.LoggerTag__c.SObjectType, loggerTagHandlerConfiguration);
 
         LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
@@ -36,7 +38,7 @@ private class LoggerTagHandler_Tests {
         try {
             insert duplicateTag;
             System.assert(false, 'Exception expected on previous line');
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             String expectedDuplicateError = 'DUPLICATE_VALUE, duplicate value found';
             System.assert(ex.getMessage().contains(expectedDuplicateError), ex.getMessage());
         }

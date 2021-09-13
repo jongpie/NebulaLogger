@@ -64,12 +64,12 @@ private class LogHandler_Tests {
         LoggerSObjectHandler__mdt logHandlerConfiguration = getMockConfiguration();
         logHandlerConfiguration.IsEnabled__c = false;
 
-        LogStatus__mdt closedLogStatus = [SELECT Id, MasterLabel FROM LogStatus__mdt WHERE IsActive__c = true AND IsClosed__c = true LIMIT 1];
+        LogStatus__mdt closedLogStatus = [SELECT Id, MasterLabel FROM LogStatus__mdt WHERE IsActive__c = TRUE AND IsClosed__c = TRUE LIMIT 1];
 
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandler.setMockConfiguration(Schema.Log__c.SObjectType,  logHandlerConfiguration);
+        LoggerSObjectHandler.setMockConfiguration(Schema.Log__c.SObjectType, logHandlerConfiguration);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
         insert log;
@@ -313,10 +313,7 @@ private class LogHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(
-            PluginType__c = 'Apex',
-            PluginApiName__c = LogPluginTest.class.getName()
-        );
+        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(PluginType__c = 'Apex', PluginApiName__c = LogPluginTest.class.getName());
         LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');

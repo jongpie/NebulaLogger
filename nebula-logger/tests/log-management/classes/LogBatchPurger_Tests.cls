@@ -28,7 +28,6 @@ private class LogBatchPurger_Tests {
         }
         insert logEntries;
 
-
         LoggerTag__c tag = new LoggerTag__c(Name = 'My important tag');
         insert tag;
 
@@ -39,7 +38,6 @@ private class LogBatchPurger_Tests {
         }
         insert logEntryTags;
     }
-
 
     @IsTest
     static void it_should_throw_exception_when_user_does_not_have_delete_access() {
@@ -53,9 +51,8 @@ private class LogBatchPurger_Tests {
                 Test.startTest();
                 Database.executeBatch(new LogBatchPurger());
                 Test.stopTest();
-            } catch(NoAccessException ex) {
+            } catch (NoAccessException ex) {
                 System.assertEquals(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
-
             }
         }
         Integer updatedCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
