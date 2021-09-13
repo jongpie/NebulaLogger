@@ -885,7 +885,6 @@ private class LogEntryEventBuilder_Tests {
         // Get expected data
         Organization organization = LoggerTestUtils.getOrganization();
         String organizationEnvironmentType = LoggerTestUtils.getOrganizationEnvironmentType();
-        LoggerTestUtils.getNetwork();
         User user = LoggerTestUtils.getUser();
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
