@@ -78,8 +78,8 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
                 request.setBody(notificationJson);
 
                 HttpResponse response = new Http().send(request);
-                System.debug('response.getStatusCode()==' + response.getStatusCode(), notificationLoggingLevel);
-                System.debug('response.getStatus()==' + response.getStatus(), notificationLoggingLevel);
+                System.debug(notificationLoggingLevel, 'response.getStatusCode()==' + response.getStatusCode());
+                System.debug(notificationLoggingLevel, 'response.getStatus()==' + response.getStatus());
 
                 log.SlackNotificationDate__c = System.now();
                 sentLogs.add(log);
@@ -163,7 +163,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private HttpRequest createSlackHttpRequest() {
-        System.debug('endpoint==' + endpoint, notificationLoggingLevel);
+        System.debug(notificationLoggingLevel, 'endpoint==' + endpoint);
 
         HttpRequest request = new HttpRequest();
         request.setEndpoint(endpoint);

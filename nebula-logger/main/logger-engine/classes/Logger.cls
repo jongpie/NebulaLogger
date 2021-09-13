@@ -2506,7 +2506,7 @@ global with sharing class Logger {
             when EVENT_BUS {
                 // TODO add error handling for when event bus fails to publish
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
-                System.debug('saveResults =' + results, DEFAULT_LOGGING_LEVEL);
+                System.debug(DEFAULT_LOGGING_LEVEL, 'saveResults =' + results);
             }
             when QUEUEABLE {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));

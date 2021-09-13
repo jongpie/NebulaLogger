@@ -11,9 +11,9 @@ global with sharing class ExampleInboundEmailHandler implements Messaging.Inboun
             Logger.error(logEntryMessage, apexException);
         } finally {
             result.success = true;
-            System.debug('Logger buffer size before save: ' + Logger.getBufferSize(), LoggingLevel.DEBUG);
+            System.debug(LoggingLevel.DEBUG, 'Logger buffer size before save: ' + Logger.getBufferSize());
             Logger.saveLog();
-            System.debug('Logger buffer size after save: ' + Logger.getBufferSize(), LoggingLevel.DEBUG);
+            System.debug(LoggingLevel.DEBUG, 'Logger buffer size after save: ' + Logger.getBufferSize());
         }
 
         return result;
