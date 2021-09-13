@@ -61,6 +61,9 @@ jobs:
             - name: 'Prettier code formatting verification'
               run: npm run prettier:verify
 
+            - name: Install Salesforce CLI
+              run: npm install sfdx-cli --global
+
             - name: Install & run SFDX Scanner
               run: |
                   sfdx plugins:install @salesforce/sfdx-scanner
