@@ -11,7 +11,10 @@
             "versionNumber": "4.6.7.0",
             "versionName": "Security Enhancements",
             "versionDescription": "Added data mask rules & the ability to strip inaccessible fields in record JSON",
-            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
+            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
+            "unpackagedMetadata": {
+                "path": "extra-tests"
+            }
         },
         {
             "package": "Nebula Logger Plugin - Slack",
@@ -27,7 +30,7 @@
             "default": false
         },
         {
-            "path": "nebula-logger-recipes",
+            "path": "extra-tests",
             "default": true
         }
     ],
