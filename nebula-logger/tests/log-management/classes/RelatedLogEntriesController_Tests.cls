@@ -86,7 +86,6 @@ private class RelatedLogEntriesController_Tests {
         System.assertEquals(TOTAL_LOG_ENTRIES + 1, logEntries.size());
         Integer countOfMatches = 0;
         for (LogEntry__c logEntry : logEntries) {
-            System.debug('checking logEntry: ' + logEntry);
             if (logEntry.Message__c.contains(search)) {
                 countOfMatches = countOfMatches + 1;
             }

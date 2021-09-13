@@ -44,11 +44,7 @@ global with sharing class Logger {
     static {
         System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
 
-        // If settings have not been configured, then insert the org defaults
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        if (orgDefaults.Id == null) {
-            insert orgDefaults;
-        }
+        setupOrgDefaults();
     }
 
     /**
@@ -2510,7 +2506,7 @@ global with sharing class Logger {
             when EVENT_BUS {
                 // TODO add error handling for when event bus fails to publish
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
-                System.debug('saveResults =' + results);
+                System.debug(DEFAULT_LOGGING_LEVEL, 'saveResults =' + results);
             }
             when QUEUEABLE {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));
@@ -2641,6 +2637,15 @@ global with sharing class Logger {
         return newEntry(loggingLevel, isEnabled(loggingLevel));
     }
 
+    @SuppressWarnings('PMD.ApexCRUDViolation')
+    private static void setupOrgDefaults() {
+        // If settings have not been configured, then insert the org defaults
+        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
+        if (orgDefaults.Id == null) {
+            insert orgDefaults;
+        }
+    }
+
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
         if (logEntryEventBuilder.shouldSave() == true) {
@@ -2720,8 +2725,6 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via a queuable job
     global class QueueableSaver implements Queueable {
-        private Id jobId;
-
         private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
         private QueueableSaver(List<LogEntryEvent__e> logEntryEvents) {
@@ -2738,6 +2741,7 @@ global with sharing class Logger {
         private final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
         private final String COMPOSITE_ENDPOINT = '/composite/sobjects';
 
+        @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
         public void insertRecords(List<SObject> records) {
             HttpRequest request = new HttpRequest();
             request.setEndpoint(BASE_URL + COMPOSITE_ENDPOINT);
@@ -2827,8 +2831,6 @@ global with sharing class Logger {
         }
 
         private String formatValue(String unformattedValue) {
-            final String invalidValueError = unformattedValue + ' is not a valid UUID value';
-
             // Remove any non-alphanumeric characters
             unformattedValue = unformattedValue.replaceAll('[^a-zA-Z0-9]', '');
 
@@ -2855,8 +2857,9 @@ global with sharing class Logger {
         private Integer convertHexToInteger(String hexValue) {
             hexValue = hexValue.toLowerCase();
 
-            if (hexValue.startsWith(HEX_PREFIX))
+            if (hexValue.startsWith(HEX_PREFIX)) {
                 hexValue = hexValue.substringAfter(HEX_PREFIX);
+            }
 
             Integer integerValue = 0;
             for (String hexCharacter : hexValue.split('')) {

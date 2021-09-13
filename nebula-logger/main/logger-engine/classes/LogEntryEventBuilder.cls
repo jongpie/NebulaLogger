@@ -8,7 +8,19 @@
  * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */
+@SuppressWarnings('PMD.NcssTypeCount, PMD.ApexCRUDViolation')
 global with sharing class LogEntryEventBuilder {
+    private final LogEntryEvent__e logEntryEvent;
+    private final LoggingLevel entryLoggingLevel;
+
+    @TestVisible
+    private String debugMessage = '';
+
+    private Boolean detailsAreSet = false;
+    private Boolean shouldSave;
+    private Set<String> tags = new Set<String>();
+    private Boolean tagDetailsAreSet = true;
+
     private static final String API_VERSION = getApiVersion();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
@@ -76,17 +88,6 @@ global with sharing class LogEntryEventBuilder {
         }
         set;
     }
-
-    private final LogEntryEvent__e logEntryEvent;
-    private final LoggingLevel entryLoggingLevel;
-
-    @TestVisible
-    private String debugMessage = '';
-
-    private Boolean detailsAreSet = false;
-    private Boolean shouldSave;
-    private Set<String> tags = new Set<String>();
-    private Boolean tagDetailsAreSet = true;
 
     /**
      * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`

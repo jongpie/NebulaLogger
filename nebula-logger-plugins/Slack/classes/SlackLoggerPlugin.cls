@@ -13,14 +13,14 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     @TestVisible
     private static LoggingLevel notificationLoggingLevel;
 
+    private List<Log__c> logs;
+
     static {
         endpoint = LoggerParameter.Plugin.getString('SlackEndpoint');
 
         String notificationLoggingLevelName = LoggerParameter.Plugin.getString('SlackNotificationLoggingLevel');
         notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
     }
-
-    private List<Log__c> logs;
 
     // Constructors
     public SlackLoggerPlugin() {
@@ -78,8 +78,8 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
                 request.setBody(notificationJson);
 
                 HttpResponse response = new Http().send(request);
-                System.debug('response.getStatusCode()==' + response.getStatusCode());
-                System.debug('response.getStatus()==' + response.getStatus());
+                System.debug(notificationLoggingLevel, 'response.getStatusCode()==' + response.getStatusCode());
+                System.debug(notificationLoggingLevel, 'response.getStatus()==' + response.getStatus());
 
                 log.SlackNotificationDate__c = System.now();
                 sentLogs.add(log);
@@ -163,7 +163,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private HttpRequest createSlackHttpRequest() {
-        System.debug('endpoint==' + endpoint);
+        System.debug(notificationLoggingLevel, 'endpoint==' + endpoint);
 
         HttpRequest request = new HttpRequest();
         request.setEndpoint(endpoint);

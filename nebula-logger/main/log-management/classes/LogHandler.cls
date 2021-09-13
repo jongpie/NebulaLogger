@@ -11,6 +11,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private static Map<String, LogStatus__mdt> logStatusByName = loadActiveLogStatuses();
 
+    @TestVisible
+    private List<Log__c> logs;
+    @TestVisible
+    private Map<Id, Log__c> oldLogsById;
+
     private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
         Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
         for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
@@ -21,12 +26,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
         return logStatusByName;
     }
-
-    @TestVisible
-    private List<Log__c> logs;
-
-    @TestVisible
-    private Map<Id, Log__c> oldLogsById;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -133,16 +132,16 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         //   1. Assume that that there will always be 3+ picklist values for the Priority__c field (out of the box, the values are: High, Medium, Low)
         //   2. Assume that not everyone will want those exact values, so dynamiclly get picklist entries (e.g., some orgs may instead use Critical, High, Medium, Low)
         //   3. Assume that the picklist entries are sorted in order of priority (not alphabetically, etc.)
-        final String FIRST_PRIORITY = picklistEntries.get(0).getValue();
-        final String SECOND_PRIORITY = picklistEntries.get(1).getValue();
+        final String firstPriority = picklistEntries.get(0).getValue();
+        final String secondPriority = picklistEntries.get(1).getValue();
 
         for (Log__c log : this.logs) {
             Log__c oldLog = this.oldLogsById.get(log.Id);
 
             if (log.TotalERRORLogEntries__c != oldLog.TotalERRORLogEntries__c && log.TotalERRORLogEntries__c > 0) {
-                log.Priority__c = FIRST_PRIORITY;
+                log.Priority__c = firstPriority;
             } else if (log.TotalWARNLogEntries__c != oldLog.TotalWARNLogEntries__c && log.TotalWARNLogEntries__c > 0) {
-                log.Priority__c = SECOND_PRIORITY;
+                log.Priority__c = secondPriority;
             }
         }
     }
