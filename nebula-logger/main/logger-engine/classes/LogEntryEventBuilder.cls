@@ -582,7 +582,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void logToApexDebug(String message) {
-        String template = Logger.getUserSettings()?.SystemLogMessageFormat__c;
+        String template = Logger.getUserSettings()?.SystemLogMessageFormat__c?.unescapeJava();
         if (String.isNotBlank(template)) {
             List<String> possibleReplacements = template.split('\\{');
             for (String possibleReplacement : possibleReplacements) {
