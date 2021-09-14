@@ -1,7 +1,7 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement } from 'lwc';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 
-export default class LogEntryEventStreamer extends LightningElement {
+export default class LogEntryEventStream extends LightningElement {
     logEntryEvents = [];
     isExpanded = false;
     isStreamEnabled = true;
@@ -91,9 +91,9 @@ export default class LogEntryEventStreamer extends LightningElement {
     onToggleStream() {
         this.isStreamEnabled = !this.isStreamEnabled;
         if (this.isStreamEnabled) {
-            createSubscription();
+            this.createSubscription();
         } else {
-            cancelSubscription();
+            this.cancelSubscription();
         }
     }
 
@@ -129,43 +129,38 @@ export default class LogEntryEventStreamer extends LightningElement {
     _meetsLoggedByFilter(logEntryEvent) {
         if (!this.loggedByFilter || logEntryEvent.LoggedByUsername__c.includes(this.loggedByFilter)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     _meetsLoggingLevelFilter(logEntryEvent) {
         if (!this.loggingLevelFilter || Number(logEntryEvent.LoggingLevelOrdinal__c) >= Number(this.loggingLevelFilter)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     _meetsMessageFilter(logEntryEvent) {
         // TODO support for regex searches in Message__c
         if (!this.messageFilter || logEntryEvent.Message__c.includes(this.messageFilter)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     _meetsOriginLocationFilter(logEntryEvent) {
         // TODO support for regex searches in OriginLocation__c
         if (!this.originLocationFilter || logEntryEvent.OriginLocation__c.includes(this.originLocationFilter)) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     _meetsOriginTypeFilter(logEntryEvent) {
         // TODO support for regex searches in Message__c
         if (!this.originTypeFilter || logEntryEvent.OriginType__c == this.originTypeFilter) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }
