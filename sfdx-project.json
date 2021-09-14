@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.7.0",
-            "versionName": "Security Enhancements",
-            "versionDescription": "Added data mask rules & the ability to strip inaccessible fields in record JSON",
+            "versionNumber": "4.6.8.0",
+            "versionName": "New 'Log Entry Event Stream' Tab",
+            "versionDescription": "Real-time monitoring & filtering of LogEntryEvent__e platform events",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
