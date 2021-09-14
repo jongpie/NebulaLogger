@@ -11,6 +11,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private static Map<String, LogStatus__mdt> logStatusByName = loadActiveLogStatuses();
 
+    @TestVisible
+    private List<Log__c> logs;
+    @TestVisible
+    private Map<Id, Log__c> oldLogsById;
+
     private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
         Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
         for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
@@ -21,12 +26,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
         return logStatusByName;
     }
-
-    @TestVisible
-    private List<Log__c> logs;
-
-    @TestVisible
-    private Map<Id, Log__c> oldLogsById;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -133,16 +132,16 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         //   1. Assume that that there will always be 3+ picklist values for the Priority__c field (out of the box, the values are: High, Medium, Low)
         //   2. Assume that not everyone will want those exact values, so dynamiclly get picklist entries (e.g., some orgs may instead use Critical, High, Medium, Low)
         //   3. Assume that the picklist entries are sorted in order of priority (not alphabetically, etc.)
-        final String FIRST_PRIORITY = picklistEntries.get(0).getValue();
-        final String SECOND_PRIORITY = picklistEntries.get(1).getValue();
+        final String firstPriority = picklistEntries.get(0).getValue();
+        final String secondPriority = picklistEntries.get(1).getValue();
 
         for (Log__c log : this.logs) {
             Log__c oldLog = this.oldLogsById.get(log.Id);
 
             if (log.TotalERRORLogEntries__c != oldLog.TotalERRORLogEntries__c && log.TotalERRORLogEntries__c > 0) {
-                log.Priority__c = FIRST_PRIORITY;
+                log.Priority__c = firstPriority;
             } else if (log.TotalWARNLogEntries__c != oldLog.TotalWARNLogEntries__c && log.TotalWARNLogEntries__c > 0) {
-                log.Priority__c = SECOND_PRIORITY;
+                log.Priority__c = secondPriority;
             }
         }
     }
@@ -151,6 +150,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         // For each log record, share the record with the user that created the log (Log__c.LoggedBy__c)
         List<Log__Share> logShares = new List<Log__Share>();
         for (Log__c log : this.logs) {
+            // Anonymous logs don't have a user set for LoggedBy__c, so there's no one to share the record with
+            if (log.LoggedBy__c == null) {
+                continue;
+            }
+
             // Load the logging user's settings
             User loggingUser = new User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
@@ -168,7 +172,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             );
             logShares.add(logShare);
         }
-        List<Database.SaveResult> saveResults = Database.insert(logShares, false);
-        System.debug('saveResults==' + saveResults);
+        Database.insert(logShares, false);
     }
 }

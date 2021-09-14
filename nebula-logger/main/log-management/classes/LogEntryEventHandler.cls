@@ -7,6 +7,7 @@
  * @group Log Management
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
+@SuppressWarnings('PMD.ApexCRUDViolation')
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
     @TestVisible
@@ -186,6 +187,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 LoggingLevel__c = logEntryEvent.LoggingLevel__c,
                 LoggingLevelOrdinal__c = logEntryEvent.LoggingLevelOrdinal__c,
                 Message__c = logEntryEvent.Message__c,
+                MessageMasked__c = logEntryEvent.MessageMasked__c,
                 MessageTruncated__c = logEntryEvent.MessageTruncated__c,
                 Name = null, // Salesforce will auto-set the record ID as the name when null
                 OriginLocation__c = logEntryEvent.OriginLocation__c,
@@ -193,6 +195,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 RecordCollectionType__c = logEntryEvent.RecordCollectionType__c,
                 RecordId__c = logEntryEvent.RecordId__c,
                 RecordJson__c = logEntryEvent.RecordJson__c,
+                RecordJsonMasked__c = logEntryEvent.RecordJsonMasked__c,
                 RecordSObjectClassification__c = logEntryEvent.RecordSObjectClassification__c,
                 RecordSObjectType__c = logEntryEvent.RecordSObjectType__c,
                 RecordSObjectTypeNamespace__c = logEntryEvent.RecordSObjectTypeNamespace__c,
@@ -212,7 +215,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
             }
         }
-        insert this.logEntries;
+        Database.DmlOptions dmlOptions = new Database.DmlOptions();
+        dmlOptions.AllowFieldTruncation = true;
+        Database.insert(this.logEntries, dmlOptions);
     }
 
     private void appendRuleBasedTags() {
@@ -272,6 +277,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         insert new List<SObject>(tagAssignments);
     }
 
+    @SuppressWarnings('PMD.ApexSOQLInjection')
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
         Map<String, Id> tagNameToId = new Map<String, Id>();
 
@@ -392,7 +398,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     @future(callout=true)
     private static void setStatusApiDetails() {
-        System.debug('Running setStatusApiDetails()');
+        System.debug(LoggingLevel.DEBUG, 'Running setStatusApiDetails()');
 
         Organization organization = [SELECT InstanceName FROM Organization];
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
@@ -415,7 +421,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        System.debug('statusApiResponse==' + statusApiResponse);
+        System.debug(LoggingLevel.DEBUG, 'statusApiResponse==' + statusApiResponse);
 
         List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : [
@@ -430,7 +436,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             logsToUpdate.add(log);
         }
-        System.debug('logsToUpdate==' + logsToUpdate);
+        System.debug(LoggingLevel.DEBUG, 'logsToUpdate==' + logsToUpdate);
         update logsToUpdate;
     }
 

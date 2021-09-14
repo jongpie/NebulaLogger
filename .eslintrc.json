@@ -1,0 +1,26 @@
+{
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "requireConfigFile": false,
+        "babelOptions": {
+            "parserOpts": {
+                "plugins": ["classProperties", ["decorators", { "decoratorsBeforeExport": false }]]
+            }
+        }
+    },
+    "ignorePatterns": ["**/*.html", "**/*.cmp", "**/*.cmp-meta.xml", "**/*.css", "**/*.test.js", "**/*js-meta.xml", "**/*.json"],
+    "plugins": ["@lwc/eslint-plugin-lwc", "@salesforce/eslint-plugin-aura"],
+    "extends": ["@salesforce/eslint-config-lwc/recommended"],
+    "rules": {
+        "eqeqeq": "off",
+        "no-console": "off",
+        "no-unused-expressions": "off",
+        "semi": "off",
+        "@lwc/lwc/consistent-component-name": "error",
+        "@lwc/lwc/no-api-reassignments": "off",
+        "@lwc/lwc/no-async-operation": "off",
+        "@lwc/lwc/no-deprecated": "error",
+        "@lwc/lwc/no-document-query": "error",
+        "@lwc/lwc/valid-api": "error"
+    }
+}

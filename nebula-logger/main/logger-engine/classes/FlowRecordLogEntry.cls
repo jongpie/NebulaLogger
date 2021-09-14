@@ -29,7 +29,7 @@ global inherited sharing class FlowRecordLogEntry {
     /**
      * @description The record to relate to this log entry - the record's JSON is automatically added to the log entry
      */
-    @InvocableVariable(required=true label='Record')
+    @InvocableVariable(required=false label='Record')
     global SObject record;
 
     /**

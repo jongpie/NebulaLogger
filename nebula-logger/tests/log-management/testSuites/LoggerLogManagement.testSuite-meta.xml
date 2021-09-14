@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ApexTestSuite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <testClassName>LogBatchPurger_Tests</testClassName>
+    <testClassName>LogBatchPurgeScheduler_Tests</testClassName>
+    <testClassName>LogEntryEventHandler_Tests</testClassName>
+    <testClassName>LogEntryFieldSetPicklist_Tests</testClassName>
+    <testClassName>LogEntryHandler_Tests</testClassName>
+    <testClassName>LogEntryTagHandler_Tests</testClassName>
+    <testClassName>LoggerTagHandler_Tests</testClassName>
+    <testClassName>LogHandler_Tests</testClassName>
+    <testClassName>LogMassDeleteExtension_Tests</testClassName>
+    <testClassName>RelatedLogEntriesController_Tests</testClassName>
+</ApexTestSuite>

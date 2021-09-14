@@ -113,7 +113,7 @@ private class LogMassDeleteExtension_Tests {
 
             String deleteAccessError = 'You do not have access to delete logs records';
 
-            LogMassDeleteExtension extension = new LogMassDeleteExtension(controller);
+            new LogMassDeleteExtension(controller);
 
             System.assertEquals(true, ApexPages.hasMessages(ApexPages.SEVERITY.ERROR));
             System.assertEquals(deleteAccessError, ApexPages.getMessages().get(0).getSummary());

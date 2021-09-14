@@ -8,18 +8,8 @@
  * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */
+@SuppressWarnings('PMD.NcssTypeCount, PMD.ApexCRUDViolation')
 global with sharing class LogEntryEventBuilder {
-    private static final String API_VERSION = getApiVersion();
-    private static final AuthSession AUTH_SESSION = getAuthSession();
-    private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
-    private static final String NAMESPACE_PREFIX = getNamespacePrefix();
-    private static final SObject NETWORK_SITE = getNetwork();
-    private static final Organization ORGANIZATION = getOrganization();
-    private static final String ORIGIN_TYPE_APEX = 'Apex';
-    private static final User USER = getUser();
-    private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
-    private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
-
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
 
@@ -28,7 +18,76 @@ global with sharing class LogEntryEventBuilder {
 
     private Boolean detailsAreSet = false;
     private Boolean shouldSave;
-    private List<String> tags = new List<String>();
+    private Set<String> tags = new Set<String>();
+    private Boolean tagDetailsAreSet = true;
+
+    private static final String API_VERSION = getApiVersion();
+    private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
+    private static final String NAMESPACE_PREFIX = getNamespacePrefix();
+    private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
+    private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
+
+    // These constants all involve queries and/or increasing heap size, so custom getters are used for lazy-loading
+    // This avoids unnecessarily consuming resources when logging is disabled, etc.
+    private static final AuthSession CACHED_AUTH_SESSION {
+        get {
+            if (CACHED_AUTH_SESSION == null) {
+                CACHED_AUTH_SESSION = queryAuthSession();
+            }
+            return CACHED_AUTH_SESSION;
+        }
+        set;
+    }
+
+    private static final List<LogEntryDataMaskRule__mdt> CACHED_DATA_MASK_RULES {
+        get {
+            if (CACHED_DATA_MASK_RULES == null) {
+                CACHED_DATA_MASK_RULES = loadDataMaskRules();
+            }
+            return CACHED_DATA_MASK_RULES;
+        }
+        set;
+    }
+
+    private static final SObject CACHED_NETWORK_SITE {
+        get {
+            if (CACHED_NETWORK_SITE == null) {
+                CACHED_NETWORK_SITE = queryNetwork();
+            }
+            return CACHED_NETWORK_SITE;
+        }
+        set;
+    }
+
+    private static final Organization CACHED_ORGANIZATION {
+        get {
+            if (CACHED_ORGANIZATION == null) {
+                CACHED_ORGANIZATION = queryOrganization();
+            }
+            return CACHED_ORGANIZATION;
+        }
+        set;
+    }
+
+    private static final String CACHED_ORGANIZATION_ENVIRONMENT_TYPE {
+        get {
+            if (CACHED_ORGANIZATION_ENVIRONMENT_TYPE == null) {
+                CACHED_ORGANIZATION_ENVIRONMENT_TYPE = getOrganizationEnvironmentType();
+            }
+            return CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
+        }
+        set;
+    }
+
+    private static final User CACHED_USER {
+        get {
+            if (CACHED_USER == null) {
+                CACHED_USER = queryUser();
+            }
+            return CACHED_USER;
+        }
+        set;
+    }
 
     /**
      * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
@@ -44,59 +103,26 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        String orgEnvironmentType;
-        if (ORGANIZATION.IsSandbox == true && ORGANIZATION.TrialExpirationDate != null) {
-            orgEnvironmentType = 'Scratch Org';
-        } else if (ORGANIZATION.IsSandbox == true) {
-            orgEnvironmentType = 'Sandbox';
-        } else {
-            orgEnvironmentType = 'Production';
-        }
-
         this.logEntryEvent = new LogEntryEvent__e(
-            ApiVersion__c = API_VERSION,
-            LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries(),
             LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries(),
-            LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls(),
             LimitsAsyncCallsUsed__c = Limits.getAsyncCalls(),
-            LimitsCalloutsMax__c = Limits.getLimitCallouts(),
             LimitsCalloutsUsed__c = Limits.getCallouts(),
-            LimitsCpuTimeMax__c = Limits.getLimitCpuTime(),
             LimitsCpuTimeUsed__c = Limits.getCpuTime(),
-            LimitsDmlRowsMax__c = Limits.getLimitDmlRows(),
             LimitsDmlRowsUsed__c = Limits.getDmlRows(),
-            LimitsDmlStatementsMax__c = Limits.getLimitDmlStatements(),
             LimitsDmlStatementsUsed__c = Limits.getDmlStatements(),
-            LimitsEmailInvocationsMax__c = Limits.getLimitEmailInvocations(),
             LimitsEmailInvocationsUsed__c = Limits.getEmailInvocations(),
-            LimitsFutureCallsMax__c = Limits.getLimitFutureCalls(),
             LimitsFutureCallsUsed__c = Limits.getFutureCalls(),
-            LimitsHeapSizeMax__c = Limits.getLimitHeapSize(),
             LimitsHeapSizeUsed__c = Limits.getHeapSize(),
-            LimitsMobilePushApexCallsMax__c = Limits.getLimitMobilePushApexCalls(),
             LimitsMobilePushApexCallsUsed__c = Limits.getMobilePushApexCalls(),
-            LimitsQueueableJobsMax__c = Limits.getLimitQueueableJobs(),
             LimitsQueueableJobsUsed__c = Limits.getQueueableJobs(),
-            LimitsPublishImmediateDmlStatementsMax__c = Limits.getLimitPublishImmediateDML(),
             LimitsPublishImmediateDmlStatementsUsed__c = Limits.getPublishImmediateDML(),
-            LimitsSoqlQueriesMax__c = Limits.getLimitQueries(),
             LimitsSoqlQueriesUsed__c = Limits.getQueries(),
-            LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows(),
             LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows(),
-            LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows(),
             LimitsSoqlQueryRowsUsed__c = Limits.getQueryRows(),
-            LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries(),
             LimitsSoslSearchesUsed__c = Limits.getSoslQueries(),
             LoggingLevel__c = entryLoggingLevel.NAME(),
             LoggingLevelOrdinal__c = entryLoggingLevel.ORDINAL(),
-            OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm(),
-            OrganizationEnvironmentType__c = orgEnvironmentType,
-            OrganizationId__c = ORGANIZATION.Id,
-            OrganizationInstanceName__c = ORGANIZATION.InstanceName,
-            OrganizationName__c = ORGANIZATION.Name,
-            OrganizationNamespacePrefix__c = ORGANIZATION.NamespacePrefix,
-            OrganizationType__c = ORGANIZATION.OrganizationType,
-            OriginType__c = ORIGIN_TYPE_APEX,
+            OriginType__c = 'Apex',
             Timestamp__c = System.now(),
             EpochTimestamp__c = System.now().getTime(),
             TriggerIsExecuting__c = Trigger.isExecuting,
@@ -114,7 +140,7 @@ global with sharing class LogEntryEventBuilder {
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(LogMessage logMessage) {
-        if (this.shouldSave == false) {
+        if (this.shouldSave == false && Test.isRunningTest() == false) {
             return this;
         }
 
@@ -129,9 +155,15 @@ global with sharing class LogEntryEventBuilder {
     global LogEntryEventBuilder setMessage(String message) {
         // To help with debugging unit tests, always run System.debug statement in a test context
         if ((this.shouldSave == true || Test.isRunningTest() == true) && this.logEntryEvent != null) {
-            String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, message);
+            String cleanedMessage = applyDataMaskRules(message, true, false);
+            Boolean messageMasked = cleanedMessage != message;
+            String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
+            Boolean messageTruncated =
+                String.isNotBlank(cleanedMessage) && cleanedMessage.length() > Schema.LogEntryEvent__e.Message__c.getDescribe().getLength();
+
             this.logEntryEvent.Message__c = truncatedMessage;
-            this.logEntryEvent.MessageTruncated__c = message != truncatedMessage;
+            this.logEntryEvent.MessageMasked__c = messageMasked;
+            this.logEntryEvent.MessageTruncated__c = messageTruncated;
             this.logToApexDebug(message);
         }
         return this;
@@ -374,9 +406,14 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        String recordJson = getJson(record);
+        String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+        Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
         this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = record.Id;
-        this.logEntryEvent.RecordJson__c = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(record));
+        this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+        this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
         this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
@@ -398,7 +435,7 @@ global with sharing class LogEntryEventBuilder {
         String sobjectTypeName = sobjectType?.getDescribe().getName();
 
         this.logEntryEvent.RecordCollectionType__c = 'List';
-        this.logEntryEvent.RecordJson__c = truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
+        this.logEntryEvent.RecordJson__c = getJson(records);
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
         this.logEntryEvent.RecordSObjectType__c = sobjectTypeName;
         this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
@@ -417,6 +454,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         this.tags.add(tag);
+        this.tagDetailsAreSet = false;
         return this;
     }
 
@@ -426,11 +464,13 @@ global with sharing class LogEntryEventBuilder {
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTags(List<String> tags) {
-        if (this.shouldSave == false || tags == null || tags.isEmpty()) {
+        if (tags == null || tags.isEmpty()) {
             return this;
         }
 
-        this.tags.addAll(tags);
+        for (String tag : tags) {
+            this.addTag(tag);
+        }
         return this;
     }
 
@@ -512,15 +552,24 @@ global with sharing class LogEntryEventBuilder {
         }
 
         // Lazy-loading of some details to help minimize Apex heap size usage until needed
-        if (this.detailsAreSet == false && Logger.getUserSettings().AnonymousMode__c == false) {
+        if (this.detailsAreSet == false) {
+            if (Logger.getUserSettings().AnonymousMode__c == false) {
+                this.setUserDetails();
+                this.setUserSessionDetails();
+            }
             this.setNetworkDetails();
-            this.setUserDetails();
-            this.setUserSessionDetails();
-
+            this.setTransactionDetails();
             this.detailsAreSet = true;
         }
 
-        this.logEntryEvent.Tags__c = getTagsString(this.tags);
+        // getLogEntryEvent() and addTag() could both be called multiple times
+        // for the same instance of LogEntryBuilder, so tags are set (if needed)
+        // each time getLogEntryEvent() is called, whereas methods executed above (using Boolean
+        // this.detailsAreSet) only need to be run once
+        if (this.tagDetailsAreSet == false) {
+            this.setTagsDetails();
+            this.tagDetailsAreSet = true;
+        }
 
         // Salesforce does not provide precise datetimes in Apex triggers for platform events
         // Set the string value of timestamp to a second field as a workaround
@@ -532,26 +581,83 @@ global with sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
+    private void logToApexDebug(String message) {
+        String template = Logger.getUserSettings()?.SystemLogMessageFormat__c?.unescapeJava();
+        if (String.isNotBlank(template)) {
+            List<String> possibleReplacements = template.split('\\{');
+            for (String possibleReplacement : possibleReplacements) {
+                if (String.isBlank(possibleReplacement)) {
+                    continue;
+                }
+                String logEntryFieldName = possibleReplacement.substringBefore('}');
+                Object logEntryFieldValue = this.logEntryEvent.get(logEntryFieldName);
+                if (logEntryFieldValue == null) {
+                    logEntryFieldValue = '(null)';
+                }
+                template = template.replace('{' + logEntryFieldName + '}', String.valueOf(logEntryFieldValue));
+            }
+            this.debugMessage = template;
+        } else {
+            this.debugMessage = message;
+        }
+        System.debug(this.entryLoggingLevel, this.debugMessage);
+    }
+
     private void setNetworkDetails() {
-        if (NETWORK_SITE == null) {
+        if (CACHED_NETWORK_SITE == null) {
             return;
         }
 
-        this.logEntryEvent.NetworkName__c = (String) NETWORK_SITE.get('Name');
-        this.logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(NETWORK_SITE.ID);
-        this.logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(NETWORK_SITE.ID);
-        this.logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(NETWORK_SITE.ID);
-        this.logEntryEvent.NetworkUrlPathPrefix__c = (String) NETWORK_SITE.get('UrlPathPrefix');
+        this.logEntryEvent.NetworkName__c = (String) CACHED_NETWORK_SITE.get('Name');
+        this.logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(CACHED_NETWORK_SITE.ID);
+        this.logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(CACHED_NETWORK_SITE.ID);
+        this.logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(CACHED_NETWORK_SITE.ID);
+        this.logEntryEvent.NetworkUrlPathPrefix__c = (String) CACHED_NETWORK_SITE.get('UrlPathPrefix');
+    }
+
+    private void setTagsDetails() {
+        if (this.tags.isEmpty() == true || this.tagDetailsAreSet == true) {
+            return;
+        }
+
+        this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(new List<String>(this.tags), '\n'));
+    }
+
+    private void setTransactionDetails() {
+        this.logEntryEvent.ApiVersion__c = API_VERSION;
+        this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
+        this.logEntryEvent.LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls();
+        this.logEntryEvent.LimitsCalloutsMax__c = Limits.getLimitCallouts();
+        this.logEntryEvent.LimitsCpuTimeMax__c = Limits.getLimitCpuTime();
+        this.logEntryEvent.LimitsDmlRowsMax__c = Limits.getLimitDmlRows();
+        this.logEntryEvent.LimitsDmlStatementsMax__c = Limits.getLimitDmlStatements();
+        this.logEntryEvent.LimitsEmailInvocationsMax__c = Limits.getLimitEmailInvocations();
+        this.logEntryEvent.LimitsFutureCallsMax__c = Limits.getLimitFutureCalls();
+        this.logEntryEvent.LimitsHeapSizeMax__c = Limits.getLimitHeapSize();
+        this.logEntryEvent.LimitsMobilePushApexCallsMax__c = Limits.getLimitMobilePushApexCalls();
+        this.logEntryEvent.LimitsQueueableJobsMax__c = Limits.getLimitQueueableJobs();
+        this.logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c = Limits.getLimitPublishImmediateDML();
+        this.logEntryEvent.LimitsSoqlQueriesMax__c = Limits.getLimitQueries();
+        this.logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows();
+        this.logEntryEvent.LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows();
+        this.logEntryEvent.LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries();
+        this.logEntryEvent.OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm();
+        this.logEntryEvent.OrganizationEnvironmentType__c = CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
+        this.logEntryEvent.OrganizationId__c = CACHED_ORGANIZATION.Id;
+        this.logEntryEvent.OrganizationInstanceName__c = CACHED_ORGANIZATION.InstanceName;
+        this.logEntryEvent.OrganizationName__c = CACHED_ORGANIZATION.Name;
+        this.logEntryEvent.OrganizationNamespacePrefix__c = CACHED_ORGANIZATION.NamespacePrefix;
+        this.logEntryEvent.OrganizationType__c = CACHED_ORGANIZATION.OrganizationType;
     }
 
     private void setUserDetails() {
-        this.logEntryEvent.LoggedById__c = USER.Id;
-        this.logEntryEvent.LoggedByUsername__c = USER.Username;
-        this.logEntryEvent.ProfileName__c = USER.Profile.Name;
-        this.logEntryEvent.UserLicenseDefinitionKey__c = USER.Profile.UserLicense.LicenseDefinitionKey;
-        this.logEntryEvent.UserLicenseId__c = USER.Profile.UserLicenseId;
-        this.logEntryEvent.UserLicenseName__c = USER.Profile.UserLicense.Name;
-        this.logEntryEvent.UserRoleName__c = USER.UserRole?.Name;
+        this.logEntryEvent.LoggedById__c = CACHED_USER.Id;
+        this.logEntryEvent.LoggedByUsername__c = CACHED_USER.Username;
+        this.logEntryEvent.ProfileName__c = CACHED_USER.Profile.Name;
+        this.logEntryEvent.UserLicenseDefinitionKey__c = CACHED_USER.Profile.UserLicense.LicenseDefinitionKey;
+        this.logEntryEvent.UserLicenseId__c = CACHED_USER.Profile.UserLicenseId;
+        this.logEntryEvent.UserLicenseName__c = CACHED_USER.Profile.UserLicense.Name;
+        this.logEntryEvent.UserRoleName__c = CACHED_USER.UserRole?.Name;
     }
 
     private void setUserSessionDetails() {
@@ -559,17 +665,17 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
         this.logEntryEvent.NetworkId__c = Network.getNetworkId();
-        this.logEntryEvent.LoginHistoryId__c = AUTH_SESSION?.LoginHistoryId;
-        this.logEntryEvent.LoginApplication__c = AUTH_SESSION?.LoginHistory.Application;
-        this.logEntryEvent.LoginBrowser__c = AUTH_SESSION?.LoginHistory.Browser;
-        this.logEntryEvent.LoginPlatform__c = AUTH_SESSION?.LoginHistory.Platform;
-        this.logEntryEvent.LoginType__c = AUTH_SESSION?.LoginType;
-        this.logEntryEvent.LogoutUrl__c = AUTH_SESSION?.LogoutUrl;
+        this.logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION?.LoginHistoryId;
+        this.logEntryEvent.LoginApplication__c = CACHED_AUTH_SESSION?.LoginHistory.Application;
+        this.logEntryEvent.LoginBrowser__c = CACHED_AUTH_SESSION?.LoginHistory.Browser;
+        this.logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION?.LoginHistory.Platform;
+        this.logEntryEvent.LoginType__c = CACHED_AUTH_SESSION?.LoginType;
+        this.logEntryEvent.LogoutUrl__c = CACHED_AUTH_SESSION?.LogoutUrl;
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        this.logEntryEvent.SessionId__c = AUTH_SESSION?.Id;
-        this.logEntryEvent.SessionSecurityLevel__c = AUTH_SESSION?.SessionSecurityLevel;
-        this.logEntryEvent.SessionType__c = AUTH_SESSION?.SessionType;
-        this.logEntryEvent.SourceIp__c = AUTH_SESSION?.SourceIp;
+        this.logEntryEvent.SessionId__c = CACHED_AUTH_SESSION?.Id;
+        this.logEntryEvent.SessionSecurityLevel__c = CACHED_AUTH_SESSION?.SessionSecurityLevel;
+        this.logEntryEvent.SessionType__c = CACHED_AUTH_SESSION?.SessionType;
+        this.logEntryEvent.SourceIp__c = CACHED_AUTH_SESSION?.SourceIp;
         this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
         this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
         this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
@@ -582,7 +688,90 @@ global with sharing class LogEntryEventBuilder {
         }
     }
 
-    private String getSObjectClassification(Schema.SObjectType sobjectType) {
+    // Private static helper methods
+    @TestVisible
+    private static void addMockDataMaskRule(LogEntryDataMaskRule__mdt dataMaskRule) {
+        CACHED_DATA_MASK_RULES.add(dataMaskRule);
+    }
+
+    private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
+        if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
+            return dataInput;
+        }
+
+        for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES) {
+            if ((applyToMessage && dataMaskRule.ApplyToMessage__c) == true || (applyToRecordJson && dataMaskRule.ApplyToRecordJson__c) == true) {
+                dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
+            }
+        }
+        return dataInput;
+    }
+
+    private static String getApiVersion() {
+        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
+        // Serializing any SObject w/ an ID will include the API version
+        // So, use UserInfo.getUserId() to create the current user's record without querying
+        // Then parse the JSON to get the API version
+        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v52.0/sobjects/User/005J000000AugnYIAR"}
+        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
+        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
+    }
+
+    private static List<LogEntryDataMaskRule__mdt> loadDataMaskRules() {
+        List<LogEntryDataMaskRule__mdt> activeDataMaskRules = new List<LogEntryDataMaskRule__mdt>();
+        for (LogEntryDataMaskRule__mdt dataMaskRule : LogEntryDataMaskRule__mdt.getAll().values()) {
+            if (dataMaskRule.IsEnabled__c == true) {
+                activeDataMaskRules.add(dataMaskRule);
+            }
+        }
+        if (Test.isRunningTest() == true) {
+            // Tests shouldn't rely on the actual CMDT rules in the org
+            // Clear the org's loaded records during tests, and mock via addMockDataMaskRule()
+            activeDataMaskRules.clear();
+        }
+        return activeDataMaskRules;
+    }
+
+    private static List<String> getIgnoredClasses() {
+        return new List<String>{
+            ComponentLogger.class.getName(),
+            FlowLogger.class.getName(),
+            Logger.class.getName(),
+            LogMessage.class.getName(),
+            LogEntryEventBuilder.class.getName()
+        };
+    }
+
+    private static String getJson(SObject record) {
+        SObject strippedRecord = stripInaccessible(new List<SObject>{ record }).get(0);
+        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecord));
+    }
+
+    private static String getJson(List<SObject> records) {
+        List<SObject> strippedRecords = stripInaccessible(records);
+        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecords));
+    }
+
+    private static String getOrganizationEnvironmentType() {
+        String orgEnvironmentType;
+        if (CACHED_ORGANIZATION.IsSandbox == true && CACHED_ORGANIZATION.TrialExpirationDate != null) {
+            orgEnvironmentType = 'Scratch Org';
+        } else if (CACHED_ORGANIZATION.IsSandbox == true) {
+            orgEnvironmentType = 'Sandbox';
+        } else {
+            orgEnvironmentType = 'Production';
+        }
+        return orgEnvironmentType;
+    }
+
+    private static String getNamespacePrefix() {
+        String className = LogEntryEventBuilder.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
+    }
+
+    private static String getSObjectClassification(Schema.SObjectType sobjectType) {
         String sobjectName = sobjectType.getDescribe().getName();
 
         // Check the map to see if we've already determined the classification for this SObject type
@@ -615,7 +804,7 @@ global with sharing class LogEntryEventBuilder {
         return sobjectClassification;
     }
 
-    private String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
+    private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
         String sobjectFullName = sobjectType.getDescribe().getName();
         String sobjectLocalName = sobjectType.getDescribe().getLocalName();
 
@@ -627,79 +816,11 @@ global with sharing class LogEntryEventBuilder {
         return namespace;
     }
 
-    private void logToApexDebug(String message) {
-        String template = Logger.getUserSettings()?.SystemLogMessageFormat__c;
-        if (String.isNotBlank(template)) {
-            List<String> possibleReplacements = template.split('\\{');
-            for (String possibleReplacement : possibleReplacements) {
-                if (String.isBlank(possibleReplacement)) {
-                    continue;
-                }
-                String logEntryFieldName = possibleReplacement.substringBefore('}');
-                template = template.replace('{' + logEntryFieldName + '}', String.valueOf(this.logEntryEvent.get(logEntryFieldName)));
-            }
-            this.debugMessage = template;
-        } else {
-            this.debugMessage = message;
-        }
-        System.debug(this.entryLoggingLevel, this.debugMessage);
-    }
-
-    // Private static methods
-    private static AuthSession getAuthSession() {
-        if (String.isBlank(UserInfo.getSessionId())) {
-            return null;
-        }
-
-        // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
-        // run by the Automated Process user - attempting to access Auth.SessionManagement
-        // methods as that user throws an UNCATCHABLE error. Let's sidestep that by querying AuthSession instead.
-
-        List<AuthSession> sessions = [
-            SELECT
-                Id,
-                LoginType,
-                LoginHistoryId,
-                LoginHistory.Application,
-                LoginHistory.Browser,
-                LoginHistory.Platform,
-                LogoutUrl,
-                SessionSecurityLevel,
-                SessionType,
-                SourceIp
-            FROM AuthSession
-            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
-        ];
-
-        if (sessions.isEmpty()) {
-            return null;
-        } else {
-            return sessions.get(0);
-        }
-    }
-
-    private static String getApiVersion() {
-        // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
-        // Serializing any SObject w/ an ID will include the API version
-        // So, use UserInfo.getUserId() to create the current user's record without querying
-        // Then parse the JSON to get the API version
-        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v52.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
-        return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
-    }
-
-    private static List<String> getIgnoredClasses() {
-        return new List<String>{ FlowLogger.class.getName(), Logger.class.getName(), LogMessage.class.getName(), LogEntryEventBuilder.class.getName() };
-    }
-
-    private static String getNamespacePrefix() {
-        String className = LogEntryEventBuilder.class.getName();
-        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
-
-        return namespacePrefix;
-    }
-
     private static Map<String, String> getSObjectSuffixToClassification() {
+        // TODO add sample metadata for external object + picklist value + test
+        // Example: MyExternalObject__x
+        // '__x' => 'External Object'
+
         return new Map<String, String>{
             // Example: MyBigObject__b
             '__b' => 'Big Object',
@@ -720,39 +841,6 @@ global with sharing class LogEntryEventBuilder {
         };
     }
 
-    private static Organization getOrganization() {
-        return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
-    }
-
-    private static SObject getNetwork() {
-        Id networkId;
-        if (Network.getNetworkId() == null) {
-            return null;
-        } else {
-            networkId = Network.getNetworkId();
-        }
-
-        String networkApiName = 'Network';
-        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
-        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
-
-        if (!networksEnabled) {
-            return null;
-        }
-
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
-
-        return Database.query(queryString);
-    }
-
-    private static User getUser() {
-        return [
-            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
-    }
-
     // TODO need to revisit Visualforce logic, re-add fields to either Log__c or LogEntry__c, etc.
     /* private static String getVisualforcePageName() {
         String visualforcePageName = ApexPages.currentPage() == null ? null : ApexPages.currentPage().getUrl();
@@ -766,36 +854,78 @@ global with sharing class LogEntryEventBuilder {
     } */
 
     private static Boolean isValidStackTrace(String stackTraceString) {
-        if (String.isEmpty(stackTraceString)) {
-            return false;
-        }
-
-        if (stackTraceString == '()' || stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
+        if (String.isBlank(stackTraceString) || stackTraceString == '()' || stackTraceString == '(' + NAMESPACE_PREFIX + ')') {
             return false;
         }
 
         return true;
     }
 
-    private static String getTagsString(List<String> tags) {
-        if (tags == null || tags.isEmpty()) {
+    private static AuthSession queryAuthSession() {
+        if (String.isBlank(UserInfo.getSessionId())) {
+            return new AuthSession();
+        }
+
+        // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
+        // run by the Automated Process user - attempting to access Auth.SessionManagement
+        // methods as that user throws an UNCATCHABLE error. Let's sidestep that by querying AuthSession instead.
+        List<AuthSession> sessions = [
+            SELECT
+                Id,
+                LoginType,
+                LoginHistoryId,
+                LoginHistory.Application,
+                LoginHistory.Browser,
+                LoginHistory.Platform,
+                LogoutUrl,
+                SessionSecurityLevel,
+                SessionType,
+                SourceIp
+            FROM AuthSession
+            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
+        ];
+        return sessions.isEmpty() ? new AuthSession() : sessions.get(0);
+    }
+
+    private static SObject queryNetwork() {
+        Id networkId = Network.getNetworkId();
+        if (networkId == null || Schema.getGlobalDescribe().containsKey('Network') == false) {
             return null;
         }
 
-        // De-duplicate the list of tags
-        tags = new List<String>(new Set<String>(tags));
+        // Networks (aka experience sites aka community sites aka portal sites ò_ô)
+        // may not be enabled in the org (no Network object), so run everything dynamically
+        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
+        return Database.query(queryString);
+    }
 
-        return String.escapeSingleQuotes(String.join(tags, '\n'));
+    private static Organization queryOrganization() {
+        return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+    }
+
+    private static User queryUser() {
+        return [
+            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
+            FROM User
+            WHERE Id = :UserInfo.getUserId()
+        ];
+    }
+
+    private static List<SObject> stripInaccessible(List<SObject> records) {
+        if (
+            Logger.getUserSettings().StripInaccessibleRecordFields__c == false ||
+            records == null ||
+            records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType
+        ) {
+            return records;
+        }
+
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records, false);
+        return securityDecision.getRecords();
     }
 
     private static String truncateFieldValue(Schema.SObjectField field, String value) {
         Integer fieldMaxLength = field.getDescribe().getLength();
-        if (String.isEmpty(value)) {
-            return value;
-        } else if (value.length() <= fieldMaxLength) {
-            return value;
-        }
-
-        return value.left(fieldMaxLength);
+        return value?.left(fieldMaxLength);
     }
 }

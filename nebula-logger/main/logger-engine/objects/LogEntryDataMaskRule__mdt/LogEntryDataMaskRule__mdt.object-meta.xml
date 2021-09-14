@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description
+    >Used to configure RegEx-based rules to mask sensitive data in log entry messages (stored in LogEntryEvent__e.Message__c and LogEntry__c.Message__c)</description>
+    <label>Log Entry Data Mask Rule</label>
+    <pluralLabel>Log Entry Data Mask Rules</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

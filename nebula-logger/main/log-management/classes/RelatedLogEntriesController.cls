@@ -5,7 +5,7 @@
 
 /**
  * @group Log Management
- * @description Controller class for the component RelatedLogEntries
+ * @description Controller class for the lightning web component `related-log-entries`
  */
 public with sharing class RelatedLogEntriesController {
     private static final SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;
@@ -24,6 +24,7 @@ public with sharing class RelatedLogEntriesController {
      * @param  search          An optional search term to filter by
      * @return                 The instance of LogEntryQueryResult, containing matching records and metadata
      */
+    @SuppressWarnings('PMD.ApexCRUDViolation')
     @AuraEnabled(cacheable=true)
     public static LogEntryQueryResult getQueryResult(
         Id recordId,
@@ -84,7 +85,7 @@ public with sharing class RelatedLogEntriesController {
         };
         String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
         logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
-        System.debug('logEntryQuery==' + logEntryQuery);
+        System.debug(LoggingLevel.DEBUG, 'logEntryQuery==' + logEntryQuery);
 
         return (List<LogEntry__c>) Database.query(logEntryQuery);
     }

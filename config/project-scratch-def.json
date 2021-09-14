@@ -3,5 +3,12 @@
     "edition": "Enterprise",
     "hasSampleData": true,
     "country": "US",
-    "language": "en_US"
+    "language": "en_US",
+    "settings": {
+        "userManagementSettings": {
+            "enableEnhancedPermsetMgmt": true,
+            "enableEnhancedProfileMgmt": true,
+            "enableNewProfileUI": true
+        }
+    }
 }

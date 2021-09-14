@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.6.0",
-            "versionName": "Configurable Apex Debug Log Syntax",
-            "versionDescription": "The output of System.debug() can now be configured using merge field syntax in the new field LoggerSettings__c.SystemLogMessageFormat__c",
+            "versionNumber": "4.6.7.0",
+            "versionName": "Security Enhancements",
+            "versionDescription": "Added data mask rules & the ability to strip inaccessible fields in record JSON",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
@@ -27,7 +27,7 @@
             "default": false
         },
         {
-            "path": "nebula-logger-recipes",
+            "path": "extra-tests",
             "default": true
         }
     ],
@@ -49,6 +49,7 @@
         "Nebula Logger - Unlocked Package@4.6.4-0-logger-for-lwc-and-aura": "04t5Y0000015kgjQAA",
         "Nebula Logger - Unlocked Package@4.6.5-0-internal-trigger-handler-optimizations": "04t5Y0000015kh3QAA",
         "Nebula Logger - Unlocked Package@4.6.6-0-configurable-apex-debug-log-syntax": "04t5Y0000015khXQAQ",
+        "Nebula Logger - Unlocked Package@4.6.7-0-security-enhancements": "04t5Y0000015klZQAQ",
         "Nebula Logger Plugin - Slack": "0Ho5e000000oM3pCAE",
         "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ",
         "Nebula Logger Plugin - Slack@0.9.1-0-beta-release-round-2": "04t5e00000065xiAAA"

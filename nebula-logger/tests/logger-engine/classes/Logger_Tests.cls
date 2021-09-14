@@ -25,10 +25,6 @@ private class Logger_Tests {
     }
 
     // Helper methods
-    static User getCurrentUser() {
-        return new User(Id = UserInfo.getUserId());
-    }
-
     static void setUserLoggingLevel(LoggingLevel loggingLevel) {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
     }
@@ -73,6 +69,7 @@ private class Logger_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
         }
         insert logs;
 
@@ -98,6 +95,7 @@ private class Logger_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
         }
 
         return Database.insert(logs, false);
@@ -139,6 +137,7 @@ private class Logger_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
         }
 
         return Database.upsert(logs, false);
@@ -167,6 +166,7 @@ private class Logger_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
             Log__c log = new Log__c(TransactionId__c = '1234' + i);
+            logs.add(log);
         }
         insert logs;
         delete logs;
@@ -177,13 +177,15 @@ private class Logger_Tests {
     static String getOriginLocation() {
         String originLocation;
         for (String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('Logger_Tests.getOriginLocation'))
+            if (currentStackTraceLine.contains('Logger_Tests.getOriginLocation')) {
                 continue;
-            if (currentStackTraceLine.contains('.LogEntryEventBuilder.'))
+            }
+            if (currentStackTraceLine.contains('.LogEntryEventBuilder.')) {
                 continue;
-            if (currentStackTraceLine.contains('.Logger.'))
+            }
+            if (currentStackTraceLine.contains('.Logger.')) {
                 continue;
-
+            }
             originLocation = currentStackTraceLine.substringBefore(':');
             if (originLocation.startsWith('Class.')) {
                 originLocation = originLocation.substringAfter('Class.');
@@ -194,7 +196,7 @@ private class Logger_Tests {
         return originLocation;
     }
 
-    @testSetup
+    @TestSetup
     static void setup() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
         settings.IsEnabled__c = true;
@@ -241,7 +243,6 @@ private class Logger_Tests {
     static void it_should_set_transaction_entry_number() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
-
             System.assertEquals(i + 1, builder.getLogEntryEvent().TransactionEntryNumber__c);
         }
     }
@@ -497,7 +498,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
-        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = null];
+        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
         User currentUser = new User(Id = UserInfo.getUserId(), TimeZoneSidKey = UserInfo.getTimeZone().getId());
 
         // Make sure that the current user has a different time zone from the automated process user

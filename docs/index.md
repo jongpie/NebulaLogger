@@ -8,7 +8,7 @@ layout: default
 
 ### [ComponentLogger](logger-engine/ComponentLogger)
 
-Controller class used by the light web component `c/logger`
+Controller class used by the lightning web component `logger`
 
 ### [FlowCollectionLogEntry](logger-engine/FlowCollectionLogEntry)
 
@@ -82,7 +82,7 @@ Handles trigger events for the `LoggerTag__c` object
 
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 
-Controller class for the component RelatedLogEntries
+Controller class for the lightning web component `related-log-entries`
 
 ## Plugin Framework
 

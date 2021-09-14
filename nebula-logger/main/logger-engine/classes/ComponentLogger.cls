@@ -5,7 +5,7 @@
 
 /**
  * @group Logger Engine
- * @description Controller class used by the light web component `c/logger`
+ * @description Controller class used by the lightning web component `logger`
  * @see Logger
  * @see LogEntryEventBuilder
  */
@@ -60,7 +60,6 @@ public inherited sharing class ComponentLogger {
 
     private static void setStackTraceDetails(LogEntryEventBuilder logEntryEventBuilder, String stackTraceString) {
         String originLocation;
-        String originType;
         Boolean isAuraComponent = false;
 
         if (String.isNotBlank(stackTraceString) == true) {
@@ -109,7 +108,7 @@ public inherited sharing class ComponentLogger {
 
     private static String truncateFieldValue(Schema.SObjectField field, String value) {
         Integer fieldMaxLength = field.getDescribe().getLength();
-        if (String.isEmpty(value)) {
+        if (String.isBlank(value)) {
             return value;
         } else if (value.length() <= fieldMaxLength) {
             return value;

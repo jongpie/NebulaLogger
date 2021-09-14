@@ -6,5 +6,8 @@
     <fields>LoggedByUsernameLink__c</fields>
     <fields>Timestamp__c</fields>
     <fields>LoggingLevelWithImage__c</fields>
+    <fields>LogTransactionId__c</fields>
+    <fields>TransactionEntryNumber__c</fields>
+    <fields>EventUuid__c</fields>
     <label>Log Entry Compact Layout</label>
 </CompactLayout>

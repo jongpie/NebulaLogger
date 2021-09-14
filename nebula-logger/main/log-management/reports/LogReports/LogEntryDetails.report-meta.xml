@@ -47,6 +47,10 @@
         <field>LogEntry__c.MessageTruncated__c</field>
     </columns>
     <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>LogEntry__c.MessageMasked__c</field>
+    </columns>
+    <columns>
         <field>LogEntry__c.OriginType__c</field>
     </columns>
     <columns>

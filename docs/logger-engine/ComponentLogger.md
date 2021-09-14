@@ -4,7 +4,7 @@ layout: default
 
 ## ComponentLogger class
 
-Controller class used by the light web component `c/logger`
+Controller class used by the lightning web component `logger`
 
 ### Related
 
