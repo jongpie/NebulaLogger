@@ -4,7 +4,7 @@ layout: default
 
 ## LogHandler class
 
-Manages setting fields on `Log__c` before insert & before update
+Manages setting fields on `Log__c` before insert &amp; before update
 
 ---
 

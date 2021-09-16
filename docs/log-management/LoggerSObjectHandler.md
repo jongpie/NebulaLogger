@@ -18,7 +18,7 @@ Abstract class used by trigger handlers for shared logic
 
 #### `execute()` → `void`
 
-Runs the handler class's logic
+Runs the handler class&apos;s logic
 
 #### `getSObjectType()` → `SObjectType`
 

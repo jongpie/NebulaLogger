@@ -4,7 +4,7 @@ layout: default
 
 ## LogBatchPurger class
 
-Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :System.today()`
+Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c &lt;= :System.today()`
 
 ### Related
 

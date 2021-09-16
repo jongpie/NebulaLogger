@@ -206,20 +206,20 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_auto_create_org_default_settings_when_not_configured() {
+    static void it_should_use_in_memory_default_settings_when_not_configured() {
         delete [SELECT Id FROM LoggerSettings__c];
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
         System.assertEquals(0, existingSettings.size());
 
-        Test.startTest();
-        Logger.isEnabled();
-        Test.stopTest();
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+        expectedSettings.SetupOwnerId = UserInfo.getUserId();
 
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
         existingSettings = [SELECT Id FROM LoggerSettings__c];
-        System.assertEquals(1, existingSettings.size());
+        System.assertEquals(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
 
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        System.assertEquals(orgDefaults.Id, existingSettings.get(0).Id);
+        System.assertEquals(expectedSettings, returnedSettings);
+        System.assertEquals(null, returnedSettings.Id);
     }
 
     @IsTest
