@@ -21,7 +21,7 @@
         "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
         "permset:assign:admin": "sfdx force:user:permset:assign --permsetname LoggerAdmin",
         "prepare": "husky install",
-        "pre-commit": "npm run lint:lwc && npm run scan && npm run prettier:logger && npm run lint:lwc && npm run test:lwc && npm run source:push && npm run test:apex && npm run docs:generate && git add .",
+        "precommit": "npm run lint:lwc && npm run scan && npm run prettier:logger && npm run lint:lwc && npm run test:lwc && npm run source:push && npm run test:apex && npm run docs:generate && git add .",
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:logger": "prettier --write \"./nebula-logger/**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
@@ -68,24 +68,10 @@
         "eslint": "latest",
         "eslint-config-prettier": "latest",
         "husky": "latest",
-        "lint-staged": "latest",
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
         "pwsh": "latest",
         "sfdx-cli": "latest"
     },
-    "dependencies": {},
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
-            "prettier --write"
-        ],
-        "**/{aura|lwc}/**": [
-            "eslint"
-        ]
-    }
+    "dependencies": {}
 }

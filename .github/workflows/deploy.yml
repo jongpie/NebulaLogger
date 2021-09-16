@@ -52,8 +52,8 @@ jobs:
               with:
                   node-version: '14'
 
-            - name: 'Install npm'
-              run: npm install
+            - name: 'Install npm dependencies'
+              run: npm ci
 
             - name: 'Lint Lightning Components'
               run: npm run lint:lwc
@@ -83,8 +83,8 @@ jobs:
               with:
                   node-version: '14'
 
-            - name: 'Install npm'
-              run: npm install
+            - name: 'Install npm dependencies'
+              run: npm ci
 
             - name: Install Salesforce CLI
               run: npm install sfdx-cli --global
@@ -112,8 +112,8 @@ jobs:
               with:
                   node-version: '14'
 
-            - name: 'Install npm'
-              run: npm install
+            - name: 'Install npm dependencies'
+              run: npm ci
 
             - name: Install Salesforce CLI
               run: npm install sfdx-cli --global
@@ -180,8 +180,8 @@ jobs:
               with:
                   node-version: '14'
 
-            - name: 'Install npm'
-              run: npm install
+            - name: 'Install npm dependencies'
+              run: npm ci
 
             - name: Install Salesforce CLI
               run: npm install sfdx-cli --global
