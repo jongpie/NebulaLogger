@@ -215,6 +215,9 @@ jobs:
             - name: 'Reinstall Latest Released Package Version'
               run: npx pwsh ./scripts/install-latest-released-unlocked-package-version.ps1 -targetusername nebula-logger-package-demo
 
+            - name: 'Delete Unvalidated Package Version'
+              run: npx pwsh ./scripts/delete-unvalidated-package-version.ps1
+
     # TODO finish auto-creation & promotion of unlocked package + committing changes to docs
     # create-package-version:
     #     name: 'Create Package Version'
