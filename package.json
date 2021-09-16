@@ -29,6 +29,7 @@
         "source:push": "sfdx force:source:push --forceoverwrite",
         "test": "npm run test:lwc && npm run test:apex",
         "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
+        "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage"
     },
     "repository": {

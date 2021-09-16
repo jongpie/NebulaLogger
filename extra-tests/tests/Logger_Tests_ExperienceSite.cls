@@ -19,7 +19,13 @@ private class Logger_Tests_ExperienceSite {
             return;
         }
 
-        Profile loggerSiteProfile = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
+        List<Profile> matchingProfiles = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
+
+        if (matchingProfiles.isEmpty() == true) {
+            return;
+        }
+
+        Profile loggerSiteProfile = matchingProfiles.get(0);
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name);
 
         User guestUser = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
