@@ -47,12 +47,19 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
+            # Cache node_modules to speed up the process
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v1
               with:
-                  node-version: '14'
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
 
             - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
             - name: 'Lint Lightning Components'
@@ -78,12 +85,8 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
-              with:
-                  node-version: '14'
-
             - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
             - name: Install Salesforce CLI
@@ -107,12 +110,19 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
+            # Cache node_modules to speed up the process
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v1
               with:
-                  node-version: '14'
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
 
             - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
             - name: Install Salesforce CLI
@@ -146,8 +156,11 @@ jobs:
               with:
                   args: '120'
 
-            - name: 'Push Metadata'
-              run: sfdx force:source:push --forceoverwrite
+            - name: 'Push Source to Scratch Org'
+              run: npm run source:push
+
+            - name: 'Assign Logger Admin Permission Set'
+              run: npm run permset:assign:admin
 
             - name: 'Run Apex Tests'
               run: npm run test:apex
@@ -175,12 +188,8 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
-              with:
-                  node-version: '14'
-
             - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
             - name: Install Salesforce CLI
