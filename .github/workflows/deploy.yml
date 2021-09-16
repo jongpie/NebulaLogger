@@ -65,16 +65,14 @@ jobs:
             - name: 'Lint Lightning Components'
               run: npm run lint:lwc
 
-            - name: 'Prettier code formatting verification'
-              run: npm run prettier:verify
-
             - name: Install Salesforce CLI
               run: npm install sfdx-cli --global
 
-            - name: Install & run SFDX Scanner
-              run: |
-                  sfdx plugins:install @salesforce/sfdx-scanner
-                  npm run scan
+            - name: SFDX Scanner verification
+              run: npm run prepare && npm run scan
+
+            - name: 'Prettier code formatting verification'
+              run: npm run prettier:verify
 
     lwc-tests:
         name: 'LWC Tests'
@@ -99,9 +97,6 @@ jobs:
             - name: 'Install npm dependencies'
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
-
-            - name: Install Salesforce CLI
-              run: npm install sfdx-cli --global
 
             - name: 'Run LWC Tests'
               run: npm run test:lwc
