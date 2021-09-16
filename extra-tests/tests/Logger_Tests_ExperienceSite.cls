@@ -9,11 +9,16 @@
  */
 @IsTest
 private class Logger_Tests_ExperienceSite {
+    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Schema.getGlobalDescribe().containsKey('Network');
     private static final String GUEST_USER_PROFILE_NAME = 'Logger Test Site Profile';
     private static final String LOG_CREATOR_PERMISSION_SET_NAME = 'LoggerLogCreator';
 
     @TestSetup
     static void setupData() {
+        if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
+            return;
+        }
+
         Profile loggerSiteProfile = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name);
 
@@ -26,6 +31,11 @@ private class Logger_Tests_ExperienceSite {
 
     @IsTest
     private static void it_should_fail_to_save_log_when_assigned_to_guest_user() {
+        // No need to fail the test if it's running in an org that does not have Experience Cloud enabled
+        if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
+            return;
+        }
+
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
 
@@ -45,6 +55,11 @@ private class Logger_Tests_ExperienceSite {
 
     @IsTest
     private static void it_should_save_log_for_guest_user() {
+        // No need to fail the test if it's running in an org that does not have Experience Cloud enabled
+        if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
+            return;
+        }
+
         Profile loggerSiteProfile = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name);
 

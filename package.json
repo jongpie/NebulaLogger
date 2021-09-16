@@ -20,9 +20,13 @@
         "package:version:create:managed": "pwsh ./scripts/switch-to-managed-package-project-json.ps1 && sfdx force:package:version:create --json --package \"Nebula Logger - Managed Package\" --codecoverage --installationkeybypass --wait 30 && pwsh ./scripts/restore-unlocked-package-project-json.ps1",
         "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Unlocked Package\" --codecoverage --installationkeybypass --wait 30",
         "permset:assign:admin": "sfdx force:user:permset:assign --permsetname LoggerAdmin",
+        "prepare": "husky install",
+        "pre-commit": "npm run lint:lwc && npm run scan && npm run prettier:logger && npm run lint:lwc && npm run test:lwc && npm run source:push && npm run test:apex && npm run docs:generate && git add .",
         "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+        "prettier:logger": "prettier --write \"./nebula-logger/**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "scan": "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3",
+        "source:push": "sfdx force:source:push --forceoverwrite",
         "test": "npm run test:lwc && npm run test:apex",
         "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage"

@@ -67,7 +67,7 @@ jobs:
             - name: Install & run SFDX Scanner
               run: |
                   sfdx plugins:install @salesforce/sfdx-scanner
-                  sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3
+                  npm run scan
 
     lwc-tests:
         name: 'LWC Tests'

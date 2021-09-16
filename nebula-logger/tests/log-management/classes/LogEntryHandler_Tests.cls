@@ -295,7 +295,11 @@ private class LogEntryHandler_Tests {
         String exampleTopLevelClassName = 'Logger';
         String methodName = 'saveLog';
         String exampleTopLevelClassMethodName = exampleTopLevelClassName + '. ' + methodName;
-        ApexClass apexClass = [SELECT Id, ApiVersion, CreatedDate, LastModifiedDate FROM ApexClass WHERE Name = :exampleTopLevelClassName];
+        ApexClass apexClass = [
+            SELECT Id, ApiVersion, CreatedDate, LastModifiedDate
+            FROM ApexClass
+            WHERE (NamespacePrefix = NULL OR NamespacePrefix = 'Nebula') AND Name = :exampleTopLevelClassName
+        ];
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleTopLevelClassMethodName, OriginType__c = 'Apex');
@@ -331,7 +335,11 @@ private class LogEntryHandler_Tests {
         String exampleInnerClassName = 'QueueableSaver';
         String methodName = 'execute';
         String exampleInnerClassMethodName = exampleTopLevelClassName + '.' + exampleInnerClassName + '.' + methodName;
-        ApexClass apexClass = [SELECT Id, ApiVersion, CreatedDate, LastModifiedDate FROM ApexClass WHERE Name = :exampleTopLevelClassName];
+        ApexClass apexClass = [
+            SELECT Id, ApiVersion, CreatedDate, LastModifiedDate
+            FROM ApexClass
+            WHERE (NamespacePrefix = NULL OR NamespacePrefix = 'Nebula') AND Name = :exampleTopLevelClassName
+        ];
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleInnerClassMethodName, OriginType__c = 'Apex');
