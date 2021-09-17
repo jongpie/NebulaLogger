@@ -2,9 +2,15 @@
     "name": "nebula-logger",
     "version": "4.6.8",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
+    "author": "Jonathan Gillespie",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/jongpie/NebulaLogger.git"
+    },
+    "homepage": "https://github.com/jongpie/NebulaLogger#readme",
+    "bugs": {
+        "url": "https://github.com/jongpie/NebulaLogger/issues"
     },
     "keywords": [
         "logger",
@@ -17,36 +23,15 @@
         "lwc",
         "aura"
     ],
-    "author": "Jonathan Gillespie",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/jongpie/NebulaLogger/issues"
-    },
-    "homepage": "https://github.com/jongpie/NebulaLogger#readme",
     "engines": {
         "node": ">= 12.18.0",
         "npm": ">= 6.14.0"
     },
-    "devDependencies": {
-        "@babel/core": "latest",
-        "@babel/eslint-parser": "latest",
-        "@cparra/apexdocs": "latest",
-        "@ljharb/eslint-config": "latest",
-        "@lwc/eslint-plugin-lwc": "latest",
-        "@prettier/plugin-xml": "latest",
-        "@salesforce/eslint-config-lwc": "latest",
-        "@salesforce/eslint-plugin-aura": "latest",
-        "@salesforce/eslint-plugin-lightning": "latest",
-        "@salesforce/sfdx-lwc-jest": "latest",
-        "@salesforce/sfdx-scanner": "latest",
-        "eslint": "latest",
-        "eslint-config-prettier": "latest",
-        "husky": "latest",
-        "lint-staged": "latest",
-        "prettier": "latest",
-        "prettier-plugin-apex": "latest",
-        "pwsh": "latest",
-        "sfdx-cli": "latest"
+    "lint-staged": {
+        "*.js": "npm run lint",
+        "*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": "prettier --write",
+        "*.cls": "npm run docs:generate && git add ./docs/ && git commit --amend --no-edit",
+        "*.{cls,trigger}": "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --engine pmd --severity-threshold 3 --target"
     },
     "scripts": {
         "devhub:details": "pwsh ./scripts/get-devhub-org-details.ps1",
@@ -77,10 +62,25 @@
         "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage"
     },
-    "lint-staged": {
-        "*.js": "npm run lint",
-        "*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": "prettier --write",
-        "*.cls": "npm run docs:generate && git add ./docs/ && git commit --amend --no-edit",
-        "*.{cls,trigger}": "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --engine pmd --severity-threshold 3 --target"
+    "devDependencies": {
+        "@babel/core": "latest",
+        "@babel/eslint-parser": "latest",
+        "@cparra/apexdocs": "latest",
+        "@ljharb/eslint-config": "latest",
+        "@lwc/eslint-plugin-lwc": "latest",
+        "@prettier/plugin-xml": "latest",
+        "@salesforce/eslint-config-lwc": "latest",
+        "@salesforce/eslint-plugin-aura": "latest",
+        "@salesforce/eslint-plugin-lightning": "latest",
+        "@salesforce/sfdx-lwc-jest": "latest",
+        "@salesforce/sfdx-scanner": "latest",
+        "eslint": "latest",
+        "eslint-config-prettier": "latest",
+        "husky": "latest",
+        "lint-staged": "latest",
+        "prettier": "latest",
+        "prettier-plugin-apex": "latest",
+        "pwsh": "latest",
+        "sfdx-cli": "latest"
     }
 }
