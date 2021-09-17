@@ -28,10 +28,16 @@
         "npm": ">= 6.14.0"
     },
     "lint-staged": {
-        "*.js": "npm run lint",
         "*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": "prettier --write",
-        "*.cls": "npm run docs:generate && git add ./docs/ && git commit --amend --no-edit",
-        "*.{cls,trigger}": "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --engine pmd --severity-threshold 3 --target"
+        "**/lwc/**": [
+            "eslint --fix",
+            "npm run test:lwc"
+        ],
+        "*.{cls,trigger}": [
+            "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --engine pmd --severity-threshold 3 --target",
+            "npm run source:push && npm run test:apex",
+            "npm run docs:generate && git add ./docs/ && git commit --amend --no-edit"
+        ]
     },
     "scripts": {
         "devhub:details": "pwsh ./scripts/get-devhub-org-details.ps1",
@@ -40,7 +46,6 @@
         "docs:generate": "pwsh ./scripts/generate-docs.ps1",
         "experience:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",
         "husky:pre-commit": "lint-staged",
-        "husky:pre-push": "npm run test:lwc && npm run source:push && npm run test:apex",
         "lint:fix": "eslint **/lwc/** --fix && eslint **/aura/** --fix",
         "lint:verify": "eslint **/lwc/** && eslint **/aura/**",
         "org:create": "pwsh ./scripts/create-scratch-org.ps1 -definitionfile ./config/project-scratch-def.json && npm run permset:assign:admin",
