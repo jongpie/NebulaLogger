@@ -1,0 +1,76 @@
+name: Bug Report
+description: File a bug report for this project
+labels: ['bug']
+body:
+    - type: markdown
+      attributes:
+          value: |
+              **NOTICE:** Please only use this form for reporting bugs in Nebula Logger.
+              - For requesting new features, open a Feature Request instead.
+              - For open discussions about using Nebula Logger, use [GitHub Discussions](https://github.com/jongpie/NebulaLogger/discussions)
+              - For documentation, check out the [GitHub Wiki](https://github.com/jongpie/NebulaLogger/wiki) and the [Apex Documentation](https://jongpie.github.io/NebulaLogger/)
+
+    - type: textarea
+      id: summary
+      attributes:
+          label: New Bug Summary
+          description: A short summary of what issue(s) you are experiencing with Nebula Logger
+      validations:
+          required: true
+
+    - type: dropdown
+      id: edition
+      attributes:
+          label: Edition of Nebula Logger
+          description: Which package are you using?
+          options:
+              - Unlocked Package
+              - Managed Package
+      validations:
+          required: true
+
+    - type: input
+      id: version
+      attributes:
+          label: Version of Nebula Logger
+          description: The package version number (displayed under Setup --> Installed Packages)
+          placeholder: v4.6.0, v4.6.1, etc.
+      validations:
+          required: true
+
+    - type: textarea
+      id: current-behavior
+      attributes:
+          label: Current Behavior
+          description: A concise description of what bug you're experiencing.
+      validations:
+          required: true
+
+    - type: textarea
+      id: expected-behavior
+      attributes:
+          label: Expected Behavior
+          description: A concise description of what you expected to happen.
+      validations:
+          required: true
+
+    - type: textarea
+      id: steps-to-reproduce
+      attributes:
+          label: Steps To Reproduce
+          description: Steps to reproduce the issue.
+          placeholder: |
+              1. In this environment...
+              2. With this config...
+              3. Run '...'
+      validations:
+          required: false
+
+    - type: textarea
+      id: logs
+      attributes:
+          label: Relevant Log Output
+          description: Please copy and paste any relevant log output. This will be automatically formatted into code.
+          render: shell
+      validations:
+          required: false
