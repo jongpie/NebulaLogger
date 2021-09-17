@@ -63,7 +63,7 @@ jobs:
               run: npm ci
 
             - name: 'Lint Lightning Components'
-              run: npm run lint:lwc
+              run: npm run lint:verify
 
             - name: Install Salesforce CLI
               run: npm install sfdx-cli --global
