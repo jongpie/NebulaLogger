@@ -1,27 +1,12 @@
 name: Feature Request
-description: Suggest an enhancement for this project
+description: Suggest an enhancement for Nebula Logger
 labels: ['enhancement']
 body:
-    - type: markdown
-      attributes:
-          value: |
-              **NOTICE:** Please use this form only for requesting new features in Nebula Logger.
-              - For reporting bugs, open a Bug Report instead.
-              - For open discussions about using Nebula Logger, use [GitHub Discussions](https://github.com/jongpie/NebulaLogger/discussions)
-              - For documentation, check out the [GitHub Wiki](https://github.com/jongpie/NebulaLogger/wiki) and the [Apex Documentation](https://jongpie.github.io/NebulaLogger/)
-
     - type: textarea
       attributes:
           label: New Feature Summary
-          description: A concise description of what feature you'd like to be added to Nebula Logger.
+          description: A description of what feature you'd like to be added to Nebula Logger.
           placeholder: |
               Example: I'd like to be able to [...]
       validations:
           required: true
-
-    - type: textarea
-      attributes:
-          label: Suggested Solution
-          description: A concise description of what you want to happen.
-      validations:
-          required: false

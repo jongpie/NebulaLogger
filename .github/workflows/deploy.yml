@@ -65,10 +65,13 @@ jobs:
             - name: 'Lint Lightning Components'
               run: npm run lint:verify
 
-            - name: Install Salesforce CLI
+            - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
-            - name: SFDX Scanner verification
+            - name: 'LWC Lint verification'
+              run: npm run lint:verify
+
+            - name: 'Apex SFDX Scanner verification'
               run: npm run prepare && npm run scan
 
             - name: 'Prettier code formatting verification'
@@ -131,7 +134,7 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: Install Salesforce CLI
+            - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
             - name: 'Populate DevHub Auth Files'
@@ -209,7 +212,7 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: Install Salesforce CLI
+            - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
             - name: 'Populate Org Auth Files'
@@ -234,30 +237,3 @@ jobs:
 
             - name: 'Delete Unvalidated Package Version'
               run: npx pwsh ./scripts/delete-unvalidated-package-version.ps1
-
-    # TODO finish auto-creation & promotion of unlocked package + committing changes to docs
-    # create-package-version:
-    #     name: 'Create Package Version'
-    #     needs: [code-quality-tests, lwc-tests, scratch-org-tests]
-    #     runs-on: ubuntu-latest
-    #     environment: Test
-    #     steps:
-    #         # Checkout the code
-    #         - name: 'Checkout source code'
-    #           uses: actions/checkout@v2
-
-    #         - name: 'Setup node'
-    #           uses: actions/setup-node@v2
-    #           with:
-    #               node-version: '14'
-
-    #         - name: 'Install npm'
-    #           run: npm install
-
-    #         - name: 'Generate Docs'
-    #           run: npm run docs:generate
-    # TODO need to commit & push any changes to ./docs/*
-
-    # TODO uncomment
-    # - name: 'Create unlocked package version'
-    #   run: npm run package:version:create:unlocked

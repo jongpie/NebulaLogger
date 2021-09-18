@@ -15,11 +15,12 @@
     "keywords": [
         "logger",
         "logging",
+        "log",
         "salesforce",
-        "platform-events",
+        "platform events",
         "apex",
         "flow",
-        "lightning-component",
+        "lightning components",
         "lwc",
         "aura"
     ],
