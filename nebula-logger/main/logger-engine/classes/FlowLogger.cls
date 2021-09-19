@@ -91,7 +91,7 @@ public inherited sharing class FlowLogger {
         }
 
         // Event though it's the same transaction ID, Salesforce expects the returned list...
-        // ...to have the same number of items as the initial input.
+        // to have the same number of items as the initial input.
         // When there's a mismatch, Salesforce throws an error:
         // FLOW_ELEMENT_ERROR The number of results does not match the number of interviews that were executed in a single bulk execution request.|FlowActionCall
         List<String> transactionIds = new List<String>();

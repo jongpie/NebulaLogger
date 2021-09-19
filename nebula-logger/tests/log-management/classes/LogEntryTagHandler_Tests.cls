@@ -20,7 +20,14 @@ private class LogEntryTagHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_unique_id_when_enabled() {
+    static void it_should_return_the_logEntry_sobjectType() {
+        Test.startTest();
+        System.assertEquals(Schema.LogEntryTag__c.SObjectType, new LogEntryTagHandler().getSObjectType());
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void it_should_set_unique_id() {
         LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
         LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
 
@@ -29,24 +36,6 @@ private class LogEntryTagHandler_Tests {
 
         logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
         System.assertEquals(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
-    }
-
-    @IsTest
-    static void it_should_not_set_unique_id_when_disabled() {
-        LoggerSObjectHandler__mdt loggerTagHandlerConfiguration = new LoggerSObjectHandler__mdt(
-            IsEnabled__c = false,
-            SObjectType__c = LogEntryTag__c.SObjectType.getDescribe().getName()
-        );
-        LoggerSObjectHandler.setMockConfiguration(Schema.LogEntryTag__c.SObjectType, loggerTagHandlerConfiguration);
-
-        LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
-        LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
-
-        LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
-        insert logEntryTag;
-
-        logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
-        System.assertEquals(null, logEntryTag.UniqueId__c);
     }
 
     @IsTest

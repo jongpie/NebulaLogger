@@ -11,16 +11,16 @@
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
     @TestVisible
-    private static final Boolean TAGGING_IS_ENABLED = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_EnableTagging', true);
+    private static final Boolean TAGGING_IS_ENABLED = LoggerParameter.getBoolean('LogEntryEventHandler_EnableTagging', true);
     @TestVisible
-    private static final Boolean TAG_USING_TOPICS = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
+    private static final Boolean TAG_USING_TOPICS = LoggerParameter.getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
     @TestVisible
     private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
 
     @TestVisible
     private List<LogEntryEvent__e> logEntryEvents;
 
-    private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
+    private Boolean shouldCallStatusApi = LoggerParameter.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
     private Map<String, List<String>> logEntryEventUuidToTagNames = new Map<String, List<String>>();
     private Set<String> tagNames = new Set<String>();
@@ -50,7 +50,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private void upsertLogs() {
         // To avoid making a callout for every log for details retrieved from api.status.salesforce.com,
-        // ...try to query recent logs first to see if there is a recent log with the details already populated
+        // try to query recent logs first to see if there is a recent log with the details already populated
         Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
 
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {

@@ -222,7 +222,7 @@ global with sharing class Logger {
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
         // This allows the ability to then upsert the instance of LoggerSettings__c and it will always be specific to that user...
-        // ...which avoids accidentally changing something at the org or profile levels
+        // which avoids accidentally changing something at the org or profile levels
         if (loggingUser.Id != null && loggingUserSettings.SetupOwnerId != loggingUser.Id) {
             loggingUserSettings.Id = null;
             loggingUserSettings.SetupOwnerId = loggingUser.Id;
@@ -2489,8 +2489,8 @@ global with sharing class Logger {
             }
         }
 
-        // Platform events don't support BEFORE_INSERT operations (only AFTER_INSERT is supported)
-        // ... but here we are, getting ready to insert the records, but we haven't.... yet
+        // Platform events don't support BEFORE_INSERT operations (only AFTER_INSERT is supported),
+        // but here we are, getting ready to insert the records, but we haven't.... yet
         // It's... it's... almost like... this part of the code IS a BEFORE_INSERT context. Huzzah!
         // This gives us a chance to run the handler class & handler plugins before insert,
         // allowing the plugins to make further changes to the `LogEntryEvent__e` records

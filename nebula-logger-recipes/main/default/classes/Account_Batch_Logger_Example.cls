@@ -4,8 +4,8 @@ public with sharing class Account_Batch_Logger_Example implements Database.Batch
     private String originalTransactionId;
 
     public Database.QueryLocator start(Database.BatchableContext batchableContext) {
-        // Each batchable method runs in a separate transaction
-        // ...so store the first transaction ID to later relate the other transactions
+        // Each batchable method runs in a separate transaction,
+        // so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
 
         Logger.info('Starting Account_Batch_Logger_Example');

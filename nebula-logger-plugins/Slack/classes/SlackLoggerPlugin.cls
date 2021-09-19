@@ -7,7 +7,7 @@
  * @group Plugins
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
-public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
+public without sharing class SlackLoggerPlugin extends LoggerPlugin implements Queueable, Database.AllowsCallouts {
     @TestVisible
     private static String endpoint;
     @TestVisible
@@ -16,9 +16,9 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     private List<Log__c> logs;
 
     static {
-        endpoint = LoggerParameter.Plugin.getString('SlackEndpoint');
+        endpoint = LoggerParameter.getString('SlackEndpoint');
 
-        String notificationLoggingLevelName = LoggerParameter.Plugin.getString('SlackNotificationLoggingLevel');
+        String notificationLoggingLevelName = LoggerParameter.getString('SlackNotificationLoggingLevel');
         notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
     }
 
@@ -63,8 +63,8 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         List<Log__c> unsentLogs = new List<Log__c>();
         for (Log__c log : this.logs) {
             if (Limits.getCallouts() == Limits.getLimitCallouts()) {
-                // If there are too many logs to send in the same transaction...
-                // ...add them to the unsentLogs list, which will be queued as a separate job
+                // If there are too many logs to send in the same transaction
+                // add them to the unsentLogs list, which will be queued as a separate job
                 unsentLogs.add(log);
             } else {
                 HttpRequest request = this.createSlackHttpRequest();
@@ -113,8 +113,8 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
             }
         }
 
-        // Since plugins are called from trigger handlers, and triggers can't make callouts...
-        // ...run this class as a queueable (async) job
+        // Since plugins are called from trigger handlers, and triggers can't make callouts
+        // run this class as a queueable (async) job
         if (logsToSend.isEmpty() == false) {
             System.enqueueJob(new SlackLoggerPlugin(logsToSend));
         }

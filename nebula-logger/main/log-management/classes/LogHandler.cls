@@ -60,15 +60,15 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setOrgReleaseCycle() {
-        // Currently, there doesn't seem to be a way within Apex or api.status.salesforce.com...
-        // ...to know if your org is on a preview instance or non-preview instance
+        // Currently, there doesn't seem to be a way within Apex or api.status.salesforce.com
+        // to know if your org is on a preview instance or non-preview instance
         // So, that unfortunately leaves hardcoding the instances for now
         // Source: https://help.salesforce.com/articleView?id=000357271&type=1&mode=1
         // And no need for this to be static since it's only used internally for BEFORE_INSERT context
         String apiVersion = JSON.serialize(new User(Id = UserInfo.getUserId())).substringAfter('/data/').substringBefore('/sobjects/User');
-        Set<String> previewInstances = new Set<String>(LoggerParameter.Handler.getStringList('LogHandler_PreviewInstances_' + apiVersion, new List<String>()));
+        Set<String> previewInstances = new Set<String>(LoggerParameter.getStringList('LogHandler_PreviewInstances_' + apiVersion, new List<String>()));
         Set<String> nonPreviewInstances = new Set<String>(
-            LoggerParameter.Handler.getStringList('LogHandler_NonPreviewInstances_' + apiVersion, new List<String>())
+            LoggerParameter.getStringList('LogHandler_NonPreviewInstances_' + apiVersion, new List<String>())
         );
 
         String releaseCycle;
@@ -120,7 +120,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             Integer daysToRetainLog = Integer.valueOf(loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c);
 
             // When loggerSettings.DefaultNumberOfDaysToRetainLogs__c is null, assume that the log should be kept forever,
-            // ...and set the retention date to null so that LogBatchPurger filters out/ignores the record
+            // and set the retention date to null so that LogBatchPurger filters out/ignores the record
             log.LogRetentionDate__c = daysToRetainLog == null ? null : System.today().addDays(daysToRetainLog);
         }
     }

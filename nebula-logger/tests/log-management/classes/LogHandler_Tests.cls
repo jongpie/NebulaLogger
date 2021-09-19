@@ -12,7 +12,7 @@ private class LogHandler_Tests {
     private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
-    public class LogPluginTest extends LoggerSObjectHandlerPlugin {
+    public class LogPluginTest extends LoggerPlugin {
         public override void execute(
             TriggerOperation triggerOperationType,
             List<SObject> triggerNew,
@@ -22,22 +22,12 @@ private class LogHandler_Tests {
         ) {
             if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
                 for (Log__c log : (List<Log__c>) triggerNew) {
-                    // The specific field changed doesn't really matter - we just want to ensure that whatever...
-                    // ...logic implement in the instance of LoggerSObjectHandlerPlugin is executed
+                    // The specific field changed doesn't really matter - we just want to ensure that whatever
+                    // logic implement in the instance of LoggerPlugin is executed
                     log.ProfileName__c = 'Some String';
                 }
             }
         }
-    }
-
-    private static LoggerSObjectHandler__mdt getMockConfiguration() {
-        Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
-        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
-    }
-
-    private static LoggerSObjectHandler__mdt getMockPlugin() {
-        Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
-        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
     @testSetup
@@ -60,40 +50,17 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_not_run_handler_when_disabled_via_configuration() {
-        LoggerSObjectHandler__mdt logHandlerConfiguration = getMockConfiguration();
-        logHandlerConfiguration.IsEnabled__c = false;
-
-        LogStatus__mdt closedLogStatus = [SELECT Id, MasterLabel FROM LogStatus__mdt WHERE IsActive__c = TRUE AND IsClosed__c = TRUE LIMIT 1];
-
-        Test.startTest();
-
-        // Use the mock configurations
-        LoggerSObjectHandler.setMockConfiguration(Schema.Log__c.SObjectType, logHandlerConfiguration);
-
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Status__c = closedLogStatus.MasterLabel, TransactionId__c = '1234');
-        insert log;
-
-        Test.stopTest();
-
-        // Assumption: if the handler had executed, then log.IsClosed__c should have been auto-set to true...
-        // ...so if it's still false, it indicates that the handler did not execute
-        log = [SELECT Id, IsClosed__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(false, log.IsClosed__c);
-    }
-
-    @IsTest
     static void it_should_set_org_release_cycle_on_insert() {
         String expectedReleaseCycle = 'Preview Instance';
         String mockOrgInstance = 'ABC-123';
         List<String> mockPreviewInstances = new List<String>{ mockOrgInstance };
 
         String apiVersion = JSON.serialize(new User(Id = UserInfo.getUserId())).substringAfter('/data/').substringBefore('/sobjects/User');
-        LoggerSObjectHandlerParameter__mdt mockPreviewInstancesParameter = new LoggerSObjectHandlerParameter__mdt(
+        LoggerParameter__mdt mockPreviewInstancesParameter = new LoggerParameter__mdt(
             DeveloperName = 'LogHandler_PreviewInstances_' + apiVersion,
             Value__c = JSON.serialize(mockPreviewInstances)
         );
-        LoggerParameter.Handler.setMockParameter(mockPreviewInstancesParameter);
+        LoggerParameter.setMockParameter(mockPreviewInstancesParameter);
 
         Log__c log = new Log__c(OrganizationInstanceName__c = mockOrgInstance, TransactionId__c = '1234');
         insert log;
@@ -313,7 +280,7 @@ private class LogHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(PluginType__c = 'Apex', PluginApiName__c = LogPluginTest.class.getName());
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'Apex', PluginApiName__c = LogPluginTest.class.getName());
         LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');

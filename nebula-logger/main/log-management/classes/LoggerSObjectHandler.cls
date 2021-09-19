@@ -9,8 +9,7 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation')
 public without sharing abstract class LoggerSObjectHandler {
-    private static Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType;
-    private static Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType;
+    private static Map<SObjectType, List<LoggerPlugin__mdt>> pluginsBySObjectType = new Map<SObjectType, List<LoggerPlugin__mdt>>();
 
     @TestVisible
     private TriggerOperation triggerOperationType;
@@ -23,73 +22,57 @@ public without sharing abstract class LoggerSObjectHandler {
     @TestVisible
     private Map<Id, SObject> triggerOldMap;
 
-    private LoggerSObjectHandler__mdt handlerConfiguration;
-    private List<LoggerSObjectHandlerPlugin__mdt> plugins;
+    private List<LoggerPlugin__mdt> plugins;
 
     static {
-        // When using CMDT's getAll(), it does not return relationship fields for EntityDefinition fields or child CMDT objects...
-        // ... so instead query the LoggerSObjectHandler__mdt CMDT object
-        List<LoggerSObjectHandler__mdt> configurations = [
-            SELECT
-                Id,
-                IsEnabled__c,
-                SObjectType__r.QualifiedApiName,
-                (
-                    SELECT Id, PluginType__c, PluginApiName__c
-                    FROM LoggerSObjectHandlerPlugins__r
-                    WHERE IsEnabled__c = TRUE
-                    ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName
-                )
-            FROM LoggerSObjectHandler__mdt
+        // When using CMDT's getAll(), it does not return relationship fields for EntityDefinition fields or child CMDT objects
+        // so instead query the LoggerSObjectHandler__mdt CMDT object
+        List<LoggerPlugin__mdt> plugins = [
+            SELECT SObjectType__r.QualifiedApiName, PluginType__c, PluginApiName__c
+            FROM LoggerPlugin__mdt
+            WHERE IsEnabled__c = TRUE
+            ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName
         ];
 
-        configurationBySObjectType = new Map<SObjectType, LoggerSObjectHandler__mdt>();
-        pluginsBySObjectType = new Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>>();
-        for (LoggerSObjectHandler__mdt config : configurations) {
+        for (LoggerPlugin__mdt plugin : plugins) {
             // CMDT entity-definition relationship fields are weird, so skip some headaches by copying the Qualified API name
-            config.SObjectType__c = config.SObjectType__r.QualifiedApiName;
+            plugin.SObjectType__c = plugin.SObjectType__r.QualifiedApiName;
 
             // Schema.getGlobalDescribe() is the worst, so don't use it
-            SObjectType sobjectType = ((SObject) Type.forName(config.SObjectType__c).newInstance()).getSObjectType();
+            SObjectType sobjectType = ((SObject) Type.forName(plugin.SObjectType__c).newInstance()).getSObjectType();
 
-            configurationBySObjectType.put(sobjectType, config);
-            pluginsBySObjectType.put(sobjectType, config?.LoggerSObjectHandlerPlugins__r);
+            List<LoggerPlugin__mdt> sobjectTypePlugins = new List<LoggerPlugin__mdt>();
+            if (pluginsBySObjectType.containsKey(sobjectType) == true) {
+                sobjectTypePlugins = pluginsBySObjectType.get(sobjectType);
+            }
+            sobjectTypePlugins.add(plugin);
+            pluginsBySObjectType.put(sobjectType, sobjectTypePlugins);
         }
 
         if (Test.isRunningTest() == true) {
             // Tests shouldn't rely on the actual CMDT rules in the org
             // Clear the org's loaded records during tests, and mock via setMockConfiguration()
-            configurationBySObjectType.clear();
             pluginsBySObjectType.clear();
         }
     }
 
-    // Private static TestVisible methods
     @TestVisible
-    private static void setMockConfiguration(Schema.SObjectType sobjectType, LoggerSObjectHandler__mdt configuration) {
-        configurationBySObjectType.put(sobjectType, configuration);
-    }
-
-    @TestVisible
-    private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerSObjectHandlerPlugin__mdt plugin) {
-        List<LoggerSObjectHandlerPlugin__mdt> plugins = pluginsBySObjectType.get(sobjectType);
+    private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerPlugin__mdt plugin) {
+        List<LoggerPlugin__mdt> plugins = pluginsBySObjectType.get(sobjectType);
         if (plugins == null) {
-            plugins = new List<LoggerSObjectHandlerPlugin__mdt>();
+            plugins = new List<LoggerPlugin__mdt>();
         }
         plugins.add(plugin);
         pluginsBySObjectType.put(sobjectType, plugins);
     }
 
     public LoggerSObjectHandler() {
-        this.setConfigurations();
-
-        if (this.isEnabled() == true) {
-            this.triggerOperationType = Trigger.operationType;
-            this.triggerNew = Trigger.new;
-            this.triggerNewMap = Trigger.newMap;
-            this.triggerOld = Trigger.old;
-            this.triggerOldMap = Trigger.oldMap;
-        }
+        this.triggerOperationType = Trigger.operationType;
+        this.triggerNew = Trigger.new;
+        this.triggerNewMap = Trigger.newMap;
+        this.triggerOld = Trigger.old;
+        this.triggerOldMap = Trigger.oldMap;
+        this.plugins = pluginsBySObjectType.get(this.getSObjectType());
     }
 
     /**
@@ -102,10 +85,6 @@ public without sharing abstract class LoggerSObjectHandler {
      * @description Runs the handler class's logic
      */
     public void execute() {
-        if (this.isEnabled() == false) {
-            return;
-        }
-
         switch on this.triggerOperationType {
             when BEFORE_INSERT {
                 this.executeBeforeInsert(this.triggerNew);
@@ -162,16 +141,12 @@ public without sharing abstract class LoggerSObjectHandler {
     protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
     }
 
-    private Boolean isEnabled() {
-        return this.handlerConfiguration.IsEnabled__c;
-    }
-
     private void executePlugins() {
         if (this.plugins == null || this.plugins.isEmpty() == true) {
             return;
         }
 
-        for (LoggerSObjectHandlerPlugin__mdt pluginConfiguration : this.plugins) {
+        for (LoggerPlugin__mdt pluginConfiguration : this.plugins) {
             switch on pluginConfiguration.PluginType__c {
                 when 'Apex' {
                     this.executeApexPlugin(pluginConfiguration.PluginApiName__c);
@@ -183,20 +158,8 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
-    private void setConfigurations() {
-        this.handlerConfiguration = configurationBySObjectType.get(this.getSObjectType());
-        this.plugins = pluginsBySObjectType.get(this.getSObjectType());
-
-        if (this.handlerConfiguration == null) {
-            // If no config exists in the org, then load some in-memory defaults
-            this.handlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = this.getSObjectType().getDescribe().getName());
-
-            configurationBySObjectType.put(this.getSObjectType(), this.handlerConfiguration);
-        }
-    }
-
     private void executeApexPlugin(String apexClassName) {
-        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
+        LoggerPlugin apexPlugin = (LoggerPlugin) Type.forName(apexClassName).newInstance();
         apexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
     }
 

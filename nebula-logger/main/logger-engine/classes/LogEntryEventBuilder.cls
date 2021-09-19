@@ -191,7 +191,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
-    // ...but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
+    // but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
     /**
      * @description Sets the log entry event's database operation result fields
      * @param  deleteResult The instance of `Database.DeleteResult` to log

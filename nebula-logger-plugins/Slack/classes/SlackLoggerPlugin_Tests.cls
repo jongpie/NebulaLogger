@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 // TODO: need to improve plugin framework to make it easier for plugins to test by making it easier
-//       to mock CMDT records & instances of LoggerSObjectHandlerPlugin
+//       to mock CMDT records & instances of LoggerPlugin
 @IsTest
 private class SlackLoggerPlugin_Tests {
     public class SuccessCalloutMock implements HttpCalloutMock {
@@ -27,7 +27,7 @@ private class SlackLoggerPlugin_Tests {
 
     static void mockConfigurations(LoggingLevel notificationLoggingLevel) {
         // Set the plugin's parameters
-        LoggerSObjectHandlerPlugin__mdt slackPluginConfig = new LoggerSObjectHandlerPlugin__mdt(
+        LoggerPlugin__mdt slackPluginConfig = new LoggerPlugin__mdt(
             IsEnabled__c = true,
             PluginApiName__c = SlackLoggerPlugin.class.getName(),
             PluginType__c = 'Apex'

@@ -167,15 +167,15 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LoggerPlugin</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LoggerPlugin_Tests</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LoggerSObjectHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerSObjectHandlerPlugin</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerSObjectHandlerPlugin_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1732,47 +1732,27 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectHandlerParameter__mdt.Description__c</field>
+        <field>LoggerParameter__mdt.Description__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectHandlerParameter__mdt.IsEnabled__c</field>
+        <field>LoggerParameter__mdt.Value__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectHandlerParameter__mdt.Value__c</field>
+        <field>LoggerPlugin__mdt.Description__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectHandlerPluginParameter__mdt.Description__c</field>
+        <field>LoggerPlugin__mdt.ExecutionOrder__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectHandlerPluginParameter__mdt.IsEnabled__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPluginParameter__mdt.Value__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPlugin__mdt.Description__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPlugin__mdt.ExecutionOrder__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPlugin__mdt.IsEnabled__c</field>
+        <field>LoggerPlugin__mdt.IsEnabled__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1809,18 +1789,8 @@
         <layout>Log__c-Log Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>LoggerSObjectHandlerParameter__mdt-Logger SObject Handler Parameter Layout</layout>
+        <layout>LoggerPlugin__mdt-Logger SObject Handler Plugin Layout</layout>
     </layoutAssignments>
-    <layoutAssignments>
-        <layout>LoggerSObjectHandlerPluginParameter__mdt-Logger SObject Handler Plugin Parameter Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>LoggerSObjectHandlerPlugin__mdt-Logger SObject Handler Plugin Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>LoggerSObjectHandler__mdt-Logger SObject Handler Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>LoggerTag__c-Logger Tag Layout</layout>
     </layoutAssignments>
     <objectPermissions>
