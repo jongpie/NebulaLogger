@@ -47,24 +47,6 @@ describe('LogEntryEventStream tests', () => {
             document.body.removeChild(document.body.firstChild);
         }
     });
-
-    it('toggles streaming when button clicked', async () => {
-        const element = createElement('log-entry-event-stream', {
-            is: LogEntryEventStream
-        });
-        document.body.appendChild(element);
-        await Promise.resolve();
-        const toggleButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="toggle-stream"]');
-
-        return Promise.resolve()
-            .then(() => {
-                expect(toggleButton.variant).toBe('success');
-                toggleButton.click();
-            })
-            .then(() => {
-                expect(toggleButton.variant).toBe('brand');
-            });
-    });
     it('streams a single log entry event', async () => {
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
@@ -82,6 +64,23 @@ describe('LogEntryEventStream tests', () => {
         const expectedStreamText = getPlatformEventText(mockLogEntryEvent);
         const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
+    });
+    it('toggles streaming when button clicked', async () => {
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const toggleButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="toggle-stream"]');
+
+        return Promise.resolve()
+            .then(() => {
+                expect(toggleButton.variant).toBe('success');
+                toggleButton.click();
+            })
+            .then(() => {
+                expect(toggleButton.variant).toBe('brand');
+            });
     });
     it('clears stream when clear button clicked', async () => {
         const element = createElement('log-entry-event-stream', {
@@ -145,6 +144,141 @@ describe('LogEntryEventStream tests', () => {
         nonMatchingLogEntryEvent.LoggingLevel__c = 'FINEST';
         nonMatchingLogEntryEvent.LoggingLevelOrdinal__c = loggingLevels.FINEST;
         expect(nonMatchingLogEntryEvent.LoggingLevelOrdinal__c).toBeLessThan(Number(loggingLevelFilterDropdown.value));
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: nonMatchingLogEntryEvent
+            }
+        });
+
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBeFalsy();
+    });
+    it('includes matching log entry event for origin type filter', async () => {
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const originTypeFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="origin-type-filter"]');
+        originTypeFilterDropdown.value = 'Flow';
+        originTypeFilterDropdown.dispatchEvent(new CustomEvent('change'));
+
+        const matchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        matchingLogEntryEvent.OriginType__c = 'Flow';
+        expect(matchingLogEntryEvent.OriginType__c).toEqual(originTypeFilterDropdown.value);
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: matchingLogEntryEvent
+            }
+        });
+
+        const expectedStreamText = getPlatformEventText(matchingLogEntryEvent);
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBe(expectedStreamText);
+    });
+    it('excludes non-matching log entry event for origin type filter', async () => {
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const originTypeFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="origin-type-filter"]');
+        originTypeFilterDropdown.value = 'Flow';
+        originTypeFilterDropdown.dispatchEvent(new CustomEvent('change'));
+
+        const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        nonMatchingLogEntryEvent.OriginType__c = 'Apex';
+        expect(nonMatchingLogEntryEvent.OriginType__c).not.toEqual(originTypeFilterDropdown.value);
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: nonMatchingLogEntryEvent
+            }
+        });
+
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBeFalsy();
+    });
+    it('includes matching log entry event for origin location filter', async () => {
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="origin-location-filter"]');
+        originLocationFilterDropdown.value = 'SomeClass.someMethod';
+        originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
+
+        const matchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        matchingLogEntryEvent.OriginLocation__c = 'SomeClass.someMethod';
+        expect(matchingLogEntryEvent.OriginLocation__c).toEqual(originLocationFilterDropdown.value);
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: matchingLogEntryEvent
+            }
+        });
+
+        const expectedStreamText = getPlatformEventText(matchingLogEntryEvent);
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBe(expectedStreamText);
+    });
+    it('excludes non-matching log entry event for origin location filter', async () => {
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="origin-location-filter"]');
+        originLocationFilterDropdown.value = 'SomeClass.someMethod';
+        originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
+
+        const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        nonMatchingLogEntryEvent.OriginLocation__c = 'AnotherClass.someOtherMethod';
+        expect(nonMatchingLogEntryEvent.OriginLocation__c).not.toEqual(originLocationFilterDropdown.value);
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: nonMatchingLogEntryEvent
+            }
+        });
+
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBeFalsy();
+    });
+    it('includes matching log entry event for logged by filter', async () => {
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="logged-by-filter"]');
+        originLocationFilterDropdown.value = 'some.person@test.com';
+        originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
+
+        const matchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        matchingLogEntryEvent.LoggedByUsername__c = 'some.person@test.com';
+        expect(matchingLogEntryEvent.LoggedByUsername__c).toEqual(originLocationFilterDropdown.value);
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: matchingLogEntryEvent
+            }
+        });
+
+        const expectedStreamText = getPlatformEventText(matchingLogEntryEvent);
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBe(expectedStreamText);
+    });
+    it('excludes non-matching log entry event for logged by filter', async () => {
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="logged-by-filter"]');
+        originLocationFilterDropdown.value = 'some.person@test.com';
+        originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
+
+        const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        nonMatchingLogEntryEvent.LoggedByUsername__c = 'a.different.person@test.com';
+        expect(nonMatchingLogEntryEvent.LoggedByUsername__c).not.toEqual(originLocationFilterDropdown.value);
         await jestMockPublish('/event/LogEntryEvent__e', {
             data: {
                 payload: nonMatchingLogEntryEvent
