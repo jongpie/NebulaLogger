@@ -47,7 +47,6 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            # Cache node_modules to speed up the process
             - name: 'Restore node_modules cache'
               id: cache-npm
               uses: actions/cache@v2
@@ -62,9 +61,6 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: 'Lint Lightning Components'
-              run: npm run lint:verify
-
             - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
@@ -74,7 +70,7 @@ jobs:
             - name: 'Apex SFDX Scanner verification'
               run: npm run prepare && npm run scan
 
-            - name: 'Prettier code formatting verification'
+            - name: 'Prettier formatting verification'
               run: npm run prettier:verify
 
     lwc-tests:
@@ -86,10 +82,9 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            # Cache node_modules to speed up the process
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -119,10 +114,9 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            # Cache node_modules to speed up the process
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -197,10 +191,9 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            # Cache node_modules to speed up the process
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v1
+              uses: actions/cache@v2
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}

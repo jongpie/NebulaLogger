@@ -4,6 +4,7 @@
             <lightning-card title="Stream Settings" class="slds-m-around_medium slds-p-around_medium">
                 <div slot="actions">
                     <lightning-button-stateful
+                        data-id="toggle-stream"
                         icon-name-when-hover="utility:close"
                         icon-name-when-off="utility:add"
                         icon-name-when-on="utility:check"
@@ -25,6 +26,7 @@
                         value={maxEvents}
                     ></lightning-input>
                     <lightning-combobox
+                        data-id="logging-level-filter"
                         label="Minimum Logging Level"
                         onchange={handleLoggingLevelFilterChange}
                         options={loggingLevelOptions}
@@ -51,6 +53,7 @@
                         value={loggedByFilter}
                     ></lightning-input>
                     <lightning-textarea
+                        data-id="message-filter"
                         label="Message"
                         onchange={handleMessageFilterChange}
                         placeholder="Message Contains"
@@ -63,8 +66,16 @@
             <lightning-card title={title} class="slds-p-around_medium" data-id="event-stream-console">
                 <div slot="actions">
                     <lightning-button-group>
-                        <lightning-button label="Clear" icon-name="utility:delete" name="clear" onclick={onClear} variant="destructive"></lightning-button>
-                        <lightning-button-stateful
+                        <lightning-button
+                            data-id="clear"
+                            label="Clear"
+                            icon-name="utility:delete"
+                            name="clear"
+                            onclick={onClear}
+                            variant="destructive"
+                        ></lightning-button>
+                        <!-- <lightning-button-stateful
+                            data-id="expand-toggle"
                             icon-name-when-off="utility:expand"
                             icon-name-when-on="utility:contract"
                             label-when-off="Expand"
@@ -73,7 +84,7 @@
                             selected={isExpanded}
                             variant="brand"
                         >
-                        </lightning-button-stateful>
+                        </lightning-button-stateful> -->
                     </lightning-button-group>
                 </div>
                 <div class="slds-m-top_medium slds-p-horizontal_medium event-stream">

@@ -36,7 +36,6 @@
         ],
         "*.{cls,trigger}": [
             "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --engine pmd --severity-threshold 3 --target",
-            "npm run source:push && npm run test:apex",
             "npm run docs:generate && git add ./docs/ && git commit --amend --no-edit"
         ]
     },
@@ -63,6 +62,7 @@
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "scan": "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3",
         "source:push": "sfdx force:source:push --forceoverwrite",
+        "source:push:test": "npm run source:push && npm run test:apex",
         "test": "npm run test:lwc && npm run test:apex",
         "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",

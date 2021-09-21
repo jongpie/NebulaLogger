@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import { subscribe, unsubscribe } from 'lightning/empApi';
+import { isEmpEnabled, subscribe, unsubscribe } from 'lightning/empApi';
 
 export default class LogEntryEventStream extends LightningElement {
     logEntryEvents = [];
@@ -47,9 +47,11 @@ export default class LogEntryEventStream extends LightningElement {
         ];
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         document.title = 'Log Entry Event Stream';
-        this.createSubscription();
+        if (isEmpEnabled()) {
+            this.createSubscription();
+        }
     }
 
     disconnectedCallback() {
@@ -82,11 +84,11 @@ export default class LogEntryEventStream extends LightningElement {
         this.logEntryEvents = [];
     }
 
-    onToggleExpand() {
-        let consoleBlock = this.template.querySelector('[data-id="event-stream-console"]');
-        consoleBlock.className = this.isExpanded ? '' : 'expanded';
-        this.isExpanded = !this.isExpanded;
-    }
+    // onToggleExpand() {
+    //     let consoleBlock = this.template.querySelector('[data-id="event-stream-console"]');
+    //     consoleBlock.className = this.isExpanded ? '' : 'expanded';
+    //     this.isExpanded = !this.isExpanded;
+    // }
 
     onToggleStream() {
         this.isStreamEnabled = !this.isStreamEnabled;
@@ -127,40 +129,45 @@ export default class LogEntryEventStream extends LightningElement {
 
     // Private functions
     _meetsLoggedByFilter(logEntryEvent) {
+        let matches = false;
         if (!this.loggedByFilter || logEntryEvent.LoggedByUsername__c.includes(this.loggedByFilter)) {
-            return true;
+            matches = true;
         }
-        return false;
+        return matches;
     }
 
     _meetsLoggingLevelFilter(logEntryEvent) {
+        let matches = false;
         if (!this.loggingLevelFilter || Number(logEntryEvent.LoggingLevelOrdinal__c) >= Number(this.loggingLevelFilter)) {
-            return true;
+            matches = true;
         }
-        return false;
+        return matches;
     }
 
     _meetsMessageFilter(logEntryEvent) {
         // TODO support for regex searches in Message__c
+        let matches = false;
         if (!this.messageFilter || logEntryEvent.Message__c.includes(this.messageFilter)) {
-            return true;
+            matches = true;
         }
-        return false;
+        return matches;
     }
 
     _meetsOriginLocationFilter(logEntryEvent) {
         // TODO support for regex searches in OriginLocation__c
+        let matches = false;
         if (!this.originLocationFilter || logEntryEvent.OriginLocation__c.includes(this.originLocationFilter)) {
-            return true;
+            matches = true;
         }
-        return false;
+        return matches;
     }
 
     _meetsOriginTypeFilter(logEntryEvent) {
         // TODO support for regex searches in Message__c
+        let matches = false;
         if (!this.originTypeFilter || logEntryEvent.OriginType__c == this.originTypeFilter) {
-            return true;
+            matches = true;
         }
-        return false;
+        return matches;
     }
 }
