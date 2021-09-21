@@ -6,11 +6,11 @@
                     <lightning-button-stateful
                         data-id="toggle-stream"
                         icon-name-when-hover="utility:close"
-                        icon-name-when-off="utility:add"
-                        icon-name-when-on="utility:check"
-                        label-when-hover="Toggle Streaming"
-                        label-when-off="Enable Streaming"
-                        label-when-on="Streaming Enabled"
+                        icon-name-when-off="utility:pause_alt"
+                        icon-name-when-on="utility:play"
+                        label-when-hover="Pause"
+                        label-when-off="Paused"
+                        label-when-on="Streaming"
                         onclick={onToggleStream}
                         selected={isStreamEnabled}
                         variant={streamButtonVariant}
