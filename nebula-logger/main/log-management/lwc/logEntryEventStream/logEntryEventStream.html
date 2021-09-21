@@ -34,21 +34,24 @@
                         value={loggingLevelFilter}
                     ></lightning-combobox>
                     <lightning-combobox
+                        data-id="origin-type-filter"
                         label="Origin Type"
-                        onchange={handleLoggingLevelFilterChange}
+                        onchange={handleOriginTypeFilterChange}
                         options={originTypeOptions}
                         placeholder="Select Origin Type"
                         value={originTypeFilter}
                     ></lightning-combobox>
                     <lightning-input
+                        data-id="origin-location-filter"
                         label="Origin Location"
-                        onchange={handleLoggingLevelFilterChange}
+                        onchange={handleOriginLocationFilterChange}
                         placeholder="Specify Origin Location"
                         value={originLocationFilter}
                     ></lightning-input>
                     <lightning-input
+                        data-id="logged-by-filter"
                         label="Logged By"
-                        onchange={handleLoggingLevelFilterChange}
+                        onchange={handleLoggedByFilterChange}
                         placeholder="Specify Username"
                         value={loggedByFilter}
                     ></lightning-input>

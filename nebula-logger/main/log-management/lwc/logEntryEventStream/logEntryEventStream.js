@@ -72,6 +72,18 @@ export default class LogEntryEventStream extends LightningElement {
         this.loggingLevelFilter = event.target.value;
     }
 
+    handleOriginTypeFilterChange(event) {
+        this.originTypeFilter = event.target.value;
+    }
+
+    handleOriginLocationFilterChange(event) {
+        this.originLocationFilter = event.target.value;
+    }
+
+    handleLoggedByFilterChange(event) {
+        this.loggedByFilter = event.target.value;
+    }
+
     handleMessageFilterChange(event) {
         this.messageFilter = event.target.value;
     }
