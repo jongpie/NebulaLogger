@@ -23,6 +23,13 @@ private class LogEntryHandler_Tests {
         }
     }
 
+    private static String getNamespacePrefix() {
+        String className = LogEntryHandler_Tests.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
+    }
+
     private static LoggerSObjectHandler__mdt getMockConfiguration() {
         Schema.SObjectType sobjectType = Schema.LogEntry__c.SObjectType;
         return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
@@ -298,7 +305,7 @@ private class LogEntryHandler_Tests {
         ApexClass apexClass = [
             SELECT Id, ApiVersion, CreatedDate, LastModifiedDate
             FROM ApexClass
-            WHERE (NamespacePrefix = NULL OR NamespacePrefix = 'Nebula') AND Name = :exampleTopLevelClassName
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :exampleTopLevelClassName
         ];
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
@@ -338,7 +345,7 @@ private class LogEntryHandler_Tests {
         ApexClass apexClass = [
             SELECT Id, ApiVersion, CreatedDate, LastModifiedDate
             FROM ApexClass
-            WHERE (NamespacePrefix = NULL OR NamespacePrefix = 'Nebula') AND Name = :exampleTopLevelClassName
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :exampleTopLevelClassName
         ];
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
