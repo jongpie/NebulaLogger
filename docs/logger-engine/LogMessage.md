@@ -97,7 +97,7 @@ String formattedMessage = new LogMessage(unformattedMessage, arguments).getMessa
 
 #### `getMessage()` → `String`
 
-Returns the formatted string to use as the log entry's message
+Returns the formatted string to use as the log entry&apos;s message
 
 ##### Return
 

@@ -18,7 +18,7 @@ Controller class used by the lightning web component `logger`
 
 #### `getSettings()` → `ComponentLoggerSettings`
 
-Provides data to the frontend about `LoggerSettings__c` & server-supported logging details
+Provides data to the frontend about `LoggerSettings__c` &amp; server-supported logging details
 
 ##### Return
 
@@ -64,11 +64,11 @@ A DTO object used to log details about a JavaScript error
 
 ###### `message` → `String`
 
-The error's message
+The error&apos;s message
 
 ###### `stack` → `String`
 
-The error's stack trace
+The error&apos;s stack trace
 
 ###### `type` → `String`
 
@@ -94,11 +94,11 @@ The name of the `LoggingLevel` enum value
 
 ###### `message` → `String`
 
-The value to use as the log entry's message
+The value to use as the log entry&apos;s message
 
 ###### `record` → `SObject`
 
-(Optional) The record to relate to the log entry - the record's JSON is also stored
+(Optional) The record to relate to the log entry - the record&apos;s JSON is also stored
 
 ###### `recordId` → `Id`
 

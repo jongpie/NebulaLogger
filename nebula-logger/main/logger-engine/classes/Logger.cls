@@ -43,8 +43,6 @@ global with sharing class Logger {
 
     static {
         System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
-
-        setupOrgDefaults();
     }
 
     /**
@@ -215,9 +213,11 @@ global with sharing class Logger {
         } else if (loggingUserSettings == null && loggingUser.ProfileId != null && LoggerSettings__c.getValues(loggingUser.ProfileId) != null) {
             // Next, check for Profile-level settings
             loggingUserSettings = LoggerSettings__c.getValues(loggingUser.ProfileId);
-        } else {
-            // Finally, use the org defaults
+        } else if (LoggerSettings__c.getOrgDefaults().Id != null) {
+            // Next, use the org defaults (if configured)
             loggingUserSettings = LoggerSettings__c.getOrgDefaults();
+        } else {
+            loggingUserSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
         }
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
@@ -2635,15 +2635,6 @@ global with sharing class Logger {
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel) {
         return newEntry(loggingLevel, isEnabled(loggingLevel));
-    }
-
-    @SuppressWarnings('PMD.ApexCRUDViolation')
-    private static void setupOrgDefaults() {
-        // If settings have not been configured, then insert the org defaults
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        if (orgDefaults.Id == null) {
-            insert orgDefaults;
-        }
     }
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {

@@ -14,3 +14,4 @@ nebula-logger/main/default/**
 
 # LWC Jest
 **/__tests__/**
+**/jest-mocks/**

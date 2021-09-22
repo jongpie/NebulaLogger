@@ -13,3 +13,4 @@ Write-Output "Unvalidated Package Version ID: $unvalidatedPackageVersionId"
 
 Write-Output "Installing package in org: $targetusername"
 sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --package $unvalidatedPackageVersionId
+$unvalidatedPackageVersionId > unvalidated-package-version-id.txt

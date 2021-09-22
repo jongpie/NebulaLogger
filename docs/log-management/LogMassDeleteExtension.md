@@ -46,7 +46,7 @@ Filters the list of selected `Log__c` records to only include records that the c
 
 **Type**
 
-List<Log\_\_c>
+List&lt;Log\_\_c&gt;
 
 **Description**
 

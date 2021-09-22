@@ -206,20 +206,88 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_auto_create_org_default_settings_when_not_configured() {
+    static void it_should_use_in_memory_default_settings_when_not_configured() {
         delete [SELECT Id FROM LoggerSettings__c];
         List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
         System.assertEquals(0, existingSettings.size());
+        LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+        expectedSettings.SetupOwnerId = UserInfo.getUserId();
 
-        Test.startTest();
-        Logger.isEnabled();
-        Test.stopTest();
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
         existingSettings = [SELECT Id FROM LoggerSettings__c];
-        System.assertEquals(1, existingSettings.size());
+        System.assertEquals(0, existingSettings.size(), 'LoggerSettings__c record should not have been saved');
+        System.assertEquals(expectedSettings, returnedSettings);
+        System.assertEquals(null, returnedSettings.Id);
+    }
 
-        LoggerSettings__c orgDefaults = LoggerSettings__c.getOrgDefaults();
-        System.assertEquals(orgDefaults.Id, existingSettings.get(0).Id);
+    @IsTest
+    static void it_should_use_org_default_settings_when_configured() {
+        delete [SELECT Id FROM LoggerSettings__c];
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.assertEquals(0, existingSettings.size());
+        LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
+        expectedSettings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        insert expectedSettings;
+        expectedSettings = LoggerSettings__c.getOrgDefaults();
+        expectedSettings.Id = null;
+        expectedSettings.SetupOwnerId = UserInfo.getUserId();
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.assertEquals(1, existingSettings.size(), 'LoggerSettings__c org defaults should have been saved');
+        System.assertEquals(expectedSettings, returnedSettings);
+        System.assertEquals(null, returnedSettings.Id);
+    }
+
+    @IsTest
+    static void it_should_use_profile_settings_when_configured() {
+        delete [SELECT Id FROM LoggerSettings__c];
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.assertEquals(0, existingSettings.size());
+        insert LoggerSettings__c.getOrgDefaults();
+        LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
+        expectedSettings.Id = null;
+        expectedSettings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        expectedSettings.SetupOwnerId = UserInfo.getProfileId();
+        insert expectedSettings;
+        expectedSettings = LoggerSettings__c.getValues(UserInfo.getProfileId());
+        expectedSettings.Id = null;
+        expectedSettings.SetupOwnerId = UserInfo.getUserId();
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.assertEquals(2, existingSettings.size(), 'LoggerSettings__c org defaults and profile settings should have been saved');
+        System.assertEquals(expectedSettings, returnedSettings);
+        System.assertEquals(null, returnedSettings.Id);
+    }
+
+    @IsTest
+    static void it_should_use_user_settings_when_configured() {
+        delete [SELECT Id FROM LoggerSettings__c];
+        List<LoggerSettings__c> existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.assertEquals(0, existingSettings.size());
+        insert LoggerSettings__c.getOrgDefaults();
+        LoggerSettings__c profileSettings = LoggerSettings__c.getOrgDefaults();
+        profileSettings.Id = null;
+        profileSettings.LoggingLevel__c = LoggingLevel.DEBUG.name();
+        profileSettings.SetupOwnerId = UserInfo.getProfileId();
+        insert profileSettings;
+        LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
+        expectedSettings.Id = null;
+        expectedSettings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        expectedSettings.SetupOwnerId = UserInfo.getUserId();
+        insert expectedSettings;
+        expectedSettings = LoggerSettings__c.getValues(UserInfo.getUserId());
+
+        LoggerSettings__c returnedSettings = Logger.getUserSettings();
+
+        existingSettings = [SELECT Id FROM LoggerSettings__c];
+        System.assertEquals(3, existingSettings.size(), 'LoggerSettings__c org defaults, profile settings, and user settings should have been saved');
+        System.assertEquals(expectedSettings, returnedSettings);
+        System.assertEquals(expectedSettings.Id, returnedSettings.Id);
     }
 
     @IsTest

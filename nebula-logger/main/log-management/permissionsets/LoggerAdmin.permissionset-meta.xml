@@ -1089,6 +1089,10 @@
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <tabSettings>
+        <tab>LogEntryEventStream</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>LogEntryTag__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>

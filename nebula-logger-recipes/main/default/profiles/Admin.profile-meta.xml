@@ -1843,6 +1843,10 @@
         <enabled>true</enabled>
     </pageAccesses>
     <tabVisibilities>
+        <tab>LogEntryEventStream</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>LogEntryTag__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>

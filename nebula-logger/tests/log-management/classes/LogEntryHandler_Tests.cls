@@ -23,6 +23,18 @@ private class LogEntryHandler_Tests {
         }
     }
 
+    private static String getNamespacePrefix() {
+        String className = LogEntryHandler_Tests.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
+    }
+
+    private static LoggerSObjectHandler__mdt getMockConfiguration() {
+        Schema.SObjectType sobjectType = Schema.LogEntry__c.SObjectType;
+        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
+    }
+
     @testSetup
     static void setupData() {
         Log__c log = new Log__c(TransactionId__c = '1234');
@@ -264,7 +276,11 @@ private class LogEntryHandler_Tests {
         String exampleTopLevelClassName = 'Logger';
         String methodName = 'saveLog';
         String exampleTopLevelClassMethodName = exampleTopLevelClassName + '. ' + methodName;
-        ApexClass apexClass = [SELECT Id, ApiVersion, CreatedDate, LastModifiedDate FROM ApexClass WHERE Name = :exampleTopLevelClassName];
+        ApexClass apexClass = [
+            SELECT Id, ApiVersion, CreatedDate, LastModifiedDate
+            FROM ApexClass
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :exampleTopLevelClassName
+        ];
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleTopLevelClassMethodName, OriginType__c = 'Apex');
@@ -300,7 +316,11 @@ private class LogEntryHandler_Tests {
         String exampleInnerClassName = 'QueueableSaver';
         String methodName = 'execute';
         String exampleInnerClassMethodName = exampleTopLevelClassName + '.' + exampleInnerClassName + '.' + methodName;
-        ApexClass apexClass = [SELECT Id, ApiVersion, CreatedDate, LastModifiedDate FROM ApexClass WHERE Name = :exampleTopLevelClassName];
+        ApexClass apexClass = [
+            SELECT Id, ApiVersion, CreatedDate, LastModifiedDate
+            FROM ApexClass
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name = :exampleTopLevelClassName
+        ];
 
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = exampleInnerClassMethodName, OriginType__c = 'Apex');
