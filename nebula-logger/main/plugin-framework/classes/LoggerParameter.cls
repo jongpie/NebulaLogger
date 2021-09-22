@@ -14,7 +14,7 @@ public class LoggerParameter {
     public static final Boolean ENABLE_SYSTEM_MESSAGES = LoggerParameter.getBoolean('EnableSystemMessages', false);
     public static final Boolean TAGGING_IS_ENABLED = getBoolean('LogEntryEventHandler_EnableTagging', true);
     public static final Boolean TAG_USING_TOPICS = getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
-    public static Boolean SHOULD_CALL_STATUS_API = LoggerParameter.getBoolean('LogEntryEventHandler_CallStatusApi', false);
+    public static final Boolean SHOULD_CALL_STATUS_API = LoggerParameter.getBoolean('LogEntryEventHandler_CallStatusApi', false);
 
     /**
      * @description Returns the configured value of the field `Value__c` as a `Boolean`

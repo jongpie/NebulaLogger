@@ -38,7 +38,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logs = (List<Log__c>) triggerNew;
 
-        this.setOrgReleaseCycle();
         this.setClosedStatusFields();
         // The log retention date field should support being manually changed, so only auto-set it on insert
         this.setLogRetentionDate();
@@ -57,34 +56,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.logs = (List<Log__c>) triggerNewMap.values();
 
         this.shareLogsWithLoggingUsers();
-    }
-
-    private void setOrgReleaseCycle() {
-        // Currently, there doesn't seem to be a way within Apex or api.status.salesforce.com
-        // to know if your org is on a preview instance or non-preview instance
-        // So, that unfortunately leaves hardcoding the instances for now
-        // Source: https://help.salesforce.com/articleView?id=000357271&type=1&mode=1
-        // And no need for this to be static since it's only used internally for BEFORE_INSERT context
-        String apiVersion = JSON.serialize(new User(Id = UserInfo.getUserId())).substringAfter('/data/').substringBefore('/sobjects/User');
-        Set<String> previewInstances = new Set<String>(LoggerParameter.getStringList('LogHandler_PreviewInstances_' + apiVersion, new List<String>()));
-        Set<String> nonPreviewInstances = new Set<String>(
-            LoggerParameter.getStringList('LogHandler_NonPreviewInstances_' + apiVersion, new List<String>())
-        );
-
-        String releaseCycle;
-
-        for (Log__c log : this.logs) {
-            if (
-                log.OrganizationInstanceName__c == 'Production' || nonPreviewInstances != null && nonPreviewInstances.contains(log.OrganizationInstanceName__c)
-            ) {
-                releaseCycle = 'Non-Preview Instance';
-            } else if (previewInstances != null && previewInstances.contains(log.OrganizationInstanceName__c)) {
-                releaseCycle = 'Preview Instance';
-            }
-
-            // Use 'Unknown' as the default for private instances and situations where the hardcoded sets above are missing some values
-            log.OrganizationInstanceReleaseCycle__c = String.isNotBlank(releaseCycle) ? releaseCycle : 'Unknown';
-        }
     }
 
     private void setClosedStatusFields() {

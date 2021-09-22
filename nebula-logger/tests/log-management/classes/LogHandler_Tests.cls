@@ -50,26 +50,6 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_org_release_cycle_on_insert() {
-        String expectedReleaseCycle = 'Preview Instance';
-        String mockOrgInstance = 'ABC-123';
-        List<String> mockPreviewInstances = new List<String>{ mockOrgInstance };
-
-        String apiVersion = JSON.serialize(new User(Id = UserInfo.getUserId())).substringAfter('/data/').substringBefore('/sobjects/User');
-        LoggerParameter__mdt mockPreviewInstancesParameter = new LoggerParameter__mdt(
-            DeveloperName = 'LogHandler_PreviewInstances_' + apiVersion,
-            Value__c = JSON.serialize(mockPreviewInstances)
-        );
-        LoggerParameter.setMockParameter(mockPreviewInstancesParameter);
-
-        Log__c log = new Log__c(OrganizationInstanceName__c = mockOrgInstance, TransactionId__c = '1234');
-        insert log;
-
-        log = [SELECT Id, OrganizationInstanceReleaseCycle__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(expectedReleaseCycle, log.OrganizationInstanceReleaseCycle__c);
-    }
-
-    @IsTest
     static void it_should_clear_closed_status_fields_when_open() {
         Log__c log = new Log__c(
             ClosedBy__c = UserInfo.getUserId(),
