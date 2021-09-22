@@ -7,16 +7,14 @@
 private class LogBatchPurger_Tests {
     private static final Integer NUMBER_OF_LOG_ENTRIES = 10;
 
-    @testSetup
+    @TestSetup
     static void setupData() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = false;
-        settings.EnableSystemMessages__c = false;
         settings.LoggingLevel__c = LoggingLevel.FINEST.name();
-        upsert settings;
+        insert settings;
 
         Date scheduledDeletionDate = System.today().addDays(-7);
-
         Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate, TransactionId__c = '1234');
         insert log;
 
@@ -63,12 +61,13 @@ private class LogBatchPurger_Tests {
     static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_enabled() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
-        settings.EnableSystemMessages__c = true;
         settings.LoggingLevel__c = LoggingLevel.FINEST.name();
         upsert settings;
 
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableSystemMessages', Value__c = String.valueOf(true)));
+
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
-        System.assertEquals(true, Logger.getUserSettings().EnableSystemMessages__c);
+        System.assertEquals(true, LoggerParameter.getBoolean('EnableSystemMessages'));
         System.assertEquals(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
 
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
@@ -97,9 +96,10 @@ private class LogBatchPurger_Tests {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
         upsert settings;
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableSystemMessages', Value__c = String.valueOf(false)));
 
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
-        System.assertEquals(false, Logger.getUserSettings().EnableSystemMessages__c);
+        System.assertEquals(false, LoggerParameter.getBoolean('EnableSystemMessages'));
         System.assertEquals(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
 
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];

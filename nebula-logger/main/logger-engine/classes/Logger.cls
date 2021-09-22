@@ -2466,14 +2466,14 @@ global with sharing class Logger {
         }
 
         if (suspendSaving == true) {
-            if (getUserSettings().EnableSystemMessages__c == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                 finest(getSuspendSavingLogSystemMessage());
             }
 
             return;
         }
 
-        if (getUserSettings().EnableSystemMessages__c == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             finest(getSavingLogSystemMessage(saveMethod));
         }
 
@@ -2566,7 +2566,7 @@ global with sharing class Logger {
                 return LoggingLevel.FINEST;
             }
             when else {
-                if (getUserSettings().EnableSystemMessages__c == true) {
+                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                     String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
                     finest(message);
                 }

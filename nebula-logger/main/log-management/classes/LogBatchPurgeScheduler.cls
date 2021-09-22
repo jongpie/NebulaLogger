@@ -20,7 +20,7 @@ global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
     }
 
     global void execute(SchedulableContext schedulableContext) {
-        if (Logger.getUserSettings().EnableSystemMessages__c == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             LogMessage logMessage = new LogMessage('Scheduling LogBatchPurgeScheduler job, schedulableContext=={0}', schedulableContext);
             Logger.info(logMessage);
             Logger.saveLog();

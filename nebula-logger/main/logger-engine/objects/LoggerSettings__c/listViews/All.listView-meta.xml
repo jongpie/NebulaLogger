@@ -11,7 +11,6 @@
     <columns>SystemLogMessageFormat__c</columns>
     <columns>DefaultLogShareAccessLevel__c</columns>
     <columns>DefaultNumberOfDaysToRetainLogs__c</columns>
-    <columns>EnableSystemMessages__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

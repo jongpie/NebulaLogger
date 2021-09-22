@@ -200,7 +200,6 @@ private class Logger_Tests {
     static void setup() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
         settings.IsEnabled__c = true;
-        settings.EnableSystemMessages__c = false;
         settings.LoggingLevel__c = LoggingLevel.DEBUG.name();
         upsert settings;
     }

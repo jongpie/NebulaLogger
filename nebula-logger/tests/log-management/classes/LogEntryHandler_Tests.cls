@@ -35,7 +35,7 @@ private class LogEntryHandler_Tests {
         return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
     }
 
-    @testSetup
+    @TestSetup
     static void setupData() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;

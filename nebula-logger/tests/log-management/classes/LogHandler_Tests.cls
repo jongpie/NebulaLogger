@@ -30,7 +30,7 @@ private class LogHandler_Tests {
         }
     }
 
-    @testSetup
+    @TestSetup
     static void setupData() {
         Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
         LogStatus__mdt openStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = FIRST_STATUS, IsClosed__c = false, IsResolved__c = false);
