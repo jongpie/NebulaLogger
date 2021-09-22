@@ -15,11 +15,15 @@
     <tabs>LogEntry__c</tabs>
     <tabs>LogEntryTag__c</tabs>
     <tabs>LoggerTag__c</tabs>
+    <tabs>LogEntryEventStream</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LoggerConsoleUtilityBar</utilityBar>
     <workspaceConfig>
+        <mappings>
+            <tab>LogEntryEventStream</tab>
+        </mappings>
         <mappings>
             <fieldName>LogEntry__c</fieldName>
             <tab>LogEntryTag__c</tab>

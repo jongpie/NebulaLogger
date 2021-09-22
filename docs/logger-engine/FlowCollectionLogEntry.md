@@ -32,7 +32,7 @@ The name of the Flow creating the log entry. Due to Salesforce limitations, this
 
 #### `loggingLevelName` → `String`
 
-Optionally specify a logging level - the default is 'DEBUG'
+Optionally specify a logging level - the default is &apos;DEBUG&apos;
 
 #### `message` → `String`
 
@@ -40,7 +40,7 @@ The message to log
 
 #### `records` → `List<SObject>`
 
-The records to relate to this log entry - the records' JSON is automatically added to the log entry
+The records to relate to this log entry - the records&apos; JSON is automatically added to the log entry
 
 #### `saveLog` → `Boolean`
 
@@ -74,10 +74,10 @@ addFlowRecordEntries description
 
 **Type**
 
-List<String>
+List&lt;String&gt;
 
 **Description**
 
-The current transaction's ID (based on `Logger.getTransactionId()`)
+The current transaction&apos;s ID (based on `Logger.getTransactionId()`)
 
 ---

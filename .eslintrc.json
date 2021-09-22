@@ -12,13 +12,13 @@
     "plugins": ["@lwc/eslint-plugin-lwc", "@salesforce/eslint-plugin-aura"],
     "extends": ["@salesforce/eslint-config-lwc/recommended"],
     "rules": {
-        "eqeqeq": "off",
+        "eqeqeq": "warn",
         "no-console": "off",
-        "no-unused-expressions": "off",
-        "semi": "off",
+        "no-unused-expressions": "warn",
+        "semi": "warn",
         "@lwc/lwc/consistent-component-name": "error",
         "@lwc/lwc/no-api-reassignments": "off",
-        "@lwc/lwc/no-async-operation": "off",
+        "@lwc/lwc/no-async-operation": "warn",
         "@lwc/lwc/no-deprecated": "error",
         "@lwc/lwc/no-document-query": "error",
         "@lwc/lwc/valid-api": "error"

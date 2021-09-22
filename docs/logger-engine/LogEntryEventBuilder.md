@@ -20,10 +20,10 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 ##### Parameters
 
-| Param               | Description                                                                     |
-| ------------------- | ------------------------------------------------------------------------------- |
-| `entryLoggingLevel` | The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e` |
-| `shouldSave`        | Determines if the builder's instance of `LogEntryEvent__e` should be saved      |
+| Param               | Description                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------ |
+| `entryLoggingLevel` | The `LoggingLevel` enum to use for the builder&apos;s instance of `LogEntryEvent__e` |
+| `shouldSave`        | Determines if the builder&apos;s instance of `LogEntryEvent__e` should be saved      |
 
 ---
 
@@ -85,7 +85,7 @@ The `LogEntryEvent__e` record
 
 #### `parseStackTrace(String stackTraceString)` → `LogEntryEventBuilder`
 
-Parses the provided stack trace and sets the log entry's origin & stack trace fields
+Parses the provided stack trace and sets the log entry&apos;s origin &amp; stack trace fields
 
 ##### Parameters
 
@@ -105,7 +105,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -125,7 +125,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(Database.MergeResult mergeResult)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -145,7 +145,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(Database.SaveResult saveResult)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -165,7 +165,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(Database.UpsertResult upsertResult)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -185,7 +185,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(Database.UndeleteResult undeleteResult)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -205,7 +205,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -225,7 +225,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -245,7 +245,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -265,7 +265,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -285,7 +285,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setDatabaseResult(List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Sets the log entry event's database operation result fields
+Sets the log entry event&apos;s database operation result fields
 
 ##### Parameters
 
@@ -305,7 +305,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setExceptionDetails(Exception apexException)` → `LogEntryEventBuilder`
 
-Sets the log entry event's exception fields
+Sets the log entry event&apos;s exception fields
 
 ##### Parameters
 
@@ -325,13 +325,13 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setMessage(LogMessage logMessage)` → `LogEntryEventBuilder`
 
-Sets the log entry event's message field
+Sets the log entry event&apos;s message field
 
 ##### Parameters
 
-| Param        | Description                                                          |
-| ------------ | -------------------------------------------------------------------- |
-| `logMessage` | The instance of `LogMessage` to use to set the entry's message field |
+| Param        | Description                                                               |
+| ------------ | ------------------------------------------------------------------------- |
+| `logMessage` | The instance of `LogMessage` to use to set the entry&apos;s message field |
 
 ##### Return
 
@@ -345,13 +345,13 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setMessage(String message)` → `LogEntryEventBuilder`
 
-Sets the log entry event's message field
+Sets the log entry event&apos;s message field
 
 ##### Parameters
 
-| Param     | Description                                        |
-| --------- | -------------------------------------------------- |
-| `message` | The string to use to set the entry's message field |
+| Param     | Description                                             |
+| --------- | ------------------------------------------------------- |
+| `message` | The string to use to set the entry&apos;s message field |
 
 ##### Return
 
@@ -365,7 +365,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setRecord(Id recordId)` → `LogEntryEventBuilder`
 
-Sets the log entry event's record fields
+Sets the log entry event&apos;s record fields
 
 ##### Parameters
 
@@ -385,7 +385,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setRecord(SObject record)` → `LogEntryEventBuilder`
 
-Sets the log entry event's record fields
+Sets the log entry event&apos;s record fields
 
 ##### Parameters
 
@@ -405,7 +405,7 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 #### `setRecord(List<SObject> records)` → `LogEntryEventBuilder`
 
-Sets the log entry event's record fields
+Sets the log entry event&apos;s record fields
 
 ##### Parameters
 
@@ -433,7 +433,7 @@ Deprecated - use `setRecord(SObject record)` instead
 
 #### `setTopics(List<String> tags)` → `LogEntryEventBuilder`
 
-Deprecated - use `addTags(List<String> tags)` instead. This method will be removed in a future release
+Deprecated - use `addTags(List&lt;String&gt; tags)` instead. This method will be removed in a future release
 
 #### `shouldSave()` → `Boolean`
 

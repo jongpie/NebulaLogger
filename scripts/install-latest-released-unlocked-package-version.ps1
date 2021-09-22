@@ -5,7 +5,7 @@ Write-Output "Target Username: $targetusername"
 
 sfdx force:package:version:list --json --concise --released --orderby CreatedDate > released-package-versions.json
 $releasedPackageVersionsOutput = Get-Content -Raw -Path ./released-package-versions.json | ConvertFrom-Json
-Write-Output "Package Version Create Output: $releasedPackageVersionsOutput"
+Write-Output "Released Package Versions Create Output: $releasedPackageVersionsOutput"
 
 $countOfReleasedPackageVersions = ($releasedPackageVersionsOutput).result.Count
 $latestReleasedPackageVersion = ($releasedPackageVersionsOutput).result[$countOfReleasedPackageVersions – 1]

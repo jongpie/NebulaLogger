@@ -4,7 +4,7 @@ layout: default
 
 ## LogEntryHandler class
 
-Manages setting fields on `LogEntry__c` before insert & before update
+Manages setting fields on `LogEntry__c` before insert &amp; before update
 
 ---
 
