@@ -380,7 +380,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException) {
-        return error().setMessage(logMessage).setExceptionDetails(apexException);
+        return error().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
@@ -562,7 +562,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Exception apexException) {
-        return error().setMessage(message).setExceptionDetails(apexException);
+        return error().setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
@@ -745,7 +745,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Exception apexException) {
-        return warn().setMessage(logMessage).setExceptionDetails(apexException);
+        return warn().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
@@ -927,7 +927,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Exception apexException) {
-        return warn().setMessage(message).setExceptionDetails(apexException);
+        return warn().setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
