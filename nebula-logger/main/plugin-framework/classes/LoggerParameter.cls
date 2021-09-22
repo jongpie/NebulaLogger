@@ -9,6 +9,7 @@
  *              and casts the parameters to common data types
  */
 public class LoggerParameter {
+    private static Set<String> parametersToLoadDuringTests = new Set<String>();
     private static Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
 
     public static final Boolean CALL_STATUS_API {
@@ -27,6 +28,20 @@ public class LoggerParameter {
                 ENABLE_SYSTEM_MESSAGES = getBoolean('EnableSystemMessages', false);
             }
             return ENABLE_SYSTEM_MESSAGES;
+        }
+        private set;
+    }
+
+    public static final String SYSTEM_LOG_MESSAGE_FORMAT {
+        get {
+            if (SYSTEM_LOG_MESSAGE_FORMAT == null) {
+                // During tests, always load this CMDT record
+                // so that tests use the same format when calling System.debug()
+                String systemLogMessageFormatParameter = 'SystemLogMessageFormat';
+                parametersToLoadDuringTests.add(systemLogMessageFormatParameter);
+                SYSTEM_LOG_MESSAGE_FORMAT = getString(systemLogMessageFormatParameter, '{OriginLocation__c}\n{Message__c}');
+            }
+            return SYSTEM_LOG_MESSAGE_FORMAT;
         }
         private set;
     }
@@ -498,7 +513,10 @@ public class LoggerParameter {
     private static String loadParameterValue(String parameterDeveloperName) {
         String parameterValue = LoggerParameter__mdt.getInstance(parameterDeveloperName)?.Value__c;
 
-        if (Test.isRunningTest() == true) {
+        Boolean useMockParameter =
+            parametersToLoadDuringTests.contains(parameterDeveloperName) == false ||
+            mockParameterByDeveloperName.containsKey(parameterDeveloperName) == true;
+        if (Test.isRunningTest() == true && useMockParameter == true) {
             // During tests, don't actually use the org's CMDT records - only use mock records
             parameterValue = (String) mockParameterByDeveloperName.get(parameterDeveloperName)?.get('Value__c');
         }

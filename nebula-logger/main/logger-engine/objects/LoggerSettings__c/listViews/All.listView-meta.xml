@@ -8,7 +8,6 @@
     <columns>ApplyDataMaskRules__c</columns>
     <columns>StripInaccessibleRecordFields__c</columns>
     <columns>AnonymousMode__c</columns>
-    <columns>SystemLogMessageFormat__c</columns>
     <columns>DefaultLogShareAccessLevel__c</columns>
     <columns>DefaultNumberOfDaysToRetainLogs__c</columns>
     <filterScope>Everything</filterScope>
