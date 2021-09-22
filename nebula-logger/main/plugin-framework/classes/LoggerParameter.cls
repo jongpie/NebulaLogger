@@ -11,10 +11,45 @@
 public class LoggerParameter {
     private static Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
 
-    public static final Boolean ENABLE_SYSTEM_MESSAGES = LoggerParameter.getBoolean('EnableSystemMessages', false);
-    public static final Boolean TAGGING_IS_ENABLED = getBoolean('LogEntryEventHandler_EnableTagging', true);
-    public static final Boolean TAG_USING_TOPICS = getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
-    public static final Boolean SHOULD_CALL_STATUS_API = LoggerParameter.getBoolean('LogEntryEventHandler_CallStatusApi', false);
+    public static final Boolean CALL_STATUS_API {
+        get {
+            if (CALL_STATUS_API == null) {
+                CALL_STATUS_API = getBoolean('CallStatusApi', false);
+            }
+            return CALL_STATUS_API;
+        }
+        private set;
+    }
+
+    public static final Boolean ENABLE_SYSTEM_MESSAGES {
+        get {
+            if (ENABLE_SYSTEM_MESSAGES == null) {
+                ENABLE_SYSTEM_MESSAGES = getBoolean('EnableSystemMessages', false);
+            }
+            return ENABLE_SYSTEM_MESSAGES;
+        }
+        private set;
+    }
+
+    public static final Boolean TAGGING_IS_ENABLED {
+        get {
+            if (TAGGING_IS_ENABLED == null) {
+                TAGGING_IS_ENABLED = getBoolean('EnableTagging', true);
+            }
+            return TAGGING_IS_ENABLED;
+        }
+        private set;
+    }
+
+    public static final Boolean TAG_USING_TOPICS {
+        get {
+            if (TAG_USING_TOPICS == null) {
+                TAG_USING_TOPICS = getBoolean('UseTopicsForTags', false);
+            }
+            return TAG_USING_TOPICS;
+        }
+        private set;
+    }
 
     /**
      * @description Returns the configured value of the field `Value__c` as a `Boolean`
@@ -35,6 +70,7 @@ public class LoggerParameter {
      */
     public static Boolean getBoolean(String parameterDeveloperName, Boolean defaultValue) {
         Boolean parameterValue = (Boolean) castParameterValue(parameterDeveloperName, Boolean.class);
+        System.debug('derp===' + (parameterValue != null ? parameterValue : defaultValue));
         return parameterValue != null ? parameterValue : defaultValue;
     }
 

@@ -124,7 +124,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         upsert TRANSACTION_ID_TO_LOG.values() Schema.Log__c.TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (LoggerParameter.SHOULD_CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
+        if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
     }

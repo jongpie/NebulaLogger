@@ -231,7 +231,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_create_tag_records_when_enabled() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -267,7 +267,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_reuse_existing_tag_records() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         String testTagName = 'Some tag!';
         LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
@@ -305,7 +305,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_append_tags_for_contains_rule() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -347,7 +347,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_append_tags_for_equals_rule() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -389,7 +389,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_append_tags_for_regex_rule() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         String zipCodeRegEx = '(^[0-9]{4}?[0-9]$|^[0-9]{4}?[0-9]-[0-9]{4}$)';
 
@@ -433,7 +433,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_append_tags_for_startsWith_rule() {
-        System.assertEquals(true, LogEntryEventHandler.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -477,10 +477,11 @@ private class LogEntryEventHandler_Tests {
     static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(
-            DeveloperName = 'LogEntryEventHandler_CallStatusApi',
+            DeveloperName = 'CallStatusApi',
             Value__c = 'true'
         );
         LoggerParameter.setMockParameter(mockCallStatusApiParameter);
+        System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
@@ -522,7 +523,7 @@ private class LogEntryEventHandler_Tests {
         insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
 
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(
-            DeveloperName = 'LogEntryEventHandler_CallStatusApi',
+            DeveloperName = 'CallStatusApi',
             Value__c = 'true'
         );
         LoggerParameter.setMockParameter(mockCallStatusApiParameter);
@@ -567,7 +568,7 @@ private class LogEntryEventHandler_Tests {
     static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(
-            DeveloperName = 'LogEntryEventHandler_CallStatusApi',
+            DeveloperName = 'CallStatusApi',
             Value__c = 'false'
         );
         LoggerParameter.setMockParameter(mockCallStatusApiParameter);
@@ -602,7 +603,7 @@ private class LogEntryEventHandler_Tests {
     static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
         Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(
-            DeveloperName = 'LogEntryEventHandler_CallStatusApi',
+            DeveloperName = 'CallStatusApi',
             Value__c = 'true'
         );
         LoggerParameter.setMockParameter(mockCallStatusApiParameter);
