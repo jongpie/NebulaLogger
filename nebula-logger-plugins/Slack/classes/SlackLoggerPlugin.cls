@@ -7,20 +7,13 @@
  * @group Plugins
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
-public without sharing class SlackLoggerPlugin extends LoggerPlugin implements Queueable, Database.AllowsCallouts {
+public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
     @TestVisible
-    private static String endpoint;
+    private static String endpoint = LoggerParameter.getString('SlackEndpoint', null);
     @TestVisible
-    private static LoggingLevel notificationLoggingLevel;
+    private static LoggingLevel notificationLoggingLevel = Logger.getLoggingLevel( LoggerParameter.getString('SlackNotificationLoggingLevel', null) );
 
     private List<Log__c> logs;
-
-    static {
-        endpoint = LoggerParameter.getString('SlackEndpoint');
-
-        String notificationLoggingLevelName = LoggerParameter.getString('SlackNotificationLoggingLevel');
-        notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
-    }
 
     // Constructors
     public SlackLoggerPlugin() {

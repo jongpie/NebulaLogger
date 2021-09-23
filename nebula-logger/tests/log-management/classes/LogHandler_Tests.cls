@@ -12,7 +12,7 @@ private class LogHandler_Tests {
     private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
-    public class LogPluginTest extends LoggerPlugin {
+    public class LogPluginTest extends LoggerSObjectHandlerPlugin {
         public override void execute(
             TriggerOperation triggerOperationType,
             List<SObject> triggerNew,
@@ -23,7 +23,7 @@ private class LogHandler_Tests {
             if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
                 for (Log__c log : (List<Log__c>) triggerNew) {
                     // The specific field changed doesn't really matter - we just want to ensure that whatever
-                    // logic implement in the instance of LoggerPlugin is executed
+                    // logic implement in the instance of LoggerSObjectHandlerPlugin is executed
                     log.ProfileName__c = 'Some String';
                 }
             }

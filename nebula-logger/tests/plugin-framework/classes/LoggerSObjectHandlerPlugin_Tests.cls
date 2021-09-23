@@ -4,10 +4,10 @@
 //------------------------------------------------------------------------------------------------//
 
 @IsTest
-private class LoggerPlugin_Tests {
+private class LoggerSObjectHandlerPlugin_Tests {
     private static String PLUGIN_LOG_STATUS = 'On Hold';
 
-    public class ExamplePlugin extends LoggerPlugin {
+    public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
         public override void execute(
             TriggerOperation triggerOperationType,
             List<SObject> triggerNew,

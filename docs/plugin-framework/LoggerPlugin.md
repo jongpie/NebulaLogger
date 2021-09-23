@@ -2,7 +2,7 @@
 layout: default
 ---
 
-## LoggerPlugin class
+## LoggerSObjectHandlerPlugin class
 
 Abstract class used to create custom Apex plugins to execute for all trigger operations on `Log__c` or `LogEntry__c`
 
@@ -10,9 +10,9 @@ Abstract class used to create custom Apex plugins to execute for all trigger ope
 
 ### Constructors
 
-#### `LoggerPlugin()`
+#### `LoggerSObjectHandlerPlugin()`
 
-## All instances of `LoggerPlugin` are dynamically created, which requires aparameterless constructor
+## All instances of `LoggerSObjectHandlerPlugin` are dynamically created, which requires aparameterless constructor
 
 ### Methods
 

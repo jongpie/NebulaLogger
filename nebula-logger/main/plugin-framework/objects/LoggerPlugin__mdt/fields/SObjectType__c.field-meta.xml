@@ -7,7 +7,7 @@
     <label>Logger SObject Type</label>
     <referenceTo>EntityDefinition</referenceTo>
     <relationshipLabel>Logger Plugins</relationshipLabel>
-    <relationshipName>LoggerPlugins</relationshipName>
+    <relationshipName>LoggerSObjectHandlerPlugins</relationshipName>
     <required>true</required>
     <type>MetadataRelationship</type>
     <unique>false</unique>

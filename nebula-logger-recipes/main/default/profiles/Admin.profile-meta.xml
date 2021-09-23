@@ -167,11 +167,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerPlugin</apexClass>
+        <apexClass>LoggerSObjectHandlerPlugin</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerPlugin_Tests</apexClass>
+        <apexClass>LoggerSObjectHandlerPlugin_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

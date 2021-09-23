@@ -10,11 +10,11 @@
 // TODO: If possible, convert to `global` for the managed package - there are some additional platform limitations
 //       and restrictions with making future changes to abstract classes & interfaces within managed packages
 //       which could lead to a lot of problems, so for now/indefinitely, plugins will only work in the unlocked package
-public abstract class LoggerPlugin {
+public abstract class LoggerSObjectHandlerPlugin {
     /**
-     * @description All instances of `LoggerPlugin` are dynamically created, which requires aparameterless constructor
+     * @description All instances of `LoggerSObjectHandlerPlugin` are dynamically created, which requires aparameterless constructor
      */
-    public LoggerPlugin() {
+    public LoggerSObjectHandlerPlugin() {
     }
 
     /**

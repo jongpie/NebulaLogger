@@ -159,7 +159,7 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     private void executeApexPlugin(String apexClassName) {
-        LoggerPlugin apexPlugin = (LoggerPlugin) Type.forName(apexClassName).newInstance();
+        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
         apexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
     }
 

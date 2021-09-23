@@ -3,7 +3,7 @@
     <fullName>PluginApiName__c</fullName>
     <description>The API name of the metadata to run, based on the Plugin Type
 
-Apex: The name of an Apex class that implements the interface LoggerPlugin
+Apex: The name of an Apex class that implements the interface LoggerSObjectHandlerPlugin
 
 Flow: The API name of a Flow that supports these inputs:
  - triggerOperationType: text variable
@@ -13,7 +13,7 @@ Flow: The API name of a Flow that supports these inputs:
     <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText>The API name of the metadata to run, based on the Plugin Type
 
-Apex: The name of an Apex class that implements the interface LoggerPlugin
+Apex: The name of an Apex class that implements the interface LoggerSObjectHandlerPlugin
 
 Flow: The API name of a Flow that supports these inputs:
  - triggerOperationType: text variable

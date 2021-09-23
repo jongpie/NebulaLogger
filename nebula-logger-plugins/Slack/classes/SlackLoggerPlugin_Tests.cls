@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 // TODO: need to improve plugin framework to make it easier for plugins to test by making it easier
-//       to mock CMDT records & instances of LoggerPlugin
+//       to mock CMDT records & instances of LoggerSObjectHandlerPlugin
 @IsTest
 private class SlackLoggerPlugin_Tests {
     public class SuccessCalloutMock implements HttpCalloutMock {
