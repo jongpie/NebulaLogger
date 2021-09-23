@@ -11,7 +11,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     @TestVisible
     private static String endpoint = LoggerParameter.getString('SlackEndpoint', null);
     @TestVisible
-    private static LoggingLevel notificationLoggingLevel = Logger.getLoggingLevel( LoggerParameter.getString('SlackNotificationLoggingLevel', null) );
+    private static LoggingLevel notificationLoggingLevel = Logger.getLoggingLevel(LoggerParameter.getString('SlackNotificationLoggingLevel', null));
 
     private List<Log__c> logs;
 

@@ -476,10 +476,7 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
-        LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(
-            DeveloperName = 'CallStatusApi',
-            Value__c = 'true'
-        );
+        LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerParameter.setMockParameter(mockCallStatusApiParameter);
         System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
 
@@ -522,10 +519,7 @@ private class LogEntryEventHandler_Tests {
 
         insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
 
-        LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(
-            DeveloperName = 'CallStatusApi',
-            Value__c = 'true'
-        );
+        LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerParameter.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
@@ -567,10 +561,7 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
-        LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(
-            DeveloperName = 'CallStatusApi',
-            Value__c = 'false'
-        );
+        LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
         LoggerParameter.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
@@ -602,10 +593,7 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
         Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
-        LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(
-            DeveloperName = 'CallStatusApi',
-            Value__c = 'true'
-        );
+        LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerParameter.setMockParameter(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';

@@ -910,10 +910,9 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(
-            DeveloperName = 'SystemLogMessageFormat',
-            Value__c = '{OriginLocation__c}\n{Message__c}: {LoggingLevel__c}'
-        ));
+        LoggerParameter.setMockParameter(
+            new LoggerParameter__mdt(DeveloperName = 'SystemLogMessageFormat', Value__c = '{OriginLocation__c}\n{Message__c}: {LoggingLevel__c}')
+        );
 
         DebugStringExample example = new DebugStringExample();
         LogEntryEventBuilder builder = example.myMethod();
