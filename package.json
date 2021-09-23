@@ -28,17 +28,6 @@
         "node": ">= 12.18.0",
         "npm": ">= 6.14.0"
     },
-    "lint-staged": {
-        "*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": "prettier --write",
-        "**/lwc/**": [
-            "eslint --fix",
-            "npm run test:lwc"
-        ],
-        "*.{cls,trigger}": [
-            "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --engine pmd --severity-threshold 3 --target",
-            "npm run docs:generate && git add ./docs/ && git commit --amend --no-edit"
-        ]
-    },
     "scripts": {
         "devhub:details": "pwsh ./scripts/get-devhub-org-details.ps1",
         "devhub:limits": "pwsh ./scripts/get-devhub-org-limits.ps1",
