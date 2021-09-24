@@ -25,8 +25,7 @@ public without sharing abstract class LoggerSObjectHandler {
     private List<LoggerPlugin__mdt> plugins;
 
     static {
-        // When using CMDT's getAll(), it does not return relationship fields for EntityDefinition fields or child CMDT objects
-        // so instead query the LoggerSObjectHandler__mdt CMDT object
+        // Query the LoggerPlugin__mdt CMDT object so the records are sorted correctly
         List<LoggerPlugin__mdt> plugins = [
             SELECT SObjectType__r.QualifiedApiName, PluginType__c, PluginApiName__c
             FROM LoggerPlugin__mdt

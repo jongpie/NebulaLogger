@@ -30,11 +30,6 @@ private class LogEntryHandler_Tests {
         return namespacePrefix;
     }
 
-    private static LoggerSObjectHandler__mdt getMockConfiguration() {
-        Schema.SObjectType sobjectType = Schema.LogEntry__c.SObjectType;
-        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
-    }
-
     @TestSetup
     static void setupData() {
         Log__c log = new Log__c(TransactionId__c = '1234');

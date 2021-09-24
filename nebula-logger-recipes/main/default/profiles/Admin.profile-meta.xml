@@ -1757,11 +1757,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectHandler__mdt.IsEnabled__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LoggerTag__c.TotalLogEntries__c</field>
         <readable>true</readable>
     </fieldPermissions>
