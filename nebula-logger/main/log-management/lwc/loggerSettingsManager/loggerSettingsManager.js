@@ -1,8 +1,8 @@
-import { api, LightningElement } from 'lwc';
+import { LightningElement } from 'lwc';
 import getLoggingLevelOptions from '@salesforce/apex/LoggerSettingsController.getLoggingLevelOptions';
 import getShareAccessLevelOptions from '@salesforce/apex/LoggerSettingsController.getShareAccessLevelOptions';
 import getSettings from '@salesforce/apex/LoggerSettingsController.getSettings';
-import saveSettings from '@salesforce/apex/LoggerSettingsController.saveSettings';
+// import saveSettings from '@salesforce/apex/LoggerSettingsController.saveSettings';
 
 const columns = [
     // { label: 'Id', fieldName: 'Id', type: 'text' },
@@ -28,19 +28,19 @@ export default class LoggerSettingsManager extends LightningElement {
             .then(result => {
                 console.log('getLoggingLevelOptions() result==' + JSON.stringify(result));
                 this._loggingLevelOptions = result;
-            })
-            .catch(error => {
-                // TODO error handling
             });
+            // .catch(error => {
+            //     // TODO error handling
+            // });
 
         getShareAccessLevelOptions()
             .then(result => {
                 console.log('getShareAccessLevelOptions() result==' + JSON.stringify(result));
                 this._shareAccessLevelOptions = result;
-            })
-            .catch(error => {
-                // TODO error handling
             });
+            // .catch(error => {
+            //     // TODO error handling
+            // });
 
         getSettings()
             .then(result => {
@@ -52,9 +52,9 @@ export default class LoggerSettingsManager extends LightningElement {
                     this.records[i] = record;
                 }
                 console.log('this.records==' + JSON.stringify(this.records));
-            })
-            .catch(error => {
-                // TODO error handling
             });
+            // .catch(error => {
+            //     // TODO error handling
+            // });
     }
 }
