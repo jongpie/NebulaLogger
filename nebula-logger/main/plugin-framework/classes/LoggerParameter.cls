@@ -8,6 +8,7 @@
  * @description Provides a centralized way to load CMDT parameters for SObject handlers & plugins,
  *              and casts the parameters to common data types
  */
+@SuppressWarnings('PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessivePublicCount')
 public class LoggerParameter {
     private SObjectType configurationSObjectType;
     private Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
@@ -15,12 +16,12 @@ public class LoggerParameter {
     /**
      * @description An instance of `LoggerParameter` that loads SObject Handler parameters from the object `LoggerSObjectHandlerParameter__mdt`
      */
-    public static LoggerParameter Handler {
+    public static LoggerParameter handler {
         get {
-            if (Handler == null) {
-                Handler = new LoggerParameter(Schema.LoggerSObjectHandlerParameter__mdt.SObjectType);
+            if (handler == null) {
+                handler = new LoggerParameter(Schema.LoggerSObjectHandlerParameter__mdt.SObjectType);
             }
-            return Handler;
+            return handler;
         }
         set;
     }
@@ -28,12 +29,12 @@ public class LoggerParameter {
     /**
      * @description An instance of `LoggerParameter` that loads SObject Handler Plugin parameters from the object `LoggerSObjectHandlerPluginParameter__mdt`
      */
-    public static LoggerParameter Plugin {
+    public static LoggerParameter plugin {
         get {
-            if (Plugin == null) {
-                Plugin = new LoggerParameter(Schema.LoggerSObjectHandlerPluginParameter__mdt.SObjectType);
+            if (plugin == null) {
+                plugin = new LoggerParameter(Schema.LoggerSObjectHandlerPluginParameter__mdt.SObjectType);
             }
-            return Plugin;
+            return plugin;
         }
         set;
     }
@@ -380,7 +381,7 @@ public class LoggerParameter {
 
     /**
      * @description Returns the configured value of the field `Value__c` as a `Long`
-     * @param  parameterDeveloperName The developer name of the instance of `LoggerSObjectHandlerPluginParameter__mdt`
+     * @param parameterDeveloperName The developer name of the instance of `LoggerSObjectHandlerPluginParameter__mdt`
      * @return                        The `Long` value configured in the matching instance of either `LoggerSObjectHandlerParameter__mdt` (for LoggerParameter.Handler)
      *                                or `LoggerSObjectHandlerPluginParameter__mdt` (for LoggerParameter.Plugin).
      *                                When no matching parameter is found, or the parameter is disabled, null is returned
@@ -486,6 +487,12 @@ public class LoggerParameter {
         return this.getString(parameterDeveloperName, null);
     }
 
+    /**
+     * @description This method returns the actual parameter if it exists, or if it's empty returns the default value.
+     * @param parameterDeveloperName The parameter to return if it exists.
+     * @param defaultValue The default value to return when the parameter doesn't exist.
+     * @return A string that's retrieved using the parameter if it's not empty, otherwise the string is defaulted to defaultValue.
+     */
     public String getString(String parameterDeveloperName, String defaultValue) {
         // Since the Value__c field is already a String, this method skips using the method castParameterValue
         String parameterValue = this.loadParameterValue(parameterDeveloperName);
@@ -503,6 +510,12 @@ public class LoggerParameter {
         return this.getStringList(parameterDeveloperName, null);
     }
 
+    /**
+     * @description This method returns the value of the parameter if it exists (cast as a list of strings), or if it's empty returns the default list.
+     * @param parameterDeveloperName The parameter of the list to return if it exists.
+     * @param defaultValue The default list to return when the parameter / value doesn't exist.
+     * @return A list that's retrieved using the parameter if it's not null, otherwise the default list is returned.
+     */
     public List<String> getStringList(String parameterDeveloperName, List<String> defaultValue) {
         List<String> parameterValue = (List<String>) this.castParameterValue(parameterDeveloperName, List<String>.class);
         return parameterValue != null ? parameterValue : defaultValue;

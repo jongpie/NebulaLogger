@@ -9,6 +9,11 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
+@SuppressWarnings('PMD.AvoidDebugStatements')
+@SuppressWarnings('PMD.AvoidGlobalModifier')
+@SuppressWarnings('PMD.CyclomaticComplexity')
+@SuppressWarnings('PMD.CognitiveComplexity')
+@SuppressWarnings('PMD.ExcessiveClassLength')
 global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -40,7 +45,7 @@ global with sharing class Logger {
         }
         set;
     }
-
+    
     static {
         System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
     }
@@ -167,6 +172,7 @@ global with sharing class Logger {
 
     /**
      * @description Indicates if the specified logging level is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @param logEntryLoggingLevel the logging level to check.
      * @return Boolean
      */
     global static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
@@ -197,8 +203,8 @@ global with sharing class Logger {
 
     /**
      * @description Returns the specified user's instance of `LoggerSettings__c`
-     * @param  user The user record - at a minimum, this record should have the user Id and Profile fields populated
-     * @return      LoggerSettings__c - The specified user's instance of the custom settings
+     * @param loggingUser The user record - at a minimum, this record should have the user Id and Profile fields populated
+     * @return LoggerSettings__c - The specified user's instance of the custom settings
      */
     // TODO make this method `global` in a future release
     public static LoggerSettings__c getUserSettings(User loggingUser) {
@@ -609,7 +615,7 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
-     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  message    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
      * @param  apexException The instance of `Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -974,7 +980,7 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
-     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  message    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
      * @param  apexException The instance of `Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2460,12 +2466,13 @@ global with sharing class Logger {
      *   All subsequent calls to saveLog() will use the transaction save method.
      * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
      */
+    @SuppressWarnings('PMD.NcssMethodCount')
     global static void saveLog(SaveMethod saveMethod) {
         if (LOG_ENTRIES_BUFFER.isEmpty()) {
             return;
         }
 
-        if (suspendSaving == true) {
+        if (suspendSaving) {
             if (getUserSettings().EnableSystemMessages__c == true) {
                 finest(getSuspendSavingLogSystemMessage());
             }
@@ -2715,6 +2722,9 @@ global with sharing class Logger {
     }
 
     // Inner class for saving log entries via a queuable job
+    /**
+     * @description Inner class for publishing log entries via the Queueable interface.
+     */
     global class QueueableSaver implements Queueable {
         private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
@@ -2722,6 +2732,11 @@ global with sharing class Logger {
             this.logEntryEvents = logEntryEvents;
         }
 
+        /**
+         * @description Required by the Queueable interface, this method contains the logic executed when
+         * the current instance of the queue runs.
+         * @param queueableContext The context of the current queue.
+         */
         global void execute(System.QueueableContext queueableContext) {
             EventBus.publish(this.logEntryEvents);
         }
@@ -2729,10 +2744,14 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
-        private final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
-        private final String COMPOSITE_ENDPOINT = '/composite/sobjects';
+        private static final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
+        private static final String COMPOSITE_ENDPOINT = '/composite/sobjects';
 
         @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
+        /**
+         * @description Inserts records via the REST api.
+         * @param records The records to save.
+         */
         public void insertRecords(List<SObject> records) {
             HttpRequest request = new HttpRequest();
             request.setEndpoint(BASE_URL + COMPOSITE_ENDPOINT);
@@ -2759,7 +2778,16 @@ global with sharing class Logger {
 
     // Inner class that matches the format expected by the REST API for saving SObjects
     private class RestSaveRequest {
+
+        /**
+         * @description Boolean used when saving records.  If true, all records must save correctly or an exception
+         * is thrown.  If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
+         */
         public Boolean allOrNone { get; set; }
+
+        /**
+         * @description List of records to save.
+         */
         public List<SObject> records { get; set; }
 
         private RestSaveRequest(List<SObject> records, Boolean allOrNone) {
@@ -2771,21 +2799,29 @@ global with sharing class Logger {
     /******************************************************************************************
      * This code is based on the Apex UUID project, released under the MIT License.            *
      * See LICENSE file or go to https://github.com/jongpie/ApexUuid for full license details. *
+     * @description private, inner class for UUID. See comment for more information.           *
      ******************************************************************************************/
     @TestVisible
     private without sharing class Uuid {
-        private final String HEX_CHARACTERS = '0123456789abcdef';
-        private final String HEX_PREFIX = '0x';
-        private final List<String> HEX_CHARACTER_LIST = HEX_CHARACTERS.split('');
-        private final Integer UUID_V4_LENGTH = 36;
-        private final String UUID_V4_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
+        private static final String HEX_CHARACTERS = '0123456789abcdef';
+        private static final String HEX_PREFIX = '0x';
+        private static final List<String> HEX_CHARACTER_LIST = HEX_CHARACTERS.split('');
+        private static final Integer UUID_V4_LENGTH = 36;
+        private static final String UUID_V4_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
 
         private final String value;
 
+        /**
+         * @description Default constructor
+         */
         public Uuid() {
             this.value = this.generateValue();
         }
 
+        /**
+         * @description Getter returning the uuid value
+         * @return A string containing the UUID value.
+         */
         public String getValue() {
             return this.value;
         }

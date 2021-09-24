@@ -11,9 +11,8 @@ public with sharing class LogMassDeleteExtension {
     private ApexPages.StandardSetController controller;
 
     /**
-     * @description LogMassDeleteExtension description
-     * @param  controller controller description
-     * @return            return description
+     * @description Constructor for Visual Force list page / StandardSetController.
+     * @param  controller The standard set controller (passed in automatically via VF page)
      */
     public LogMassDeleteExtension(ApexPages.StandardSetController controller) {
         if (Schema.Log__c.SObjectType.getDescribe().isDeletable() == false) {

@@ -8,7 +8,7 @@
  * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */
-@SuppressWarnings('PMD.NcssTypeCount, PMD.ApexCRUDViolation')
+@SuppressWarnings('PMD.NcssTypeCount, PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.PropertyNamingConventions, PMD.CognitiveComplexity, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity')
 global with sharing class LogEntryEventBuilder {
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
@@ -93,8 +93,8 @@ global with sharing class LogEntryEventBuilder {
      * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
      * @param  entryLoggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
      * @param  shouldSave        Determines if the builder's instance of `LogEntryEvent__e` should be saved
-     * @return                   The new instance of `LogEntryEventBuilder`
      */
+    @SuppressWarnings('PMD.NcssConstructorCount')
     public LogEntryEventBuilder(LoggingLevel entryLoggingLevel, Boolean shouldSave) {
         this.entryLoggingLevel = entryLoggingLevel;
         this.shouldSave = shouldSave;
@@ -367,6 +367,8 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Deprecated - use `setRecord(Id recordId)` instead
+     * @param recordId The id of the record to set.
+     * @return An instance of LogEntryEventBuilder with a record associated wit recordId.
      */
     global LogEntryEventBuilder setRecordId(Id recordId) {
         return this.setRecord(recordId);
@@ -374,6 +376,8 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Deprecated - use `setRecord(SObject record)` instead
+     * @param record the record to set.
+     * @return An instance of LogEntryEventBuilder with the given record.
      */
     global LogEntryEventBuilder setRecordId(SObject record) {
         return this.setRecord(record);
@@ -445,8 +449,8 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Appends the tag to the existing list of tags
-     * @param  tags The string to use as a tag for the current entry
-     * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param tag The string to use as a tag for the current entry
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTag(String tag) {
         if (this.shouldSave == false || String.isBlank(tag)) {
@@ -460,8 +464,8 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Appends the tag to the existing list of tags
-     * @param  tags The string to use as a tag for the current entry
-     * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param tags The string to use as a tag for the current entry
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTags(List<String> tags) {
         if (tags == null || tags.isEmpty()) {
@@ -477,6 +481,8 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Deprecated - use `addTags(List<String> tags)` instead.
      *              This method will be removed in a future release
+     * @param tags A list of tags
+     * @return An instance of LogEntryEventBuilder with the given topics / tags.
      */
     public LogEntryEventBuilder setTopics(List<String> tags) {
         return this.addTags(tags);
@@ -484,9 +490,10 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Parses the provided stack trace and sets the log entry's origin & stack trace fields
-     * @param  stackTraceString The Apex stack trace string to parse
-     * @return                  The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param stackTraceString The Apex stack trace string to parse
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    @SuppressWarnings('PMD.NcssMethodCount, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (this.shouldSave == false) {
             return this;
@@ -536,7 +543,7 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Determines if this instance of `LogEntryEventBuilder` should be saved the next time that `Logger.saveLog()` is called
-     * @return   Boolean
+     * @return A boolean set to true if the log entries should be saved.
      */
     public Boolean shouldSave() {
         return this.shouldSave;
@@ -544,7 +551,7 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
-     * @return   The `LogEntryEvent__e` record
+     * @return The `LogEntryEvent__e` record
      */
     public LogEntryEvent__e getLogEntryEvent() {
         if (this.shouldSave == false) {
@@ -581,6 +588,7 @@ global with sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements') 
     private void logToApexDebug(String message) {
         String template = Logger.getUserSettings()?.SystemLogMessageFormat__c?.unescapeJava();
         if (String.isNotBlank(template)) {
