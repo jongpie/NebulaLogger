@@ -1,0 +1,55 @@
+.expanded {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 999;
+}
+
+.expanded .event-stream {
+    height: 100vh;
+}
+
+.event-stream {
+    background-color: #22272e;
+    color: white;
+    font-family: 'Lucida Console', 'Courier New', monospace;
+    text-indent: -32px;
+    padding-left: 32px;
+    height: calc(100vh - 300px);
+    margin-right: 8px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.event-stream-entry {
+    font-family: 'Lucida Console', 'Courier New', monospace;
+    margin: 4px 0;
+}
+
+.timestamp {
+    color: darkgrey;
+    margin-right: 8px;
+}
+
+.logged-by {
+    color: #45c65a;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.origin {
+    color: cornflowerblue;
+    margin-right: 8px;
+}
+
+.logging-level {
+    background-color: dimgray;
+    color: white;
+    margin-right: 8px;
+    padding: 4px;
+}

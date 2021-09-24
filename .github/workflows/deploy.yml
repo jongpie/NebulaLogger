@@ -45,27 +45,31 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
               with:
-                  node-version: '14'
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
 
-            - name: 'Install npm'
-              run: npm install
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
 
-            - name: 'Lint Lightning Components'
-              run: npm run lint:lwc
-
-            - name: 'Prettier code formatting verification'
-              run: npm run prettier:verify
-
-            - name: Install Salesforce CLI
+            - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
-            - name: Install & run SFDX Scanner
-              run: |
-                  sfdx plugins:install @salesforce/sfdx-scanner
-                  sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3
+            - name: 'LWC Lint verification'
+              run: npm run lint:verify
+
+            - name: 'Apex SFDX Scanner verification'
+              run: npm run prepare && npm run scan
+
+            - name: 'Prettier formatting verification'
+              run: npm run prettier:verify
 
     lwc-tests:
         name: 'LWC Tests'
@@ -76,16 +80,19 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
               with:
-                  node-version: '14'
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
 
-            - name: 'Install npm'
-              run: npm install
-
-            - name: Install Salesforce CLI
-              run: npm install sfdx-cli --global
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
 
             - name: 'Run LWC Tests'
               run: npm run test:lwc
@@ -106,15 +113,21 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
               with:
-                  node-version: '14'
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
 
-            - name: 'Install npm'
-              run: npm install
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
 
-            - name: Install Salesforce CLI
+            - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
             - name: 'Populate DevHub Auth Files'
@@ -145,8 +158,11 @@ jobs:
               with:
                   args: '120'
 
-            - name: 'Push Metadata'
-              run: sfdx force:source:push --forceoverwrite
+            - name: 'Push Source to Scratch Org'
+              run: npm run source:push
+
+            - name: 'Assign Logger Admin Permission Set'
+              run: npm run permset:assign:admin
 
             - name: 'Run Apex Tests'
               run: npm run test:apex
@@ -176,15 +192,21 @@ jobs:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
 
-            - name: 'Setup node'
-              uses: actions/setup-node@v2
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
               with:
-                  node-version: '14'
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
 
-            - name: 'Install npm'
-              run: npm install
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
 
-            - name: Install Salesforce CLI
+            - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
             - name: 'Populate Org Auth Files'
@@ -207,29 +229,5 @@ jobs:
             - name: 'Reinstall Latest Released Package Version'
               run: npx pwsh ./scripts/install-latest-released-unlocked-package-version.ps1 -targetusername nebula-logger-package-demo
 
-    # TODO finish auto-creation & promotion of unlocked package + committing changes to docs
-    # create-package-version:
-    #     name: 'Create Package Version'
-    #     needs: [code-quality-tests, lwc-tests, scratch-org-tests]
-    #     runs-on: ubuntu-latest
-    #     environment: Test
-    #     steps:
-    #         # Checkout the code
-    #         - name: 'Checkout source code'
-    #           uses: actions/checkout@v2
-
-    #         - name: 'Setup node'
-    #           uses: actions/setup-node@v2
-    #           with:
-    #               node-version: '14'
-
-    #         - name: 'Install npm'
-    #           run: npm install
-
-    #         - name: 'Generate Docs'
-    #           run: npm run docs:generate
-    # TODO need to commit & push any changes to ./docs/*
-
-    # TODO uncomment
-    # - name: 'Create unlocked package version'
-    #   run: npm run package:version:create:unlocked
+            - name: 'Delete Unvalidated Package Version'
+              run: npx pwsh ./scripts/delete-unvalidated-package-version.ps1

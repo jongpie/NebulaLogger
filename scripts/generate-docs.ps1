@@ -1,4 +1,8 @@
 # This script is used to generate the markdown files used by Github pages
+rm -rf ./docs/logger-engine/
+rm -rf ./docs/log-management/
+rm -rf ./docs/plugin-framework/
+
 npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main/ --targetDir docs
 
 # Make a few adjustments to the generated markdown files so that they work correctly in Github Pages
@@ -18,4 +22,7 @@ foreach($file in Get-ChildItem $docsSubdirectories) {
     (Get-Content -path $file -Raw) -replace "/Plugin-Framework/","" | Set-Content -Path $file -NoNewline
 }
 
-prettier ./docs --write
+mv ./docs/Logger-Engine/ ./docs/logger-engine/
+mv ./docs/Log-Management/ ./docs/log-management/
+mv ./docs/Plugin-Framework/ ./docs/plugin-framework/
+prettier ./docs/ --write

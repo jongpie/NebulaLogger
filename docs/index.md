@@ -46,7 +46,7 @@ Schedulable class used to schedule the batch job `LogBatchPurger`
 
 ### [LogBatchPurger](log-management/LogBatchPurger)
 
-Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :System.today()`
+Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c &lt;= :System.today()`
 
 ### [LogEntryEventHandler](log-management/LogEntryEventHandler)
 
@@ -58,7 +58,7 @@ Dynamically returns `LogEntry__c` field sets in App Builder when configuring the
 
 ### [LogEntryHandler](log-management/LogEntryHandler)
 
-Manages setting fields on `LogEntry__c` before insert & before update
+Manages setting fields on `LogEntry__c` before insert &amp; before update
 
 ### [LogEntryTagHandler](log-management/LogEntryTagHandler)
 
@@ -66,7 +66,7 @@ Handles trigger events for the `LogEntryTag__c` object
 
 ### [LogHandler](log-management/LogHandler)
 
-Manages setting fields on `Log__c` before insert & before update
+Manages setting fields on `Log__c` before insert &amp; before update
 
 ### [LogMassDeleteExtension](log-management/LogMassDeleteExtension)
 
@@ -88,7 +88,7 @@ Controller class for the lightning web component `related-log-entries`
 
 ### [LoggerParameter](plugin-framework/LoggerParameter)
 
-Provides a centralized way to load T parameters for SObject handlers & plugins, and casts the parameters to common data types
+Provides a centralized way to load T parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
 
 ### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
 

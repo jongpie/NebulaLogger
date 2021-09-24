@@ -18,7 +18,7 @@ Abstract class used to create custom Apex plugins to execute for all trigger ope
 
 #### `execute(TriggerOperation triggerOperationType,List<SObject> triggerNew,Map<Id, SObject> triggerNewMap,List<SObject> triggerOld,Map<Id, SObject> triggerOldMap)` → `void`
 
-This method is the entry point for plugins to execute any custom logic. It is automatically called by the logging system for any enabled plugins. Several trigger-based parameters are provided - these parameters should be used by plugins, instead of calling the platform's static variables directly (e.g., use the provided `triggerNew` variable instead of using `Trigger.new` directly, and so on).
+This method is the entry point for plugins to execute any custom logic. It is automatically called by the logging system for any enabled plugins. Several trigger-based parameters are provided - these parameters should be used by plugins, instead of calling the platform&apos;s static variables directly (e.g., use the provided `triggerNew` variable instead of using `Trigger.new` directly, and so on).
 
 ##### Parameters
 
