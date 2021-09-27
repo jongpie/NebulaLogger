@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Plugin Framework
+ * @group Configuration
  * @description Provides a centralized way to load parameters for SObject handlers & plugins,
  *              and casts the parameters to common data types
  */

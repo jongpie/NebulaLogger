@@ -84,11 +84,13 @@ Handles trigger events for the `LoggerTag__c` object
 
 Controller class for the lightning web component `related-log-entries`
 
-## Plugin Framework
+## Configuration
 
-### [LoggerParameter](plugin-framework/LoggerParameter)
+### [LoggerParameter](configuration/LoggerParameter)
 
 Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
+
+## Plugin Framework
 
 ### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
 
