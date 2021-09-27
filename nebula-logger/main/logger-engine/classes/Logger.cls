@@ -9,11 +9,7 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
-@SuppressWarnings('PMD.AvoidDebugStatements')
-@SuppressWarnings('PMD.AvoidGlobalModifier')
-@SuppressWarnings('PMD.CyclomaticComplexity')
-@SuppressWarnings('PMD.CognitiveComplexity')
-@SuppressWarnings('PMD.ExcessiveClassLength')
+@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
 global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -2744,8 +2740,8 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
-        private static final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
-        private static final String COMPOSITE_ENDPOINT = '/composite/sobjects';
+        private final String baseURL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
+        private final String compositeEndpoint = '/composite/sobjects';
 
         @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
         /**
@@ -2754,7 +2750,7 @@ global with sharing class Logger {
          */
         public void insertRecords(List<SObject> records) {
             HttpRequest request = new HttpRequest();
-            request.setEndpoint(BASE_URL + COMPOSITE_ENDPOINT);
+            request.setEndpoint(baseURL + compositeEndpoint);
             request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
             request.setHeader('Content-Type', 'application/json; charset=utf-8');
             request.setMethod('POST');
@@ -2803,11 +2799,11 @@ global with sharing class Logger {
      ******************************************************************************************/
     @TestVisible
     private without sharing class Uuid {
-        private static final String HEX_CHARACTERS = '0123456789abcdef';
-        private static final String HEX_PREFIX = '0x';
-        private static final List<String> HEX_CHARACTER_LIST = HEX_CHARACTERS.split('');
-        private static final Integer UUID_V4_LENGTH = 36;
-        private static final String UUID_V4_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
+        private final String hexCharacters = '0123456789abcdef';
+        private final String hexPrefix = '0x';
+        private final List<String> hexCharacterList = hexCharacters.split('');
+        private final Integer uuidV4Length = 36;
+        private final String uuidV4Regex = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
 
         private final String value;
 
@@ -2884,15 +2880,15 @@ global with sharing class Logger {
         private Integer convertHexToInteger(String hexValue) {
             hexValue = hexValue.toLowerCase();
 
-            if (hexValue.startsWith(HEX_PREFIX)) {
-                hexValue = hexValue.substringAfter(HEX_PREFIX);
+            if (hexValue.startsWith(hexPrefix)) {
+                hexValue = hexValue.substringAfter(hexPrefix);
             }
 
             Integer integerValue = 0;
             for (String hexCharacter : hexValue.split('')) {
-                Integer hexCharacterIndex = HEX_CHARACTERS.indexOf(hexCharacter);
+                Integer hexCharacterIndex = hexCharacters.indexOf(hexCharacter);
 
-                integerValue = HEX_CHARACTERS.length() * integerValue + hexCharacterIndex;
+                integerValue = hexCharacters.length() * integerValue + hexCharacterIndex;
             }
             return integerValue;
         }
@@ -2900,10 +2896,10 @@ global with sharing class Logger {
         private String convertIntegerToHex(Integer integerValue) {
             String hexValue = '';
             while (integerValue > 0) {
-                Integer hexCharacterIndex = Math.mod(integerValue, HEX_CHARACTERS.length());
+                Integer hexCharacterIndex = Math.mod(integerValue, hexCharacters.length());
 
-                hexValue = HEX_CHARACTER_LIST[hexCharacterIndex] + hexValue;
-                integerValue = integerValue / HEX_CHARACTERS.length();
+                hexValue = hexCharacterList[hexCharacterIndex] + hexValue;
+                integerValue = integerValue / hexCharacters.length();
             }
             return hexValue;
         }
