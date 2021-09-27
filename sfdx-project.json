@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.8.0",
-            "versionName": "New 'Log Entry Event Stream' Component",
-            "versionDescription": "Real-time monitoring & filtering of LogEntryEvent__e platform events",
+            "versionNumber": "4.6.9.0",
+            "versionName": "Custom Metadata Types Optimizations",
+            "versionDescription": "Consolidated & cleaned up several custom metadata type objects",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {

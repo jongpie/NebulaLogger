@@ -12,7 +12,7 @@ Adds a Slack integration for the unlocked package edition of Nebula Logger. Any 
 
 This plugin includes some add-on metadata for Logger to support the Slack integration
 
-1. Apex class `SlackLoggerPlugin` and corresponding tests in `SlackPlugin_Tests`
+1. Apex class `SlackLoggerPlugin` and corresponding tests in `SlackLoggerPlugin_Tests`
 2. Plugin configuration details stored in Logger's CMDT objects `LoggerPlugin__mdt` and `LoggerParameter__mdt`
 3. Custom fields `Log__c.SendSlackNotification__c` and `Log__c.SlackNotificationDate__c`
 4. Field-level security (FLS) via a new permission set `LoggerSlackPluginAdmin` to provide access to the custom Slack fields

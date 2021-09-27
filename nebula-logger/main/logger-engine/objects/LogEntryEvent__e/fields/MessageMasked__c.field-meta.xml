@@ -3,7 +3,9 @@
     <fullName>MessageMasked__c</fullName>
     <defaultValue>false</defaultValue>
     <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
     <label>Message Masked</label>
-    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

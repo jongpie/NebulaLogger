@@ -87,6 +87,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LogEntryEventBuilder_IntegrationTests</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LogEntryEventBuilder_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -167,6 +171,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LoggerSObjectHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LoggerSObjectHandlerPlugin</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -175,7 +183,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerSObjectHandler</apexClass>
+        <apexClass>LoggerSettings</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -212,6 +220,14 @@
     </classAccesses>
     <classAccesses>
         <apexClass>RelatedLogEntriesController_Tests</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>SlackLoggerPlugin</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>SlackLoggerPlugin_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <custom>false</custom>
@@ -617,6 +633,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntryEvent__e.RecordJsonMasked__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntryEvent__e.RecordJson__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -836,7 +857,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>LogEntry__c.ComponentType__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1276,7 +1297,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
+        <editable>false</editable>
         <field>LogEntry__c.RecordJsonMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1577,6 +1598,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.SendSlackNotification__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.SessionId__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1588,6 +1614,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.SessionType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.SlackNotificationDate__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1784,8 +1815,12 @@
         <layout>Log__c-Log Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>LoggerPlugin__mdt-Logger SObject Handler Plugin Layout</layout>
+        <layout>LoggerParameter__mdt-Logger Parameter Layout</layout>
     </layoutAssignments>
+    <layoutAssignments>
+        <layout>LoggerPlugin__mdt-Logger Plugin Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>LoggerTag__c-Logger Tag Layout</layout>
     </layoutAssignments>
     <objectPermissions>
@@ -1865,4 +1900,4 @@
         <tab>Logger_lwc_demo</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
-</Profile>
+   </Profile>
