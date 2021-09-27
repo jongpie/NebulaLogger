@@ -14,7 +14,7 @@ Provides a centralized way to load parameters for SObject handlers &amp; plugins
 
 #### `ENABLE_SYSTEM_MESSAGES` → `Boolean`
 
-#### `SYSTEM_LOG_MESSAGE_FORMAT` → `String`
+#### `SYSTEM_DEBUG_MESSAGE_FORMAT` → `String`
 
 #### `TAGGING_IS_ENABLED` → `Boolean`
 

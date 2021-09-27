@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>System Log Message Format</label>
+    <label>System.debug() Message Format</label>
     <protected>true</protected>
     <values>
         <field>Description__c</field>

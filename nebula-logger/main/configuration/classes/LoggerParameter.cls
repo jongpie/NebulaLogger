@@ -25,23 +25,23 @@ public class LoggerParameter {
     public static final Boolean ENABLE_SYSTEM_MESSAGES {
         get {
             if (ENABLE_SYSTEM_MESSAGES == null) {
-                ENABLE_SYSTEM_MESSAGES = getBoolean('EnableSystemMessages', false);
+                ENABLE_SYSTEM_MESSAGES = getBoolean('EnableLoggerSystemMessages', false);
             }
             return ENABLE_SYSTEM_MESSAGES;
         }
         private set;
     }
 
-    public static final String SYSTEM_LOG_MESSAGE_FORMAT {
+    public static final String SYSTEM_DEBUG_MESSAGE_FORMAT {
         get {
-            if (SYSTEM_LOG_MESSAGE_FORMAT == null) {
+            if (SYSTEM_DEBUG_MESSAGE_FORMAT == null) {
                 // During tests, always load this CMDT record
                 // so that tests use the same format when calling System.debug()
-                String systemLogMessageFormatParameter = 'SystemLogMessageFormat';
-                parametersToLoadDuringTests.add(systemLogMessageFormatParameter);
-                SYSTEM_LOG_MESSAGE_FORMAT = getString(systemLogMessageFormatParameter, '{OriginLocation__c}\n{Message__c}');
+                String systemDebugMessageFormatParameter = 'SystemDebugMessageFormat';
+                parametersToLoadDuringTests.add(systemDebugMessageFormatParameter);
+                SYSTEM_DEBUG_MESSAGE_FORMAT = getString(systemDebugMessageFormatParameter, '{OriginLocation__c}\n{Message__c}');
             }
-            return SYSTEM_LOG_MESSAGE_FORMAT;
+            return SYSTEM_DEBUG_MESSAGE_FORMAT;
         }
         private set;
     }

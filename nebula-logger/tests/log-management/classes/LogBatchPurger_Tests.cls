@@ -64,10 +64,10 @@ private class LogBatchPurger_Tests {
         settings.LoggingLevel__c = LoggingLevel.FINEST.name();
         upsert settings;
 
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableSystemMessages', Value__c = String.valueOf(true)));
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(true)));
 
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
-        System.assertEquals(true, LoggerParameter.getBoolean('EnableSystemMessages', null));
+        System.assertEquals(true, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
         System.assertEquals(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
 
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
@@ -96,10 +96,10 @@ private class LogBatchPurger_Tests {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
         upsert settings;
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableSystemMessages', Value__c = String.valueOf(false)));
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(false)));
 
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
-        System.assertEquals(false, LoggerParameter.getBoolean('EnableSystemMessages', null));
+        System.assertEquals(false, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
         System.assertEquals(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
 
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
