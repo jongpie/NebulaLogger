@@ -9,7 +9,7 @@
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
             "versionNumber": "4.6.9.0",
-            "versionName": "Custom Metadata Types Optimizations",
+            "versionName": "Custom Metadata Types Optimized",
             "versionDescription": "Consolidated & cleaned up several custom metadata type objects",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },

@@ -64,7 +64,7 @@ private class LogBatchPurger_Tests {
         settings.LoggingLevel__c = LoggingLevel.FINEST.name();
         upsert settings;
 
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(true)));
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
 
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
         System.assertEquals(true, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
