@@ -2514,7 +2514,7 @@ global with sharing class Logger {
             when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
                 // To avoid that, use the EventBus instead (even though REST was specified)
-                if (String.isBlank(UserInfo.getUserId())) {
+                if (String.isBlank(UserInfo.getSessionId())) {
                     saveLog(Logger.SaveMethod.EVENT_BUS);
                 } else {
                     new RestApiSaver().insertRecords(logEntryEvents);
@@ -2596,12 +2596,7 @@ global with sharing class Logger {
         );
 
         SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(query));
-
-        if (securityDecision.getRecords().isEmpty()) {
-            return null;
-        } else {
-            return (Log__c) securityDecision.getRecords().get(0);
-        }
+        return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
     }
 
     // Private logging level methods to keep global methods simpler/cleaner

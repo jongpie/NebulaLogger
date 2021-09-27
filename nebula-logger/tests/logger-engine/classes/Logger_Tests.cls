@@ -1436,6 +1436,52 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_add_an_error_entry_for_logMessage_with_recordList_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), users, getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+    }
+
+    @IsTest
+    static void it_should_add_an_error_entry_for_logMessage_with_recordList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), users);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+    }
+
+    @IsTest
     static void it_should_add_an_error_entry_for_logMessage() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -1906,6 +1952,52 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_add_an_error_entry_for_string_message_with_recordList_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), users, getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+    }
+
+    @IsTest
+    static void it_should_add_an_error_entry_for_string_message_with_recordList() {
+        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), users);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+    }
+
+    @IsTest
     static void it_should_add_an_error_entry_for_string_message() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
@@ -2273,6 +2365,52 @@ private class Logger_Tests {
         System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
         System.assertEquals(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+    }
+
+    @IsTest
+    static void it_should_add_a_warn_entry_for_logMessage_with_recordList_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), users, getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+    }
+
+    @IsTest
+    static void it_should_add_a_warn_entry_for_logMessage_with_recordList() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), users);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
@@ -2647,6 +2785,52 @@ private class Logger_Tests {
         System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(getRecord().Id, entryBuilder.getLogEntryEvent().RecordId__c);
         System.assertEquals(JSON.serializePretty(getRecord()), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+    }
+
+    @IsTest
+    static void it_should_add_a_warn_entry_for_string_message_with_recordList_and_exception() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), users, getException());
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(getException().getMessage(), entryBuilder.getLogEntryEvent().ExceptionMessage__c);
+        System.assertEquals(getException().getTypeName(), entryBuilder.getLogEntryEvent().ExceptionType__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+    }
+
+    @IsTest
+    static void it_should_add_a_warn_entry_for_string_message_with_recordList() {
+        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        setUserLoggingLevel(loggingLevel);
+        System.assertEquals(0, Logger.getBufferSize());
+
+        Test.startTest();
+
+        List<User> users = [SELECT Id, Name, Username, IsActive FROM User LIMIT 5];
+        LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), users);
+
+        Test.stopTest();
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), entryBuilder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionMessage__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().ExceptionType__c);
         System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
@@ -5890,6 +6074,8 @@ private class Logger_Tests {
     // Start tests for utility methods
     @IsTest
     static void it_should_return_logging_levels_for_string_names() {
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+
         System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
         System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
         System.assertEquals(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
