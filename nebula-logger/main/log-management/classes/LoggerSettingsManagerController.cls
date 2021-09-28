@@ -1,4 +1,15 @@
-public with sharing class LoggerSettingsController {
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+
+/**
+ * @group Log Management
+ * @description Controller class for the lightning web component `loggerSettingsManager`
+ */
+@SuppressWarnings('PMD.ApexCRUDViolation')
+public with sharing class LoggerSettingsManagerController {
     @AuraEnabled
     public static List<LoggerSettings__c> getSettings() {
         try {
@@ -6,7 +17,7 @@ public with sharing class LoggerSettingsController {
                 return null;
             }
 
-            return [
+            List<LoggerSettings__c> queriedSettingsRecords = [
                 SELECT
                     Id,
                     SetupOwnerId,
@@ -19,7 +30,24 @@ public with sharing class LoggerSettingsController {
                     DefaultSaveMethod__c
                 FROM LoggerSettings__c
                 // ORDER BY SetupOwner.Type, SetupOwner.Name
+                ORDER BY SetupOwner.Name
             ];
+
+            Map<String, List<LoggerSettings__c>> settingsRecordsByOwnerType = new Map<String, List<LoggerSettings__c>>();
+            for (LoggerSettings__c settingsRecord : queriedSettingsRecords) {
+                List<LoggerSettings__c> ownerTypeLoggerSettingsRecords = settingsRecordsByOwnerType.get(settingsRecord.SetupOwner.Type);
+                if (ownerTypeLoggerSettingsRecords == null) {
+                    ownerTypeLoggerSettingsRecords = new List<LoggerSettings__c>();
+                }
+                ownerTypeLoggerSettingsRecords.add(settingsRecord);
+                settingsRecordsByOwnerType.put(settingsRecord.SetupOwner.Type, ownerTypeLoggerSettingsRecords);
+            }
+
+            List<LoggerSettings__c> sortedSettingsRecords = new List<LoggerSettings__c>();
+            sortedSettingsRecords.addAll(settingsRecordsByOwnerType.get('00D'));
+            sortedSettingsRecords.addAll(settingsRecordsByOwnerType.get('00e'));
+            sortedSettingsRecords.addAll(settingsRecordsByOwnerType.get('User'));
+            return sortedSettingsRecords;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }

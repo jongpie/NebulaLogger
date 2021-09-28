@@ -1037,6 +1037,10 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
+        <tab>LoggerSettingsManager</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>LoggerTag__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>

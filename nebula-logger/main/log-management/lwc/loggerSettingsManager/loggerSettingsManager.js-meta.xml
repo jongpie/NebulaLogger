@@ -3,6 +3,7 @@
     <apiVersion>51.0</apiVersion>
     <isExposed>true</isExposed>
     <targets>
+        <target>lightning__Tab</target>
         <target>lightning__UtilityBar</target>
     </targets>
 </LightningComponentBundle>

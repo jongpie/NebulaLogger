@@ -1,19 +1,31 @@
 <template>
-    <template if:true={records}>
-        <lightning-card title={title} icon-name="standard:bundle_config">
-            <lightning-datatable
-                columns={columns}
-                data={records}
-                default-sort-direction={defaultSortDirection}
-                hide-checkbox-column
-                key-field="Id"
-                onsave={handleSave}
-                onsort={handleSort}
-                show-row-number-column
-                sorted-by={sortedBy}
-                sorted-direction={sortedDirection}
-            >
-            </lightning-datatable>
-        </lightning-card>
-    </template>
+    <div class="wrapper slds-var-p-around_small">
+        <lightning-tabset>
+            <lightning-tab label="User Settings">
+                <template if:true={records}>
+                    <lightning-card title={title} icon-name="standard:bundle_config">
+                        <div slot="actions">
+                            <lightning-button label="New" variant="brand"></lightning-button>
+                        </div>
+                        <lightning-datatable
+                            columns={columns}
+                            data={records}
+                            default-sort-direction={defaultSortDirection}
+                            hide-checkbox-column
+                            key-field="Id"
+                            onsave={handleSave}
+                            onsort={handleSort}
+                            show-row-number-column
+                            sorted-by={sortedBy}
+                            sorted-direction={sortedDirection}
+                        >
+                        </lightning-datatable>
+                    </lightning-card>
+                </template>
+            </lightning-tab>
+            <lightning-tab label="System Parameters">
+                Content for tab 2
+            </lightning-tab>
+        </lightning-tabset>
+    </div>
 </template>

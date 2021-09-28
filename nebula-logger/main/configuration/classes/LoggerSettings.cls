@@ -3,6 +3,10 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/**
+ * @group Configuration
+ * @description Provides a centralized way to load & update the custom hierarchy setting `LoggerSettings__c`
+ */
 public with sharing class LoggerSettings {
     private static LoggerSettings__c userSettings;
 

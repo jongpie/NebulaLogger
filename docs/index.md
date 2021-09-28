@@ -76,6 +76,10 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 
 Abstract class used by trigger handlers for shared logic
 
+### [LoggerSettingsManagerController](log-management/LoggerSettingsManagerController)
+
+Controller class for the lightning web component `loggerSettingsManager`
+
 ### [LoggerTagHandler](log-management/LoggerTagHandler)
 
 Handles trigger events for the `LoggerTag__c` object
@@ -93,3 +97,9 @@ Provides a centralized way to load T parameters for SObject handlers &amp; plugi
 ### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
 
 Abstract class used to create custom Apex plugins to execute for all trigger operations on `Log__c` or `LogEntry__c`
+
+## Configuration
+
+### [LoggerSettings](/configuration/LoggerSettings)
+
+Provides a centralized way to load &amp; update the custom hierarchy setting `LoggerSettings__c`

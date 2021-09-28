@@ -1,12 +1,14 @@
 import { LightningElement } from 'lwc';
-import getLoggingLevelOptions from '@salesforce/apex/LoggerSettingsController.getLoggingLevelOptions';
-import getShareAccessLevelOptions from '@salesforce/apex/LoggerSettingsController.getShareAccessLevelOptions';
-import getSettings from '@salesforce/apex/LoggerSettingsController.getSettings';
-// import saveSettings from '@salesforce/apex/LoggerSettingsController.saveSettings';
+import getLoggingLevelOptions from '@salesforce/apex/LoggerSettingsManagerController.getLoggingLevelOptions';
+import getShareAccessLevelOptions from '@salesforce/apex/LoggerSettingsManagerController.getShareAccessLevelOptions';
+import getSettings from '@salesforce/apex/LoggerSettingsManagerController.getSettings';
+// import saveSettings from '@salesforce/apex/LoggerSettingsManagerController.saveSettings';
 
 const columns = [
     // { label: 'Id', fieldName: 'Id', type: 'text' },
-    // { label: 'SetupOwnerId', fieldName: 'SetupOwnerId', type: 'text' },
+    { label: 'SetupOwnerId', fieldName: 'SetupOwnerId', type: 'text' },
+    // { label: 'SetupOwner.Name', fieldName: 'SetupOwner.Name', type: 'text' },
+    // { label: 'SetupOwner.Type', fieldName: 'SetupOwner.Type', type: 'text' },
     { label: 'Location', fieldName: 'SetupOwnerType', type: 'text' },
     { label: 'Setup Owner', fieldName: 'SetupOwnerName', type: 'text' },
     { label: 'Is Enabled', fieldName: 'IsEnabled__c', type: 'text' },
@@ -23,7 +25,13 @@ export default class LoggerSettingsManager extends LightningElement {
     _loggingLevelOptions;
     _shareAccessLevelOptions;
 
+    get title() {
+        return 'Logger Settings Manager';
+    }
+
     connectedCallback() {
+        document.title = this.title;
+
         getLoggingLevelOptions()
             .then(result => {
                 console.log('getLoggingLevelOptions() result==' + JSON.stringify(result));
@@ -45,12 +53,27 @@ export default class LoggerSettingsManager extends LightningElement {
         getSettings()
             .then(result => {
                 console.log('getSettings() result==' + JSON.stringify(result));
-                this.records = result;
-                for (let i = 0; i < this.records.size; i++) {
-                    let record = this.records[i];
-                    record.SetupOwnerType = 'test';
-                    this.records[i] = record;
+                console.log('getSettings() result.length==' + result.length);
+                for (let i = 0; i < result.length; i++) {
+                    let record = result[i];
+                    record.SetupOwnerName = record.SetupOwner.Name;
+
+                    let setupOwnerType;
+                    switch (record.SetupOwner.Type) {
+                        case '00D':
+                            setupOwnerType = 'Organization';
+                            break;
+                        case '00e':
+                            setupOwnerType = 'Profile';
+                            break;
+                        default:
+                            setupOwnerType = record.SetupOwner.Type;
+                    }
+                    record.SetupOwnerType = setupOwnerType;
+                    console.log(record);
+                    result[i] = record;
                 }
+                this.records = result;
                 console.log('this.records==' + JSON.stringify(this.records));
             });
             // .catch(error => {
