@@ -140,29 +140,29 @@ public without sharing abstract class LoggerSObjectHandler {
         this.executePlugins();
     }
 
-    protected virtual void executeBeforeInsert(List<SObject> triggerNew){
+    protected virtual void executeBeforeInsert(List<SObject> triggerNew) {
     }
 
-    protected virtual void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap){
+    protected virtual void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
     }
 
-    protected virtual void executeBeforeDelete(Map<Id, SObject> triggerNewMap){
+    protected virtual void executeBeforeDelete(Map<Id, SObject> triggerNewMap) {
     }
 
     // executeAfterInsert(List<SObject triggerNew) is used for LogEntryEvent__e, which does not have an ID field
-    protected virtual void executeAfterInsert(List<SObject> triggerNew){
+    protected virtual void executeAfterInsert(List<SObject> triggerNew) {
     }
 
-    protected virtual void executeAfterInsert(Map<Id, SObject> triggerNewMap){
+    protected virtual void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
     }
 
-    protected virtual void executeAfterUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap){
+    protected virtual void executeAfterUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
     }
 
-    protected virtual void executeAfterDelete(Map<Id, SObject> triggerNewMap){
+    protected virtual void executeAfterDelete(Map<Id, SObject> triggerNewMap) {
     }
 
-    protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap){
+    protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
     }
 
     private Boolean isEnabled() {

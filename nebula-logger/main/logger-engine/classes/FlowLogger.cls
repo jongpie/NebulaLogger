@@ -34,7 +34,7 @@ public inherited sharing class FlowLogger {
          * @description General message to log.
          */
         public String message;
-        
+
         /**
          * @description String containing fault message, if applicable
          */
@@ -44,7 +44,7 @@ public inherited sharing class FlowLogger {
          * @description String containing the logging level.
          */
         public String loggingLevelName;
-        
+
         /**
          * @description String of tags / topics.
          */
@@ -115,7 +115,7 @@ public inherited sharing class FlowLogger {
     }
 
     // Static methods
-    
+
     /**
      * @description Adds logging entries
      * @param flowEntries The log entry instances to add.

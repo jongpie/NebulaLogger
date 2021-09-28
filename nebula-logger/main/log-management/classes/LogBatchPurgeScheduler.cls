@@ -28,7 +28,7 @@ global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
     }
 
     /**
-     * @description Required by the Database.Schedulable interface, this method kicks off the LogBatchPurger batch class 
+     * @description Required by the Database.Schedulable interface, this method kicks off the LogBatchPurger batch class
      * on a scheduled basis.
      * @param schedulableContext Required for the Schedulable interface, this method contains contextual information about when this instance is/was scheduled.
      */

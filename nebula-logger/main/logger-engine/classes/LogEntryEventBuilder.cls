@@ -8,7 +8,9 @@
  * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */
-@SuppressWarnings('PMD.NcssTypeCount, PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.PropertyNamingConventions, PMD.CognitiveComplexity, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity')
+@SuppressWarnings(
+    'PMD.NcssTypeCount, PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.PropertyNamingConventions, PMD.CognitiveComplexity, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity'
+)
 global with sharing class LogEntryEventBuilder {
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
@@ -588,7 +590,7 @@ global with sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements') 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void logToApexDebug(String message) {
         String template = Logger.getUserSettings()?.SystemLogMessageFormat__c?.unescapeJava();
         if (String.isNotBlank(template)) {

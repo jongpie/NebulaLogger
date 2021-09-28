@@ -15,7 +15,8 @@ public abstract class LoggerSObjectHandlerPlugin {
      * @description All instances of `LoggerSObjectHandlerPlugin` are dynamically created, which requires aparameterless constructor
      */
     @SuppressWarnings('PMD.EmptyStatementBlock')
-    public LoggerSObjectHandlerPlugin(){}
+    public LoggerSObjectHandlerPlugin() {
+    }
 
     /**
      * @description This method is the entry point for plugins to execute any custom logic.

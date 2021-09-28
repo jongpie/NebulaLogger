@@ -60,7 +60,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * log records.
      * @param batchableContext - The context of the current batch job.
      * @param logRecords - The log records to purge.
-     */ 
+     */
     global void execute(Database.BatchableContext batchableContext, List<Log__c> logRecords) {
         // Legacy support: this batch job originally used this method, but List<SObject> is now used
         // However, the original method can't be removed from the managed package, so this is just

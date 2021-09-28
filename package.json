@@ -84,8 +84,8 @@
         "eslint-config-prettier": "latest",
         "husky": "latest",
         "lint-staged": "latest",
-        "prettier": "latest",
-        "prettier-plugin-apex": "latest",
+        "prettier": "2.4.1",
+        "prettier-plugin-apex": "1.10.0",
         "pwsh": "latest",
         "sfdx-cli": "latest"
     }

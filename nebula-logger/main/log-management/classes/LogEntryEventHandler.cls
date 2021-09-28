@@ -449,7 +449,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     // Private class for handling the response from api.status.salesforce.com
     @TestVisible
     private class StatusApiResponse {
-
         /**
          * @description String containing the release number.
          */

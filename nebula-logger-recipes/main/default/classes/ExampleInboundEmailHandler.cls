@@ -1,7 +1,18 @@
+/**
+ * @description Example inbound email handler.
+ */
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class ExampleInboundEmailHandler implements Messaging.InboundEmailHandler {
     @TestVisible
     private static String logEntryMessage = 'Testing logging from InboundEmailHandler';
 
+    /**
+     * @description Contains example logging logic for handling an incoming email.
+     * @param email The incoming email.
+     * @param env The incoming email envelope.
+     * @return The inbound email result.
+     */
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope env) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
         try {

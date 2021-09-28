@@ -108,7 +108,7 @@ public with sharing class RelatedLogEntriesController {
         return String.join(fieldNames, ',');
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements') 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static String getOrderByClause(String sortByFieldName, String sortDirection) {
         sortByFieldName = String.isNotBlank(sortByFieldName) ? sortByFieldName : DEFAULT_SORT_FIELD_NAME;
         sortDirection = String.isNotBlank(sortDirection) ? sortDirection : DEFAULT_SORT_DIRECTION;
@@ -198,7 +198,7 @@ public with sharing class RelatedLogEntriesController {
     }
 
     // Inner classes
-    
+
     /**
      * @description Inner, wrapper class that contains query result information after querying related log entries.
      */
@@ -206,37 +206,44 @@ public with sharing class RelatedLogEntriesController {
         /**
          * @description Contains the fieldSet associated with this query.
          */
-        @AuraEnabled public FieldSetMetadata fieldSet { get; set; }
+        @AuraEnabled
+        public FieldSetMetadata fieldSet { get; set; }
 
         /**
          * @description Contains the result of the CRUD check, determining if the log entry is "accessible" for the current user.
          */
-        @AuraEnabled public Boolean isAccessible { get; set; }
+        @AuraEnabled
+        public Boolean isAccessible { get; set; }
 
         /**
          * @description Contains the label of the log entry sObject, fetched using a describe call in the constructor.
          */
-        @AuraEnabled public String label { get; set; }
-        
+        @AuraEnabled
+        public String label { get; set; }
+
         /**
          * @description Contains the plural label of the log entry sObject, fetched using a describe call in the constructor.
          */
-        @AuraEnabled public String labelPlural { get; set; }
+        @AuraEnabled
+        public String labelPlural { get; set; }
 
         /**
          * @description contains the log entry results from the query.
          */
-        @AuraEnabled public List<LogEntry__c> records { get; set; }
-        
+        @AuraEnabled
+        public List<LogEntry__c> records { get; set; }
+
         /**
          * @description contains the tab icon of the log entry, fetched using describe a call on the log entry sObject.
          */
-        @AuraEnabled public String tabIcon { get; set; }
+        @AuraEnabled
+        public String tabIcon { get; set; }
 
         /**
          * @description Contains the number of records returned via the log entries query.
          */
-        @AuraEnabled public Integer totalLogEntriesCount { get; set; }
+        @AuraEnabled
+        public Integer totalLogEntriesCount { get; set; }
 
         private LogEntryQueryResult(FieldSetMetadata fieldSetMetadata, List<LogEntry__c> records, Integer totalLogEntriesCount) {
             this.fieldSet = fieldSetMetadata;
@@ -253,21 +260,23 @@ public with sharing class RelatedLogEntriesController {
      * @description Inner, wrapper class, containing metadata around the list of fields used in the related log entry query.
      */
     public class FieldSetMetadata {
-
         /**
          * @description A list of field related metadata
          */
-        @AuraEnabled public List<FieldMetadata> fields { get; set; }
-        
+        @AuraEnabled
+        public List<FieldMetadata> fields { get; set; }
+
         /**
          * @description Contains the label of the desired field set, fetched using a describe call on the field set.
          */
-        @AuraEnabled public String label { get; set; }
-        
+        @AuraEnabled
+        public String label { get; set; }
+
         /**
          * @description A string containing the API name of the field set, including the namespace prefix, if applicable.
          */
-        @AuraEnabled public String name { get; set; }
+        @AuraEnabled
+        public String name { get; set; }
 
         private FieldSetMetadata(SObjectType sobjectType, String fieldSetName) {
             this.fields = new List<FieldMetadata>();
@@ -291,41 +300,47 @@ public with sharing class RelatedLogEntriesController {
      * @description An inner, wrapper class containing metadata information about an individual field.
      */
     public class FieldMetadata {
-
         /**
          * @description A string containing the API name of the field, in particular the field path as it relates to the parent field set.
          */
-        @AuraEnabled public String fieldName { get; set; }
-        
+        @AuraEnabled
+        public String fieldName { get; set; }
+
         /**
          * @description Boolean that returns true if this field is the standard Name field for its parent object.
          */
-        @AuraEnabled public Boolean isNameField { get; set; }
-        
+        @AuraEnabled
+        public Boolean isNameField { get; set; }
+
         /**
          * @description A string containing the label of the field.
          */
-        @AuraEnabled public String label { get; set; }
-        
+        @AuraEnabled
+        public String label { get; set; }
+
         /**
          * @description A string used for lookup fields to indicate the display name of the lookup / relationship.
          */
-        @AuraEnabled public String lookupDisplayFieldName { get; set; }
-        
+        @AuraEnabled
+        public String lookupDisplayFieldName { get; set; }
+
         /**
          * @description Boolean that returns true if this field is sortable.
          */
-        @AuraEnabled public Boolean sortable { get; set; }
-        
+        @AuraEnabled
+        public Boolean sortable { get; set; }
+
         /**
          * @description If the field is a lookup or master detail relationship, this string will return the relationship API name.  For instance: Lookup__r instead of Lookup__c.
          */
-        @AuraEnabled public String relationshipName { get; set; }
-        
+        @AuraEnabled
+        public String relationshipName { get; set; }
+
         /**
          * @description Returns the type of the field, matching the Schema.DisplayType ENUM values, but in all lowercase letters.
          */
-        @AuraEnabled public String type { get; set; }
+        @AuraEnabled
+        public String type { get; set; }
 
         private FieldMetadata(FieldSetMember fieldSetMember) {
             Schema.DescribeFieldResult fieldDescribe = fieldSetMember.getSObjectField().getDescribe();

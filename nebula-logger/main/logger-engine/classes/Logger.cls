@@ -41,7 +41,7 @@ global with sharing class Logger {
         }
         set;
     }
-    
+
     static {
         System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
     }
@@ -2774,7 +2774,6 @@ global with sharing class Logger {
 
     // Inner class that matches the format expected by the REST API for saving SObjects
     private class RestSaveRequest {
-
         /**
          * @description Boolean used when saving records.  If true, all records must save correctly or an exception
          * is thrown.  If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
