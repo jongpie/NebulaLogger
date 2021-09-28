@@ -402,21 +402,28 @@ global with sharing class LogEntryEventBuilder {
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(SObject record) {
-        if (this.shouldSave == false || record == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
-        String recordJson = getJson(record);
-        String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
-        Boolean recordJsonMasked = cleanedRecordJson != recordJson;
-
         this.logEntryEvent.RecordCollectionType__c = 'Single';
-        this.logEntryEvent.RecordId__c = record.Id;
-        this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-        this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
+
+        if (record == null) {
+            this.logEntryEvent.RecordJson__c = getJson(record);
+            this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
+            this.logEntryEvent.RecordSObjectType__c = 'Unknown';
+        } else {
+            String recordJson = getJson(record);
+            String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+            Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
+            this.logEntryEvent.RecordId__c = record.Id;
+            this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+            this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
+            this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
+            this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
+        }
 
         return this;
     }
@@ -427,18 +434,35 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(List<SObject> records) {
-        if (this.shouldSave == false || records == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
-        Schema.SObjectType sobjectType = records.getSObjectType() != null ? records.getSObjectType() : records.get(0).getSObjectType();
-        String sobjectTypeName = sobjectType?.getDescribe().getName();
-
         this.logEntryEvent.RecordCollectionType__c = 'List';
-        this.logEntryEvent.RecordJson__c = getJson(records);
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
-        this.logEntryEvent.RecordSObjectType__c = sobjectTypeName;
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
+
+        // First, try to use the list's SObject Type
+        // If that fails, then try to use the first record's SObject Type
+        // If THAT fails, then log as is a generic SObject
+        Schema.SObjectType sobjectType = records?.getSObjectType();
+        if (sobjectType == null && records != null && records.size() >= 1) {
+            sobjectType = records.get(0)?.getSObjectType();
+        }
+
+        String recordJson = getJson(records);
+        if (sobjectType == null) {
+            this.logEntryEvent.RecordJson__c = recordJson;
+            this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
+            this.logEntryEvent.RecordSObjectType__c = 'Unknown';
+        } else {
+            String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+            Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
+            this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+            this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+            this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+            this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
+        }
 
         return this;
     }
