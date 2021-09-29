@@ -23,7 +23,7 @@ private class LogHandler_Tests {
             if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
                 for (Log__c log : (List<Log__c>) triggerNew) {
                     // The specific field changed doesn't really matter - we just want to ensure that whatever
-                    // logic implement in the instance of LoggerSObjectHandlerPlugin is executed
+                    // logic implemented in the instance of LoggerSObjectHandlerPlugin is executed
                     log.ProfileName__c = 'Some String';
                 }
             }

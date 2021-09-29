@@ -414,12 +414,12 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.RecordCollectionType__c = 'Single';
 
+        String recordJson = getJson(record);
         if (record == null) {
-            this.logEntryEvent.RecordJson__c = getJson(record);
+            this.logEntryEvent.RecordJson__c = recordJson;
             this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
             this.logEntryEvent.RecordSObjectType__c = 'Unknown';
         } else {
-            String recordJson = getJson(record);
             String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
             Boolean recordJsonMasked = cleanedRecordJson != recordJson;
 
@@ -446,9 +446,9 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.RecordCollectionType__c = 'List';
 
-        // First, try to use the list's SObject Type
-        // If that fails, then try to use the first record's SObject Type
-        // If THAT fails, then log as is a generic SObject
+        // First, try to use the list's SObject Type - if the list is null or an instance of List<SObject>, it won't have an SObject Type
+        // If using the list doesn't work, and there are 1+ records in the list, then try to use the first record's SObject Type - if it's null, it won't have an SObject Type
+        // If the first object doesn't work, then just log as is a generic SObject - no need to waste additional CPU time on it
         Schema.SObjectType sobjectType = records?.getSObjectType();
         if (sobjectType == null && records != null && records.size() >= 1) {
             sobjectType = records.get(0)?.getSObjectType();
