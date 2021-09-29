@@ -26,7 +26,11 @@ Enum used to control how LogEntryEvent\_\_e records are inserted
 
 #### `allOrNone` → `Boolean`
 
+Boolean used when saving records. If true, all records must save correctly or an exception is thrown. If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
+
 #### `records` → `List<SObject>`
+
+List of records to save.
 
 ---
 
@@ -34,7 +38,7 @@ Enum used to control how LogEntryEvent\_\_e records are inserted
 
 #### `Uuid()` → `public`
 
-This code is based on the Apex UUID project, released under the MIT License. _ See LICENSE file or go to https://github.com/jongpie/ApexUuid for full license details. _
+Default constructor
 
 #### `debug(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
@@ -1327,7 +1331,7 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
 | Param           | Description                                                               |
 | --------------- | ------------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `message`       | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `records`       | The list of `SObject` records to log                                      |
 | `apexException` | The instance of `Exception` to log                                        |
 
@@ -3274,9 +3278,9 @@ Returns the specified user&apos;s instance of `LoggerSettings__c`
 
 ##### Parameters
 
-| Param  | Description                                                                                      |
-| ------ | ------------------------------------------------------------------------------------------------ |
-| `user` | The user record - at a minimum, this record should have the user Id and Profile fields populated |
+| Param         | Description                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------------ |
+| `loggingUser` | The user record - at a minimum, this record should have the user Id and Profile fields populated |
 
 ##### Return
 
@@ -3289,6 +3293,18 @@ LoggerSettings\_\_c
 LoggerSettings\_\_c - The specified user&apos;s instance of the custom settings
 
 #### `getValue()` → `String`
+
+Getter returning the uuid value
+
+##### Return
+
+**Type**
+
+String
+
+**Description**
+
+A string containing the UUID value.
 
 #### `info(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
@@ -3878,6 +3894,14 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### `insertRecords(List<SObject> records)` → `void`
 
+Inserts records via the REST api.
+
+##### Parameters
+
+| Param     | Description          |
+| --------- | -------------------- |
+| `records` | The records to save. |
+
 #### `isDebugEnabled()` → `Boolean`
 
 Indicates if logging level &apos;DEBUG&apos; is enabled for the current user, based on the custom setting LoggerSettings\_\_c
@@ -4027,6 +4051,12 @@ Boolean
 #### `meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel)` → `Boolean`
 
 Indicates if the specified logging level is enabled for the current user, based on the custom setting LoggerSettings\_\_c
+
+##### Parameters
+
+| Param                  | Description                 |
+| ---------------------- | --------------------------- |
+| `logEntryLoggingLevel` | the logging level to check. |
 
 ##### Return
 
@@ -4871,7 +4901,7 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 
 | Param           | Description                                                               |
 | --------------- | ------------------------------------------------------------------------- |
-| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `message`       | The instance of `LogMessage` to use to set the entry&apos;s message field |
 | `records`       | The list of `SObject` records to log                                      |
 | `apexException` | The instance of `Exception` to log                                        |
 
@@ -4932,10 +4962,19 @@ The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining met
 
 #### Logger.QueueableSaver class
 
+Inner class for publishing log entries via the Queueable interface.
+
 ---
 
 ##### Methods
 
 ###### `execute(System.QueueableContext queueableContext)` → `void`
+
+Required by the Queueable interface, this method contains the logic executed when the current instance of the queue runs.
+
+####### Parameters
+|Param|Description|
+|-----|-----------|
+|`queueableContext` | The context of the current queue. |
 
 ---

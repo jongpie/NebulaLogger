@@ -7,6 +7,7 @@
  * @group Log Management
  * @description Controller class for the lightning web component `related-log-entries`
  */
+@SuppressWarnings('PMD.ExcessivePublicCount')
 public with sharing class RelatedLogEntriesController {
     private static final SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;
     private static final SObjectType LOG_ENTRY_SOBJECT_TYPE = Schema.LogEntry__c.SObjectType;
@@ -14,7 +15,7 @@ public with sharing class RelatedLogEntriesController {
     private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
     /**
-     * Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
+     * @description Used by the component relatedLogEntries to get log entries for a particular record (based on record ID)
      * @param  recordId        Used to filter LogEntry__c records where RecordId__c == recordId
      * @param  fieldSetName    The API/developer name of the field set
      * @param  rowLimit        The max number of rows to query
@@ -24,7 +25,7 @@ public with sharing class RelatedLogEntriesController {
      * @param  search          An optional search term to filter by
      * @return                 The instance of LogEntryQueryResult, containing matching records and metadata
      */
-    @SuppressWarnings('PMD.ApexCRUDViolation')
+    @SuppressWarnings('PMD.ApexCRUDViolation, PMD.ExcessiveParameterList')
     @AuraEnabled(cacheable=true)
     public static LogEntryQueryResult getQueryResult(
         Id recordId,
@@ -58,6 +59,8 @@ public with sharing class RelatedLogEntriesController {
     }
 
     // Private static helper methods
+
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     private static List<LogEntry__c> search(Id recordId, String searchTerm, String fieldsClause, String orderByClause, Integer rowLimit) {
         searchTerm = '\'*' + String.escapeSingleQuotes(searchTerm) + '*\'';
 
@@ -75,6 +78,7 @@ public with sharing class RelatedLogEntriesController {
         return (List<LogEntry__c>) Search.query(logEntrySearch).get(0);
     }
 
+    @SuppressWarnings('PMD.ExcessiveParameterList, PMD.AvoidDebugStatements')
     private static List<LogEntry__c> query(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
         List<Object> queryTextReplacements = new List<Object>{
             fieldsClause,
@@ -104,6 +108,7 @@ public with sharing class RelatedLogEntriesController {
         return String.join(fieldNames, ',');
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static String getOrderByClause(String sortByFieldName, String sortDirection) {
         sortByFieldName = String.isNotBlank(sortByFieldName) ? sortByFieldName : DEFAULT_SORT_FIELD_NAME;
         sortDirection = String.isNotBlank(sortDirection) ? sortDirection : DEFAULT_SORT_DIRECTION;
@@ -164,6 +169,7 @@ public with sharing class RelatedLogEntriesController {
         return relationshipName + '.' + displayFieldApiName;
     }
 
+    @SuppressWarnings('PMD.CognitiveComplexity')
     private static String getTabIcon(Schema.SObjectType sobjectType) {
         String sobjectName = sobjectType.getDescribe().getName();
 
@@ -192,19 +198,50 @@ public with sharing class RelatedLogEntriesController {
     }
 
     // Inner classes
+
+    /**
+     * @description Inner, wrapper class that contains query result information after querying related log entries.
+     */
     public class LogEntryQueryResult {
+        /**
+         * @description Contains the fieldSet associated with this query.
+         */
         @AuraEnabled
         public FieldSetMetadata fieldSet { get; set; }
+
+        /**
+         * @description Contains the result of the CRUD check, determining if the log entry is "accessible" for the current user.
+         */
         @AuraEnabled
         public Boolean isAccessible { get; set; }
+
+        /**
+         * @description Contains the label of the log entry sObject, fetched using a describe call in the constructor.
+         */
         @AuraEnabled
         public String label { get; set; }
+
+        /**
+         * @description Contains the plural label of the log entry sObject, fetched using a describe call in the constructor.
+         */
         @AuraEnabled
         public String labelPlural { get; set; }
+
+        /**
+         * @description contains the log entry results from the query.
+         */
         @AuraEnabled
         public List<LogEntry__c> records { get; set; }
+
+        /**
+         * @description contains the tab icon of the log entry, fetched using describe a call on the log entry sObject.
+         */
         @AuraEnabled
         public String tabIcon { get; set; }
+
+        /**
+         * @description Contains the number of records returned via the log entries query.
+         */
         @AuraEnabled
         public Integer totalLogEntriesCount { get; set; }
 
@@ -219,11 +256,25 @@ public with sharing class RelatedLogEntriesController {
         }
     }
 
+    /**
+     * @description Inner, wrapper class, containing metadata around the list of fields used in the related log entry query.
+     */
     public class FieldSetMetadata {
+        /**
+         * @description A list of field related metadata
+         */
         @AuraEnabled
         public List<FieldMetadata> fields { get; set; }
+
+        /**
+         * @description Contains the label of the desired field set, fetched using a describe call on the field set.
+         */
         @AuraEnabled
         public String label { get; set; }
+
+        /**
+         * @description A string containing the API name of the field set, including the namespace prefix, if applicable.
+         */
         @AuraEnabled
         public String name { get; set; }
 
@@ -245,19 +296,49 @@ public with sharing class RelatedLogEntriesController {
         }
     }
 
+    /**
+     * @description An inner, wrapper class containing metadata information about an individual field.
+     */
     public class FieldMetadata {
+        /**
+         * @description A string containing the API name of the field, in particular the field path as it relates to the parent field set.
+         */
         @AuraEnabled
         public String fieldName { get; set; }
+
+        /**
+         * @description Boolean that returns true if this field is the standard Name field for its parent object.
+         */
         @AuraEnabled
         public Boolean isNameField { get; set; }
+
+        /**
+         * @description A string containing the label of the field.
+         */
         @AuraEnabled
         public String label { get; set; }
+
+        /**
+         * @description A string used for lookup fields to indicate the display name of the lookup / relationship.
+         */
         @AuraEnabled
         public String lookupDisplayFieldName { get; set; }
+
+        /**
+         * @description Boolean that returns true if this field is sortable.
+         */
         @AuraEnabled
         public Boolean sortable { get; set; }
+
+        /**
+         * @description If the field is a lookup or master detail relationship, this string will return the relationship API name.  For instance: Lookup__r instead of Lookup__c.
+         */
         @AuraEnabled
         public String relationshipName { get; set; }
+
+        /**
+         * @description Returns the type of the field, matching the Schema.DisplayType ENUM values, but in all lowercase letters.
+         */
         @AuraEnabled
         public String type { get; set; }
 

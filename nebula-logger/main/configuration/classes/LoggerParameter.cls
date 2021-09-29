@@ -8,6 +8,7 @@
  * @description Provides a centralized way to load parameters for SObject handlers & plugins,
  *              and casts the parameters to common data types
  */
+@SuppressWarnings('PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessivePublicCount')
 public class LoggerParameter {
     private static Set<String> parametersToLoadDuringTests = new Set<String>();
     private static Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
@@ -282,12 +283,24 @@ public class LoggerParameter {
         return parameterValue != null ? parameterValue : defaultValue;
     }
 
+    /**
+     * @description This method returns the actual parameter if it exists, or if it's empty returns the default value.
+     * @param parameterDeveloperName The parameter to return if it exists.
+     * @param defaultValue The default value to return when the parameter doesn't exist.
+     * @return A string that's retrieved using the parameter if it's not empty, otherwise the string is defaulted to defaultValue.
+     */
     public static String getString(String parameterDeveloperName, String defaultValue) {
         // Since the Value__c field is already a String, this method skips using the method castParameterValue
         String parameterValue = loadParameterValue(parameterDeveloperName);
         return parameterValue != null ? parameterValue : defaultValue;
     }
 
+    /**
+     * @description This method returns the value of the parameter if it exists (cast as a list of strings), or if it's empty returns the default list.
+     * @param parameterDeveloperName The parameter of the list to return if it exists.
+     * @param defaultValue The default list to return when the parameter / value doesn't exist.
+     * @return A list that's retrieved using the parameter if it's not null, otherwise the default list is returned.
+     */
     public static List<String> getStringList(String parameterDeveloperName, List<String> defaultValue) {
         List<String> parameterValue = (List<String>) castParameterValue(parameterDeveloperName, List<String>.class);
         return parameterValue != null ? parameterValue : defaultValue;

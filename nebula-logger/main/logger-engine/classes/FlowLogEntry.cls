@@ -12,6 +12,7 @@
  * @see Logger
  * @see LogEntryEventBuilder
  */
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global inherited sharing class FlowLogEntry {
     /**
      * @description The name of the Flow creating the log entry.
@@ -62,12 +63,15 @@ global inherited sharing class FlowLogEntry {
     @InvocableVariable(required=false label='DEPRECATED: Use \'Tags\' Instead')
     public List<String> topics;
 
+    /**
+     * @description Current system timestamp.
+     */
     public DateTime timestamp = System.now();
 
     /**
-     * addFlowEntries description
-     * @param  flowLogEntries The list of FlowLogEntry instances to save
-     * @return                The current transaction's ID (based on `Logger.getTransactionId()`)
+     * @description Invocable method, that can be called via flow.
+     * @param flowLogEntries The list of FlowLogEntry instances to save
+     * @return The current transaction's ID (based on `Logger.getTransactionId()`)
      */
     @InvocableMethod(category='Logging' label='Add Log Entry' description='Creates a log entry for a flow or process builder')
     global static List<String> addFlowEntries(List<FlowLogEntry> flowLogEntries) {

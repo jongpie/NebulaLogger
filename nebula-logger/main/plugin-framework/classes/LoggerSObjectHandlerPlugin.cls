@@ -14,6 +14,7 @@ public abstract class LoggerSObjectHandlerPlugin {
     /**
      * @description All instances of `LoggerSObjectHandlerPlugin` are dynamically created, which requires aparameterless constructor
      */
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     public LoggerSObjectHandlerPlugin() {
     }
 
@@ -29,6 +30,7 @@ public abstract class LoggerSObjectHandlerPlugin {
      * @param  triggerOld           The value `Trigger.old` at the time that the handler class is created
      * @param  triggerOldMap        The value `Trigger.oldMap` at the time that the handler class is created
      */
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     public abstract void execute(
         TriggerOperation triggerOperationType,
         List<SObject> triggerNew,

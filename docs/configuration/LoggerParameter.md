@@ -404,6 +404,44 @@ The `List&lt;SObject&gt;` value configured in the matching instance of `LoggerPa
 
 #### `getString(String parameterDeveloperName, String defaultValue)` → `String`
 
+This method returns the actual parameter if it exists, or if it&apos;s empty returns the default value.
+
+##### Parameters
+
+| Param                    | Description                                                        |
+| ------------------------ | ------------------------------------------------------------------ |
+| `parameterDeveloperName` | The parameter to return if it exists.                              |
+| `defaultValue`           | The default value to return when the parameter doesn&apos;t exist. |
+
+##### Return
+
+**Type**
+
+String
+
+**Description**
+
+A string that&apos;s retrieved using the parameter if it&apos;s not empty, otherwise the string is defaulted to defaultValue.
+
 #### `getStringList(String parameterDeveloperName, List<String> defaultValue)` → `List<String>`
+
+This method returns the value of the parameter if it exists (cast as a list of strings), or if it&apos;s empty returns the default list.
+
+##### Parameters
+
+| Param                    | Description                                                               |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `parameterDeveloperName` | The parameter of the list to return if it exists.                         |
+| `defaultValue`           | The default list to return when the parameter / value doesn&apos;t exist. |
+
+##### Return
+
+**Type**
+
+List&lt;String&gt;
+
+**Description**
+
+A list that&apos;s retrieved using the parameter if it&apos;s not null, otherwise the default list is returned.
 
 ---

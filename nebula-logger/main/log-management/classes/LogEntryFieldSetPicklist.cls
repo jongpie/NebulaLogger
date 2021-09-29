@@ -9,8 +9,8 @@
  */
 public without sharing class LogEntryFieldSetPicklist extends VisualEditor.DynamicPickList {
     /**
-     * Returns a default value of null - admins must select a field set within App Builder
-     * @return   null (no default value)
+     * @description Returns a default value of null - admins must select a field set within App Builder
+     * @return null (no default value)
      */
     public override VisualEditor.DataRow getDefaultValue() {
         return null;

@@ -8,6 +8,7 @@
  * @description Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :System.today()`
  * @see LogBatchPurgeScheduler
  */
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
     @TestVisible
     private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
@@ -16,10 +17,21 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     private String originalTransactionId;
     private Integer totalProcessedRecords;
 
+    /**
+     * @description Default constructor, sets up instance of LogBatchPurger class.
+     */
     global LogBatchPurger() {
         this.totalProcessedRecords = 0;
     }
 
+    /**
+     * @description Required by the Database.Batchable interface.  Collects the records /
+     * objects passed in to the batch instance and returns a Databae.QueryLocator reference representing
+     * the current iteration.
+     * @param batchableContext contains the context of the batch job
+     * @return an instance of the Database.QueryLocator class
+     * @throws NoAccessException when there is no delete access to Logs
+     */
     global Database.QueryLocator start(Database.BatchableContext batchableContext) {
         if (Schema.Log__c.SObjectType.getDescribe().isDeletable() == false) {
             NoAccessException noDeleteAccessException = new NoAccessException();
@@ -40,6 +52,12 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         return this.getQueryLocator(this.currentSObjectType);
     }
 
+    /**
+     * @description Required by the Database.Batchable interface, this method executes the logic for purging
+     * log records.
+     * @param batchableContext - The context of the current batch job.
+     * @param logRecords - The log records to purge.
+     */
     global void execute(Database.BatchableContext batchableContext, List<Log__c> logRecords) {
         // Legacy support: this batch job originally used this method, but List<SObject> is now used
         // However, the original method can't be removed from the managed package, so this is just
@@ -47,6 +65,12 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         this.execute(batchableContext, (List<SObject>) logRecords);
     }
 
+    /**
+     * @description Required by the Database.Batchable interface, this method executes the logic for purging
+     * log records.
+     * @param batchableContext - The context of the current batch job.
+     * @param loggerRecords - The log records to purge.
+     */
     global void execute(Database.BatchableContext batchableContext, List<SObject> loggerRecords) {
         try {
             this.totalProcessedRecords += loggerRecords.size();
@@ -60,6 +84,11 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
     }
 
+    /**
+     * @description Required by the Database.Batchable interface.  This method runs after all batch jobs are complete.
+     * This method writes a status to the Log__c object indicating that the purge has finished.
+     * @param batchableContext - The context of the batch jobs
+     */
     global void finish(Database.BatchableContext batchableContext) {
         Id nextBatchJobId;
         if (this.currentSObjectType != Schema.Log__c.SObjectType) {
@@ -117,7 +146,8 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      *              Records for each SObject type are deleted in separate instances of the LogBatchPurger job,
      *              starting with the lowest-level object (LogEntryTag__c). This helps to avoid running into DML limits that occurred
      *              when this job tried to delete records in multiple SObject types within 1 job
-     * @return      The instance of Database.QueryLocator for the lowest-level Logger object
+     * @param sobjectType Takes the sObjectType enum to instanciate a new log related instance.
+     * @return The instance of Database.QueryLocator for the lowest-level Logger object
      */
     private Database.QueryLocator getQueryLocator(Schema.SObjectType sobjectType) {
         Database.QueryLocator queryLocator;

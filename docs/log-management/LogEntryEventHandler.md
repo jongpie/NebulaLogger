@@ -12,7 +12,11 @@ Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__
 
 #### `releaseNumber` → `String`
 
+String containing the release number.
+
 #### `releaseVersion` → `String`
+
+String containing the release version.
 
 ---
 
@@ -20,7 +24,23 @@ Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__
 
 #### `executeAfterInsert(List<SObject> triggerNew)` → `void`
 
+Public method so it can be called from Logger - this is unique to LogEntryEventHandler
+
+##### Parameters
+
+| Param        | Description                      |
+| ------------ | -------------------------------- |
+| `triggerNew` | list of new LogEntryEvent events |
+
 #### `executeBeforeInsert(List<SObject> triggerNew)` → `void`
+
+method so it can be called from Logger - this is unique to LogEntryEventHandler
+
+##### Parameters
+
+| Param        | Description                      |
+| ------------ | -------------------------------- |
+| `triggerNew` | list of new LogEntryEvent events |
 
 #### `getSObjectType()` → `SObjectType`
 
