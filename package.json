@@ -75,6 +75,7 @@
         "@salesforce/sfdx-scanner": "latest",
         "eslint": "^7.0.0",
         "eslint-config-prettier": "latest",
+        "eslint-plugin-import": "^2.24.2",
         "husky": "latest",
         "lint-staged": "latest",
         "parse-salesforce-object": "latest",
