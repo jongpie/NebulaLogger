@@ -57,6 +57,10 @@
         "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerConfiguration,LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage"
     },
+    "dependencies": {
+        "set-value": ">=4.0.1",
+        "trim-newlines": "^4.0.2"
+    },
     "devDependencies": {
         "@babel/core": "latest",
         "@babel/eslint-parser": "latest",
@@ -69,12 +73,13 @@
         "@salesforce/eslint-plugin-lightning": "latest",
         "@salesforce/sfdx-lwc-jest": "latest",
         "@salesforce/sfdx-scanner": "latest",
-        "eslint": "latest",
+        "eslint": "^7.0.0",
         "eslint-config-prettier": "latest",
         "husky": "latest",
         "lint-staged": "latest",
-        "prettier": "2.4.1",
-        "prettier-plugin-apex": "1.10.0",
+        "parse-salesforce-object": "latest",
+        "prettier": "latest",
+        "prettier-plugin-apex": "latest",
         "pwsh": "latest",
         "sfdx-cli": "latest"
     }
