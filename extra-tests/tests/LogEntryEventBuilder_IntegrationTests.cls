@@ -6,7 +6,7 @@
 @IsTest
 private class LogEntryEventBuilder_IntegrationTests {
     @IsTest
-    static void it_should_strip_inaccessible_fields_for_record_when_enabled() {
+    static void stripInaccessibleFieldsForRecordWhenEnabled() {
         User standardUser = LoggerTestUtils.createStandardUser();
         AccountBrand mockAccountBrand = new AccountBrand(
             Id = LoggerTestUtils.createMockId(Schema.AccountBrand.SObjectType),
@@ -21,22 +21,26 @@ private class LogEntryEventBuilder_IntegrationTests {
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.Email.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible(), 'AccountBrand was accessible, and should not have been.');
+            System.assertEquals(
+                false,
+                Schema.AccountBrand.CompanyName.getDescribe().isAccessible(),
+                'AccountBrand Company Name was accessible, and should not have been.'
+            );
+            System.assertEquals(false, Schema.AccountBrand.Email.getDescribe().isAccessible(), 'AccountBrand Email was accessible, and should not have been.');
+            System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible(), 'AccountBrand Name was accessible, and should not have been.');
+            System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
 
             Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrand);
         }
 
-        System.assertNotEquals(JSON.serializePretty(mockAccountBrand), builder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(strippedAccountBrand), builder.getLogEntryEvent().RecordJson__c);
+        System.assertNotEquals(JSON.serializePretty(mockAccountBrand), builder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(JSON.serializePretty(strippedAccountBrand), builder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
     }
 
     @IsTest
-    static void it_should_strip_inaccessible_fields_for_records_when_enabled() {
+    static void stripInaccessibleFieldsForRecordsWhenEnabled() {
         User standardUser = LoggerTestUtils.createStandardUser();
         List<AccountBrand> mockAccountBrands = new List<AccountBrand>();
         List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
@@ -58,17 +62,21 @@ private class LogEntryEventBuilder_IntegrationTests {
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.CompanyName.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.Email.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible());
-            System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible());
+            System.assertEquals(false, Schema.AccountBrand.SObjectType.getDescribe().isAccessible(), 'AccountBrand was accessible, and should not have been.');
+            System.assertEquals(
+                false,
+                Schema.AccountBrand.CompanyName.getDescribe().isAccessible(),
+                'AccountBrand Company Name was accessible and should not have been.'
+            );
+            System.assertEquals(false, Schema.AccountBrand.Email.getDescribe().isAccessible(), 'AccountBrand Email was accessible, and should not have been,');
+            System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible(), 'AccountBrand Name was accessible, and should not have been.');
+            System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
 
             Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrands);
         }
 
-        System.assertNotEquals(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(strippedAccountBrands), builder.getLogEntryEvent().RecordJson__c);
+        System.assertNotEquals(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
+        System.assertEquals(JSON.serializePretty(strippedAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
     }
 }

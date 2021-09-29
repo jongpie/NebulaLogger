@@ -7,6 +7,7 @@
  * @group Plugins
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
+@SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
     @TestVisible
     private static String endpoint;
@@ -23,6 +24,11 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     // Constructors
+
+    /**
+     * @description Default constructor
+     */
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     public SlackLoggerPlugin() {
     }
 
@@ -32,6 +38,16 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     // Instance methods
+
+    /**
+     * @description Handles the queuable execute logic.
+     * @param triggerOperationType Defines the trigger operation type
+     * @param triggerNew contains a list of the new trigger context / records.
+     * @param triggerNewMap contains a map of ids to new trigger records.
+     * @param triggerOld old contains a list of the old trigger context / records.
+     * @param triggerOldMap contains a map of ids to old trigger records.
+     */
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     public override void execute(
         TriggerOperation triggerOperationType,
         List<SObject> triggerNew,
@@ -51,6 +67,11 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         }
     }
 
+    /**
+     * @description Handles the queuable execute logic. Required by the Queueable interface.
+     * @param queueableContext Context of the current queuable instance.
+     */
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     public void execute(System.QueueableContext queueableContext) {
         // SInce this runs in an async context, requery the logs just in case any field values have changed
         this.requeryLogs();
@@ -162,6 +183,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         ];
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private HttpRequest createSlackHttpRequest() {
         System.debug(notificationLoggingLevel, 'endpoint==' + endpoint);
 
@@ -286,6 +308,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         public String text;
     }
 
+    @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
     private class LogDto {
         public List<ActionDto> actions;
         public String author_name;

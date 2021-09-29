@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Abstract class used by trigger handlers for shared logic
  */
-@SuppressWarnings('PMD.ApexCRUDViolation')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.EmptyStatementBlock')
 public without sharing abstract class LoggerSObjectHandler {
     private static Map<SObjectType, LoggerSObjectHandler__mdt> configurationBySObjectType;
     private static Map<SObjectType, List<LoggerSObjectHandlerPlugin__mdt>> pluginsBySObjectType;
@@ -80,6 +80,9 @@ public without sharing abstract class LoggerSObjectHandler {
         pluginsBySObjectType.put(sobjectType, plugins);
     }
 
+    /**
+     * @description Default constructor
+     */
     public LoggerSObjectHandler() {
         this.setConfigurations();
 

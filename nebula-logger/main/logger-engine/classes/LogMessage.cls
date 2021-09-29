@@ -9,6 +9,7 @@
  * @see Logger
  * @see LogEntryEventBuilder
  */
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global inherited sharing virtual class LogMessage {
     private String formattedMessage;
     private String unformattedMessage;
@@ -50,6 +51,7 @@ global inherited sharing virtual class LogMessage {
      * String unformattedMessage = 'my string with 3 inputs: {0} and then {1} and finally {2}';
      * String formattedMessage = new LogMessage(unformattedMessage, 'something', 'something else', 'one more').getMessage();
      */
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     global LogMessage(String unformattedMessage, Object messageInput1, Object messageInput2, Object messageInput3) {
         this.unformattedMessage = unformattedMessage;
         this.messageInputs = new List<Object>{ messageInput1, messageInput2, messageInput3 };
@@ -70,6 +72,7 @@ global inherited sharing virtual class LogMessage {
     }
 
     // Parameterless constructor that can be used by subclasses when extending LogMessage
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     protected LogMessage() {
     }
 

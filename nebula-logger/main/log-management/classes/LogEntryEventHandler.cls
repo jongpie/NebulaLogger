@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
-@SuppressWarnings('PMD.ApexCRUDViolation')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.AvoidDebugStatements, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
     @TestVisible
@@ -33,12 +33,18 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return Schema.LogEntryEvent__e.SObjectType;
     }
 
-    // Public method so it can be called from Logger - this is unique to LogEntryEventHandler
+    /**
+     * @description method so it can be called from Logger - this is unique to LogEntryEventHandler
+     * @param triggerNew list of new LogEntryEvent events
+     */
     public override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logEntryEvents = (List<LogEntryEvent__e>) triggerNew;
     }
 
-    // Public method so it can be called from Logger - this is unique to LogEntryEventHandler
+    /**
+     * @description Public method so it can be called from Logger - this is unique to LogEntryEventHandler
+     * @param triggerNew list of new LogEntryEvent events
+     */
     public override void executeAfterInsert(List<SObject> triggerNew) {
         this.logEntryEvents = (List<LogEntryEvent__e>) triggerNew;
 
@@ -443,7 +449,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     // Private class for handling the response from api.status.salesforce.com
     @TestVisible
     private class StatusApiResponse {
+        /**
+         * @description String containing the release number.
+         */
         public String releaseNumber { get; set; }
+
+        /**
+         * @description String containing the release version.
+         */
         public String releaseVersion { get; set; }
     }
 }
