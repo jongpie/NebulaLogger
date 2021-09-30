@@ -43,7 +43,7 @@ private class SlackLoggerPlugin_Tests {
 
     static void mockConfigurations(LoggingLevel notificationLoggingLevel) {
         // Set the plugin's parameters
-        LoggerSObjectHandlerPlugin__mdt slackPluginConfig = new LoggerSObjectHandlerPlugin__mdt(
+        LoggerPlugin__mdt slackPluginConfig = new LoggerPlugin__mdt(
             IsEnabled__c = true,
             PluginApiName__c = SlackLoggerPlugin.class.getName(),
             PluginType__c = 'Apex'

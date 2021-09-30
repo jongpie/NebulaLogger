@@ -11,16 +11,11 @@
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
     @TestVisible
-    private static final Boolean TAGGING_IS_ENABLED = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_EnableTagging', true);
-    @TestVisible
-    private static final Boolean TAG_USING_TOPICS = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_UseTopicsForTags', false);
-    @TestVisible
     private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
 
     @TestVisible
     private List<LogEntryEvent__e> logEntryEvents;
 
-    private Boolean shouldCallStatusApi = LoggerParameter.Handler.getBoolean('LogEntryEventHandler_CallStatusApi', false);
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
     private Map<String, List<String>> logEntryEventUuidToTagNames = new Map<String, List<String>>();
     private Set<String> tagNames = new Set<String>();
@@ -56,7 +51,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private void upsertLogs() {
         // To avoid making a callout for every log for details retrieved from api.status.salesforce.com,
-        // ...try to query recent logs first to see if there is a recent log with the details already populated
+        // try to query recent logs first to see if there is a recent log with the details already populated
         Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
 
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
@@ -135,7 +130,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         upsert TRANSACTION_ID_TO_LOG.values() Schema.Log__c.TransactionId__c;
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
-        if (this.shouldCallStatusApi == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
+        if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
     }
@@ -227,7 +222,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void appendRuleBasedTags() {
-        if (TAGGING_IS_ENABLED == false || TAG_ASSIGNMENT_RULES.isEmpty() == true) {
+        if (LoggerParameter.TAGGING_IS_ENABLED == false || TAG_ASSIGNMENT_RULES.isEmpty() == true) {
             return;
         }
 
@@ -252,12 +247,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void insertLogEntryTags() {
-        if (TAGGING_IS_ENABLED == false || this.tagNames.isEmpty()) {
+        if (LoggerParameter.TAGGING_IS_ENABLED == false || this.tagNames.isEmpty()) {
             return;
         }
 
         // Orgs can be configured to either use LoggerTag__c & LogEntryTag__c (default), or use Topic & TopicAssignment
-        Schema.SObjectType tagSObjectType = TAG_USING_TOPICS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
+        Schema.SObjectType tagSObjectType = LoggerParameter.TAG_USING_TOPICS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
         Map<String, Id> tagNameToId = getTagNameToId(tagSObjectType);
         this.tagNames.addAll(tagNameToId.keySet());
 
@@ -270,7 +265,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             for (String tagName : logEntryTagNames) {
-                if (TAG_USING_TOPICS == true) {
+                if (LoggerParameter.TAG_USING_TOPICS == true) {
                     // Add the topic for the LogEntry__c & the parent Log__c
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));

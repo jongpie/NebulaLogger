@@ -193,7 +193,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
-    // ...but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
+    // but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
     /**
      * @description Sets the log entry event's database operation result fields
      * @param  deleteResult The instance of `Database.DeleteResult` to log
@@ -408,21 +408,28 @@ global with sharing class LogEntryEventBuilder {
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(SObject record) {
-        if (this.shouldSave == false || record == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
-        String recordJson = getJson(record);
-        String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
-        Boolean recordJsonMasked = cleanedRecordJson != recordJson;
-
         this.logEntryEvent.RecordCollectionType__c = 'Single';
-        this.logEntryEvent.RecordId__c = record.Id;
-        this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-        this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
+
+        String recordJson = getJson(record);
+        if (record == null) {
+            this.logEntryEvent.RecordJson__c = recordJson;
+            this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
+            this.logEntryEvent.RecordSObjectType__c = 'Unknown';
+        } else {
+            String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+            Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
+            this.logEntryEvent.RecordId__c = record.Id;
+            this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+            this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
+            this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
+            this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
+        }
 
         return this;
     }
@@ -433,18 +440,35 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(List<SObject> records) {
-        if (this.shouldSave == false || records == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
-        Schema.SObjectType sobjectType = records.getSObjectType() != null ? records.getSObjectType() : records.get(0).getSObjectType();
-        String sobjectTypeName = sobjectType?.getDescribe().getName();
-
         this.logEntryEvent.RecordCollectionType__c = 'List';
-        this.logEntryEvent.RecordJson__c = getJson(records);
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
-        this.logEntryEvent.RecordSObjectType__c = sobjectTypeName;
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
+
+        // First, try to use the list's SObject Type - if the list is null or an instance of List<SObject>, it won't have an SObject Type
+        // If using the list doesn't work, and there are 1+ records in the list, then try to use the first record's SObject Type - if it's null, it won't have an SObject Type
+        // If the first object doesn't work, then just log as is a generic SObject - no need to waste additional CPU time on it
+        Schema.SObjectType sobjectType = records?.getSObjectType();
+        if (sobjectType == null && records != null && records.size() >= 1) {
+            sobjectType = records.get(0)?.getSObjectType();
+        }
+
+        String recordJson = getJson(records);
+        if (sobjectType == null) {
+            this.logEntryEvent.RecordJson__c = recordJson;
+            this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
+            this.logEntryEvent.RecordSObjectType__c = 'Unknown';
+        } else {
+            String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+            Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
+            this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+            this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+            this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+            this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
+        }
 
         return this;
     }
@@ -592,7 +616,7 @@ global with sharing class LogEntryEventBuilder {
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     private void logToApexDebug(String message) {
-        String template = Logger.getUserSettings()?.SystemLogMessageFormat__c?.unescapeJava();
+        String template = LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT?.unescapeJava();
         if (String.isNotBlank(template)) {
             List<String> possibleReplacements = template.split('\\{');
             for (String possibleReplacement : possibleReplacements) {

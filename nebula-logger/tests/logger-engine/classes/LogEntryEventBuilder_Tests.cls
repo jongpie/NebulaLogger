@@ -151,6 +151,30 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_apply_data_mask_rule_to_record_list_json_when_enabled() {
+        Logger.getUserSettings().ApplyDataMaskRules__c = true;
+        LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
+        rule.ApplyToMessage__c = false;
+        rule.ApplyToRecordJson__c = true;
+        LogEntryEventBuilder.addMockDataMaskRule(rule);
+
+        String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
+        String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
+        List<Account> accounts = new List<Account>{ new Account(Name = message) };
+        String accountListJson = JSON.serializePretty(accounts);
+        String expectedSanitizedAccountListJson = JSON.serializePretty(new List<Account>{ new Account(Name = expectedSanitizedMessage) });
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        builder.setMessage(message).setRecord(accounts);
+
+        System.assertEquals(false, builder.getLogEntryEvent().MessageMasked__c);
+        System.assertEquals(message, builder.getLogEntryEvent().Message__c);
+        System.assertNotEquals(expectedSanitizedMessage, builder.getLogEntryEvent().Message__c);
+        System.assertEquals(true, builder.getLogEntryEvent().RecordJsonMasked__c);
+        System.assertNotEquals(accountListJson, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(expectedSanitizedAccountListJson, builder.getLogEntryEvent().RecordJson__c);
+    }
+
+    @IsTest
     static void it_should_not_data_mask_rule_when_disabled_for_message_and_json() {
         Logger.getUserSettings().ApplyDataMaskRules__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
@@ -680,6 +704,31 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_record_fields_for_record_when_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Test.startTest();
+
+        User nullUser;
+        System.assertEquals(null, nullUser);
+        builder.setRecordId(nullUser);
+
+        Test.stopTest();
+
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals('null', builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+    }
+
+    @IsTest
     static void it_should_set_record_fields_for_record_when_standard_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
@@ -778,7 +827,69 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_set_record_fields_for_list_of_records() {
+    static void it_should_set_record_fields_for_list_of_records_when_list_is_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        List<SObject> users;
+        System.assertEquals(null, users);
+        builder.setRecord(users);
+
+        System.assertEquals('List', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals('null', builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
+    static void it_should_set_record_fields_for_list_of_records_when_list_is_empty() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        List<SObject> users = new List<SObject>();
+        System.assertEquals(true, users.isEmpty());
+        builder.setRecord(users);
+
+        System.assertEquals('List', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
+    static void it_should_set_record_fields_for_list_of_records_when_first_record_is_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        List<SObject> users = new List<SObject>();
+        User nullUser;
+        users.add(nullUser);
+        users.add(new User(Id = UserInfo.getUserId()));
+        builder.setRecord(users);
+
+        System.assertEquals('List', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(users), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals('Unknown', builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
+    static void it_should_set_record_fields_for_list_of_records_when_populated() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
@@ -910,8 +1021,9 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
-        LoggerSettings__c settings = Logger.getUserSettings();
-        settings.SystemLogMessageFormat__c = '{OriginLocation__c}\n{Message__c}: {LoggingLevel__c}';
+        LoggerParameter.setMockParameter(
+            new LoggerParameter__mdt(DeveloperName = 'SystemDebugMessageFormat', Value__c = '{OriginLocation__c}\n{Message__c}: {LoggingLevel__c}')
+        );
 
         DebugStringExample example = new DebugStringExample();
         LogEntryEventBuilder builder = example.myMethod();

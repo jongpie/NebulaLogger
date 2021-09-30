@@ -52,6 +52,8 @@ Optionally provide a comma-separated String of tags to dynamically assign to the
 
 #### `timestamp` → `DateTime`
 
+Current system timestamp.
+
 #### `topics` → `List<String>`
 
 Optionally provide a comma-separated String of tags to dynamically assign to the log entry
@@ -62,7 +64,7 @@ Optionally provide a comma-separated String of tags to dynamically assign to the
 
 #### `addFlowEntries(List<FlowLogEntry> flowLogEntries)` → `List<String>`
 
-addFlowEntries description
+Invocable method, that can be called via flow.
 
 ##### Parameters
 

@@ -5,7 +5,7 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kplQAA)
+[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kqtQAA)
 [![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
@@ -219,8 +219,8 @@ public with sharing class BatchableLoggerExample implements Database.Batchable<S
     private String originalTransactionId;
 
     public Database.QueryLocator start(Database.BatchableContext batchableContext) {
-        // Each batchable method runs in a separate transaction
-        // ...so store the first transaction ID to later relate the other transactions
+        // Each batchable method runs in a separate transaction,
+        // so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
 
         Logger.info('Starting BatchableLoggerExample');
@@ -680,8 +680,8 @@ If you want to add your own automation to the `Log__c` or `LogEntry__c` objects,
 
 Once you've created your Apex or Flow plugin(s), you will also need to configure the plugin:
 
--   'Logger Plugin' - use the custom metadata type `LoggerSObjectHandlerPlugin__mdt` to define your plugin, including the plugin type (Apex or Flow) and the API name of your plugin's Apex class or Flow
--   'Logger Plugin Parameter' - use the custom metadata type `LoggerSObjectHandlerPluginParameter__mdt` to define any configurable parameters needed for your plugin, such as environment-specific URLs and other similar configurations
+-   'Logger Plugin' - use the custom metadata type `LoggerPlugin__mdt` to define your plugin, including the plugin type (Apex or Flow) and the API name of your plugin's Apex class or Flow
+-   'Logger Parameter' - use the custom metadata type `LoggerParameter__mdt` to define any configurable parameters needed for your plugin, such as environment-specific URLs and other similar configurations
 
 ![Logger plugin: configuration](./content/slack-plugin-configuration.png)
 
@@ -694,7 +694,7 @@ The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula
 -   Use Apex to apply custom logic to `Log__c` and `LogEntry__c` records
 -   Add custom fields and list views to Logger's objects
 -   Extend permission sets to include field-level security for your custom fields
--   Leverage the new `LoggerSObjectHandlerPluginParameter__mdt` CMDT object to store configuration for your plugin
+-   Leverage the new `LoggerParameter__mdt` CMDT object to store configuration for your plugin
 
 Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on how to install & customize the plugin
 

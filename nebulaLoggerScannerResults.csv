@@ -1,7 +1,0 @@
-"Problem","File","Severity","Line","Column","Rule","Description","URL","Category","Engine"
-"1","/Users/jloghry/workspace/NebulaLogger/extra-tests/classes/ExampleInboundEmailHandler.cls","3","1","27","AvoidGlobalModifier","Avoid using global modifier","https://pmd.github.io/pmd-6.36.0/pmd_rules_apex_bestpractices.html#avoidglobalmodifier","Best Practices","pmd"
-"2","/Users/jloghry/workspace/NebulaLogger/extra-tests/classes/ExampleInboundEmailHandler.cls","3","1","27","ApexDoc","Missing ApexDoc comment","https://pmd.github.io/pmd-6.36.0/pmd_rules_apex_documentation.html#apexdoc","Documentation","pmd"
-"3","/Users/jloghry/workspace/NebulaLogger/extra-tests/classes/ExampleInboundEmailHandler.cls","3","5","41","ApexDoc","Missing ApexDoc comment","https://pmd.github.io/pmd-6.36.0/pmd_rules_apex_documentation.html#apexdoc","Documentation","pmd"
-"4","/Users/jloghry/workspace/NebulaLogger/extra-tests/classes/ExampleInboundEmailHandler.cls","3","14","20","AvoidDebugStatements","Avoid debug statements since they impact on performance","https://pmd.github.io/pmd-6.36.0/pmd_rules_apex_performance.html#avoiddebugstatements","Performance","pmd"
-"5","/Users/jloghry/workspace/NebulaLogger/extra-tests/classes/ExampleInboundEmailHandler.cls","3","16","20","AvoidDebugStatements","Avoid debug statements since they impact on performance","https://pmd.github.io/pmd-6.36.0/pmd_rules_apex_performance.html#avoiddebugstatements","Performance","pmd"
-

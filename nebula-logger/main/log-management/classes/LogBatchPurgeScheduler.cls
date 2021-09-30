@@ -33,7 +33,7 @@ global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
      * @param schedulableContext Required for the Schedulable interface, this method contains contextual information about when this instance is/was scheduled.
      */
     global void execute(SchedulableContext schedulableContext) {
-        if (Logger.getUserSettings().EnableSystemMessages__c == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             LogMessage logMessage = new LogMessage('Scheduling LogBatchPurgeScheduler job, schedulableContext=={0}', schedulableContext);
             Logger.info(logMessage);
             Logger.saveLog();

@@ -146,7 +146,6 @@ private class ComponentLogger_Tests {
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
         ComponentLogger.saveComponentLogEntries(componentLogEntries);
         Test.stopTest();
 
@@ -192,7 +191,6 @@ private class ComponentLogger_Tests {
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
         ComponentLogger.saveComponentLogEntries(componentLogEntries);
         Test.stopTest();
 

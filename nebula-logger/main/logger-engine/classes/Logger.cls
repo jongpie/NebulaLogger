@@ -224,7 +224,7 @@ global with sharing class Logger {
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
         // This allows the ability to then upsert the instance of LoggerSettings__c and it will always be specific to that user...
-        // ...which avoids accidentally changing something at the org or profile levels
+        // which avoids accidentally changing something at the org or profile levels
         if (loggingUser.Id != null && loggingUserSettings.SetupOwnerId != loggingUser.Id) {
             loggingUserSettings.Id = null;
             loggingUserSettings.SetupOwnerId = loggingUser.Id;
@@ -382,7 +382,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException) {
-        return error().setMessage(logMessage).setExceptionDetails(apexException);
+        return error().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
@@ -564,7 +564,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Exception apexException) {
-        return error().setMessage(message).setExceptionDetails(apexException);
+        return error().setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
@@ -747,7 +747,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Exception apexException) {
-        return warn().setMessage(logMessage).setExceptionDetails(apexException);
+        return warn().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
@@ -929,7 +929,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Exception apexException) {
-        return warn().setMessage(message).setExceptionDetails(apexException);
+        return warn().setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
@@ -2468,15 +2468,15 @@ global with sharing class Logger {
             return;
         }
 
-        if (suspendSaving) {
-            if (getUserSettings().EnableSystemMessages__c == true) {
+        if (suspendSaving == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                 finest(getSuspendSavingLogSystemMessage());
             }
 
             return;
         }
 
-        if (getUserSettings().EnableSystemMessages__c == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             finest(getSavingLogSystemMessage(saveMethod));
         }
 
@@ -2492,8 +2492,8 @@ global with sharing class Logger {
             }
         }
 
-        // Platform events don't support BEFORE_INSERT operations (only AFTER_INSERT is supported)
-        // ... but here we are, getting ready to insert the records, but we haven't.... yet
+        // Platform events don't support BEFORE_INSERT operations (only AFTER_INSERT is supported),
+        // but here we are, getting ready to insert the records, but we haven't.... yet
         // It's... it's... almost like... this part of the code IS a BEFORE_INSERT context. Huzzah!
         // This gives us a chance to run the handler class & handler plugins before insert,
         // allowing the plugins to make further changes to the `LogEntryEvent__e` records
@@ -2517,7 +2517,7 @@ global with sharing class Logger {
             when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
                 // To avoid that, use the EventBus instead (even though REST was specified)
-                if (String.isBlank(UserInfo.getUserId())) {
+                if (String.isBlank(UserInfo.getSessionId())) {
                     saveLog(Logger.SaveMethod.EVENT_BUS);
                 } else {
                     new RestApiSaver().insertRecords(logEntryEvents);
@@ -2569,7 +2569,7 @@ global with sharing class Logger {
                 return LoggingLevel.FINEST;
             }
             when else {
-                if (getUserSettings().EnableSystemMessages__c == true) {
+                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                     String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
                     finest(message);
                 }
@@ -2599,12 +2599,7 @@ global with sharing class Logger {
         );
 
         SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(query));
-
-        if (securityDecision.getRecords().isEmpty()) {
-            return null;
-        } else {
-            return (Log__c) securityDecision.getRecords().get(0);
-        }
+        return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
     }
 
     // Private logging level methods to keep global methods simpler/cleaner

@@ -1,0 +1,337 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group Configuration
+ * @description Provides a centralized way to load parameters for SObject handlers & plugins,
+ *              and casts the parameters to common data types
+ */
+@SuppressWarnings('PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessivePublicCount')
+public class LoggerParameter {
+    private static Set<String> parametersToLoadDuringTests = new Set<String>();
+    private static Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
+
+    public static final Boolean CALL_STATUS_API {
+        get {
+            if (CALL_STATUS_API == null) {
+                CALL_STATUS_API = getBoolean('CallStatusApi', false);
+            }
+            return CALL_STATUS_API;
+        }
+        private set;
+    }
+
+    public static final Boolean ENABLE_SYSTEM_MESSAGES {
+        get {
+            if (ENABLE_SYSTEM_MESSAGES == null) {
+                ENABLE_SYSTEM_MESSAGES = getBoolean('EnableLoggerSystemMessages', false);
+            }
+            return ENABLE_SYSTEM_MESSAGES;
+        }
+        private set;
+    }
+
+    public static final String SYSTEM_DEBUG_MESSAGE_FORMAT {
+        get {
+            if (SYSTEM_DEBUG_MESSAGE_FORMAT == null) {
+                // During tests, always load this CMDT record
+                // so that tests use the same format when calling System.debug()
+                String systemDebugMessageFormatParameter = 'SystemDebugMessageFormat';
+                parametersToLoadDuringTests.add(systemDebugMessageFormatParameter);
+                SYSTEM_DEBUG_MESSAGE_FORMAT = getString(systemDebugMessageFormatParameter, '{OriginLocation__c}\n{Message__c}');
+            }
+            return SYSTEM_DEBUG_MESSAGE_FORMAT;
+        }
+        private set;
+    }
+
+    public static final Boolean TAGGING_IS_ENABLED {
+        get {
+            if (TAGGING_IS_ENABLED == null) {
+                TAGGING_IS_ENABLED = getBoolean('EnableTagging', true);
+            }
+            return TAGGING_IS_ENABLED;
+        }
+        private set;
+    }
+
+    public static final Boolean TAG_USING_TOPICS {
+        get {
+            if (TAG_USING_TOPICS == null) {
+                TAG_USING_TOPICS = getBoolean('UseTopicsForTags', false);
+            }
+            return TAG_USING_TOPICS;
+        }
+        private set;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `Boolean`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `Boolean` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static Boolean getBoolean(String parameterDeveloperName, Boolean defaultValue) {
+        Boolean parameterValue = (Boolean) castParameterValue(parameterDeveloperName, Boolean.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<Boolean>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<Boolean>` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<Boolean> getBooleanList(String parameterDeveloperName, List<Boolean> defaultValue) {
+        List<Boolean> parameterValue = (List<Boolean>) castParameterValue(parameterDeveloperName, List<Boolean>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `Date`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `Date` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static Date getDate(String parameterDeveloperName, Date defaultValue) {
+        Date parameterValue = (Date) castParameterValue(parameterDeveloperName, Date.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<Date>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<Date>` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<Date> getDateList(String parameterDeveloperName, List<Date> defaultValue) {
+        List<Date> parameterValue = (List<Date>) castParameterValue(parameterDeveloperName, List<Date>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `Datetime`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `Datetime` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static Datetime getDatetime(String parameterDeveloperName, Datetime defaultValue) {
+        Datetime parameterValue = (Datetime) castParameterValue(parameterDeveloperName, Datetime.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<Datetime>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<Datetime>` value configured in the matching instance of  `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<Datetime> getDatetimeList(String parameterDeveloperName, List<Datetime> defaultValue) {
+        List<Datetime> parameterValue = (List<Datetime>) castParameterValue(parameterDeveloperName, List<Datetime>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `Decimal`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `Decimal` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static Decimal getDecimal(String parameterDeveloperName, Decimal defaultValue) {
+        Decimal parameterValue = (Decimal) castParameterValue(parameterDeveloperName, Decimal.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<Decimal>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<Decimal>` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<Decimal> getDecimalList(String parameterDeveloperName, List<Decimal> defaultValue) {
+        List<Decimal> parameterValue = (List<Decimal>) castParameterValue(parameterDeveloperName, List<Decimal>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `Double`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `Double` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static Double getDouble(String parameterDeveloperName, Double defaultValue) {
+        Double parameterValue = (Double) castParameterValue(parameterDeveloperName, Double.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<Double>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<Double>` value configured in the matching instance of LLoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<Double> getDoubleList(String parameterDeveloperName, List<Double> defaultValue) {
+        List<Double> parameterValue = (List<Double>) castParameterValue(parameterDeveloperName, List<Double>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `Id`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `Id` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static Id getId(String parameterDeveloperName, Id defaultValue) {
+        Id parameterValue = (Id) castParameterValue(parameterDeveloperName, Id.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<Id>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<Id>` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<Id> getIdList(String parameterDeveloperName, List<Id> defaultValue) {
+        List<Id> parameterValue = (List<Id>) castParameterValue(parameterDeveloperName, List<Id>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `Integer`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `Integer` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static Integer getInteger(String parameterDeveloperName, Integer defaultValue) {
+        Integer parameterValue = (Integer) castParameterValue(parameterDeveloperName, Integer.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<Integer>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<Integer>` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<Integer> getIntegerList(String parameterDeveloperName, List<Integer> defaultValue) {
+        List<Integer> parameterValue = (List<Integer>) castParameterValue(parameterDeveloperName, List<Integer>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `Long`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `Long` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static Long getLong(String parameterDeveloperName, Long defaultValue) {
+        Long parameterValue = (Long) castParameterValue(parameterDeveloperName, Long.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<Long>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<Long>` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<Long> getLongList(String parameterDeveloperName, List<Long> defaultValue) {
+        List<Long> parameterValue = (List<Long>) castParameterValue(parameterDeveloperName, List<Long>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `SObject`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `SObject` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static SObject getSObject(String parameterDeveloperName, SObject defaultValue) {
+        SObject parameterValue = (SObject) castParameterValue(parameterDeveloperName, SObject.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description Returns the configured value of the field `Value__c` as a `List<SObject>`
+     * @param  parameterDeveloperName The developer name of the instance of `LoggerParameter__mdt`
+     * @param  defaultValue           A default value to return instead of null
+     * @return                        The `List<SObject>` value configured in the matching instance of `LoggerParameter__mdt`
+     *                                Returns the supplied `defaultValue` when no matching parameter is found, or the parameter value is null
+     */
+    public static List<SObject> getSObjectList(String parameterDeveloperName, List<SObject> defaultValue) {
+        List<SObject> parameterValue = (List<SObject>) castParameterValue(parameterDeveloperName, List<SObject>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description This method returns the actual parameter if it exists, or if it's empty returns the default value.
+     * @param parameterDeveloperName The parameter to return if it exists.
+     * @param defaultValue The default value to return when the parameter doesn't exist.
+     * @return A string that's retrieved using the parameter if it's not empty, otherwise the string is defaulted to defaultValue.
+     */
+    public static String getString(String parameterDeveloperName, String defaultValue) {
+        // Since the Value__c field is already a String, this method skips using the method castParameterValue
+        String parameterValue = loadParameterValue(parameterDeveloperName);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    /**
+     * @description This method returns the value of the parameter if it exists (cast as a list of strings), or if it's empty returns the default list.
+     * @param parameterDeveloperName The parameter of the list to return if it exists.
+     * @param defaultValue The default list to return when the parameter / value doesn't exist.
+     * @return A list that's retrieved using the parameter if it's not null, otherwise the default list is returned.
+     */
+    public static List<String> getStringList(String parameterDeveloperName, List<String> defaultValue) {
+        List<String> parameterValue = (List<String>) castParameterValue(parameterDeveloperName, List<String>.class);
+        return parameterValue != null ? parameterValue : defaultValue;
+    }
+
+    // Private methods
+    @TestVisible
+    private static void setMockParameter(LoggerParameter__mdt parameter) {
+        mockParameterByDeveloperName.put(parameter.DeveloperName, parameter);
+    }
+
+    private static Object castParameterValue(String parameterDeveloperName, Type dataType) {
+        String parameterValue = loadParameterValue(parameterDeveloperName);
+        if (parameterValue == null) {
+            return null;
+        } else {
+            return JSON.deserialize(parameterValue, dataType);
+        }
+    }
+
+    private static String loadParameterValue(String parameterDeveloperName) {
+        String parameterValue = LoggerParameter__mdt.getInstance(parameterDeveloperName)?.Value__c;
+
+        Boolean useMockParameter =
+            parametersToLoadDuringTests.contains(parameterDeveloperName) == false ||
+            mockParameterByDeveloperName.containsKey(parameterDeveloperName) == true;
+        if (Test.isRunningTest() == true && useMockParameter == true) {
+            // During tests, don't actually use the org's CMDT records - only use mock records
+            parameterValue = (String) mockParameterByDeveloperName.get(parameterDeveloperName)?.get('Value__c');
+        }
+
+        return parameterValue;
+    }
+}

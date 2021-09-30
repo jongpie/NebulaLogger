@@ -13,8 +13,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     @TestVisible
     private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
 
-    private final Boolean isSystemDebuggingEnabled;
-
     private SObjectType currentSObjectType;
     private String originalTransactionId;
     private Integer totalProcessedRecords;
@@ -23,7 +21,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @description Default constructor, sets up instance of LogBatchPurger class.
      */
     global LogBatchPurger() {
-        this.isSystemDebuggingEnabled = Logger.getUserSettings()?.EnableSystemMessages__c == true;
         this.totalProcessedRecords = 0;
     }
 
@@ -47,7 +44,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         this.originalTransactionId = Logger.getTransactionId();
         this.currentSObjectType = this.getInitialSObjectType();
 
-        if (this.isSystemDebuggingEnabled) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             Logger.info('Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
             Logger.saveLog();
         }
@@ -79,7 +76,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             this.totalProcessedRecords += loggerRecords.size();
             this.hardDelete(loggerRecords);
         } catch (Exception apexException) {
-            if (this.isSystemDebuggingEnabled) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                 Logger.error('Error deleting logs', apexException);
             }
         } finally {
@@ -98,7 +95,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             nextBatchJobId = Database.executeBatch(new LogBatchPurger());
         }
 
-        if (this.isSystemDebuggingEnabled) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             Logger.setParentLogTransactionId(this.originalTransactionId);
             Logger.info(
                 new LogMessage('Finished LogBatchPurger job for {0}, {1} total log records processed', this.currentSObjectType, this.totalProcessedRecords)

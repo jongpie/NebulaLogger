@@ -12,7 +12,7 @@ Abstract class used by trigger handlers for shared logic
 
 #### `LoggerSObjectHandler()`
 
----
+## Default constructor
 
 ### Methods
 
