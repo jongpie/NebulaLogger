@@ -3,7 +3,7 @@
         <lightning-tabset>
             <lightning-tab label="User Settings">
                 <template if:true={records}>
-                    <lightning-card title={settingsTitle} icon-name="standard:bundle_config">
+                    <lightning-card title={settingsTitle} icon-name="standard:settings">
                         <div slot="actions">
                             <template if:true={canEditLoggerSettings}>
                                 <lightning-button label="New" variant="brand"></lightning-button>
@@ -28,11 +28,25 @@
             <lightning-tab label="System Parameters">
                 <template if:true={parametersLoaded}>
                     <c-custom-metadata-table
+                        icon="standard:bundle_config"
                         enableediting={canEditLoggerParameters}
                         fieldstodisplay="DeveloperName, MasterLabel, Value__c, Description__c"
                         objectapiname="LoggerParameter__mdt"
                         records={parameterRecords}
-                        title="Logger Parameters"
+                        title={parametersTitle}
+                    >
+                    </c-custom-metadata-table>
+                </template>
+            </lightning-tab>
+            <lightning-tab label="Plugins">
+                <template if:true={pluginsLoaded}>
+                    <c-custom-metadata-table
+                        icon="standard:apex_config"
+                        enableediting={canEditLoggerPlugins}
+                        fieldstodisplay="DeveloperName, MasterLabel, IsEnabled__c, Description__c"
+                        objectapiname="LoggerPlugin__mdt"
+                        records={pluginRecords}
+                        title={pluginsTitle}
                     >
                     </c-custom-metadata-table>
                 </template>

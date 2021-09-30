@@ -5,6 +5,7 @@ import getLoggingLevelOptions from '@salesforce/apex/LoggerConfiguratorControlle
 import getShareAccessLevelOptions from '@salesforce/apex/LoggerConfiguratorController.getShareAccessLevelOptions';
 import getSettings from '@salesforce/apex/LoggerConfiguratorController.getSettings';
 import getParameters from '@salesforce/apex/LoggerConfiguratorController.getParameters';
+import getPlugins from '@salesforce/apex/LoggerConfiguratorController.getPlugins';
 // import saveSettings from '@salesforce/apex/LoggerConfiguratorController.saveSettings';
 
 const columns = [
@@ -26,6 +27,10 @@ export default class LoggerConfigurator extends LightningElement {
     columns = columns;
 
     parameterRecords;
+    pluginRecords;
+
+    parametersLoaded = false;
+    pluginsLoaded = false;
 
     _loggingLevelOptions;
     _shareAccessLevelOptions;
@@ -38,6 +43,14 @@ export default class LoggerConfigurator extends LightningElement {
         return 'Logger Settings';
     }
 
+    get parametersTitle() {
+        return 'Logger Parameters';
+    }
+
+    get pluginsTitle() {
+        return 'Logger Plugins';
+    }
+
     get canEditLoggerSettings() {
         return canEditLoggerSettings;
     }
@@ -46,34 +59,17 @@ export default class LoggerConfigurator extends LightningElement {
         return canEditLoggerParameters;
     }
 
+    get canEditLoggerPlugins() {
+        return true; // TODO add custom permission
+    }
+
     connectedCallback() {
         document.title = this.title;
-
-        getParameters().then(result => {
-            console.log('getParameters() result==' + JSON.stringify(result));
-            this.parameterRecords = result;
-            this.parametersLoaded = true;
-        });
-
-        getLoggingLevelOptions().then(result => {
-            console.log('getLoggingLevelOptions() result==' + JSON.stringify(result));
-            this._loggingLevelOptions = result;
-        });
-        // .catch(error => {
-        //     // TODO error handling
-        // });
-
-        getShareAccessLevelOptions().then(result => {
-            console.log('getShareAccessLevelOptions() result==' + JSON.stringify(result));
-            this._shareAccessLevelOptions = result;
-        });
-        // .catch(error => {
-        //     // TODO error handling
-        // });
 
         getSettings().then(result => {
             console.log('getSettings() result==' + JSON.stringify(result));
             console.log('getSettings() result.length==' + result.length);
+            // TODO move logic to a private helper function
             for (let i = 0; i < result.length; i++) {
                 let record = result[i];
                 record.SetupOwnerName = record.SetupOwner.Name;
@@ -95,6 +91,34 @@ export default class LoggerConfigurator extends LightningElement {
             }
             this.records = result;
             console.log('this.records==' + JSON.stringify(this.records));
+        });
+        // .catch(error => {
+        //     // TODO error handling
+        // });
+        
+        getParameters().then(result => {
+            console.log('getParameters() result==' + JSON.stringify(result));
+            this.parameterRecords = result;
+            this.parametersLoaded = true;
+        });
+
+        getPlugins().then(result => {
+            console.log('getPlugins() result==' + JSON.stringify(result));
+            this.pluginRecords = result;
+            this.pluginsLoaded = true;
+        });
+
+        getLoggingLevelOptions().then(result => {
+            console.log('getLoggingLevelOptions() result==' + JSON.stringify(result));
+            this._loggingLevelOptions = result;
+        });
+        // .catch(error => {
+        //     // TODO error handling
+        // });
+
+        getShareAccessLevelOptions().then(result => {
+            console.log('getShareAccessLevelOptions() result==' + JSON.stringify(result));
+            this._shareAccessLevelOptions = result;
         });
         // .catch(error => {
         //     // TODO error handling

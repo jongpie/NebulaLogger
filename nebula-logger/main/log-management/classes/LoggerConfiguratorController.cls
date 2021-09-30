@@ -72,6 +72,15 @@ public with sharing class LoggerConfiguratorController {
         }
     }
 
+    @AuraEnabled
+    public static List<LoggerPlugin__mdt> getPlugins() {
+        try {
+            return [SELECT DeveloperName, MasterLabel, IsEnabled__c, Description__c FROM LoggerPlugin__mdt ORDER BY DeveloperName];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<PicklistOption> getLoggingLevelOptions() {
         try {

@@ -11,6 +11,9 @@ export default class CustomMetadataTable extends LightningElement {
     objectapiname;
 
     @api
+    icon = '';
+
+    @api
     title = '';
 
     @api

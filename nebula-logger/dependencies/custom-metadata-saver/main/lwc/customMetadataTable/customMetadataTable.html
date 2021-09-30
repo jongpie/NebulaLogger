@@ -1,5 +1,6 @@
 <template>
-    <lightning-card title={title} icon-name="standard:bundle_config">
+    [icon name: {icon}]
+    <lightning-card title={title} icon-name={icon}>
         <template if:true={deploymentStatus}>
             <div slot="actions" class="slds-text-align_right">
                 Deployment Status: {deploymentStatus} <br />
