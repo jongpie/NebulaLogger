@@ -15,8 +15,8 @@ private class LogEntryHandler_Tests {
         ) {
             if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
                 for (LogEntry__c logEntry : (List<LogEntry__c>) triggerNew) {
-                    // The specific field changed doesn't really matter - we just want to ensure that whatever...
-                    // ...logic implement in the instance of LoggerSObjectHandlerPlugin is executed
+                    // The specific field changed doesn't really matter - we just want to ensure that whatever
+                    // logic implemented in the instance of LoggerSObjectHandlerPlugin is executed
                     logEntry.Message__c = 'Some String';
                 }
             }
@@ -30,12 +30,7 @@ private class LogEntryHandler_Tests {
         return namespacePrefix;
     }
 
-    private static LoggerSObjectHandler__mdt getMockConfiguration() {
-        Schema.SObjectType sobjectType = Schema.LogEntry__c.SObjectType;
-        return new LoggerSObjectHandler__mdt(IsEnabled__c = true, SObjectType__c = sobjectType.getDescribe().getName());
-    }
-
-    @testSetup
+    @TestSetup
     static void setupData() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
@@ -47,32 +42,6 @@ private class LogEntryHandler_Tests {
         Test.startTest();
         System.assertEquals(Schema.LogEntry__c.SObjectType, new LogEntryHandler().getSObjectType());
         Test.stopTest();
-    }
-
-    @IsTest
-    static void it_should_not_run_handler_when_disabled_via_configuration() {
-        String currentUserJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
-
-        LoggerSObjectHandler__mdt logEntryHandlerConfiguration = getMockConfiguration();
-        logEntryHandlerConfiguration.IsEnabled__c = false;
-
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordJson__c = currentUserJson);
-
-        Test.startTest();
-
-        // Use the mock configurations
-        LoggerSObjectHandler.setMockConfiguration(Schema.LogEntry__c.SObjectType, logEntryHandlerConfiguration);
-
-        insert logEntry;
-
-        Test.stopTest();
-
-        // Assumption: if the handler had executed, then logEntry.HasRecordJson__c should have been auto-set to true...
-        // ...so if it's still false, it indicates that the handler did not execute
-        logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertNotEquals(null, logEntry.RecordJson__c);
-        System.assertEquals(false, logEntry.HasRecordJson__c);
     }
 
     @IsTest
@@ -385,10 +354,7 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerSObjectHandlerPlugin__mdt plugin = new LoggerSObjectHandlerPlugin__mdt(
-            PluginType__c = 'Apex',
-            PluginApiName__c = LogEntryPluginTest.class.getName()
-        );
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'Apex', PluginApiName__c = LogEntryPluginTest.class.getName());
         LoggerSObjectHandler.setMockPlugin(Schema.LogEntry__c.SObjectType, plugin);
 
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');

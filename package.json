@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.6.8",
+    "version": "4.6.9",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
@@ -28,17 +28,6 @@
         "node": ">= 12.18.0",
         "npm": ">= 6.14.0"
     },
-    "lint-staged": {
-        "*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": "prettier --write",
-        "**/lwc/**": [
-            "eslint --fix",
-            "npm run test:lwc"
-        ],
-        "*.{cls,trigger}": [
-            "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --engine pmd --severity-threshold 3 --target",
-            "npm run docs:generate && git add ./docs/ && git commit --amend --no-edit"
-        ]
-    },
     "scripts": {
         "devhub:details": "pwsh ./scripts/get-devhub-org-details.ps1",
         "devhub:limits": "pwsh ./scripts/get-devhub-org-limits.ps1",
@@ -65,8 +54,12 @@
         "source:push:test": "npm run source:push && npm run test:apex",
         "test": "npm run test:lwc && npm run test:apex",
         "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
-        "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
+        "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerConfiguration,LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage"
+    },
+    "dependencies": {
+        "set-value": ">=4.0.1",
+        "trim-newlines": "^4.0.2"
     },
     "devDependencies": {
         "@babel/core": "latest",
@@ -80,10 +73,12 @@
         "@salesforce/eslint-plugin-lightning": "latest",
         "@salesforce/sfdx-lwc-jest": "latest",
         "@salesforce/sfdx-scanner": "latest",
-        "eslint": "latest",
+        "eslint": "^7.0.0",
         "eslint-config-prettier": "latest",
+        "eslint-plugin-import": "^2.24.2",
         "husky": "latest",
         "lint-staged": "latest",
+        "parse-salesforce-object": "latest",
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
         "pwsh": "latest",

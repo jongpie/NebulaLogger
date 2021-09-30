@@ -8,7 +8,9 @@
  * @description Builder class that generates each `LogEntryEvent__e` record
  * @see Logger
  */
-@SuppressWarnings('PMD.NcssTypeCount, PMD.ApexCRUDViolation')
+@SuppressWarnings(
+    'PMD.NcssTypeCount, PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.PropertyNamingConventions, PMD.CognitiveComplexity, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity'
+)
 global with sharing class LogEntryEventBuilder {
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
@@ -93,8 +95,8 @@ global with sharing class LogEntryEventBuilder {
      * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
      * @param  entryLoggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
      * @param  shouldSave        Determines if the builder's instance of `LogEntryEvent__e` should be saved
-     * @return                   The new instance of `LogEntryEventBuilder`
      */
+    @SuppressWarnings('PMD.NcssConstructorCount')
     public LogEntryEventBuilder(LoggingLevel entryLoggingLevel, Boolean shouldSave) {
         this.entryLoggingLevel = entryLoggingLevel;
         this.shouldSave = shouldSave;
@@ -191,7 +193,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     // DML-result builder methods. All* of the Result classes behave the same (*except Upsert)
-    // ...but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
+    // but Salesforce didn't bother to use an interface for the classes, so instead - overloads!
     /**
      * @description Sets the log entry event's database operation result fields
      * @param  deleteResult The instance of `Database.DeleteResult` to log
@@ -367,6 +369,8 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Deprecated - use `setRecord(Id recordId)` instead
+     * @param recordId The id of the record to set.
+     * @return An instance of LogEntryEventBuilder with a record associated wit recordId.
      */
     global LogEntryEventBuilder setRecordId(Id recordId) {
         return this.setRecord(recordId);
@@ -374,6 +378,8 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Deprecated - use `setRecord(SObject record)` instead
+     * @param record the record to set.
+     * @return An instance of LogEntryEventBuilder with the given record.
      */
     global LogEntryEventBuilder setRecordId(SObject record) {
         return this.setRecord(record);
@@ -402,21 +408,28 @@ global with sharing class LogEntryEventBuilder {
      * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(SObject record) {
-        if (this.shouldSave == false || record == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
-        String recordJson = getJson(record);
-        String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
-        Boolean recordJsonMasked = cleanedRecordJson != recordJson;
-
         this.logEntryEvent.RecordCollectionType__c = 'Single';
-        this.logEntryEvent.RecordId__c = record.Id;
-        this.logEntryEvent.RecordJson__c = cleanedRecordJson;
-        this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
+
+        String recordJson = getJson(record);
+        if (record == null) {
+            this.logEntryEvent.RecordJson__c = recordJson;
+            this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
+            this.logEntryEvent.RecordSObjectType__c = 'Unknown';
+        } else {
+            String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+            Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
+            this.logEntryEvent.RecordId__c = record.Id;
+            this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+            this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(record.getSObjectType());
+            this.logEntryEvent.RecordSObjectType__c = record.getSObjectType().getDescribe().getName();
+            this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(record.getSObjectType());
+        }
 
         return this;
     }
@@ -427,26 +440,43 @@ global with sharing class LogEntryEventBuilder {
      * @return         The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setRecord(List<SObject> records) {
-        if (this.shouldSave == false || records == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
-        Schema.SObjectType sobjectType = records.getSObjectType() != null ? records.getSObjectType() : records.get(0).getSObjectType();
-        String sobjectTypeName = sobjectType?.getDescribe().getName();
-
         this.logEntryEvent.RecordCollectionType__c = 'List';
-        this.logEntryEvent.RecordJson__c = getJson(records);
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
-        this.logEntryEvent.RecordSObjectType__c = sobjectTypeName;
-        this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
+
+        // First, try to use the list's SObject Type - if the list is null or an instance of List<SObject>, it won't have an SObject Type
+        // If using the list doesn't work, and there are 1+ records in the list, then try to use the first record's SObject Type - if it's null, it won't have an SObject Type
+        // If the first object doesn't work, then just log as is a generic SObject - no need to waste additional CPU time on it
+        Schema.SObjectType sobjectType = records?.getSObjectType();
+        if (sobjectType == null && records != null && records.size() >= 1) {
+            sobjectType = records.get(0)?.getSObjectType();
+        }
+
+        String recordJson = getJson(records);
+        if (sobjectType == null) {
+            this.logEntryEvent.RecordJson__c = recordJson;
+            this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
+            this.logEntryEvent.RecordSObjectType__c = 'Unknown';
+        } else {
+            String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+            Boolean recordJsonMasked = cleanedRecordJson != recordJson;
+
+            this.logEntryEvent.RecordJson__c = cleanedRecordJson;
+            this.logEntryEvent.RecordJsonMasked__c = recordJsonMasked;
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+            this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+            this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
+        }
 
         return this;
     }
 
     /**
      * @description Appends the tag to the existing list of tags
-     * @param  tags The string to use as a tag for the current entry
-     * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param tag The string to use as a tag for the current entry
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTag(String tag) {
         if (this.shouldSave == false || String.isBlank(tag)) {
@@ -460,8 +490,8 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Appends the tag to the existing list of tags
-     * @param  tags The string to use as a tag for the current entry
-     * @return        The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param tags The string to use as a tag for the current entry
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTags(List<String> tags) {
         if (tags == null || tags.isEmpty()) {
@@ -477,6 +507,8 @@ global with sharing class LogEntryEventBuilder {
     /**
      * @description Deprecated - use `addTags(List<String> tags)` instead.
      *              This method will be removed in a future release
+     * @param tags A list of tags
+     * @return An instance of LogEntryEventBuilder with the given topics / tags.
      */
     public LogEntryEventBuilder setTopics(List<String> tags) {
         return this.addTags(tags);
@@ -484,9 +516,10 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Parses the provided stack trace and sets the log entry's origin & stack trace fields
-     * @param  stackTraceString The Apex stack trace string to parse
-     * @return                  The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param stackTraceString The Apex stack trace string to parse
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
+    @SuppressWarnings('PMD.NcssMethodCount, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (this.shouldSave == false) {
             return this;
@@ -536,7 +569,7 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Determines if this instance of `LogEntryEventBuilder` should be saved the next time that `Logger.saveLog()` is called
-     * @return   Boolean
+     * @return A boolean set to true if the log entries should be saved.
      */
     public Boolean shouldSave() {
         return this.shouldSave;
@@ -544,7 +577,7 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
-     * @return   The `LogEntryEvent__e` record
+     * @return The `LogEntryEvent__e` record
      */
     public LogEntryEvent__e getLogEntryEvent() {
         if (this.shouldSave == false) {
@@ -581,8 +614,9 @@ global with sharing class LogEntryEventBuilder {
         return this.logEntryEvent;
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void logToApexDebug(String message) {
-        String template = Logger.getUserSettings()?.SystemLogMessageFormat__c?.unescapeJava();
+        String template = LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT?.unescapeJava();
         if (String.isNotBlank(template)) {
             List<String> possibleReplacements = template.split('\\{');
             for (String possibleReplacement : possibleReplacements) {

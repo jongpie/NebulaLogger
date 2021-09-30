@@ -30,6 +30,11 @@
                 <default>false</default>
                 <label>User</label>
             </value>
+            <value>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+                <label>Unknown</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

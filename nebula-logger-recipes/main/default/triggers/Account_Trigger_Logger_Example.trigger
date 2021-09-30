@@ -1,5 +1,7 @@
-// An example trigger to demo logging Account records, using all trigger operations
-// Normally, you should use a trigger handler framework, but this trigger is just for demo purposes
+/**
+ * @description An example trigger to demo logging Account records, using all trigger operations
+ * Normally, you should use a trigger handler framework, but this trigger is just for demo purposes
+ */
 trigger Account_Trigger_Logger_Example on Account(before insert, before update, before delete, after insert, after update, after delete, after undelete) {
     // Get the trigger's list of records
     List<Account> triggerRecords = Trigger.new != null ? Trigger.new : Trigger.old;

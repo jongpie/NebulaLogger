@@ -7,22 +7,21 @@
  * @group Plugins
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
+@SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
     @TestVisible
-    private static String endpoint;
+    private static String endpoint = LoggerParameter.getString('SlackEndpoint', null);
     @TestVisible
-    private static LoggingLevel notificationLoggingLevel;
+    private static LoggingLevel notificationLoggingLevel = Logger.getLoggingLevel(LoggerParameter.getString('SlackNotificationLoggingLevel', null));
 
     private List<Log__c> logs;
 
-    static {
-        endpoint = LoggerParameter.Plugin.getString('SlackEndpoint');
-
-        String notificationLoggingLevelName = LoggerParameter.Plugin.getString('SlackNotificationLoggingLevel');
-        notificationLoggingLevel = Logger.getLoggingLevel(notificationLoggingLevelName);
-    }
-
     // Constructors
+
+    /**
+     * @description Default constructor
+     */
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     public SlackLoggerPlugin() {
     }
 
@@ -32,6 +31,16 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     // Instance methods
+
+    /**
+     * @description Handles the queuable execute logic.
+     * @param triggerOperationType Defines the trigger operation type
+     * @param triggerNew contains a list of the new trigger context / records.
+     * @param triggerNewMap contains a map of ids to new trigger records.
+     * @param triggerOld old contains a list of the old trigger context / records.
+     * @param triggerOldMap contains a map of ids to old trigger records.
+     */
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     public override void execute(
         TriggerOperation triggerOperationType,
         List<SObject> triggerNew,
@@ -51,6 +60,11 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         }
     }
 
+    /**
+     * @description Handles the queuable execute logic. Required by the Queueable interface.
+     * @param queueableContext Context of the current queuable instance.
+     */
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     public void execute(System.QueueableContext queueableContext) {
         // SInce this runs in an async context, requery the logs just in case any field values have changed
         this.requeryLogs();
@@ -63,8 +77,8 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         List<Log__c> unsentLogs = new List<Log__c>();
         for (Log__c log : this.logs) {
             if (Limits.getCallouts() == Limits.getLimitCallouts()) {
-                // If there are too many logs to send in the same transaction...
-                // ...add them to the unsentLogs list, which will be queued as a separate job
+                // If there are too many logs to send in the same transaction
+                // add them to the unsentLogs list, which will be queued as a separate job
                 unsentLogs.add(log);
             } else {
                 HttpRequest request = this.createSlackHttpRequest();
@@ -113,8 +127,8 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
             }
         }
 
-        // Since plugins are called from trigger handlers, and triggers can't make callouts...
-        // ...run this class as a queueable (async) job
+        // Since plugins are called from trigger handlers, and triggers can't make callouts
+        // run this class as a queueable (async) job
         if (logsToSend.isEmpty() == false) {
             System.enqueueJob(new SlackLoggerPlugin(logsToSend));
         }
@@ -162,6 +176,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         ];
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private HttpRequest createSlackHttpRequest() {
         System.debug(notificationLoggingLevel, 'endpoint==' + endpoint);
 
@@ -286,6 +301,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         public String text;
     }
 
+    @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
     private class LogDto {
         public List<ActionDto> actions;
         public String author_name;

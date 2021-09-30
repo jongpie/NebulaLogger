@@ -9,6 +9,7 @@
  * @see Logger
  * @see LogEntryEventBuilder
  */
+@SuppressWarnings('PMD.ExcessivePublicCount, PMD.StdCyclomaticComplexity')
 public inherited sharing class ComponentLogger {
     @TestVisible
     private static final String EXCEPTION_TYPE_PREFIX = 'JavaScript.';
@@ -58,6 +59,7 @@ public inherited sharing class ComponentLogger {
         logEntryEventBuilder.getLogEntryEvent().ExceptionType__c = EXCEPTION_TYPE_PREFIX + componentError.type;
     }
 
+    @SuppressWarnings('PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.AvoidDeeplyNestedIfStmts')
     private static void setStackTraceDetails(LogEntryEventBuilder logEntryEventBuilder, String stackTraceString) {
         String originLocation;
         Boolean isAuraComponent = false;

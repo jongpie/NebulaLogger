@@ -62,7 +62,7 @@ Optionally provide a comma-separated String of tags to dynamically assign to the
 
 #### `addFlowRecordEntries(List<FlowRecordLogEntry> flowRecordLogEntries)` → `List<String>`
 
-addFlowRecordEntries description
+Invocable method for adding record entries via flow or process builder
 
 ##### Parameters
 

@@ -52,6 +52,8 @@ Optionally provide a comma-separated String of tags to dynamically assign to the
 
 #### `timestamp` → `DateTime`
 
+Represents the current system time
+
 #### `topics` → `List<String>`
 
 Optionally provide a comma-separated String of tags to dynamically assign to the log entry
@@ -62,13 +64,13 @@ Optionally provide a comma-separated String of tags to dynamically assign to the
 
 #### `addFlowCollectionEntries(List<FlowCollectionLogEntry> flowCollectionLogEntries)` → `List<String>`
 
-addFlowRecordEntries description
+Invocable method for adding LogEntry records via flow or process builder
 
 ##### Parameters
 
-| Param                  | Description                                      |
-| ---------------------- | ------------------------------------------------ |
-| `flowRecordLogEntries` | The list of FlowRecordLogEntry instances to save |
+| Param                      | Description                                      |
+| -------------------------- | ------------------------------------------------ |
+| `flowCollectionLogEntries` | The list of FlowRecordLogEntry instances to save |
 
 ##### Return
 

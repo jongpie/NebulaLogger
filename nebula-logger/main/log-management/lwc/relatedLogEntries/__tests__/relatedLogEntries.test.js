@@ -14,11 +14,6 @@ function flushPromises() {
     return new Promise(resolve => setTimeout(resolve, 0));
 }
 
-function setElementValue(element, value) {
-    element.value = value;
-    element.dispatchEvent(new CustomEvent('commit'));
-}
-
 jest.mock(
     '@salesforce/apex/RelatedLogEntriesController.getQueryResult',
     () => {

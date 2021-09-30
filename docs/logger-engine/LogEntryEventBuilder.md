@@ -35,9 +35,9 @@ Appends the tag to the existing list of tags
 
 ##### Parameters
 
-| Param  | Description                                      |
-| ------ | ------------------------------------------------ |
-| `tags` | The string to use as a tag for the current entry |
+| Param | Description                                      |
+| ----- | ------------------------------------------------ |
+| `tag` | The string to use as a tag for the current entry |
 
 ##### Return
 
@@ -427,13 +427,61 @@ The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
 Deprecated - use `setRecord(Id recordId)` instead
 
+##### Parameters
+
+| Param      | Description                  |
+| ---------- | ---------------------------- |
+| `recordId` | The id of the record to set. |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+An instance of LogEntryEventBuilder with a record associated wit recordId.
+
 #### `setRecordId(SObject record)` → `LogEntryEventBuilder`
 
 Deprecated - use `setRecord(SObject record)` instead
 
+##### Parameters
+
+| Param    | Description        |
+| -------- | ------------------ |
+| `record` | the record to set. |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+An instance of LogEntryEventBuilder with the given record.
+
 #### `setTopics(List<String> tags)` → `LogEntryEventBuilder`
 
 Deprecated - use `addTags(List&lt;String&gt; tags)` instead. This method will be removed in a future release
+
+##### Parameters
+
+| Param  | Description    |
+| ------ | -------------- |
+| `tags` | A list of tags |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+An instance of LogEntryEventBuilder with the given topics / tags.
 
 #### `shouldSave()` → `Boolean`
 
@@ -447,6 +495,6 @@ Boolean
 
 **Description**
 
-Boolean
+A boolean set to true if the log entries should be saved.
 
 ---

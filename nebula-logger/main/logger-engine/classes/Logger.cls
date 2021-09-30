@@ -9,6 +9,7 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
+@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
 global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -167,6 +168,7 @@ global with sharing class Logger {
 
     /**
      * @description Indicates if the specified logging level is enabled for the current user, based on the custom setting LoggerSettings__c
+     * @param logEntryLoggingLevel the logging level to check.
      * @return Boolean
      */
     global static Boolean meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel) {
@@ -197,8 +199,8 @@ global with sharing class Logger {
 
     /**
      * @description Returns the specified user's instance of `LoggerSettings__c`
-     * @param  user The user record - at a minimum, this record should have the user Id and Profile fields populated
-     * @return      LoggerSettings__c - The specified user's instance of the custom settings
+     * @param loggingUser The user record - at a minimum, this record should have the user Id and Profile fields populated
+     * @return LoggerSettings__c - The specified user's instance of the custom settings
      */
     // TODO make this method `global` in a future release
     public static LoggerSettings__c getUserSettings(User loggingUser) {
@@ -222,7 +224,7 @@ global with sharing class Logger {
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
         // This allows the ability to then upsert the instance of LoggerSettings__c and it will always be specific to that user...
-        // ...which avoids accidentally changing something at the org or profile levels
+        // which avoids accidentally changing something at the org or profile levels
         if (loggingUser.Id != null && loggingUserSettings.SetupOwnerId != loggingUser.Id) {
             loggingUserSettings.Id = null;
             loggingUserSettings.SetupOwnerId = loggingUser.Id;
@@ -380,7 +382,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(LogMessage logMessage, Exception apexException) {
-        return error().setMessage(logMessage).setExceptionDetails(apexException);
+        return error().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
@@ -562,7 +564,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder error(String message, Exception apexException) {
-        return error().setMessage(message).setExceptionDetails(apexException);
+        return error().setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
@@ -609,7 +611,7 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
-     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  message    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
      * @param  apexException The instance of `Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -745,7 +747,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(LogMessage logMessage, Exception apexException) {
-        return warn().setMessage(logMessage).setExceptionDetails(apexException);
+        return warn().setExceptionDetails(apexException).setMessage(logMessage);
     }
 
     /**
@@ -927,7 +929,7 @@ global with sharing class Logger {
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global static LogEntryEventBuilder warn(String message, Exception apexException) {
-        return warn().setMessage(message).setExceptionDetails(apexException);
+        return warn().setExceptionDetails(apexException).setMessage(message);
     }
 
     /**
@@ -974,7 +976,7 @@ global with sharing class Logger {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
-     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  message    The instance of `LogMessage` to use to set the entry's message field
      * @param  records       The list of `SObject` records to log
      * @param  apexException The instance of `Exception` to log
      * @return               The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
@@ -2460,20 +2462,21 @@ global with sharing class Logger {
      *   All subsequent calls to saveLog() will use the transaction save method.
      * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
      */
+    @SuppressWarnings('PMD.NcssMethodCount')
     global static void saveLog(SaveMethod saveMethod) {
         if (LOG_ENTRIES_BUFFER.isEmpty()) {
             return;
         }
 
         if (suspendSaving == true) {
-            if (getUserSettings().EnableSystemMessages__c == true) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                 finest(getSuspendSavingLogSystemMessage());
             }
 
             return;
         }
 
-        if (getUserSettings().EnableSystemMessages__c == true) {
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             finest(getSavingLogSystemMessage(saveMethod));
         }
 
@@ -2489,8 +2492,8 @@ global with sharing class Logger {
             }
         }
 
-        // Platform events don't support BEFORE_INSERT operations (only AFTER_INSERT is supported)
-        // ... but here we are, getting ready to insert the records, but we haven't.... yet
+        // Platform events don't support BEFORE_INSERT operations (only AFTER_INSERT is supported),
+        // but here we are, getting ready to insert the records, but we haven't.... yet
         // It's... it's... almost like... this part of the code IS a BEFORE_INSERT context. Huzzah!
         // This gives us a chance to run the handler class & handler plugins before insert,
         // allowing the plugins to make further changes to the `LogEntryEvent__e` records
@@ -2514,7 +2517,7 @@ global with sharing class Logger {
             when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
                 // To avoid that, use the EventBus instead (even though REST was specified)
-                if (String.isBlank(UserInfo.getUserId())) {
+                if (String.isBlank(UserInfo.getSessionId())) {
                     saveLog(Logger.SaveMethod.EVENT_BUS);
                 } else {
                     new RestApiSaver().insertRecords(logEntryEvents);
@@ -2566,7 +2569,7 @@ global with sharing class Logger {
                 return LoggingLevel.FINEST;
             }
             when else {
-                if (getUserSettings().EnableSystemMessages__c == true) {
+                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                     String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
                     finest(message);
                 }
@@ -2596,12 +2599,7 @@ global with sharing class Logger {
         );
 
         SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(query));
-
-        if (securityDecision.getRecords().isEmpty()) {
-            return null;
-        } else {
-            return (Log__c) securityDecision.getRecords().get(0);
-        }
+        return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
     }
 
     // Private logging level methods to keep global methods simpler/cleaner
@@ -2715,6 +2713,9 @@ global with sharing class Logger {
     }
 
     // Inner class for saving log entries via a queuable job
+    /**
+     * @description Inner class for publishing log entries via the Queueable interface.
+     */
     global class QueueableSaver implements Queueable {
         private List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
 
@@ -2722,6 +2723,11 @@ global with sharing class Logger {
             this.logEntryEvents = logEntryEvents;
         }
 
+        /**
+         * @description Required by the Queueable interface, this method contains the logic executed when
+         * the current instance of the queue runs.
+         * @param queueableContext The context of the current queue.
+         */
         global void execute(System.QueueableContext queueableContext) {
             EventBus.publish(this.logEntryEvents);
         }
@@ -2729,13 +2735,17 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
-        private final String BASE_URL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
-        private final String COMPOSITE_ENDPOINT = '/composite/sobjects';
+        private final String baseURL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
+        private final String compositeEndpoint = '/composite/sobjects';
 
         @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')
+        /**
+         * @description Inserts records via the REST api.
+         * @param records The records to save.
+         */
         public void insertRecords(List<SObject> records) {
             HttpRequest request = new HttpRequest();
-            request.setEndpoint(BASE_URL + COMPOSITE_ENDPOINT);
+            request.setEndpoint(baseURL + compositeEndpoint);
             request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
             request.setHeader('Content-Type', 'application/json; charset=utf-8');
             request.setMethod('POST');
@@ -2759,7 +2769,15 @@ global with sharing class Logger {
 
     // Inner class that matches the format expected by the REST API for saving SObjects
     private class RestSaveRequest {
+        /**
+         * @description Boolean used when saving records.  If true, all records must save correctly or an exception
+         * is thrown.  If false, partial processing is enabled, and if an indidividual record fails, successful records are still saved without exception.
+         */
         public Boolean allOrNone { get; set; }
+
+        /**
+         * @description List of records to save.
+         */
         public List<SObject> records { get; set; }
 
         private RestSaveRequest(List<SObject> records, Boolean allOrNone) {
@@ -2771,21 +2789,29 @@ global with sharing class Logger {
     /******************************************************************************************
      * This code is based on the Apex UUID project, released under the MIT License.            *
      * See LICENSE file or go to https://github.com/jongpie/ApexUuid for full license details. *
+     * @description private, inner class for UUID. See comment for more information.           *
      ******************************************************************************************/
     @TestVisible
     private without sharing class Uuid {
-        private final String HEX_CHARACTERS = '0123456789abcdef';
-        private final String HEX_PREFIX = '0x';
-        private final List<String> HEX_CHARACTER_LIST = HEX_CHARACTERS.split('');
-        private final Integer UUID_V4_LENGTH = 36;
-        private final String UUID_V4_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
+        private final String hexCharacters = '0123456789abcdef';
+        private final String hexPrefix = '0x';
+        private final List<String> hexCharacterList = hexCharacters.split('');
+        private final Integer uuidV4Length = 36;
+        private final String uuidV4Regex = '[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}';
 
         private final String value;
 
+        /**
+         * @description Default constructor
+         */
         public Uuid() {
             this.value = this.generateValue();
         }
 
+        /**
+         * @description Getter returning the uuid value
+         * @return A string containing the UUID value.
+         */
         public String getValue() {
             return this.value;
         }
@@ -2848,15 +2874,15 @@ global with sharing class Logger {
         private Integer convertHexToInteger(String hexValue) {
             hexValue = hexValue.toLowerCase();
 
-            if (hexValue.startsWith(HEX_PREFIX)) {
-                hexValue = hexValue.substringAfter(HEX_PREFIX);
+            if (hexValue.startsWith(hexPrefix)) {
+                hexValue = hexValue.substringAfter(hexPrefix);
             }
 
             Integer integerValue = 0;
             for (String hexCharacter : hexValue.split('')) {
-                Integer hexCharacterIndex = HEX_CHARACTERS.indexOf(hexCharacter);
+                Integer hexCharacterIndex = hexCharacters.indexOf(hexCharacter);
 
-                integerValue = HEX_CHARACTERS.length() * integerValue + hexCharacterIndex;
+                integerValue = hexCharacters.length() * integerValue + hexCharacterIndex;
             }
             return integerValue;
         }
@@ -2864,10 +2890,10 @@ global with sharing class Logger {
         private String convertIntegerToHex(Integer integerValue) {
             String hexValue = '';
             while (integerValue > 0) {
-                Integer hexCharacterIndex = Math.mod(integerValue, HEX_CHARACTERS.length());
+                Integer hexCharacterIndex = Math.mod(integerValue, hexCharacters.length());
 
-                hexValue = HEX_CHARACTER_LIST[hexCharacterIndex] + hexValue;
-                integerValue = integerValue / HEX_CHARACTERS.length();
+                hexValue = hexCharacterList[hexCharacterIndex] + hexValue;
+                integerValue = integerValue / hexCharacters.length();
             }
             return hexValue;
         }

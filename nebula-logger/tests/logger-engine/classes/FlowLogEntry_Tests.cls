@@ -23,7 +23,6 @@ private class FlowLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
@@ -50,7 +49,6 @@ private class FlowLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
@@ -79,7 +77,6 @@ private class FlowLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
@@ -97,7 +94,6 @@ private class FlowLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         System.assertEquals(null, flowEntry.faultMessage);
@@ -131,7 +127,6 @@ private class FlowLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.faultMessage = 'Whoops, a Flow error has occurred.';
@@ -167,7 +162,6 @@ private class FlowLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         List<String> tags = new List<String>{ 'first tag', 'SECOND TAG' };
         FlowLogEntry flowEntry = createFlowLogEntry();

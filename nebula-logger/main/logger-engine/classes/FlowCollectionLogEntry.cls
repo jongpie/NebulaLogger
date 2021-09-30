@@ -12,6 +12,7 @@
  * @see Logger
  * @see LogEntryEventBuilder
  */
+@SuppressWarnings('PMD.AvoidGlobalModifier')
 global inherited sharing class FlowCollectionLogEntry {
     /**
      * @description The name of the Flow creating the log entry.
@@ -37,6 +38,7 @@ global inherited sharing class FlowCollectionLogEntry {
      */
     @InvocableVariable(required=false label='(Optional) Flow Fault Error Message')
     global String faultMessage;
+
     /**
      * @description Optionally choose to save any pending log entries
      */
@@ -61,12 +63,15 @@ global inherited sharing class FlowCollectionLogEntry {
     @InvocableVariable(required=false label='DEPRECATED: Use \'Tags\' Instead')
     public List<String> topics;
 
+    /**
+     * @description Represents the current system time
+     */
     public DateTime timestamp = System.now();
 
     /**
-     * addFlowRecordEntries description
-     * @param  flowRecordLogEntries The list of FlowRecordLogEntry instances to save
-     * @return                      The current transaction's ID (based on `Logger.getTransactionId()`)
+     * @description Invocable method for adding LogEntry records via flow or process builder
+     * @param  flowCollectionLogEntries The list of FlowRecordLogEntry instances to save
+     * @return The current transaction's ID (based on `Logger.getTransactionId()`)
      */
     @InvocableMethod(
         category='Logging'

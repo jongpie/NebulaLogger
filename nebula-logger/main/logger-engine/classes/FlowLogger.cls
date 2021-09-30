@@ -19,15 +19,50 @@ public inherited sharing class FlowLogger {
     // +3 goofiness points: if we duplicate properties between classes, we can convert all other classes
     //                      to one common class (FlowLogger.LogEntry), and use it for shared logic.
     //                      For maximum goofiness, the conversion between classes happens using JSON.deserialize()
+    /**
+     * @description Inner, wrapper class containing Log Entry information.
+     */
     public class LogEntry {
         // Public member variables - all other Flow classes should duplicate these public variables
+
+        /**
+         * @description name of the flow.
+         */
         public String flowName;
+
+        /**
+         * @description General message to log.
+         */
         public String message;
+
+        /**
+         * @description String containing fault message, if applicable
+         */
         public String faultMessage;
+
+        /**
+         * @description String containing the logging level.
+         */
         public String loggingLevelName;
+
+        /**
+         * @description String of tags / topics.
+         */
         public String tagsString;
+
+        /**
+         * @description List of tags / topics.
+         */
         public List<String> topics; // TODO: deprecated, remove in a future release
+
+        /**
+         * @description boolean used to determine if logs are saved to Salesforce.
+         */
         public Boolean saveLog = false;
+
+        /**
+         * @description timestamp of the log
+         */
         public DateTime timestamp;
 
         // Private member variables
@@ -35,6 +70,10 @@ public inherited sharing class FlowLogger {
         private LogEntryEventBuilder logEntryEventBuilder;
         private LogEntryEvent__e logEntryEvent;
 
+        /**
+         * @description Adds the logger to the buffer.
+         * @return An instance of LogEntryEventBuilder.
+         */
         public LogEntryEventBuilder addToLoggerBuffer() {
             if (this.logEntryEventBuilder != null) {
                 return this.logEntryEventBuilder;
@@ -76,6 +115,12 @@ public inherited sharing class FlowLogger {
     }
 
     // Static methods
+
+    /**
+     * @description Adds logging entries
+     * @param flowEntries The log entry instances to add.
+     * @return A list of transaction ids.
+     */
     public static List<String> addEntries(List<LogEntry> flowEntries) {
         Boolean saveLog = false;
         for (LogEntry flowEntry : flowEntries) {
@@ -91,7 +136,7 @@ public inherited sharing class FlowLogger {
         }
 
         // Event though it's the same transaction ID, Salesforce expects the returned list...
-        // ...to have the same number of items as the initial input.
+        // to have the same number of items as the initial input.
         // When there's a mismatch, Salesforce throws an error:
         // FLOW_ELEMENT_ERROR The number of results does not match the number of interviews that were executed in a single bulk execution request.|FlowActionCall
         List<String> transactionIds = new List<String>();

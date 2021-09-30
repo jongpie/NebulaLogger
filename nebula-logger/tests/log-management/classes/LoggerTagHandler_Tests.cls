@@ -15,21 +15,6 @@ private class LoggerTagHandler_Tests {
     }
 
     @IsTest
-    static void it_should_not_set_unique_id_when_disabled() {
-        LoggerSObjectHandler__mdt loggerTagHandlerConfiguration = new LoggerSObjectHandler__mdt(
-            IsEnabled__c = false,
-            SObjectType__c = LoggerTag__c.SObjectType.getDescribe().getName()
-        );
-        LoggerSObjectHandler.setMockConfiguration(Schema.LoggerTag__c.SObjectType, loggerTagHandlerConfiguration);
-
-        LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
-        insert tag;
-
-        tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id];
-        System.assertEquals(null, tag.UniqueId__c);
-    }
-
-    @IsTest
     static void it_should_not_insert_duplicate_tag() {
         LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
         insert tag;

@@ -34,10 +34,10 @@ private class Logger_Tests_MergeResult {
     }
 
     @IsTest
-    static void it_should_add_an_error_entry_for_logMessage_with_mergeResult() {
+    static void addErrorEntryForLogMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -47,22 +47,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Logging level name was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry tags was incorrect.');
     }
 
     @IsTest
-    static void it_should_add_an_error_entry_for_logMessage_with_mergeResultList() {
+    static void addErrorEntryForLogMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -72,21 +84,29 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags was incorrect.');
     }
 
     @IsTest
-    static void it_should_add_an_error_entry_for_string_message_with_mergeResult() {
+    static void addErrorEntryForStringMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -96,22 +116,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was incorrect.');
     }
 
     @IsTest
-    static void it_should_add_an_error_entry_for_string_message_with_mergeResultList() {
+    static void addErrorEntryForStringMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -121,22 +153,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('List', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'List',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was incorrect.');
     }
 
     @IsTest
-    static void it_should_add_an_warn_entry_for_logMessage_with_mergeResult() {
+    static void addWarnEntryForLogMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -146,22 +190,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field not null.');
     }
 
     @IsTest
-    static void it_should_add_an_warn_entry_for_logMessage_with_mergeResultList() {
+    static void addWarnEntryForLogMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -171,21 +227,29 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_warn_entry_for_string_message_with_mergeResult() {
+    static void addWarnEntryForStringMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -195,22 +259,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null');
     }
 
     @IsTest
-    static void it_should_add_an_warn_entry_for_string_message_with_mergeResultList() {
+    static void addWarnEntryForStringMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -220,22 +296,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('List', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event recrd JSON was incorrect.');
+        System.assertEquals(
+            'List',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event databse result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result json was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_info_entry_for_logMessage_with_mergeResult() {
+    static void addAnInfoEntryForLogMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -245,22 +333,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was not null.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_info_entry_for_logMessage_with_mergeResultList() {
+    static void addInfoEntryForLogMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -270,21 +370,29 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null');
     }
 
     @IsTest
-    static void it_should_add_an_info_entry_for_string_message_with_mergeResult() {
+    static void addInfoEntryForStringMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -294,22 +402,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null');
     }
 
     @IsTest
-    static void it_should_add_an_info_entry_for_string_message_with_mergeResultList() {
+    static void addAnInfoEntryForStringMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Log entry buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -319,22 +439,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('List', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry record JSON was incorrect.');
+        System.assertEquals(
+            'List',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_debug_entry_for_logMessage_with_mergeResult() {
+    static void addDebugEntryForLogMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -344,22 +476,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_debug_entry_for_logMessage_with_mergeResultList() {
+    static void addDebugEntryForLogMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -369,21 +513,29 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_debug_entry_for_string_message_with_mergeResult() {
+    static void addDebugEntryForStringMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -393,22 +545,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_debug_entry_for_string_message_with_mergeResultList() {
+    static void addDebugEntryForStringMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -418,22 +582,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('List', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'List',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_fine_entry_for_logMessage_with_mergeResult() {
+    static void addFineEntryForLogMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -443,22 +619,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_fine_entry_for_logMessage_with_mergeResultList() {
+    static void addFineEntryForLogMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -468,21 +656,29 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_fine_entry_for_string_message_with_mergeResult() {
+    static void addFineEntryForStringMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -492,22 +688,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was incorrect.');
     }
 
     @IsTest
-    static void it_should_add_an_fine_entry_for_string_message_with_mergeResultList() {
+    static void addFineEntryForStringMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -517,22 +725,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('List', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'List',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_finer_entry_for_logMessage_with_mergeResult() {
+    static void addFinerEntryForLogMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -542,22 +762,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_finer_entry_for_logMessage_with_mergeResultList() {
+    static void addFinerEntryForLogMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -567,21 +799,29 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_finer_entry_for_string_message_with_mergeResult() {
+    static void addFinerEntryForStringMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -591,22 +831,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_finer_entry_for_string_message_with_mergeResultList() {
+    static void addFinerEntryForStringMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -616,22 +868,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('List', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'List',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_finest_entry_for_logMessage_with_mergeResult() {
+    static void addFinestEntryForLogMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -641,22 +905,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_finest_entry_for_logMessage_with_mergeResultList() {
+    static void addFinestEntryForLogMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -666,21 +942,29 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getLogMessage().getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_finest_entry_for_string_message_with_mergeResult() {
+    static void addFinestEntryForStringMessageWithMergeResult() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         Database.MergeResult mergeResult = getMergeResult();
 
@@ -690,22 +974,34 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('Single', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResult), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(mergeResult.getId(), entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'Single',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResult),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 
     @IsTest
-    static void it_should_add_an_finest_entry_for_string_message_with_mergeResultList() {
+    static void addFinestEntryForStringMessageWithMergeResultList() {
         LoggingLevel loggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
@@ -715,14 +1011,26 @@ private class Logger_Tests_MergeResult {
 
         Test.stopTest();
 
-        System.assertEquals(1, Logger.getBufferSize());
-        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c);
-        System.assertEquals('List', entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c);
-        System.assertEquals(JSON.serializePretty(mergeResults), entryBuilder.getLogEntryEvent().DatabaseResultJson__c);
-        System.assertEquals(Database.MergeResult.class.getName(), entryBuilder.getLogEntryEvent().DatabaseResultType__c);
-        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c);
+        System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
+        System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
+        System.assertEquals(getMessage(), entryBuilder.getLogEntryEvent().Message__c, 'Log entry event message was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordId__c, 'Log entry event record id was incorrect.');
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
+        System.assertEquals(
+            'List',
+            entryBuilder.getLogEntryEvent().DatabaseResultCollectionType__c,
+            'Log entry event database result collection type was incorrect.'
+        );
+        System.assertEquals(
+            JSON.serializePretty(mergeResults),
+            entryBuilder.getLogEntryEvent().DatabaseResultJson__c,
+            'Log entry event database result JSON was incorrect.'
+        );
+        System.assertEquals(
+            Database.MergeResult.class.getName(),
+            entryBuilder.getLogEntryEvent().DatabaseResultType__c,
+            'Log entry event database result type was incorrect.'
+        );
+        System.assertEquals(null, entryBuilder.getLogEntryEvent().Tags__c, 'Log entry event tags field was not null.');
     }
 }

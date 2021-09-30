@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.8.0",
-            "versionName": "New 'Log Entry Event Stream' Component",
-            "versionDescription": "Real-time monitoring & filtering of LogEntryEvent__e platform events",
+            "versionNumber": "4.6.9.0",
+            "versionName": "Custom Metadata Types Optimized",
+            "versionDescription": "Consolidated & cleaned up several custom metadata type objects",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
@@ -51,6 +51,7 @@
         "Nebula Logger - Unlocked Package@4.6.6-0-configurable-apex-debug-log-syntax": "04t5Y0000015khXQAQ",
         "Nebula Logger - Unlocked Package@4.6.7-0-security-enhancements": "04t5Y0000015klZQAQ",
         "Nebula Logger - Unlocked Package@4.6.8-0-new-log-entry-event-stream-component": "04t5Y0000015kplQAA",
+        "Nebula Logger - Unlocked Package@4.6.9-0-custom-metadata-types-optimized": "04t5Y0000015kqtQAA",
         "Nebula Logger Plugin - Slack": "0Ho5e000000oM3pCAE",
         "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ",
         "Nebula Logger Plugin - Slack@0.9.1-0-beta-release-round-2": "04t5e00000065xiAAA"

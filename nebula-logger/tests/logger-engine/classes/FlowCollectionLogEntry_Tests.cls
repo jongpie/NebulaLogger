@@ -30,7 +30,6 @@ private class FlowCollectionLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
@@ -76,7 +75,6 @@ private class FlowCollectionLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
@@ -119,7 +117,6 @@ private class FlowCollectionLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
@@ -138,7 +135,6 @@ private class FlowCollectionLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowCollectionLogEntry flowEntry = createFlowCollectionLogEntry();
         System.assertEquals(null, flowEntry.faultMessage);
@@ -182,7 +178,6 @@ private class FlowCollectionLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         FlowCollectionLogEntry flowEntry = createFlowCollectionLogEntry();
         flowEntry.faultMessage = 'Whoops, a Flow error has occurred.';
@@ -227,7 +222,6 @@ private class FlowCollectionLogEntry_Tests {
         Test.startTest();
 
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
-        Logger.getUserSettings().EnableSystemMessages__c = false;
 
         List<String> tags = new List<String>{ 'first tag', 'SECOND TAG' };
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();

@@ -16,7 +16,7 @@ private class RelatedLogEntriesController_Tests {
         return fieldSetName;
     }
 
-    @testSetup
+    @TestSetup
     static void setupData() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;

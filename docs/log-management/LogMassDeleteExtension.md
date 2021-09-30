@@ -12,13 +12,13 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 
 #### `LogMassDeleteExtension(ApexPages.StandardSetController controller)`
 
-LogMassDeleteExtension description
+Constructor for Visual Force list page / StandardSetController.
 
 ##### Parameters
 
-| Param        | Description            |
-| ------------ | ---------------------- |
-| `controller` | controller description |
+| Param        | Description                                                       |
+| ------------ | ----------------------------------------------------------------- |
+| `controller` | The standard set controller (passed in automatically via VF page) |
 
 ---
 
