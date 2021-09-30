@@ -8,19 +8,22 @@ import getDeploymentStatus from '@salesforce/apex/CustomMetadataTableController.
 
 export default class CustomMetadataTable extends LightningElement {
     @api
-    objectapiname;
+    objectApiName;
 
     @api
-    icon = '';
+    iconName = '';
 
     @api
     title = '';
 
     @api
-    fieldstodisplay = '';
+    fieldsToDisplay = '';
 
     @api
-    enableediting = false;
+    fieldsToEdit = '';
+
+    @api
+    enableEditing = false;
 
     @api
     records = [];
@@ -59,9 +62,9 @@ export default class CustomMetadataTable extends LightningElement {
         console.log('CMDT records==' + JSON.stringify(this.records));
     }
 
-    @wire(getObjectInfo, { objectApiName: '$objectapiname' })
+    @wire(getObjectInfo, { objectApiName: '$objectApiName' })
     getSObjectDescribe({ error, data }) {
-        console.log('getting SObject Describe for ' + this.objectapiname);
+        console.log('getting SObject Describe for ' + this.objectApiName);
         if (error) {
             // TODO add error handling
             console.log('an error occurred');
@@ -130,7 +133,13 @@ export default class CustomMetadataTable extends LightningElement {
         console.log(sobjectFieldsByDeveloperName);
         this.columns = [];
 
-        this.fieldstodisplay.split(',').forEach(fieldApiName => {
+        this._editableFields = new Set();
+        this.fieldsToEdit.split(',').forEach(fieldApiName => {
+            fieldApiName = fieldApiName.trim();
+            this._editableFields.add(fieldApiName);
+        });
+
+        this.fieldsToDisplay.split(',').forEach(fieldApiName => {
             fieldApiName = fieldApiName.trim();
             let field = sobjectFieldsByDeveloperName.get(fieldApiName);
             if (field) {
@@ -138,6 +147,7 @@ export default class CustomMetadataTable extends LightningElement {
                 this.columns.push(column);
             }
         });
+
         console.log('this.columns==' + JSON.stringify(this.columns));
     }
 
@@ -145,7 +155,7 @@ export default class CustomMetadataTable extends LightningElement {
         let column = {
             label: field.label,
             fieldName: field.apiName,
-            editable: this.enableediting && field.apiName != 'DeveloperName',
+            editable: this.enableEditing && field.apiName != 'DeveloperName' && this._editableFields.has(field.apiName),
             type: field.dataType.toLowerCase()
         };
 

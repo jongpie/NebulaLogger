@@ -5,6 +5,7 @@ import getLoggingLevelOptions from '@salesforce/apex/LoggerConfiguratorControlle
 import getShareAccessLevelOptions from '@salesforce/apex/LoggerConfiguratorController.getShareAccessLevelOptions';
 import getSettings from '@salesforce/apex/LoggerConfiguratorController.getSettings';
 import getParameters from '@salesforce/apex/LoggerConfiguratorController.getParameters';
+import getDataMaskRules from '@salesforce/apex/LoggerConfiguratorController.getDataMaskRules';
 import getPlugins from '@salesforce/apex/LoggerConfiguratorController.getPlugins';
 // import saveSettings from '@salesforce/apex/LoggerConfiguratorController.saveSettings';
 
@@ -28,9 +29,11 @@ export default class LoggerConfigurator extends LightningElement {
 
     parameterRecords;
     pluginRecords;
+    dataMaskRules;
 
     parametersLoaded = false;
     pluginsLoaded = false;
+    dataMaskRulesLoaded = false;
 
     _loggingLevelOptions;
     _shareAccessLevelOptions;
@@ -47,6 +50,10 @@ export default class LoggerConfigurator extends LightningElement {
         return 'Logger Parameters';
     }
 
+    get dataMaskRulesTitle() {
+        return 'Logger Data Mask Rules';
+    }
+    
     get pluginsTitle() {
         return 'Logger Plugins';
     }
@@ -57,6 +64,10 @@ export default class LoggerConfigurator extends LightningElement {
 
     get canEditLoggerParameters() {
         return canEditLoggerParameters;
+    }
+
+    get canEditLogEntryDataMaskRules() {
+        return true; // TODO add custom permission
     }
 
     get canEditLoggerPlugins() {
@@ -95,11 +106,17 @@ export default class LoggerConfigurator extends LightningElement {
         // .catch(error => {
         //     // TODO error handling
         // });
-        
+
         getParameters().then(result => {
             console.log('getParameters() result==' + JSON.stringify(result));
             this.parameterRecords = result;
             this.parametersLoaded = true;
+        });
+
+        getDataMaskRules().then(result => {
+            console.log('getDataMaskRules() result==' + JSON.stringify(result));
+            this.dataMaskRules = result;
+            this.dataMaskRulesLoaded = true;
         });
 
         getPlugins().then(result => {

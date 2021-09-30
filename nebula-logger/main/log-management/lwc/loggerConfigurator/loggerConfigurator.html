@@ -28,12 +28,27 @@
             <lightning-tab label="System Parameters">
                 <template if:true={parametersLoaded}>
                     <c-custom-metadata-table
-                        icon="standard:bundle_config"
-                        enableediting={canEditLoggerParameters}
-                        fieldstodisplay="DeveloperName, MasterLabel, Value__c, Description__c"
-                        objectapiname="LoggerParameter__mdt"
+                        icon-name="standard:bundle_config"
+                        enable-editing={canEditLoggerParameters}
+                        fields-to-display="DeveloperName, MasterLabel, Value__c, Description__c"
+                        fields-to-edit="Value__c"
+                        object-api-name="LoggerParameter__mdt"
                         records={parameterRecords}
                         title={parametersTitle}
+                    >
+                    </c-custom-metadata-table>
+                </template>
+            </lightning-tab>
+            <lightning-tab label="Data Mask Rules">
+                <template if:true={dataMaskRulesLoaded}>
+                    <c-custom-metadata-table
+                        icon-name="standard:topic"
+                        enable-editing={canEditLoggerParameters}
+                        fields-to-display="DeveloperName, MasterLabel, IsEnabled__c, ApplyToMessage__c, ApplyToRecordJson__c, SensitiveDataRegEx__c, ReplacementRegEx__c"
+                        fields-to-edit="IsEnabled__c, ApplyToMessage__c, ApplyToRecordJson__c, SensitiveDataRegEx__c, ReplacementRegEx__c"
+                        object-api-name="LogEntryDataMaskRule__mdt"
+                        records={dataMaskRules}
+                        title={dataMaskRulesTitle}
                     >
                     </c-custom-metadata-table>
                 </template>
@@ -41,10 +56,11 @@
             <lightning-tab label="Plugins">
                 <template if:true={pluginsLoaded}>
                     <c-custom-metadata-table
-                        icon="standard:apex_config"
-                        enableediting={canEditLoggerPlugins}
-                        fieldstodisplay="DeveloperName, MasterLabel, IsEnabled__c, Description__c"
-                        objectapiname="LoggerPlugin__mdt"
+                        icon-name="standard:apex_plugin"
+                        enable-editing={canEditLoggerPlugins}
+                        fields-to-display="DeveloperName, MasterLabel, IsEnabled__c, Description__c"
+                        fields-to-edit="IsEnabled__c, Description__c"
+                        object-api-name="LoggerPlugin__mdt"
                         records={pluginRecords}
                         title={pluginsTitle}
                     >

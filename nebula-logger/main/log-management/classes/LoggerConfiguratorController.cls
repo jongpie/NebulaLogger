@@ -73,6 +73,15 @@ public with sharing class LoggerConfiguratorController {
     }
 
     @AuraEnabled
+    public static List<LogEntryDataMaskRule__mdt> getDataMaskRules() {
+        try {
+            return [SELECT DeveloperName, MasterLabel, IsEnabled__c, ApplyToMessage__c, ApplyToRecordJson__c, SensitiveDataRegEx__c, ReplacementRegEx__c FROM LogEntryDataMaskRule__mdt ORDER BY DeveloperName];
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
     public static List<LoggerPlugin__mdt> getPlugins() {
         try {
             return [SELECT DeveloperName, MasterLabel, IsEnabled__c, Description__c FROM LoggerPlugin__mdt ORDER BY DeveloperName];

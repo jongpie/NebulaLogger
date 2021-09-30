@@ -1,6 +1,5 @@
 <template>
-    [icon name: {icon}]
-    <lightning-card title={title} icon-name={icon}>
+    <lightning-card title={title} icon-name={iconName}>
         <template if:true={deploymentStatus}>
             <div slot="actions" class="slds-text-align_right">
                 Deployment Status: {deploymentStatus} <br />
