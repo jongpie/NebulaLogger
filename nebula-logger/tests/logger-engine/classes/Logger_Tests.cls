@@ -315,6 +315,40 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_set_scenario() {
+        String transactionId = Logger.getTransactionId();
+        String transactionScenarioName = 'some test scenario for this transaction';
+
+        Logger.setScenario(transactionScenarioName);
+        for (Integer i = 0; i < 5; i++) {
+            Logger.info('my log entry');
+        }
+        Logger.saveLog();
+        Test.getEventBus().deliver();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+    }
+
+    @IsTest
+    static void it_should_use_last_scenario_when_multiple_scenarios_specified() {
+        String transactionId = Logger.getTransactionId();
+        String initialTransactionScenarioName = 'some test scenario for this transaction';
+        String lastTransactionScenarioName = 'some test scenario for this transaction';
+
+        Logger.setScenario(initialTransactionScenarioName);
+        for (Integer i = 0; i < 5; i++) {
+            Logger.info('my log entry');
+        }
+        Logger.setScenario(lastTransactionScenarioName);
+        Logger.saveLog();
+        Test.getEventBus().deliver();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(lastTransactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+    }
+
+    @IsTest
     static void it_should_set_parent_transaction_id() {
         String expectedParentTransactionId = 'imagineThisWereAGuid';
         Logger.setParentLogTransactionId(expectedParentTransactionId);

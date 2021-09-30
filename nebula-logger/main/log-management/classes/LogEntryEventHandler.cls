@@ -106,6 +106,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             log.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
             log.ProfileId__c = logEntryEvent.ProfileId__c;
             log.ProfileName__c = logEntryEvent.ProfileName__c;
+            log.Scenario__c = logEntryEvent.Scenario__c;
             log.SessionId__c = logEntryEvent.SessionId__c;
             log.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
             log.SessionType__c = logEntryEvent.SessionType__c;

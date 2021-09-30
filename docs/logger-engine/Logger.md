@@ -4188,9 +4188,19 @@ Sets the default save method used when calling saveLog() - any subsequent calls 
 
 ##### Parameters
 
-| Param        | Description                                                                                              |
-| ------------ | -------------------------------------------------------------------------------------------------------- |
-| `saveMethod` | - The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction |
+| Param        | Description                                                                                            |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| `saveMethod` | The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction |
+
+#### `setScenario(String scenario)` → `void`
+
+Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c` and `Log__c.Scenario__c`, and can be used to filter &amp; group logs
+
+##### Parameters
+
+| Param      | Description                                                 |
+| ---------- | ----------------------------------------------------------- |
+| `scenario` | The name to use for the current transaction&apos;s scenario |
 
 #### `suspendSaving()` → `void`
 

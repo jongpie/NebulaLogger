@@ -113,6 +113,7 @@ private class LogEntryEventHandler_Tests {
             RecordJson__c = JSON.serializePretty(currentUser),
             RecordSObjectClassification__c = 'Standard Object',
             RecordSObjectType__c = 'User',
+            Scenario__c = 'Apex test execution',
             SessionId__c = null,
             SessionSecurityLevel__c = null,
             SessionType__c = null,
@@ -702,6 +703,7 @@ private class LogEntryEventHandler_Tests {
                 ParentLog__c,
                 ProfileId__c,
                 ProfileName__c,
+                Scenario__c,
                 SessionId__c,
                 SessionSecurityLevel__c,
                 SessionType__c,
@@ -809,6 +811,8 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c);
         System.assertEquals(logOwnerId, log.OwnerId);
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c);
+        System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c);
+        System.assertEquals(logEntryEvent.Scenario__c, log.Scenario__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
         System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c);

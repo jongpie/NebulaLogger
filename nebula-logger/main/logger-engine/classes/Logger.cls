@@ -18,6 +18,7 @@ global with sharing class Logger {
 
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
+    private static String transactionScenario;
     private static Boolean suspendSaving = false;
     private static LoggerSettings__c userSettings;
 
@@ -2442,8 +2443,17 @@ global with sharing class Logger {
 
     // Save control methods
     /**
+     * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
+     *              and `Log__c.Scenario__c`, and can be used to filter & group logs
+     * @param  scenario The name to use for the current transaction's scenario
+     */
+    public static void setScenario(String scenario) {
+        transactionScenario = scenario;
+    }
+
+    /**
      * @description Sets the default save method used when calling saveLog() - any subsequent calls to saveLog() will use the specified save method
-     * @param  saveMethod - The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
+     * @param  saveMethod The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
     global static void setSaveMethod(SaveMethod saveMethod) {
         transactionSaveMethod = saveMethod;
@@ -2485,6 +2495,7 @@ global with sharing class Logger {
             if (logEntryEventBuilder.shouldSave()) {
                 LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
                 logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
+                logEntryEvent.Scenario__c = transactionScenario;
                 logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
                 logEntryEvent.TransactionId__c = getTransactionId();
 

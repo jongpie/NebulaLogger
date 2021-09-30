@@ -1594,6 +1594,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Log__c.Scenario__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.SendSlackNotification__c</field>
         <readable>true</readable>
     </fieldPermissions>

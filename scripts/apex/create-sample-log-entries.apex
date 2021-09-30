@@ -1,3 +1,4 @@
+Logger.setScenario('an example transaction scenario name');
 Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
 Logger.getUserSettings().ApplyDataMaskRules__c = true;
 
