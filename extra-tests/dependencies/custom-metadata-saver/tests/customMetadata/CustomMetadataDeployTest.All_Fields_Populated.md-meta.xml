@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>All Fields Populated</label>
+    <protected>false</protected>
+    <values>
+        <field>ExampleCheckboxField__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>ExampleDateField__c</field>
+        <value xsi:type="xsd:date">2021-02-23</value>
+    </values>
+    <values>
+        <field>ExampleDatetimeField__c</field>
+        <value xsi:type="xsd:dateTime">2021-02-25T05:44:00.000Z</value>
+    </values>
+    <values>
+        <field>ExampleEmailField__c</field>
+        <value xsi:type="xsd:string">some.one@test.com</value>
+    </values>
+    <values>
+        <field>ExampleNumberField__c</field>
+        <value xsi:type="xsd:double">123456.0987</value>
+    </values>
+    <values>
+        <field>ExamplePercentField__c</field>
+        <value xsi:type="xsd:double">55.2951</value>
+    </values>
+    <values>
+        <field>ExamplePhoneField__c</field>
+        <value xsi:type="xsd:string">+1 (510) 555-1234</value>
+    </values>
+    <values>
+        <field>ExamplePicklistField__c</field>
+        <value xsi:type="xsd:string">Option 2</value>
+    </values>
+    <values>
+        <field>ExampleTextAreaField__c</field>
+        <value xsi:type="xsd:string">Some
+more 
+text</value>
+    </values>
+    <values>
+        <field>ExampleTextAreaLongField__c</field>
+        <value xsi:type="xsd:string">Even
+more
+text
+is
+available
+here</value>
+    </values>
+    <values>
+        <field>ExampleTextField__c</field>
+        <value xsi:type="xsd:string">hello, it&apos;s flow, ya know</value>
+    </values>
+    <values>
+        <field>ExampleURLField__c</field>
+        <value xsi:type="xsd:string">https://salesforce.com</value>
+    </values>
+</CustomMetadata>

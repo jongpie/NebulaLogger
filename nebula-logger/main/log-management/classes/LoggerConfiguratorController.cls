@@ -6,10 +6,10 @@
 
 /**
  * @group Log Management
- * @description Controller class for the lightning web component `loggerSettingsManager`
+ * @description Controller class for the lightning web component `loggerConfigurator`
  */
 @SuppressWarnings('PMD.ApexCRUDViolation')
-public with sharing class LoggerSettingsManagerController {
+public with sharing class LoggerConfiguratorController {
     @AuraEnabled
     public static List<LoggerSettings__c> getSettings() {
         try {
@@ -58,6 +58,15 @@ public with sharing class LoggerSettingsManagerController {
         try {
             upsert settings;
             return getSettings();
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static List<LoggerParameter__mdt> getParameters() {
+        try {
+            return [SELECT DeveloperName, MasterLabel, Description__c, Value__c FROM LoggerParameter__mdt ORDER BY DeveloperName];
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }

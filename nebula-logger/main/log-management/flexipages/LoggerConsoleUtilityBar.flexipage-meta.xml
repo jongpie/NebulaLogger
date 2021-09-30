@@ -38,7 +38,7 @@
                     <type>decorator</type>
                     <value>1200</value>
                 </componentInstanceProperties>
-                <componentName>loggerSettingsManager</componentName>
+                <componentName>loggerConfigurator</componentName>
             </componentInstance>
         </itemInstances>
         <name>utilityItems</name>

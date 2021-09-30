@@ -2,15 +2,17 @@
 layout: default
 ---
 
-## LoggerSettingsManagerController class
+## LoggerConfiguratorController class
 
-Controller class for the lightning web component `loggerSettingsManager`
+Controller class for the lightning web component `loggerConfigurator`
 
 ---
 
 ### Methods
 
 #### `getLoggingLevelOptions()` → `List<PicklistOption>`
+
+#### `getParameters()` → `List<LoggerParameter_t>`
 
 #### `getSettings()` → `List<LoggerSettings__c>`
 
@@ -22,7 +24,7 @@ Controller class for the lightning web component `loggerSettingsManager`
 
 ### Inner Classes
 
-#### LoggerSettingsManagerController.PicklistOption class
+#### LoggerConfiguratorController.PicklistOption class
 
 ---
 

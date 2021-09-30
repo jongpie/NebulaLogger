@@ -1037,7 +1037,7 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>LoggerSettingsManager</tab>
+        <tab>LoggerConfigurator</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

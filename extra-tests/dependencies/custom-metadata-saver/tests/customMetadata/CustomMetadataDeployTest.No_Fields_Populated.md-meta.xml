@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>No Fields Populated</label>
+    <protected>false</protected>
+    <values>
+        <field>ExampleCheckboxField__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>ExampleDateField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExampleDatetimeField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExampleEmailField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExampleNumberField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExamplePercentField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExamplePhoneField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExamplePicklistField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExampleTextAreaField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExampleTextAreaLongField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExampleTextField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ExampleURLField__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

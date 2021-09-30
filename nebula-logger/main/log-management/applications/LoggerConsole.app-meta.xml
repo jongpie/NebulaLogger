@@ -16,7 +16,7 @@
     <tabs>LogEntryTag__c</tabs>
     <tabs>LoggerTag__c</tabs>
     <tabs>LogEntryEventStream</tabs>
-    <tabs>LoggerSettingsManager</tabs>
+    <tabs>LoggerConfigurator</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
@@ -37,7 +37,7 @@
             <tab>Log__c</tab>
         </mappings>
         <mappings>
-            <tab>LoggerSettingsManager</tab>
+            <tab>LoggerConfigurator</tab>
         </mappings>
         <mappings>
             <tab>LoggerTag__c</tab>

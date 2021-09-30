@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <masterLabel>Custom Metadata Table</masterLabel>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+    <targetConfig targets="lightning__FlowScreen">
+            <propertyType name="T" extends="SObject" label="CMDT Object" description="Generic SObject data type used for input SObject properties"/>
+            <property name="records" type="{T[]}" label="CMDT Record Collection" description="The collection of custom metadata records to display in a table"/>
+            <property name="fieldstodisplay" type="String" label="Fields to Display" description="Comma-separated list of field API names to display in the table"/>
+            <property name="enableediting" type="Boolean" label="Enable Editing" description="When disabled, all records are shown as read-only. When enabled, all supported fields can be updated via inline-editing."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

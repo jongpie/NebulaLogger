@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Records</fullName>
+    <columns>MasterLabel</columns>
+    <columns>DeveloperName</columns>
+    <columns>ExampleCheckboxField__c</columns>
+    <columns>ExampleDateField__c</columns>
+    <columns>ExampleDatetimeField__c</columns>
+    <columns>ExampleEmailField__c</columns>
+    <columns>ExampleNumberField__c</columns>
+    <columns>ExamplePercentField__c</columns>
+    <columns>ExamplePhoneField__c</columns>
+    <columns>ExamplePicklistField__c</columns>
+    <columns>ExampleTextField__c</columns>
+    <columns>ExampleTextAreaField__c</columns>
+    <columns>ExampleTextAreaLongField__c</columns>
+    <columns>ExampleURLField__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Records</label>
+</ListView>

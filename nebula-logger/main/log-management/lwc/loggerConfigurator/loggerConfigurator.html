@@ -3,7 +3,7 @@
         <lightning-tabset>
             <lightning-tab label="User Settings">
                 <template if:true={records}>
-                    <lightning-card title={title} icon-name="standard:bundle_config">
+                    <lightning-card title={settingsTitle} icon-name="standard:bundle_config">
                         <div slot="actions">
                             <lightning-button label="New" variant="brand"></lightning-button>
                         </div>
@@ -24,7 +24,16 @@
                 </template>
             </lightning-tab>
             <lightning-tab label="System Parameters">
-                Content for tab 2
+                <template if:true={parametersLoaded}>
+                    <c-custom-metadata-table
+                        enableediting="true"
+                        fieldstodisplay="DeveloperName, MasterLabel, Value__c, Description__c"
+                        objectapiname="LoggerParameter__mdt"
+                        records={parameterRecords}
+                        title="Logger Parameters"
+                    >
+                    </c-custom-metadata-table>
+                </template>
             </lightning-tab>
         </lightning-tabset>
     </div>
