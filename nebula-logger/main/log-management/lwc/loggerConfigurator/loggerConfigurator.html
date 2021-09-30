@@ -5,7 +5,9 @@
                 <template if:true={records}>
                     <lightning-card title={settingsTitle} icon-name="standard:bundle_config">
                         <div slot="actions">
-                            <lightning-button label="New" variant="brand"></lightning-button>
+                            <template if:true={canEditLoggerSettings}>
+                                <lightning-button label="New" variant="brand"></lightning-button>
+                            </template>
                         </div>
                         <lightning-datatable
                             columns={columns}
@@ -26,7 +28,7 @@
             <lightning-tab label="System Parameters">
                 <template if:true={parametersLoaded}>
                     <c-custom-metadata-table
-                        enableediting="true"
+                        enableediting={canEditLoggerParameters}
                         fieldstodisplay="DeveloperName, MasterLabel, Value__c, Description__c"
                         objectapiname="LoggerParameter__mdt"
                         records={parameterRecords}

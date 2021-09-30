@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <applicationVisibilities>
         <application>LoggerConsole</application>
@@ -76,6 +76,14 @@
         <enabled>true</enabled>
         <name>LoggerPlugin__mdt</name>
     </customMetadataTypeAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>CanEditLoggerParameters</name>
+    </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>CanEditLoggerSettings</name>
+    </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>
         <name>LoggerSettings__c</name>
@@ -593,12 +601,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordJson__c</field>
+        <field>LogEntry__c.RecordJsonMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordJsonMasked__c</field>
+        <field>LogEntry__c.RecordJson__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

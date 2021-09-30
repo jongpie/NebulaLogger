@@ -1,4 +1,6 @@
 import { LightningElement } from 'lwc';
+import canEditLoggerParameters from '@salesforce/customPermission/CanEditLoggerParameters';
+import canEditLoggerSettings from '@salesforce/customPermission/CanEditLoggerSettings';
 import getLoggingLevelOptions from '@salesforce/apex/LoggerConfiguratorController.getLoggingLevelOptions';
 import getShareAccessLevelOptions from '@salesforce/apex/LoggerConfiguratorController.getShareAccessLevelOptions';
 import getSettings from '@salesforce/apex/LoggerConfiguratorController.getSettings';
@@ -34,6 +36,14 @@ export default class LoggerConfigurator extends LightningElement {
 
     get settingsTitle() {
         return 'Logger Settings';
+    }
+
+    get canEditLoggerSettings() {
+        return canEditLoggerSettings;
+    }
+
+    get canEditLoggerParameters() {
+        return canEditLoggerParameters;
     }
 
     connectedCallback() {

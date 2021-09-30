@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Provides access to create, update, and delete LoggerSettings__c records via the component loggerConfigurator</description>
+    <isLicensed>false</isLicensed>
+    <label>Can Edit Logger Settings</label>
+</CustomPermission>
