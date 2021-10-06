@@ -213,6 +213,29 @@ private class FlowCollectionLogEntry_Tests {
         System.assertEquals(flowEntry.message, logEntry.Message__c);
         System.assertEquals('Flow', logEntry.OriginType__c);
     }
+
+    @IsTest
+    static void it_should_set_log_scenario() {
+        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+
+        Test.startTest();
+
+        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+        FlowCollectionLogEntry flowEntry = createFlowCollectionLogEntry();
+        flowEntry.loggingLevelName = userLoggingLevel.name();
+        flowEntry.scenario = 'Some scenario';
+        FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowEntry });
+        System.assertEquals(1, Logger.getBufferSize());
+
+        Logger.saveLog();
+        String transactionId = Logger.getTransactionId();
+
+        Test.stopTest();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(flowEntry.scenario, log.Scenario__c);
+    }
+
     @IsTest
     static void it_should_add_tags_to_log_entry() {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
