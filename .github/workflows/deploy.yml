@@ -3,8 +3,6 @@ name: Deployment
 
 on:
     push:
-        branches:
-            - main
         paths-ignore:
             - 'content/**'
             - 'docs/**'

@@ -104,6 +104,10 @@ The value to use as the log entry&apos;s message
 
 (Optional) The record ID to relate to the log entry
 
+###### `scenario` → `String`
+
+Optionally specify the name to use for the current transaction&apos;s scenario
+
 ###### `stack` → `String`
 
 The JavaScript stack trace from when the log entry was created

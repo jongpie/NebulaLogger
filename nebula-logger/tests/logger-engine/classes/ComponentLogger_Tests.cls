@@ -132,6 +132,27 @@ private class ComponentLogger_Tests {
     }
 
     @IsTest
+    static void it_should_set_log_scenario() {
+        System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+
+        List<ComponentLogger.ComponentLogEntry> componentLogEntries = new List<ComponentLogger.ComponentLogEntry>();
+        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.message = 'hello, world';
+        componentLogEntry.scenario = 'Some scenario';
+        componentLogEntry.timestamp = System.now();
+        componentLogEntries.add(componentLogEntry);
+
+        Test.startTest();
+        ComponentLogger.saveComponentLogEntries(componentLogEntries);
+        Test.stopTest();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c];
+        System.assertEquals(componentLogEntry.scenario, log.Scenario__c);
+    }
+
+    @IsTest
     static void it_should_parse_aura_component_stack_trace() {
         String expectedComponentType = 'Aura';
         String expectedComponentApiName = 'c/loggerAuraDemo';

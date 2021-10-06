@@ -12,6 +12,8 @@ export default class Logger extends LightningElement {
     componentLogEntries = [];
     settings;
 
+    _scenario;
+
     @wire(getSettings)
     wiredSettings({ error, data }) {
         if (data) {
@@ -57,6 +59,14 @@ export default class Logger extends LightningElement {
     }
 
     @api
+    setScenario(scenario) {
+        this._scenario = scenario;
+        this.componentLogEntries.forEach(logEntry => {
+            logEntry.scenario = this._scenario;
+        });
+    }
+
+    @api
     getBufferSize() {
         return this.componentLogEntries.length;
     }
@@ -88,6 +98,9 @@ export default class Logger extends LightningElement {
         const shouldSave = this._meetsUserLoggingLevel(loggingLevel);
 
         const logEntryBuilder = newLogEntry(loggingLevel, shouldSave).setMessage(message);
+        if (this._scenario) {
+            logEntryBuilder.scenario = this._scenario;
+        }
         if (this._meetsUserLoggingLevel(loggingLevel) == true) {
             this.componentLogEntries.push(logEntryBuilder);
         }

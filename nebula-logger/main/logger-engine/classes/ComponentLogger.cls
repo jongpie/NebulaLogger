@@ -32,8 +32,9 @@ public inherited sharing class ComponentLogger {
     public static String saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
         try {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
-                LoggingLevel loggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
-                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(loggingLevel, componentLogEntry.message)
+                Logger.setScenario(componentLogEntry.scenario);
+                LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
+                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message)
                     .setRecord(componentLogEntry.recordId)
                     .setRecord(componentLogEntry.record)
                     .addTags(componentLogEntry.tags);
@@ -213,6 +214,12 @@ public inherited sharing class ComponentLogger {
          */
         @AuraEnabled
         public SObject record { get; set; }
+
+        /**
+         * @description Optionally specify the name to use for the current transaction's scenario
+         */
+        @AuraEnabled
+        public String scenario { get; set; }
 
         /**
          * @description The JavaScript stack trace from when the log entry was created
