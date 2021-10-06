@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.9.0",
-            "versionName": "Custom Metadata Types Optimized",
-            "versionDescription": "Consolidated & cleaned up several custom metadata type objects",
+            "versionNumber": "4.6.10.0",
+            "versionName": "Log Scenario Field",
+            "versionDescription": "New scenario field added to Log__c to help filter & group logs based on the context that created the log",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
