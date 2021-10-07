@@ -223,10 +223,10 @@ jobs:
                   sfdx auth:sfdxurl:store --sfdxurlfile ./NEBULA_PKG_DEMO_SANDBOX_SFDX_URL.txt --setalias nebula-logger-package-demo
 
             - name: 'Create & Install Unvalidated Package Version'
-              run: npx pwsh ./scripts/create-and-install-unvalidated-package-version.ps1 -targetusername nebula-logger-package-demo
+              run: npx pwsh ./scripts/build/create-and-install-unvalidated-package-version.ps1 -targetusername nebula-logger-package-demo
 
             - name: 'Reinstall Latest Released Package Version'
-              run: npx pwsh ./scripts/install-latest-released-unlocked-package-version.ps1 -targetusername nebula-logger-package-demo
+              run: npx pwsh ./scripts/build/install-latest-released-unlocked-package-version.ps1 -targetusername nebula-logger-package-demo
 
             - name: 'Delete Unvalidated Package Version'
-              run: npx pwsh ./scripts/delete-unvalidated-package-version.ps1
+              run: npx pwsh ./scripts/build/delete-unvalidated-package-version.ps1
