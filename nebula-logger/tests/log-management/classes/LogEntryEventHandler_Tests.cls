@@ -97,6 +97,7 @@ private class LogEntryEventHandler_Tests {
             LimitsSoslSearchesMax__c = 987,
             LimitsSoslSearchesUsed__c = 123,
             Locale__c = 'es-ES',
+            LoggerVersionNumber__c = 'v4.6.10',
             LoggingLevel__c = 'DEBUG',
             LoggingLevelOrdinal__c = 9,
             LoginDomain__c = 'https://fake.my.salesforce.com',
@@ -687,6 +688,7 @@ private class LogEntryEventHandler_Tests {
                 Locale__c,
                 LoggedBy__c,
                 LoggedByUsername__c,
+                LoggerVersionNumber__c,
                 LoginDomain__c,
                 LoginHistoryId__c,
                 LoginType__c,
@@ -804,6 +806,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.Locale__c, log.Locale__c);
         System.assertEquals(logEntryEvent.LoggedById__c, log.LoggedBy__c);
         System.assertEquals(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c);
+        System.assertEquals(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c);
         System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c);
         System.assertEquals(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c);
         System.assertEquals(logEntryEvent.LoginType__c, log.LoginType__c);

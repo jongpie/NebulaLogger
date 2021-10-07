@@ -252,6 +252,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>LoggerVersionNumber__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>OrganizationId__c</field>
             </layoutItems>
             <layoutItems>

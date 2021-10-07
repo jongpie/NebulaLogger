@@ -479,6 +479,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntryEvent__e.LoggerVersionNumber__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntryEvent__e.LoginApplication__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1455,6 +1460,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.LoggedBy__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.LoggerVersionNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

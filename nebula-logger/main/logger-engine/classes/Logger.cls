@@ -2653,6 +2653,7 @@ global with sharing class Logger {
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
         if (logEntryEventBuilder.shouldSave() == true) {
+            logEntryEventBuilder.getLogEntryEvent().LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
             logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }

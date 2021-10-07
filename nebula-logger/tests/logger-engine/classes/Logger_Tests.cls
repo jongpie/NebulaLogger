@@ -307,6 +307,15 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_set_logger_version_number() {
+        for (Integer i = 0; i < 10; i++) {
+            LogEntryEventBuilder builder = Logger.info('my log entry');
+            System.assertNotEquals(null, builder.getLogEntryEvent().LoggerVersionNumber__c);
+            System.assertEquals(Logger.CURRENT_VERSION_NUMBER, builder.getLogEntryEvent().LoggerVersionNumber__c);
+        }
+    }
+
+    @IsTest
     static void it_should_set_transaction_entry_number() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
@@ -6108,8 +6117,6 @@ private class Logger_Tests {
     // Start tests for utility methods
     @IsTest
     static void it_should_return_logging_levels_for_string_names() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
-
         System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
         System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
         System.assertEquals(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
