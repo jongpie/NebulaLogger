@@ -52,6 +52,7 @@
         "scan": "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3",
         "source:push": "sfdx force:source:push --forceoverwrite",
         "source:push:test": "npm run source:push && npm run test:apex",
+        "sync:version": "pwsh scripts/sync-package-version-number.ps1",
         "test": "npm run test:lwc && npm run test:apex",
         "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerConfiguration,LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",

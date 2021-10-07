@@ -11,6 +11,9 @@
  */
 @SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
 global with sharing class Logger {
+    // There's no reliable way to get the version number dynamically in Apex
+    @TestVisible
+    private static final String CURRENT_VERSION_NUMBER = 'v4.6.9';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = setTransactionId();
@@ -44,7 +47,8 @@ global with sharing class Logger {
     }
 
     static {
-        System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
+        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + CURRENT_VERSION_NUMBER);
+        System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
     }
 
     /**
