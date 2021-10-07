@@ -2524,7 +2524,7 @@ global with sharing class Logger {
             when EVENT_BUS {
                 // TODO add error handling for when event bus fails to publish
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
-                System.debug(DEFAULT_LOGGING_LEVEL, 'saveResults =' + results);
+                System.debug(DEFAULT_LOGGING_LEVEL, 'Logger - LogEntryEvent__e save results: ' + results);
             }
             when QUEUEABLE {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));
@@ -2585,7 +2585,7 @@ global with sharing class Logger {
             }
             when else {
                 if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                    String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
+                    String message = 'Logger - Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
                     finest(message);
                 }
                 return DEFAULT_LOGGING_LEVEL;
@@ -2689,11 +2689,11 @@ global with sharing class Logger {
     }
 
     private static String getSuspendSavingLogSystemMessage() {
-        return 'Logging suspended, ignoring call to saveLog()';
+        return 'Logger - Logging suspended, ignoring call to saveLog()';
     }
 
     private static String getSavingLogSystemMessage(SaveMethod saveMethod) {
-        String savingLogMessage = 'Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
+        String savingLogMessage = 'Logger - Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
         switch on getCurrentQuiddity() {
             when ANONYMOUS {
                 savingLogMessage += 'Anonymous Apex';

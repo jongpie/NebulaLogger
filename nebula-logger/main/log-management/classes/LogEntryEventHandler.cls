@@ -401,7 +401,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     @future(callout=true)
     private static void setStatusApiDetails() {
-        System.debug(LoggingLevel.DEBUG, 'Running setStatusApiDetails()');
+        System.debug(LoggingLevel.DEBUG, 'Logger - Calling Status API for org details');
 
         Organization organization = [SELECT InstanceName FROM Organization];
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
@@ -424,7 +424,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        System.debug(LoggingLevel.DEBUG, 'statusApiResponse==' + statusApiResponse);
+        System.debug(LoggingLevel.DEBUG, 'Logger - Status API response: ' + statusApiResponse);
 
         List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : [
@@ -439,7 +439,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             logsToUpdate.add(log);
         }
-        System.debug(LoggingLevel.DEBUG, 'logsToUpdate==' + logsToUpdate);
+        System.debug(LoggingLevel.DEBUG, 'Logger - logs to update: ' + logsToUpdate);
         update logsToUpdate;
     }
 
