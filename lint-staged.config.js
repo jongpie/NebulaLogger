@@ -7,6 +7,6 @@ module.exports = {
         return [`eslint ${filenames.join(' ')} --fix`, `npm run test:lwc`];
     },
     '*.{cls,trigger}': () => {
-        return [`npm run scan`, `npm run docs:generate && git add ./docs/`];
+        return [`npm run scan`, `npm run docs:generate && git add ./docs/ && git commit --amend --no-edit`];
     }
 };

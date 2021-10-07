@@ -91,17 +91,16 @@ export default class Logger extends LightningElement {
     // Private functions
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
         let logEntryLoggingLevelOrdinal = this.settings.supportedLoggingLevels[logEntryLoggingLevel];
-        return this.settings && this.settings.isEnabled == true && this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
+        return this.settings && this.settings.isEnabled && this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
     }
 
     _newEntry(loggingLevel, message) {
         const shouldSave = this._meetsUserLoggingLevel(loggingLevel);
-
-        const logEntryBuilder = newLogEntry(loggingLevel, shouldSave).setMessage(message);
+        const logEntryBuilder = newLogEntry(loggingLevel, shouldSave, this.settings.isConsoleLoggingEnabled).setMessage(message);
         if (this._scenario) {
             logEntryBuilder.scenario = this._scenario;
         }
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
+        if (this._meetsUserLoggingLevel(loggingLevel) === true) {
             this.componentLogEntries.push(logEntryBuilder);
         }
 

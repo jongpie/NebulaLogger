@@ -130,9 +130,13 @@ A DTO object used for passing `LoggerSettings__c` details to lightning component
 
 ##### Properties
 
+###### `isConsoleLoggingEnabled` → `Boolean`
+
+Indicates if logging via the browser&apos;s `console.log()` is enabled for the current user, based on `Logger.IsComponentConsoleLoggingEnabled__c`
+
 ###### `isEnabled` → `Boolean`
 
-Indicates if logging is enabled for the current user, based on `Logger.isEnabled()`
+Indicates if logging is enabled for the current user, based on `LoggerSettings__c.IsEnabled__c`
 
 ###### `supportedLoggingLevels` → `Map<String, Integer>`
 
@@ -140,7 +144,7 @@ A map of the supported `LoggingLevel` enum values
 
 ###### `userLoggingLevel` → `ComponentLoggingLevel`
 
-The configured `LoggingLevel` for the current user, based on `Logger.getUserLoggingLevel()`
+The configured `LoggingLevel` for the current user, based on `LoggerSettings__c.LoggingLevel__c`
 
 ---
 

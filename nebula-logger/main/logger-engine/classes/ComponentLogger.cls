@@ -125,10 +125,16 @@ public inherited sharing class ComponentLogger {
      */
     public class ComponentLoggerSettings {
         /**
-         * @description Indicates if logging is enabled for the current user, based on `Logger.isEnabled()`
+         * @description Indicates if logging is enabled for the current user, based on `LoggerSettings__c.IsEnabled__c`
          */
         @AuraEnabled
         public Boolean isEnabled { get; set; }
+
+        /**
+         * @description Indicates if logging via the browser's `console.log()` is enabled for the current user, based on `Logger.IsComponentConsoleLoggingEnabled__c`
+         */
+        @AuraEnabled
+        public Boolean isConsoleLoggingEnabled { get; set; }
 
         /**
          * @description A map of the supported `LoggingLevel` enum values
@@ -137,13 +143,14 @@ public inherited sharing class ComponentLogger {
         public Map<String, Integer> supportedLoggingLevels { get; set; }
 
         /**
-         * @description The configured `LoggingLevel` for the current user, based on `Logger.getUserLoggingLevel()`
+         * @description The configured `LoggingLevel` for the current user, based on `LoggerSettings__c.LoggingLevel__c`
          */
         @AuraEnabled
         public ComponentLoggingLevel userLoggingLevel { get; set; }
 
         private ComponentLoggerSettings() {
-            this.isEnabled = Logger.isEnabled();
+            this.isEnabled = Logger.getUserSettings().IsEnabled__c;
+            this.isConsoleLoggingEnabled = Logger.getUserSettings().IsComponentConsoleLoggingEnabled__c;
             this.supportedLoggingLevels = getSupportedLoggingLevels();
             this.userLoggingLevel = getUserLoggingLevel();
         }
