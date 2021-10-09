@@ -5,6 +5,7 @@ on:
     push:
         branches:
             - main
+            - 'devops/**'
         paths-ignore:
             - 'content/**'
             - 'docs/**'
@@ -40,7 +41,7 @@ on:
 
 jobs:
     code-quality-tests:
-        name: 'Code Quality Tests'
+        name: 'Run Code Quality Tests'
         runs-on: ubuntu-latest
         environment: Test
         steps:
@@ -64,17 +65,26 @@ jobs:
             - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
-            - name: 'LWC Lint verification'
+            - name: 'Verify Package Version Number'
+              run: |
+                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  rm ./DEVHUB_SFDX_URL.txt
+                  npm run package:version:number:verify
+              env:
+                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+
+            - name: 'Verify LWC with Lint'
               run: npm run lint:verify
 
-            - name: 'Apex SFDX Scanner verification'
+            - name: 'Verify Apex with SFDX Scanner'
               run: npm run prepare && npm run scan
 
-            - name: 'Prettier formatting verification'
+            - name: 'Verify Prettier formatting'
               run: npm run prettier:verify
 
     lwc-tests:
-        name: 'LWC Tests'
+        name: 'Run LWC Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
         environment: Test
@@ -106,7 +116,7 @@ jobs:
                   flags: LWC
 
     scratch-org-tests:
-        name: 'Scratch Org Tests'
+        name: 'Run Scratch Org Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
         environment: Test

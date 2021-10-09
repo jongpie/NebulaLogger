@@ -1,6 +1,6 @@
 module.exports = {
     'sfdx-project.json': () => {
-        return `npm run sync:version`;
+        return `npm run package:version:number:fix`;
     },
     '*.{cls,cmp,component,css,html,js,json,md,page,trigger,yaml,yml}': filenames => filenames.map(filename => `prettier --write '${filename}'`),
     '**/lwc/**': filenames => {
