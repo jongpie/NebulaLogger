@@ -80,7 +80,7 @@ jobs:
             - name: 'Verify Apex with SFDX Scanner'
               run: npm run prepare && npm run scan
 
-            - name: 'Verify Prettier formatting'
+            - name: 'Verify formatting with Prettier'
               run: npm run prettier:verify
 
     lwc-tests:
