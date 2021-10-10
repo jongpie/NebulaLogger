@@ -200,6 +200,8 @@ jobs:
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }}
 
             - name: 'Restore node_modules cache'
               id: cache-npm
