@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogHandler_Tests {
     private static final String HIGH_PRIORITY = Schema.Log__c.Priority__c.getDescribe().getPicklistValues().get(0).getValue();

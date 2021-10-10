@@ -5,6 +5,7 @@
 
 // TODO: need to improve plugin framework to make it easier for plugins to test by making it easier
 //       to mock CMDT records & instances of LoggerSObjectHandlerPlugin
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class SlackLoggerPlugin_Tests {
     /**

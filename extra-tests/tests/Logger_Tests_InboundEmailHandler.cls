@@ -7,6 +7,7 @@
  * @group Extra Tests
  * @description Additional integration tests for logging from an instance of `Messaging.InboundEmailHandler`
  */
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class Logger_Tests_InboundEmailHandler {
     @IsTest

@@ -3,9 +3,10 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LoggerSObjectHandlerPlugin_Tests {
-    private static String PLUGIN_LOG_STATUS = 'On Hold';
+    private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
     public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
         public override void execute(
