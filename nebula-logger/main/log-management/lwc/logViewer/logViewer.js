@@ -10,6 +10,7 @@ export default class LogViewer extends LightningElement {
     // onto a record page. We can rename this variable (probably) once LWC quick actions are GA'd
     @api
     logId;
+
     @wire(getLog, { logId: '$logId' })
     log;
 
@@ -56,11 +57,14 @@ export default class LogViewer extends LightningElement {
         document.body.removeChild(textArea);
 
         // I figure it might be nice to also include the parsed JSON in the console
+        /* eslint-disable-next-line no-console */
         console.log('Log data successfully copied to clipboard:');
+        /* eslint-disable-next-line no-console */
         console.log(JSON.parse(value));
 
         this.jsonCopied = true;
 
+        /* eslint-disable-next-line @lwc/lwc/no-async-operation */
         setTimeout(() => {
             this.jsonCopied = false;
         }, 5000);

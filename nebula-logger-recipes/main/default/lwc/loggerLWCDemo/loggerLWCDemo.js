@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/* eslint-disable no-console */
 import { LightningElement } from 'lwc';
 
 const LOGGER_NAME = 'c-logger';

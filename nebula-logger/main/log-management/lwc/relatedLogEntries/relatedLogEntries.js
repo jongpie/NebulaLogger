@@ -6,6 +6,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import getQueryResult from '@salesforce/apex/RelatedLogEntriesController.getQueryResult';
 export default class RelatedLogEntries extends LightningElement {
+    /* eslint-disable @lwc/lwc/no-api-reassignments */
     @api recordId;
     @api fieldSetName;
     @api sortBy = '';
@@ -46,13 +47,14 @@ export default class RelatedLogEntries extends LightningElement {
         } else if (result.error) {
             this.logEntryData = undefined;
             this.logEntryColumns = undefined;
+            /* eslint-disable-next-line no-console */
             console.log(result.error);
         }
     }
 
     // Parse the Apex results & add any UI-specific attributes based on field metadata
     processResult(queryResult) {
-        if (queryResult.fieldSet == undefined) {
+        if (queryResult.fieldSet === undefined) {
             return null;
         }
 
@@ -65,7 +67,7 @@ export default class RelatedLogEntries extends LightningElement {
         for (let i = 0; i < fieldSet.fields.length; i++) {
             let field = Object.assign({}, fieldSet.fields[i]); // clone field
 
-            if (field.type == 'datetime') {
+            if (field.type === 'datetime') {
                 field.type = 'date';
                 // FIXME and make dynamic based on user prefences for datetimes
                 field.typeAttributes = {
@@ -76,7 +78,7 @@ export default class RelatedLogEntries extends LightningElement {
                     minute: '2-digit',
                     second: '2-digit'
                 };
-            } else if (field.type == 'reference') {
+            } else if (field.type === 'reference') {
                 let displayFieldName = field.lookupDisplayFieldName.replace('.', '') + 'Display';
                 let looupFieldName = field.fieldName;
 

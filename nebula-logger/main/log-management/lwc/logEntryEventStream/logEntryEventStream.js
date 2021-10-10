@@ -117,8 +117,6 @@ export default class LogEntryEventStream extends LightningElement {
         // but it doesn't seem to be populated via empApi, so use a synthetic key instead
         logEntryEvent.key = logEntryEvent.TransactionId__c + '__' + logEntryEvent.TransactionEntryNumber__c;
 
-        console.log('logEntryEvent:', JSON.stringify(logEntryEvent));
-
         const updatedLogEntryEvents = [...this.logEntryEvents];
 
         if (
@@ -128,7 +126,6 @@ export default class LogEntryEventStream extends LightningElement {
             this._meetsOriginLocationFilter(logEntryEvent) &&
             this._meetsOriginTypeFilter(logEntryEvent)
         ) {
-            console.log('event meets filter criteria!');
             updatedLogEntryEvents.unshift(logEntryEvent);
         }
 
@@ -136,7 +133,6 @@ export default class LogEntryEventStream extends LightningElement {
             updatedLogEntryEvents.pop();
         }
         this.logEntryEvents = updatedLogEntryEvents;
-        console.log('this.logEntryEvents:', JSON.stringify(this.logEntryEvents));
     }
 
     // Private functions
@@ -177,7 +173,7 @@ export default class LogEntryEventStream extends LightningElement {
     _meetsOriginTypeFilter(logEntryEvent) {
         // TODO support for regex searches in Message__c
         let matches = false;
-        if (!this.originTypeFilter || logEntryEvent.OriginType__c == this.originTypeFilter) {
+        if (!this.originTypeFilter || logEntryEvent.OriginType__c === this.originTypeFilter) {
             matches = true;
         }
         return matches;

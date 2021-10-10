@@ -1,3 +1,4 @@
+/* eslint-disable no-console, no-unused-expressions */
 ({
     saveLogExample: function (component) {
         console.log("start of aura cmp's saveLog function");

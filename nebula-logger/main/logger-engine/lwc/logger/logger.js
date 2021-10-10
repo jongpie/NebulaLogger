@@ -19,6 +19,7 @@ export default class Logger extends LightningElement {
         if (data) {
             this.settings = data;
         } else if (error) {
+            /* eslint-disable-next-line no-console */
             console.error(error);
         }
     }
@@ -82,7 +83,9 @@ export default class Logger extends LightningElement {
             saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
                 .then(this.flushBuffer())
                 .catch(error => {
+                    /* eslint-disable-next-line no-console */
                     console.error(error);
+                    /* eslint-disable-next-line no-console */
                     console.error(this.componentLogEntries);
                 });
         }
@@ -91,7 +94,7 @@ export default class Logger extends LightningElement {
     // Private functions
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
         let logEntryLoggingLevelOrdinal = this.settings.supportedLoggingLevels[logEntryLoggingLevel];
-        return this.settings && this.settings.isEnabled && this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
+        return this.settings && this.settings.isEnabled === true && this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
     }
 
     _newEntry(loggingLevel, message) {

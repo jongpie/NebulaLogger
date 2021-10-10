@@ -68,6 +68,7 @@ const LogEntryBuilder = class {
             return;
         }
 
+        /* eslint-disable no-console */
         switch (this.loggingLevel) {
             case 'ERROR':
                 console.error(this.message);
