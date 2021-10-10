@@ -78,7 +78,10 @@ jobs:
               run: npm run lint:verify
 
             - name: 'Verify Apex with SFDX Scanner'
-              run: npm run prepare && npm run scan
+              run: npm run scan
+
+            - name: 'Verify docs are updated'
+              run: npm run docs:verify
 
             - name: 'Verify formatting with Prettier'
               run: npm run prettier:verify
