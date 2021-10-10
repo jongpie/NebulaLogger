@@ -9,8 +9,8 @@
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
             "versionNumber": "4.6.10.0",
-            "versionName": "Log Scenario Field",
-            "versionDescription": "New scenario field added to Log__c to help filter & group logs based on the context that created the log",
+            "versionName": "New Log and Logger Settings Fields",
+            "versionDescription": "New Log__c fields Scenario__c & LoggerVersionNumber__c, and new LoggerSettings__c fields IsApexSystemDebugLoggingEnabled__c & IsComponentConsoleLoggingEnabled__c",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
