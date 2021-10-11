@@ -65,7 +65,7 @@ jobs:
             - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
-            - name: 'Verify Package Version Number'
+            - name: 'Verify package version number is updated'
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
                   sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername

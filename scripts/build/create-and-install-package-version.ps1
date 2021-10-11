@@ -64,6 +64,7 @@ function Create-New-Package-Version {
     $projectJSON.packageAliases = $sortedPackageAliases
     $projectJSON | Sort-Object -Property Id -Descending | ConvertTo-Json -depth 32 | Set-Content $sfdxProjectJsonPath
 
+    $packageVersionId = "$packageVersionId".Trim()
     return $packageVersionId
 }
 
@@ -77,10 +78,26 @@ function Update-README-Package-Version-Id {
     ((Get-Content -path $readmePath -Raw) -replace "btn-install-unlocked-package.png\)\]\(https:\/\/login.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $unlockedPackageReplacement) | Set-Content -Path $readmePath -NoNewline
 }
 
+function Install-Package-Version {
+    param (
+        $packageVersionId
+    )
+    $packageVersionId = "$packageVersionId".Trim()
+    sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --package $packageVersionId
+}
+
+Write-Output "Creating new package version"
 $packageVersionId = Create-New-Package-Version
+$packageVersionId = "$packageVersionId".Trim()
+Write-Output "Created new package version ID $packageVersionId"
+Write-Output "Adding new package version to $sfdxProjectJsonPath"
 npx prettier --write $sfdxProjectJsonPath
 git add $sfdxProjectJsonPath
 
+Write-Output "Adding new package version to $readmePath"
 Update-README-Package-Version-Id $packageVersionId
 npx prettier --write $readmePath
 git add $readmePath
+
+Write-Output "Installing new package version ID $packageVersionId for target user $targetusername"
+Install-Package-Version $packageVersionId
