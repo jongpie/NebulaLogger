@@ -179,7 +179,12 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             }
             when Log__c log {
                 queryLocator = Database.getQueryLocator(
-                    [SELECT Id FROM Log__c WHERE LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL ORDER BY LogRetentionDate__c]
+                    [
+                        SELECT Id
+                        FROM Log__c
+                        WHERE (LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL) OR TotalLogEntries__c = 0
+                        ORDER BY LogRetentionDate__c
+                    ]
                 );
             }
         }

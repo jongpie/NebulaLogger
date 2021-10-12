@@ -47,9 +47,10 @@ function Create-New-Package-Version {
     $packageVersionId = $packageVersionCreateResult.result.SubscriberPackageVersionId
 
     # Now delete the old package version (if there is one)
-    if($oldPackageVersionId -ne $null) {
-        sfdx force:package:version:delete --noprompt --package $oldPackageVersionId --json | ConvertFrom-Json
-    }
+    # Purposefully commented-out - not 100% I want to keep this, I might move this to happen after a PR is merged
+    # if($oldPackageVersionId -ne $null) {
+    #     sfdx force:package:version:delete --noprompt --package $oldPackageVersionId --json | ConvertFrom-Json
+    # }
 
     # Add the new package version alias & sort all of the package aliases
     # TODO: this sorting "works," but doesn't take into account double digits in parts of the version number
