@@ -66,6 +66,7 @@ jobs:
               run: npm install sfdx-cli --global
 
             - name: 'Verify package version number is updated'
+              if: ${{ github.event_name == 'pull_request' }}
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
                   sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
