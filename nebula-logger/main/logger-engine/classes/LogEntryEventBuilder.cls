@@ -841,18 +841,6 @@ global with sharing class LogEntryEventBuilder {
         return sobjectClassification;
     }
 
-    private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
-        String sobjectFullName = sobjectType.getDescribe().getName();
-        String sobjectLocalName = sobjectType.getDescribe().getLocalName();
-
-        // Remove the trailing '__' if present
-        String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
-        if (String.isBlank(namespace)) {
-            namespace = null;
-        }
-        return namespace;
-    }
-
     private static Map<String, String> getSObjectSuffixToClassification() {
         // TODO add sample metadata for external object + picklist value + test
         // Example: MyExternalObject__x
@@ -876,6 +864,18 @@ global with sharing class LogEntryEventBuilder {
             // Examples: AccountShare and Log__Share
             'Share' => 'Record Share Object'
         };
+    }
+
+    private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
+        String sobjectFullName = sobjectType.getDescribe().getName();
+        String sobjectLocalName = sobjectType.getDescribe().getLocalName();
+
+        // Remove the trailing '__' if present
+        String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
+        if (String.isBlank(namespace)) {
+            namespace = null;
+        }
+        return namespace;
     }
 
     // TODO need to revisit Visualforce logic, re-add fields to either Log__c or LogEntry__c, etc.
