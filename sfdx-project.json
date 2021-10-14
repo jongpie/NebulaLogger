@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.10.0",
-            "versionName": "New Log and Logger Settings Fields",
-            "versionDescription": "New Log__c fields Scenario__c & LoggerVersionNumber__c, and new LoggerSettings__c fields IsApexSystemDebugLoggingEnabled__c & IsComponentConsoleLoggingEnabled__c",
+            "versionNumber": "4.6.11.0",
+            "versionName": "New Logger Admin dashboard + related reports",
+            "versionDescription": "Added new homepage to Logger Console app to display the new Logger Admin dashboard",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
