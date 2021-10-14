@@ -74,9 +74,11 @@ function Update-README-Package-Version-Id {
         $packageVersionId
     )
     $packageVersionId = "$packageVersionId".Trim()
-    # Since there are links for both the unlocked & managed packages, the unlocked package button is used to ensure the correct link is updated
-    $unlockedPackageReplacement = "btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=$packageVersionId"
-    ((Get-Content -path $readmePath -Raw) -replace "btn-install-unlocked-package.png\)\]\(https:\/\/login.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $unlockedPackageReplacement) | Set-Content -Path $readmePath -NoNewline
+    # Since there are links for both the unlocked & managed packages, the unlocked package buttons are used to ensure the correct link is updated
+    $sandboxUnlockedPackageReplacement = "btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=$packageVersionId"
+    ((Get-Content -path $readmePath -Raw) -replace "btn-install-unlocked-package-sandbox.png\)\]\(https:\/\/test.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $sandboxUnlockedPackageReplacement) | Set-Content -Path $readmePath -NoNewline
+    $productionUnlockedPackageReplacement = "btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=$packageVersionId"
+    ((Get-Content -path $readmePath -Raw) -replace "btn-install-unlocked-package-production.png\)\]\(https:\/\/login.salesforce.com\/packaging\/installPackage.apexp\?p0=.{0,18}", $productionUnlockedPackageReplacement) | Set-Content -Path $readmePath -NoNewline
 }
 
 function Install-Package-Version {

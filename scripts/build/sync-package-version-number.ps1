@@ -3,6 +3,7 @@
 
 $sfdxProjectJsonPath = "./sfdx-project.json"
 $packageJsonPath = "./package.json"
+$readmeClassPath = "./README.md"
 $loggerClassPath = "./nebula-logger/main/logger-engine/classes/Logger.cls"
 
 function Get-SFDX-Project-JSON {
@@ -25,13 +26,34 @@ function Update-Package-JSON {
         $versionNumber
     )
     $packageJson = Get-Package-JSON
-    Write-Output "Bumping package.json version to: $versionNumber"
+    Write-Output "Bumping package.json version number to: $versionNumber"
 
     $packageJson.version = $versionNumber
 
     ConvertTo-Json -InputObject $packageJson | Set-Content -Path $packageJsonPath -NoNewline
     prettier --write $packageJsonPath
     git add $packageJsonPath
+}
+
+function Get-README {
+    Get-Content -Raw -Path $readmeClassPath
+}
+
+function Update-README {
+    param (
+        $versionNumber
+    )
+    $versionNumber = "v" + $versionNumber
+    $readmeContents = Get-README
+    # Write-Output "$readmeContents"
+    Write-Output "Bumping README unlocked package version number to: $versionNumber"
+
+    $targetRegEx = "(.+Unlocked Package')(.+)"
+    $replacementRegEx = '$1' + $versionNumber + '$3'
+    $readmeContents -replace $targetRegEx, $replacementRegEx | Set-Content -Path $readmeClassPath -NoNewline
+    Write-Output "$readmeContents"
+    prettier --write $readmeClassPath
+    git add $readmeClassPath
 }
 
 function Get-Logger-Class {
@@ -44,7 +66,7 @@ function Update-Logger-Class {
     )
     $versionNumber = "v" + $versionNumber
     $loggerClassContents = Get-Logger-Class
-    Write-Output "Bumping Logger.cls version to: $versionNumber"
+    Write-Output "Bumping Logger.cls version number to: $versionNumber"
 
 
     $targetRegEx = "(.+CURRENT_VERSION_NUMBER = ')(.+)(';)"
@@ -58,4 +80,5 @@ $versionNumber = Get-Version-Number
 Write-Output "Target Version Number: $versionNumber"
 
 Update-Package-JSON $versionNumber
+# Update-README $versionNumber TODO: fix this
 Update-Logger-Class $versionNumber
