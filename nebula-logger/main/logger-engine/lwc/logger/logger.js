@@ -83,10 +83,12 @@ export default class Logger extends LightningElement {
             saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
                 .then(this.flushBuffer())
                 .catch(error => {
-                    /* eslint-disable-next-line no-console */
-                    console.error(error);
-                    /* eslint-disable-next-line no-console */
-                    console.error(this.componentLogEntries);
+                    if (this.settings.isConsoleLoggingEnabled === true) {
+                        /* eslint-disable-next-line no-console */
+                        console.error(error);
+                        /* eslint-disable-next-line no-console */
+                        console.error(this.componentLogEntries);
+                    }
                 });
         }
     }
