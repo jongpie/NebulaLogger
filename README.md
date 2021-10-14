@@ -7,8 +7,8 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Unlocked Package v4.6.10
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l22QAA)
-[![Install Unlocked Package](./content/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l22QAA)
+[![Install Unlocked Package](./content/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l27QAA)
+[![Install Unlocked Package](./content/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l27QAA)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ## Managed Package v4.6.0
