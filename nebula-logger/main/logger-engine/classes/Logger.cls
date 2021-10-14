@@ -2522,9 +2522,8 @@ global with sharing class Logger {
 
         switch on saveMethod {
             when EVENT_BUS {
-                // TODO add error handling for when event bus fails to publish
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
-                System.debug(DEFAULT_LOGGING_LEVEL, 'Logger - LogEntryEvent__e save results: ' + results);
+                processEventBusPublishResults(results);
             }
             when QUEUEABLE {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));
@@ -2748,6 +2747,49 @@ global with sharing class Logger {
         savingLogMessage += ', save method is ' + saveMethod.name();
 
         return savingLogMessage;
+    }
+
+    private static void processEventBusPublishResults(List<Database.SaveResult> platformEventPublishResults) {
+        System.debug(DEFAULT_LOGGING_LEVEL, 'Logger - LogEntryEvent__e save results: ' + platformEventPublishResults);
+        List<String> errorMessages = new List<String>();
+        for (Database.SaveResult result : platformEventPublishResults) {
+            if (result.isSuccess() == false) {
+                for (Database.Error error : result.getErrors()) {
+                    errorMessages.add(error.getMessage());
+                }
+            }
+        }
+
+        if (errorMessages.isEmpty() == false) {
+            sendErrorEmail(errorMessages);
+        }
+    }
+
+    private static void sendErrorEmail(List<String> errorMessages) {
+        Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
+        message.ToAddresses = getApexErrrorRecipients();
+        message.Subject = 'Logger Error';
+        message.PlainTextBody = 'Logger failed to save 1 or more log entries for ' + UserInfo.getUserName() + '(User ID: ' + UserInfo.getUserId() + ')';
+        List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage> {message};
+        List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
+        if (emailResults[0].success == true) {
+            System.debug('Logger - The email was sent successfully');
+        } else {
+            System.debug('Logger - The email failed to send: ' + emailResults[0].errors[0].message);
+        }
+    }
+
+    private static List<String> getApexErrrorRecipients() {
+        List<String> retVal = new List<String>();
+        for (ApexEmailNotification notification : [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE]) {
+          if (notification.UserId != null) {
+            retVal.add(notification.UserId);
+          } else {
+            retVal.addAll(notification.Email.split(';'));
+          }
+        }
+        retVal.add(UserInfo.getUserId());
+        return retVal;
     }
 
     // Inner class for saving log entries via a queuable job
