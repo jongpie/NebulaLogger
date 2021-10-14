@@ -3,7 +3,7 @@
     <fullName>IsEnabled__c</fullName>
     <defaultValue>true</defaultValue>
     <externalId>false</externalId>
-    <label>Is Enabled</label>
+    <label>Enabled</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

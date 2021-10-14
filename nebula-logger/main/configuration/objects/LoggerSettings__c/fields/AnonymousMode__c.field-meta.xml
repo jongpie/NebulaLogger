@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <inlineHelpText
     >When enabled, any logs generated will not have any user-specific details set - any fields related to the User, Profile, etc. will be null.</inlineHelpText>
-    <label>Anonymous Mode</label>
+    <label>Anonymous</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>
