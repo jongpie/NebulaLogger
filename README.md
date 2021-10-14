@@ -5,15 +5,23 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015kqtQAA)
-[![Install Managed Package](./content/btn-install-managed-package.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+## Unlocked Package v4.6.10
+
+[![Install Unlocked Package](./content/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l27QAA)
+[![Install Unlocked Package](./content/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l27QAA)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
+
+## Managed Package v4.6.0
+
+[![Install Managed Package](./content/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![Install Managed Package](./content/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![View Milestone](./content/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/6)
 
 ---
 
 ## Features
 
-1. Easily add log entries via Apex, Lightning Components (lwc & aura), Flow & Process Builder to generate 1 consolidate log
+1. Easily add log entries via Apex, Lightning Components (lwc & aura), Flow & Process Builder to generate 1 consolidated, unified log
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
 4. Enable logging and set the logging level for different users & profiles using `LoggerSettings__c` custom hierarchy setting
@@ -683,8 +691,6 @@ Once you've created your Apex or Flow plugin(s), you will also need to configure
 -   'Logger Plugin' - use the custom metadata type `LoggerPlugin__mdt` to define your plugin, including the plugin type (Apex or Flow) and the API name of your plugin's Apex class or Flow
 -   'Logger Parameter' - use the custom metadata type `LoggerParameter__mdt` to define any configurable parameters needed for your plugin, such as environment-specific URLs and other similar configurations
 
-![Logger plugin: configuration](./content/slack-plugin-configuration.png)
-
 Note: the logger plugin framework is not available in the managed package due to some platform limitations & considerations with some of the underlying code. The unlocked package is recommended (instead of the managed package) when possible, including if you want to be able to leverage the plugin framework in your org.
 
 ### Beta Plugin: Slack Integration
@@ -698,7 +704,7 @@ The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula
 
 Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on how to install & customize the plugin
 
-![Slack plugin: notification](./content/slack-plugin-notification.png)
+![Slack plugin: notification](./nebula-logger-plugins/Slack/.content/slack-plugin-notification.png)
 
 ---
 

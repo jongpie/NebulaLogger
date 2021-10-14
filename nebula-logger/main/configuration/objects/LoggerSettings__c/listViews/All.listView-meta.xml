@@ -5,6 +5,9 @@
     <columns>SETUP_TYPE</columns>
     <columns>IsEnabled__c</columns>
     <columns>LoggingLevel__c</columns>
+    <columns>DefaultSaveMethod__c</columns>
+    <columns>IsApexSystemDebugLoggingEnabled__c</columns>
+    <columns>IsComponentConsoleLoggingEnabled__c</columns>
     <columns>ApplyDataMaskRules__c</columns>
     <columns>StripInaccessibleRecordFields__c</columns>
     <columns>AnonymousMode__c</columns>

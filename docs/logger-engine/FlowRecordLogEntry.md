@@ -46,6 +46,10 @@ The record to relate to this log entry - the record&apos;s JSON is automatically
 
 Optionally choose to save any pending log entries
 
+#### `scenario` → `String`
+
+Optionally specify the name to use for the current transaction&apos;s scenario
+
 #### `tagsString` → `String`
 
 Optionally provide a comma-separated String of tags to dynamically assign to the log entry

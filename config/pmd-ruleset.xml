@@ -14,31 +14,14 @@
       <exclude name="AvoidLogicInTrigger" />
     </rule>
     <rule ref="category/apex/codestyle.xml">
-      <exclude name="FieldNamingConventions" />
-      <exclude name="MethodNamingConventions" />
-      <exclude name="PropertyNamingConventions" />
-      <exclude name="VariableNamingConventions" />
     </rule>
     <rule ref="category/apex/design.xml">
-      <exclude name="AvoidDeeplyNestedIfStmts" />
-      <exclude name="CognitiveComplexity" />
-      <exclude name="CyclomaticComplexity" />
-      <exclude name="ExcessiveClassLength" />
-      <exclude name="ExcessiveParameterList" />
-      <exclude name="ExcessivePublicCount" />
-      <exclude name="NcssConstructorCount" />
-      <exclude name="NcssMethodCount" />
-      <exclude name="StdCyclomaticComplexity" />
-      <exclude name="TooManyFields" />
     </rule>
     <rule ref="category/apex/documentation.xml">
-      <exclude name="ApexDoc" />
     </rule>
     <rule ref="category/apex/errorprone.xml">
-      <exclude name="EmptyStatementBlock" />
     </rule>
     <rule ref="category/apex/performance.xml">
-      <exclude name="AvoidDebugStatements" />
     </rule>
     <rule ref="category/apex/security.xml">
     </rule>

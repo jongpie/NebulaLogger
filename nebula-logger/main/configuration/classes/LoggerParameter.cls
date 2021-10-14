@@ -8,11 +8,17 @@
  * @description Provides a centralized way to load parameters for SObject handlers & plugins,
  *              and casts the parameters to common data types
  */
-@SuppressWarnings('PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public class LoggerParameter {
     private static Set<String> parametersToLoadDuringTests = new Set<String>();
     private static Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
 
+    /**
+     * @description Indicates if Logger will make an async callout to https://api.status.salesforce.com
+     *              to get additional details about the current org, which is then stored on the Log__c record.
+     *              Controlled by the custom metadata record LoggerParamer.CallStatusApi
+     * @return The configured value, or `false` as the default
+     */
     public static final Boolean CALL_STATUS_API {
         get {
             if (CALL_STATUS_API == null) {
@@ -23,6 +29,11 @@ public class LoggerParameter {
         private set;
     }
 
+    /**
+     * @description Indicates if Logger will append its own log entries about the logging system.
+     *              Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages
+     * @return The configured value, or `false` as the default
+     */
     public static final Boolean ENABLE_SYSTEM_MESSAGES {
         get {
             if (ENABLE_SYSTEM_MESSAGES == null) {
@@ -33,6 +44,11 @@ public class LoggerParameter {
         private set;
     }
 
+    /**
+     * @description The merge-field syntax to use when calling System.debug().
+     *              Controlled by the custom metadata record LoggerParamer.SystemDebugMessageFormat
+     * @return The configured value, or `{OriginLocation__c}\n{Message__c}` as the default
+     */
     public static final String SYSTEM_DEBUG_MESSAGE_FORMAT {
         get {
             if (SYSTEM_DEBUG_MESSAGE_FORMAT == null) {
@@ -47,6 +63,11 @@ public class LoggerParameter {
         private set;
     }
 
+    /**
+     * @description Indicates if Logger's tagging system is enabled.
+     *              Controlled by the custom metadata record LoggerParamer.EnableTagging
+     * @return The configured value, or `true` as the default
+     */
     public static final Boolean TAGGING_IS_ENABLED {
         get {
             if (TAGGING_IS_ENABLED == null) {
@@ -57,6 +78,10 @@ public class LoggerParameter {
         private set;
     }
 
+    /**
+     * @description Indicates if Logger's tagging will use Topic and TopicAssignment for storing tags
+     * @return The configured value, or `false` as the default
+     */
     public static final Boolean TAG_USING_TOPICS {
         get {
             if (TAG_USING_TOPICS == null) {

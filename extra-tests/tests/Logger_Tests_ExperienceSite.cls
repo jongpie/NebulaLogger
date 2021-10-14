@@ -7,6 +7,7 @@
  * @group Extra Tests
  * @description Additional integration tests for orgs with Experience Sites (Communities) enabled
  */
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class Logger_Tests_ExperienceSite {
     private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Schema.getGlobalDescribe().containsKey('Network');

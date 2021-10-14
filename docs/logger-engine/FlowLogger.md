@@ -74,6 +74,10 @@ General message to log.
 
 boolean used to determine if logs are saved to Salesforce.
 
+###### `scenario` → `String`
+
+Optionally specify the name to use for the current transaction&apos;s scenario
+
 ###### `tagsString` → `String`
 
 String of tags / topics.

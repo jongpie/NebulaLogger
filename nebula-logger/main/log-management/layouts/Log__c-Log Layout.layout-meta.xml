@@ -68,6 +68,10 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
+                <field>Scenario__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
                 <field>Issue__c</field>
             </layoutItems>
             <layoutItems>
@@ -246,6 +250,10 @@
         <editHeading>true</editHeading>
         <label>Organization Details</label>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>LoggerVersionNumber__c</field>
+            </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>OrganizationId__c</field>

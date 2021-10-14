@@ -634,7 +634,10 @@ global with sharing class LogEntryEventBuilder {
         } else {
             this.debugMessage = message;
         }
-        System.debug(this.entryLoggingLevel, this.debugMessage);
+
+        if (Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c == true) {
+            System.debug(this.entryLoggingLevel, this.debugMessage);
+        }
     }
 
     private void setNetworkDetails() {

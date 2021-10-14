@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogEntryEventHandler_Tests {
     private static final String MOCK_RELEASE_NUMBER = '230.12.2';
@@ -97,6 +98,7 @@ private class LogEntryEventHandler_Tests {
             LimitsSoslSearchesMax__c = 987,
             LimitsSoslSearchesUsed__c = 123,
             Locale__c = 'es-ES',
+            LoggerVersionNumber__c = 'v4.6.10',
             LoggingLevel__c = 'DEBUG',
             LoggingLevelOrdinal__c = 9,
             LoginDomain__c = 'https://fake.my.salesforce.com',
@@ -113,6 +115,7 @@ private class LogEntryEventHandler_Tests {
             RecordJson__c = JSON.serializePretty(currentUser),
             RecordSObjectClassification__c = 'Standard Object',
             RecordSObjectType__c = 'User',
+            Scenario__c = 'Apex test execution',
             SessionId__c = null,
             SessionSecurityLevel__c = null,
             SessionType__c = null,
@@ -686,6 +689,7 @@ private class LogEntryEventHandler_Tests {
                 Locale__c,
                 LoggedBy__c,
                 LoggedByUsername__c,
+                LoggerVersionNumber__c,
                 LoginDomain__c,
                 LoginHistoryId__c,
                 LoginType__c,
@@ -702,6 +706,7 @@ private class LogEntryEventHandler_Tests {
                 ParentLog__c,
                 ProfileId__c,
                 ProfileName__c,
+                Scenario__c,
                 SessionId__c,
                 SessionSecurityLevel__c,
                 SessionType__c,
@@ -802,6 +807,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.Locale__c, log.Locale__c);
         System.assertEquals(logEntryEvent.LoggedById__c, log.LoggedBy__c);
         System.assertEquals(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c);
+        System.assertEquals(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c);
         System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c);
         System.assertEquals(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c);
         System.assertEquals(logEntryEvent.LoginType__c, log.LoginType__c);
@@ -809,6 +815,8 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c);
         System.assertEquals(logOwnerId, log.OwnerId);
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c);
+        System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c);
+        System.assertEquals(logEntryEvent.Scenario__c, log.Scenario__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
         System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c);

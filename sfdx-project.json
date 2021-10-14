@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.9.0",
-            "versionName": "Custom Metadata Types Optimized",
-            "versionDescription": "Consolidated & cleaned up several custom metadata type objects",
+            "versionNumber": "4.6.10.0",
+            "versionName": "New Log and Logger Settings Fields",
+            "versionDescription": "New Log__c fields Scenario__c & LoggerVersionNumber__c, and new LoggerSettings__c fields IsApexSystemDebugLoggingEnabled__c & IsComponentConsoleLoggingEnabled__c",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
@@ -44,6 +44,7 @@
         "Nebula Logger - Unlocked Package@4.5.2-0-plugin-framework-enhancements": "04t5Y0000027FNaQAM",
         "Nebula Logger - Unlocked Package@4.6.0-0-tagging-system-overhaul": "04t5Y0000015keTQAQ",
         "Nebula Logger - Unlocked Package@4.6.1-0-summer-21-upgrade": "04t5Y0000015kfMQAQ",
+        "Nebula Logger - Unlocked Package@4.6.10-0-new-log-and-logger-settings-fields": "04t5Y0000015l27QAA",
         "Nebula Logger - Unlocked Package@4.6.2-0-anonymous-logs": "04t5Y0000015kgPQAQ",
         "Nebula Logger - Unlocked Package@4.6.3-0-more-metadata-data": "04t5Y0000015kgeQAA",
         "Nebula Logger - Unlocked Package@4.6.4-0-logger-for-lwc-and-aura": "04t5Y0000015kgjQAA",

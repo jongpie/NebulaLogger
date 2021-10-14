@@ -129,6 +129,29 @@ describe('Logger lwc tests', () => {
             expect(logEntry.message).toEqual(message);
         });
     });
+    it('sets a log scenario on all entries', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+
+        getSettingsAdapter.emit(mockGetSettings);
+
+        return Promise.resolve().then(() => {
+            const scenario = 'some scenario';
+            const message = 'some message';
+            const firstLogEntry = logger.finest(message);
+            expect(firstLogEntry.scenario).toBeUndefined();
+            expect(logger.getBufferSize()).toEqual(1);
+
+            const secondLogEntry = logger.info(message);
+            expect(secondLogEntry.scenario).toBeUndefined();
+            expect(logger.getBufferSize()).toEqual(2);
+
+            logger.setScenario(scenario);
+
+            expect(firstLogEntry.scenario).toEqual(scenario);
+            expect(secondLogEntry.scenario).toEqual(scenario);
+        });
+    });
     it('flushes buffer', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);

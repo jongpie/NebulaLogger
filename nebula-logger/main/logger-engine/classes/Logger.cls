@@ -11,13 +11,17 @@
  */
 @SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
 global with sharing class Logger {
+    // There's no reliable way to get the version number dynamically in Apex
+    @TestVisible
+    private static final String CURRENT_VERSION_NUMBER = 'v4.6.10';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = setTransactionId();
-    private static final Quiddity TRANSACTION_QUIDDITY = System.Request.getCurrent().getQuiddity();
+    private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
 
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
+    private static String transactionScenario;
     private static Boolean suspendSaving = false;
     private static LoggerSettings__c userSettings;
 
@@ -43,7 +47,8 @@ global with sharing class Logger {
     }
 
     static {
-        System.debug(LoggingLevel.INFO, 'Logger.getTransactionId() == ' + getTransactionId());
+        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + CURRENT_VERSION_NUMBER);
+        System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
     }
 
     /**
@@ -2442,8 +2447,17 @@ global with sharing class Logger {
 
     // Save control methods
     /**
+     * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
+     *              and `Log__c.Scenario__c`, and can be used to filter & group logs
+     * @param  scenario The name to use for the current transaction's scenario
+     */
+    public static void setScenario(String scenario) {
+        transactionScenario = scenario;
+    }
+
+    /**
      * @description Sets the default save method used when calling saveLog() - any subsequent calls to saveLog() will use the specified save method
-     * @param  saveMethod - The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
+     * @param  saveMethod The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
     global static void setSaveMethod(SaveMethod saveMethod) {
         transactionSaveMethod = saveMethod;
@@ -2485,7 +2499,8 @@ global with sharing class Logger {
             if (logEntryEventBuilder.shouldSave()) {
                 LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
                 logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
-                logEntryEvent.SystemMode__c = getCurrentQuiddity().name();
+                logEntryEvent.Scenario__c = transactionScenario;
+                logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
                 logEntryEvent.TransactionId__c = getTransactionId();
 
                 logEntryEvents.add(logEntryEvent);
@@ -2509,7 +2524,7 @@ global with sharing class Logger {
             when EVENT_BUS {
                 // TODO add error handling for when event bus fails to publish
                 List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
-                System.debug(DEFAULT_LOGGING_LEVEL, 'saveResults =' + results);
+                System.debug(DEFAULT_LOGGING_LEVEL, 'Logger - LogEntryEvent__e save results: ' + results);
             }
             when QUEUEABLE {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));
@@ -2570,7 +2585,7 @@ global with sharing class Logger {
             }
             when else {
                 if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                    String message = 'Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
+                    String message = 'Logger - Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
                     finest(message);
                 }
                 return DEFAULT_LOGGING_LEVEL;
@@ -2638,6 +2653,7 @@ global with sharing class Logger {
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
         if (logEntryEventBuilder.shouldSave() == true) {
+            logEntryEventBuilder.getLogEntryEvent().LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
             logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
@@ -2646,8 +2662,27 @@ global with sharing class Logger {
     }
 
     private static String setTransactionId() {
-        String transactionId = System.Request.getCurrent().getRequestId();
+        // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
+        // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
+        // skip calling System.Request.getCurrent() if there is no user session.
+        // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
+        String transactionId;
+        if (String.isNotBlank(UserInfo.getSessionId())) {
+            transactionId = System.Request.getCurrent().getRequestId();
+        }
         return String.isNotBlank(transactionId) ? transactionId : new Uuid().getValue();
+    }
+
+    private static Quiddity setTransactionQuiddity() {
+        // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
+        // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
+        // skip calling System.Request.getCurrent() if there is no user session.
+        // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
+        if (String.isNotBlank(UserInfo.getSessionId())) {
+            return System.Request.getCurrent().getQuiddity();
+        } else {
+            return null;
+        }
     }
 
     private static SaveMethod getDefaultSaveMethod() {
@@ -2673,11 +2708,11 @@ global with sharing class Logger {
     }
 
     private static String getSuspendSavingLogSystemMessage() {
-        return 'Logging suspended, ignoring call to saveLog()';
+        return 'Logger - Logging suspended, ignoring call to saveLog()';
     }
 
     private static String getSavingLogSystemMessage(SaveMethod saveMethod) {
-        String savingLogMessage = 'Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
+        String savingLogMessage = 'Logger - Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
         switch on getCurrentQuiddity() {
             when ANONYMOUS {
                 savingLogMessage += 'Anonymous Apex';
@@ -2703,8 +2738,11 @@ global with sharing class Logger {
             when SYNCHRONOUS {
                 savingLogMessage += 'Apex synchronous DML';
             }
+            when null {
+                savingLogMessage += 'unknown context';
+            }
             when else {
-                savingLogMessage += getCurrentQuiddity().name();
+                savingLogMessage += getCurrentQuiddity()?.name();
             }
         }
         savingLogMessage += ', save method is ' + saveMethod.name();

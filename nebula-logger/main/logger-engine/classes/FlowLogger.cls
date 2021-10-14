@@ -46,6 +46,12 @@ public inherited sharing class FlowLogger {
         public String loggingLevelName;
 
         /**
+         * @description Optionally specify the name to use for the current transaction's scenario
+         */
+        @InvocableVariable(required=false label='(Optional) Scenario')
+        public String scenario;
+
+        /**
          * @description String of tags / topics.
          */
         public String tagsString;
@@ -92,14 +98,15 @@ public inherited sharing class FlowLogger {
             // but LogEntryEventBuilder.addTags() uses List<String>, so FlowLogger handles the conversion work
             List<String> parsedTags = this.tagsString?.replaceAll('( ,)|(,)|(, )', ',').split(',');
 
+            Logger.setScenario(this.scenario);
             this.entryLoggingLevel = Logger.getLoggingLevel(this.loggingLevelName);
             this.logEntryEventBuilder = Logger.newEntry(this.entryLoggingLevel, this.message).addTags(this.topics).addTags(parsedTags);
-            this.logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
 
             if (this.logEntryEventBuilder.shouldSave() == false) {
                 return this.logEntryEventBuilder;
             }
 
+            this.logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
             this.logEntryEvent.OriginLocation__c = this.flowName;
             this.logEntryEvent.OriginType__c = 'Flow';
             this.logEntryEvent.StackTrace__c = null;

@@ -3,16 +3,22 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/* eslint-disable no-console */
 import { LightningElement } from 'lwc';
 
 const LOGGER_NAME = 'c-logger';
 
 export default class LoggerLWCDemo extends LightningElement {
     message = 'Hello, world!';
+    scenario = 'Some demo scenario';
     tagsString = 'Tag-one, Another tag here';
 
     messageChange(event) {
         this.message = event.target.value;
+    }
+
+    scenarioChange(event) {
+        this.scenario = event.target.value;
     }
 
     tagsStringChange(event) {
@@ -73,6 +79,7 @@ export default class LoggerLWCDemo extends LightningElement {
     saveLogExample() {
         console.log('running saveLog for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
+        logger.setScenario(this.scenario);
         console.log(logger);
         logger.saveLog();
     }

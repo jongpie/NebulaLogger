@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class Logger_Tests {
     // Helper classes
@@ -307,11 +308,54 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_set_logger_version_number() {
+        for (Integer i = 0; i < 10; i++) {
+            LogEntryEventBuilder builder = Logger.info('my log entry');
+            System.assertNotEquals(null, builder.getLogEntryEvent().LoggerVersionNumber__c);
+            System.assertEquals(Logger.CURRENT_VERSION_NUMBER, builder.getLogEntryEvent().LoggerVersionNumber__c);
+        }
+    }
+
+    @IsTest
     static void it_should_set_transaction_entry_number() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
             System.assertEquals(i + 1, builder.getLogEntryEvent().TransactionEntryNumber__c);
         }
+    }
+
+    @IsTest
+    static void it_should_set_scenario() {
+        String transactionId = Logger.getTransactionId();
+        String transactionScenarioName = 'some test scenario for this transaction';
+
+        Logger.setScenario(transactionScenarioName);
+        for (Integer i = 0; i < 5; i++) {
+            Logger.info('my log entry');
+        }
+        Logger.saveLog();
+        Test.getEventBus().deliver();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+    }
+
+    @IsTest
+    static void it_should_use_last_scenario_when_multiple_scenarios_specified() {
+        String transactionId = Logger.getTransactionId();
+        String initialTransactionScenarioName = 'some test scenario for this transaction';
+        String lastTransactionScenarioName = 'some test scenario for this transaction';
+
+        Logger.setScenario(initialTransactionScenarioName);
+        for (Integer i = 0; i < 5; i++) {
+            Logger.info('my log entry');
+        }
+        Logger.setScenario(lastTransactionScenarioName);
+        Logger.saveLog();
+        Test.getEventBus().deliver();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(lastTransactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
     }
 
     @IsTest
@@ -6074,8 +6118,6 @@ private class Logger_Tests {
     // Start tests for utility methods
     @IsTest
     static void it_should_return_logging_levels_for_string_names() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
-
         System.assertEquals(LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
         System.assertEquals(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
         System.assertEquals(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));

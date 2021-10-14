@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class ComponentLogger_Tests {
     @IsTest
@@ -129,6 +130,27 @@ private class ComponentLogger_Tests {
         System.assertEquals(componentLogEntry.error.message, logEntry.ExceptionMessage__c);
         System.assertEquals(componentLogEntry.error.stack, logEntry.ExceptionStackTrace__c);
         System.assertEquals(ComponentLogger.EXCEPTION_TYPE_PREFIX + componentLogEntry.error.type, logEntry.ExceptionType__c);
+    }
+
+    @IsTest
+    static void it_should_set_log_scenario() {
+        System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+
+        List<ComponentLogger.ComponentLogEntry> componentLogEntries = new List<ComponentLogger.ComponentLogEntry>();
+        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.message = 'hello, world';
+        componentLogEntry.scenario = 'Some scenario';
+        componentLogEntry.timestamp = System.now();
+        componentLogEntries.add(componentLogEntry);
+
+        Test.startTest();
+        ComponentLogger.saveComponentLogEntries(componentLogEntries);
+        Test.stopTest();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c];
+        System.assertEquals(componentLogEntry.scenario, log.Scenario__c);
     }
 
     @IsTest

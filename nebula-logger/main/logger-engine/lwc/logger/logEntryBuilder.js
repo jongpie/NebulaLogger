@@ -4,10 +4,10 @@
 //------------------------------------------------------------------------------------------------//
 
 const LogEntryBuilder = class {
-    constructor(loggingLevel, shouldSave) {
+    constructor(loggingLevel, shouldSave, isConsoleLoggingEnabled) {
         this.shouldSave = shouldSave;
-
-        if (this.shouldSave == true) {
+        this.isConsoleLoggingEnabled = isConsoleLoggingEnabled;
+        if (this.shouldSave === true) {
             this.loggingLevel = loggingLevel;
             this.stack = new Error().stack;
             this.timestamp = new Date().toISOString();
@@ -16,7 +16,7 @@ const LogEntryBuilder = class {
     }
 
     setMessage(message) {
-        if (this.shouldSave == true) {
+        if (this.shouldSave === true) {
             this.message = message;
             this._logToConsole();
         }
@@ -24,21 +24,21 @@ const LogEntryBuilder = class {
     }
 
     setRecordId(recordId) {
-        if (this.shouldSave == true) {
+        if (this.shouldSave === true) {
             this.recordId = recordId;
         }
         return this;
     }
 
     setRecord(record) {
-        if (this.shouldSave == true) {
+        if (this.shouldSave === true) {
             this.record = record;
         }
         return this;
     }
 
     setError(error) {
-        if (this.shouldSave == true) {
+        if (this.shouldSave === true) {
             this.error = {};
             this.error.message = error.message;
             this.error.stack = error.stack;
@@ -48,7 +48,7 @@ const LogEntryBuilder = class {
     }
 
     addTag(tag) {
-        if (this.shouldSave == true) {
+        if (this.shouldSave === true) {
             this.tags.push(tag);
             // Deduplicate the list of tags
             this.tags = Array.from(new Set(this.tags));
@@ -64,6 +64,11 @@ const LogEntryBuilder = class {
     }
 
     _logToConsole() {
+        if (!this.isConsoleLoggingEnabled) {
+            return;
+        }
+
+        /* eslint-disable no-console */
         switch (this.loggingLevel) {
             case 'ERROR':
                 console.error(this.message);
@@ -85,6 +90,6 @@ const LogEntryBuilder = class {
     }
 };
 
-export function newLogEntry(loggingLevel, shouldSave) {
-    return new LogEntryBuilder(loggingLevel, shouldSave);
+export function newLogEntry(loggingLevel, shouldSave, isConsoleLoggingEnabled) {
+    return new LogEntryBuilder(loggingLevel, shouldSave, isConsoleLoggingEnabled);
 }

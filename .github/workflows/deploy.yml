@@ -5,6 +5,7 @@ on:
     push:
         branches:
             - main
+            - 'devops/**'
         paths-ignore:
             - 'content/**'
             - 'docs/**'
@@ -14,7 +15,7 @@ on:
             - '.gitignore'
             - '.prettierignore'
             - '.prettierrc'
-            - 'Contributing.md'
+            - 'CONTRIBUTING.md'
             - 'LICENSE'
             - 'package.json'
             - 'README.md'
@@ -31,7 +32,7 @@ on:
             - '.gitignore'
             - '.prettierignore'
             - '.prettierrc'
-            - 'Contributing.md'
+            - 'CONTRIBUTING.md'
             - 'LICENSE'
             - 'package.json'
             - 'README.md'
@@ -40,7 +41,7 @@ on:
 
 jobs:
     code-quality-tests:
-        name: 'Code Quality Tests'
+        name: 'Run Code Quality Tests'
         runs-on: ubuntu-latest
         environment: Test
         steps:
@@ -64,17 +65,29 @@ jobs:
             - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
-            - name: 'LWC Lint verification'
+            - name: 'Verify package version number is updated'
+              run: |
+                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  rm ./DEVHUB_SFDX_URL.txt
+                  npm run package:version:number:verify
+              env:
+                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+
+            - name: 'Verify LWC with ESLint'
               run: npm run lint:verify
 
-            - name: 'Apex SFDX Scanner verification'
-              run: npm run prepare && npm run scan
+            - name: 'Verify Apex with SFDX Scanner'
+              run: npm run scan
 
-            - name: 'Prettier formatting verification'
+            - name: 'Verify docs are updated'
+              run: npm run docs:verify
+
+            - name: 'Verify formatting with Prettier'
               run: npm run prettier:verify
 
     lwc-tests:
-        name: 'LWC Tests'
+        name: 'Run LWC Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
         environment: Test
@@ -106,7 +119,7 @@ jobs:
                   flags: LWC
 
     scratch-org-tests:
-        name: 'Scratch Org Tests'
+        name: 'Run Scratch Org Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
         environment: Test
@@ -181,8 +194,8 @@ jobs:
               run: npm run org:delete:noprompt
               if: ${{ always() }}
 
-    create-and-install-test-package-version:
-        name: 'Create & Install Test Package Version'
+    create-and-install-package-version:
+        name: 'Create & Install Package Version'
         needs: [lwc-tests, scratch-org-tests]
         if: ${{ github.event_name == 'pull_request' }}
         runs-on: ubuntu-latest
@@ -190,6 +203,8 @@ jobs:
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }}
 
             - name: 'Restore node_modules cache'
               id: cache-npm
@@ -222,11 +237,14 @@ jobs:
                   sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
                   sfdx auth:sfdxurl:store --sfdxurlfile ./NEBULA_PKG_DEMO_SANDBOX_SFDX_URL.txt --setalias nebula-logger-package-demo
 
-            - name: 'Create & Install Unvalidated Package Version'
-              run: npx pwsh ./scripts/create-and-install-unvalidated-package-version.ps1 -targetusername nebula-logger-package-demo
+            - name: 'Create & Install Package Version'
+              run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetusername nebula-logger-package-demo
 
-            - name: 'Reinstall Latest Released Package Version'
-              run: npx pwsh ./scripts/install-latest-released-unlocked-package-version.ps1 -targetusername nebula-logger-package-demo
-
-            - name: 'Delete Unvalidated Package Version'
-              run: npx pwsh ./scripts/delete-unvalidated-package-version.ps1
+            - name: 'Commit New Package Version'
+              run: |
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Action Bot"
+                  npx prettier --write ./sfdx-project.json
+                  git add ./sfdx-project.json
+                  git commit -m "Created new package version"
+                  git push

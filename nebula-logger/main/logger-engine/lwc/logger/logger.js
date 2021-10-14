@@ -12,11 +12,14 @@ export default class Logger extends LightningElement {
     componentLogEntries = [];
     settings;
 
+    _scenario;
+
     @wire(getSettings)
     wiredSettings({ error, data }) {
         if (data) {
             this.settings = data;
         } else if (error) {
+            /* eslint-disable-next-line no-console */
             console.error(error);
         }
     }
@@ -57,6 +60,14 @@ export default class Logger extends LightningElement {
     }
 
     @api
+    setScenario(scenario) {
+        this._scenario = scenario;
+        this.componentLogEntries.forEach(logEntry => {
+            logEntry.scenario = this._scenario;
+        });
+    }
+
+    @api
     getBufferSize() {
         return this.componentLogEntries.length;
     }
@@ -72,8 +83,12 @@ export default class Logger extends LightningElement {
             saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
                 .then(this.flushBuffer())
                 .catch(error => {
-                    console.error(error);
-                    console.error(this.componentLogEntries);
+                    if (this.settings.isConsoleLoggingEnabled === true) {
+                        /* eslint-disable-next-line no-console */
+                        console.error(error);
+                        /* eslint-disable-next-line no-console */
+                        console.error(this.componentLogEntries);
+                    }
                 });
         }
     }
@@ -81,14 +96,16 @@ export default class Logger extends LightningElement {
     // Private functions
     _meetsUserLoggingLevel(logEntryLoggingLevel) {
         let logEntryLoggingLevelOrdinal = this.settings.supportedLoggingLevels[logEntryLoggingLevel];
-        return this.settings && this.settings.isEnabled == true && this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
+        return this.settings && this.settings.isEnabled === true && this.settings.userLoggingLevel.ordinal <= logEntryLoggingLevelOrdinal;
     }
 
     _newEntry(loggingLevel, message) {
         const shouldSave = this._meetsUserLoggingLevel(loggingLevel);
-
-        const logEntryBuilder = newLogEntry(loggingLevel, shouldSave).setMessage(message);
-        if (this._meetsUserLoggingLevel(loggingLevel) == true) {
+        const logEntryBuilder = newLogEntry(loggingLevel, shouldSave, this.settings.isConsoleLoggingEnabled).setMessage(message);
+        if (this._scenario) {
+            logEntryBuilder.scenario = this._scenario;
+        }
+        if (this._meetsUserLoggingLevel(loggingLevel) === true) {
             this.componentLogEntries.push(logEntryBuilder);
         }
 

@@ -1,4 +1,5 @@
 # This script is used to generate the markdown files used by Github pages
+rm -f ./docs/*/*.md
 rm -rf ./docs/configuration/
 rm -rf ./docs/logger-engine/
 rm -rf ./docs/log-management/

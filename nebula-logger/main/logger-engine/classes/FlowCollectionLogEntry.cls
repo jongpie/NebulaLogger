@@ -52,6 +52,12 @@ global inherited sharing class FlowCollectionLogEntry {
     global String loggingLevelName;
 
     /**
+     * @description Optionally specify the name to use for the current transaction's scenario
+     */
+    @InvocableVariable(required=false label='(Optional) Scenario')
+    global String scenario;
+
+    /**
      * @description Optionally provide a comma-separated String of tags to dynamically assign to the log entry
      */
     @InvocableVariable(required=false label='(Optional) Tags (comma-separated)')

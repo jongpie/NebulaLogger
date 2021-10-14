@@ -89,7 +89,6 @@ public with sharing class RelatedLogEntriesController {
         };
         String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
         logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
-        System.debug(LoggingLevel.DEBUG, 'logEntryQuery==' + logEntryQuery);
 
         return (List<LogEntry__c>) Database.query(logEntryQuery);
     }

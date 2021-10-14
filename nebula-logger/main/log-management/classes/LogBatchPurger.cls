@@ -45,7 +45,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         this.currentSObjectType = this.getInitialSObjectType();
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            Logger.info('Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
+            Logger.info('Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
             Logger.saveLog();
         }
 
@@ -77,7 +77,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             this.hardDelete(loggerRecords);
         } catch (Exception apexException) {
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                Logger.error('Error deleting logs', apexException);
+                Logger.error('Logger - Error deleting logs', apexException);
             }
         } finally {
             Logger.saveLog();
@@ -98,10 +98,14 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             Logger.setParentLogTransactionId(this.originalTransactionId);
             Logger.info(
-                new LogMessage('Finished LogBatchPurger job for {0}, {1} total log records processed', this.currentSObjectType, this.totalProcessedRecords)
+                new LogMessage(
+                    'Logger - Finished LogBatchPurger job for {0}, {1} total log records processed',
+                    this.currentSObjectType,
+                    this.totalProcessedRecords
+                )
             );
             if (nextBatchJobId != null) {
-                Logger.info(new LogMessage('Starting a new instance of LogBatchPurger job, job ID is: {0}', nextBatchJobId));
+                Logger.info(new LogMessage('Logger - Starting a new instance of LogBatchPurger job, job ID is: {0}', nextBatchJobId));
             }
             Logger.saveLog();
         }
@@ -175,7 +179,12 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             }
             when Log__c log {
                 queryLocator = Database.getQueryLocator(
-                    [SELECT Id FROM Log__c WHERE LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL ORDER BY LogRetentionDate__c]
+                    [
+                        SELECT Id
+                        FROM Log__c
+                        WHERE (LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL) OR TotalLogEntries__c = 0
+                        ORDER BY LogRetentionDate__c
+                    ]
                 );
             }
         }

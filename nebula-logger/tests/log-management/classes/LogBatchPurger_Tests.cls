@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogBatchPurger_Tests {
     private static final Integer NUMBER_OF_LOG_ENTRIES = 10;
@@ -20,7 +21,7 @@ private class LogBatchPurger_Tests {
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES; i++) {
-            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id);
+            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.INFO.name());
 
             logEntries.add(logEntry);
         }
@@ -149,11 +150,12 @@ private class LogBatchPurger_Tests {
     }
 
     @IsTest
-    static void it_should_not_delete_a_log_without_a_scheduled_deletion_date() {
-        List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
+    static void it_should_not_delete_a_log_without_a_scheduled_deletion_date_and_with_log_entries() {
+        List<Log__c> logs = [SELECT Id, TotalLogEntries__c, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
 
         System.assertEquals(1, logs.size());
+        System.assertEquals(NUMBER_OF_LOG_ENTRIES, logs.get(0).TotalLogEntries__c);
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
 
         // Set the log's deletion date to be null
@@ -171,5 +173,42 @@ private class LogBatchPurger_Tests {
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(1, logs.size(), logs);
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size(), logEntries);
+    }
+
+    @IsTest
+    static void it_should_delete_a_log_with_a_scheduled_deletion_date_and_without_log_entries() {
+        Date retentionDate = System.today().addDays(-1);
+        Log__c log = new Log__c(TransactionId__c = '5678');
+        insert log;
+        log.LogRetentionDate__c = retentionDate;
+        update log;
+        log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(retentionDate, log.LogRetentionDate__c, 'Log should not have a retention date');
+        System.assertEquals(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
+
+        Test.startTest();
+        Database.executeBatch(new LogBatchPurger());
+        Test.stopTest();
+
+        List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(0, matchingLogs.size(), 'Test log should have been deleted');
+    }
+
+    @IsTest
+    static void it_should_delete_a_log_without_a_scheduled_deletion_date_and_without_log_entries() {
+        Log__c log = new Log__c(TransactionId__c = '5678');
+        insert log;
+        log.LogRetentionDate__c = null;
+        update log;
+        log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(null, log.LogRetentionDate__c, 'Log should not have a retention date');
+        System.assertEquals(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
+
+        Test.startTest();
+        Database.executeBatch(new LogBatchPurger());
+        Test.stopTest();
+
+        List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(0, matchingLogs.size(), 'Test log should have been deleted');
     }
 }
