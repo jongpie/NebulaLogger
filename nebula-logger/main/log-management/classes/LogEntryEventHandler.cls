@@ -129,7 +129,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
 
-        upsert TRANSACTION_ID_TO_LOG.values() Schema.Log__c.TransactionId__c;
+        LoggerEmailUtils.sendErrorEmail(Database.upsert(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, false));
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
@@ -220,7 +220,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
         Database.DmlOptions dmlOptions = new Database.DmlOptions();
         dmlOptions.AllowFieldTruncation = true;
-        Database.insert(this.logEntries, dmlOptions);
+        dmlOptions.OptAllOrNone = false;
+        LoggerEmailUtils.sendErrorEmail(Database.insert(this.logEntries, dmlOptions));
     }
 
     private void appendRuleBasedTags() {
@@ -277,7 +278,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 }
             }
         }
-        insert new List<SObject>(tagAssignments);
+        LoggerEmailUtils.sendErrorEmail(Database.insert(new List<SObject>(tagAssignments), false));
     }
 
     @SuppressWarnings('PMD.ApexSOQLInjection')
@@ -306,7 +307,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         if (!missingTagsToCreate.isEmpty()) {
-            insert missingTagsToCreate;
+            LoggerEmailUtils.sendErrorEmail(Database.insert(missingTagsToCreate, false));
             for (SObject tag : missingTagsToCreate) {
                 missingTagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
             }

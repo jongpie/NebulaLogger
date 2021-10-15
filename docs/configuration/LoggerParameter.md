@@ -18,6 +18,10 @@ Indicates if Logger will make an async callout to https://api.status.salesforce.
 
 Indicates if Logger will append its own log entries about the logging system. Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages @return The configured value, or `false` as the default
 
+#### `SEND_ERROR_EMAIL_NOTIFICATIONS` → `Boolean`
+
+Indicates if Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record LoggerParamer.SendErrorEmailNotifications @return The configured value, or `true` as the default
+
 #### `SYSTEM_DEBUG_MESSAGE_FORMAT` → `String`
 
 The merge-field syntax to use when calling System.debug(). Controlled by the custom metadata record LoggerParamer.SystebugMessageFormat @return The configured value, or `{OriginLocation__c}\n{Message__c}` as the default

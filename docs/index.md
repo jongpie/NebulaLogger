@@ -84,6 +84,12 @@ Handles trigger events for the `LoggerTag__c` object
 
 Controller class for the lightning web component `related-log-entries`
 
+## Common
+
+### [LoggerEmailUtils](common/LoggerEmailUtils)
+
+Builds and sends email notifications when internal exceptions occur within the logging system
+
 ## Configuration
 
 ### [LoggerParameter](configuration/LoggerParameter)

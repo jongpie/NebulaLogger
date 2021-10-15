@@ -64,6 +64,21 @@ public class LoggerParameter {
     }
 
     /**
+     * @description Indicates if Logger will send an error email notification if any internal exceptions occur.
+     *              Controlled by the custom metadata record LoggerParamer.SendErrorEmailNotifications
+     * @return The configured value, or `true` as the default
+     */
+    public static final Boolean SEND_ERROR_EMAIL_NOTIFICATIONS {
+        get {
+            if (SEND_ERROR_EMAIL_NOTIFICATIONS == null) {
+                SEND_ERROR_EMAIL_NOTIFICATIONS = getBoolean('SendErrorEmailNotifications', true);
+            }
+            return SEND_ERROR_EMAIL_NOTIFICATIONS;
+        }
+        private set;
+    }
+
+    /**
      * @description Indicates if Logger's tagging system is enabled.
      *              Controlled by the custom metadata record LoggerParamer.EnableTagging
      * @return The configured value, or `true` as the default
