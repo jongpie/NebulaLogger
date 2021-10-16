@@ -3,10 +3,6 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-/**
- * @group Common
- * @description Builds and sends email notifications when internal exceptions occur within the logging system
- */
 @IsTest
 public class LoggerTestUtils {
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Common
+ * @group Provides
  * @description Builds and sends email notifications when internal exceptions occur within the logging system
  */
 @SuppressWarnings('PMD.PropertyNamingConventions')
@@ -12,7 +12,7 @@ public without sharing class LoggerEmailUtils {
     private static final List<String> CACHED_APEX_ERROR_RECIPIENTS {
         get {
             if (CACHED_APEX_ERROR_RECIPIENTS == null) {
-                CACHED_APEX_ERROR_RECIPIENTS = loadApexErrrorRecipients();
+                CACHED_APEX_ERROR_RECIPIENTS = queryApexErrrorRecipients();
             }
             return CACHED_APEX_ERROR_RECIPIENTS;
         }
@@ -53,27 +53,25 @@ public without sharing class LoggerEmailUtils {
         if (errorMessages.isEmpty() == true) {
             return;
         }
-        System.debug(LoggingLevel.INFO, 'Logger - errorMessages: ' + errorMessages);
+
         if (CACHED_APEX_ERROR_RECIPIENTS.isEmpty() == true) {
+            System.debug(LoggingLevel.INFO, 'Logger - no Apex email recipients configured, skipping sending email');
             return;
         }
-        final String formattedErrorMessages = String.join(errorMessages, '\n\t');
-        System.debug(LoggingLevel.INFO, 'Logger - formattedErrorMessages: ' + formattedErrorMessages);
 
-        final String emailBody = 'Logger failed to save 1 or more log entries for {0} (User ID: {1})\nError Messages:\n\t{2}';
+        final String emailBodyTemplate = 'Logger failed to save 1 or more log entries for {0} (User ID: {1})<br /><br />Error Messages:<ul>{2}</ul>';
+        final String formattedErrorMessages = '<li>' + String.join(errorMessages, '</li><li>') + '</li>';
         List<String> emailBodyInputs = new List<String>{ UserInfo.getUserName(), UserInfo.getUserId(), formattedErrorMessages };
-        String formattedEmailBody = String.format(emailBody, emailBodyInputs);
-        System.debug(LoggingLevel.INFO, 'Logger - formattedEmailBody: ' + formattedEmailBody);
+        String formattedEmailBody = String.format(emailBodyTemplate, emailBodyInputs);
+
         Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-        message.ToAddresses = CACHED_APEX_ERROR_RECIPIENTS;
-        message.Subject = 'Logger Error';
-        message.PlainTextBody = formattedEmailBody;
+        message.setToAddresses(CACHED_APEX_ERROR_RECIPIENTS);
+        message.setSubject('Logger - Error Notification');
+        message.setHtmlBody(formattedEmailBody);
         sendEmail(message);
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static List<String> getErrorMessages(List<Database.SaveResult> saveResults) {
-        System.debug(LoggingLevel.INFO, 'Logger - LogEntryEvent__e save results: ' + saveResults);
         List<String> errorMessages = new List<String>();
         for (Database.SaveResult result : saveResults) {
             if (result.isSuccess() == false) {
@@ -85,9 +83,7 @@ public without sharing class LoggerEmailUtils {
         return errorMessages;
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static List<String> getErrorMessages(List<Database.UpsertResult> upsertResults) {
-        System.debug(LoggingLevel.INFO, 'Logger - LogEntryEvent__e upsert results: ' + upsertResults);
         List<String> errorMessages = new List<String>();
         for (Database.UpsertResult result : upsertResults) {
             if (result.isSuccess() == false) {
@@ -111,7 +107,7 @@ public without sharing class LoggerEmailUtils {
     }
 
     @SuppressWarnings('PMD.ApexCRUDViolation')
-    private static List<String> loadApexErrrorRecipients() {
+    private static List<String> queryApexErrrorRecipients() {
         List<String> apexErrrorRecipients = new List<String>();
         for (ApexEmailNotification notification : [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE]) {
             if (notification.UserId != null) {
@@ -120,7 +116,6 @@ public without sharing class LoggerEmailUtils {
                 apexErrrorRecipients.addAll(notification.Email.split(';'));
             }
         }
-        apexErrrorRecipients.add(UserInfo.getUserId());
         return apexErrrorRecipients;
     }
 }
