@@ -9,6 +9,7 @@
  */
 @SuppressWarnings('PMD.PropertyNamingConventions')
 public without sharing class LoggerEmailUtils {
+    @TestVisible
     private static final List<String> CACHED_APEX_ERROR_RECIPIENTS {
         get {
             if (CACHED_APEX_ERROR_RECIPIENTS == null) {
@@ -49,6 +50,7 @@ public without sharing class LoggerEmailUtils {
         sendErrorEmail(errorMessages);
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static void sendErrorEmail(List<String> errorMessages) {
         if (errorMessages.isEmpty() == true) {
             return;
