@@ -264,12 +264,78 @@
             <rowIndex>9</rowIndex>
             <rowSpan>12</rowSpan>
         </dashboardGridComponents>
+        <dashboardGridComponents>
+            <colSpan>8</colSpan>
+            <columnIndex>0</columnIndex>
+            <dashboardComponent>
+                <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+                <chartAxisRange>Auto</chartAxisRange>
+                <componentType>Bar</componentType>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.Timestamp__c</column>
+                </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.LoggingLevel__c</column>
+                </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.OriginType__c</column>
+                </dashboardFilterColumns>
+                <displayUnits>Auto</displayUnits>
+                <drillEnabled>false</drillEnabled>
+                <drillToDetailEnabled>false</drillToDetailEnabled>
+                <enableHover>false</enableHover>
+                <expandOthers>false</expandOthers>
+                <groupingSortProperties />
+                <header>Log Entry Daily Retention Summary</header>
+                <report>LogReports/LogEntryDailyRetentionSummary</report>
+                <showPercentage>false</showPercentage>
+                <showPicturesOnCharts>false</showPicturesOnCharts>
+                <showValues>false</showValues>
+                <sortBy>RowLabelAscending</sortBy>
+                <useReportChart>true</useReportChart>
+            </dashboardComponent>
+            <rowIndex>21</rowIndex>
+            <rowSpan>10</rowSpan>
+        </dashboardGridComponents>
+        <dashboardGridComponents>
+            <colSpan>4</colSpan>
+            <columnIndex>8</columnIndex>
+            <dashboardComponent>
+                <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+                <chartAxisRange>Auto</chartAxisRange>
+                <componentType>Bar</componentType>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.Timestamp__c</column>
+                </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.LoggingLevel__c</column>
+                </dashboardFilterColumns>
+                <dashboardFilterColumns>
+                    <column>LogEntry__c.OriginType__c</column>
+                </dashboardFilterColumns>
+                <displayUnits>Auto</displayUnits>
+                <drillEnabled>false</drillEnabled>
+                <drillToDetailEnabled>false</drillToDetailEnabled>
+                <enableHover>false</enableHover>
+                <expandOthers>false</expandOthers>
+                <groupingSortProperties />
+                <header>Log Entry Scenario Summary</header>
+                <report>LogReports/LogEntryScenarioSummary</report>
+                <showPercentage>false</showPercentage>
+                <showPicturesOnCharts>false</showPicturesOnCharts>
+                <showValues>false</showValues>
+                <sortBy>RowLabelAscending</sortBy>
+                <useReportChart>true</useReportChart>
+            </dashboardComponent>
+            <rowIndex>21</rowIndex>
+            <rowSpan>10</rowSpan>
+        </dashboardGridComponents>
         <numberOfColumns>12</numberOfColumns>
         <rowHeight>36</rowHeight>
     </dashboardGridLayout>
     <dashboardType>LoggedInUser</dashboardType>
     <isGridLayout>true</isGridLayout>
-    <runningUser>test-t8j76db3qzft@example.com</runningUser>
+    <runningUser>test-jjw63tzh5qcz@example.com</runningUser>
     <textColor>#000000</textColor>
     <title>Logger Admin Dashboard</title>
     <titleColor>#000000</titleColor>
