@@ -1,8 +1,8 @@
 # Slack plugin for Nebula Logger
 
-Adds a Slack integration for the unlocked package edition of Nebula Logger. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
+Adds a Slack integration for the unlocked package edition of Nebula Logger v4.6.9 or newer. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
 
-[![Install Unlocked Package](./.content/btn-install-unlocked-package-plugin.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5e00000065xiAAA)
+[![Install Unlocked Package](./.content/btn-install-unlocked-package-plugin.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l2WQAQ)
 
 ![Slack plugin: notification](./.content/slack-plugin-notification.png)
 
@@ -38,7 +38,7 @@ Check out [Slack's webhooks documentation](https://api.slack.com/messaging/webho
 
 1. Ensure that you have the unlocked package version of Nebula Logger installed in your org
 2. Install the unlocked package for the Slack plugin
-3. Go to Setup --> Custom Metadata Types --> Logger Plugin --> Slack. There are 2 parameters to configure (shown in screenshot below)
+3. Go to Setup --> Custom Metadata Types --> Logger Parameters. There are 2 parameters to configure (shown in screenshot below)
     - Parameter 'Slack Endpoint' - You can configure this webhook in 1 of 2 ways:
         - Easier but less secure: Paste the Slack webhook URL into the `Value__c` field and save the Plugin Parameter record.
         - More secure: Create a new Named Credential, using the webhook URL as the endpoint. Within the Parameter 'Slack Endpoint', enter `callout:<your named credential>` into the `Value__c` field and save the Plugin Parameter record
@@ -46,4 +46,4 @@ Check out [Slack's webhooks documentation](https://api.slack.com/messaging/webho
 
 The Slack integration should now be setup & working - any new logs that meet the specified notification logging level (step 6 above) will send a Slack notification.
 
-![Slack plugin: configuration](./.content/slack-plugin-configuration.png)
+![Slack plugin: parameters](./.content/slack-plugin-parameters.png)
