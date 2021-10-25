@@ -31,6 +31,37 @@ global with sharing class LogEntryEventBuilder {
 
     // These constants all involve queries and/or increasing heap size, so custom getters are used for lazy-loading
     // This avoids unnecessarily consuming resources when logging is disabled, etc.
+
+    // Public constants - exposed as public so other code can leverage the cached query results
+    /**
+     * @description Returns the current org's `Organization` record
+     * @return The current org's `Organization` record
+     */
+    public static final Organization CACHED_ORGANIZATION {
+        get {
+            if (CACHED_ORGANIZATION == null) {
+                CACHED_ORGANIZATION = queryOrganization();
+            }
+            return CACHED_ORGANIZATION;
+        }
+        set;
+    }
+
+    /**
+     * @description Returns the current user, including parent fields for profile and user role
+     * @return The current user's record
+     */
+    public static final User CACHED_USER {
+        get {
+            if (CACHED_USER == null) {
+                CACHED_USER = queryUser();
+            }
+            return CACHED_USER;
+        }
+        set;
+    }
+
+    // Private constants
     private static final AuthSession CACHED_AUTH_SESSION {
         get {
             if (CACHED_AUTH_SESSION == null) {
@@ -61,32 +92,12 @@ global with sharing class LogEntryEventBuilder {
         set;
     }
 
-    private static final Organization CACHED_ORGANIZATION {
-        get {
-            if (CACHED_ORGANIZATION == null) {
-                CACHED_ORGANIZATION = queryOrganization();
-            }
-            return CACHED_ORGANIZATION;
-        }
-        set;
-    }
-
     private static final String CACHED_ORGANIZATION_ENVIRONMENT_TYPE {
         get {
             if (CACHED_ORGANIZATION_ENVIRONMENT_TYPE == null) {
                 CACHED_ORGANIZATION_ENVIRONMENT_TYPE = getOrganizationEnvironmentType();
             }
             return CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
-        }
-        set;
-    }
-
-    private static final User CACHED_USER {
-        get {
-            if (CACHED_USER == null) {
-                CACHED_USER = queryUser();
-            }
-            return CACHED_USER;
         }
         set;
     }

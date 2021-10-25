@@ -34,35 +34,37 @@ public without sharing class LoggerEmailUtils {
     /**
      * @description Sends an error email notification to the org's list of Apex Exception Email recipients,
      *              configured under Setup --> Email --> Apex Exception Email
+     * @param  sobjectType The SObjectType of records being saved.
      * @param  saveResults The list of Database.SaveResult instances to use in the email.
      *                     If no errors are found in the provided list, then no email will be sent.
      */
-    public static void sendErrorEmail(List<Database.SaveResult> saveResults) {
+    public static void sendErrorEmail(Schema.SObjectType sobjectType, List<Database.SaveResult> saveResults) {
         if (LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS == false || saveResults == null || saveResults.isEmpty() == true) {
             return;
         }
 
         List<String> errorMessages = getErrorMessages(saveResults);
-        sendErrorEmail(errorMessages);
+        sendErrorEmail(sobjectType, errorMessages);
     }
 
     /**
      * @description Sends an error email notification to the org's list of Apex Exception Email recipients,
      *              configured under Setup --> Email --> Apex Exception Email
+     * @param  sobjectType The SObjectType of records being saved.
      * @param  upsertResults The list of Database.UpsertResult instances to use in the email.
      *                     If no errors are found in the provided list, then no email will be sent.
      */
-    public static void sendErrorEmail(List<Database.UpsertResult> upsertResults) {
+    public static void sendErrorEmail(Schema.SObjectType sobjectType, List<Database.UpsertResult> upsertResults) {
         if (LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS == false || upsertResults == null || upsertResults.isEmpty() == true) {
             return;
         }
 
         List<String> errorMessages = getErrorMessages(upsertResults);
-        sendErrorEmail(errorMessages);
+        sendErrorEmail(sobjectType, errorMessages);
     }
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
-    private static void sendErrorEmail(List<String> errorMessages) {
+    private static void sendErrorEmail(Schema.SObjectType sobjectType, List<String> errorMessages) {
         if (errorMessages.isEmpty() == true) {
             return;
         }
@@ -72,15 +74,10 @@ public without sharing class LoggerEmailUtils {
             return;
         }
 
-        final String emailBodyTemplate = 'Logger failed to save 1 or more log entries for {0} (User ID: {1})<br /><br />Error Messages:<ul>{2}</ul>';
-        final String formattedErrorMessages = '<li>' + String.join(errorMessages, '</li><li>') + '</li>';
-        List<String> emailBodyInputs = new List<String>{ UserInfo.getUserName(), UserInfo.getUserId(), formattedErrorMessages };
-        String formattedEmailBody = String.format(emailBodyTemplate, emailBodyInputs);
-
         Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
         message.setToAddresses(CACHED_APEX_ERROR_RECIPIENTS);
-        message.setSubject('Logger - Error Notification');
-        message.setHtmlBody(formattedEmailBody);
+        message.setSubject(buildSubject(errorMessages));
+        message.setHtmlBody(buildHtmlBody(sobjectType, errorMessages));
         sendEmail(message);
     }
 
@@ -118,6 +115,25 @@ public without sharing class LoggerEmailUtils {
         } else {
             System.debug(LoggingLevel.INFO, 'Logger - The email failed to send: ' + emailResults[0].errors[0].message);
         }
+    }
+
+    private static String buildSubject(List<String> errorMessages) {
+        String emailSubjectTemplate = 'Logger - Error Notification - {0} ({1})';
+        List<Object> emailSubjectInputs = new List<Object>{ LogEntryEventBuilder.CACHED_ORGANIZATION.Name, LogEntryEventBuilder.CACHED_ORGANIZATION.Id };
+        return String.format(emailSubjectTemplate, emailSubjectInputs);
+    }
+
+    private static String buildHtmlBody(Schema.SObjectType sobjectType, List<String> errorMessages) {
+        final String emailBodyTemplate = 'Logger failed to save {0} {1} records for {2} (User ID: {3})<br /><br />Error Messages:<ul>{4}</ul>';
+        final String formattedErrorMessages = '<li>' + String.join(errorMessages, '</li><li>') + '</li>';
+        List<Object> emailBodyInputs = new List<Object>{
+            errorMessages.size(),
+            sobjectType,
+            LogEntryEventBuilder.CACHED_USER.Username,
+            LogEntryEventBuilder.CACHED_USER.Id,
+            formattedErrorMessages
+        };
+        return String.format(emailBodyTemplate, emailBodyInputs);
     }
 
     @SuppressWarnings('PMD.ApexCRUDViolation')
