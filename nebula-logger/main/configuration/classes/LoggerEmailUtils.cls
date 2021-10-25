@@ -20,6 +20,17 @@ public without sharing class LoggerEmailUtils {
         set;
     }
 
+    @TestVisible
+    private static final List<Messaging.SingleEmailMessage> SENT_EMAILS {
+        get {
+            if (SENT_EMAILS == null) {
+                SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
+            }
+            return SENT_EMAILS;
+        }
+        set;
+    }
+
     /**
      * @description Sends an error email notification to the org's list of Apex Exception Email recipients,
      *              configured under Setup --> Email --> Apex Exception Email
@@ -101,6 +112,7 @@ public without sharing class LoggerEmailUtils {
     private static void sendEmail(Messaging.SingleEmailMessage message) {
         List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
         List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
+        SENT_EMAILS.add(message);
         if (emailResults[0].success == true) {
             System.debug(LoggingLevel.INFO, 'Logger - The email was sent successfully');
         } else {
