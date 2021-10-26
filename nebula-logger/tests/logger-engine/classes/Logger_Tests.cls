@@ -341,6 +341,33 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_set_scenario_and_apply_scenario_rule_logging_level() {
+        String transactionId = Logger.getTransactionId();
+        String transactionScenarioName = 'some test scenario for this transaction';
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            Scenario__c = transactionScenarioName,
+            UserLoggingLevelOverride__c = LoggingLevel.FINER.name()
+        );
+        Logger.setMockScenarioRule(scenarioRule);
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        System.assertNotEquals(Logger.getUserSettings().LoggingLevel__c, scenarioRule.UserLoggingLevelOverride__c);
+
+        Logger.setScenario(transactionScenarioName);
+        for (Integer i = 0; i < 5; i++) {
+            Logger.finer('my log entry');
+        }
+        Logger.saveLog();
+        Test.getEventBus().deliver();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c FROM LogEntry__c WHERE Log__c = :log.Id];
+        for (LogEntry__c logEntry : logEntries) {
+            System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c, 'All log entries should have FINER as the logging level');
+        }
+    }
+
+    @IsTest
     static void it_should_use_last_scenario_when_multiple_scenarios_specified() {
         String transactionId = Logger.getTransactionId();
         String initialTransactionScenarioName = 'some test scenario for this transaction';
