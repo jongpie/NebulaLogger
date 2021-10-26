@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>UserLoggingLevelOverride__c</fullName>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
-    <inlineHelpText>Overrides the user&apos;s logging level (normally controlled via LoggerSettings__c.LoggingLevel__c) for any transactions with the specified Scenario</inlineHelpText>
+    <inlineHelpText
+    >Overrides the user&apos;s logging level (normally controlled via LoggerSettings__c.LoggingLevel__c) for any transactions with the specified Scenario</inlineHelpText>
     <label>User Logging Level Override</label>
     <required>true</required>
     <type>Picklist</type>
