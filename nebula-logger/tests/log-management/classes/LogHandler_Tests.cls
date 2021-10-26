@@ -40,7 +40,7 @@ private class LogHandler_Tests {
         LogStatus__mdt closedStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = SECOND_STATUS, IsClosed__c = true, IsResolved__c = true);
         logStatusByName.put(closedStatus.MasterLabel, closedStatus);
 
-        LogHandler.logStatusByName = logStatusByName;
+        LogHandler.LOG_STATUS_NAME_TO_STATUS.putAll(logStatusByName);
     }
 
     @IsTest
@@ -116,22 +116,37 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_retention_date_when_configured() {
+    static void it_should_set_retention_date_when_configured_via_logger_settings() {
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
-
-        LoggerSettings__c settings = Logger.getUserSettings();
-        settings.DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
-        upsert settings;
-
-        Test.startTest();
+        Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
+        upsert Logger.getUserSettings();
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;
 
-        Test.stopTest();
-
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
+    }
+
+    @IsTest
+    static void it_should_set_retention_date_when_configured_via_scenario_rules() {
+        Integer defaultDaysToRetainLog = 1;
+        Integer daysToRetainLog = 90;
+        Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
+        Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
+        upsert Logger.getUserSettings();
+        String transactionScenarioName = 'some scenario';
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            Scenario__c = transactionScenarioName,
+            NumberOfDaysToRetainLogs__c = daysToRetainLog
+        );
+        LogHandler.setMockScenarioRule(scenarioRule);
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Scenario__c = transactionScenarioName, TransactionId__c = '1234');
+        insert log;
+
+        log = [SELECT Id, Scenario__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
     }
 

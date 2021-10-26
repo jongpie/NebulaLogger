@@ -6,6 +6,7 @@
     <columns>Scenario__c</columns>
     <columns>IsEnabled__c</columns>
     <columns>UserLoggingLevelOverride__c</columns>
+    <columns>NumberOfDaysToRetainLogs__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

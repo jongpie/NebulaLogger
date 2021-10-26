@@ -8,7 +8,7 @@
     <inlineHelpText
     >This value is used to set the field Log__c.LogRetentionDate__c,  which is then used by LogBatchPurger to delete old logs. To keep  logs indefinitely, set this field to blank (null).</inlineHelpText>
     <label>Days to Retain Logs</label>
-    <precision>3</precision>
+    <precision>4</precision>
     <required>false</required>
     <scale>0</scale>
     <trackTrending>false</trackTrending>
