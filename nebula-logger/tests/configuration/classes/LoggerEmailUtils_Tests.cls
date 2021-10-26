@@ -47,7 +47,6 @@ private class LoggerEmailUtils_Tests {
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
         List<Database.SaveResult> saveResultsWithErrors = Database.insert(new List<LogEntry__c>{ new LogEntry__c() }, false);
-        LoggerEmailUtils.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
@@ -95,7 +94,6 @@ private class LoggerEmailUtils_Tests {
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
-        LoggerEmailUtils.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
 
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');

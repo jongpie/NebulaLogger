@@ -9,6 +9,7 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.AvoidDebugStatements, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
+    private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
     @TestVisible
     private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
@@ -129,7 +130,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
 
-        LoggerEmailUtils.sendErrorEmail(Schema.Log__c.SObjectType, Database.upsert(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, false));
+        List<Database.UpsertResult> upsertResults = Database.upsert(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, false);
+        LoggerEmailUtils.sendErrorEmail(Schema.Log__c.SObjectType, upsertResults);
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
@@ -218,10 +220,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
             }
         }
-        Database.DmlOptions dmlOptions = new Database.DmlOptions();
-        dmlOptions.AllowFieldTruncation = true;
-        dmlOptions.OptAllOrNone = false;
-        LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, Database.insert(this.logEntries, dmlOptions));
+
+        List<Database.SaveResult> saveResults = Database.insert(this.logEntries, DML_OPTIONS);
+        LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
     }
 
     private void appendRuleBasedTags() {
@@ -260,7 +261,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         this.tagNames.addAll(tagNameToId.keySet());
 
         // Assign the tags to the records
-        Schema.SObjectType sobjectType;
+        Schema.SObjectType tagAssignmentSObjectType;
         Set<SObject> tagAssignments = new Set<SObject>();
         for (LogEntry__c logEntry : this.logEntries) {
             List<String> logEntryTagNames = this.logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
@@ -271,17 +272,19 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             for (String tagName : logEntryTagNames) {
                 if (LoggerParameter.TAG_USING_TOPICS == true) {
                     // Add the topic for the LogEntry__c & the parent Log__c
-                    sobjectType = Schema.TopicAssignment.SObjectType;
+                    tagAssignmentSObjectType = Schema.TopicAssignment.SObjectType;
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
                 } else {
                     // Add a LogEntryTag__c record that links to the LogEntry__c - the handler class will also related it to the parent Log__c
-                    sobjectType = Schema.LogEntry__c.SObjectType;
+                    tagAssignmentSObjectType = Schema.LogEntryTag__c.SObjectType;
                     tagAssignments.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tagNameToId.get(tagName)));
                 }
             }
         }
-        LoggerEmailUtils.sendErrorEmail(sobjectType, Database.insert(new List<SObject>(tagAssignments), false));
+
+        List<Database.SaveResult> saveResults = Database.insert(new List<SObject>(tagAssignments), DML_OPTIONS);
+        LoggerEmailUtils.sendErrorEmail(tagAssignmentSObjectType, saveResults);
     }
 
     @SuppressWarnings('PMD.ApexSOQLInjection')
@@ -310,7 +313,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         if (!missingTagsToCreate.isEmpty()) {
-            LoggerEmailUtils.sendErrorEmail(tagSObjectType, Database.insert(missingTagsToCreate, false));
+            List<Database.SaveResult> saveResults = Database.insert(missingTagsToCreate, DML_OPTIONS);
+            LoggerEmailUtils.sendErrorEmail(tagSObjectType, saveResults);
             for (SObject tag : missingTagsToCreate) {
                 missingTagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
             }
@@ -320,6 +324,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     // Private static methods
+    private static Database.DmlOptions createDmlOptions() {
+        Database.DmlOptions dmlOptions = new Database.DmlOptions();
+        dmlOptions.AllowFieldTruncation = true;
+        dmlOptions.OptAllOrNone = false;
+        return dmlOptions;
+    }
+
     private static List<String> getTagNames(String tagsString) {
         List<String> cleanedTagNames = new List<String>();
 
