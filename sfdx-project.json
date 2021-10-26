@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.11.0",
-            "versionName": "Admin enhancements - new dashboard, reports, and error email alerts",
-            "versionDescription": "Added new Logger Console homepage to display the new Logger Admin dashboard, added Logger error email notifications",
+            "versionNumber": "4.6.12.0",
+            "versionName": "Logger Scenario Rules",
+            "versionDescription": "Added new CMDT LoggerScenarioRule__mdt to override the user's logging level for a particular scenario",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
