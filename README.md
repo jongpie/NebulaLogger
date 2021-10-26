@@ -5,13 +5,13 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-## Unlocked Package v4.6.12
+## Unlocked Package - v4.6.12
 
 [![Install Unlocked Package](./content/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l2vQAA)
 [![Install Unlocked Package](./content/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l2vQAA)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-## Managed Package v4.6.0
+## Managed Package - v4.6.0
 
 [![Install Managed Package](./content/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
 [![Install Managed Package](./content/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
@@ -38,7 +38,7 @@ Learn more about the design and history of the project on [Joys Of Apex blog pos
 
 ## Installing
 
-Nebula Logger is available as both an unlocked package and a managed package. The metadata is the same in both packages, but there are some differences in the available functionality & features. All examples in `README` are for the unlocked package (no namespace) - simply add the `Nebula` namespace to the examples if you are using the managed package.
+Nebula Logger is available as both an unlocked package and a managed package. The metadata is the same in both packages, but there are some differences in the available functionality & features. All examples in `README` are for the unlocked package v4.6.12
 
 <table>
     <thead>
