@@ -3,7 +3,9 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
+@SuppressWarnings(
+    'PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount'
+)
 @IsTest
 private class LogEntryEventBuilder_Tests {
     static String getMessage() {
@@ -997,7 +999,7 @@ private class LogEntryEventBuilder_Tests {
         // Get expected data
         Organization organization = LoggerTestUtils.getOrganization();
         String organizationEnvironmentType = LoggerTestUtils.getOrganizationEnvironmentType();
-        User user = LoggerTestUtils.getUser();
+        User user = LoggerTestUtils.getCurrentUser();
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
 

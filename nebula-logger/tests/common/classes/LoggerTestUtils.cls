@@ -3,12 +3,16 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.ApexDoc')
 @IsTest
 public class LoggerTestUtils {
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
     private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
 
+    /**
+     * @description Instances of `AggregateResult` can not be created directly in Apex.
+     *              This method uses a workaround to generate a mock.
+     * @return   The mock instance of `AggregateResult`
+     */
     public static AggregateResult createMockAggregateResult() {
         Map<String, Object> defaultMockAggregateKeyValues = new Map<String, Object>{
             'fieldAvg' => 62.5,
@@ -19,10 +23,21 @@ public class LoggerTestUtils {
         return createMockAggregateResult(defaultMockAggregateKeyValues);
     }
 
+    /**
+     * @description Instances of `AggregateResult` can not be created directly in Apex.
+     *              This method uses a workaround to generate a mock, using the provided map of aliases & aggregate values
+     * @param  mockAggregateKeyValues A map of aliases & aggregate values to use when creating the mock `AggregateResult`
+     * @return   The mock instance of `AggregateResult`
+     */
     public static AggregateResult createMockAggregateResult(Map<String, Object> mockAggregateKeyValues) {
         return (AggregateResult) JSON.deserialize(JSON.serialize(mockAggregateKeyValues), AggregateResult.class);
     }
 
+    /**
+     * @description Generates a mock record ID for the provided SObject Type
+     * @param  sobjectType The SObject Type for the generated mock record ID
+     * @return   The mock record ID for the specified SObject Type
+     */
     public static String createMockId(Schema.SObjectType sobjectType) {
         Integer recordIdNumber = 1;
         if (SOBJECT_TYPE_TO_MOCK_ID_COUNT.containsKey(sobjectType)) {
@@ -37,6 +52,10 @@ public class LoggerTestUtils {
         return recordIdKeyPrefix + '0'.repeat(recordIdCenterLength) + recordIdSuffix;
     }
 
+    /**
+     * @description Creates a `User` record for testing purposes, using the 'Standard User' profile
+     * @return   The generated `User` record - it is not automatically inserted into the database.
+     */
     public static User createStandardUser() {
         return new User(
             Alias = 'log_xyz',
@@ -51,10 +70,18 @@ public class LoggerTestUtils {
         );
     }
 
+    /**
+     * @description Queries for the `Organization` record for the current environment.
+     * @return   The matching `Organization` record
+     */
     public static Organization getOrganization() {
         return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
     }
 
+    /**
+     * @description Returns the current environment's type - Scratch Org, Sandbox, or Production.
+     * @return   The environment type
+     */
     public static String getOrganizationEnvironmentType() {
         Organization organization = getOrganization();
 
@@ -69,6 +96,10 @@ public class LoggerTestUtils {
         return orgEnvironmentType;
     }
 
+    /**
+     * @description Returns the current user's `Network` (Experience Cloud site)
+     * @return   The matching `Network` record
+     */
     public static SObject getNetwork() {
         if (Network.getNetworkId() == null) {
             return null;
@@ -87,7 +118,11 @@ public class LoggerTestUtils {
         return Database.query(queryString);
     }
 
-    public static User getUser() {
+    /**
+     * @description Returns the current user
+     * @return   The matching `User` record
+     */
+    public static User getCurrentUser() {
         return [
             SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
             FROM User

@@ -45,19 +45,10 @@
         <field>FK_$LogEntry__c.OriginLocation__c</field>
     </columns>
     <description>Detailed report for the LogEntryTag__c object</description>
-    <filter>
-        <criteriaItems>
-            <column>FK_$LogEntry__c.LoggingLevel__c</column>
-            <columnToColumn>false</columnToColumn>
-            <isUnlocked>true</isUnlocked>
-            <operator>equals</operator>
-            <value>,ERROR,WARN,INFO,DEBUG,FINE,FINER,FINEST</value>
-        </criteriaItems>
-    </filter>
     <format>Summary</format>
     <groupingsDown>
         <field>FK_$LogEntry__c.Timestamp__c</field>
-        <sortOrder>Asc</sortOrder>
+        <sortOrder>Desc</sortOrder>
     </groupingsDown>
     <groupingsDown>
         <dateGranularity>Day</dateGranularity>

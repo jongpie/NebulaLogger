@@ -45,6 +45,21 @@ public class LoggerParameter {
     }
 
     /**
+     * @description Indicates if Logger will send an error email notification if any internal exceptions occur.
+     *              Controlled by the custom metadata record LoggerParamer.SendErrorEmailNotifications
+     * @return The configured value, or `true` as the default
+     */
+    public static final Boolean SEND_ERROR_EMAIL_NOTIFICATIONS {
+        get {
+            if (SEND_ERROR_EMAIL_NOTIFICATIONS == null) {
+                SEND_ERROR_EMAIL_NOTIFICATIONS = getBoolean('SendErrorEmailNotifications', true);
+            }
+            return SEND_ERROR_EMAIL_NOTIFICATIONS;
+        }
+        private set;
+    }
+
+    /**
      * @description The merge-field syntax to use when calling System.debug().
      *              Controlled by the custom metadata record LoggerParamer.SystemDebugMessageFormat
      * @return The configured value, or `{OriginLocation__c}\n{Message__c}` as the default

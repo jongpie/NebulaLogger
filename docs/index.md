@@ -86,6 +86,10 @@ Controller class for the lightning web component `related-log-entries`
 
 ## Configuration
 
+### [LoggerEmailUtils](configuration/LoggerEmailUtils)
+
+Builds and sends email notifications when internal exceptions occur within the logging system
+
 ### [LoggerParameter](configuration/LoggerParameter)
 
 Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types

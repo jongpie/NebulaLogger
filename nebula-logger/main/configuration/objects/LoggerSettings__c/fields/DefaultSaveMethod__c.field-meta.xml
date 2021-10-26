@@ -7,14 +7,16 @@
 Possible values:
 EVENT_BUS
 QUEUEABLE
-REST</description>
+REST
+SYNCHRONOUS_DML</description>
     <externalId>false</externalId>
     <inlineHelpText>Defaults to &apos;EVENT_BUS&apos;. This controls the default save method used by Logger when calling saveLog().
 
 Possible values:
 EVENT_BUS
 QUEUEABLE
-REST</inlineHelpText>
+REST
+SYNCHRONOUS_DML</inlineHelpText>
     <label>Save Method</label>
     <length>255</length>
     <required>true</required>

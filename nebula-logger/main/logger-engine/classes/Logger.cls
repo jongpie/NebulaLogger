@@ -13,7 +13,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.6.10';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.6.11';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = setTransactionId();
@@ -2522,9 +2522,8 @@ global with sharing class Logger {
 
         switch on saveMethod {
             when EVENT_BUS {
-                // TODO add error handling for when event bus fails to publish
-                List<Database.SaveResult> results = EventBus.publish(logEntryEvents);
-                System.debug(DEFAULT_LOGGING_LEVEL, 'Logger - LogEntryEvent__e save results: ' + results);
+                List<Database.SaveResult> saveResults = EventBus.publish(logEntryEvents);
+                LoggerEmailUtils.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
             when QUEUEABLE {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));

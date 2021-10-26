@@ -31,6 +31,37 @@ global with sharing class LogEntryEventBuilder {
 
     // These constants all involve queries and/or increasing heap size, so custom getters are used for lazy-loading
     // This avoids unnecessarily consuming resources when logging is disabled, etc.
+
+    // Public constants - exposed as public so other code can leverage the cached query results
+    /**
+     * @description Returns the current org's `Organization` record
+     * @return The current org's `Organization` record
+     */
+    public static final Organization CACHED_ORGANIZATION {
+        get {
+            if (CACHED_ORGANIZATION == null) {
+                CACHED_ORGANIZATION = queryOrganization();
+            }
+            return CACHED_ORGANIZATION;
+        }
+        set;
+    }
+
+    /**
+     * @description Returns the current user, including parent fields for profile and user role
+     * @return The current user's record
+     */
+    public static final User CACHED_USER {
+        get {
+            if (CACHED_USER == null) {
+                CACHED_USER = queryUser();
+            }
+            return CACHED_USER;
+        }
+        set;
+    }
+
+    // Private constants
     private static final AuthSession CACHED_AUTH_SESSION {
         get {
             if (CACHED_AUTH_SESSION == null) {
@@ -61,32 +92,12 @@ global with sharing class LogEntryEventBuilder {
         set;
     }
 
-    private static final Organization CACHED_ORGANIZATION {
-        get {
-            if (CACHED_ORGANIZATION == null) {
-                CACHED_ORGANIZATION = queryOrganization();
-            }
-            return CACHED_ORGANIZATION;
-        }
-        set;
-    }
-
     private static final String CACHED_ORGANIZATION_ENVIRONMENT_TYPE {
         get {
             if (CACHED_ORGANIZATION_ENVIRONMENT_TYPE == null) {
                 CACHED_ORGANIZATION_ENVIRONMENT_TYPE = getOrganizationEnvironmentType();
             }
             return CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
-        }
-        set;
-    }
-
-    private static final User CACHED_USER {
-        get {
-            if (CACHED_USER == null) {
-                CACHED_USER = queryUser();
-            }
-            return CACHED_USER;
         }
         set;
     }
@@ -841,18 +852,6 @@ global with sharing class LogEntryEventBuilder {
         return sobjectClassification;
     }
 
-    private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
-        String sobjectFullName = sobjectType.getDescribe().getName();
-        String sobjectLocalName = sobjectType.getDescribe().getLocalName();
-
-        // Remove the trailing '__' if present
-        String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
-        if (String.isBlank(namespace)) {
-            namespace = null;
-        }
-        return namespace;
-    }
-
     private static Map<String, String> getSObjectSuffixToClassification() {
         // TODO add sample metadata for external object + picklist value + test
         // Example: MyExternalObject__x
@@ -876,6 +875,18 @@ global with sharing class LogEntryEventBuilder {
             // Examples: AccountShare and Log__Share
             'Share' => 'Record Share Object'
         };
+    }
+
+    private static String getSObjectTypeNamespace(Schema.SObjectType sobjectType) {
+        String sobjectFullName = sobjectType.getDescribe().getName();
+        String sobjectLocalName = sobjectType.getDescribe().getLocalName();
+
+        // Remove the trailing '__' if present
+        String namespace = sobjectFullName.replace(sobjectLocalName, '').replace('__', '');
+        if (String.isBlank(namespace)) {
+            namespace = null;
+        }
+        return namespace;
     }
 
     // TODO need to revisit Visualforce logic, re-add fields to either Log__c or LogEntry__c, etc.

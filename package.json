@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.6.10",
+    "version": "4.6.11",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
@@ -49,7 +49,8 @@
         "package:version:number:fix": "pwsh ./scripts/build/sync-package-version-number.ps1",
         "package:version:number:verify": "pwsh scripts/build/validate-current-package-version-number.ps1",
         "permset:assign:admin": "sfdx force:user:permset:assign --permsetname LoggerAdmin",
-        "prepare": "husky install && sfdx plugins:link ./node_modules/@salesforce/sfdx-scanner",
+        "plugin:version:create:slack": "sfdx force:package:version:create --json --package \"Nebula Logger Plugin - Slack\" --codecoverage --installationkeybypass --wait 30",
+        "prepare": "husky install && chmod +x ./.husky/pre-commit && sfdx plugins:link ./node_modules/@salesforce/sfdx-scanner",
         "prettier:fix": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "scan": "sfdx scanner:run --pmdconfig config/pmd-ruleset.xml --target . --engine pmd --severity-threshold 3",
