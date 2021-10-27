@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
-    <actionOverrides>
-        <actionName>Tab</actionName>
-        <content>LoggerConsoleHomePage</content>
-        <formFactor>Large</formFactor>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Flexipage</type>
-        <pageOrSobjectType>standard-home</pageOrSobjectType>
-    </actionOverrides>
     <brand>
         <headerColor>#1E1E1E</headerColor>
         <shouldOverrideOrgTheme>true</shouldOverrideOrgTheme>
@@ -19,7 +11,6 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <label>Logger Console</label>
     <navType>Console</navType>
-    <tabs>standard-home</tabs>
     <tabs>Log__c</tabs>
     <tabs>LogEntry__c</tabs>
     <tabs>LogEntryTag__c</tabs>
@@ -49,9 +40,6 @@
         </mappings>
         <mappings>
             <tab>standard-Dashboard</tab>
-        </mappings>
-        <mappings>
-            <tab>standard-home</tab>
         </mappings>
         <mappings>
             <tab>standard-report</tab>
