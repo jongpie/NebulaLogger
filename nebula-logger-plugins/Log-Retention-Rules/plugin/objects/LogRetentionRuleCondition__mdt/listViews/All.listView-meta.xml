@@ -3,10 +3,12 @@
     <fullName>All</fullName>
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
-    <columns>IsEnabled__c</columns>
-    <columns>Scenario__c</columns>
-    <columns>UserLoggingLevelOverride__c</columns>
-    <columns>NumberOfDaysToRetainLogs__c</columns>
+    <columns>LogRetentionRule__c</columns>
+    <columns>SortOrder__c</columns>
+    <columns>FieldPath__c</columns>
+    <columns>Operator__c</columns>
+    <columns>ValueType__c</columns>
+    <columns>Value__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

@@ -4,8 +4,7 @@
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>IsEnabled__c</columns>
-    <columns>Scenario__c</columns>
-    <columns>UserLoggingLevelOverride__c</columns>
+    <columns>ExecutionOrder__c</columns>
     <columns>NumberOfDaysToRetainLogs__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>

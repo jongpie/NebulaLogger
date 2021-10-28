@@ -14,6 +14,19 @@
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
+            "package": "Nebula Logger Plugin - Log Retention Rules",
+            "path": "nebula-logger-plugins/Log-Retention-Rules/plugin",
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Unlocked Package@4.6.12-0-logger-scenario-rules"
+                }
+            ],
+            "versionName": "Beta Release",
+            "versionNumber": "0.9.0.0",
+            "versionDescription": "Initial beta version of new plugin",
+            "default": false
+        },
+        {
             "package": "Nebula Logger Plugin - Logger Admin Dashboard",
             "path": "nebula-logger-plugins/Logger-Admin-Dashboard/plugin",
             "dependencies": [
@@ -68,6 +81,7 @@
         "Nebula Logger - Unlocked Package@4.6.7-0-security-enhancements": "04t5Y0000015klZQAQ",
         "Nebula Logger - Unlocked Package@4.6.8-0-new-log-entry-event-stream-component": "04t5Y0000015kplQAA",
         "Nebula Logger - Unlocked Package@4.6.9-0-custom-metadata-types-optimized": "04t5Y0000015kqtQAA",
+        "Nebula Logger Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
         "Nebula Logger Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",
         "Nebula Logger Plugin - Logger Admin Dashboard@0.9.0-0": "04t5Y0000015l3AQAQ",
         "Nebula Logger Plugin - Slack": "0Ho5Y000000blMDSAY",
