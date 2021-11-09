@@ -37,7 +37,7 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>UserLoggingLevelOverride__c</field>
+                <field>UserLoggingLevel__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>

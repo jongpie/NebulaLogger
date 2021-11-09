@@ -11,7 +11,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private static final Map<String, LogStatus__mdt> LOG_STATUS_NAME_TO_STATUS = loadActiveLogStatuses();
     @TestVisible
-    private static final Map<String, LoggerScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LoggerScenarioRule__mdt>();
+    private static final Map<String, LogScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
 
     @TestVisible
     private List<Log__c> logs;
@@ -80,7 +80,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setLogRetentionDate() {
-        Map<String, LoggerScenarioRule__mdt> scenarioToScenarioRule = queryScenarioRules(this.logs);
+        Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = queryScenarioRules(this.logs);
         for (Log__c log : this.logs) {
             // If the retention date has already been populated, leave it as-is
             if (log.LogRetentionDate__c != null) {
@@ -92,7 +92,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
 
             // Load the configured scenario rule (if one exists)
-            LoggerScenarioRule__mdt matchingScenarioRule = scenarioToScenarioRule.get(log.Scenario__c);
+            LogScenarioRule__mdt matchingScenarioRule = scenarioToScenarioRule.get(log.Scenario__c);
             if (Test.isRunningTest() == true) {
                 matchingScenarioRule = SCENARIO_TO_MOCK_SCENARIO_RULE.get(log.Scenario__c);
             }
@@ -157,7 +157,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         Database.insert(logShares, false);
     }
 
-    private static Map<String, LoggerScenarioRule__mdt> queryScenarioRules(List<Log__c> logs) {
+    private static Map<String, LogScenarioRule__mdt> queryScenarioRules(List<Log__c> logs) {
         List<String> scenarios = new List<String>();
         for (Log__c log : logs) {
             if (log.Scenario__c != null) {
@@ -165,10 +165,10 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
         }
 
-        Map<String, LoggerScenarioRule__mdt> scenarioToScenarioRule = new Map<String, LoggerScenarioRule__mdt>();
-        for (LoggerScenarioRule__mdt scenarioRule : [
+        Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = new Map<String, LogScenarioRule__mdt>();
+        for (LogScenarioRule__mdt scenarioRule : [
             SELECT Scenario__c, NumberOfDaysToRetainLogs__c
-            FROM LoggerScenarioRule__mdt
+            FROM LogScenarioRule__mdt
             WHERE IsEnabled__c = TRUE AND Scenario__c IN :scenarios
         ]) {
             scenarioToScenarioRule.put(scenarioRule.Scenario__c, scenarioRule);
@@ -177,7 +177,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     @TestVisible
-    private static void setMockScenarioRule(LoggerScenarioRule__mdt scenarioRule) {
+    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
         SCENARIO_TO_MOCK_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 }

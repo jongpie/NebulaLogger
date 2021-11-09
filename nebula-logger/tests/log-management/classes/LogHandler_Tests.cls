@@ -137,7 +137,7 @@ private class LogHandler_Tests {
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
         upsert Logger.getUserSettings();
         String transactionScenarioName = 'some scenario';
-        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
             Scenario__c = transactionScenarioName,
             NumberOfDaysToRetainLogs__c = daysToRetainLog
         );

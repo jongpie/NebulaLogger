@@ -17,7 +17,7 @@ global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     @TestVisible
-    private static final Map<String, LoggerScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LoggerScenarioRule__mdt>();
+    private static final Map<String, LogScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = setTransactionId();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
 
@@ -2456,11 +2456,11 @@ global with sharing class Logger {
     global static void setScenario(String scenario) {
         transactionScenario = scenario;
 
-        // LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule__mdt.getInstance(scenario);
-        LoggerScenarioRule__mdt matchingScenarioRule;
-        for (LoggerScenarioRule__mdt scenarioRule : [
-            SELECT UserLoggingLevelOverride__c
-            FROM LoggerScenarioRule__mdt
+        // LogScenarioRule__mdt scenarioRule = LogScenarioRule__mdt.getInstance(scenario);
+        LogScenarioRule__mdt matchingScenarioRule;
+        for (LogScenarioRule__mdt scenarioRule : [
+            SELECT UserLoggingLevel__c
+            FROM LogScenarioRule__mdt
             WHERE IsEnabled__c = TRUE AND Scenario__c = :scenario
         ]) {
             matchingScenarioRule = scenarioRule;
@@ -2471,12 +2471,12 @@ global with sharing class Logger {
         }
 
         if (matchingScenarioRule != null) {
-            getUserSettings().LoggingLevel__c = matchingScenarioRule.UserLoggingLevelOverride__c;
+            getUserSettings().LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
         }
     }
 
     @TestVisible
-    private static void setMockScenarioRule(LoggerScenarioRule__mdt scenarioRule) {
+    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
         SCENARIO_TO_MOCK_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 

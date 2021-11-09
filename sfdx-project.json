@@ -10,7 +10,7 @@
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
             "versionNumber": "4.6.12.0",
             "versionName": "Logger Scenario Rules",
-            "versionDescription": "Added new CMDT LoggerScenarioRule__mdt to override the user's logging level for a particular scenario",
+            "versionDescription": "Added new CMDT LogScenarioRule__mdt to configure scenario-specific logging levels and retention dates",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
