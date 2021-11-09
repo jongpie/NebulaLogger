@@ -137,10 +137,7 @@ private class LogHandler_Tests {
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
         upsert Logger.getUserSettings();
         String transactionScenarioName = 'some scenario';
-        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
-            Scenario__c = transactionScenarioName,
-            NumberOfDaysToRetainLogs__c = daysToRetainLog
-        );
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, NumberOfDaysToRetainLogs__c = daysToRetainLog);
         LogHandler.setMockScenarioRule(scenarioRule);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Scenario__c = transactionScenarioName, TransactionId__c = '1234');

@@ -2458,11 +2458,7 @@ global with sharing class Logger {
 
         // LogScenarioRule__mdt scenarioRule = LogScenarioRule__mdt.getInstance(scenario);
         LogScenarioRule__mdt matchingScenarioRule;
-        for (LogScenarioRule__mdt scenarioRule : [
-            SELECT UserLoggingLevel__c
-            FROM LogScenarioRule__mdt
-            WHERE IsEnabled__c = TRUE AND Scenario__c = :scenario
-        ]) {
+        for (LogScenarioRule__mdt scenarioRule : [SELECT UserLoggingLevel__c FROM LogScenarioRule__mdt WHERE IsEnabled__c = TRUE AND Scenario__c = :scenario]) {
             matchingScenarioRule = scenarioRule;
         }
 

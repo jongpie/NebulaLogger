@@ -14,19 +14,6 @@
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
-            "package": "Nebula Logger Plugin - Log Retention Rules",
-            "path": "nebula-logger-plugins/Log-Retention-Rules/plugin",
-            "dependencies": [
-                {
-                    "package": "Nebula Logger - Unlocked Package@4.6.12-0-logger-scenario-rules"
-                }
-            ],
-            "versionName": "Beta Release",
-            "versionNumber": "0.9.0.0",
-            "versionDescription": "Initial beta version of new plugin",
-            "default": false
-        },
-        {
             "package": "Nebula Logger Plugin - Logger Admin Dashboard",
             "path": "nebula-logger-plugins/Logger-Admin-Dashboard/plugin",
             "dependencies": [
