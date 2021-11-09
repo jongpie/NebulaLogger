@@ -38,7 +38,7 @@ Learn more about the design and history of the project on [Joys Of Apex blog pos
 
 ## Installing
 
-Nebula Logger is available as both an unlocked package and a managed package. The metadata is the same in both packages, but there are some differences in the available functionality & features. All examples in `README` are for the unlocked package v4.6.12
+Nebula Logger is available as both an unlocked package and a managed package. The metadata is the same in both packages, but there are some differences in the available functionality & features. All examples in `README` are for the unlocked package (no namespace) - simply add the `Nebula` namespace to the examples if you are using the managed package.
 
 <table>
     <thead>

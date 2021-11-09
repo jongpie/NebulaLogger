@@ -9,7 +9,7 @@
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
             "versionNumber": "4.6.12.0",
-            "versionName": "Logger Scenario Rules",
+            "versionName": "Log Scenario Rules",
             "versionDescription": "Added new CMDT LogScenarioRule__mdt to configure scenario-specific logging levels and retention dates",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
@@ -18,12 +18,12 @@
             "path": "nebula-logger-plugins/Logger-Admin-Dashboard/plugin",
             "dependencies": [
                 {
-                    "package": "Nebula Logger - Unlocked Package@4.6.12-0-logger-scenario-rules"
+                    "package": "Nebula Logger - Unlocked Package@4.6.12-0-log-scenario-rules"
                 }
             ],
             "versionName": "Beta Release",
             "versionNumber": "0.9.0.0",
-            "versionDescription": "Initial beta version of new plugin",
+            "versionDescription": "Initial beta version of new dashboard plugin",
             "default": false
         },
         {
@@ -59,7 +59,7 @@
         "Nebula Logger - Unlocked Package@4.6.1-0-summer-21-upgrade": "04t5Y0000015kfMQAQ",
         "Nebula Logger - Unlocked Package@4.6.10-0-new-log-and-logger-settings-fields": "04t5Y0000015l27QAA",
         "Nebula Logger - Unlocked Package@4.6.11-0-admin-enhancements---new-dashboard,-reports,-and-error-email-alerts": "04t5Y0000015l2qQAA",
-        "Nebula Logger - Unlocked Package@4.6.12-0-logger-scenario-rules": "04t5Y0000015l3oQAA",
+        "Nebula Logger - Unlocked Package@4.6.12-0-log-scenario-rules": "04t5Y0000015l3oQAA",
         "Nebula Logger - Unlocked Package@4.6.2-0-anonymous-logs": "04t5Y0000015kgPQAQ",
         "Nebula Logger - Unlocked Package@4.6.3-0-more-metadata-data": "04t5Y0000015kgeQAA",
         "Nebula Logger - Unlocked Package@4.6.4-0-logger-for-lwc-and-aura": "04t5Y0000015kgjQAA",
@@ -70,7 +70,7 @@
         "Nebula Logger - Unlocked Package@4.6.9-0-custom-metadata-types-optimized": "04t5Y0000015kqtQAA",
         "Nebula Logger Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
         "Nebula Logger Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",
-        "Nebula Logger Plugin - Logger Admin Dashboard@0.9.0-0": "04t5Y0000015l3AQAQ",
+        "Nebula Logger Plugin - Logger Admin Dashboard@0.9.0-0": "04t5Y0000015l3yQAA",
         "Nebula Logger Plugin - Slack": "0Ho5Y000000blMDSAY",
         "Nebula Logger Plugin - Slack@0.9.0-0-beta-release": "04t5e00000061lHAAQ",
         "Nebula Logger Plugin - Slack@0.9.1-0-beta-release-round-2": "04t5e00000065xiAAA",
