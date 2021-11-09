@@ -70,10 +70,10 @@ public without sharing abstract class LoggerSObjectHandler {
      */
     public LoggerSObjectHandler() {
         this.triggerOperationType = Trigger.operationType;
-        this.triggerNew = Trigger.new;
-        this.triggerNewMap = Trigger.newMap;
-        this.triggerOld = Trigger.old;
-        this.triggerOldMap = Trigger.oldMap;
+        this.triggerNew = Trigger.new == null ? new List<SObject>() : Trigger.new;
+        this.triggerNewMap = Trigger.newMap == null ? new Map<Id, SObject>() : Trigger.newMap;
+        this.triggerOld = Trigger.old == null ? new List<SObject>() : Trigger.old;
+        this.triggerOldMap = Trigger.oldMap == null ? new Map<Id, SObject>() : Trigger.oldMap;
         this.plugins = pluginsBySObjectType.get(this.getSObjectType());
     }
 
@@ -178,5 +178,22 @@ public without sharing abstract class LoggerSObjectHandler {
         if (updatedTriggerNew != null && updatedTriggerNew.size() == this.triggerNew.size()) {
             this.triggerNew = updatedTriggerNew;
         }
+    }
+
+    private LoggerPlugin.PluginInput buildPluginInput() {
+        LoggerPlugin.PluginInput pluginInput = new LoggerPlugin.PluginInput();
+        pluginInput.triggerOperationType = this.triggerOperationType;
+        pluginInput.triggerOperationTypeName = this.triggerOperationType?.name();
+
+        List<LoggerPlugin.PluginRecordInput> triggerRecordInputs = new List<LoggerPlugin.PluginRecordInput>();
+        // TODO better handle operations where Trigger.new is null
+        for (SObject record : this.triggerNew) {
+            LoggerPlugin.PluginRecordInput triggerRecordInput = new LoggerPlugin.PluginRecordInput();
+            triggerRecordInput.triggerRecordNew = record;
+            triggerRecordInput.triggerRecordOld = this.triggerOldMap.get(record.Id);
+        }
+        pluginInput.triggerRecords = triggerRecordInputs;
+
+        return pluginInput;
     }
 }

@@ -3,8 +3,9 @@
     <fullName>All</fullName>
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
-    <columns>NumberOfDaysToRetainLogs__c</columns>
     <columns>IsEnabled__c</columns>
+    <columns>ExecutionOrder__c</columns>
+    <columns>NumberOfDaysToRetainLogs__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

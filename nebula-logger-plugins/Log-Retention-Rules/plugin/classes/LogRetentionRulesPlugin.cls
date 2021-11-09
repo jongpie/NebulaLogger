@@ -4,11 +4,11 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.               //
 //-----------------------------------------------------------------------------------------------------------//
 
+// TODO revise suppressed PMD rules/clean up code
+@SuppressWarnings('PMD.ApexDoc, PMD.AvoidDebugStatements, PMD.DebugsShouldUseLoggingLevel, PMD.ExcessiveParameterList')
 public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandlerPlugin {
-    @TestVisible
-    private final Map<String, LogRetentionRule__mdt> rulesByDeveloperName = new Map<String, LogRetentionRule__mdt>();
-    @TestVisible
-    private final Map<String, List<LogRetentionRuleCondition__mdt>> conditionsByRuleDeveloperName = new Map<String, List<LogRetentionRuleCondition__mdt>>();
+    private static final Map<String, LogRetentionRule__mdt> RULE_NAME_TO_RULE = new Map<String, LogRetentionRule__mdt>();
+    private static final Map<String, List<LogRetentionRuleCondition__mdt>> RULE_NAME_TO_CONDITIONS = new Map<String, List<LogRetentionRuleCondition__mdt>>();
 
     public LogRetentionRulesPlugin() {
         this.loadConfiguredFilters();
@@ -48,9 +48,11 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         System.debug('starting setLogRetentionDate==' + logEntries);
 
         Map<Id, Log__c> logIdToLog = new Map<Id, Log__c>();
-        for (FilterResult filterResult : this.runFilters(logEntries)) {
+        List<FilterResult> filterResults = this.runFilters(logEntries);
+        System.debug('filterResults==' + filterResults);
+        for (FilterResult filterResult : filterResults) {
             System.debug('filterResult==' + filterResult);
-            System.debug('filter matches==' + filterResult.matchesFilter);
+            System.debug('filter matches for ' + filterResult.rule.DeveloperName + '==' + filterResult.matchesFilter);
             if (filterResult.matchesFilter == true) {
                 Id logId = (Id) filterResult.record.get(Schema.LogEntry__c.Log__c);
                 Log__c log = logIdToLog.get(logId);
@@ -70,6 +72,8 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
 
     // Private methods
     private void loadConfiguredFilters() {
+        Map<String, LogRetentionRule__mdt> queriedRulesByDeveloperName = new Map<String, LogRetentionRule__mdt>();
+        Map<String, List<LogRetentionRuleCondition__mdt>> queriedConditionsByRuleDeveloperName = new Map<String, List<LogRetentionRuleCondition__mdt>>();
         for (LogRetentionRule__mdt rule : [
             SELECT
                 DeveloperName,
@@ -79,18 +83,29 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
                 (SELECT FieldPath__c, Operator__c, ValueType__c, Value__c FROM LogRetentionRuleConditions__r ORDER BY SortOrder__c NULLS LAST, DeveloperName)
             FROM LogRetentionRule__mdt
             WHERE IsEnabled__c = TRUE
+            ORDER BY ExecutionOrder__c NULLS LAST, DeveloperName
         ]) {
-            this.rulesByDeveloperName.put(rule.DeveloperName, rule);
-            this.conditionsByRuleDeveloperName.put(rule.DeveloperName, rule.LogRetentionRuleConditions__r);
+            queriedRulesByDeveloperName.put(rule.DeveloperName, rule);
+            queriedConditionsByRuleDeveloperName.put(rule.DeveloperName, rule.LogRetentionRuleConditions__r);
+
+            if (Test.isRunningTest() == true) {
+                queriedRulesByDeveloperName.clear();
+                queriedConditionsByRuleDeveloperName.clear();
+            }
+            RULE_NAME_TO_RULE.putAll(queriedRulesByDeveloperName);
+            RULE_NAME_TO_CONDITIONS.putAll(queriedConditionsByRuleDeveloperName);
         }
     }
 
     private List<FilterResult> runFilters(List<SObject> records) {
+        System.debug('runFilters for records: ' + records);
+        System.debug('runFilters for RULE_NAME_TO_RULE: ' + RULE_NAME_TO_RULE);
         List<FilterResult> results = new List<FilterResult>();
         for (SObject record : records) {
-            for (String filterDeveloperName : this.rulesByDeveloperName.keySet()) {
-                LogRetentionRule__mdt filter = this.rulesByDeveloperName.get(filterDeveloperName);
-                List<LogRetentionRuleCondition__mdt> filerConditions = this.conditionsByRuleDeveloperName.get(filter.DeveloperName);
+            for (String filterDeveloperName : RULE_NAME_TO_RULE.keySet()) {
+                System.debug('processing filter: ' + filterDeveloperName);
+                LogRetentionRule__mdt filter = RULE_NAME_TO_RULE.get(filterDeveloperName);
+                List<LogRetentionRuleCondition__mdt> filerConditions = RULE_NAME_TO_CONDITIONS.get(filter.DeveloperName);
                 FilterResult filterResult = new FilterResult(record, filter, filerConditions);
 
                 results.add(filterResult);
@@ -99,6 +114,17 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         return results;
     }
 
+    @TestVisible
+    private static void setMockRetentionRule(LogRetentionRule__mdt rule) {
+        RULE_NAME_TO_RULE.put(rule.DeveloperName, rule);
+    }
+
+    @TestVisible
+    private static void setMockRetentionRuleConditions(LogRetentionRule__mdt rule, List<LogRetentionRuleCondition__mdt> conditions) {
+        RULE_NAME_TO_CONDITIONS.put(rule.DeveloperName, conditions);
+    }
+
+    @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart')
     @TestVisible
     private class FilterResult {
         public SObject record { get; private set; }
@@ -176,6 +202,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         }
     }
 
+    @SuppressWarnings('PMD.ApexDoc')
     @TestVisible
     private class FilterConditionResult {
         private Boolean matchesFilter;
@@ -362,6 +389,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
     // Credit goes to this StackExchange post for the original BooleanExpression class -
     // below is a modified version of the class
     // https://salesforce.stackexchange.com/questions/113300/boolean-evaluation-in-apex/113308
+    @SuppressWarnings('PMD.ApexDoc')
     private class BooleanExpression {
         public Boolean evaluate(String x) {
             x = simplify(x);
@@ -412,6 +440,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         }
     }
 
+    @SuppressWarnings('PMD.ApexDoc')
     private class FieldPath {
         private List<Schema.SObjectField> fieldChain;
         private Schema.DescribeFieldResult fieldDescribe;
@@ -435,7 +464,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
 
             for (Schema.SObjectField field : this.fieldChain) {
                 Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-                String relationshipName = fieldDescribe.getRelationshipName();
+                // TODO delete? String relationshipName = fieldDescribe.getRelationshipName();
 
                 if (fieldDescribe.getSoapType() != Schema.SoapType.Id) {
                     return parentRecord.get(fieldDescribe.getName());
