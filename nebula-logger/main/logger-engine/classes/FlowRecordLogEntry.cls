@@ -45,6 +45,12 @@ global inherited sharing class FlowRecordLogEntry {
     global Boolean saveLog = false;
 
     /**
+     * @description Optionally choose the save method to use when 'Save Log' is true
+     */
+    @InvocableVariable(required=false label='(Optional) Save Method')
+    global String saveMethodName;
+
+    /**
      * @description Optionally specify a logging level - the default is 'DEBUG'
      */
     @InvocableVariable(required=false label='(Optional) Logging Level')

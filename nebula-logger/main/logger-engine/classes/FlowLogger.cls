@@ -62,9 +62,14 @@ public inherited sharing class FlowLogger {
         public List<String> topics; // TODO: deprecated, remove in a future release
 
         /**
-         * @description boolean used to determine if logs are saved to Salesforce.
+         * @description Boolean used to determine if logs are saved to Salesforce.
          */
         public Boolean saveLog = false;
+
+        /**
+         * @description String name of the instance of Logger.SaveMethod to use saveLog == true
+         */
+        public String saveMethodName;
 
         /**
          * @description timestamp of the log
@@ -130,16 +135,20 @@ public inherited sharing class FlowLogger {
      */
     public static List<String> addEntries(List<LogEntry> flowEntries) {
         Boolean saveLog = false;
+        Logger.SaveMethod saveMethod = Logger.getSaveMethod();
         for (LogEntry flowEntry : flowEntries) {
             flowEntry.addToLoggerBuffer();
 
             if (flowEntry.saveLog == true) {
                 saveLog = flowEntry.saveLog;
+                if (String.isNotBlank(flowEntry.saveMethodName) == true) {
+                    saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
+                }
             }
         }
 
         if (saveLog == true) {
-            Logger.saveLog();
+            Logger.saveLog(saveMethod);
         }
 
         // Event though it's the same transaction ID, Salesforce expects the returned list...

@@ -72,7 +72,11 @@ General message to log.
 
 ###### `saveLog` → `Boolean`
 
-boolean used to determine if logs are saved to Salesforce.
+Boolean used to determine if logs are saved to Salesforce.
+
+###### `saveMethodName` → `String`
+
+String name of the instance of Logger.SaveMethod to use saveLog == true
 
 ###### `scenario` → `String`
 

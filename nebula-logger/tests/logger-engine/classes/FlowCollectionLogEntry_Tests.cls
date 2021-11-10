@@ -103,6 +103,51 @@ private class FlowCollectionLogEntry_Tests {
     }
 
     @IsTest
+    static void it_should_auto_save_entry_with_save_method_when_saveMethodName_specified() {
+        User currentUser = new User(
+            Id = UserInfo.getUserId(),
+            FirstName = UserInfo.getFirstName(),
+            LastName = UserInfo.getLastName(),
+            Username = UserInfo.getUserName()
+        );
+
+        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
+
+        Test.startTest();
+        System.assertEquals(0, Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
+
+        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+
+        FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
+        flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
+        flowCollectionEntry.records = new List<SObject>{ currentUser };
+        flowCollectionEntry.saveLog = true;
+        flowCollectionEntry.saveMethodName = Logger.SaveMethod.QUEUEABLE.name();
+        FlowCollectionLogEntry.addFlowCollectionEntries(new List<FlowCollectionLogEntry>{ flowCollectionEntry });
+
+        System.assertEquals(1, Limits.getQueueableJobs(), 'Log entries should have been saved using the QUEUEABLE save method');
+        Test.stopTest();
+
+        String expectedUserJson = JSON.serializePretty(new List<SObject>{ currentUser });
+
+        LogEntry__c logEntry = [
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordCollectionType__c, RecordJson__c, RecordSObjectType__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
+        System.assertEquals(flowCollectionEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowCollectionEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+        System.assertEquals(null, logEntry.RecordId__c);
+        System.assertEquals('List', logEntry.RecordCollectionType__c);
+        System.assertEquals('User', logEntry.RecordSObjectType__c);
+        System.assertEquals(expectedUserJson, logEntry.RecordJson__c);
+    }
+
+    @IsTest
     static void it_should_not_save_entry_when_logging_level_not_met() {
         User currentUser = new User(
             Id = UserInfo.getUserId(),

@@ -70,6 +70,37 @@ private class FlowLogEntry_Tests {
     }
 
     @IsTest
+    static void it_should_auto_save_entry_with_save_method_when_saveMethodName_specified() {
+        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
+
+        Test.startTest();
+        System.assertEquals(0, Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
+
+        Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
+
+        FlowLogEntry flowEntry = createFlowLogEntry();
+        flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
+        flowEntry.saveLog = true;
+        flowEntry.saveMethodName = Logger.SaveMethod.QUEUEABLE.name();
+        FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
+
+        System.assertEquals(1, Limits.getQueueableJobs(), 'Log entries should have been saved using the QUEUEABLE save method');
+        Test.stopTest();
+
+        LogEntry__c logEntry = [
+            SELECT Id, LoggingLevel__c, Message__c, OriginType__c, OriginLocation__c, RecordId__c, RecordJson__c
+            FROM LogEntry__c
+            ORDER BY CreatedDate
+            LIMIT 1
+        ];
+        System.assertEquals(flowEntry.loggingLevelName, logEntry.LoggingLevel__c);
+        System.assertEquals(flowEntry.message, logEntry.Message__c);
+        System.assertEquals('Flow', logEntry.OriginType__c);
+    }
+
+    @IsTest
     static void it_should_not_save_entry_when_logging_level_not_met() {
         LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;

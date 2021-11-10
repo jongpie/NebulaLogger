@@ -46,6 +46,10 @@ Optionally relate the log entry to a particular record ID
 
 Optionally choose to save any pending log entries.
 
+#### `saveMethodName` → `String`
+
+Optionally choose the save method to use when &apos;Save Log&apos; is true
+
 #### `scenario` → `String`
 
 Optionally specify the name to use for the current transaction&apos;s scenario
