@@ -4,11 +4,9 @@
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>IsEnabled__c</columns>
-    <columns>ExecutionOrder__c</columns>
-    <columns>SObjectType__c</columns>
-    <columns>PluginType__c</columns>
-    <columns>PluginApiName__c</columns>
-    <columns>Description__c</columns>
+    <columns>Scenario__c</columns>
+    <columns>UserLoggingLevel__c</columns>
+    <columns>NumberOfDaysToRetainLogs__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

@@ -13,9 +13,11 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.6.11';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.6.12';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
+    @TestVisible
+    private static final Map<String, LogScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = setTransactionId();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
 
@@ -2451,8 +2453,27 @@ global with sharing class Logger {
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
      * @param  scenario The name to use for the current transaction's scenario
      */
-    public static void setScenario(String scenario) {
+    global static void setScenario(String scenario) {
         transactionScenario = scenario;
+
+        // LogScenarioRule__mdt scenarioRule = LogScenarioRule__mdt.getInstance(scenario);
+        LogScenarioRule__mdt matchingScenarioRule;
+        for (LogScenarioRule__mdt scenarioRule : [SELECT UserLoggingLevel__c FROM LogScenarioRule__mdt WHERE IsEnabled__c = TRUE AND Scenario__c = :scenario]) {
+            matchingScenarioRule = scenarioRule;
+        }
+
+        if (Test.isRunningTest() == true) {
+            matchingScenarioRule = SCENARIO_TO_MOCK_SCENARIO_RULE.get(scenario);
+        }
+
+        if (matchingScenarioRule != null) {
+            getUserSettings().LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
+        }
+    }
+
+    @TestVisible
+    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
+        SCENARIO_TO_MOCK_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 
     /**

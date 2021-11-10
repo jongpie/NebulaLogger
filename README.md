@@ -5,16 +5,16 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-## Unlocked Package v4.6.11
+## Unlocked Package - v4.6.12
 
-[![Install Unlocked Package](./content/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l2qQAA)
-[![Install Unlocked Package](./content/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l2qQAA)
+[![Install Unlocked Package in a Sandbox](./content/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l3oQAA)
+[![Install Unlocked Package in Production](./content/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l3oQAA)
 [![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-## Managed Package v4.6.0
+## Managed Package - v4.6.0
 
-[![Install Managed Package](./content/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
-[![Install Managed Package](./content/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![Install Managed Package in a Sandbox](./content/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![Install Managed Package in Production](./content/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
 [![View Milestone](./content/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/6)
 
 ---
@@ -574,16 +574,6 @@ Once you've implementing log entry tagging within Apex or Flow, you can choose h
 The Logger Console app provides access to the tabs for Logger's objects: `Log__c`, `LogEntry__c`, `LogEntryTag__c` and `LoggerTag__c` (for any users with the correct access).
 
 ![Logger Console app](./content/logger-console-app.png)
-
-### Logger Admin Dashboard
-
-To help monitor logs in your org, the Logger Console app's homepage displays the included dashboard 'Logger Admin' - it displays several report charts to quickly see summary info about your logs. The dashboard supports filtering on:
-
--   Timestamp: based on `LogEntry__c.Timestamp__c`
--   Logging Level: based on `LogEntry__c.LoggingLevel__c`
--   Origin Type: based on `LogEntry__c.OriginType__c`
-
-![Logger Console Home](./content/logger-console-app-home.png)
 
 ### Log's 'Manage' Quick Action
 

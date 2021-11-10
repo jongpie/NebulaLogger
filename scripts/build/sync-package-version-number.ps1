@@ -29,7 +29,6 @@ function Update-Package-JSON {
     Write-Output "Bumping package.json version number to: $versionNumber"
 
     $packageJson.version = $versionNumber
-
     ConvertTo-Json -InputObject $packageJson | Set-Content -Path $packageJsonPath -NoNewline
     prettier --write $packageJsonPath
     git add $packageJsonPath
@@ -45,13 +44,11 @@ function Update-README {
     )
     $versionNumber = "v" + $versionNumber
     $readmeContents = Get-README
-    # Write-Output "$readmeContents"
     Write-Output "Bumping README unlocked package version number to: $versionNumber"
 
-    $targetRegEx = "(.+Unlocked Package')(.+)"
-    $replacementRegEx = '$1' + $versionNumber + '$3'
+    $targetRegEx = "(.+ Unlocked Package - )(.+)"
+    $replacementRegEx = '$1' + $versionNumber
     $readmeContents -replace $targetRegEx, $replacementRegEx | Set-Content -Path $readmeClassPath -NoNewline
-    Write-Output "$readmeContents"
     prettier --write $readmeClassPath
     git add $readmeClassPath
 }
@@ -68,7 +65,6 @@ function Update-Logger-Class {
     $loggerClassContents = Get-Logger-Class
     Write-Output "Bumping Logger.cls version number to: $versionNumber"
 
-
     $targetRegEx = "(.+CURRENT_VERSION_NUMBER = ')(.+)(';)"
     $replacementRegEx = '$1' + $versionNumber + '$3'
     $loggerClassContents -replace $targetRegEx, $replacementRegEx | Set-Content -Path $loggerClassPath -NoNewline
@@ -80,5 +76,5 @@ $versionNumber = Get-Version-Number
 Write-Output "Target Version Number: $versionNumber"
 
 Update-Package-JSON $versionNumber
-# Update-README $versionNumber TODO: fix this
+Update-README $versionNumber
 Update-Logger-Class $versionNumber
