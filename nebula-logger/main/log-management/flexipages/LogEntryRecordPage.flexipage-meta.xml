@@ -20,6 +20,7 @@
                     <value>10</value>
                 </componentInstanceProperties>
                 <componentName>force:highlightsPanel</componentName>
+                <identifier>force_highlightsPanel</identifier>
             </componentInstance>
         </itemInstances>
         <name>header</name>
@@ -33,6 +34,7 @@
                     <value>required</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Log__c</fieldItem>
+                <identifier>RecordLog__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -42,6 +44,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoggedByUsernameLink__c</fieldItem>
+                <identifier>RecordLoggedByUsernameLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -51,6 +54,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Timestamp__c</fieldItem>
+                <identifier>RecordTimestamp__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -60,6 +64,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.EpochTimestamp__c</fieldItem>
+                <identifier>RecordEpochTimestamp__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-cb40f95d-9915-4ba5-815c-f3e53bcc4001</name>
@@ -73,6 +78,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoggingLevelWithImage__c</fieldItem>
+                <identifier>RecordLoggingLevelWithImage__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -82,6 +88,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Origin__c</fieldItem>
+                <identifier>RecordOrigin__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -91,6 +98,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Trigger__c</fieldItem>
+                <identifier>RecordTrigger__cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.TriggerIsExecuting__c}</leftValue>
@@ -107,6 +115,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.EventUuid__c</fieldItem>
+                <identifier>RecordEventUuid__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -116,6 +125,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.TransactionEntryNumber__c</fieldItem>
+                <identifier>RecordTransactionEntryNumber__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-f419a303-8d53-44e5-8647-63a464804568</name>
@@ -129,6 +139,7 @@
                     <value>Facet-cb40f95d-9915-4ba5-815c-f3e53bcc4001</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -138,6 +149,7 @@
                     <value>Facet-f419a303-8d53-44e5-8647-63a464804568</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column2</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-506803d6-0468-4ac1-a044-ede56cf84c05</name>
@@ -151,6 +163,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Message__c</fieldItem>
+                <identifier>RecordMessage__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -160,6 +173,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.MessageTruncated__c</fieldItem>
+                <identifier>RecordMessageTruncated__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -169,6 +183,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.MessageMasked__c</fieldItem>
+                <identifier>RecordMessageMasked__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -178,6 +193,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.StackTrace__c</fieldItem>
+                <identifier>RecordStackTrace__cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasStackTrace__c}</leftValue>
@@ -198,6 +214,7 @@
                     <value>Facet-30caba7c-11da-4321-bccd-e97e901d03f4</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column3</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-3a75f17f-589a-49f4-bdec-38f730e94676</name>
@@ -211,6 +228,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexClassName__c</fieldItem>
+                <identifier>RecordApexClassName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -220,6 +238,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexInnerClassName__c</fieldItem>
+                <identifier>RecordApexInnerClassName__cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.ApexInnerClassName__c}</leftValue>
@@ -235,6 +254,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexMethodName__c</fieldItem>
+                <identifier>RecordApexMethodName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -244,6 +264,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexClassApiVersion__c</fieldItem>
+                <identifier>RecordApexClassApiVersion__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-eb0dd886-ca25-4094-b405-b0653a844c4c</name>
@@ -257,6 +278,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexClassId__c</fieldItem>
+                <identifier>RecordApexClassId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -266,6 +288,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexClassCreatedDate__c</fieldItem>
+                <identifier>RecordApexClassCreatedDate__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -275,6 +298,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApexClassLastModifiedDate__c</fieldItem>
+                <identifier>RecordApexClassLastModifiedDate__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-a59c58c4-ed12-445a-b526-b1fdb0225dfd</name>
@@ -288,6 +312,7 @@
                     <value>Facet-eb0dd886-ca25-4094-b405-b0653a844c4c</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column4</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -297,6 +322,7 @@
                     <value>Facet-a59c58c4-ed12-445a-b526-b1fdb0225dfd</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column5</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-a417c39b-b395-4d13-a87d-2d5bbb9d9d77</name>
@@ -310,6 +336,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ComponentType__c</fieldItem>
+                <identifier>RecordComponentType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -319,6 +346,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ComponentApiName__c</fieldItem>
+                <identifier>RecordComponentApiName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-dc259053-1bb7-4620-814d-e4f04eca75c2</name>
@@ -332,6 +360,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ComponentFunctionName__c</fieldItem>
+                <identifier>RecordComponentFunctionName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-91b743b5-7408-4da0-9cf3-e3fbd695545d</name>
@@ -345,6 +374,7 @@
                     <value>Facet-dc259053-1bb7-4620-814d-e4f04eca75c2</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column6</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -354,6 +384,7 @@
                     <value>Facet-91b743b5-7408-4da0-9cf3-e3fbd695545d</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column7</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-6b39517d-52f9-42f2-bf33-d392592baaa4</name>
@@ -367,6 +398,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowLabel__c</fieldItem>
+                <identifier>RecordFlowLabel__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -376,6 +408,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowProcessType__c</fieldItem>
+                <identifier>RecordFlowProcessType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -385,6 +418,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowTriggerType__c</fieldItem>
+                <identifier>RecordFlowTriggerType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -394,6 +428,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowVersionRunInMode__c</fieldItem>
+                <identifier>RecordFlowVersionRunInMode__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -403,6 +438,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowVersionApiVersionRuntime__c</fieldItem>
+                <identifier>RecordFlowVersionApiVersionRuntime__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -412,6 +448,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowDescription__c</fieldItem>
+                <identifier>RecordFlowDescription__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-17586de5-b418-46c3-8e43-07f6a5e7321a</name>
@@ -425,6 +462,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowDurableId__c</fieldItem>
+                <identifier>RecordFlowDurableId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -434,6 +472,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowActiveVersionId__c</fieldItem>
+                <identifier>RecordFlowActiveVersionId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -443,6 +482,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowVersionNumber__c</fieldItem>
+                <identifier>RecordFlowVersionNumber__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -452,6 +492,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowLastModifiedByName__c</fieldItem>
+                <identifier>RecordFlowLastModifiedByName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -461,6 +502,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.FlowLastModifiedDate__c</fieldItem>
+                <identifier>RecordFlowLastModifiedDate__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-f9b96f42-358a-4ffe-bc2c-a20f42bd59b8</name>
@@ -474,6 +516,7 @@
                     <value>Facet-17586de5-b418-46c3-8e43-07f6a5e7321a</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column8</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -483,6 +526,7 @@
                     <value>Facet-f9b96f42-358a-4ffe-bc2c-a20f42bd59b8</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column9</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-5f20b7f6-e40f-49b2-905b-5e2ca6c609e9</name>
@@ -496,6 +540,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ExceptionType__c</fieldItem>
+                <identifier>RecordExceptionType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -505,6 +550,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ExceptionMessage__c</fieldItem>
+                <identifier>RecordExceptionMessage__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -514,6 +560,7 @@
                     <value>none</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ExceptionStackTrace__c</fieldItem>
+                <identifier>RecordExceptionStackTrace__cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasExceptionStackTrace__c}</leftValue>
@@ -534,6 +581,7 @@
                     <value>Facet-2459e7ac-69ae-42c7-a640-3fd29367e57b</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column10</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-2a15cd64-78af-4727-8c6d-2913cb00a278</name>
@@ -547,6 +595,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.DatabaseResultCollectionType__c</fieldItem>
+                <identifier>RecordDatabaseResultCollectionType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -556,6 +605,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.DatabaseResultType__c</fieldItem>
+                <identifier>RecordDatabaseResultType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -565,6 +615,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.DatabaseResultJson__c</fieldItem>
+                <identifier>RecordDatabaseResultJson__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-839d3f77-0b78-43a9-9477-6b63126dcf12</name>
@@ -578,6 +629,7 @@
                     <value>Facet-839d3f77-0b78-43a9-9477-6b63126dcf12</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column11</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-b0b8c0ec-36e3-469b-9106-00d34530d793</name>
@@ -591,6 +643,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordCollectionType__c</fieldItem>
+                <identifier>RecordRecordCollectionType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -600,6 +653,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordSObjectType__c</fieldItem>
+                <identifier>RecordRecordSObjectType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -609,6 +663,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordId__c</fieldItem>
+                <identifier>RecordRecordId__cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasRecordId__c}</leftValue>
@@ -625,6 +680,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordSObjectClassification__c</fieldItem>
+                <identifier>RecordRecordSObjectClassification__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -634,6 +690,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordSObjectTypeNamespace__c</fieldItem>
+                <identifier>RecordRecordSObjectTypeNamespace__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -643,6 +700,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordLink__c</fieldItem>
+                <identifier>RecordRecordLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -652,6 +710,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordJson__c</fieldItem>
+                <identifier>RecordRecordJson__cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasRecordJson__c}</leftValue>
@@ -668,6 +727,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordJsonMasked__c</fieldItem>
+                <identifier>RecordRecordJsonMasked__cField</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasRecordJson__c}</leftValue>
@@ -688,6 +748,7 @@
                     <value>Facet-1da92bf7-f9ed-4842-b880-7625370f3c70</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column12</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-f6d04c17-cbcd-40c6-aa58-c46313ecd8c4</name>
@@ -701,6 +762,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsAggregateQueries__c</fieldItem>
+                <identifier>RecordLimitsAggregateQueries__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -710,6 +772,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsAsyncCalls__c</fieldItem>
+                <identifier>RecordLimitsAsyncCalls__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -719,6 +782,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsCallouts__c</fieldItem>
+                <identifier>RecordLimitsCallouts__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -728,6 +792,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsCpuTime__c</fieldItem>
+                <identifier>RecordLimitsCpuTime__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -737,6 +802,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsDmlRows__c</fieldItem>
+                <identifier>RecordLimitsDmlRows__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -746,6 +812,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsDmlStatements__c</fieldItem>
+                <identifier>RecordLimitsDmlStatements__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -755,6 +822,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsEmailInvocations__c</fieldItem>
+                <identifier>RecordLimitsEmailInvocations__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -764,6 +832,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsFutureCalls__c</fieldItem>
+                <identifier>RecordLimitsFutureCalls__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</name>
@@ -777,6 +846,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsHeapSize__c</fieldItem>
+                <identifier>RecordLimitsHeapSize__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -786,6 +856,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsMobilePushApexCalls__c</fieldItem>
+                <identifier>RecordLimitsMobilePushApexCalls__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -795,6 +866,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsPublishImmediateDmlStatements__c</fieldItem>
+                <identifier>RecordLimitsPublishImmediateDmlStatements__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -804,6 +876,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsQueueableJobs__c</fieldItem>
+                <identifier>RecordLimitsQueueableJobs__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -813,6 +886,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsSoqlQueries__c</fieldItem>
+                <identifier>RecordLimitsSoqlQueries__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -822,6 +896,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsSoqlQueryLocatorRows__c</fieldItem>
+                <identifier>RecordLimitsSoqlQueryLocatorRows__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -831,6 +906,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsSoqlQueryRows__c</fieldItem>
+                <identifier>RecordLimitsSoqlQueryRows__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -840,6 +916,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LimitsSoslSearches__c</fieldItem>
+                <identifier>RecordLimitsSoslSearches__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-ce9617b4-fac3-4077-93b0-d2ced40ad0b1</name>
@@ -853,6 +930,7 @@
                     <value>Facet-8e5572ea-8a8e-4426-8154-004cbbcb1314</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column13</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -862,6 +940,7 @@
                     <value>Facet-ce9617b4-fac3-4077-93b0-d2ced40ad0b1</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column14</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-4fa5f475-f3a7-4ac0-b1cd-8285d7b369c7</name>
@@ -879,6 +958,7 @@
                     <value>Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -892,6 +972,7 @@
                     <value>Message Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection2</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -905,6 +986,7 @@
                     <value>Apex Class Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection3</identifier>
                 <visibilityRule>
                     <booleanFilter>1 AND 2</booleanFilter>
                     <criteria>
@@ -930,6 +1012,7 @@
                     <value>Lightning Component Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection4</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.OriginType__c}</leftValue>
@@ -950,6 +1033,7 @@
                     <value>Flow Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection5</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.OriginType__c}</leftValue>
@@ -970,6 +1054,7 @@
                     <value>Exception Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection6</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasException__c}</leftValue>
@@ -990,6 +1075,7 @@
                     <value>Database Result</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection7</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasDatabaseResult__c}</leftValue>
@@ -1010,6 +1096,7 @@
                     <value>Related Record</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection8</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.HasRecordJson__c}</leftValue>
@@ -1030,11 +1117,13 @@
                     <value>Limits</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection9</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentName>force:recordDetailPanelMobile</componentName>
+                <identifier>force_recordDetailPanelMobile</identifier>
             </componentInstance>
         </itemInstances>
         <name>main</name>
@@ -1056,6 +1145,7 @@
                     <value>Topics</value>
                 </componentInstanceProperties>
                 <componentName>forceChatter:topicsOnRecordWrapper</componentName>
+                <identifier>forceChatter_topicsOnRecordWrapper</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -1073,6 +1163,7 @@
                     <value>CARD</value>
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
+                <identifier>force_relatedListSingleContainer</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -1082,6 +1173,7 @@
                     <value>RECORD</value>
                 </componentInstanceProperties>
                 <componentName>forceChatter:exposedFeed</componentName>
+                <identifier>forceChatter_exposedFeed</identifier>
             </componentInstance>
         </itemInstances>
         <name>sidebar</name>

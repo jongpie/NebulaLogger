@@ -24,6 +24,7 @@
                     <value>10</value>
                 </componentInstanceProperties>
                 <componentName>force:highlightsPanel</componentName>
+                <identifier>force_highlightsPanel</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -37,6 +38,7 @@
                     <value>non-linear</value>
                 </componentInstanceProperties>
                 <componentName>runtime_sales_pathassistant:pathAssistant</componentName>
+                <identifier>runtime_sales_pathassistant_pathAssistant</identifier>
             </componentInstance>
         </itemInstances>
         <name>header</name>
@@ -66,6 +68,7 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
+                <identifier>force_relatedListSingleContainer</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-0f2e71a4-ac08-400c-8f11-6c6e44a085cb</name>
@@ -79,6 +82,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.TransactionId__c</fieldItem>
+                <identifier>RecordTransactionId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -88,6 +92,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.StartTime__c</fieldItem>
+                <identifier>RecordStartTime__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -97,6 +102,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.SystemModeSummary__c</fieldItem>
+                <identifier>RecordSystemModeSummary__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -106,6 +112,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.TotalLimitsCpuTimeUsed__c</fieldItem>
+                <identifier>RecordTotalLimitsCpuTimeUsed__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-d581561a-9af6-472b-bf5b-f191cbaa0836</name>
@@ -119,6 +126,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.TotalLogEntries__c</fieldItem>
+                <identifier>RecordTotalLogEntries__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -128,6 +136,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.TotalERRORLogEntries__c</fieldItem>
+                <identifier>RecordTotalERRORLogEntries__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -137,6 +146,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.TotalWARNLogEntries__c</fieldItem>
+                <identifier>RecordTotalWARNLogEntries__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -146,6 +156,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ParentLog__c</fieldItem>
+                <identifier>RecordParentLog__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-af147cb3-e6b1-4ef7-a00b-d4746d5a1c90</name>
@@ -159,6 +170,7 @@
                     <value>Facet-d581561a-9af6-472b-bf5b-f191cbaa0836</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -168,6 +180,7 @@
                     <value>Facet-af147cb3-e6b1-4ef7-a00b-d4746d5a1c90</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column2</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-bd93b6fa-7edb-4404-9635-26fa1ec10da5</name>
@@ -181,6 +194,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OwnerId</fieldItem>
+                <identifier>RecordOwnerIdField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -190,6 +204,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Priority__c</fieldItem>
+                <identifier>RecordPriority__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -199,6 +214,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Status__c</fieldItem>
+                <identifier>RecordStatus__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -208,6 +224,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Scenario__c</fieldItem>
+                <identifier>RecordScenario__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -217,6 +234,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Issue__c</fieldItem>
+                <identifier>RecordIssue__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -226,6 +244,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Comments__c</fieldItem>
+                <identifier>RecordComments__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-5847b03d-2740-46a4-81cd-e39ffebaf306</name>
@@ -239,6 +258,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.IsClosed__c</fieldItem>
+                <identifier>RecordIsClosed__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -248,6 +268,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.IsResolved__c</fieldItem>
+                <identifier>RecordIsResolved__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -257,6 +278,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ClosedBy__c</fieldItem>
+                <identifier>RecordClosedBy__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -266,6 +288,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ClosedDate__c</fieldItem>
+                <identifier>RecordClosedDate__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -275,6 +298,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LogRetentionDate__c</fieldItem>
+                <identifier>RecordLogRetentionDate__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-0d174e01-17f8-4c93-8f5a-8983346600f8</name>
@@ -288,6 +312,7 @@
                     <value>Facet-5847b03d-2740-46a4-81cd-e39ffebaf306</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column3</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -297,6 +322,7 @@
                     <value>Facet-0d174e01-17f8-4c93-8f5a-8983346600f8</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column4</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-45c75e70-6963-46be-859e-c1df0d4b5c08</name>
@@ -310,6 +336,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoggedByUsernameLink__c</fieldItem>
+                <identifier>RecordLoggedByUsernameLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -319,6 +346,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserLoggingLevel__c</fieldItem>
+                <identifier>RecordUserLoggingLevel__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -328,6 +356,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ProfileLink__c</fieldItem>
+                <identifier>RecordProfileLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -337,6 +366,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserRoleLink__c</fieldItem>
+                <identifier>RecordUserRoleLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -346,6 +376,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserType__c</fieldItem>
+                <identifier>RecordUserType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-c9a75c95-cc0f-4cad-88ea-3ad05e1d03ef</name>
@@ -359,6 +390,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.Locale__c</fieldItem>
+                <identifier>RecordLocale__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -368,6 +400,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.TimeZoneName__c</fieldItem>
+                <identifier>RecordTimeZoneName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -377,6 +410,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserLicenseId__c</fieldItem>
+                <identifier>RecordUserLicenseId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -386,6 +420,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserLicenseName__c</fieldItem>
+                <identifier>RecordUserLicenseName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -395,6 +430,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserLicenseDefinitionKey__c</fieldItem>
+                <identifier>RecordUserLicenseDefinitionKey__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-5f51eb27-d6d6-40bf-aece-d3dedddd86c3</name>
@@ -408,6 +444,7 @@
                     <value>Facet-c9a75c95-cc0f-4cad-88ea-3ad05e1d03ef</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column5</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -417,6 +454,7 @@
                     <value>Facet-5f51eb27-d6d6-40bf-aece-d3dedddd86c3</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column6</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-12145474-d012-4654-ba48-4100dbbbc893</name>
@@ -430,6 +468,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.SessionId__c</fieldItem>
+                <identifier>RecordSessionId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -439,6 +478,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.SessionType__c</fieldItem>
+                <identifier>RecordSessionType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -448,6 +488,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.SessionSecurityLevel__c</fieldItem>
+                <identifier>RecordSessionSecurityLevel__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -457,6 +498,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.SourceIp__c</fieldItem>
+                <identifier>RecordSourceIp__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -466,6 +508,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoginHistoryId__c</fieldItem>
+                <identifier>RecordLoginHistoryId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -475,6 +518,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoginType__c</fieldItem>
+                <identifier>RecordLoginType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-a13e63e8-930f-4be1-94cf-3e93d3875283</name>
@@ -488,6 +532,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoginApplication__c</fieldItem>
+                <identifier>RecordLoginApplication__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -497,6 +542,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoginPlatform__c</fieldItem>
+                <identifier>RecordLoginPlatform__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -506,6 +552,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoginBrowser__c</fieldItem>
+                <identifier>RecordLoginBrowser__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -515,6 +562,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ThemeDisplayed__c</fieldItem>
+                <identifier>RecordThemeDisplayed__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -524,6 +572,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LogoutUrl__c</fieldItem>
+                <identifier>RecordLogoutUrl__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-8166c7e7-f142-4051-8cf3-1c42335d7402</name>
@@ -537,6 +586,7 @@
                     <value>Facet-a13e63e8-930f-4be1-94cf-3e93d3875283</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column7</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -546,6 +596,7 @@
                     <value>Facet-8166c7e7-f142-4051-8cf3-1c42335d7402</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column8</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-9fb0fd0b-69be-44f7-8c04-fb654709fe28</name>
@@ -559,6 +610,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.NetworkId__c</fieldItem>
+                <identifier>RecordNetworkId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -568,6 +620,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.NetworkName__c</fieldItem>
+                <identifier>RecordNetworkName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -577,6 +630,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.NetworkUrlPathPrefix__c</fieldItem>
+                <identifier>RecordNetworkUrlPathPrefix__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-8be71933-38d1-4afa-adff-fffceb6867e1</name>
@@ -590,6 +644,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.NetworkSelfRegistrationUrl__c</fieldItem>
+                <identifier>RecordNetworkSelfRegistrationUrl__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -599,6 +654,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.NetworkLoginUrl__c</fieldItem>
+                <identifier>RecordNetworkLoginUrl__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -608,6 +664,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.NetworkLogoutUrl__c</fieldItem>
+                <identifier>RecordNetworkLogoutUrl__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-f457131f-2dab-408e-9965-d730594b7ea2</name>
@@ -621,6 +678,7 @@
                     <value>Facet-8be71933-38d1-4afa-adff-fffceb6867e1</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column9</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -630,6 +688,7 @@
                     <value>Facet-f457131f-2dab-408e-9965-d730594b7ea2</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column10</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-f8d82d02-dbf4-468f-aae1-45cfb6763435</name>
@@ -643,6 +702,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.LoggerVersionNumber__c</fieldItem>
+                <identifier>RecordLoggerVersionNumber__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -652,6 +712,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationId__c</fieldItem>
+                <identifier>RecordOrganizationId__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -661,6 +722,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationName__c</fieldItem>
+                <identifier>RecordOrganizationName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -670,6 +732,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationType__c</fieldItem>
+                <identifier>RecordOrganizationType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -679,6 +742,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationNamespacePrefix__c</fieldItem>
+                <identifier>RecordOrganizationNamespacePrefix__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -688,6 +752,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationDomainUrl__c</fieldItem>
+                <identifier>RecordOrganizationDomainUrl__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-c4a1f400-d677-4197-9c0c-60bb1e5b426d</name>
@@ -701,6 +766,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationEnvironmentType__c</fieldItem>
+                <identifier>RecordOrganizationEnvironmentType__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -710,6 +776,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.OrganizationInstanceName__c</fieldItem>
+                <identifier>RecordOrganizationInstanceName__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -719,6 +786,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApiVersion__c</fieldItem>
+                <identifier>RecordApiVersion__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -728,6 +796,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApiReleaseVersion__c</fieldItem>
+                <identifier>RecordApiReleaseVersion__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -737,6 +806,7 @@
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.ApiReleaseNumber__c</fieldItem>
+                <identifier>RecordApiReleaseNumber__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-7a49dd50-62e1-43c4-a95b-81a04f2e4a8e</name>
@@ -750,6 +820,7 @@
                     <value>Facet-c4a1f400-d677-4197-9c0c-60bb1e5b426d</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column11</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -759,6 +830,7 @@
                     <value>Facet-7a49dd50-62e1-43c4-a95b-81a04f2e4a8e</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:column</componentName>
+                <identifier>flexipage_column12</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-d7efb447-a626-4612-8219-5b554c751159</name>
@@ -776,6 +848,7 @@
                     <value>Information</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -789,6 +862,7 @@
                     <value>Log Management</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection2</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -802,6 +876,7 @@
                     <value>User Details</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection3</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -815,6 +890,7 @@
                     <value>Session Details</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection4</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.SessionId__c}</leftValue>
@@ -834,6 +910,7 @@
                     <value>Experience Cloud Site Details</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection5</identifier>
                 <visibilityRule>
                     <criteria>
                         <leftValue>{!Record.NetworkId__c}</leftValue>
@@ -853,11 +930,13 @@
                     <value>Organization Details</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:fieldSection</componentName>
+                <identifier>flexipage_fieldSection6</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentName>force:recordDetailPanelMobile</componentName>
+                <identifier>force_recordDetailPanelMobile</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-82b9e667-1aa4-42ed-8a09-ac611351ece9</name>
@@ -887,6 +966,7 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
+                <identifier>force_relatedListSingleContainer2</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-f428f9bd-8335-4c6e-994c-9fb022741a70</name>
@@ -916,6 +996,7 @@
                     <value>true</value>
                 </componentInstanceProperties>
                 <componentName>force:relatedListSingleContainer</componentName>
+                <identifier>force_relatedListSingleContainer3</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-0bb71d38-e0b0-4931-838e-b2254d40c2ea</name>
@@ -929,6 +1010,7 @@
                     <value>RECORD</value>
                 </componentInstanceProperties>
                 <componentName>forceChatter:exposedFeed</componentName>
+                <identifier>forceChatter_exposedFeed</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-cd3bf9c9-7895-4537-a614-5e58e75317f2</name>
@@ -950,6 +1032,7 @@
                     <value>Log Entries</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
+                <identifier>customTab</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -963,6 +1046,7 @@
                     <value>Standard.Tab.detail</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
+                <identifier>detailTab</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -976,6 +1060,7 @@
                     <value>History</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
+                <identifier>customTab2</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -989,6 +1074,7 @@
                     <value>Related Logs</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
+                <identifier>customTab3</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -1002,6 +1088,7 @@
                     <value>Standard.Tab.collaborate</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tab</componentName>
+                <identifier>collaborateTab</identifier>
             </componentInstance>
         </itemInstances>
         <name>Facet-4be58932-ea47-4516-80d6-14dedd7c1fc0</name>
@@ -1023,6 +1110,7 @@
                     <value>Topics</value>
                 </componentInstanceProperties>
                 <componentName>forceChatter:topicsOnRecordWrapper</componentName>
+                <identifier>forceChatter_topicsOnRecordWrapper</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
@@ -1032,6 +1120,7 @@
                     <value>Facet-4be58932-ea47-4516-80d6-14dedd7c1fc0</value>
                 </componentInstanceProperties>
                 <componentName>flexipage:tabset</componentName>
+                <identifier>flexipage_tabset</identifier>
             </componentInstance>
         </itemInstances>
         <name>main</name>
