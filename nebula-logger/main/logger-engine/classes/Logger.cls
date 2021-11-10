@@ -2477,6 +2477,14 @@ global with sharing class Logger {
     }
 
     /**
+     * @description Returns the default save method used when calling saveLog() - set via LoggerSettings__c or by calling setSaveMethod(SaveMethod saveMethod)
+     * @return   The enum value of Logger.SaveMethod to use for any calls to saveLog() in the current transaction
+     */
+    global static SaveMethod getSaveMethod() {
+        return transactionSaveMethod;
+    }
+
+    /**
      * @description Sets the default save method used when calling saveLog() - any subsequent calls to saveLog() will use the specified save method
      * @param  saveMethod The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
