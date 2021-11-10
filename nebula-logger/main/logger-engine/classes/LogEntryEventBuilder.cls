@@ -760,7 +760,7 @@ global with sharing class LogEntryEventBuilder {
         // Serializing any SObject w/ an ID will include the API version
         // So, use UserInfo.getUserId() to create the current user's record without querying
         // Then parse the JSON to get the API version
-        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v52.0/sobjects/User/005J000000AugnYIAR"}
+        // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
         String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }

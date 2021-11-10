@@ -3,9 +3,9 @@
     "tabIcon": "custom:custom83",
     "records": [
         {
-            "attributes": { "type": "LogEntry__c", "url": "/services/data/v52.0/sobjects/LogEntry__c/a0054000004OazXAAS" },
+            "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004OazXAAS" },
             "Log__r": {
-                "attributes": { "type": "Log__c", "url": "/services/data/v52.0/sobjects/Log__c/a0154000007ksDlAAI" },
+                "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksDlAAI" },
                 "Id": "a0154000007ksDlAAI",
                 "Name": "Log-001429"
             },
@@ -18,9 +18,9 @@
             "Name": "a0054000004OazX"
         },
         {
-            "attributes": { "type": "LogEntry__c", "url": "/services/data/v52.0/sobjects/LogEntry__c/a0054000004OazYAAS" },
+            "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004OazYAAS" },
             "Log__r": {
-                "attributes": { "type": "Log__c", "url": "/services/data/v52.0/sobjects/Log__c/a0154000007ksDlAAI" },
+                "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksDlAAI" },
                 "Id": "a0154000007ksDlAAI",
                 "Name": "Log-001429"
             },
@@ -33,9 +33,9 @@
             "Name": "a0054000004OazY"
         },
         {
-            "attributes": { "type": "LogEntry__c", "url": "/services/data/v52.0/sobjects/LogEntry__c/a0054000004Ob2gAAC" },
+            "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004Ob2gAAC" },
             "Log__r": {
-                "attributes": { "type": "Log__c", "url": "/services/data/v52.0/sobjects/Log__c/a0154000007ksGuAAI" },
+                "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksGuAAI" },
                 "Id": "a0154000007ksGuAAI",
                 "Name": "Log-001430"
             },
@@ -48,9 +48,9 @@
             "Name": "a0054000004Ob2g"
         },
         {
-            "attributes": { "type": "LogEntry__c", "url": "/services/data/v52.0/sobjects/LogEntry__c/a0054000004Ob2hAAC" },
+            "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004Ob2hAAC" },
             "Log__r": {
-                "attributes": { "type": "Log__c", "url": "/services/data/v52.0/sobjects/Log__c/a0154000007ksGuAAI" },
+                "attributes": { "type": "Log__c", "url": "/services/data/v53.0/sobjects/Log__c/a0154000007ksGuAAI" },
                 "Id": "a0154000007ksGuAAI",
                 "Name": "Log-001430"
             },
