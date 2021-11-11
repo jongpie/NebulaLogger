@@ -26,39 +26,46 @@
                         value={maxEvents}
                     ></lightning-input>
                     <lightning-combobox
-                        data-id="logging-level-filter"
+                        data-id="loggingLevelFilter"
                         label="Minimum Logging Level"
-                        onchange={handleLoggingLevelFilterChange}
+                        onchange={handleFilterChange}
                         options={loggingLevelOptions}
                         placeholder="Select Logging Level"
                         value={loggingLevelFilter}
                     ></lightning-combobox>
                     <lightning-combobox
-                        data-id="origin-type-filter"
+                        data-id="originTypeFilter"
                         label="Origin Type"
-                        onchange={handleOriginTypeFilterChange}
+                        onchange={handleFilterChange}
                         options={originTypeOptions}
                         placeholder="Select Origin Type"
                         value={originTypeFilter}
                     ></lightning-combobox>
                     <lightning-input
-                        data-id="origin-location-filter"
+                        data-id="originLocationFilter"
                         label="Origin Location"
-                        onchange={handleOriginLocationFilterChange}
+                        onchange={handleFilterChange}
                         placeholder="Specify Origin Location"
                         value={originLocationFilter}
                     ></lightning-input>
                     <lightning-input
-                        data-id="logged-by-filter"
+                        data-id="scenarioFilter"
+                        label="Scenario"
+                        onchange={handleFilterChange}
+                        placeholder="Specify Scenario"
+                        value={scenarioFilter}
+                    ></lightning-input>
+                    <lightning-input
+                        data-id="loggedByFilter"
                         label="Logged By"
-                        onchange={handleLoggedByFilterChange}
+                        onchange={handleFilterChange}
                         placeholder="Specify Username"
                         value={loggedByFilter}
                     ></lightning-input>
                     <lightning-textarea
-                        data-id="message-filter"
+                        data-id="messageFilter"
                         label="Message"
-                        onchange={handleMessageFilterChange}
+                        onchange={handleFilterChange}
                         placeholder="Message Contains"
                         value={messageFilter}
                     ></lightning-textarea>

@@ -112,7 +112,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="logging-level-filter"]');
+        const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="loggingLevelFilter"]');
         loggingLevelFilterDropdown.value = loggingLevels.DEBUG;
         loggingLevelFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
@@ -136,7 +136,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="logging-level-filter"]');
+        const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="loggingLevelFilter"]');
         loggingLevelFilterDropdown.value = loggingLevels.DEBUG;
         loggingLevelFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
@@ -159,7 +159,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const originTypeFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="origin-type-filter"]');
+        const originTypeFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="originTypeFilter"]');
         originTypeFilterDropdown.value = 'Flow';
         originTypeFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
@@ -182,7 +182,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const originTypeFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="origin-type-filter"]');
+        const originTypeFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="originTypeFilter"]');
         originTypeFilterDropdown.value = 'Flow';
         originTypeFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
@@ -204,7 +204,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="origin-location-filter"]');
+        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="originLocationFilter"]');
         originLocationFilterDropdown.value = 'SomeClass.someMethod';
         originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
@@ -227,7 +227,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="origin-location-filter"]');
+        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="originLocationFilter"]');
         originLocationFilterDropdown.value = 'SomeClass.someMethod';
         originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
@@ -249,7 +249,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="logged-by-filter"]');
+        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="loggedByFilter"]');
         originLocationFilterDropdown.value = 'some.person@test.com';
         originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
@@ -272,7 +272,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="logged-by-filter"]');
+        const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="loggedByFilter"]');
         originLocationFilterDropdown.value = 'some.person@test.com';
         originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
@@ -288,13 +288,13 @@ describe('LogEntryEventStream tests', () => {
         const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
         expect(eventStreamDiv.textContent).toBeFalsy();
     });
-    it('includes matching log entry event for message filter', async () => {
+    it('includes matching log entry event using string for message filter', async () => {
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const messageFilterTextarea = element.shadowRoot.querySelector('lightning-textarea[data-id="message-filter"]');
+        const messageFilterTextarea = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
         messageFilterTextarea.value = 'matching text';
         messageFilterTextarea.dispatchEvent(new CustomEvent('change'));
 
@@ -317,7 +317,7 @@ describe('LogEntryEventStream tests', () => {
         });
         document.body.appendChild(element);
         await Promise.resolve();
-        const messageFilterTextarea = element.shadowRoot.querySelector('lightning-textarea[data-id="message-filter"]');
+        const messageFilterTextarea = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
         messageFilterTextarea.value = 'non-matching text';
         messageFilterTextarea.dispatchEvent(new CustomEvent('change'));
 
@@ -332,5 +332,29 @@ describe('LogEntryEventStream tests', () => {
 
         const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
         expect(eventStreamDiv.textContent).toBeFalsy();
+    });
+
+    it('includes matching log entry event using regex for message filter', async () => {
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+
+        const messageFilterTextarea = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
+        messageFilterTextarea.value = 'Something.+? blah$';
+        messageFilterTextarea.dispatchEvent(new CustomEvent('change'));
+
+        const matchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        matchingLogEntryEvent.Message__c = 'Something, something, something, beep boop beep!!!!!!!%@#$!%, blah, blah, blah';
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: matchingLogEntryEvent
+            }
+        });
+
+        const expectedStreamText = getPlatformEventText(matchingLogEntryEvent);
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
 });
