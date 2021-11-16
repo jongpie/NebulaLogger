@@ -15,14 +15,14 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global inherited sharing class FlowLogEntry {
     /**
-     * @description The name of the Flow creating the log entry.
+     * @description The API name of the Flow creating the log entry.
      *   Due to Salesforce limitations, this cannot be automatically determined.
      */
     @InvocableVariable(required=true label='Flow API Name')
     global String flowName;
 
     /**
-     * @description The message to log.
+     * @description The message to log
      */
     @InvocableVariable(required=true label='Log Entry Message')
     global String message;
@@ -34,7 +34,7 @@ global inherited sharing class FlowLogEntry {
     global String faultMessage;
 
     /**
-     * @description Optionally choose to save any pending log entries.
+     * @description Optionally choose to save any pending log entries
      */
     @InvocableVariable(required=false label='(Optional) Save Log')
     global Boolean saveLog;

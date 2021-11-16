@@ -32,7 +32,7 @@
         "devhub:details": "pwsh ./scripts/build/get-devhub-org-details.ps1",
         "devhub:limits": "pwsh ./scripts/build/get-devhub-org-limits.ps1",
         "devhub:open": "pwsh ./scripts/build/open-devhub-org.ps1",
-        "docs:fix": "pwsh ./scripts/build/generate-docs.ps1",
+        "docs:fix": "pwsh ./scripts/build/generate-docs.ps1 && git add ./docs && git commit --amend --no-edit",
         "docs:verify": "pwsh ./scripts/build/verify-docs-up-to-date.ps1",
         "experience:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",
         "husky:pre-commit": "lint-staged",

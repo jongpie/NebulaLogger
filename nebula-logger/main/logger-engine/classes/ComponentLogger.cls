@@ -26,11 +26,14 @@ public inherited sharing class ComponentLogger {
     /**
      * @description saveComponentLogEntries Saves log entries created via lwc or aura components
      * @param  componentLogEntries The list of `ComponentLogEntry` objects to save via `Logger`
+     * @param  saveMethodName      String name of the instance of Logger.SaveMethod to use when saving.
+     *                             When null, the value of `Logger.getSaveMethod()` will be used.
      * @return                     return The transaction ID (based on `Logger.getTransactionId())`
      */
     @AuraEnabled
-    public static String saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries) {
+    public static String saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries, String saveMethodName) {
         try {
+            Logger.SaveMethod saveMethod = Logger.getSaveMethod();
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 Logger.setScenario(componentLogEntry.scenario);
                 LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
@@ -43,7 +46,10 @@ public inherited sharing class ComponentLogger {
                 setComponentErrorDetails(logEntryEventBuilder, componentLogEntry.error);
                 setStackTraceDetails(logEntryEventBuilder, componentLogEntry.stack);
             }
-            Logger.saveLog();
+            if (String.isNotBlank(saveMethodName) == true) {
+                saveMethod = Logger.SaveMethod.valueOf(saveMethodName);
+            }
+            Logger.saveLog(saveMethod);
             return Logger.getTransactionId();
         } catch (Exception apexException) {
             throw new AuraHandledException(apexException.getMessage());
@@ -125,6 +131,12 @@ public inherited sharing class ComponentLogger {
      */
     public class ComponentLoggerSettings {
         /**
+         * @description Indicates the save method that will be used by default if no other save method is specified, based on `LoggerSettings__c.DefaultSaveMethod__c`
+         */
+        @AuraEnabled
+        public String defaultSaveMethodName { get; set; }
+
+        /**
          * @description Indicates if logging is enabled for the current user, based on `LoggerSettings__c.IsEnabled__c`
          */
         @AuraEnabled
@@ -149,6 +161,7 @@ public inherited sharing class ComponentLogger {
         public ComponentLoggingLevel userLoggingLevel { get; set; }
 
         private ComponentLoggerSettings() {
+            this.defaultSaveMethodName = Logger.getSaveMethod().name();
             this.isEnabled = Logger.getUserSettings().IsEnabled__c;
             this.isConsoleLoggingEnabled = Logger.getUserSettings().IsComponentConsoleLoggingEnabled__c;
             this.supportedLoggingLevels = getSupportedLoggingLevels();

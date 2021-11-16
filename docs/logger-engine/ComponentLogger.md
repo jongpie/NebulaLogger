@@ -30,15 +30,16 @@ ComponentLoggerSettings
 
 return The instance of `ComponentLoggerSettings` for the current user
 
-#### `saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries)` → `String`
+#### `saveComponentLogEntries(List<ComponentLogEntry> componentLogEntries, String saveMethodName)` → `String`
 
 saveComponentLogEntries Saves log entries created via lwc or aura components
 
 ##### Parameters
 
-| Param                 | Description                                                  |
-| --------------------- | ------------------------------------------------------------ |
-| `componentLogEntries` | The list of `ComponentLogEntry` objects to save via `Logger` |
+| Param                 | Description                                                          |
+| --------------------- | -------------------------------------------------------------------- |
+| `componentLogEntries` | The list of `ComponentLogEntry` objects to save via `Logger`         |
+| `saveMethodName`      | String name of the instance of Logger.SaveMethod to use when saving. |
 
 ##### Return
 
@@ -129,6 +130,10 @@ A DTO object used for passing `LoggerSettings__c` details to lightning component
 ---
 
 ##### Properties
+
+###### `defaultSaveMethodName` → `String`
+
+Indicates the save method that will be used by default if no other save method is specified, based on `LoggerSettings__c.DefaultSaveMethod__c`
 
 ###### `isConsoleLoggingEnabled` → `Boolean`
 

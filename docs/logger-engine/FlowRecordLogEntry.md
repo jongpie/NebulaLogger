@@ -28,7 +28,7 @@ Optionally log a Flow fault error message
 
 #### `flowName` → `String`
 
-The name of the Flow creating the log entry. Due to Salesforce limitations, this cannot be automatically determined
+The API name of the Flow creating the log entry. Due to Salesforce limitations, this cannot be automatically determined
 
 #### `loggingLevelName` → `String`
 
