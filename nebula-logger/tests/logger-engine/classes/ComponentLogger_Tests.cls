@@ -44,7 +44,7 @@ private class ComponentLogger_Tests {
     static void it_should_return_aura_exception_when_it_breaks() {
         Test.startTest();
         try {
-            ComponentLogger.saveComponentLogEntries(null);
+            ComponentLogger.saveComponentLogEntries(null, null);
             System.assert(false, 'This assert shouldn\'t run since this is a negative test');
         } catch (Exception apexException) {
             System.assertEquals(AuraHandledException.class.getName(), apexException.getTypeName());
@@ -70,7 +70,48 @@ private class ComponentLogger_Tests {
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
-        ComponentLogger.saveComponentLogEntries(componentLogEntries);
+        ComponentLogger.saveComponentLogEntries(componentLogEntries, null);
+        Test.stopTest();
+
+        List<LogEntry__c> logEntries = [
+            SELECT Id, LoggingLevel__c, Message__c, RecordId__c, RecordJson__c, RecordSObjectType__c, Timestamp__c
+            FROM LogEntry__c
+        ];
+        System.assertEquals(1, logEntries.size());
+
+        LogEntry__c logEntry = logEntries.get(0);
+
+        System.assertEquals(componentLogEntry.loggingLevel, logEntry.LoggingLevel__c);
+        System.assertEquals(componentLogEntry.message, logEntry.Message__c);
+        System.assertEquals(componentLogEntry.recordId, logEntry.RecordId__c);
+        System.assertEquals(JSON.serializePretty(currentUser), logEntry.RecordJson__c);
+        System.assertEquals(Schema.SObjectType.User.getName(), logEntry.RecordSObjectType__c);
+        System.assertEquals(componentLogEntry.timestamp, logEntry.Timestamp__c);
+    }
+
+    @IsTest
+    static void it_should_save_component_log_entry_with_queueable_job() {
+        upsert LoggerSettings__c.getInstance();
+        System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
+
+        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+
+        List<ComponentLogger.ComponentLogEntry> componentLogEntries = new List<ComponentLogger.ComponentLogEntry>();
+        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.message = 'hello, world';
+        componentLogEntry.recordId = currentUser.Id;
+        componentLogEntry.record = currentUser;
+        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
+        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
+        componentLogEntries.add(componentLogEntry);
+
+        Test.startTest();
+        System.assertEquals(0, Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
+
+        ComponentLogger.saveComponentLogEntries(componentLogEntries, Logger.SaveMethod.QUEUEABLE.name());
+
+        System.assertEquals(1, Limits.getQueueableJobs(), 'Log entries should have been saved using the QUEUEABLE save method');
         Test.stopTest();
 
         List<LogEntry__c> logEntries = [
@@ -113,7 +154,7 @@ private class ComponentLogger_Tests {
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
-        ComponentLogger.saveComponentLogEntries(componentLogEntries);
+        ComponentLogger.saveComponentLogEntries(componentLogEntries, null);
         Test.stopTest();
 
         List<LogEntry__c> logEntries = [
@@ -146,7 +187,7 @@ private class ComponentLogger_Tests {
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
-        ComponentLogger.saveComponentLogEntries(componentLogEntries);
+        ComponentLogger.saveComponentLogEntries(componentLogEntries, null);
         Test.stopTest();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c];
@@ -168,7 +209,7 @@ private class ComponentLogger_Tests {
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
-        ComponentLogger.saveComponentLogEntries(componentLogEntries);
+        ComponentLogger.saveComponentLogEntries(componentLogEntries, null);
         Test.stopTest();
 
         List<LogEntry__c> logEntries = [
@@ -213,7 +254,7 @@ private class ComponentLogger_Tests {
         componentLogEntries.add(componentLogEntry);
 
         Test.startTest();
-        ComponentLogger.saveComponentLogEntries(componentLogEntries);
+        ComponentLogger.saveComponentLogEntries(componentLogEntries, null);
         Test.stopTest();
 
         List<LogEntry__c> logEntries = [

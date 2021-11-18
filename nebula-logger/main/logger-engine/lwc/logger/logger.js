@@ -25,6 +25,19 @@ export default class Logger extends LightningElement {
     }
 
     @api
+    getUserSettings() {
+        return this.settings;
+    }
+
+    @api
+    setScenario(scenario) {
+        this._scenario = scenario;
+        this.componentLogEntries.forEach(logEntry => {
+            logEntry.scenario = this._scenario;
+        });
+    }
+
+    @api
     error(message) {
         return this._newEntry('ERROR', message);
     }
@@ -60,14 +73,6 @@ export default class Logger extends LightningElement {
     }
 
     @api
-    setScenario(scenario) {
-        this._scenario = scenario;
-        this.componentLogEntries.forEach(logEntry => {
-            logEntry.scenario = this._scenario;
-        });
-    }
-
-    @api
     getBufferSize() {
         return this.componentLogEntries.length;
     }
@@ -78,9 +83,13 @@ export default class Logger extends LightningElement {
     }
 
     @api
-    saveLog() {
+    saveLog(saveMethodName) {
         if (this.getBufferSize() > 0) {
-            saveComponentLogEntries({ componentLogEntries: this.componentLogEntries })
+            if (!saveMethodName && this.settings && this.settings.defaultSaveMethodName) {
+                saveMethodName = this.settings.defaultSaveMethodName;
+            }
+
+            saveComponentLogEntries({ componentLogEntries: this.componentLogEntries, saveMethodName: saveMethodName })
                 .then(this.flushBuffer())
                 .catch(error => {
                     if (this.settings.isConsoleLoggingEnabled === true) {

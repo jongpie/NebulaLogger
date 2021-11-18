@@ -3230,6 +3230,20 @@ String
 
 String - The parent log&apos;s transaction ID. This must be explicitly set by calling setParentLogTransactionId(String)
 
+#### `getSaveMethod()` → `SaveMethod`
+
+Returns the default save method used when calling saveLog() - set via LoggerSettings\_\_c or by calling setSaveMethod(SaveMethod saveMethod)
+
+##### Return
+
+**Type**
+
+SaveMethod
+
+**Description**
+
+The enum value of Logger.SaveMethod to use for any calls to saveLog() in the current transaction
+
 #### `getTransactionId()` → `String`
 
 Returns the unique ID for a particular transaction, stored in Log**c.TransactionId**c

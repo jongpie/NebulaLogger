@@ -13,7 +13,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.6.12';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.6.13';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     @TestVisible
@@ -2477,6 +2477,14 @@ global with sharing class Logger {
     }
 
     /**
+     * @description Returns the default save method used when calling saveLog() - set via LoggerSettings__c or by calling setSaveMethod(SaveMethod saveMethod)
+     * @return   The enum value of Logger.SaveMethod to use for any calls to saveLog() in the current transaction
+     */
+    global static SaveMethod getSaveMethod() {
+        return transactionSaveMethod;
+    }
+
+    /**
      * @description Sets the default save method used when calling saveLog() - any subsequent calls to saveLog() will use the specified save method
      * @param  saveMethod The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
@@ -2793,7 +2801,7 @@ global with sharing class Logger {
 
     // Inner class for saving log entries via the REST API (using the current user's session ID)
     private class RestApiSaver {
-        private final String baseURL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v52.0';
+        private final String baseURL = System.Url.getSalesforceBaseUrl().toExternalForm() + '/services/data/v53.0';
         private final String compositeEndpoint = '/composite/sobjects';
 
         @SuppressWarnings('PMD.ApexSuggestUsingNamedCred')

@@ -15,7 +15,7 @@
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global inherited sharing class FlowCollectionLogEntry {
     /**
-     * @description The name of the Flow creating the log entry.
+     * @description The API name of the Flow creating the log entry.
      *   Due to Salesforce limitations, this cannot be automatically determined
      */
     @InvocableVariable(required=true label='Flow API Name')
@@ -44,6 +44,12 @@ global inherited sharing class FlowCollectionLogEntry {
      */
     @InvocableVariable(required=false label='(Optional) Save Log')
     global Boolean saveLog = false;
+
+    /**
+     * @description Optionally choose the save method to use when 'Save Log' is true
+     */
+    @InvocableVariable(required=false label='(Optional) Save Method')
+    global String saveMethodName;
 
     /**
      * @description Optionally specify a logging level - the default is 'DEBUG'

@@ -26,12 +26,12 @@ public inherited sharing class FlowLogger {
         // Public member variables - all other Flow classes should duplicate these public variables
 
         /**
-         * @description name of the flow.
+         * @description API name of the flow
          */
         public String flowName;
 
         /**
-         * @description General message to log.
+         * @description General message to log
          */
         public String message;
 
@@ -41,30 +41,35 @@ public inherited sharing class FlowLogger {
         public String faultMessage;
 
         /**
-         * @description String containing the logging level.
+         * @description String name of the entry's logging level
          */
         public String loggingLevelName;
 
         /**
-         * @description Optionally specify the name to use for the current transaction's scenario
+         * @description Optionally specify the scenario to use for the current transaction
          */
         @InvocableVariable(required=false label='(Optional) Scenario')
         public String scenario;
 
         /**
-         * @description String of tags / topics.
+         * @description Comma-separated string of tags
          */
         public String tagsString;
 
         /**
-         * @description List of tags / topics.
+         * @description List of tags / topics
          */
         public List<String> topics; // TODO: deprecated, remove in a future release
 
         /**
-         * @description boolean used to determine if logs are saved to Salesforce.
+         * @description Boolean used to determine if logs are saved to Salesforce
          */
         public Boolean saveLog = false;
+
+        /**
+         * @description String name of the instance of Logger.SaveMethod to use when 'Save Log' == true
+         */
+        public String saveMethodName;
 
         /**
          * @description timestamp of the log
@@ -77,8 +82,8 @@ public inherited sharing class FlowLogger {
         private LogEntryEvent__e logEntryEvent;
 
         /**
-         * @description Adds the logger to the buffer.
-         * @return An instance of LogEntryEventBuilder.
+         * @description Adds the logger to the buffer
+         * @return An instance of LogEntryEventBuilder
          */
         public LogEntryEventBuilder addToLoggerBuffer() {
             if (this.logEntryEventBuilder != null) {
@@ -130,16 +135,20 @@ public inherited sharing class FlowLogger {
      */
     public static List<String> addEntries(List<LogEntry> flowEntries) {
         Boolean saveLog = false;
+        Logger.SaveMethod saveMethod = Logger.getSaveMethod();
         for (LogEntry flowEntry : flowEntries) {
             flowEntry.addToLoggerBuffer();
 
             if (flowEntry.saveLog == true) {
                 saveLog = flowEntry.saveLog;
+                if (String.isNotBlank(flowEntry.saveMethodName) == true) {
+                    saveMethod = Logger.SaveMethod.valueOf(flowEntry.saveMethodName);
+                }
             }
         }
 
         if (saveLog == true) {
-            Logger.saveLog();
+            Logger.saveLog(saveMethod);
         }
 
         // Event though it's the same transaction ID, Salesforce expects the returned list...

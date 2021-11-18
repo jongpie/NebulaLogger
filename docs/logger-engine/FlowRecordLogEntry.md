@@ -28,7 +28,7 @@ Optionally log a Flow fault error message
 
 #### `flowName` → `String`
 
-The name of the Flow creating the log entry. Due to Salesforce limitations, this cannot be automatically determined
+The API name of the Flow creating the log entry. Due to Salesforce limitations, this cannot be automatically determined
 
 #### `loggingLevelName` → `String`
 
@@ -45,6 +45,10 @@ The record to relate to this log entry - the record&apos;s JSON is automatically
 #### `saveLog` → `Boolean`
 
 Optionally choose to save any pending log entries
+
+#### `saveMethodName` → `String`
+
+Optionally choose the save method to use when &apos;Save Log&apos; is true
 
 #### `scenario` → `String`
 

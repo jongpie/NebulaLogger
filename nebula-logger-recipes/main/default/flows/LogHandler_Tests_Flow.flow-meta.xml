@@ -97,7 +97,7 @@
         </inputParameters>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
-    <apiVersion>49.0</apiVersion>
+    <apiVersion>53.0</apiVersion>
     <assignments>
         <name>Update_user_s_first_name</name>
         <label>Update user&apos;s first name</label>
