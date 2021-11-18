@@ -38,35 +38,35 @@ export default class LoggerLWCDemo extends LightningElement {
         console.log('running logWarn for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.warn(this.message, { tags: this.tagsString.split(',') });
+        logger.warn(this.message).addTags(this.tagsString.split(','));
     }
 
     logInfoExample() {
         console.log('running logInfo for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.info(this.message, { tags: this.tagsString.split(',') });
+        logger.info(this.message).addTags(this.tagsString.split(','));
     }
 
     logDebugExample() {
         console.log('running logDebug for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.debug(this.message, { tags: this.tagsString.split(',') });
+        logger.debug(this.message).addTags(this.tagsString.split(','));
     }
 
     logFineExample() {
         console.log('running logFine for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.fine(this.message, { tags: this.tagsString.split(',') });
+        logger.fine(this.message).addTags(this.tagsString.split(','));
     }
 
     logFinerExample() {
         console.log('running logFiner for btn');
         const logger = this.template.querySelector(LOGGER_NAME);
         console.log(logger);
-        logger.finer(this.message, { tags: this.tagsString.split(',') });
+        logger.finer(this.message).addTags(this.tagsString.split(','));
     }
 
     logFinestExample() {
@@ -81,6 +81,6 @@ export default class LoggerLWCDemo extends LightningElement {
         const logger = this.template.querySelector(LOGGER_NAME);
         logger.setScenario(this.scenario);
         console.log(logger);
-        logger.saveLog();
+        logger.saveLog('QUEUEABLE');
     }
 }
