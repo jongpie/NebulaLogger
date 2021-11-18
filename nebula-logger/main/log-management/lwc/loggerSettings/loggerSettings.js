@@ -9,14 +9,20 @@ const columns = [
     // { label: 'SetupOwnerId', fieldName: 'SetupOwnerId', type: 'text' },
     { label: 'Location', fieldName: 'SetupOwnerType', type: 'text' },
     { label: 'Setup Owner', fieldName: 'SetupOwnerName', type: 'text' },
-    { label: 'Is Enabled', fieldName: 'IsEnabled__c', type: 'text' },
+    { label: 'Is Enabled', fieldName: 'IsEnabled__c', type: 'boolean' },
+    { label: 'IsApexSystemDebugLoggingEnabled', fieldName: 'IsApexSystemDebugLoggingEnabled__c', type: 'boolean' },
+    { label: 'IsComponentConsoleLoggingEnabled', fieldName: 'IsComponentConsoleLoggingEnabled__c', type: 'boolean' },
     { label: 'Logging Level', fieldName: 'LoggingLevel__c', type: 'text' },
-    { label: 'Enable System Messages', fieldName: 'EnableSystemMessages__c', type: 'text' },
+    { label: 'ApplyDataMaskRules', fieldName: 'ApplyDataMaskRules__c', type: 'boolean' },
+    { label: 'StripInaccessibleRecordFields', fieldName: 'StripInaccessibleRecordFields__c', type: 'boolean' },
+    { label: 'AnonymousMode', fieldName: 'AnonymousMode__c', type: 'boolean' },
+    // { label: 'Enable System Messages', fieldName: 'EnableSystemMessages__c', type: 'text' },
     { label: 'Save Method', fieldName: 'DefaultSaveMethod__c', type: 'text' },
     { label: 'Log Share Level', fieldName: 'DefaultLogShareAccessLevel__c', type: 'text' }
 ];
 
-export default class LoggerSettingsManager extends LightningElement {
+export default class LoggerSettings extends LightningElement {
+    title = "Logger Settings";
     records;
     columns = columns;
 
@@ -24,6 +30,7 @@ export default class LoggerSettingsManager extends LightningElement {
     _shareAccessLevelOptions;
 
     connectedCallback() {
+        document.title = this.title;
         getLoggingLevelOptions()
             .then(result => {
                 console.log('getLoggingLevelOptions() result==' + JSON.stringify(result));

@@ -12,11 +12,15 @@ public with sharing class LoggerSettingsController {
                     SetupOwnerId,
                     SetupOwner.Type,
                     SetupOwner.Name,
+                    AnonymousMode__c,
+                    ApplyDataMaskRules__c,
+                    DefaultLogShareAccessLevel__c,
+                    DefaultSaveMethod__c,
+                    IsApexSystemDebugLoggingEnabled__c,
+                    IsComponentConsoleLoggingEnabled__c,
                     IsEnabled__c,
                     LoggingLevel__c,
-                    EnableSystemMessages__c,
-                    DefaultLogShareAccessLevel__c,
-                    DefaultSaveMethod__c
+                    StripInaccessibleRecordFields__c
                 FROM LoggerSettings__c
                 // ORDER BY SetupOwner.Type, SetupOwner.Name
             ];
