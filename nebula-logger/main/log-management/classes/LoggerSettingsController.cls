@@ -30,9 +30,21 @@ public with sharing class LoggerSettingsController {
     }
 
     @AuraEnabled
-    public static List<LoggerSettings__c> saveSettings(List<LoggerSettings__c> settings) {
+    public static List<LoggerSettings__c> saveRecord(LoggerSettings__c settingsRecord) {
+        System.debug('saveRecord==' + settingsRecord);
         try {
-            upsert settings;
+            upsert settingsRecord;
+            return getSettings();
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static List<LoggerSettings__c> deleteRecord(LoggerSettings__c settingsRecord) {
+        System.debug('deleteRecord==' + settingsRecord);
+        try {
+            delete settingsRecord;
             return getSettings();
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -51,6 +63,23 @@ public with sharing class LoggerSettingsController {
 
                     picklistOptions.add(picklistOption);
                 }
+            }
+            return picklistOptions;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<PicklistOption> getSaveMethodOptions() {
+        try {
+            List<PicklistOption> picklistOptions = new List<PicklistOption>();
+            for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
+                PicklistOption picklistOption = new PicklistOption();
+                picklistOption.label = saveMethod.name();
+                picklistOption.value = saveMethod.name();
+
+                picklistOptions.add(picklistOption);
             }
             return picklistOptions;
         } catch (Exception e) {

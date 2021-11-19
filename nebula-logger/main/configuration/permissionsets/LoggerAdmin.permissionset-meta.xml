@@ -76,6 +76,10 @@
         <enabled>true</enabled>
         <name>LoggerPlugin__mdt</name>
     </customMetadataTypeAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>CanManageLoggerSettings</name>
+    </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>
         <name>LoggerSettings__c</name>

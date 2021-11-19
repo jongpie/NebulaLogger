@@ -1,4 +1,5 @@
 <template>
+    <!-- Setting datatable -->
     <template if:true={records}>
         <lightning-card title={title} icon-name="standard:bundle_config">
             <lightning-datatable
@@ -7,6 +8,7 @@
                 default-sort-direction={defaultSortDirection}
                 hide-checkbox-column
                 key-field="Id"
+                onrowaction={handleRowActions}
                 onsave={handleSave}
                 onsort={handleSort}
                 show-row-number-column
@@ -15,5 +17,152 @@
             >
             </lightning-datatable>
         </lightning-card>
+    </template>
+
+    <!-- Spinner -->
+    <div if:true={showLoadingSpinner}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </div>
+
+    <!-- Detail view modal -->
+    <template if:true={showModal} onkeydown={handleModalKeyDown}>
+        <section
+            role="dialog"
+            tabindex="-1"
+            aria-labelledby="modal-heading-01"
+            aria-modal="true"
+            aria-describedby="modal-content-id-1"
+            class="slds-modal slds-fade-in-open"
+            onkeydown={handleModalKeyDown}
+        >
+            <div class="slds-modal__container" onkeydown={handleModalKeyDown} >
+                <!-- Record modal header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                    </button>
+
+                    <h2 class="slds-text-heading_medium slds-hyphenate">Logger Settings Details</h2>
+                </header>
+
+                <!-- Record modal body -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <!-- General Settings -->
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title slds-theme_shade">
+                            <span class="slds-truncate slds-p-horizontal_small" title="General Settings">General Settings</span>
+                        </h3>
+                        <lightning-layout>
+                            <lightning-layout-item size="6"> TODO - setup location and owner name [{record.SetupOwnerType}] </lightning-layout-item>
+                            <lightning-layout-item size="6">
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Is Enabled"
+                                    read-only={isReadOnlyMode}
+                                    value={record.IsEnabled__c}
+                                    variant="label-stacked"
+                                ></lightning-input>
+                                <lightning-combobox
+                                    label="Logging Level"
+                                    options={loggingLevelOptions}
+                                    placeholder="Select Logging Level"
+                                    read-only={isReadOnlyMode}
+                                    required
+                                    value={record.LoggingLevel__c}
+                                    variant="label-stacked"
+                                ></lightning-combobox>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+
+                    <!-- Developer Settings -->
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title slds-theme_shade">
+                            <span class="slds-truncate slds-p-horizontal_small" title="Developer Settings">Developer Settings</span>
+                        </h3>
+                        <lightning-layout>
+                            <lightning-layout-item size="6">
+                                <lightning-combobox
+                                    label="Save Method"
+                                    options={saveMethodOptions}
+                                    placeholder="Select Save Method"
+                                    read-only={isReadOnlyMode}
+                                    required
+                                    value={record.DefaultSaveMethod__c}
+                                    variant="label-stacked"
+                                ></lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6">
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Is Apex System Debug Logging Enable"
+                                    read-only={isReadOnlyMode}
+                                    value={record.IsApexSystemDebugLoggingEnabled__c}
+                                    variant="label-stacked"
+                                ></lightning-input>
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Is Component Console Logging Enable"
+                                    read-only={isReadOnlyMode}
+                                    value={record.IsComponentConsoleLoggingEnabled__c}
+                                    variant="label-stacked"
+                                ></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title slds-theme_shade">
+                            <span class="slds-truncate slds-p-horizontal_small" title="Security Settings">Security Settings</span>
+                        </h3>
+                        <lightning-layout>
+                            <lightning-layout-item size="6">
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Apply Data Mask Rules"
+                                    read-only={isReadOnlyMode}
+                                    value={record.ApplyDataMaskRules__c}
+                                    variant="label-stacked"
+                                ></lightning-input>
+                                <lightning-combobox
+                                    label="Log Share Access Level"
+                                    onchange={handleChange}
+                                    options={shareAccessLevelOptions}
+                                    placeholder="Select Log Share Access Level"
+                                    read-only={isReadOnlyMode}
+                                    required
+                                    value={record.DefaultLogShareAccessLevel__c}
+                                    variant="label-stacked"
+                                ></lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6">
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Strip Inaccessible Record Fields"
+                                    read-only={isReadOnlyMode}
+                                    value={record.StripInaccessibleRecordFields__c}
+                                    variant="label-stacked"
+                                ></lightning-input>
+                                <lightning-input
+                                    type="checkbox"
+                                    label="Anonymous Mode"
+                                    read-only={isReadOnlyMode}
+                                    value={record.AnonymousMode__c}
+                                    variant="label-stacked"
+                                ></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </div>
+
+                <!-- Record modal footer -->
+                <footer class="slds-modal__footer" if:false={isReadOnlyMode}>
+                    <lightning-button label="Cancel" onclick={closeModal} title="Cancel"></lightning-button>
+                    <lightning-button label="Save" onclick={saveRecord} title="Save" variant="brand"></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
 </template>
