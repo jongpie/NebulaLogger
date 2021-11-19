@@ -148,29 +148,26 @@ public without sharing abstract class LoggerSObjectHandler {
             return;
         }
 
+        LoggerPlugin.PluginInput pluginInput = buildPluginInput();
         for (LoggerPlugin__mdt pluginConfiguration : this.plugins) {
             switch on pluginConfiguration.PluginType__c {
                 when 'Apex' {
-                    this.executeApexPlugin(pluginConfiguration.PluginApiName__c);
+                    this.executeApexPlugin(pluginConfiguration.PluginApiName__c, pluginInput);
                 }
                 when 'Flow' {
-                    this.executeFlowPlugin(pluginConfiguration.PluginApiName__c);
+                    this.executeFlowPlugin(pluginConfiguration.PluginApiName__c, pluginInput);
                 }
             }
         }
     }
 
-    private void executeApexPlugin(String apexClassName) {
-        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
-        apexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
+    private void executeApexPlugin(String apexClassName, LoggerPlugin.PluginInput pluginInput) {
+        LoggerPlugin apexPlugin = (LoggerPlugin) Type.forName(apexClassName).newInstance();
+        apexPlugin.execute(pluginInput);
     }
 
-    private void executeFlowPlugin(String flowApiName) {
-        Map<String, Object> flowInputs = new Map<String, Object>();
-        flowInputs.put('triggerOperationType', this.triggerOperationType?.name());
-        flowInputs.put('triggerNew', this.triggerNew);
-        flowInputs.put('triggerOld', this.triggerOld);
-
+    private void executeFlowPlugin(String flowApiName, LoggerPlugin.PluginInput pluginInput) {
+        Map<String, Object> flowInputs = new Map<String, Object>{ 'pluginInput' => pluginInput };
         Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
         flowPlugin.start();
 
