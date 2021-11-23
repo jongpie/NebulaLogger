@@ -117,7 +117,6 @@ jobs:
               uses: codecov/codecov-action@v2.0.2
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
-                  verbose: true
                   flags: LWC
 
     scratch-org-tests:
@@ -190,8 +189,6 @@ jobs:
               uses: codecov/codecov-action@v2.0.2
               with:
                   token: ${{ secrets.CODECOV_TOKEN }}
-                  files: ./tests/apex/test-result-codecoverage.json
-                  verbose: true
                   flags: Apex
 
             - name: 'Delete Scratch Org'

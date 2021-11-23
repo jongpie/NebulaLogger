@@ -1,6 +1,15 @@
-import { LightningElement } from 'lwc';
+// UI
+import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
+// Security access
 import canManageLoggerSettings from '@salesforce/customPermission/CanManageLoggerSettings';
+
+// LoggerSettings__c metadata
+import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+
+// Apex controller actions
 import getLoggingLevelOptions from '@salesforce/apex/LoggerSettingsController.getLoggingLevelOptions';
 import getShareAccessLevelOptions from '@salesforce/apex/LoggerSettingsController.getShareAccessLevelOptions';
 import getSaveMethodOptions from '@salesforce/apex/LoggerSettingsController.getSaveMethodOptions';
@@ -8,17 +17,17 @@ import getSettings from '@salesforce/apex/LoggerSettingsController.getSettings';
 import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
 
-// row actions
-const actions = [
-    { label: 'Record Details', name: 'record_details' },
+const TABLE_ROW_ACTIONS = [
+    { label: 'View', name: 'view' },
     { label: 'Edit', name: 'edit' },
     { label: 'Delete', name: 'delete' }
 ];
 
-const columns = [
+// TODO move columns to a function, use getObjectInfo to retrieve labels & field type
+const TABLE_COLUMNS = [
     // { label: 'Id', fieldName: 'Id', type: 'text' },
-    { label: 'SetupOwnerId', fieldName: 'SetupOwnerId', type: 'text' },
-    { label: 'Location', fieldName: 'SetupOwnerType', type: 'text' },
+    // { label: 'SetupOwnerId', fieldName: 'SetupOwnerId', type: 'text' },
+    { label: 'Setup Location', fieldName: 'SetupOwnerType', type: 'text' },
     { label: 'Setup Owner', fieldName: 'SetupOwnerName', type: 'text' },
     { label: 'Is Enabled', fieldName: 'IsEnabled__c', type: 'boolean' },
     // { label: 'IsApexSystemDebugLoggingEnabled', fieldName: 'IsApexSystemDebugLoggingEnabled__c', type: 'boolean' },
@@ -30,10 +39,11 @@ const columns = [
     // { label: 'Enable System Messages', fieldName: 'EnableSystemMessages__c', type: 'text' },
     { label: 'Save Method', fieldName: 'DefaultSaveMethod__c', type: 'text' },
     { label: 'Log Share Level', fieldName: 'DefaultLogShareAccessLevel__c', type: 'text' },
+    { label: 'Days to Retain Logs', fieldName: 'DefaultNumberOfDaysToRetainLogs__c', type: 'number' },
     {
         type: 'action',
         typeAttributes: {
-            rowActions: actions,
+            rowActions: TABLE_ROW_ACTIONS,
             menuAlignment: 'right'
         }
     }
@@ -42,7 +52,7 @@ const columns = [
 export default class LoggerSettings extends LightningElement {
     title = 'Logger Settings';
     records;
-    columns = columns;
+    columns = TABLE_COLUMNS;
 
     // TODO cleanup
     data;
@@ -55,9 +65,13 @@ export default class LoggerSettings extends LightningElement {
     showLoadingSpinner = false;
     // END TODO cleanup
 
+    // Picklist options
     loggingLevelOptions;
     saveMethodOptions;
     shareAccessLevelOptions;
+
+    // Object & field metadata
+    _fields;
 
     connectedCallback() {
         document.title = this.title;
@@ -85,32 +99,90 @@ export default class LoggerSettings extends LightningElement {
         //     // TODO error handling
         // });
 
-        getSettings().then(result => {
-            console.log('getSettings() result==' + JSON.stringify(result));
-            this.records = result;
-            for (let i = 0; i < this.records.size; i++) {
-                let record = this.records[i];
-                record.SetupOwnerType = 'test';
-                // this.records[i] = record;
-            }
-            console.log('this.records==' + JSON.stringify(this.records));
-        });
+        this.loadSettingsRecords();
         // .catch(error => {
         //     // TODO error handling
         // });
     }
 
+    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_OBJECT })
+    oppInfo({ data, error }) {
+        if (data) {
+            this._fields = data.fields;
+        }
+    }
+
+    // Access control getters
+    get canManageLoggerSettings() {
+        return canManageLoggerSettings;
+    }
+
+    get noAccessError() {
+        return 'You do not have access to manage ' + this.title;
+    }
+
+    // Field metadata getters
+    get defaultNumberOfDaysToRetainLogsFieldHelpText() {
+        return this._fields.DefaultNumberOfDaysToRetainLogs__c.inlineHelpText;
+    }
+
+    get defaultNumberOfDaysToRetainLogsFieldLabel() {
+        return this._fields.DefaultNumberOfDaysToRetainLogs__c.label;
+    }
+
+    get isEnabledFieldHelpText() {
+        return this._fields.IsEnabled__c.inlineHelpText;
+    }
+
+    get isEnabledFieldLabel() {
+        return this._fields.IsEnabled__c.label;
+    }
+
+    get loggingLevelFieldHelpText() {
+        return this._fields.LoggingLevel__c.inlineHelpText;
+    }
+
+    get loggingLevelFieldLabel() {
+        return this._fields.LoggingLevel__c.label;
+    }
+
+    loadSettingsRecords() {
+        this.showLoadingSpinner = true;
+        getSettings().then(results => {
+            console.log('getSettings() results==' + JSON.stringify(results));
+            let settingsRecordInfos = [].concat(results);
+            console.log('getSettings() results length==' + settingsRecordInfos.length);
+            console.log('settingsRecordInfos==', settingsRecordInfos);
+            const settingsRecords = [];
+            for (let i = 0; i < results.length; i++) {
+                let record = results[i].Record;
+                record.SetupOwnerType = results[i].SetupOwnerType;
+                record.SetupOwnerName = results[i].SetupOwnerName;
+                // this.records[i] = record;
+
+                settingsRecords.push(record);
+            }
+            console.log('final settings records==', settingsRecords);
+            this.records = settingsRecords;
+            // this.records = result;
+            // for (let i = 0; i < this.records.size; i++) {
+            //     let record = this.records[i];
+            //     record.SetupOwnerType = 'test';
+            //     // this.records[i] = record;
+            // }
+            console.log('this.records==' + JSON.stringify(this.records));
+            this.showLoadingSpinner = false;
+        });
+    }
+
     handleRowActions(event) {
         let actionName = event.detail.action.name;
-
-        window.console.log('actionName ====> ' + actionName);
+        console.log('actionName ====> ' + actionName);
 
         let row = event.detail.row;
-
-        window.console.log('row ====> ' + row);
-        // eslint-disable-next-line default-case
+        console.log('row ====> ' + row);
         switch (actionName) {
-            case 'record_details':
+            case 'view':
                 this.viewCurrentRecord(row);
                 break;
             case 'edit':
@@ -118,6 +190,8 @@ export default class LoggerSettings extends LightningElement {
                 break;
             case 'delete':
                 this.deleteSettingsRecord(row);
+                break;
+            default:
                 break;
         }
     }
@@ -136,6 +210,10 @@ export default class LoggerSettings extends LightningElement {
     // closing modal box
     closeModal() {
         this.showModal = false;
+    }
+
+    createNewRecord() {
+        alert('TODO');
     }
 
     viewCurrentRecord(currentRow) {
@@ -159,31 +237,20 @@ export default class LoggerSettings extends LightningElement {
 
         // // querying the record edit form and submiting fields to form
         // this.template.querySelector('lightning-record-edit-form').submit(event.detail.fields);
-        saveRecord({ settingsRecord: this.currentRecord })
-        .then(result => {
+        saveRecord({ settingsRecord: this.currentRecord }).then(result => {
             console.log('result ====> ', result);
             this.records = result;
             this.showLoadingSpinner = false;
 
             this.dispatchEvent(
                 new ShowToastEvent({
-                    title: 'Logger Settings record deleted',
+                    title: 'Logger Settings record for zeee' + event.detail.fields.SetupOwnerName + ' successfully saved',
                     variant: 'success'
                 })
             );
-
         });
 
         this.closeModal();
-
-        // showing success message
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: 'Success!!',
-                message: event.detail.fields.FirstName + ' ' + event.detail.fields.LastName + ' Contact updated Successfully!!.',
-                variant: 'success'
-            })
-        );
     }
 
     deleteSettingsRecord(currentRow) {
@@ -196,11 +263,10 @@ export default class LoggerSettings extends LightningElement {
 
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: 'Logger Settings record deleted',
+                        title: 'Logger Settings record for ' + currentRow.SetupOwnerName + ' successfully deleted',
                         variant: 'success'
                     })
                 );
-
             })
             .catch(error => {
                 console.log('Error ====> ' + error);
