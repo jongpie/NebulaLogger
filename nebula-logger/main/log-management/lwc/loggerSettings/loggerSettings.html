@@ -128,7 +128,8 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
-                                    label="Log Share Access Level"
+                                    field-level-help={defaultShareAccessLevelFieldHelpText}
+                                    label={defaultShareAccessLevelFieldLabel}
                                     onchange={handleChange}
                                     options={shareAccessLevelOptions}
                                     placeholder="Select Log Share Access Level"
@@ -148,7 +149,8 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
-                                    label="Save Method"
+                                    field-level-help={defaultSaveMethodFieldHelpText}
+                                    label={defaultSaveMethodFieldLabel}
                                     options={saveMethodOptions}
                                     placeholder="Select Save Method"
                                     read-only={isReadOnlyMode}
@@ -159,14 +161,16 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    label="Is Apex System Debug Logging Enable"
+                                    field-level-help={isApexSystemDebugLoggingEnabledFieldHelpText}
+                                    label={isApexSystemDebugLoggingEnabledFieldLabel}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
                                     value={record.IsApexSystemDebugLoggingEnabled__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-input
-                                    label="Is Component Console Logging Enable"
+                                    field-level-help={isComponentConsoleLoggingEnabledFieldHelpText}
+                                    label={isComponentConsoleLoggingEnabledFieldLabel}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
                                     value={record.IsComponentConsoleLoggingEnabled__c}
@@ -184,25 +188,28 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    type="checkbox"
-                                    label="Apply Data Mask Rules"
+                                    field-level-help={applyDataMaskRulesFieldHelpText}
+                                    label={applyDataMaskRulesFieldLabel}
                                     read-only={isReadOnlyMode}
+                                    type="checkbox"
                                     value={record.ApplyDataMaskRules__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    type="checkbox"
-                                    label="Strip Inaccessible Record Fields"
+                                    field-level-help={stripInaccessibleRecordFieldsFieldHelpText}
+                                    label={stripInaccessibleRecordFieldsFieldLabel}
                                     read-only={isReadOnlyMode}
+                                    type="checkbox"
                                     value={record.StripInaccessibleRecordFields__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-input
-                                    type="checkbox"
-                                    label="Anonymous Mode"
+                                    field-level-help={anonymousModeFieldHelpText}
+                                    label={anonymousModeFieldLabel}
                                     read-only={isReadOnlyMode}
+                                    type="checkbox"
                                     value={record.AnonymousMode__c}
                                     variant="label-stacked"
                                 ></lightning-input>

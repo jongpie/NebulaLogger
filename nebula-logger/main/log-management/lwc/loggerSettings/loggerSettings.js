@@ -122,12 +122,60 @@ export default class LoggerSettings extends LightningElement {
     }
 
     // Field metadata getters
+    get anonymousModeFieldHelpText() {
+        return this._fields.AnonymousMode__c.inlineHelpText;
+    }
+
+    get anonymousModeFieldLabel() {
+        return this._fields.AnonymousMode__c.label;
+    }
+
+    get applyDataMaskRulesFieldHelpText() {
+        return this._fields.ApplyDataMaskRules__c.inlineHelpText;
+    }
+
+    get applyDataMaskRulesFieldLabel() {
+        return this._fields.ApplyDataMaskRules__c.label;
+    }
+
     get defaultNumberOfDaysToRetainLogsFieldHelpText() {
         return this._fields.DefaultNumberOfDaysToRetainLogs__c.inlineHelpText;
     }
 
     get defaultNumberOfDaysToRetainLogsFieldLabel() {
         return this._fields.DefaultNumberOfDaysToRetainLogs__c.label;
+    }
+
+    get defaultSaveMethodFieldHelpText() {
+        return this._fields.DefaultSaveMethod__c.inlineHelpText;
+    }
+
+    get defaultSaveMethodFieldLabel() {
+        return this._fields.DefaultSaveMethod__c.label;
+    }
+
+    get defaultShareAccessLevelFieldHelpText() {
+        return this._fields.DefaultLogShareAccessLevel__c.inlineHelpText;
+    }
+
+    get defaultShareAccessLevelFieldLabel() {
+        return this._fields.DefaultLogShareAccessLevel__c.label;
+    }
+
+    get isApexSystemDebugLoggingEnabledFieldHelpText() {
+        return this._fields.IsApexSystemDebugLoggingEnabled__c.inlineHelpText;
+    }
+
+    get isApexSystemDebugLoggingEnabledFieldLabel() {
+        return this._fields.IsApexSystemDebugLoggingEnabled__c.label;
+    }
+
+    get isComponentConsoleLoggingEnabledFieldHelpText() {
+        return this._fields.IsComponentConsoleLoggingEnabled__c.inlineHelpText;
+    }
+
+    get isComponentConsoleLoggingEnabledFieldLabel() {
+        return this._fields.IsComponentConsoleLoggingEnabled__c.label;
     }
 
     get isEnabledFieldHelpText() {
@@ -144,6 +192,14 @@ export default class LoggerSettings extends LightningElement {
 
     get loggingLevelFieldLabel() {
         return this._fields.LoggingLevel__c.label;
+    }
+
+    get stripInaccessibleRecordFieldsFieldHelpText() {
+        return this._fields.StripInaccessibleRecordFields__c.inlineHelpText;
+    }
+
+    get stripInaccessibleRecordFieldsFieldLabel() {
+        return this._fields.StripInaccessibleRecordFields__c.label;
     }
 
     loadSettingsRecords() {
