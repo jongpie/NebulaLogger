@@ -54,6 +54,12 @@ public without sharing class LoggerSettingsController {
     }
 
     @AuraEnabled(cacheable=true)
+    public static Boolean canManageLoggerSettings() {
+        return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() == true ||
+            FeatureManagement.checkPermission('CanManageLoggerSettings') == true;
+    }
+
+    @AuraEnabled(cacheable=true)
     public static List<PicklistOption> getLoggingLevelOptions() {
         try {
             List<PicklistOption> picklistOptions = initializePicklistOptions();
@@ -80,6 +86,24 @@ public without sharing class LoggerSettingsController {
                 PicklistOption picklistOption = new PicklistOption();
                 picklistOption.label = saveMethod.name();
                 picklistOption.value = saveMethod.name();
+
+                picklistOptions.add(picklistOption);
+            }
+            return picklistOptions;
+        } catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<PicklistOption> getSetupOwnerTypeOptions() {
+        try {
+            List<PicklistOption> picklistOptions = initializePicklistOptions();
+            List<String> optionNames = new List<String>{'Organization', 'Profile', 'User'};
+            for (String optionName : optionNames) {
+                PicklistOption picklistOption = new PicklistOption();
+                picklistOption.label = optionName;
+                picklistOption.value = optionName;
 
                 picklistOptions.add(picklistOption);
             }
@@ -123,26 +147,24 @@ public without sharing class LoggerSettingsController {
 
     private static List<SettingsRecordInfo> getLoggerSettingsRecordInfos() {
         List<SettingsRecordInfo> settingsRecordInfos = new List<SettingsRecordInfo>();
-        for (
-            LoggerSettings__c settingsRecord : [
-                SELECT
-                    Id,
-                    SetupOwnerId,
-                    SetupOwner.Type,
-                    SetupOwner.Name,
-                    AnonymousMode__c,
-                    ApplyDataMaskRules__c,
-                    DefaultLogShareAccessLevel__c,
-                    DefaultNumberOfDaysToRetainLogs__c,
-                    DefaultSaveMethod__c,
-                    IsApexSystemDebugLoggingEnabled__c,
-                    IsComponentConsoleLoggingEnabled__c,
-                    IsEnabled__c,
-                    LoggingLevel__c,
-                    StripInaccessibleRecordFields__c
-                FROM LoggerSettings__c
-            ]
-        ) {
+        for (LoggerSettings__c settingsRecord : [
+            SELECT
+                Id,
+                SetupOwnerId,
+                SetupOwner.Type,
+                SetupOwner.Name,
+                AnonymousMode__c,
+                ApplyDataMaskRules__c,
+                DefaultLogShareAccessLevel__c,
+                DefaultNumberOfDaysToRetainLogs__c,
+                DefaultSaveMethod__c,
+                IsApexSystemDebugLoggingEnabled__c,
+                IsComponentConsoleLoggingEnabled__c,
+                IsEnabled__c,
+                LoggingLevel__c,
+                StripInaccessibleRecordFields__c
+            FROM LoggerSettings__c
+        ]) {
             SettingsRecordInfo settingsRecordInfo = new SettingsRecordInfo();
             settingsRecordInfo.setupOwnerType = getSetupOwnerType(settingsRecord);
             settingsRecordInfo.setupOwnerName = getSetupOwnerName(settingsRecord);

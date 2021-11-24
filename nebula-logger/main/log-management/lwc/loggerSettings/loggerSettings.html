@@ -1,16 +1,10 @@
 <template>
     <!-- Datatable -->
-    <lightning-card title={title} icon-name="custom:custom67">
-        <template if:false={canManageLoggerSettings}>
-            {noAccessError}
-        </template>
-        <template if:true={canManageLoggerSettings}>
+    <lightning-card title={title} icon-name="custom:custom67" onkeydown={handleKeyDown}>
+        <template if:false={canUserManageLoggerSettings}> You do not have access to manage {title} </template>
+        <template if:true={canUserManageLoggerSettings}>
             <div slot="actions">
-                <lightning-button-icon
-                    class="slds-m-horizontal_xx-small"
-                    icon-name="action:refresh"
-                    onclick={loadSettingsRecords}
-                ></lightning-button-icon>
+                <lightning-button-icon class="slds-m-horizontal_xx-small" icon-name="action:refresh" onclick={loadSettingsRecords}></lightning-button-icon>
                 <lightning-button
                     class="slds-m-horizontal_xx-small"
                     icon-name="action:new"
@@ -20,20 +14,10 @@
                     variant="brand"
                 ></lightning-button>
             </div>
-            <lightning-datatable
-                columns={columns}
-                data={records}
-                default-sort-direction={defaultSortDirection}
-                hide-checkbox-column
-                key-field="Id"
-                onrowaction={handleRowActions}
-                onsave={handleSave}
-                onsort={handleSort}
-                show-row-number-column
-                sorted-by={sortedBy}
-                sorted-direction={sortedDirection}
-            >
-            </lightning-datatable>
+            <div>
+                <lightning-datatable columns={columns} data={records} hide-checkbox-column key-field="Id" onrowaction={handleRowActions} show-row-number-column>
+                </lightning-datatable>
+            </div>
         </template>
     </lightning-card>
 
@@ -42,18 +26,10 @@
         <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
     </div>
 
-    <!-- View/edit modal -->
-    <template if:true={showModal} onkeydown={handleModalKeyDown}>
-        <section
-            role="dialog"
-            tabindex="-1"
-            aria-labelledby="modal-heading-01"
-            aria-modal="true"
-            aria-describedby="modal-content-id-1"
-            class="slds-modal slds-fade-in-open"
-            onkeydown={handleModalKeyDown}
-        >
-            <div class="slds-modal__container" onkeydown={handleModalKeyDown}>
+    <!-- Record modal -->
+    <template if:true={showModal} onkeydown={handleKeyDown}>
+        <section class="slds-modal slds-fade-in-open" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
+            <div class="slds-modal__container" onkeydown={handleKeyDown}>
                 <!-- Record modal header -->
                 <header class="slds-modal__header">
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
@@ -64,7 +40,7 @@
                 </header>
 
                 <!-- Record modal body -->
-                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <div class="slds-modal__content slds-p-around_medium">
                     <!-- General Settings -->
                     <div class="slds-section slds-is-open">
                         <h3 class="slds-section__title slds-theme_shade">
@@ -72,40 +48,44 @@
                         </h3>
                         <lightning-layout>
                             <lightning-layout-item size="6">
-                                <lightning-input
+
+                                <lightning-combobox
                                     label="Setup Location"
-                                    read-only="true"
-                                    type="text"
-                                    value={record.SetupOwnerType}
+                                    options={setupOwnerTypeOptions}
+                                    read-only={isExistingRecord}
+                                    required
+                                    value={currentRecord.SetupOwnerType}
                                     variant="label-stacked"
-                                ></lightning-input>
+                                ></lightning-combobox>
+
                                 <lightning-input
                                     label="Setup Owner"
-                                    read-only="true"
+                                    read-only={isExistingRecord}
+                                    required
                                     type="text"
-                                    value={record.SetupOwnerName}
+                                    value={currentRecord.SetupOwnerName}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    field-level-help={isEnabledFieldHelpText}
-                                    label={isEnabledFieldLabel}
+                                    field-level-help={loggerSettingsFields.IsEnabled__c.inlineHelpText}
+                                    label={loggerSettingsFields.IsEnabled__c.label}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={record.IsEnabled__c}
+                                    value={currentRecord.IsEnabled__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-combobox
-                                    field-level-help={loggingLevelFieldHelpText}
-                                    label={loggingLevelFieldLabel}
+                                    field-level-help={loggerSettingsFields.LoggingLevel__c.inlineHelpText}
+                                    label={loggerSettingsFields.LoggingLevel__c.label}
                                     options={loggingLevelOptions}
-                                    placeholder="Select Logging Level"
                                     read-only={isReadOnlyMode}
                                     required
-                                    value={record.LoggingLevel__c}
+                                    value={currentRecord.LoggingLevel__c}
                                     variant="label-stacked"
                                 ></lightning-combobox>
+                                [hey it's the current record's logging level: {currentRecord.LoggingLevel__c}]
                             </lightning-layout-item>
                         </lightning-layout>
                     </div>
@@ -118,23 +98,22 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    field-level-help={defaultNumberOfDaysToRetainLogsFieldHelpText}
-                                    label={defaultNumberOfDaysToRetainLogsFieldLabel}
+                                    field-level-help={loggerSettingsFields.DefaultNumberOfDaysToRetainLogs__c.inlineHelpText}
+                                    label={loggerSettingsFields.DefaultNumberOfDaysToRetainLogs__c.label}
                                     read-only={isReadOnlyMode}
                                     type="number"
-                                    value={record.DefaultNumberOfDaysToRetainLogs__c}
+                                    value={currentRecord.DefaultNumberOfDaysToRetainLogs__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
-                                    field-level-help={defaultShareAccessLevelFieldHelpText}
-                                    label={defaultShareAccessLevelFieldLabel}
+                                    field-level-help={loggerSettingsFields.DefaultLogShareAccessLevel__c.inlineHelpText}
+                                    label={loggerSettingsFields.DefaultLogShareAccessLevel__c.label}
                                     onchange={handleChange}
                                     options={shareAccessLevelOptions}
-                                    placeholder="Select Log Share Access Level"
                                     read-only={isReadOnlyMode}
-                                    value={record.DefaultLogShareAccessLevel__c}
+                                    value={currentRecord.DefaultLogShareAccessLevel__c}
                                     variant="label-stacked"
                                 ></lightning-combobox>
                             </lightning-layout-item>
@@ -149,31 +128,30 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
-                                    field-level-help={defaultSaveMethodFieldHelpText}
-                                    label={defaultSaveMethodFieldLabel}
+                                    field-level-help={loggerSettingsFields.DefaultSaveMethod__c.inlineHelpText}
+                                    label={loggerSettingsFields.DefaultSaveMethod__c.label}
                                     options={saveMethodOptions}
-                                    placeholder="Select Save Method"
                                     read-only={isReadOnlyMode}
                                     required
-                                    value={record.DefaultSaveMethod__c}
+                                    value={currentRecord.DefaultSaveMethod__c}
                                     variant="label-stacked"
                                 ></lightning-combobox>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    field-level-help={isApexSystemDebugLoggingEnabledFieldHelpText}
-                                    label={isApexSystemDebugLoggingEnabledFieldLabel}
+                                    field-level-help={loggerSettingsFields.IsApexSystemDebugLoggingEnabled__c.inlineHelpText}
+                                    label={loggerSettingsFields.IsApexSystemDebugLoggingEnabled__c.label}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={record.IsApexSystemDebugLoggingEnabled__c}
+                                    value={currentRecord.IsApexSystemDebugLoggingEnabled__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-input
-                                    field-level-help={isComponentConsoleLoggingEnabledFieldHelpText}
-                                    label={isComponentConsoleLoggingEnabledFieldLabel}
+                                    field-level-help={loggerSettingsFields.IsComponentConsoleLoggingEnabled__c.inlineHelpText}
+                                    label={loggerSettingsFields.IsComponentConsoleLoggingEnabled__c.label}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={record.IsComponentConsoleLoggingEnabled__c}
+                                    value={currentRecord.IsComponentConsoleLoggingEnabled__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
@@ -188,29 +166,29 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    field-level-help={applyDataMaskRulesFieldHelpText}
-                                    label={applyDataMaskRulesFieldLabel}
+                                    field-level-help={loggerSettingsFields.ApplyDataMaskRules__c.inlineHelpText}
+                                    label={loggerSettingsFields.ApplyDataMaskRules__c.label}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={record.ApplyDataMaskRules__c}
+                                    value={currentRecord.ApplyDataMaskRules__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    field-level-help={stripInaccessibleRecordFieldsFieldHelpText}
-                                    label={stripInaccessibleRecordFieldsFieldLabel}
+                                    field-level-help={loggerSettingsFields.StripInaccessibleRecordFields__c.inlineHelpText}
+                                    label={loggerSettingsFields.StripInaccessibleRecordFields__c.label}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={record.StripInaccessibleRecordFields__c}
+                                    value={currentRecord.StripInaccessibleRecordFields__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-input
-                                    field-level-help={anonymousModeFieldHelpText}
-                                    label={anonymousModeFieldLabel}
+                                    field-level-help={loggerSettingsFields.AnonymousMode__c.inlineHelpText}
+                                    label={loggerSettingsFields.AnonymousMode__c.label}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={record.AnonymousMode__c}
+                                    value={currentRecord.AnonymousMode__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
@@ -221,7 +199,7 @@
                 <!-- Record modal footer -->
                 <footer class="slds-modal__footer" if:false={isReadOnlyMode}>
                     <lightning-button label="Cancel" onclick={closeModal} title="Cancel"></lightning-button>
-                    <lightning-button label="Save" onclick={saveRecord} title="Save" variant="brand"></lightning-button>
+                    <lightning-button label="Save" onclick={saveCurrentRecord} title="Save" variant="brand"></lightning-button>
                 </footer>
             </div>
         </section>

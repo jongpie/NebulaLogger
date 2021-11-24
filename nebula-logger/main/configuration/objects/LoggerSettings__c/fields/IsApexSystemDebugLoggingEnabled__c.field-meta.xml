@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <inlineHelpText
     >When enabled, Logger will automatically call Apex&apos;s System.debug(). To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.</inlineHelpText>
-    <label>Enable System.debug()</label>
+    <label>Enable Apex System.debug()</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

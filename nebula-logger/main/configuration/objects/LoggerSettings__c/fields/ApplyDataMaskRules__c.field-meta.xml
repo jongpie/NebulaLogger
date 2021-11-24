@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <inlineHelpText
     >When enabled, any data-mask rules (configured in LogEntryDataMaskRule__mdt) will be automatically applied to log entry messages.</inlineHelpText>
-    <label>Apply Data Masking</label>
+    <label>Apply Data Mask Rules</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>
