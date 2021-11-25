@@ -18,6 +18,7 @@ import getShareAccessLevelOptions from '@salesforce/apex/LoggerSettingsControlle
 
 // LoggerSettings__c data
 import getRecords from '@salesforce/apex/LoggerSettingsController.getRecords';
+import createNewRecord from '@salesforce/apex/LoggerSettingsController.createNewRecord';
 import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
 
@@ -87,7 +88,6 @@ export default class LoggerSettings extends LightningElement {
             this.loggerSettingsFields = data.fields;
             canUserModifyLoggerSettings().then(result => {
                 this.canUserModifyLoggerSettings = result;
-                console.log('this.canUserModifyLoggerSettings==', this.canUserModifyLoggerSettings);
                 this._loadTableColumns();
             });
         } else if (error) {
@@ -169,10 +169,15 @@ export default class LoggerSettings extends LightningElement {
     }
 
     createNewRecord() {
-        // FIXME new isn't working yet
-        this.currentRecord = {};
-        this.isReadOnlyMode = false;
-        this.showModal = true;
+        createNewRecord()
+            .then(result => {
+                this.currentRecord = result;
+                this.isReadOnlyMode = false;
+                this.showModal = true;
+            })
+            .catch(error => {
+                this._handleError(error);
+            });
     }
 
     viewCurrentRecord(currentRow) {
@@ -190,6 +195,11 @@ export default class LoggerSettings extends LightningElement {
     saveCurrentRecord(currentRow) {
         // FIXME save isn't working yet
         this.showLoadingSpinner = true;
+
+
+        // TODO need to add validity check for each input/combo-box before saving the data
+
+
         console.log('saveRecord currentRow', currentRow);
         console.log('saveRecord currentRecord', JSON.parse(JSON.stringify(this.currentRecord)));
         saveRecord({ settingsRecord: this.currentRecord }).then(() => {

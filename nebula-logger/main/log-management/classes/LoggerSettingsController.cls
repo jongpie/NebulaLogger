@@ -32,6 +32,15 @@ public without sharing class LoggerSettingsController {
     }
 
     @AuraEnabled
+    public static LoggerSettings__c createNewRecord() {
+        try {
+            return (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+        } catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+
+    @AuraEnabled
     public static void saveRecord(LoggerSettings__c settingsRecord) {
         System.debug('saveRecord==' + settingsRecord);
         try {
@@ -98,7 +107,7 @@ public without sharing class LoggerSettingsController {
     public static List<PicklistOption> getSetupOwnerTypeOptions() {
         try {
             List<PicklistOption> picklistOptions = initializePicklistOptions();
-            List<String> optionNames = new List<String>{'Organization', 'Profile', 'User'};
+            List<String> optionNames = new List<String>{ 'Organization', 'Profile', 'User' };
             for (String optionName : optionNames) {
                 PicklistOption picklistOption = new PicklistOption();
                 picklistOption.label = optionName;
