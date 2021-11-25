@@ -82,7 +82,7 @@
     </customMetadataTypeAccesses>
     <customPermissions>
         <enabled>true</enabled>
-        <name>CanManageLoggerSettings</name>
+        <name>CanModifyLoggerSettings</name>
     </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>

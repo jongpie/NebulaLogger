@@ -1,10 +1,9 @@
 <template>
     <!-- Datatable -->
     <lightning-card title={title} icon-name="custom:custom67" onkeydown={handleKeyDown}>
-        <template if:false={canUserManageLoggerSettings}> You do not have access to manage {title} </template>
-        <template if:true={canUserManageLoggerSettings}>
-            <div slot="actions">
-                <lightning-button-icon class="slds-m-horizontal_xx-small" icon-name="action:refresh" onclick={loadSettingsRecords}></lightning-button-icon>
+        <div slot="actions">
+            <lightning-button-icon class="slds-m-horizontal_xx-small" icon-name="action:refresh" onclick={loadSettingsRecords}></lightning-button-icon>
+            <template if:true={canUserModifyLoggerSettings}>
                 <lightning-button
                     class="slds-m-horizontal_xx-small"
                     icon-name="action:new"
@@ -13,12 +12,12 @@
                     title="New Logger Settings Record"
                     variant="brand"
                 ></lightning-button>
-            </div>
-            <div>
-                <lightning-datatable columns={columns} data={records} hide-checkbox-column key-field="Id" onrowaction={handleRowActions} show-row-number-column>
-                </lightning-datatable>
-            </div>
-        </template>
+            </template>
+        </div>
+        <div>
+            <lightning-datatable columns={columns} data={records} hide-checkbox-column key-field="Id" onrowaction={handleRowActions} show-row-number-column>
+            </lightning-datatable>
+        </div>
     </lightning-card>
 
     <!-- Spinner -->
@@ -48,8 +47,8 @@
                         </h3>
                         <lightning-layout>
                             <lightning-layout-item size="6">
-
                                 <lightning-combobox
+                                    data-id="SetupOwnerType"
                                     label="Setup Location"
                                     options={setupOwnerTypeOptions}
                                     read-only={isExistingRecord}
@@ -57,8 +56,8 @@
                                     value={currentRecord.SetupOwnerType}
                                     variant="label-stacked"
                                 ></lightning-combobox>
-
                                 <lightning-input
+                                    data-id="SetupOwnerName"
                                     label="Setup Owner"
                                     read-only={isExistingRecord}
                                     required
@@ -69,23 +68,26 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
+                                    checked={currentRecord.IsEnabled__c}
+                                    data-id="IsEnabled__c"
                                     field-level-help={loggerSettingsFields.IsEnabled__c.inlineHelpText}
                                     label={loggerSettingsFields.IsEnabled__c.label}
+                                    onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={currentRecord.IsEnabled__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-combobox
+                                    data-id="LoggingLevel__c"
                                     field-level-help={loggerSettingsFields.LoggingLevel__c.inlineHelpText}
                                     label={loggerSettingsFields.LoggingLevel__c.label}
+                                    onchange={handleFieldChange}
                                     options={loggingLevelOptions}
                                     read-only={isReadOnlyMode}
                                     required
                                     value={currentRecord.LoggingLevel__c}
                                     variant="label-stacked"
                                 ></lightning-combobox>
-                                [hey it's the current record's logging level: {currentRecord.LoggingLevel__c}]
                             </lightning-layout-item>
                         </lightning-layout>
                     </div>
@@ -98,8 +100,10 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-input
+                                    data-id="DefaultNumberOfDaysToRetainLogs__c"
                                     field-level-help={loggerSettingsFields.DefaultNumberOfDaysToRetainLogs__c.inlineHelpText}
                                     label={loggerSettingsFields.DefaultNumberOfDaysToRetainLogs__c.label}
+                                    onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="number"
                                     value={currentRecord.DefaultNumberOfDaysToRetainLogs__c}
@@ -108,6 +112,7 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
+                                    data-id="DefaultLogShareAccessLevel__c"
                                     field-level-help={loggerSettingsFields.DefaultLogShareAccessLevel__c.inlineHelpText}
                                     label={loggerSettingsFields.DefaultLogShareAccessLevel__c.label}
                                     onchange={handleChange}
@@ -128,8 +133,10 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
+                                    data-id="DefaultSaveMethod__c"
                                     field-level-help={loggerSettingsFields.DefaultSaveMethod__c.inlineHelpText}
                                     label={loggerSettingsFields.DefaultSaveMethod__c.label}
+                                    onchange={handleFieldChange}
                                     options={saveMethodOptions}
                                     read-only={isReadOnlyMode}
                                     required
@@ -139,19 +146,22 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
+                                    checked={currentRecord.IsApexSystemDebugLoggingEnabled__c}
+                                    data-id="IsApexSystemDebugLoggingEnabled__c"
                                     field-level-help={loggerSettingsFields.IsApexSystemDebugLoggingEnabled__c.inlineHelpText}
                                     label={loggerSettingsFields.IsApexSystemDebugLoggingEnabled__c.label}
+                                    onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={currentRecord.IsApexSystemDebugLoggingEnabled__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-input
+                                    checked={currentRecord.IsComponentConsoleLoggingEnabled__c}
                                     field-level-help={loggerSettingsFields.IsComponentConsoleLoggingEnabled__c.inlineHelpText}
                                     label={loggerSettingsFields.IsComponentConsoleLoggingEnabled__c.label}
+                                    onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={currentRecord.IsComponentConsoleLoggingEnabled__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
@@ -166,29 +176,35 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-input
+                                    checked={currentRecord.ApplyDataMaskRules__c}
+                                    data-id="ApplyDataMaskRules__c"
                                     field-level-help={loggerSettingsFields.ApplyDataMaskRules__c.inlineHelpText}
                                     label={loggerSettingsFields.ApplyDataMaskRules__c.label}
+                                    onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={currentRecord.ApplyDataMaskRules__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
+                                    checked={currentRecord.StripInaccessibleRecordFields__c}
+                                    data-id="StripInaccessibleRecordFields__c"
                                     field-level-help={loggerSettingsFields.StripInaccessibleRecordFields__c.inlineHelpText}
                                     label={loggerSettingsFields.StripInaccessibleRecordFields__c.label}
+                                    onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={currentRecord.StripInaccessibleRecordFields__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-input
+                                    checked={currentRecord.AnonymousMode__c}
+                                    data-id="AnonymousMode__c"
                                     field-level-help={loggerSettingsFields.AnonymousMode__c.inlineHelpText}
                                     label={loggerSettingsFields.AnonymousMode__c.label}
+                                    onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
-                                    value={currentRecord.AnonymousMode__c}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>

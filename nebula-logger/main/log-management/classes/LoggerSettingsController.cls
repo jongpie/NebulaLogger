@@ -19,9 +19,9 @@ public without sharing class LoggerSettingsController {
     }
 
     @AuraEnabled
-    public static List<SettingsRecordInfo> getSettings() {
+    public static List<SettingsRecordInfo> getRecords() {
         try {
-            if (FeatureManagement.checkPermission('CanManageLoggerSettings') == false) {
+            if (canUserModifyLoggerSettings() == false) {
                 return null;
             }
 
@@ -32,42 +32,41 @@ public without sharing class LoggerSettingsController {
     }
 
     @AuraEnabled
-    public static List<SettingsRecordInfo> saveRecord(LoggerSettings__c settingsRecord) {
+    public static void saveRecord(LoggerSettings__c settingsRecord) {
         System.debug('saveRecord==' + settingsRecord);
         try {
             upsert settingsRecord;
-            return getSettings();
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }
     }
 
     @AuraEnabled
-    public static List<SettingsRecordInfo> deleteRecord(LoggerSettings__c settingsRecord) {
+    public static void deleteRecord(LoggerSettings__c settingsRecord) {
         System.debug('deleteRecord==' + settingsRecord);
         try {
             delete settingsRecord;
-            return getSettings();
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }
     }
 
     @AuraEnabled(cacheable=true)
-    public static Boolean canManageLoggerSettings() {
+    public static Boolean canUserModifyLoggerSettings() {
         return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() == true ||
-            FeatureManagement.checkPermission('CanManageLoggerSettings') == true;
+            FeatureManagement.checkPermission('CanModifyLoggerSettings') == true;
     }
 
     @AuraEnabled(cacheable=true)
     public static List<PicklistOption> getLoggingLevelOptions() {
         try {
             List<PicklistOption> picklistOptions = initializePicklistOptions();
-            for (LoggingLevel logLevel : LoggingLevel.values()) {
-                if (logLevel != LoggingLevel.NONE && logLevel != LoggingLevel.INTERNAL) {
+            for (Integer i = LoggingLevel.values().size() - 1; i > 0; i--) {
+                LoggingLevel currentLoggingLevel = LoggingLevel.values().get(i);
+                if (currentLoggingLevel != LoggingLevel.NONE && currentLoggingLevel != LoggingLevel.INTERNAL) {
                     PicklistOption picklistOption = new PicklistOption();
-                    picklistOption.label = logLevel.name();
-                    picklistOption.value = logLevel.name();
+                    picklistOption.label = currentLoggingLevel.name();
+                    picklistOption.value = currentLoggingLevel.name();
 
                     picklistOptions.add(picklistOption);
                 }

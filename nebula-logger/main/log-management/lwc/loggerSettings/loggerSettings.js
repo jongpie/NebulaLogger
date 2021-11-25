@@ -10,31 +10,16 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // LoggerSettings__c metadata
 import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-import canManageLoggerSettings from '@salesforce/apex/LoggerSettingsController.canManageLoggerSettings';
+import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
 import getLoggingLevelOptions from '@salesforce/apex/LoggerSettingsController.getLoggingLevelOptions';
 import getSaveMethodOptions from '@salesforce/apex/LoggerSettingsController.getSaveMethodOptions';
 import getSetupOwnerTypeOptions from '@salesforce/apex/LoggerSettingsController.getSetupOwnerTypeOptions';
 import getShareAccessLevelOptions from '@salesforce/apex/LoggerSettingsController.getShareAccessLevelOptions';
 
 // LoggerSettings__c data
-import getSettings from '@salesforce/apex/LoggerSettingsController.getSettings';
+import getRecords from '@salesforce/apex/LoggerSettingsController.getRecords';
 import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
-
-// Datatable config
-const TABLE_ROW_ACTIONS = [
-    { label: 'View', name: 'view' },
-    { label: 'Edit', name: 'edit' },
-    { label: 'Delete', name: 'delete' }
-];
-const TABLE_COLUMN_NAMES = [
-    'IsEnabled__c',
-    'LoggingLevel__c',
-    'ApplyDataMaskRules__c',
-    'DefaultSaveMethod__c',
-    'DefaultLogShareAccessLevel__c',
-    'DefaultNumberOfDaysToRetainLogs__c'
-];
 
 export default class LoggerSettings extends LightningElement {
     // UI
@@ -45,7 +30,7 @@ export default class LoggerSettings extends LightningElement {
     columns;
 
     // LoggerSettings__c metadata
-    canUserManageLoggerSettings;
+    canUserModifyLoggerSettings;
     loggerSettingsFields;
     loggingLevelOptions;
     saveMethodOptions;
@@ -56,27 +41,9 @@ export default class LoggerSettings extends LightningElement {
     records;
     currentRecord;
 
-    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_OBJECT })
-    getLoggerSettingsObjectInfo({ data, error }) {
-        if (data) {
-            this.loggerSettingsFields = data.fields;
-            this._loadTableColumns();
-        } else if (error) {
-            this._handleError(error);
-        }
-    }
-
     connectedCallback() {
         document.title = this.title;
         this.showLoadingSpinner = true;
-
-        canManageLoggerSettings().then(result => {
-            this.canUserManageLoggerSettings = result;
-        });
-
-        if (this.canUserManageLoggerSettings === false) {
-            return;
-        }
 
         getLoggingLevelOptions()
             .then(results => {
@@ -114,9 +81,23 @@ export default class LoggerSettings extends LightningElement {
         this.showLoadingSpinner = false;
     }
 
+    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_OBJECT })
+    getLoggerSettingsObjectInfo({ data, error }) {
+        if (data) {
+            this.loggerSettingsFields = data.fields;
+            canUserModifyLoggerSettings().then(result => {
+                this.canUserModifyLoggerSettings = result;
+                console.log('this.canUserModifyLoggerSettings==', this.canUserModifyLoggerSettings);
+                this._loadTableColumns();
+            });
+        } else if (error) {
+            this._handleError(error);
+        }
+    }
+
     loadSettingsRecords() {
         this.showLoadingSpinner = true;
-        getSettings()
+        getRecords()
             .then(settingsRecords => {
                 for (let i = 0; i < settingsRecords.length; i++) {
                     const record = settingsRecords[i].Record;
@@ -150,6 +131,23 @@ export default class LoggerSettings extends LightningElement {
             default:
                 break;
         }
+    }
+
+    handleFieldChange(event) {
+        console.log('ze orig of currentRecord', JSON.parse(JSON.stringify(this.currentRecord)));
+        console.log('eeeeevent', event);
+        console.log('eeeeevent.target', JSON.parse(JSON.stringify(event.target)));
+        console.log('eeeeevent.target.dataset.id ', event.target.dataset.id);
+
+        let value;
+        if (event.target.type === 'checkbox' || event.target.type === 'checkbox-button' || event.target.type === 'toggle') {
+            value = event.target.checked;
+        } else {
+            value = event.target.value;
+        }
+        this.currentRecord[event.target.dataset.id] = value;
+        console.log('ze value', value);
+        console.log('ze currentRecord', JSON.parse(JSON.stringify(this.currentRecord)));
     }
 
     handleKeyDown(event) {
@@ -194,7 +192,7 @@ export default class LoggerSettings extends LightningElement {
         this.showLoadingSpinner = true;
         console.log('saveRecord currentRow', currentRow);
         console.log('saveRecord currentRecord', JSON.parse(JSON.stringify(this.currentRecord)));
-        saveRecord({ settingsRecord: this.currentRecord }).then(()  => {
+        saveRecord({ settingsRecord: this.currentRecord }).then(() => {
             this.loadSettingsRecords();
 
             this.dispatchEvent(
@@ -228,12 +226,24 @@ export default class LoggerSettings extends LightningElement {
     }
 
     _loadTableColumns() {
+        // The columns SetupOwnerType and SetupOwnerName are true fields
+        // They're flattened versions of SetupOwner.Type and SetupOwner.Name, so object API info isn't used here
         this.columns = [
-            { label: 'Setup Location', fieldName: 'SetupOwnerType', type: 'text' },
-            { label: 'Setup Owner', fieldName: 'SetupOwnerName', type: 'text' }
+            { fieldName: 'SetupOwnerType', label: 'Setup Location', type: 'text' },
+            { fieldName: 'SetupOwnerName', label: 'Setup Owner', type: 'text' }
         ];
-        for (let i = 0; i < TABLE_COLUMN_NAMES.length; i++) {
-            const field = this.loggerSettingsFields[TABLE_COLUMN_NAMES[i]];
+
+        // For all other fields, use object API info to dynamically get field details
+        const tableColumnNames = [
+            'IsEnabled__c',
+            'LoggingLevel__c',
+            'ApplyDataMaskRules__c',
+            'DefaultSaveMethod__c',
+            'DefaultLogShareAccessLevel__c',
+            'DefaultNumberOfDaysToRetainLogs__c'
+        ];
+        for (let i = 0; i < tableColumnNames.length; i++) {
+            const field = this.loggerSettingsFields[tableColumnNames[i]];
             const column = {
                 fieldName: field.apiName,
                 label: field.label,
@@ -244,10 +254,19 @@ export default class LoggerSettings extends LightningElement {
             }
             this.columns.push(column);
         }
+
+        // Finally, add the row-level actions
+        let tableRowActions = [{ label: 'View', name: 'view' }];
+        if (this.canUserModifyLoggerSettings === true) {
+            tableRowActions = tableRowActions.concat([
+                { label: 'Edit', name: 'edit' },
+                { label: 'Delete', name: 'delete' }
+            ]);
+        }
         this.columns.push({
             type: 'action',
             typeAttributes: {
-                rowActions: TABLE_ROW_ACTIONS,
+                rowActions: tableRowActions,
                 menuAlignment: 'auto'
             }
         });
