@@ -8,23 +8,16 @@
  * @description Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
  */
 public without sharing class LoggerSettingsController {
-    private static final Map<Id, Profile> CACHED_PROFILES {
-        get {
-            if (CACHED_PROFILES == null) {
-                CACHED_PROFILES = queryProfiles();
-            }
-            return CACHED_PROFILES;
-        }
-        set;
+    // Data methods
+    @AuraEnabled(cacheable=true)
+    public static Boolean canUserModifyLoggerSettings() {
+        return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() == true ||
+            FeatureManagement.checkPermission('CanModifyLoggerSettings') == true;
     }
 
     @AuraEnabled
     public static List<SettingsRecordInfo> getRecords() {
         try {
-            if (canUserModifyLoggerSettings() == false) {
-                return null;
-            }
-
             return getLoggerSettingsRecordInfos();
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
@@ -34,7 +27,7 @@ public without sharing class LoggerSettingsController {
     @AuraEnabled
     public static LoggerSettings__c createNewRecord() {
         try {
-            return (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+            return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }
@@ -60,25 +53,44 @@ public without sharing class LoggerSettingsController {
         }
     }
 
-    @AuraEnabled(cacheable=true)
-    public static Boolean canUserModifyLoggerSettings() {
-        return Schema.LoggerSettings__c.SObjectType.getDescribe().isUpdateable() == true ||
-            FeatureManagement.checkPermission('CanModifyLoggerSettings') == true;
+    // Setup Owner methods
+    @AuraEnabled
+    public static Organization getOrganization() {
+        try {
+            return [SELECT Id, Name FROM Organization];
+        } catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
     }
 
+    @AuraEnabled
+    public static List<SObject> searchForSetupOwner(String setupOwnerType, String searchTerm) {
+        try {
+            String query = 'FIND \'' + searchTerm + '\' IN ALL FIELDS RETURNING ' + setupOwnerType + '(Id, Mame)';
+            List<SObject> searchResults = Search.query(query).get(0);
+            return searchResults;
+        } catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+
+    // Picklist methods
     @AuraEnabled(cacheable=true)
     public static List<PicklistOption> getLoggingLevelOptions() {
         try {
             List<PicklistOption> picklistOptions = initializePicklistOptions();
             for (Integer i = LoggingLevel.values().size() - 1; i > 0; i--) {
                 LoggingLevel currentLoggingLevel = LoggingLevel.values().get(i);
-                if (currentLoggingLevel != LoggingLevel.NONE && currentLoggingLevel != LoggingLevel.INTERNAL) {
-                    PicklistOption picklistOption = new PicklistOption();
-                    picklistOption.label = currentLoggingLevel.name();
-                    picklistOption.value = currentLoggingLevel.name();
 
-                    picklistOptions.add(picklistOption);
+                if (currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
+                    continue;
                 }
+
+                PicklistOption picklistOption = new PicklistOption();
+                picklistOption.label = currentLoggingLevel.name();
+                picklistOption.value = currentLoggingLevel.name();
+
+                picklistOptions.add(picklistOption);
             }
             return picklistOptions;
         } catch (Exception ex) {
@@ -133,7 +145,7 @@ public without sharing class LoggerSettingsController {
                 }
 
                 PicklistOption picklistOption = new PicklistOption();
-                picklistOption.label = picklistEntry.label;
+                picklistOption.label = picklistEntry.value;
                 picklistOption.value = picklistEntry.value;
 
                 picklistOptions.add(picklistOption);
@@ -155,6 +167,7 @@ public without sharing class LoggerSettingsController {
 
     private static List<SettingsRecordInfo> getLoggerSettingsRecordInfos() {
         List<SettingsRecordInfo> settingsRecordInfos = new List<SettingsRecordInfo>();
+        List<Id> setupOwnerIds = new List<Id>();
         for (LoggerSettings__c settingsRecord : [
             SELECT
                 Id,
@@ -174,12 +187,21 @@ public without sharing class LoggerSettingsController {
             FROM LoggerSettings__c
         ]) {
             SettingsRecordInfo settingsRecordInfo = new SettingsRecordInfo();
-            settingsRecordInfo.setupOwnerType = getSetupOwnerType(settingsRecord);
-            settingsRecordInfo.setupOwnerName = getSetupOwnerName(settingsRecord);
-            settingsRecordInfo.record = settingsRecord;
-
+            settingsRecordInfo.SetupOwnerType = getSetupOwnerType(settingsRecord);
+            settingsRecordInfo.SetupOwnerName = settingsRecord.SetupOwner.Name;
+            settingsRecordInfo.Record = settingsRecord;
             settingsRecordInfos.add(settingsRecordInfo);
+
+            setupOwnerIds.add(settingsRecord.SetupOwnerId);
         }
+
+        Map<Id, String> setupOwnerIdToName = querySetupOwnerNames(setupOwnerIds);
+        for (SettingsRecordInfo settingsRecordInfo : settingsRecordInfos) {
+            if (setupOwnerIdToName.containsKey((settingsRecordInfo.Record.SetupOwnerId)) == true) {
+                settingsRecordInfo.SetupOwnerName = setupOwnerIdToName.get(settingsRecordInfo.Record.SetupOwnerId);
+            }
+        }
+
         settingsRecordInfos.sort();
         return settingsRecordInfos;
     }
@@ -200,17 +222,15 @@ public without sharing class LoggerSettingsController {
         return setupOwnerType;
     }
 
-    private static String getSetupOwnerName(LoggerSettings__c settingsRecord) {
-        String setupOwnerName;
-        switch on settingsRecord.SetupOwner.Type {
-            when '00e' {
-                setupOwnerName = CACHED_PROFILES.get(settingsRecord.SetupOwnerId).Name;
-            }
-            when else {
-                setupOwnerName = settingsRecord.SetupOwner.Name;
-            }
+    private static Map<Id, String> querySetupOwnerNames(List<Id> setupOwnerIds) {
+        Map<Id, String> setupOwnerIdToName = new Map<Id, String>();
+        for (Profile profile : [SELECT Id, Name FROM Profile WHERE Id IN :setupOwnerIds]) {
+            setupOwnerIdToName.put(profile.Id, profile.Name);
         }
-        return setupOwnerName;
+        for (User user : [SELECT Id, Username FROM User WHERE Id IN :setupOwnerIds]) {
+            setupOwnerIdToName.put(user.Id, user.Username);
+        }
+        return setupOwnerIdToName;
     }
 
     private static Map<Id, Profile> queryProfiles() {

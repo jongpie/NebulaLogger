@@ -115,7 +115,7 @@
                                     data-id="DefaultLogShareAccessLevel__c"
                                     field-level-help={loggerSettingsFields.DefaultLogShareAccessLevel__c.inlineHelpText}
                                     label={loggerSettingsFields.DefaultLogShareAccessLevel__c.label}
-                                    onchange={handleChange}
+                                    onchange={handleFieldChange}
                                     options={shareAccessLevelOptions}
                                     read-only={isReadOnlyMode}
                                     value={currentRecord.DefaultLogShareAccessLevel__c}
@@ -157,6 +157,7 @@
                                 ></lightning-input>
                                 <lightning-input
                                     checked={currentRecord.IsComponentConsoleLoggingEnabled__c}
+                                    data-id="IsComponentConsoleLoggingEnabled__c"
                                     field-level-help={loggerSettingsFields.IsComponentConsoleLoggingEnabled__c.inlineHelpText}
                                     label={loggerSettingsFields.IsComponentConsoleLoggingEnabled__c.label}
                                     onchange={handleFieldChange}

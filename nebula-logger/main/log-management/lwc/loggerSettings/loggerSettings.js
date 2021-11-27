@@ -103,6 +103,7 @@ export default class LoggerSettings extends LightningElement {
                     const record = settingsRecords[i].Record;
                     record.SetupOwnerType = settingsRecords[i].SetupOwnerType;
                     record.SetupOwnerName = settingsRecords[i].SetupOwnerName;
+                    // record.SetupOwnerUrl = '/' + record.SetupOwnerId;
 
                     settingsRecords[i] = record;
                 }
@@ -192,29 +193,29 @@ export default class LoggerSettings extends LightningElement {
         this.showModal = true;
     }
 
-    saveCurrentRecord(currentRow) {
-        // FIXME save isn't working yet
+    saveCurrentRecord() {
+        const inputsAreValid = [...this.template.querySelectorAll('lightning-input, lightning-combobox')].reduce((validSoFar, inputField) => {
+            inputField.reportValidity();
+            return validSoFar && inputField.checkValidity();
+        }, true);
+
+        if (inputsAreValid === false) {
+            return;
+        }
+
         this.showLoadingSpinner = true;
 
-
-        // TODO need to add validity check for each input/combo-box before saving the data
-
-
-        console.log('saveRecord currentRow', currentRow);
-        console.log('saveRecord currentRecord', JSON.parse(JSON.stringify(this.currentRecord)));
         saveRecord({ settingsRecord: this.currentRecord }).then(() => {
             this.loadSettingsRecords();
-
             this.dispatchEvent(
                 new ShowToastEvent({
-                    title: this.title + ' record for ' + currentRow.detail.fields.SetupOwnerName + ' successfully saved',
+                    title: this.title + ' record for ' + this.currentRecord.SetupOwnerName + ' successfully saved',
                     variant: 'success'
                 })
             );
+            this.closeModal();
             this.showLoadingSpinner = false;
         });
-
-        this.closeModal();
     }
 
     deleteCurrentRecord(currentRow) {
@@ -240,7 +241,18 @@ export default class LoggerSettings extends LightningElement {
         // They're flattened versions of SetupOwner.Type and SetupOwner.Name, so object API info isn't used here
         this.columns = [
             { fieldName: 'SetupOwnerType', label: 'Setup Location', type: 'text' },
-            { fieldName: 'SetupOwnerName', label: 'Setup Owner', type: 'text' }
+            { fieldName: 'SetupOwnerName', label: 'Setup Owner Name', type: 'text' }
+            // TODO see if there's a way to make links work properly/consistently for org, profile & user
+            // {
+            //     fieldName: 'SetupOwnerUrl',
+            //     label: 'Setup Owner',
+            //     type: 'url',
+            //     typeAttributes: {
+            //         label: { fieldName: 'SetupOwnerName' },
+            //         // name: { fieldName: 'SetupOwnerUrl' },
+            //         target: '_blank'
+            //     }
+            // }
         ];
 
         // For all other fields, use object API info to dynamically get field details
