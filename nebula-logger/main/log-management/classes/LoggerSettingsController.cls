@@ -53,10 +53,28 @@ public without sharing class LoggerSettingsController {
     }
 
     @AuraEnabled
-    public static List<SObject> searchForSetupOwner(String setupOwnerType, String searchTerm) {
+    public static List<SetupOwnerSearchResult> searchForSetupOwner(String setupOwnerType, String searchTerm) {
         try {
-            String query = 'FIND \'' + searchTerm + '\' IN ALL FIELDS RETURNING ' + setupOwnerType + '(Id, Mame)';
-            List<SObject> searchResults = Search.query(query).get(0);
+            searchTerm = '%' + String.escapeSingleQuotes(searchTerm) + '%';
+            List<SetupOwnerSearchResult> searchResults = new List<SetupOwnerSearchResult>();
+            switch on setupOwnerType {
+                when 'Profile' {
+                    for (Profile matchingProfile : [SELECT Id, Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name]) {
+                        SetupOwnerSearchResult result = new SetupOwnerSearchResult();
+                        result.Id = matchingProfile.Id;
+                        result.Label = matchingProfile.Name;
+                        searchResults.add(result);
+                    }
+                }
+                when 'User' {
+                    for (User matchingUser : [SELECT Id, Username FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username]) {
+                        SetupOwnerSearchResult result = new SetupOwnerSearchResult();
+                        result.Id = matchingUser.Id;
+                        result.Label = matchingUser.Username;
+                        searchResults.add(result);
+                    }
+                }
+            }
             return searchResults;
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
@@ -232,13 +250,28 @@ public without sharing class LoggerSettingsController {
 
         public Integer compareTo(Object compareTo) {
             SettingsRecordResult that = (SettingsRecordResult) compareTo;
-            if (this.setupOwnerType == that.setupOwnerType && this.setupOwnerName == that.setupOwnerName) {
+            String thisCompositeName = this.SetupOwnerType + '.' + this.SetupOwnerName;
+            String thatCompositeName = that.SetupOwnerType + '.' + that.SetupOwnerName;
+            if (thisCompositeName == thatCompositeName) {
                 return 0;
-            } else if (this.setupOwnerType > that.setupOwnerType || this.setupOwnerName > that.setupOwnerName) {
+            } else if (thisCompositeName > thatCompositeName) {
                 return 1;
             } else {
                 return -1;
+                // if (this.SetupOwnerType == that.SetupOwnerType || this.SetupOwnerName == that.SetupOwnerName) {
+                //     return 0;
+                // } else if (this.SetupOwnerType > that.SetupOwnerType || this.SetupOwnerName > that.SetupOwnerName) {
+                //     return 1;
+                // } else {
+                //     return -1;
             }
         }
+    }
+
+    public class SetupOwnerSearchResult {
+        @AuraEnabled
+        public String Label;
+        @AuraEnabled
+        public Id Id;
     }
 }

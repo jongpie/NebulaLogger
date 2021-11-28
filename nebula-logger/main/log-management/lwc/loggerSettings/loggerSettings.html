@@ -57,28 +57,86 @@
                                     value={currentRecord.SetupOwnerType}
                                     variant="label-stacked"
                                 ></lightning-combobox>
-                                <template if:true={isNewOrganizationRecord}>
+                                <template if:true={isExistingRecord}>
                                     <lightning-input
                                         data-id="SetupOwnerName"
                                         label="Setup Owner"
-                                        onchange={handleFieldChange}
-                                        read-only="true"
-                                        required
-                                        type="text"
-                                        value={organization.Name}
-                                        variant="label-stacked"
-                                    ></lightning-input>
-                                </template>
-                                <template if:false={isNewOrganizationRecord}>
-                                    <lightning-input
-                                        data-id="SetupOwnerName"
-                                        label="Setup Owner"
-                                        read-only={isExistingRecord}
+                                        read-only
                                         required
                                         type="text"
                                         value={currentRecord.SetupOwnerName}
                                         variant="label-stacked"
                                     ></lightning-input>
+                                </template>
+                                <template if:false={isExistingRecord}>
+                                    <template if:true={isNewOrganizationRecord}>
+                                        <lightning-input
+                                            data-id="SetupOwnerName"
+                                            label="Setup Owner"
+                                            read-only
+                                            required
+                                            type="text"
+                                            value={organization.Name}
+                                            variant="label-stacked"
+                                        ></lightning-input>
+                                    </template>
+                                    <template if:true={showSetupOwnerLookup}>
+                                        <div class="slds-combobox_container" aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                                            <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                                                <!-- Search Input Box -->
+                                                <template if:false={showPill}>
+                                                    <lightning-input
+                                                        autocomplete="off"
+                                                        label="Setup Owner"
+                                                        onchange={handleRecordSearch}
+                                                        placeholder="Search"
+                                                        required
+                                                        type="search"
+                                                        variant="label-stacked"
+                                                    ></lightning-input>
+                                                    <div if:true={showSpinner}>
+                                                        <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                                                    </div>
+                                                </template>
+
+                                                <!-- Selected Value Pill -->
+                                                <div if:true={showPill} class="pillContainer">
+                                                    <lightning-pill
+                                                        label={selectedRecord.Label}
+                                                        name={selectedRecord.Id}
+                                                        onremove={handleRemoveSetupOwner}
+                                                    >
+                                                        <lightning-icon icon-name={iconName} alternative-text="icon" size="x-small"></lightning-icon>
+                                                    </lightning-pill>
+                                                </div>
+
+                                                <!-- Dropdown List -->
+                                                <template if:true={showDropdown}>
+                                                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid">
+                                                        <ul class="slds-listbox slds-listbox_vertical recordListBox">
+                                                            <template for:each={setupOwnerSearchResults} for:item="matchingRecord">
+                                                                <li
+                                                                    key={matchingRecord.Id}
+                                                                    data-key={matchingRecord.Id}
+                                                                    class="slds-listbox__item eachItem"
+                                                                    onmousedown={handleSearchResultSelection}
+                                                                >
+                                                                    <div class="slds-media slds-listbox__option_entity">
+                                                                        <lightning-icon
+                                                                            icon-name={iconName}
+                                                                            alternative-text="icon"
+                                                                            size="small"
+                                                                        ></lightning-icon>
+                                                                        <span class="verticalAlign slds-truncate">{matchingRecord.Label}</span>
+                                                                    </div>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
                                 </template>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
@@ -93,6 +151,7 @@
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-combobox
+                                    class="slds-m-top_large"
                                     data-id="LoggingLevel__c"
                                     field-level-help={loggerSettingsFields.LoggingLevel__c.inlineHelpText}
                                     label={loggerSettingsFields.LoggingLevel__c.label}

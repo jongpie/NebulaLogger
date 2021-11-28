@@ -3,6 +3,7 @@
     <fullName>IsEnabled__c</fullName>
     <defaultValue>true</defaultValue>
     <externalId>false</externalId>
+    <inlineHelpText>Controls if Logger is enabled for the specified level (organization, profile, or user)</inlineHelpText>
     <label>Enabled</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>

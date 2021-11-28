@@ -22,6 +22,7 @@ import getRecords from '@salesforce/apex/LoggerSettingsController.getRecords';
 import createNewRecord from '@salesforce/apex/LoggerSettingsController.createNewRecord';
 import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
+import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
 
 export default class LoggerSettings extends LightningElement {
     // UI
@@ -43,6 +44,13 @@ export default class LoggerSettings extends LightningElement {
     records;
     currentRecord;
     isNewOrganizationRecord = false;
+    showSetupOwnerLookup = false;
+    showSetupOwnerDropdown = false;
+    searchString;
+    setupOwnerSearchResults;
+    selectedRecord;
+    showDropdown = false;
+    showPill = false;
 
     connectedCallback() {
         document.title = this.title;
@@ -115,6 +123,13 @@ export default class LoggerSettings extends LightningElement {
                 }
                 this.records = settingsRecords;
                 this.currentRecord = null;
+                this.searchString = null;
+                this.showSetupOwnerLookup = false;
+                this.setupOwnerSearchResults = null;
+                this.selectedRecord = null;
+                this.showDropdown = false;
+                this.showPill = false;
+
                 this.showLoadingSpinner = false;
             })
             .catch(error => {
@@ -157,6 +172,59 @@ export default class LoggerSettings extends LightningElement {
         console.log('ze currentRecord', JSON.parse(JSON.stringify(this.currentRecord)));
 
         this._setIsNewOrganizationRecord();
+        this._setShowSetupOwnerLookup();
+    }
+
+    handleRecordSearch(event) {
+        this.searchString = event.target.value;
+        console.log('searching ' + this.currentRecord.SetupOwnerType + ' for search term: ' + this.searchString);
+        if (this.searchString && this.searchString.length >= 2) {
+            searchForSetupOwner({
+                setupOwnerType: this.currentRecord.SetupOwnerType,
+                searchTerm: this.searchString
+            })
+                .then(results => {
+                    console.log('search results', results);
+                    this.setupOwnerSearchResults = results;
+                    this.showDropdown = true;
+                })
+                .catch(error => {
+                    this._handleError(error);
+                });
+        } else {
+            this.showDropdown = false;
+        }
+    }
+
+    handleSearchResultSelection(event) {
+        console.log('handleSearchResultSelection', event);
+        console.log('event.currentTarget.dataset.key==', event.currentTarget.dataset.key);
+        console.log('event.target.dataset==', event.target.dataset);
+        console.log('event.target==', JSON.parse(JSON.stringify(event.target)));
+        if (event.currentTarget.dataset.key) {
+            this.currentRecord.SetupOwnerId = event.currentTarget.dataset.key;
+
+            // this.currentRecord.SetupOwnerName = event.curr
+            //  ``
+            let index = this.setupOwnerSearchResults.findIndex(x => x.Id === event.currentTarget.dataset.key);
+            console.log('indexxxx', index);
+            if (index !== -1) {
+                this.selectedRecord = this.setupOwnerSearchResults[index];
+                // this.value = this.selectedRecord.value;
+                this.showDropdown = false;
+                this.showPill = true;
+            }
+        }
+        console.log('this.selectedRecord', this.selectedRecord);
+        console.log('this.showPill', this.showPill);
+        console.log('this.showDropdown', this.showDropdown);
+    }
+
+    handleRemoveSetupOwner() {
+        this.showPill = false;
+        // this.value = '';
+        this.selectedRecord = '';
+        this.searchString = '';
     }
 
     handleKeyDown(event) {
@@ -182,6 +250,13 @@ export default class LoggerSettings extends LightningElement {
         this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.SetupOwnerType === 'Organization';
         // return this.isExistingRecord === false && this.currentRecord?.SetupOwnerType === 'Organization';
         console.log('this.isNewOrganizationRecord==' + this.isNewOrganizationRecord);
+    }
+
+    _setShowSetupOwnerLookup() {
+        console.log('showSetupOwnerLookup()');
+        this.showSetupOwnerLookup = this.isExistingRecord === false && this.currentRecord?.SetupOwnerType !== 'Organization';
+        // return this.isExistingRecord === false && this.currentRecord?.SetupOwnerType === 'Organization';
+        console.log('this.showSetupOwnerLookup==' + this.showSetupOwnerLookup);
     }
 
     createNewRecord() {
@@ -223,9 +298,10 @@ export default class LoggerSettings extends LightningElement {
         saveRecord({ settingsRecord: this.currentRecord })
             .then(() => {
                 this.loadSettingsRecords();
+                const setupOwnerName = this.selectedRecord ? this.selectedRecord.Label : this.currentRecord.SetupOwnerName;
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: this.title + ' record for ' + this.currentRecord.SetupOwnerName + ' successfully saved',
+                        title: this.title + ' record for ' + setupOwnerName + ' successfully saved',
                         variant: 'success'
                     })
                 );
