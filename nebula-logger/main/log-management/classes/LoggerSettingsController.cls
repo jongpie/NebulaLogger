@@ -17,26 +17,19 @@ public without sharing class LoggerSettingsController {
 
     @AuraEnabled
     public static List<SettingsRecordInfo> getRecords() {
-        try {
-            return getLoggerSettingsRecordInfos();
-        } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
-        }
+        return getLoggerSettingsRecordInfos();
     }
 
     @AuraEnabled
     public static LoggerSettings__c createNewRecord() {
-        try {
-            return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
-        } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
-        }
+        return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
     }
 
     @AuraEnabled
     public static void saveRecord(LoggerSettings__c settingsRecord) {
         System.debug('saveRecord==' + settingsRecord);
         try {
+            // TODO add validation to confirm that a new record isn't being inserted for an existing SetupOwnerId
             upsert settingsRecord;
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
@@ -56,11 +49,7 @@ public without sharing class LoggerSettingsController {
     // Setup Owner methods
     @AuraEnabled
     public static Organization getOrganization() {
-        try {
-            return [SELECT Id, Name FROM Organization];
-        } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
-        }
+        return [SELECT Id, Name FROM Organization];
     }
 
     @AuraEnabled
@@ -77,83 +66,67 @@ public without sharing class LoggerSettingsController {
     // Picklist methods
     @AuraEnabled(cacheable=true)
     public static List<PicklistOption> getLoggingLevelOptions() {
-        try {
-            List<PicklistOption> picklistOptions = initializePicklistOptions();
-            for (Integer i = LoggingLevel.values().size() - 1; i > 0; i--) {
-                LoggingLevel currentLoggingLevel = LoggingLevel.values().get(i);
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
+        for (Integer i = LoggingLevel.values().size() - 1; i > 0; i--) {
+            LoggingLevel currentLoggingLevel = LoggingLevel.values().get(i);
 
-                if (currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
-                    continue;
-                }
-
-                PicklistOption picklistOption = new PicklistOption();
-                picklistOption.label = currentLoggingLevel.name();
-                picklistOption.value = currentLoggingLevel.name();
-
-                picklistOptions.add(picklistOption);
+            if (currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
+                continue;
             }
-            return picklistOptions;
-        } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
+
+            PicklistOption picklistOption = new PicklistOption();
+            picklistOption.label = currentLoggingLevel.name();
+            picklistOption.value = currentLoggingLevel.name();
+
+            picklistOptions.add(picklistOption);
         }
+        return picklistOptions;
     }
 
     @AuraEnabled(cacheable=true)
     public static List<PicklistOption> getSaveMethodOptions() {
-        try {
-            List<PicklistOption> picklistOptions = initializePicklistOptions();
-            for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
-                PicklistOption picklistOption = new PicklistOption();
-                picklistOption.label = saveMethod.name();
-                picklistOption.value = saveMethod.name();
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
+        for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
+            PicklistOption picklistOption = new PicklistOption();
+            picklistOption.label = saveMethod.name();
+            picklistOption.value = saveMethod.name();
 
-                picklistOptions.add(picklistOption);
-            }
-            return picklistOptions;
-        } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
+            picklistOptions.add(picklistOption);
         }
+        return picklistOptions;
     }
 
     @AuraEnabled(cacheable=true)
     public static List<PicklistOption> getSetupOwnerTypeOptions() {
-        try {
-            List<PicklistOption> picklistOptions = initializePicklistOptions();
-            List<String> optionNames = new List<String>{ 'Organization', 'Profile', 'User' };
-            for (String optionName : optionNames) {
-                PicklistOption picklistOption = new PicklistOption();
-                picklistOption.label = optionName;
-                picklistOption.value = optionName;
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
+        List<String> optionNames = new List<String>{ 'Organization', 'Profile', 'User' };
+        for (String optionName : optionNames) {
+            PicklistOption picklistOption = new PicklistOption();
+            picklistOption.label = optionName;
+            picklistOption.value = optionName;
 
-                picklistOptions.add(picklistOption);
-            }
-            return picklistOptions;
-        } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
+            picklistOptions.add(picklistOption);
         }
+        return picklistOptions;
     }
 
     @AuraEnabled(cacheable=true)
     public static List<PicklistOption> getShareAccessLevelOptions() {
-        try {
-            List<PicklistOption> picklistOptions = initializePicklistOptions();
-            for (Schema.PicklistEntry picklistEntry : Schema.Log__Share.AccessLevel.getDescribe().getPicklistValues()) {
-                // The 'All' access level is an internal value and can't be granted
-                // Source: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_bulk_sharing_creating_with_apex.htm
-                if (picklistEntry.value == 'All') {
-                    continue;
-                }
-
-                PicklistOption picklistOption = new PicklistOption();
-                picklistOption.label = picklistEntry.value;
-                picklistOption.value = picklistEntry.value;
-
-                picklistOptions.add(picklistOption);
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
+        for (Schema.PicklistEntry picklistEntry : Schema.Log__Share.AccessLevel.getDescribe().getPicklistValues()) {
+            // The 'All' access level is an internal value and can't be granted
+            // Source: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_bulk_sharing_creating_with_apex.htm
+            if (picklistEntry.value == 'All') {
+                continue;
             }
-            return picklistOptions;
-        } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
+
+            PicklistOption picklistOption = new PicklistOption();
+            picklistOption.label = picklistEntry.value;
+            picklistOption.value = picklistEntry.value;
+
+            picklistOptions.add(picklistOption);
         }
+        return picklistOptions;
     }
 
     private static List<PicklistOption> initializePicklistOptions() {

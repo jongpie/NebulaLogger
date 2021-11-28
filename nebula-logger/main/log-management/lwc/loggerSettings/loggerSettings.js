@@ -261,8 +261,8 @@ export default class LoggerSettings extends LightningElement {
             'LoggingLevel__c',
             'ApplyDataMaskRules__c',
             'DefaultSaveMethod__c',
-            'DefaultLogShareAccessLevel__c',
-            'DefaultNumberOfDaysToRetainLogs__c'
+            'DefaultNumberOfDaysToRetainLogs__c',
+            'DefaultLogShareAccessLevel__c'
         ];
         for (let i = 0; i < tableColumnNames.length; i++) {
             const field = this.loggerSettingsFields[tableColumnNames[i]];
