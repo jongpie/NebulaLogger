@@ -16,8 +16,8 @@ public without sharing class LoggerSettingsController {
     }
 
     @AuraEnabled
-    public static List<SettingsRecordInfo> getRecords() {
-        return getLoggerSettingsRecordInfos();
+    public static List<SettingsRecordResult> getRecords() {
+        return getLoggerSettingsRecordResults();
     }
 
     @AuraEnabled
@@ -138,8 +138,8 @@ public without sharing class LoggerSettingsController {
         return picklistOptions;
     }
 
-    private static List<SettingsRecordInfo> getLoggerSettingsRecordInfos() {
-        List<SettingsRecordInfo> settingsRecordInfos = new List<SettingsRecordInfo>();
+    private static List<SettingsRecordResult> getLoggerSettingsRecordResults() {
+        List<SettingsRecordResult> settingsRecordResults = new List<SettingsRecordResult>();
         List<Id> setupOwnerIds = new List<Id>();
         for (LoggerSettings__c settingsRecord : [
             SELECT
@@ -159,24 +159,24 @@ public without sharing class LoggerSettingsController {
                 StripInaccessibleRecordFields__c
             FROM LoggerSettings__c
         ]) {
-            SettingsRecordInfo settingsRecordInfo = new SettingsRecordInfo();
-            settingsRecordInfo.SetupOwnerType = getSetupOwnerType(settingsRecord);
-            settingsRecordInfo.SetupOwnerName = settingsRecord.SetupOwner.Name;
-            settingsRecordInfo.Record = settingsRecord;
-            settingsRecordInfos.add(settingsRecordInfo);
+            SettingsRecordResult settingsRecordResult = new SettingsRecordResult();
+            settingsRecordResult.SetupOwnerType = getSetupOwnerType(settingsRecord);
+            settingsRecordResult.SetupOwnerName = settingsRecord.SetupOwner.Name;
+            settingsRecordResult.Record = settingsRecord;
+            settingsRecordResults.add(settingsRecordResult);
 
             setupOwnerIds.add(settingsRecord.SetupOwnerId);
         }
 
         Map<Id, String> setupOwnerIdToName = querySetupOwnerNames(setupOwnerIds);
-        for (SettingsRecordInfo settingsRecordInfo : settingsRecordInfos) {
-            if (setupOwnerIdToName.containsKey((settingsRecordInfo.Record.SetupOwnerId)) == true) {
-                settingsRecordInfo.SetupOwnerName = setupOwnerIdToName.get(settingsRecordInfo.Record.SetupOwnerId);
+        for (SettingsRecordResult settingsRecordResult : settingsRecordResults) {
+            if (setupOwnerIdToName.containsKey((settingsRecordResult.Record.SetupOwnerId)) == true) {
+                settingsRecordResult.SetupOwnerName = setupOwnerIdToName.get(settingsRecordResult.Record.SetupOwnerId);
             }
         }
 
-        settingsRecordInfos.sort();
-        return settingsRecordInfos;
+        settingsRecordResults.sort();
+        return settingsRecordResults;
     }
 
     private static String getSetupOwnerType(LoggerSettings__c settingsRecord) {
@@ -222,7 +222,7 @@ public without sharing class LoggerSettingsController {
     // 1. Trying to sort in SOQL on SetupOwner.Type, SetupOwner.Name results in only user-specific records being returned (no idea why - seems like a bug)
     // 2. Records tied to profiles do not return the actual profile name in SetupOwner.Name - example: System Admin returns as 'PT1' in query results
     // 3. Records tied to the org or profiles return unhelpful values in SetupOwner.Type - org returns '00D', profiles return '00e'
-    public class SettingsRecordInfo implements Comparable {
+    public class SettingsRecordResult implements Comparable {
         @AuraEnabled
         public String SetupOwnerType;
         @AuraEnabled
@@ -231,7 +231,7 @@ public without sharing class LoggerSettingsController {
         public LoggerSettings__c Record;
 
         public Integer compareTo(Object compareTo) {
-            SettingsRecordInfo that = (SettingsRecordInfo) compareTo;
+            SettingsRecordResult that = (SettingsRecordResult) compareTo;
             if (this.setupOwnerType == that.setupOwnerType && this.setupOwnerName == that.setupOwnerName) {
                 return 0;
             } else if (this.setupOwnerType > that.setupOwnerType || this.setupOwnerName > that.setupOwnerName) {
