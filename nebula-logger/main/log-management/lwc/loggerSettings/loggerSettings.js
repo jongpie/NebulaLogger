@@ -17,6 +17,7 @@ import getSetupOwnerTypeOptions from '@salesforce/apex/LoggerSettingsController.
 import getShareAccessLevelOptions from '@salesforce/apex/LoggerSettingsController.getShareAccessLevelOptions';
 
 // LoggerSettings__c data
+import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import getRecords from '@salesforce/apex/LoggerSettingsController.getRecords';
 import createNewRecord from '@salesforce/apex/LoggerSettingsController.createNewRecord';
 import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
@@ -41,10 +42,15 @@ export default class LoggerSettings extends LightningElement {
     // LoggerSettings__c data
     records;
     currentRecord;
+    isNewOrganizationRecord = false;
 
     connectedCallback() {
         document.title = this.title;
         this.showLoadingSpinner = true;
+
+        getOrganization().then(result => {
+            this.organization = result;
+        });
 
         getLoggingLevelOptions()
             .then(results => {
@@ -149,6 +155,8 @@ export default class LoggerSettings extends LightningElement {
         this.currentRecord[event.target.dataset.id] = value;
         console.log('ze value', value);
         console.log('ze currentRecord', JSON.parse(JSON.stringify(this.currentRecord)));
+
+        this._setIsNewOrganizationRecord();
     }
 
     handleKeyDown(event) {
@@ -167,6 +175,13 @@ export default class LoggerSettings extends LightningElement {
             isExistingRecord = true;
         }
         return isExistingRecord;
+    }
+
+    _setIsNewOrganizationRecord() {
+        console.log('isNewOrganizationRecord()');
+        this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.SetupOwnerType === 'Organization';
+        // return this.isExistingRecord === false && this.currentRecord?.SetupOwnerType === 'Organization';
+        console.log('this.isNewOrganizationRecord==' + this.isNewOrganizationRecord);
     }
 
     createNewRecord() {
@@ -205,17 +220,21 @@ export default class LoggerSettings extends LightningElement {
 
         this.showLoadingSpinner = true;
 
-        saveRecord({ settingsRecord: this.currentRecord }).then(() => {
-            this.loadSettingsRecords();
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: this.title + ' record for ' + this.currentRecord.SetupOwnerName + ' successfully saved',
-                    variant: 'success'
-                })
-            );
-            this.closeModal();
-            this.showLoadingSpinner = false;
-        });
+        saveRecord({ settingsRecord: this.currentRecord })
+            .then(() => {
+                this.loadSettingsRecords();
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: this.title + ' record for ' + this.currentRecord.SetupOwnerName + ' successfully saved',
+                        variant: 'success'
+                    })
+                );
+                this.closeModal();
+                this.showLoadingSpinner = false;
+            })
+            .catch(error => {
+                this._handleError(error);
+            });
     }
 
     deleteCurrentRecord(currentRow) {
@@ -295,10 +314,11 @@ export default class LoggerSettings extends LightningElement {
     }
 
     _handleError(error) {
+        console.error(error);
         this.dispatchEvent(
             new ShowToastEvent({
-                message: error.message,
-                title: 'Error!',
+                mode: 'sticky',
+                title: error.body.message,
                 variant: 'error'
             })
         );

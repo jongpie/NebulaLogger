@@ -50,21 +50,36 @@
                                 <lightning-combobox
                                     data-id="SetupOwnerType"
                                     label="Setup Location"
+                                    onchange={handleFieldChange}
                                     options={setupOwnerTypeOptions}
                                     read-only={isExistingRecord}
                                     required
                                     value={currentRecord.SetupOwnerType}
                                     variant="label-stacked"
                                 ></lightning-combobox>
-                                <lightning-input
-                                    data-id="SetupOwnerName"
-                                    label="Setup Owner"
-                                    read-only={isExistingRecord}
-                                    required
-                                    type="text"
-                                    value={currentRecord.SetupOwnerName}
-                                    variant="label-stacked"
-                                ></lightning-input>
+                                <template if:true={isNewOrganizationRecord}>
+                                    <lightning-input
+                                        data-id="SetupOwnerName"
+                                        label="Setup Owner"
+                                        onchange={handleFieldChange}
+                                        read-only="true"
+                                        required
+                                        type="text"
+                                        value={organization.Name}
+                                        variant="label-stacked"
+                                    ></lightning-input>
+                                </template>
+                                <template if:false={isNewOrganizationRecord}>
+                                    <lightning-input
+                                        data-id="SetupOwnerName"
+                                        label="Setup Owner"
+                                        read-only={isExistingRecord}
+                                        required
+                                        type="text"
+                                        value={currentRecord.SetupOwnerName}
+                                        variant="label-stacked"
+                                    ></lightning-input>
+                                </template>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
