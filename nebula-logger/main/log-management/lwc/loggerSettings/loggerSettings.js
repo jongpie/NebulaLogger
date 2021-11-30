@@ -50,9 +50,7 @@ export default class LoggerSettings extends LightningElement {
     // LoggerSettings__c data
     records;
     currentRecord;
-
     selectedSetupOwner;
-
 
     connectedCallback() {
         document.title = this.title;
@@ -62,25 +60,21 @@ export default class LoggerSettings extends LightningElement {
             this.organization = result;
         });
 
-        getLoggingLevelOptions()
-            .then(results => {
-                this.loggingLevelOptions = results;
-            });
+        getLoggingLevelOptions().then(results => {
+            this.loggingLevelOptions = results;
+        });
 
-        getSaveMethodOptions()
-            .then(results => {
-                this.saveMethodOptions = results;
-            });
+        getSaveMethodOptions().then(results => {
+            this.saveMethodOptions = results;
+        });
 
-        getSetupOwnerTypeOptions()
-            .then(results => {
-                this.setupOwnerTypeOptions = results;
-            });
+        getSetupOwnerTypeOptions().then(results => {
+            this.setupOwnerTypeOptions = results;
+        });
 
-        getShareAccessLevelOptions()
-            .then(results => {
-                this.shareAccessLevelOptions = results;
-            });
+        getShareAccessLevelOptions().then(results => {
+            this.shareAccessLevelOptions = results;
+        });
 
         this.loadSettingsRecords();
         this.showLoadingSpinner = false;
@@ -104,12 +98,7 @@ export default class LoggerSettings extends LightningElement {
         getRecords()
             .then(settingsRecords => {
                 for (let i = 0; i < settingsRecords.length; i++) {
-                    const record = settingsRecords[i].record;
-                    record.SetupOwnerType = settingsRecords[i].setupOwnerType;
-                    record.SetupOwnerName = settingsRecords[i].setupOwnerName;
-                    record.CreatedByUsername = record.CreatedBy.Username;
-                    record.LastModifiedByUsername = record.LastModifiedBy.Username;
-
+                    const record = {...settingsRecords[i], ...settingsRecords[i].record};
                     settingsRecords[i] = record;
                 }
                 this.records = settingsRecords;
@@ -146,8 +135,13 @@ export default class LoggerSettings extends LightningElement {
         }
     }
 
-    handleFieldChange(event) {
+    handleSetupOwnerTypeFieldChange(event) {
+        this.selectedSetupOwner = null;
+        this.showPill = false;
+        this.handleFieldChange(event);
+    }
 
+    handleFieldChange(event) {
         let value;
         if (event.target.type === 'checkbox' || event.target.type === 'checkbox-button' || event.target.type === 'toggle') {
             value = event.target.checked;
@@ -161,10 +155,10 @@ export default class LoggerSettings extends LightningElement {
     }
 
     handleRecordSearch(event) {
-        this.setupOwnerSearchTerm = event.target.value;
+        this.setupOwnerSearchTerm = event.detail.value;
         if (this.setupOwnerSearchTerm && this.setupOwnerSearchTerm.length >= 2) {
             searchForSetupOwner({
-                setupOwnerType: this.currentRecord.SetupOwnerType,
+                setupOwnerType: this.currentRecord.setupOwnerType,
                 searchTerm: this.setupOwnerSearchTerm
             })
                 .then(results => {
@@ -221,11 +215,11 @@ export default class LoggerSettings extends LightningElement {
     }
 
     _setIsNewOrganizationRecord() {
-        this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.SetupOwnerType === 'Organization';
+        this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.setupOwnerType === 'Organization';
     }
 
     _setShowSetupOwnerLookup() {
-        this.showSetupOwnerLookup = this.isExistingRecord === false && this.currentRecord?.SetupOwnerType !== 'Organization';
+        this.showSetupOwnerLookup = this.isExistingRecord === false && this.currentRecord?.setupOwnerType !== 'Organization';
     }
 
     createNewRecord() {
@@ -267,7 +261,7 @@ export default class LoggerSettings extends LightningElement {
         saveRecord({ settingsRecord: this.currentRecord })
             .then(() => {
                 this.loadSettingsRecords();
-                const setupOwnerName = this.selectedSetupOwner ? this.selectedSetupOwner.label : this.currentRecord.SetupOwnerName;
+                const setupOwnerName = this.selectedSetupOwner ? this.selectedSetupOwner.label : this.currentRecord.setupOwnerName;
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: this.title + ' record for ' + setupOwnerName + ' successfully saved',
@@ -289,7 +283,7 @@ export default class LoggerSettings extends LightningElement {
                 this.loadSettingsRecords();
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: this.title + ' record for ' + currentRow.SetupOwnerName + ' successfully deleted',
+                        title: this.title + ' record for ' + currentRow.setupOwnerName + ' successfully deleted',
                         variant: 'success'
                     })
                 );
@@ -301,11 +295,11 @@ export default class LoggerSettings extends LightningElement {
     }
 
     _loadTableColumns() {
-        // The columns SetupOwnerType and SetupOwnerName are true fields
+        // The columns setupOwnerType and setupOwnerName are true fields
         // They're flattened versions of SetupOwner.Type and SetupOwner.Name, so object API info isn't used here
         this.columns = [
-            { fieldName: 'SetupOwnerType', label: 'Setup Location', type: 'text' },
-            { fieldName: 'SetupOwnerName', label: 'Setup Owner Name', type: 'text' }
+            { fieldName: 'setupOwnerType', label: 'Setup Location', type: 'text' },
+            { fieldName: 'setupOwnerName', label: 'Setup Owner Name', type: 'text' }
         ];
 
         // For all other fields, use object API info to dynamically get field details

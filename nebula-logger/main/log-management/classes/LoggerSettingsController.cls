@@ -56,6 +56,8 @@ public without sharing class LoggerSettingsController {
             SettingsRecordResult settingsRecordResult = new SettingsRecordResult();
             settingsRecordResult.setupOwnerType = getSetupOwnerType(settingsRecord);
             settingsRecordResult.setupOwnerName = settingsRecord.SetupOwner.Name;
+            settingsRecordResult.createdByUsername = settingsRecord.createdBy.Username;
+            settingsRecordResult.lastModifiedByUsername = settingsRecord.lastModifiedBy.Username;
             settingsRecordResult.record = settingsRecord;
             settingsRecordResults.add(settingsRecordResult);
 
@@ -72,7 +74,6 @@ public without sharing class LoggerSettingsController {
         settingsRecordResults.sort();
         return settingsRecordResults;
     }
-
 
     /**
      * @description Creates a new, unsaved `LoggerSettings__c` record
@@ -142,12 +143,18 @@ public without sharing class LoggerSettingsController {
                     }
                 }
                 when 'User' {
-                    for (User matchingUser : [SELECT Id, Name, Username FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username]) {
+                    for (User matchingUser : [
+                        SELECT Id, Name, Username, SmallPhotoUrl
+                        FROM User
+                        WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm
+                        ORDER BY Username
+                    ]) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingUser.Id;
                         result.label = matchingUser.Username;
                         result.secondaryLabel = 'Name: ' + matchingUser.Name;
                         result.icon = 'standard:people';
+                        result.image = matchingUser.SmallPhotoUrl;
                         searchResults.add(result);
                     }
                 }
@@ -302,6 +309,10 @@ public without sharing class LoggerSettingsController {
         @AuraEnabled
         public String setupOwnerName;
         @AuraEnabled
+        public String createdByUsername;
+        @AuraEnabled
+        public String lastModifiedByUsername;
+        @AuraEnabled
         public LoggerSettings__c record;
 
         /**
@@ -335,5 +346,7 @@ public without sharing class LoggerSettingsController {
         public String secondaryLabel;
         @AuraEnabled
         public String icon;
+        @AuraEnabled
+        public String image;
     }
 }
