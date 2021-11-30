@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
  */
-@SuppressWarnings('PMD.ApexCRUDViolation')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.ExcessivePublicCount')
 public without sharing class LoggerSettingsController {
     // Data methods
     /**
@@ -126,18 +126,22 @@ public without sharing class LoggerSettingsController {
             List<SetupOwnerSearchResult> searchResults = new List<SetupOwnerSearchResult>();
             switch on setupOwnerType {
                 when 'Profile' {
-                    for (Profile matchingProfile : [SELECT Id, Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name]) {
+                    for (Profile matchingProfile : [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name]) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
-                        result.label = matchingProfile.Name;
                         result.recordId = matchingProfile.Id;
+                        result.label = matchingProfile.Name;
+                        result.secondaryLabel = 'License: ' + matchingProfile.UserLicense.Name;
+                        result.icon = 'utility:profile';
                         searchResults.add(result);
                     }
                 }
                 when 'User' {
-                    for (User matchingUser : [SELECT Id, Username FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username]) {
+                    for (User matchingUser : [SELECT Id, Name, Username FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username]) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
-                        result.label = matchingUser.Username;
                         result.recordId = matchingUser.Id;
+                        result.label = matchingUser.Username;
+                        result.secondaryLabel = 'Name: ' + matchingUser.Name;
+                        result.icon = 'standard:people';
                         searchResults.add(result);
                     }
                 }
@@ -294,6 +298,11 @@ public without sharing class LoggerSettingsController {
         @AuraEnabled
         public LoggerSettings__c record;
 
+        /**
+         * @description Implements sorting logic for the `Comparable` interface
+         * @param  compareTo The object to compare to when sorting the current item
+         * @return           The sorting result
+         */
         public Integer compareTo(Object compareTo) {
             SettingsRecordResult that = (SettingsRecordResult) compareTo;
             String thisCompositeName = this.setupOwnerType + '.' + this.setupOwnerName;
@@ -313,8 +322,12 @@ public without sharing class LoggerSettingsController {
      */
     public class SetupOwnerSearchResult {
         @AuraEnabled
+        public Id recordId;
+        @AuraEnabled
         public String label;
         @AuraEnabled
-        public Id recordId;
+        public String secondaryLabel;
+        @AuraEnabled
+        public String icon;
     }
 }

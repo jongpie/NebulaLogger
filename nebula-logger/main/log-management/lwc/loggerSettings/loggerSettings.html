@@ -88,7 +88,9 @@
                                                     <lightning-input
                                                         autocomplete="off"
                                                         label="Setup Owner"
+                                                        onblur={handleRecordSearchBlur}
                                                         onchange={handleRecordSearch}
+                                                        onclick={handleRecordSearch}
                                                         placeholder="Search"
                                                         required
                                                         type="search"
@@ -102,8 +104,8 @@
                                                 <!-- Selected Value Pill -->
                                                 <div if:true={showPill} class="pillContainer">
                                                     <lightning-pill
-                                                        label={selectedRecord.Label}
-                                                        name={selectedRecord.Id}
+                                                        label={selectedSetupOwner.label}
+                                                        name={selectedSetupOwner.recordId}
                                                         onremove={handleRemoveSetupOwner}
                                                     >
                                                         <lightning-icon icon-name={iconName} alternative-text="icon" size="x-small"></lightning-icon>
@@ -113,21 +115,37 @@
                                                 <!-- Dropdown List -->
                                                 <template if:true={showDropdown}>
                                                     <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid">
-                                                        <ul class="slds-listbox slds-listbox_vertical recordListBox">
+                                                        <ul class="slds-listbox slds-listbox_vertical">
                                                             <template for:each={setupOwnerSearchResults} for:item="matchingRecord">
                                                                 <li
-                                                                    key={matchingRecord.Id}
-                                                                    data-key={matchingRecord.Id}
-                                                                    class="slds-listbox__item eachItem"
+                                                                    key={matchingRecord.recordId}
+                                                                    data-key={matchingRecord.recordId}
+                                                                    class="slds-listbox__item"
                                                                     onmousedown={handleSearchResultSelection}
                                                                 >
-                                                                    <div class="slds-media slds-listbox__option_entity">
+                                                                    <div
+                                                                        class="
+                                                                            slds-media
+                                                                            slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta
+                                                                        "
+                                                                        role="option"
+                                                                    >
                                                                         <lightning-icon
-                                                                            icon-name={iconName}
+                                                                            class="slds-media__figure slds-listbox__option-icon"
+                                                                            icon-name={matchingRecord.icon}
                                                                             alternative-text="icon"
                                                                             size="small"
                                                                         ></lightning-icon>
-                                                                        <span class="verticalAlign slds-truncate">{matchingRecord.Label}</span>
+
+                                                                        <span class="slds-media__body">
+                                                                            <span
+                                                                                class="slds-listbox__option-text slds-listbox__option-text_entity slds-truncate"
+                                                                                >{matchingRecord.label}</span
+                                                                            >
+                                                                            <span class="slds-listbox__option-meta slds-listbox__option-meta_entity"
+                                                                                >{matchingRecord.secondaryLabel}</span
+                                                                            >
+                                                                        </span>
                                                                     </div>
                                                                 </li>
                                                             </template>
