@@ -31,25 +31,25 @@ public without sharing class LoggerSettingsController {
         List<Id> setupOwnerIds = new List<Id>();
         for (LoggerSettings__c settingsRecord : [
             SELECT
-                Id,
-                CreatedById,
-                CreatedBy.Username,
-                CreatedDate,
-                LastModifiedById,
-                LastModifiedBy.Username,
-                LastModifiedDate,
-                SetupOwnerId,
-                SetupOwner.Type,
-                SetupOwner.Name,
                 AnonymousMode__c,
                 ApplyDataMaskRules__c,
+                CreatedBy.Username,
+                CreatedById,
+                CreatedDate,
                 DefaultLogShareAccessLevel__c,
                 DefaultNumberOfDaysToRetainLogs__c,
                 DefaultSaveMethod__c,
+                Id,
                 IsApexSystemDebugLoggingEnabled__c,
                 IsComponentConsoleLoggingEnabled__c,
                 IsEnabled__c,
+                LastModifiedBy.Username,
+                LastModifiedById,
+                LastModifiedDate,
                 LoggingLevel__c,
+                SetupOwner.Name,
+                SetupOwner.Type,
+                SetupOwnerId,
                 StripInaccessibleRecordFields__c
             FROM LoggerSettings__c
         ]) {
