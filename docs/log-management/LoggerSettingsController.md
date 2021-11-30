@@ -189,6 +189,10 @@ Inner class used for sorting LoggerSettings\_\_c, used for 3 reasons: 1. Trying 
 
 ##### Properties
 
+###### `createdByUsername` → `String`
+
+###### `lastModifiedByUsername` → `String`
+
 ###### `record` → `LoggerSettings__c`
 
 ###### `setupOwnerName` → `String`
@@ -229,6 +233,8 @@ Inner class used for returning search results for `Profile` and `User` records
 ##### Properties
 
 ###### `icon` → `String`
+
+###### `image` → `String`
 
 ###### `label` → `String`
 

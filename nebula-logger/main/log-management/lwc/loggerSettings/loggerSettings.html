@@ -7,7 +7,12 @@
     <!-- Datatable -->
     <lightning-card title={title} icon-name="custom:custom67" onkeydown={handleKeyDown}>
         <div slot="actions">
-            <lightning-button-icon alternative-text="Refresh Records" class="slds-m-horizontal_xx-small" icon-name="action:refresh" onclick={loadSettingsRecords}></lightning-button-icon>
+            <lightning-button-icon
+                alternative-text="Refresh Records"
+                class="slds-m-horizontal_xx-small"
+                icon-name="action:refresh"
+                onclick={loadSettingsRecords}
+            ></lightning-button-icon>
             <template if:true={canUserModifyLoggerSettings}>
                 <lightning-button
                     class="slds-m-horizontal_xx-small"

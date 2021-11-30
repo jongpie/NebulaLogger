@@ -8,9 +8,9 @@
             "path": "nebula-logger",
             "default": false,
             "definitionFile": "config/project-scratch-def-with-experience-cloud.json",
-            "versionNumber": "4.6.13.0",
-            "versionName": "Save Method Support for Flows and Lightning Components",
-            "versionDescription": "Adds the ability to specify a save method in the Flow log entry invocable classes",
+            "versionNumber": "4.6.14.0",
+            "versionName": "New Logger Settings Component",
+            "versionDescription": "Adds a new loggerSettings lwc for managing LoggerSettings__c records",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         },
         {
