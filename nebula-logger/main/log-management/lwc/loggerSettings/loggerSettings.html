@@ -303,6 +303,65 @@
                             </lightning-layout-item>
                         </lightning-layout>
                     </div>
+
+                    <!-- System Information -->
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title slds-theme_shade">
+                            <span class="slds-truncate slds-p-horizontal_small" title="System Information">System Information</span>
+                        </h3>
+                        <lightning-layout>
+                            <lightning-layout-item size="6">
+                                <lightning-input
+                                    data-id="CreatedByUsername"
+                                    field-level-help={loggerSettingsFields.CreatedById.inlineHelpText}
+                                    label={loggerSettingsFields.CreatedById.label}
+                                    onchange={handleFieldChange}
+                                    read-only
+                                    type="text"
+                                    value={currentRecord.CreatedByUsername}
+                                    variant="label-stacked"
+                                ></lightning-input>
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">{loggerSettingsFields.CreatedDate.label}</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-formatted-date-time
+                                            year="numeric"
+                                            month="long"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                            value={currentRecord.CreatedDate}
+                                        ></lightning-formatted-date-time>
+                                    </div>
+                                </div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6">
+                                <lightning-input
+                                    data-id="LastModifiedByUsername"
+                                    field-level-help={loggerSettingsFields.LastModifiedById.inlineHelpText}
+                                    label={loggerSettingsFields.LastModifiedById.label}
+                                    onchange={handleFieldChange}
+                                    read-only
+                                    type="text"
+                                    value={currentRecord.LastModifiedByUsername}
+                                    variant="label-stacked"
+                                ></lightning-input>
+                                <div class="slds-form-element">
+                                    <label class="slds-form-element__label">{loggerSettingsFields.LastModifiedDate.label}</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-formatted-date-time
+                                            year="numeric"
+                                            month="long"
+                                            day="2-digit"
+                                            hour="2-digit"
+                                            minute="2-digit"
+                                            value={currentRecord.LastModifiedDate}
+                                        ></lightning-formatted-date-time>
+                                    </div>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
                 </div>
 
                 <!-- Record modal footer -->

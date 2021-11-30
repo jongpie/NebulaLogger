@@ -107,6 +107,8 @@ export default class LoggerSettings extends LightningElement {
                     const record = settingsRecords[i].record;
                     record.SetupOwnerType = settingsRecords[i].setupOwnerType;
                     record.SetupOwnerName = settingsRecords[i].setupOwnerName;
+                    record.CreatedByUsername = record.CreatedBy.Username;
+                    record.LastModifiedByUsername = record.LastModifiedBy.Username;
 
                     settingsRecords[i] = record;
                 }

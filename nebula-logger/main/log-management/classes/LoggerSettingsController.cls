@@ -32,6 +32,12 @@ public without sharing class LoggerSettingsController {
         for (LoggerSettings__c settingsRecord : [
             SELECT
                 Id,
+                CreatedById,
+                CreatedBy.Username,
+                CreatedDate,
+                LastModifiedById,
+                LastModifiedBy.Username,
+                LastModifiedDate,
                 SetupOwnerId,
                 SetupOwner.Type,
                 SetupOwner.Name,

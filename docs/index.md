@@ -76,6 +76,10 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 
 Abstract class used by trigger handlers for shared logic
 
+### [LoggerSettingsController](log-management/LoggerSettingsController)
+
+Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
+
 ### [LoggerTagHandler](log-management/LoggerTagHandler)
 
 Handles trigger events for the `LoggerTag__c` object
