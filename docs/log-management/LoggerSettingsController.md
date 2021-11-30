@@ -48,19 +48,19 @@ Deletes the specified `LoggerSettings__c` record
 | ---------------- | -------------------- |
 | `settingsRecord` | The record to delete |
 
-#### `getLoggingLevelOptions()` → `List<PicklistOption>`
+#### `getLoggerSettingsPicklistOptions()` → `LoggerSettingsPicklistOptions`
 
-Returns the values of `LoggingLevel` enum, converted to `PicklistOption` that can be used in lwc
+Returns all of the `List&lt;PicklistOption` used in the frontend
 
 ##### Return
 
 **Type**
 
-List&lt;PicklistOption&gt;
+LoggerSettingsPicklistOptions
 
 **Description**
 
-The converted list of `LoggingLevel` values
+The instance of `LoggerSettingsPicklistOptions`, containing all picklist options for any fields treated as picklists
 
 #### `getOrganization()` → `Organization`
 
@@ -89,48 +89,6 @@ List&lt;SettingsRecordResult&gt;
 **Description**
 
 The list of existing records
-
-#### `getSaveMethodOptions()` → `List<PicklistOption>`
-
-Returns the values of `Logger.SaveMethod` enum, converted to `PicklistOption` that can be used in lwc
-
-##### Return
-
-**Type**
-
-List&lt;PicklistOption&gt;
-
-**Description**
-
-The converted list of `Logger.SaveMethod` values
-
-#### `getSetupOwnerTypeOptions()` → `List<PicklistOption>`
-
-Returns the 3 supported values for custom hiearchy settings (`Organization`, `Profile`, and `User`), converted to `PicklistOption` that can be used in lwc
-
-##### Return
-
-**Type**
-
-List&lt;PicklistOption&gt;
-
-**Description**
-
-The converted list of supported values
-
-#### `getShareAccessLevelOptions()` → `List<PicklistOption>`
-
-Returns the values of `Log__Share.AccessLevel.getDescribe().getPicklistValues()`, converted to `PicklistOption` that can be used in lwc
-
-##### Return
-
-**Type**
-
-List&lt;PicklistOption&gt;
-
-**Description**
-
-The converted list of `AccessLevel` values
 
 #### `saveRecord(LoggerSettings__c settingsRecord)` → `void`
 
@@ -167,9 +125,27 @@ The list of `SetupOwnerSearchResult`, based on any matching SObject records
 
 ### Inner Classes
 
+#### LoggerSettingsController.LoggerSettingsPicklistOptions class
+
+Inner class for returning all custom `List&lt;PicklistOption&gt;` in a single Apex method call
+
+---
+
+##### Properties
+
+###### `loggingLevelOptions` → `List<PicklistOption>`
+
+###### `saveMethodOptions` → `List<PicklistOption>`
+
+###### `setupOwnerTypeOptions` → `List<PicklistOption>`
+
+###### `shareAccessLevelOptions` → `List<PicklistOption>`
+
+---
+
 #### LoggerSettingsController.PicklistOption class
 
-DTO for picklist options since Schema.PicklistEntry isn&apos;t supported for aura-enabled methods
+Inner DTO class for picklist options since Schema.PicklistEntry isn&apos;t supported for aura-enabled methods
 
 ---
 

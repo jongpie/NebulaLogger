@@ -167,11 +167,20 @@ public without sharing class LoggerSettingsController {
 
     // Picklist methods
     /**
-     * @description Returns the values of `LoggingLevel` enum, converted to `PicklistOption` that can be used in lwc
-     * @return   The converted list of `LoggingLevel` values
+     * @description Returns all of the `List<PicklistOption` used in the frontend
+     * @return   The instance of `LoggerSettingsPicklistOptions`, containing all picklist options for any fields treated as picklists
      */
-    @AuraEnabled(cacheable=true)
-    public static List<PicklistOption> getLoggingLevelOptions() {
+    @AuraEnabled
+    public static LoggerSettingsPicklistOptions getLoggerSettingsPicklistOptions() {
+        LoggerSettingsPicklistOptions loggerSettingsPicklistOptions = new LoggerSettingsPicklistOptions();
+        loggerSettingsPicklistOptions.loggingLevelOptions = getLoggingLevelOptions();
+        loggerSettingsPicklistOptions.saveMethodOptions = getSaveMethodOptions();
+        loggerSettingsPicklistOptions.setupOwnerTypeOptions = getSetupOwnerTypeOptions();
+        loggerSettingsPicklistOptions.shareAccessLevelOptions = getShareAccessLevelOptions();
+        return loggerSettingsPicklistOptions;
+    }
+
+    private static List<PicklistOption> getLoggingLevelOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
         for (Integer i = LoggingLevel.values().size() - 1; i > 0; i--) {
             LoggingLevel currentLoggingLevel = LoggingLevel.values().get(i);
@@ -189,12 +198,7 @@ public without sharing class LoggerSettingsController {
         return picklistOptions;
     }
 
-    /**
-     * @description Returns the values of `Logger.SaveMethod` enum, converted to `PicklistOption` that can be used in lwc
-     * @return   The converted list of `Logger.SaveMethod` values
-     */
-    @AuraEnabled(cacheable=true)
-    public static List<PicklistOption> getSaveMethodOptions() {
+    private static List<PicklistOption> getSaveMethodOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
         for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
             PicklistOption picklistOption = new PicklistOption();
@@ -206,12 +210,7 @@ public without sharing class LoggerSettingsController {
         return picklistOptions;
     }
 
-    /**
-     * @description Returns the 3 supported values for custom hiearchy settings (`Organization`, `Profile`, and `User`), converted to `PicklistOption` that can be used in lwc
-     * @return   The converted list of supported values
-     */
-    @AuraEnabled(cacheable=true)
-    public static List<PicklistOption> getSetupOwnerTypeOptions() {
+    private static List<PicklistOption> getSetupOwnerTypeOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
         List<String> optionNames = new List<String>{ 'Organization', 'Profile', 'User' };
         for (String optionName : optionNames) {
@@ -224,12 +223,7 @@ public without sharing class LoggerSettingsController {
         return picklistOptions;
     }
 
-    /**
-     * @description Returns the values of `Log__Share.AccessLevel.getDescribe().getPicklistValues()`, converted to `PicklistOption` that can be used in lwc
-     * @return   The converted list of `AccessLevel` values
-     */
-    @AuraEnabled(cacheable=true)
-    public static List<PicklistOption> getShareAccessLevelOptions() {
+    private static List<PicklistOption> getShareAccessLevelOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
         for (Schema.PicklistEntry picklistEntry : Schema.Log__Share.AccessLevel.getDescribe().getPicklistValues()) {
             // The 'All' access level is an internal value and can't be granted
@@ -288,7 +282,21 @@ public without sharing class LoggerSettingsController {
     }
 
     /**
-     * @description DTO for picklist options since Schema.PicklistEntry isn't supported for aura-enabled methods
+     * @description Inner class for returning all custom `List<PicklistOption>` in a single Apex method call
+     */
+    public class LoggerSettingsPicklistOptions {
+        @AuraEnabled
+        public List<PicklistOption> loggingLevelOptions;
+        @AuraEnabled
+        public List<PicklistOption> saveMethodOptions;
+        @AuraEnabled
+        public List<PicklistOption> setupOwnerTypeOptions;
+        @AuraEnabled
+        public List<PicklistOption> shareAccessLevelOptions;
+    }
+
+    /**
+     * @description Inner DTO class for picklist options since Schema.PicklistEntry isn't supported for aura-enabled methods
      */
     public class PicklistOption {
         @AuraEnabled

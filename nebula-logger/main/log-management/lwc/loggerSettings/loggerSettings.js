@@ -11,10 +11,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
-import getLoggingLevelOptions from '@salesforce/apex/LoggerSettingsController.getLoggingLevelOptions';
-import getSaveMethodOptions from '@salesforce/apex/LoggerSettingsController.getSaveMethodOptions';
-import getSetupOwnerTypeOptions from '@salesforce/apex/LoggerSettingsController.getSetupOwnerTypeOptions';
-import getShareAccessLevelOptions from '@salesforce/apex/LoggerSettingsController.getShareAccessLevelOptions';
+import getLoggerSettingsPicklistOptions from '@salesforce/apex/LoggerSettingsController.getLoggerSettingsPicklistOptions';
 
 // LoggerSettings__c data
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
@@ -43,10 +40,7 @@ export default class LoggerSettings extends LightningElement {
     // LoggerSettings__c metadata
     canUserModifyLoggerSettings;
     loggerSettingsFields;
-    loggingLevelOptions;
-    saveMethodOptions;
-    setupOwnerTypeOptions;
-    shareAccessLevelOptions;
+    loggerSettingsPicklistOptions;
 
     // LoggerSettings__c data
     records;
@@ -61,20 +55,8 @@ export default class LoggerSettings extends LightningElement {
             this.organization = result;
         });
 
-        getLoggingLevelOptions().then(results => {
-            this.loggingLevelOptions = results;
-        });
-
-        getSaveMethodOptions().then(results => {
-            this.saveMethodOptions = results;
-        });
-
-        getSetupOwnerTypeOptions().then(results => {
-            this.setupOwnerTypeOptions = results;
-        });
-
-        getShareAccessLevelOptions().then(results => {
-            this.shareAccessLevelOptions = results;
+        getLoggerSettingsPicklistOptions().then(results => {
+            this.loggerSettingsPicklistOptions = results;
         });
 
         this.loadSettingsRecords();
@@ -224,6 +206,7 @@ export default class LoggerSettings extends LightningElement {
 
     _setIsNewOrganizationRecord() {
         this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.setupOwnerType === 'Organization';
+        this.currentRecord.setupOwnerName = this.organization.Name;
     }
 
     _setShowSetupOwnerLookup() {

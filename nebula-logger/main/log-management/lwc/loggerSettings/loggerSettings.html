@@ -61,7 +61,7 @@
                                     data-id="setupOwnerType"
                                     label="Setup Location"
                                     onchange={handleSetupOwnerTypeFieldChange}
-                                    options={setupOwnerTypeOptions}
+                                    options={loggerSettingsPicklistOptions.setupOwnerTypeOptions}
                                     read-only={isExistingRecord}
                                     required
                                     value={currentRecord.setupOwnerType}
@@ -209,7 +209,7 @@
                                     field-level-help={loggerSettingsFields.LoggingLevel__c.inlineHelpText}
                                     label={loggerSettingsFields.LoggingLevel__c.label}
                                     onchange={handleFieldChange}
-                                    options={loggingLevelOptions}
+                                    options={loggerSettingsPicklistOptions.loggingLevelOptions}
                                     read-only={isReadOnlyMode}
                                     required
                                     value={currentRecord.LoggingLevel__c}
@@ -243,7 +243,7 @@
                                     field-level-help={loggerSettingsFields.DefaultLogShareAccessLevel__c.inlineHelpText}
                                     label={loggerSettingsFields.DefaultLogShareAccessLevel__c.label}
                                     onchange={handleFieldChange}
-                                    options={shareAccessLevelOptions}
+                                    options={loggerSettingsPicklistOptions.shareAccessLevelOptions}
                                     read-only={isReadOnlyMode}
                                     value={currentRecord.DefaultLogShareAccessLevel__c}
                                     variant="label-stacked"
@@ -264,7 +264,7 @@
                                     field-level-help={loggerSettingsFields.DefaultSaveMethod__c.inlineHelpText}
                                     label={loggerSettingsFields.DefaultSaveMethod__c.label}
                                     onchange={handleFieldChange}
-                                    options={saveMethodOptions}
+                                    options={loggerSettingsPicklistOptions.saveMethodOptions}
                                     read-only={isReadOnlyMode}
                                     required
                                     value={currentRecord.DefaultSaveMethod__c}
