@@ -30,7 +30,8 @@ export default class LoggerSettings extends LightningElement {
     columns;
     isReadOnlyMode = true;
     showLoadingSpinner = false;
-    showModal = false;
+    showEditModal = false;
+    showDeleteModal = false;
     isNewOrganizationRecord = false;
     showSetupOwnerLookup = false;
     showSetupOwnerDropdown = false;
@@ -98,7 +99,7 @@ export default class LoggerSettings extends LightningElement {
         getRecords()
             .then(settingsRecords => {
                 for (let i = 0; i < settingsRecords.length; i++) {
-                    const record = {...settingsRecords[i], ...settingsRecords[i].record};
+                    const record = { ...settingsRecords[i], ...settingsRecords[i].record };
                     settingsRecords[i] = record;
                 }
                 this.records = settingsRecords;
@@ -111,6 +112,8 @@ export default class LoggerSettings extends LightningElement {
                 this.showPill = false;
 
                 this.showLoadingSpinner = false;
+                this.closeEditModal();
+                this.closeDeleteModal();
             })
             .catch(error => {
                 this._handleError(error);
@@ -198,12 +201,17 @@ export default class LoggerSettings extends LightningElement {
 
     handleKeyDown(event) {
         if (event.code === 'Escape') {
-            this.closeModal();
+            this.closeEditModal();
+            this.closeDeleteModal();
         }
     }
 
-    closeModal() {
-        this.showModal = false;
+    closeEditModal() {
+        this.showEditModal = false;
+    }
+
+    closeDeleteModal() {
+        this.showDeleteModal = false;
     }
 
     get isExistingRecord() {
@@ -227,7 +235,7 @@ export default class LoggerSettings extends LightningElement {
             .then(result => {
                 this.currentRecord = result;
                 this.isReadOnlyMode = false;
-                this.showModal = true;
+                this.showEditModal = true;
             })
             .catch(error => {
                 this._handleError(error);
@@ -237,13 +245,13 @@ export default class LoggerSettings extends LightningElement {
     viewCurrentRecord(currentRow) {
         this.currentRecord = currentRow;
         this.isReadOnlyMode = true;
-        this.showModal = true;
+        this.showEditModal = true;
     }
 
     editCurrentRecord(currentRow) {
         this.currentRecord = currentRow;
         this.isReadOnlyMode = false;
-        this.showModal = true;
+        this.showEditModal = true;
     }
 
     saveCurrentRecord() {
@@ -268,7 +276,7 @@ export default class LoggerSettings extends LightningElement {
                         variant: 'success'
                     })
                 );
-                this.closeModal();
+                this.closeEditModal();
                 this.showLoadingSpinner = false;
             })
             .catch(error => {
@@ -277,13 +285,19 @@ export default class LoggerSettings extends LightningElement {
     }
 
     deleteCurrentRecord(currentRow) {
+        this.showDeleteModal = true;
+        this.currentRecord = currentRow;
+    }
+
+    confirmDeleteCurrentRecord() {
         this.showLoadingSpinner = true;
-        deleteRecord({ settingsRecord: currentRow })
+        const setupOwnerName = this.currentRecord.setupOwnerName;
+        deleteRecord({ settingsRecord: this.currentRecord })
             .then(() => {
                 this.loadSettingsRecords();
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: this.title + ' record for ' + currentRow.setupOwnerName + ' successfully deleted',
+                        title: this.title + ' record for ' + setupOwnerName + ' successfully deleted',
                         variant: 'success'
                     })
                 );

@@ -2,7 +2,7 @@
     <!-- Datatable -->
     <lightning-card title={title} icon-name="custom:custom67" onkeydown={handleKeyDown}>
         <div slot="actions">
-            <lightning-button-icon class="slds-m-horizontal_xx-small" icon-name="action:refresh" onclick={loadSettingsRecords}></lightning-button-icon>
+            <lightning-button-icon alternative-text="Refresh Records" class="slds-m-horizontal_xx-small" icon-name="action:refresh" onclick={loadSettingsRecords}></lightning-button-icon>
             <template if:true={canUserModifyLoggerSettings}>
                 <lightning-button
                     class="slds-m-horizontal_xx-small"
@@ -25,20 +25,20 @@
         <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
     </div>
 
-    <!-- Record modal -->
-    <template if:true={showModal} onkeydown={handleKeyDown}>
+    <!-- Edit modal -->
+    <template if:true={showEditModal} onkeydown={handleKeyDown}>
         <section class="slds-modal slds-fade-in-open" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
             <div class="slds-modal__container" onkeydown={handleKeyDown}>
-                <!-- Record modal header -->
+                <!-- Edit modal header -->
                 <header class="slds-modal__header">
-                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeEditModal}>
                         <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
                     </button>
 
                     <h2 class="slds-text-heading_medium slds-hyphenate">Logger Settings Details</h2>
                 </header>
 
-                <!-- Record modal body -->
+                <!-- Edit modal body -->
                 <div class="slds-modal__content slds-p-around_medium">
                     <!-- General Settings -->
                     <div class="slds-section slds-is-open">
@@ -391,10 +391,38 @@
                     </template>
                 </div>
 
-                <!-- Record modal footer -->
+                <!-- Edit modal footer -->
                 <footer class="slds-modal__footer" if:false={isReadOnlyMode}>
-                    <lightning-button label="Cancel" onclick={closeModal} title="Cancel"></lightning-button>
+                    <lightning-button label="Cancel" onclick={closeEditModal} title="Cancel"></lightning-button>
                     <lightning-button label="Save" onclick={saveCurrentRecord} title="Save" variant="brand"></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <!-- Delete modal -->
+    <template if:true={showDeleteModal} onkeydown={handleKeyDown}>
+        <section class="slds-modal slds-fade-in-open" onkeydown={handleKeyDown} role="dialog" tabindex="-1">
+            <div class="slds-modal__container" onkeydown={handleKeyDown}>
+                <!-- Delete modal header -->
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeDeleteModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small"></lightning-icon>
+                    </button>
+
+                    <h2 class="slds-text-heading_medium slds-hyphenate">Delete Logger Settings Record</h2>
+                </header>
+
+                <!-- Delete modal body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    Are you sure you want to delete the Logger Settings record for {currentRecord.setupOwnerName}?
+                </div>
+
+                <!-- Delete modal footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={closeDeleteModal} title="Cancel"></lightning-button>
+                    <lightning-button label="Delete" onclick={confirmDeleteCurrentRecord} title="Delete" variant="destructive"></lightning-button>
                 </footer>
             </div>
         </section>
