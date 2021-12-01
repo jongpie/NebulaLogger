@@ -11,7 +11,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
-import getLoggerSettingsPicklistOptions from '@salesforce/apex/LoggerSettingsController.getLoggerSettingsPicklistOptions';
+import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 
 // LoggerSettings__c data
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
@@ -55,7 +55,7 @@ export default class LoggerSettings extends LightningElement {
             this.organization = result;
         });
 
-        getLoggerSettingsPicklistOptions().then(results => {
+        getPicklistOptions().then(results => {
             this.loggerSettingsPicklistOptions = results;
         });
 

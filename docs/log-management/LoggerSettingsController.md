@@ -48,20 +48,6 @@ Deletes the specified `LoggerSettings__c` record
 | ---------------- | -------------------- |
 | `settingsRecord` | The record to delete |
 
-#### `getLoggerSettingsPicklistOptions()` → `LoggerSettingsPicklistOptions`
-
-Returns all of the `List&lt;PicklistOption` used in the frontend
-
-##### Return
-
-**Type**
-
-LoggerSettingsPicklistOptions
-
-**Description**
-
-The instance of `LoggerSettingsPicklistOptions`, containing all picklist options for any fields treated as picklists
-
 #### `getOrganization()` → `Organization`
 
 Returns the `Organization` record for the current environment
@@ -75,6 +61,20 @@ Organization
 **Description**
 
 The current environment&apos;s `Organization` record
+
+#### `getPicklistOptions()` → `LoggerSettingsPicklistOptions`
+
+Returns all of the `List&lt;PicklistOption&gt;` used in the frontend for displaying certain text fields as picklist fields
+
+##### Return
+
+**Type**
+
+LoggerSettingsPicklistOptions
+
+**Description**
+
+The instance of `LoggerSettingsPicklistOptions`, containing all picklist options for any fields treated as picklists
 
 #### `getRecords()` → `List<SettingsRecordResult>`
 

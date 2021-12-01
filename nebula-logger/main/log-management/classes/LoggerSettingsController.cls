@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerSettingsController {
     // Data methods
     /**
@@ -22,6 +22,20 @@ public without sharing class LoggerSettingsController {
     }
 
     /**
+     * @description Returns all of the `List<PicklistOption>` used in the frontend for displaying certain text fields as picklist fields
+     * @return   The instance of `LoggerSettingsPicklistOptions`, containing all picklist options for any fields treated as picklists
+     */
+    @AuraEnabled(cacheable=true)
+    public static LoggerSettingsPicklistOptions getPicklistOptions() {
+        LoggerSettingsPicklistOptions loggerSettingsPicklistOptions = new LoggerSettingsPicklistOptions();
+        loggerSettingsPicklistOptions.loggingLevelOptions = getLoggingLevelOptions();
+        loggerSettingsPicklistOptions.saveMethodOptions = getSaveMethodOptions();
+        loggerSettingsPicklistOptions.setupOwnerTypeOptions = getSetupOwnerTypeOptions();
+        loggerSettingsPicklistOptions.shareAccessLevelOptions = getShareAccessLevelOptions();
+        return loggerSettingsPicklistOptions;
+    }
+
+    /**
      * @description Returns all existing `LoggerSettings__c` records as instances of `SettingsRecordResult`
      * @return   The list of existing records
      */
@@ -29,35 +43,12 @@ public without sharing class LoggerSettingsController {
     public static List<SettingsRecordResult> getRecords() {
         List<SettingsRecordResult> settingsRecordResults = new List<SettingsRecordResult>();
         List<Id> setupOwnerIds = new List<Id>();
-        for (LoggerSettings__c settingsRecord : [
-            SELECT
-                AnonymousMode__c,
-                ApplyDataMaskRules__c,
-                CreatedBy.Username,
-                CreatedById,
-                CreatedDate,
-                DefaultLogShareAccessLevel__c,
-                DefaultNumberOfDaysToRetainLogs__c,
-                DefaultSaveMethod__c,
-                Id,
-                IsApexSystemDebugLoggingEnabled__c,
-                IsComponentConsoleLoggingEnabled__c,
-                IsEnabled__c,
-                LastModifiedBy.Username,
-                LastModifiedById,
-                LastModifiedDate,
-                LoggingLevel__c,
-                SetupOwner.Name,
-                SetupOwner.Type,
-                SetupOwnerId,
-                StripInaccessibleRecordFields__c
-            FROM LoggerSettings__c
-        ]) {
+        for (LoggerSettings__c settingsRecord : queryLoggerSettings()) {
             SettingsRecordResult settingsRecordResult = new SettingsRecordResult();
             settingsRecordResult.setupOwnerType = getSetupOwnerType(settingsRecord);
             settingsRecordResult.setupOwnerName = settingsRecord.SetupOwner.Name;
-            settingsRecordResult.createdByUsername = settingsRecord.createdBy.Username;
-            settingsRecordResult.lastModifiedByUsername = settingsRecord.lastModifiedBy.Username;
+            settingsRecordResult.createdByUsername = settingsRecord.CreatedBy.Username;
+            settingsRecordResult.lastModifiedByUsername = settingsRecord.LastModifiedBy.Username;
             settingsRecordResult.record = settingsRecord;
             settingsRecordResults.add(settingsRecordResult);
 
@@ -91,9 +82,11 @@ public without sharing class LoggerSettingsController {
     @AuraEnabled
     public static void saveRecord(LoggerSettings__c settingsRecord) {
         try {
-            upsert settingsRecord;
+            if (canUserModifyLoggerSettings() == true) {
+                upsert settingsRecord;
+            }
         } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
+            throw createAuraHandledException(ex);
         }
     }
 
@@ -104,9 +97,11 @@ public without sharing class LoggerSettingsController {
     @AuraEnabled
     public static void deleteRecord(LoggerSettings__c settingsRecord) {
         try {
-            delete settingsRecord;
+            if (canUserModifyLoggerSettings() == true) {
+                delete settingsRecord;
+            }
         } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
+            throw createAuraHandledException(ex);
         }
     }
 
@@ -158,26 +153,20 @@ public without sharing class LoggerSettingsController {
                         searchResults.add(result);
                     }
                 }
+                when else {
+                    throw new IllegalArgumentException('Invalid SetupOwnerType: ' + setupOwnerType);
+                }
             }
             return searchResults;
         } catch (Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
+            throw createAuraHandledException(ex);
         }
     }
 
-    // Picklist methods
-    /**
-     * @description Returns all of the `List<PicklistOption` used in the frontend
-     * @return   The instance of `LoggerSettingsPicklistOptions`, containing all picklist options for any fields treated as picklists
-     */
-    @AuraEnabled
-    public static LoggerSettingsPicklistOptions getLoggerSettingsPicklistOptions() {
-        LoggerSettingsPicklistOptions loggerSettingsPicklistOptions = new LoggerSettingsPicklistOptions();
-        loggerSettingsPicklistOptions.loggingLevelOptions = getLoggingLevelOptions();
-        loggerSettingsPicklistOptions.saveMethodOptions = getSaveMethodOptions();
-        loggerSettingsPicklistOptions.setupOwnerTypeOptions = getSetupOwnerTypeOptions();
-        loggerSettingsPicklistOptions.shareAccessLevelOptions = getShareAccessLevelOptions();
-        return loggerSettingsPicklistOptions;
+    private static AuraHandledException createAuraHandledException(Exception ex) {
+        AuraHandledException auraHandledException = new AuraHandledException(ex.getMessage());
+        auraHandledException.setMessage(ex.getMessage());
+        return auraHandledException;
     }
 
     private static List<PicklistOption> getLoggingLevelOptions() {
@@ -266,6 +255,33 @@ public without sharing class LoggerSettingsController {
         return setupOwnerType;
     }
 
+    private static List<LoggerSettings__c> queryLoggerSettings() {
+        return [
+            SELECT
+                AnonymousMode__c,
+                ApplyDataMaskRules__c,
+                CreatedBy.Username,
+                CreatedById,
+                CreatedDate,
+                DefaultLogShareAccessLevel__c,
+                DefaultNumberOfDaysToRetainLogs__c,
+                DefaultSaveMethod__c,
+                Id,
+                IsApexSystemDebugLoggingEnabled__c,
+                IsComponentConsoleLoggingEnabled__c,
+                IsEnabled__c,
+                LastModifiedBy.Username,
+                LastModifiedById,
+                LastModifiedDate,
+                LoggingLevel__c,
+                SetupOwner.Name,
+                SetupOwner.Type,
+                SetupOwnerId,
+                StripInaccessibleRecordFields__c
+            FROM LoggerSettings__c
+        ];
+    }
+
     private static Map<Id, String> querySetupOwnerNames(List<Id> setupOwnerIds) {
         Map<Id, String> setupOwnerIdToName = new Map<Id, String>();
         for (Profile profile : [SELECT Id, Name FROM Profile WHERE Id IN :setupOwnerIds]) {
@@ -275,10 +291,6 @@ public without sharing class LoggerSettingsController {
             setupOwnerIdToName.put(user.Id, user.Username);
         }
         return setupOwnerIdToName;
-    }
-
-    private static Map<Id, Profile> queryProfiles() {
-        return new Map<Id, Profile>([SELECT Id, Name FROM Profile]);
     }
 
     /**
