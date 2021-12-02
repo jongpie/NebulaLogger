@@ -258,7 +258,6 @@ public without sharing class LoggerSettingsController {
     private static List<LoggerSettings__c> queryLoggerSettings() {
         return [
             SELECT
-                AnonymousMode__c,
                 ApplyDataMaskRules__c,
                 CreatedBy.Username,
                 CreatedById,
@@ -267,6 +266,7 @@ public without sharing class LoggerSettingsController {
                 DefaultNumberOfDaysToRetainLogs__c,
                 DefaultSaveMethod__c,
                 Id,
+                IsAnonymousModeEnabled__c,
                 IsApexSystemDebugLoggingEnabled__c,
                 IsComponentConsoleLoggingEnabled__c,
                 IsEnabled__c,

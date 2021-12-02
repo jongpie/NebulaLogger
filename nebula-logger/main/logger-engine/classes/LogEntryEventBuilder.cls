@@ -597,7 +597,7 @@ global with sharing class LogEntryEventBuilder {
 
         // Lazy-loading of some details to help minimize Apex heap size usage until needed
         if (this.detailsAreSet == false) {
-            if (Logger.getUserSettings().AnonymousMode__c == false) {
+            if (Logger.getUserSettings().IsAnonymousModeEnabled__c == false) {
                 this.setUserDetails();
                 this.setUserSessionDetails();
             }

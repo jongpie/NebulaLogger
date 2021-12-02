@@ -1065,7 +1065,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
-        Logger.getUserSettings().AnonymousMode__c = true;
+        Logger.getUserSettings().IsAnonymousModeEnabled__c = true;
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
