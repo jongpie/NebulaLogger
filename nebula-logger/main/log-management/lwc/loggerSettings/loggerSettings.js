@@ -14,11 +14,11 @@ import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsControll
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 
 // LoggerSettings__c data
-import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import getRecords from '@salesforce/apex/LoggerSettingsController.getRecords';
-import createNewRecord from '@salesforce/apex/LoggerSettingsController.createNewRecord';
+import createRecord from '@salesforce/apex/LoggerSettingsController.createRecord';
 import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
+import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
 
 export default class LoggerSettings extends LightningElement {
@@ -27,7 +27,7 @@ export default class LoggerSettings extends LightningElement {
     columns;
     isReadOnlyMode = true;
     showLoadingSpinner = false;
-    showEditModal = false;
+    showRecordModal = false;
     showDeleteModal = false;
     isNewOrganizationRecord = false;
     showSetupOwnerLookup = false;
@@ -93,9 +93,9 @@ export default class LoggerSettings extends LightningElement {
                 this.showDropdown = false;
                 this.showPill = false;
 
-                this.showLoadingSpinner = false;
-                this.closeEditModal();
+                this.closeRecordModal();
                 this.closeDeleteModal();
+                this.showLoadingSpinner = false;
             })
             .catch(error => {
                 this._handleError(error);
@@ -116,6 +116,8 @@ export default class LoggerSettings extends LightningElement {
                 this.deleteCurrentRecord(row);
                 break;
             default:
+                /* eslint-disable-next-line no-console */
+                console.error('Unknown row action: ' + actionName);
                 break;
         }
     }
@@ -183,13 +185,15 @@ export default class LoggerSettings extends LightningElement {
 
     handleKeyDown(event) {
         if (event.code === 'Escape') {
-            this.closeEditModal();
+            this.closeRecordModal();
             this.closeDeleteModal();
+        } else if (event.ctrlKey === true && event.code === 'KeyS') {
+            this.saveCurrentRecord();
         }
     }
 
-    closeEditModal() {
-        this.showEditModal = false;
+    closeRecordModal() {
+        this.showRecordModal = false;
     }
 
     closeDeleteModal() {
@@ -214,11 +218,11 @@ export default class LoggerSettings extends LightningElement {
     }
 
     createNewRecord() {
-        createNewRecord()
+        createRecord()
             .then(result => {
                 this.currentRecord = result;
                 this.isReadOnlyMode = false;
-                this.showEditModal = true;
+                this.showRecordModal = true;
             })
             .catch(error => {
                 this._handleError(error);
@@ -228,13 +232,13 @@ export default class LoggerSettings extends LightningElement {
     viewCurrentRecord(currentRow) {
         this.currentRecord = currentRow;
         this.isReadOnlyMode = true;
-        this.showEditModal = true;
+        this.showRecordModal = true;
     }
 
     editCurrentRecord(currentRow) {
         this.currentRecord = currentRow;
         this.isReadOnlyMode = false;
-        this.showEditModal = true;
+        this.showRecordModal = true;
     }
 
     saveCurrentRecord() {
@@ -259,7 +263,7 @@ export default class LoggerSettings extends LightningElement {
                         variant: 'success'
                     })
                 );
-                this.closeEditModal();
+                this.closeRecordModal();
                 this.showLoadingSpinner = false;
             })
             .catch(error => {
@@ -292,7 +296,7 @@ export default class LoggerSettings extends LightningElement {
     }
 
     _loadTableColumns() {
-        // The columns setupOwnerType and setupOwnerName are true fields
+        // The columns setupOwnerType and setupOwnerName are not true fields
         // They're flattened versions of SetupOwner.Type and SetupOwner.Name, so object API info isn't used here
         this.columns = [
             { fieldName: 'setupOwnerType', label: 'Setup Location', type: 'text' },
@@ -303,7 +307,7 @@ export default class LoggerSettings extends LightningElement {
         const tableColumnNames = [
             'IsEnabled__c',
             'LoggingLevel__c',
-            'ApplyDataMaskRules__c',
+            'IsDataMaskingEnabled__c',
             'DefaultSaveMethod__c',
             'DefaultNumberOfDaysToRetainLogs__c',
             'DefaultLogShareAccessLevel__c'

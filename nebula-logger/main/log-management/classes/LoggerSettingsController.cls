@@ -71,7 +71,7 @@ public without sharing class LoggerSettingsController {
      * @return   A new `LoggerSettings__c` record, with all fields populated with default values
      */
     @AuraEnabled
-    public static LoggerSettings__c createNewRecord() {
+    public static LoggerSettings__c createRecord() {
         return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
     }
 

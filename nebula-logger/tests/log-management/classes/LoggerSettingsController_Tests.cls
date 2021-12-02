@@ -156,7 +156,7 @@ private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_create_new_record() {
         LoggerSettings__c expectedNewRecord = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
-        LoggerSettings__c newRecord = LoggerSettingsController.createNewRecord();
+        LoggerSettings__c newRecord = LoggerSettingsController.createRecord();
         System.assertEquals(expectedNewRecord, newRecord);
         System.assertEquals(null, newRecord.Id);
         System.assertEquals(null, newRecord.SetupOwnerId);
@@ -164,7 +164,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_save_new_record() {
-        LoggerSettings__c newRecord = LoggerSettingsController.createNewRecord();
+        LoggerSettings__c newRecord = LoggerSettingsController.createRecord();
         newRecord.SetupOwnerId = UserInfo.getUserId();
         System.assertEquals(null, newRecord.Id);
 

@@ -24,7 +24,7 @@ Boolean
 
 return description
 
-#### `createNewRecord()` → `LoggerSettings__c`
+#### `createRecord()` → `LoggerSettings__c`
 
 Creates a new, unsaved `LoggerSettings__c` record
 
