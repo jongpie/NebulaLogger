@@ -743,7 +743,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
-        if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
+        if (Logger.getUserSettings().IsDataMaskingEnabled__c == false) {
             return dataInput;
         }
 

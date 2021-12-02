@@ -316,7 +316,6 @@ private class LoggerSettingsController_Tests {
         return new Map<Id, LoggerSettings__c>(
             [
                 SELECT
-                    ApplyDataMaskRules__c,
                     CreatedBy.Username,
                     CreatedById,
                     CreatedDate,
@@ -327,6 +326,7 @@ private class LoggerSettingsController_Tests {
                     IsAnonymousModeEnabled__c,
                     IsApexSystemDebugLoggingEnabled__c,
                     IsComponentConsoleLoggingEnabled__c,
+                    IsDataMaskingEnabled__c,
                     IsEnabled__c,
                     LastModifiedBy.Username,
                     LastModifiedById,

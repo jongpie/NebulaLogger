@@ -8,7 +8,7 @@
     <columns>DefaultSaveMethod__c</columns>
     <columns>IsApexSystemDebugLoggingEnabled__c</columns>
     <columns>IsComponentConsoleLoggingEnabled__c</columns>
-    <columns>ApplyDataMaskRules__c</columns>
+    <columns>IsDataMaskingEnabled__c</columns>
     <columns>StripInaccessibleRecordFields__c</columns>
     <columns>IsAnonymousModeEnabled__c</columns>
     <columns>DefaultLogShareAccessLevel__c</columns>
