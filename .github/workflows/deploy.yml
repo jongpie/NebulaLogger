@@ -119,8 +119,9 @@ jobs:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   flags: LWC
 
-    scratch-org-tests:
-        name: 'Run Scratch Org Tests'
+    # TODO find a way to consolidate duplicated LOC for scratch org steps
+    base-scratch-org-tests:
+        name: 'Run Base Scratch Org Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
         environment: Test
@@ -145,25 +146,76 @@ jobs:
             - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
-            - name: 'Populate DevHub Auth Files'
+            - name: 'Authorize Dev Hub'
               shell: bash
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  echo ${{ env.NEBULA_CI_DEVHUB_SFDX_URL }} > ./NEBULA_CI_DEVHUB_SFDX_URL.txt
-                  echo ${{ env.JONGPIE_DEVHUB_SFDX_URL }} > ./JONGPIE_DEVHUB_SFDX_URL.txt
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
               env:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
-                  NEBULA_CI_DEVHUB_SFDX_URL: ${{ secrets.NEBULA_CI_DEVHUB_SFDX_URL }}
-                  JONGPIE_DEVHUB_SFDX_URL: ${{ secrets.JONGPIE_DEVHUB_SFDX_URL }}
 
-            - name: 'Authorize Dev Hubs'
+            - name: 'Create Base Scratch Org'
+              run: npm run org:create:base -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-ci-devhub,jongpie-devhub
+
+            - name: 'Push Source to Scratch Org'
+              run: npm run source:push
+
+            - name: 'Assign Logger Admin Permission Set'
+              run: npm run permset:assign:admin
+
+            - name: 'Run Apex Tests'
+              run: npm run test:apex
+
+            # TODO revisit this part - for now, CodeCov.io upload will only run in the Experience Cloud step
+            # - name: 'Delete unsupported code coverage files'
+            #   run: rm ./tests/apex/test-result-707*-codecoverage.json
+
+            # - name: 'Upload Apex test code coverage to Codecov.io'
+            #   uses: codecov/codecov-action@v2.0.2
+            #   with:
+            #       token: ${{ secrets.CODECOV_TOKEN }}
+            #       flags: Apex
+
+            - name: 'Delete Base Scratch Org'
+              run: npm run org:delete:noprompt
+              if: ${{ always() }}
+
+    experience-cloud-scratch-org-tests:
+        name: 'Run Experience Cloud Scratch Org Tests'
+        needs: [code-quality-tests]
+        runs-on: ubuntu-latest
+        environment: Test
+        steps:
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
+              with:
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
+
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
+
+            - name: 'Install Salesforce CLI'
+              run: npm install sfdx-cli --global
+
+            - name: 'Authorize Dev Hub'
+              shell: bash
               run: |
+                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
                   sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./NEBULA_CI_DEVHUB_SFDX_URL.txt --setalias nebula-ci-devhub
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./JONGPIE_DEVHUB_SFDX_URL.txt --setalias jongpie-devhub
+              env:
+                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
             - name: 'Create Scratch Org with Experience Sites Enabled'
-              run: npm run org:create:experience -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-ci-devhub,jongpie-devhub
+              run: npm run org:create:experience-cloud -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-ci-devhub,jongpie-devhub
 
             - name: 'Create Test Experience Site'
               run: npm run experience:create
@@ -191,13 +243,13 @@ jobs:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   flags: Apex
 
-            - name: 'Delete Scratch Org'
+            - name: 'Delete Experience Cloud Scratch Org'
               run: npm run org:delete:noprompt
               if: ${{ always() }}
 
     create-and-install-package-version:
         name: 'Create & Install Package Version'
-        needs: [lwc-tests, scratch-org-tests]
+        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
         if: ${{ github.event_name == 'pull_request' }}
         runs-on: ubuntu-latest
         environment: Test
@@ -224,19 +276,21 @@ jobs:
             - name: 'Install Salesforce CLI'
               run: npm install sfdx-cli --global
 
-            - name: 'Populate Org Auth Files'
+            - name: 'Authorize Packaging Org'
               shell: bash
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  echo ${{ env.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }} > ./NEBULA_PKG_DEMO_SANDBOX_SFDX_URL.txt
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
               env:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
-                  NEBULA_PKG_DEMO_SANDBOX_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 
-            - name: 'Authorize Orgs'
+            - name: 'Authorize Demo Org'
+              shell: bash
               run: |
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./NEBULA_PKG_DEMO_SANDBOX_SFDX_URL.txt --setalias nebula-logger-package-demo
+                  echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
+                  sfdx auth:sfdxurl:store --sfdxurlfile ./PKG_DEMO_ORG_SFDX_URL.txt --setalias nebula-logger-package-demo
+              env:
+                  PKG_DEMO_ORG_SFDX_URL: ${{ secrets.PKG_DEMO_ORG_SFDX_URL }}
 
             - name: 'Create & Install Package Version'
               run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetusername nebula-logger-package-demo
