@@ -51,13 +51,12 @@ export default class LoggerSettings extends LightningElement {
         document.title = this.title;
         this.showLoadingSpinner = true;
 
-        getOrganization().then(result => {
-            this.organization = result;
-        });
-
-        getPicklistOptions().then(results => {
-            this.loggerSettingsPicklistOptions = results;
-        });
+        Promise.all([getOrganization(), getPicklistOptions()])
+            .then(([organization, loggerSettingsPicklistOptions]) => {
+                this.organization = organization;
+                this.loggerSettingsPicklistOptions = loggerSettingsPicklistOptions;
+            })
+            .catch(this._handleError);
 
         this.loadSettingsRecords();
         this.showLoadingSpinner = false;
@@ -97,9 +96,7 @@ export default class LoggerSettings extends LightningElement {
                 this.closeDeleteModal();
                 this.showLoadingSpinner = false;
             })
-            .catch(error => {
-                this._handleError(error);
-            });
+            .catch(this._handleError);
     }
 
     handleRowActions(event) {
@@ -224,9 +221,7 @@ export default class LoggerSettings extends LightningElement {
                 this.isReadOnlyMode = false;
                 this.showRecordModal = true;
             })
-            .catch(error => {
-                this._handleError(error);
-            });
+            .catch(this._handleError);
     }
 
     viewCurrentRecord(currentRow) {
@@ -266,9 +261,7 @@ export default class LoggerSettings extends LightningElement {
                 this.closeRecordModal();
                 this.showLoadingSpinner = false;
             })
-            .catch(error => {
-                this._handleError(error);
-            });
+            .catch(this._handleError);
     }
 
     deleteCurrentRecord(currentRow) {
@@ -290,9 +283,7 @@ export default class LoggerSettings extends LightningElement {
                 );
                 this.showLoadingSpinner = false;
             })
-            .catch(error => {
-                this._handleError(error);
-            });
+            .catch(this._handleError);
     }
 
     _loadTableColumns() {
