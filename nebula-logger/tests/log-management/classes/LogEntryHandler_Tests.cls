@@ -253,8 +253,7 @@ private class LogEntryHandler_Tests {
                 OriginLocation__c,
                 OriginType__c
             FROM LogEntry__c
-            WHERE OriginType__c = 'Apex'
-            LIMIT 1
+            WHERE Id = :logEntry.Id
         ];
         System.assertEquals('Apex', logEntry.OriginType__c);
         System.assertEquals(null, logEntry.OriginLocation__c);
@@ -293,8 +292,7 @@ private class LogEntryHandler_Tests {
                 ApexMethodName__c,
                 OriginLocation__c
             FROM LogEntry__c
-            WHERE OriginType__c = 'Apex'
-            LIMIT 1
+            WHERE Id = :logEntry.Id
         ];
         System.assertEquals(exampleTopLevelClassMethodName, logEntry.OriginLocation__c);
         System.assertEquals('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
@@ -333,8 +331,7 @@ private class LogEntryHandler_Tests {
                 ApexMethodName__c,
                 OriginLocation__c
             FROM LogEntry__c
-            WHERE OriginType__c = 'Apex'
-            LIMIT 1
+            WHERE Id = :logEntry.Id
         ];
         System.assertEquals(exampleInnerClassMethodName, logEntry.OriginLocation__c);
         System.assertEquals('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);

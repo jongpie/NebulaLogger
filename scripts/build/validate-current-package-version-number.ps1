@@ -8,19 +8,28 @@ function Get-SFDX-Project-Version-Number {
     return $versionNumber
 }
 
-function Get-Latest-Released-Version-Number {
-    $latestReleasedPackageVersionNumber = (sfdx force:package:version:list --packages "Nebula Logger - Unlocked Package" --released --orderby "MajorVersion DESC, MinorVersion DESC, PatchVersion DESC" --json | ConvertFrom-Json).result[0].Version
-    $latestReleasedPackageVersionNumber = $latestReleasedPackageVersionNumber.substring(0, $latestReleasedPackageVersionNumber.LastIndexOf('.'))
-    return $latestReleasedPackageVersionNumber
+function Get-Released-Versions {
+    $releasedPackageVersions = (sfdx force:package:version:list --packages "Nebula Logger - Unlocked Package" --released --orderby "MajorVersion DESC, MinorVersion DESC, PatchVersion DESC" --json | ConvertFrom-Json).result
+    return $releasedPackageVersions
+}
+
+function Get-Simplified-Version-Number {
+    param (
+        $packageVersion
+    )
+    $simplifiedReleasedVersionNumber = ($packageVersion.MajorVersion.ToString()) + '.' + ($packageVersion.MinorVersion.ToString()) + '.' + ($packageVersion.PatchVersion.ToString())
+    return $simplifiedReleasedVersionNumber
 }
 
 $currentPackageVersionNumber = Get-SFDX-Project-Version-Number
 Write-Output "Current package version number == $currentPackageVersionNumber"
-$latestReleasedPackageVersionNumber = Get-Latest-Released-Version-Number
-Write-Output "Latest released package version number == $latestReleasedPackageVersionNumber"
+$releasedPackageVersions = Get-Released-Versions
+Write-Output "Released package versions == $releasedPackageVersions"
 
-if ($currentPackageVersionNumber -eq $latestReleasedPackageVersionNumber) {
-    throw "Current package version number $currentPackageVersionNumber has already been released - please increment the package version number"
-} else {
-    Write-Output "Current package version number $currentPackageVersionNumber has not been released"
+foreach($releasedPackageVersion in $releasedPackageVersions) {
+    $simplifiedReleasedVersionNumber = Get-Simplified-Version-Number($releasedPackageVersion)
+    if ($currentPackageVersionNumber -eq $simplifiedReleasedVersionNumber) {
+        throw "Current package version number $currentPackageVersionNumber has already been released - please increment the package version number"
+    }
 }
+Write-Output "Package version number verified: current package version number $currentPackageVersionNumber has not been released yet"

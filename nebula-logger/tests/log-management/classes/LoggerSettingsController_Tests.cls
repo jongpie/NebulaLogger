@@ -32,9 +32,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_permit_user_to_modify_logger_settings_when_loggerAdmin_permission_set_is_assigned() {
         User testUser = LoggerTestUtils.createStandardUser();
         insert testUser;
-        PermissionSet loggerAdminPermissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'LoggerAdmin'];
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = testUser.Id, PermissionSetId = loggerAdminPermissionSet.Id);
-        insert permissionSetAssignment;
+        LoggerTestUtils.assignAdminPermissionSet(testUser.Id);
 
         System.runAs(testUser) {
             System.assertEquals(true, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
@@ -46,12 +44,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_not_permit_user_to_modify_logger_settings_when_loggerLogViewer_permission_set_is_assigned() {
         User testUser = LoggerTestUtils.createStandardUser();
         insert testUser;
-        PermissionSet loggerLogViewerPermissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'LoggerLogViewer'];
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
-            AssigneeId = testUser.Id,
-            PermissionSetId = loggerLogViewerPermissionSet.Id
-        );
-        insert permissionSetAssignment;
+        LoggerTestUtils.assignLogViewerPermissionSet(testUser.Id);
 
         System.runAs(testUser) {
             System.assertEquals(false, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
@@ -63,12 +56,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_not_permit_user_to_modify_logger_settings_when_loggerEndUser_permission_set_is_assigned() {
         User testUser = LoggerTestUtils.createStandardUser();
         insert testUser;
-        PermissionSet loggerEndUserPermissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'LoggerEndUser'];
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
-            AssigneeId = testUser.Id,
-            PermissionSetId = loggerEndUserPermissionSet.Id
-        );
-        insert permissionSetAssignment;
+        LoggerTestUtils.assignEndUserPermissionSet(testUser.Id);
 
         System.runAs(testUser) {
             System.assertEquals(false, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
@@ -80,12 +68,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_not_permit_user_to_modify_logger_settings_when_loggerLogCreator_permission_set_is_assigned() {
         User testUser = LoggerTestUtils.createStandardUser();
         insert testUser;
-        PermissionSet loggerLogCreatorPermissionSet = [SELECT Id FROM PermissionSet WHERE Name = 'LoggerLogCreator'];
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(
-            AssigneeId = testUser.Id,
-            PermissionSetId = loggerLogCreatorPermissionSet.Id
-        );
-        insert permissionSetAssignment;
+        LoggerTestUtils.assignLogCreatorPermissionSet(testUser.Id);
 
         System.runAs(testUser) {
             System.assertEquals(false, FeatureManagement.checkPermission(CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME));
