@@ -155,7 +155,7 @@ jobs:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
             - name: 'Create Base Scratch Org'
-              run: npm run org:create:base -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-ci-devhub,jongpie-devhub
+              run: npm run org:create:base -- -durationdays 1 -devhubs nebula-logger-packaging
 
             - name: 'Push Source to Scratch Org'
               run: npm run source:push
@@ -165,16 +165,6 @@ jobs:
 
             - name: 'Run Apex Tests'
               run: npm run test:apex
-
-            # TODO revisit this part - for now, CodeCov.io upload will only run in the Experience Cloud step
-            # - name: 'Delete unsupported code coverage files'
-            #   run: rm ./tests/apex/test-result-707*-codecoverage.json
-
-            # - name: 'Upload Apex test code coverage to Codecov.io'
-            #   uses: codecov/codecov-action@v2.0.2
-            #   with:
-            #       token: ${{ secrets.CODECOV_TOKEN }}
-            #       flags: Apex
 
             - name: 'Delete Base Scratch Org'
               run: npm run org:delete:noprompt
@@ -215,7 +205,7 @@ jobs:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
             - name: 'Create Scratch Org with Experience Sites Enabled'
-              run: npm run org:create:experience-cloud -- -durationdays 1 -devhubs nebula-logger-packaging,nebula-ci-devhub,jongpie-devhub
+              run: npm run org:create:experience-cloud -- -durationdays 1 -devhubs nebula-logger-packaging
 
             - name: 'Create Test Experience Site'
               run: npm run experience:create
@@ -234,6 +224,7 @@ jobs:
             - name: 'Run Apex Tests'
               run: npm run test:apex
 
+            # TODO revisit this part - for now, CodeCov.io upload will only run in the Experience Cloud org
             - name: 'Delete unsupported code coverage files'
               run: rm ./tests/apex/test-result-707*-codecoverage.json
 
