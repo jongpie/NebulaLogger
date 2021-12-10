@@ -367,7 +367,7 @@ public class LoggerParameter {
         Boolean useMockParameter =
             parametersToLoadDuringTests.contains(parameterDeveloperName) == false ||
             mockParameterByDeveloperName.containsKey(parameterDeveloperName) == true;
-        if (Test.isRunningTest() == true && useMockParameter == true) {
+        if (System.Test.isRunningTest() == true && useMockParameter == true) {
             // During tests, don't actually use the org's CMDT records - only use mock records
             parameterValue = (String) mockParameterByDeveloperName.get(parameterDeveloperName)?.get('Value__c');
         }

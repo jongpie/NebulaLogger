@@ -352,7 +352,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         for (LogEntryTagRule__mdt rule : tagAssignmentRules) {
             rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
         }
-        if (Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest() == true) {
             // During tests, only use mock records - tests can add mock records using LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add()
             tagAssignmentRules.clear();
         }

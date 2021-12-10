@@ -93,7 +93,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
             // Load the configured scenario rule (if one exists)
             LogScenarioRule__mdt matchingScenarioRule = scenarioToScenarioRule.get(log.Scenario__c);
-            if (Test.isRunningTest() == true) {
+            if (System.Test.isRunningTest() == true) {
                 matchingScenarioRule = SCENARIO_TO_MOCK_SCENARIO_RULE.get(log.Scenario__c);
             }
 

@@ -2462,7 +2462,7 @@ global with sharing class Logger {
             matchingScenarioRule = scenarioRule;
         }
 
-        if (Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest() == true) {
             matchingScenarioRule = SCENARIO_TO_MOCK_SCENARIO_RULE.get(scenario);
         }
 

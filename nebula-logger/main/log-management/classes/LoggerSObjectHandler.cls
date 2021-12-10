@@ -48,7 +48,7 @@ public without sharing abstract class LoggerSObjectHandler {
             pluginsBySObjectType.put(sobjectType, sobjectTypePlugins);
         }
 
-        if (Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest() == true) {
             // Tests shouldn't rely on the actual CMDT rules in the org
             // Clear the org's loaded records during tests, and mock via setMockConfiguration()
             pluginsBySObjectType.clear();
