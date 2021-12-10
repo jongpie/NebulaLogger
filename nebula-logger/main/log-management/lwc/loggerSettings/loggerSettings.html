@@ -406,7 +406,7 @@
                 <!-- Record modal footer -->
                 <footer class="slds-modal__footer" if:false={isReadOnlyMode}>
                     <lightning-button class="slds-p-around--xx-small" label="Cancel" onclick={closeRecordModal} title="Cancel"></lightning-button>
-                    <lightning-button class="slds-p-around--xx-small" label="Save" onclick={saveCurrentRecord} title="Save" variant="brand"></lightning-button>
+                    <lightning-button class="slds-p-around--xx-small" data-id="save-btn" label="Save" onclick={saveCurrentRecord} title="Save" variant="brand"></lightning-button>
                 </footer>
             </div>
         </section>
@@ -436,6 +436,7 @@
                     <lightning-button class="slds-p-around--xx-small" label="Cancel" onclick={closeDeleteModal} title="Cancel"></lightning-button>
                     <lightning-button
                         class="slds-p-around--xx-small"
+                        data-id="delete-confirmation-btn"
                         label="Delete"
                         onclick={confirmDeleteCurrentRecord}
                         title="Delete"

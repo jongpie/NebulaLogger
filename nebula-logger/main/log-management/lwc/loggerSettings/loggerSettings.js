@@ -12,14 +12,14 @@ import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
+import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
+import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
 
 // LoggerSettings__c data
 import getRecords from '@salesforce/apex/LoggerSettingsController.getRecords';
 import createRecord from '@salesforce/apex/LoggerSettingsController.createRecord';
 import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
-import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
-import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
 
 export default class LoggerSettings extends LightningElement {
     // UI
@@ -102,6 +102,7 @@ export default class LoggerSettings extends LightningElement {
     handleRowActions(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
+        /* eslint-disable-next-line default-case */
         switch (actionName) {
             case 'view':
                 this.viewCurrentRecord(row);
@@ -111,10 +112,6 @@ export default class LoggerSettings extends LightningElement {
                 break;
             case 'delete':
                 this.deleteCurrentRecord(row);
-                break;
-            default:
-                /* eslint-disable-next-line no-console */
-                console.error('Unknown row action: ' + actionName);
                 break;
         }
     }
