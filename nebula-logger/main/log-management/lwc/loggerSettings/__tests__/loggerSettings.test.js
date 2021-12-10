@@ -84,6 +84,16 @@ jest.mock(
     { virtual: true }
 );
 
+jest.mock(
+    '@salesforce/apex/LoggerSettingsController.saveRecord',
+    () => {
+        return {
+            default: jest.fn()
+        };
+    },
+    { virtual: true }
+);
+
 async function initializeElement(enableModifyAccess) {
     // Assign mock values for resolved Apex promises
     canUserModifyLoggerSettings.mockResolvedValue(enableModifyAccess);
@@ -207,9 +217,10 @@ describe('Logger Settings lwc tests', () => {
         expect(isAnonymousModeEnabled__cField.checked).toEqual(mockNewRecord.IsAnonymousModeEnabled__c);
     });
 
-    it('saves new record when save button is clicked', async () => {
+    it('saves new organization record when save button is clicked', async () => {
         const loggerSettingsElement = await initializeElement(true);
         createRecord.mockResolvedValue(mockNewRecord);
+        saveRecord.mockResolvedValue(null);
 
         // Clickety click
         const newRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="new-btn"]');
@@ -228,54 +239,33 @@ describe('Logger Settings lwc tests', () => {
         expect(recordModal).toBeTruthy();
 
         // Check each of the fields within the modal to ensure the default field values are populated
-        // TODO find a way to do this dynamically (using querySelectorAll?) to reduce LOC
-        expect('this test').toBe('finished');
-
-
-
         const setupOwnerTypeField = loggerSettingsElement.shadowRoot.querySelector('[data-id="setupOwnerType"]');
+        setupOwnerTypeField.value = 'Organization';
         expect(setupOwnerTypeField).toBeTruthy();
         expect(setupOwnerTypeField.options).toEqual(mockPicklistOptions.setupOwnerTypeOptions);
-        expect(setupOwnerTypeField.value).toBeFalsy();
-        const setupOwnerNameField = loggerSettingsElement.shadowRoot.querySelector('lightning-input[data-id="setupOwnerName"]');
-        expect(setupOwnerNameField).toBeFalsy();
-        const isEnabledField = loggerSettingsElement.shadowRoot.querySelector('[data-id="IsEnabled__c"]');
-        expect(isEnabledField).toBeTruthy();
-        expect(isEnabledField.checked).toEqual(mockNewRecord.IsEnabled__c);
+
         const loggingLevelField = loggerSettingsElement.shadowRoot.querySelector('[data-id="LoggingLevel__c"]');
         expect(loggingLevelField).toBeTruthy();
         expect(loggingLevelField.options).toEqual(mockPicklistOptions.loggingLevelOptions);
         expect(loggingLevelField.value).toEqual(mockNewRecord.LoggingLevel__c);
-        const defaultNumberOfDaysToRetainLogsField = loggerSettingsElement.shadowRoot.querySelector('[data-id="DefaultNumberOfDaysToRetainLogs__c"]');
-        expect(defaultNumberOfDaysToRetainLogsField).toBeTruthy();
-        expect(defaultNumberOfDaysToRetainLogsField.value).toEqual(mockNewRecord.DefaultNumberOfDaysToRetainLogs__c);
-        const defaultLogShareAccessLevelField = loggerSettingsElement.shadowRoot.querySelector('[data-id="DefaultLogShareAccessLevel__c"]');
-        expect(defaultLogShareAccessLevelField).toBeTruthy();
-        expect(defaultLogShareAccessLevelField.options).toEqual(mockPicklistOptions.shareAccessLevelOptions);
-        expect(defaultLogShareAccessLevelField.value).toEqual(mockNewRecord.DefaultLogShareAccessLevel__c);
+
         const defaultSaveMethodField = loggerSettingsElement.shadowRoot.querySelector('[data-id="DefaultSaveMethod__c"]');
         expect(defaultSaveMethodField).toBeTruthy();
         expect(defaultSaveMethodField.options).toEqual(mockPicklistOptions.saveMethodOptions);
         expect(defaultSaveMethodField.value).toEqual(mockNewRecord.DefaultSaveMethod__c);
-        const isApexSystemDebugLoggingEnabledField = loggerSettingsElement.shadowRoot.querySelector('[data-id="IsApexSystemDebugLoggingEnabled__c"]');
-        expect(isApexSystemDebugLoggingEnabledField).toBeTruthy();
-        expect(isApexSystemDebugLoggingEnabledField.checked).toEqual(mockNewRecord.IsApexSystemDebugLoggingEnabled__c);
-        const isComponentConsoleLoggingEnabledField = loggerSettingsElement.shadowRoot.querySelector('[data-id="IsComponentConsoleLoggingEnabled__c"]');
-        expect(isComponentConsoleLoggingEnabledField).toBeTruthy();
-        expect(isComponentConsoleLoggingEnabledField.checked).toEqual(mockNewRecord.IsComponentConsoleLoggingEnabled__c);
-        const isDataMaskingEnabledField = loggerSettingsElement.shadowRoot.querySelector('[data-id="IsDataMaskingEnabled__c"]');
-        expect(isDataMaskingEnabledField).toBeTruthy();
-        expect(isDataMaskingEnabledField.checked).toEqual(mockNewRecord.IsDataMaskingEnabled__c);
-        const stripInaccessibleRecordFieldsField = loggerSettingsElement.shadowRoot.querySelector('[data-id="StripInaccessibleRecordFields__c"]');
-        expect(stripInaccessibleRecordFieldsField).toBeTruthy();
-        expect(stripInaccessibleRecordFieldsField.checked).toEqual(mockNewRecord.StripInaccessibleRecordFields__c);
-        const isAnonymousModeEnabled__cField = loggerSettingsElement.shadowRoot.querySelector('[data-id="IsAnonymousModeEnabled__c"]');
-        expect(isAnonymousModeEnabled__cField).toBeTruthy();
-        expect(isAnonymousModeEnabled__cField.checked).toEqual(mockNewRecord.IsAnonymousModeEnabled__c);
+
+        const expectedNewRecord = { ...mockNewRecord };
+        const expectedApexParameter = { settingsRecord: expectedNewRecord };
+        const saveRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="save-btn"]');
+        saveRecordBtn.click();
+        await Promise.resolve();
+        expect(saveRecord).toHaveBeenCalledTimes(1);
+        expect(saveRecord.mock.calls[0][0]).toEqual(expectedApexParameter);
     });
 
     it('deletes record when delete row action is clicked', async () => {
         const loggerSettingsElement = await initializeElement(true);
+        deleteRecord.mockResolvedValue(null);
 
         // Verify the expected Apex/framework calls
         expect(deleteRecord).toHaveBeenCalledTimes(0);
@@ -295,13 +285,11 @@ describe('Logger Settings lwc tests', () => {
         const recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
         expect(recordModal).toBeTruthy();
 
-
         // Clickety click
-        const expectedApexParameter = {"settingsRecord": {"Id": firstRowRecordId}}
+        const expectedApexParameter = { settingsRecord: { Id: firstRowRecordId } };
         const deleteRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="delete-confirmation-btn"]');
         deleteRecordBtn.click();
         expect(deleteRecord).toHaveBeenCalledTimes(1);
         expect(deleteRecord.mock.calls[0][0]).toEqual(expectedApexParameter);
-        expect('this test').toBe('this test');
     });
 });
