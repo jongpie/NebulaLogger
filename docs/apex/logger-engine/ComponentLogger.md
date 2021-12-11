@@ -137,7 +137,7 @@ Indicates the save method that will be used by default if no other save method i
 
 ###### `isConsoleLoggingEnabled` → `Boolean`
 
-Indicates if logging via the browser&apos;s `console.log()` is enabled for the current user, based on `Logger.IsComponentConsoleLoggingEnabled__c`
+Indicates if logging via the browser&apos;s `console.log()` is enabled for the current user, based on `Logger.IsJavaScriptConsoleLoggingEnabled__c`
 
 ###### `isEnabled` → `Boolean`
 

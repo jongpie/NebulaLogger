@@ -191,7 +191,7 @@ describe('Logger Settings lwc tests', () => {
             'DefaultSaveMethod__c',
             'IsAnonymousModeEnabled__c',
             'IsApexSystemDebugLoggingEnabled__c',
-            'IsComponentConsoleLoggingEnabled__c',
+            'IsJavaScriptConsoleLoggingEnabled__c',
             'IsDataMaskingEnabled__c',
             'IsEnabled__c',
             'LoggingLevel__c',
@@ -417,7 +417,7 @@ describe('Logger Settings lwc tests', () => {
             'DefaultLogShareAccessLevel__c',
             'DefaultSaveMethod__c',
             'IsApexSystemDebugLoggingEnabled__c',
-            'IsComponentConsoleLoggingEnabled__c',
+            'IsJavaScriptConsoleLoggingEnabled__c',
             'IsDataMaskingEnabled__c',
             'StripInaccessibleRecordFields__c',
             'IsAnonymousModeEnabled__c'

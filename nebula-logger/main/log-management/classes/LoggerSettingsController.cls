@@ -267,7 +267,7 @@ public without sharing class LoggerSettingsController {
                 Id,
                 IsAnonymousModeEnabled__c,
                 IsApexSystemDebugLoggingEnabled__c,
-                IsComponentConsoleLoggingEnabled__c,
+                IsJavaScriptConsoleLoggingEnabled__c,
                 IsDataMaskingEnabled__c,
                 IsEnabled__c,
                 LastModifiedBy.Username,

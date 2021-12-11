@@ -418,8 +418,8 @@
             "unique": false,
             "updateable": true
         },
-        "IsComponentConsoleLoggingEnabled__c": {
-            "apiName": "IsComponentConsoleLoggingEnabled__c",
+        "IsJavaScriptConsoleLoggingEnabled__c": {
+            "apiName": "IsJavaScriptConsoleLoggingEnabled__c",
             "calculated": false,
             "compound": false,
             "compoundComponentName": null,
