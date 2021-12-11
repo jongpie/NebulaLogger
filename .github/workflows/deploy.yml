@@ -76,10 +76,10 @@ jobs:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
             - name: 'Verify LWC with ESLint'
-              run: npm run lint:verify
+              run: npm run lint:verify:lwc
 
             - name: 'Verify Apex with SFDX Scanner'
-              run: npm run scan
+              run: npm run lint:verify:apex
 
             - name: 'Verify docs are updated'
               run: npm run docs:verify
