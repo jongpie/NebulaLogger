@@ -5,7 +5,7 @@ rm -rf ./docs/logger-engine/
 rm -rf ./docs/log-management/
 rm -rf ./docs/plugin-framework/
 
-npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main/ --targetDir docs
+npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main/ --targetDir docs --targetGenerator jekyll
 
 # Make a few adjustments to the generated markdown files so that they work correctly in Github Pages
 $indexPageFile = "docs/index.md"
@@ -20,10 +20,10 @@ $docsSubdirectories = "docs/*/*.*"
 foreach($file in Get-ChildItem $docsSubdirectories) {
     Write-Output "Processing file: $file"
     (Get-Content -path $file -Raw) -replace ".md","" | Set-Content -Path $file -NoNewline
-    (Get-Content -path $file -Raw) -replace "/Configuration/","" | Set-Content -Path $file -NoNewline
-    (Get-Content -path $file -Raw) -replace "/Logger-Engine/","" | Set-Content -Path $file -NoNewline
-    (Get-Content -path $file -Raw) -replace "/Log-Management/","" | Set-Content -Path $file -NoNewline
-    (Get-Content -path $file -Raw) -replace "/Plugin-Framework/","" | Set-Content -Path $file -NoNewline
+    (Get-Content -path $file -Raw) -replace "../Configuration/","" | Set-Content -Path $file -NoNewline
+    (Get-Content -path $file -Raw) -replace "../Logger-Engine/","" | Set-Content -Path $file -NoNewline
+    (Get-Content -path $file -Raw) -replace "../Log-Management/","" | Set-Content -Path $file -NoNewline
+    (Get-Content -path $file -Raw) -replace "../Plugin-Framework/","" | Set-Content -Path $file -NoNewline
 }
 
 mv ./docs/Configuration/ ./docs/configuration/

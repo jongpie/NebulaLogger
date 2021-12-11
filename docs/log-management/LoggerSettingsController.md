@@ -184,9 +184,10 @@ Inner class used for sorting LoggerSettings\_\_c, used for 3 reasons: 1. Trying 
 Implements sorting logic for the `Comparable` interface
 
 ####### Parameters
-|Param|Description|
-|-----|-----------|
-|`compareTo` | The object to compare to when sorting the current item |
+
+| Param       | Description                                            |
+| ----------- | ------------------------------------------------------ |
+| `compareTo` | The object to compare to when sorting the current item |
 
 ####### Return
 

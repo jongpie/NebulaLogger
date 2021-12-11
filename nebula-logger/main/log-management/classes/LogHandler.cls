@@ -7,6 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `Log__c` before insert & before update
  */
+@SuppressWarnings('PMD.ApexCrudViolation')
 public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private static final Map<String, LogStatus__mdt> LOG_STATUS_NAME_TO_STATUS = loadActiveLogStatuses();
