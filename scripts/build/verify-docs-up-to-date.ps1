@@ -2,12 +2,15 @@
 $ErrorActionPreference = 'Stop'
 
 function Verify-No-Uncommitted-Changes-To-Docs {
-    $uncommittedChanges = git status ./docs --porcelain
+    $diff = git diff --cached
+    Write-Output "Diff: : $diff"
+
+    $uncommittedChanges = git status --porcelain ./docs/
 
     if ($uncommittedChanges -ne $null) {
         throw "Uncommitted changes found: $uncommittedChanges"
     }
 }
 
-npm run docs:fix
+npm run docs:fix:apex
 Verify-No-Uncommitted-Changes-To-Docs

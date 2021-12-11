@@ -8,9 +8,9 @@ Provides the ability to generate string messages on demand, using String.format(
 
 ### Related
 
-[Logger](../Logger-Engine/Logger.md)
+[Logger](Logger)
 
-[LogEntryEventBuilder](../Logger-Engine/LogEntryEventBuilder.md)
+[LogEntryEventBuilder](LogEntryEventBuilder)
 
 ---
 

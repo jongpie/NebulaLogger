@@ -186,16 +186,16 @@ describe('Logger Settings lwc tests', () => {
 
         // Check each of the fields within the modal to ensure the default field values are populated
         const expectedFieldNames = [
-            'IsEnabled__c',
-            'LoggingLevel__c',
-            'DefaultNumberOfDaysToRetainLogs__c',
             'DefaultLogShareAccessLevel__c',
+            'DefaultNumberOfDaysToRetainLogs__c',
             'DefaultSaveMethod__c',
+            'IsAnonymousModeEnabled__c',
             'IsApexSystemDebugLoggingEnabled__c',
             'IsComponentConsoleLoggingEnabled__c',
             'IsDataMaskingEnabled__c',
-            'StripInaccessibleRecordFields__c',
-            'IsAnonymousModeEnabled__c'
+            'IsEnabled__c',
+            'LoggingLevel__c',
+            'StripInaccessibleRecordFields__c'
         ];
         expectedFieldNames.forEach(fieldName => {
             const inputField = loggerSettingsElement.shadowRoot.querySelector('[data-id="' + fieldName + '"]');

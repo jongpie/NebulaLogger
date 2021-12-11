@@ -6,10 +6,10 @@
 const LogEntryBuilder = class {
     /**
      * @description Constructor used to generate each JavaScript-based log entry event
-     *              This class is the JavaScript-equivalent of the Apex class `LogEntryEventBuilder`
-     * @param  {} loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
-     * @param  {} shouldSave Determines if the builder's instance of `LogEntryEvent__e` should be saved
-     * @param  {} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
+     *              This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
+     * @param  {String} loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
+     * @param  {Boolean} shouldSave Determines if the builder's instance of `LogEntryEvent__e` should be saved
+     * @param  {Boolean} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
      */
     constructor(loggingLevel, shouldSave, isConsoleLoggingEnabled) {
         this.shouldSave = shouldSave;
@@ -24,8 +24,8 @@ const LogEntryBuilder = class {
 
     /**
      * @description Sets the log entry event's message field
-     * @param  {} message The string to use to set the entry's message field
-     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  {String} message The string to use to set the entry's message field
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setMessage(message) {
         if (this.shouldSave === true) {
@@ -37,8 +37,8 @@ const LogEntryBuilder = class {
 
     /**
      * @description Sets the log entry event's record fields
-     * @param  {} recordId The ID of the SObject record related to the entry
-     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  {String} recordId The ID of the SObject record related to the entry
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setRecordId(recordId) {
         if (this.shouldSave === true) {
@@ -49,8 +49,8 @@ const LogEntryBuilder = class {
 
     /**
      * @description Sets the log entry event's record fields
-     * @param  {} record The `SObject` record related to the entry. The JSON of the record is automatically added to the entry
-     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param  {Object} record The `SObject` record related to the entry. The JSON of the record is automatically added to the entry
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setRecord(record) {
         if (this.shouldSave === true) {
@@ -61,8 +61,8 @@ const LogEntryBuilder = class {
 
     /**
      * @description Sets the log entry event's exception fields
-     * @param  apexException The instance of an `Exception` to use.
-     * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param {Error} error The instance of a JavaScript `Error` object to use.
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setError(error) {
         if (this.shouldSave === true) {
@@ -76,8 +76,8 @@ const LogEntryBuilder = class {
 
     /**
      * @description Appends the tag to the existing list of tags
-     * @param tag The string to use as a tag for the current entry
-     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param {String} tag The string to add as a tag for the current log entry
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     addTag(tag) {
         if (this.shouldSave === true) {
@@ -90,8 +90,8 @@ const LogEntryBuilder = class {
 
     /**
      * @description Appends the tag to the existing list of tags
-     * @param tags The list of strings to use as tags for the current entry
-     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @param {String[]} tags The list of strings to add as tags for the current entry
+     * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     addTags(tags) {
         for (let i = 0; i < tags.length; i++) {

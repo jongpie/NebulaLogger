@@ -8,7 +8,7 @@ Builder class that generates each `LogEntryEvent__e` record
 
 ### Related
 
-[Logger](../Logger-Engine/Logger.md)
+[Logger](Logger)
 
 ---
 

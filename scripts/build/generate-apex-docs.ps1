@@ -17,7 +17,7 @@ Write-Output "Processing file: $indexPageFile"
 (Get-Content -path $indexPageFile -Raw) -replace "/Log-Management/","log-management/" | Set-Content -Path $indexPageFile -NoNewline
 (Get-Content -path $indexPageFile -Raw) -replace "/Plugin-Framework/","plugin-framework/" | Set-Content -Path $indexPageFile -NoNewline
 
-$docsSubdirectories = "docs/*/*.*"
+$docsSubdirectories = "docs/apex/*/*.*"
 foreach($file in Get-ChildItem $docsSubdirectories) {
     Write-Output "Processing file: $file"
     (Get-Content -path $file -Raw) -replace ".md","" | Set-Content -Path $file -NoNewline

@@ -8,9 +8,9 @@ The core class for logging
 
 ### Related
 
-[LogEntryEventBuilder](../Logger-Engine/LogEntryEventBuilder.md)
+[LogEntryEventBuilder](LogEntryEventBuilder)
 
-[LogMessage](../Logger-Engine/LogMessage.md)
+[LogMessage](LogMessage)
 
 ---
 

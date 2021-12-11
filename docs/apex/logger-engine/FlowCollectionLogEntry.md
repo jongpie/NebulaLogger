@@ -8,15 +8,15 @@ Handles adding new log entries in Flow for a particular `SObject` record collect
 
 ### Related
 
-[FlowLogEntry](../Logger-Engine/FlowLogEntry.md)
+[FlowLogEntry](FlowLogEntry)
 
-[FlowRecordLogEntry](../Logger-Engine/FlowRecordLogEntry.md)
+[FlowRecordLogEntry](FlowRecordLogEntry)
 
-[FlowLogger](../Logger-Engine/FlowLogger.md)
+[FlowLogger](FlowLogger)
 
-[Logger](../Logger-Engine/Logger.md)
+[Logger](Logger)
 
-[LogEntryEventBuilder](../Logger-Engine/LogEntryEventBuilder.md)
+[LogEntryEventBuilder](LogEntryEventBuilder)
 
 ---
 

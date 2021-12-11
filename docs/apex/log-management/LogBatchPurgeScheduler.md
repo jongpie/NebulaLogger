@@ -8,7 +8,7 @@ Schedulable class used to schedule the batch job `LogBatchPurger`
 
 ### Related
 
-[LogBatchPurger](../Log-Management/LogBatchPurger.md)
+[LogBatchPurger](LogBatchPurger)
 
 ---
 

@@ -25,8 +25,8 @@ export default class Logger extends LightningElement {
     }
 
     /**
-     * @description Returns the current user's instance of `LoggerSettings__c`
-     * @return The current user's instance of the custom settings
+     * @description Returns information about the current user's settings, stored in `LoggerSettings__c`
+     * @return {ComponentLogger.ComponentLoggerSettings} The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
      */
     @api
     getUserSettings() {
@@ -36,7 +36,7 @@ export default class Logger extends LightningElement {
     /**
      * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
-     * @param  scenario The name to use for the current transaction's scenario
+     * @param  {String} scenario The name to use for the current transaction's scenario
      */
     @api
     setScenario(scenario) {
@@ -48,7 +48,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
-     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
     error(message) {
@@ -57,7 +57,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
-     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
     warn(message) {
@@ -66,7 +66,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
-     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
     info(message) {
@@ -75,7 +75,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
-     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
     debug(message) {
@@ -84,7 +84,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
-     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
     fine(message) {
@@ -93,7 +93,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
-     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
     finer(message) {
@@ -102,7 +102,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
-     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
     finest(message) {
@@ -111,7 +111,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Returns the number of entries that have been generated but not yet saved
-     * @return Integer
+     * @return {Integer} The buffer's current size
      */
     @api
     getBufferSize() {
@@ -129,7 +129,7 @@ export default class Logger extends LightningElement {
     /**
      * @description Saves any entries in Logger's buffer, using the specified save method for only this call.
      *              All subsequent calls to saveLog() will use the transaction save method.
-     * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
+     * @param  {String} saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
      */
     @api
     saveLog(saveMethodName) {
