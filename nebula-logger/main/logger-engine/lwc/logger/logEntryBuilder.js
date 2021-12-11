@@ -4,6 +4,13 @@
 //------------------------------------------------------------------------------------------------//
 
 const LogEntryBuilder = class {
+    /**
+     * @description Constructor used to generate each JavaScript-based log entry event
+     *              This class is the JavaScript-equivalent of the Apex class `LogEntryEventBuilder`
+     * @param  {} loggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
+     * @param  {} shouldSave Determines if the builder's instance of `LogEntryEvent__e` should be saved
+     * @param  {} isConsoleLoggingEnabled Determines if `console.log()` methods are execute
+     */
     constructor(loggingLevel, shouldSave, isConsoleLoggingEnabled) {
         this.shouldSave = shouldSave;
         this.isConsoleLoggingEnabled = isConsoleLoggingEnabled;
@@ -15,6 +22,11 @@ const LogEntryBuilder = class {
         }
     }
 
+    /**
+     * @description Sets the log entry event's message field
+     * @param  {} message The string to use to set the entry's message field
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     setMessage(message) {
         if (this.shouldSave === true) {
             this.message = message;
@@ -23,6 +35,11 @@ const LogEntryBuilder = class {
         return this;
     }
 
+    /**
+     * @description Sets the log entry event's record fields
+     * @param  {} recordId The ID of the SObject record related to the entry
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     setRecordId(recordId) {
         if (this.shouldSave === true) {
             this.recordId = recordId;
@@ -30,6 +47,11 @@ const LogEntryBuilder = class {
         return this;
     }
 
+    /**
+     * @description Sets the log entry event's record fields
+     * @param  {} record The `SObject` record related to the entry. The JSON of the record is automatically added to the entry
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     setRecord(record) {
         if (this.shouldSave === true) {
             this.record = record;
@@ -37,6 +59,11 @@ const LogEntryBuilder = class {
         return this;
     }
 
+    /**
+     * @description Sets the log entry event's exception fields
+     * @param  apexException The instance of an `Exception` to use.
+     * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     setError(error) {
         if (this.shouldSave === true) {
             this.error = {};
@@ -47,6 +74,11 @@ const LogEntryBuilder = class {
         return this;
     }
 
+    /**
+     * @description Appends the tag to the existing list of tags
+     * @param tag The string to use as a tag for the current entry
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     addTag(tag) {
         if (this.shouldSave === true) {
             this.tags.push(tag);
@@ -56,6 +88,11 @@ const LogEntryBuilder = class {
         return this;
     }
 
+    /**
+     * @description Appends the tag to the existing list of tags
+     * @param tags The list of strings to use as tags for the current entry
+     * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     addTags(tags) {
         for (let i = 0; i < tags.length; i++) {
             this.addTag(tags[i]);
@@ -71,20 +108,16 @@ const LogEntryBuilder = class {
         /* eslint-disable no-console */
         switch (this.loggingLevel) {
             case 'ERROR':
-                console.error(this.message);
-                console.error(this);
+                console.error(this.message, this);
                 break;
             case 'WARN':
-                console.warn(this.message);
-                console.warn(this);
+                console.warn(this.message, this);
                 break;
             case 'INFO':
-                console.info(this.message);
-                console.info(this);
+                console.info(this.message, this);
                 break;
             default:
-                console.debug(this.message);
-                console.debug(this);
+                console.debug(this.message, this);
                 break;
         }
     }

@@ -8,9 +8,9 @@ Controller class used by the lightning web component `logger`
 
 ### Related
 
-[Logger](Logger)
+[Logger](../Logger-Engine/Logger.md)
 
-[LogEntryEventBuilder](LogEntryEventBuilder)
+[LogEntryEventBuilder](../Logger-Engine/LogEntryEventBuilder.md)
 
 ---
 

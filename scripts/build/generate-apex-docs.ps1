@@ -1,15 +1,16 @@
-# This script is used to generate the markdown files used by Github pages
-rm -f ./docs/*/*.md
-rm -rf ./docs/configuration/
-rm -rf ./docs/logger-engine/
-rm -rf ./docs/log-management/
-rm -rf ./docs/plugin-framework/
+# This script is used to generate the markdown files used by Github pages for Apex docs
+rm -f ./docs/apex/*/*.md
+rm -rf ./docs/apex/configuration/
+rm -rf ./docs/apex/logger-engine/
+rm -rf ./docs/apex/log-management/
+rm -rf ./docs/apex/plugin-framework/
 
-npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main/ --targetDir docs --targetGenerator jekyll
+npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main/ --targetDir docs/apex --targetGenerator jekyll
 
 # Make a few adjustments to the generated markdown files so that they work correctly in Github Pages
-$indexPageFile = "docs/index.md"
+$indexPageFile = "docs/apex/index.md"
 Write-Output "Processing file: $indexPageFile"
+(Get-Content -path $indexPageFile -Raw) -replace "# Classes","# Nebula Logger for Apex" | Set-Content -Path $indexPageFile -NoNewline
 (Get-Content -path $indexPageFile -Raw) -replace ".md","" | Set-Content -Path $indexPageFile -NoNewline
 (Get-Content -path $indexPageFile -Raw) -replace "/Configuration/","configuration/" | Set-Content -Path $indexPageFile -NoNewline
 (Get-Content -path $indexPageFile -Raw) -replace "/Logger-Engine/","logger-engine/" | Set-Content -Path $indexPageFile -NoNewline
@@ -26,8 +27,8 @@ foreach($file in Get-ChildItem $docsSubdirectories) {
     (Get-Content -path $file -Raw) -replace "../Plugin-Framework/","" | Set-Content -Path $file -NoNewline
 }
 
-mv ./docs/Configuration/ ./docs/configuration/
-mv ./docs/Logger-Engine/ ./docs/logger-engine/
-mv ./docs/Log-Management/ ./docs/log-management/
-mv ./docs/Plugin-Framework/ ./docs/plugin-framework/
-prettier ./docs/ --write
+mv ./docs/apex/Configuration/ ./docs/apex/configuration/
+mv ./docs/apex/Logger-Engine/ ./docs/apex/logger-engine/
+mv ./docs/apex/Log-Management/ ./docs/apex/log-management/
+mv ./docs/apex/Plugin-Framework/ ./docs/apex/plugin-framework/
+prettier ./docs/apex/ --write

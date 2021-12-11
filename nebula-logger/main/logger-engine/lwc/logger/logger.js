@@ -24,11 +24,20 @@ export default class Logger extends LightningElement {
         }
     }
 
+    /**
+     * @description Returns the current user's instance of `LoggerSettings__c`
+     * @return The current user's instance of the custom settings
+     */
     @api
     getUserSettings() {
         return this.settings;
     }
 
+    /**
+     * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
+     *              and `Log__c.Scenario__c`, and can be used to filter & group logs
+     * @param  scenario The name to use for the current transaction's scenario
+     */
     @api
     setScenario(scenario) {
         this._scenario = scenario;
@@ -37,51 +46,91 @@ export default class Logger extends LightningElement {
         });
     }
 
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     @api
     error(message) {
         return this._newEntry('ERROR', message);
     }
 
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     @api
     warn(message) {
         return this._newEntry('WARN', message);
     }
 
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     @api
     info(message) {
         return this._newEntry('INFO', message);
     }
 
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     @api
     debug(message) {
         return this._newEntry('DEBUG', message);
     }
 
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     @api
     fine(message) {
         return this._newEntry('FINE', message);
     }
 
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     @api
     finer(message) {
         return this._newEntry('FINER', message);
     }
 
+    /**
+     * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @return      The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
     @api
     finest(message) {
         return this._newEntry('FINEST', message);
     }
 
+    /**
+     * @description Returns the number of entries that have been generated but not yet saved
+     * @return Integer
+     */
     @api
     getBufferSize() {
         return this.componentLogEntries.length;
     }
 
+    /**
+     * @description Discards any entries that have been generated but not yet saved
+     */
     @api
     flushBuffer() {
         this.componentLogEntries = [];
     }
 
+    /**
+     * @description Saves any entries in Logger's buffer, using the specified save method for only this call.
+     *              All subsequent calls to saveLog() will use the transaction save method.
+     * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
+     */
     @api
     saveLog(saveMethodName) {
         if (this.getBufferSize() > 0) {

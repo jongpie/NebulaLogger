@@ -8,15 +8,15 @@ Handles adding new log entries in Flow
 
 ### Related
 
-[FlowRecordLogEntry](FlowRecordLogEntry)
+[FlowRecordLogEntry](../Logger-Engine/FlowRecordLogEntry.md)
 
-[FlowCollectionLogEntry](FlowCollectionLogEntry)
+[FlowCollectionLogEntry](../Logger-Engine/FlowCollectionLogEntry.md)
 
-[FlowLogger](FlowLogger)
+[FlowLogger](../Logger-Engine/FlowLogger.md)
 
-[Logger](Logger)
+[Logger](../Logger-Engine/Logger.md)
 
-[LogEntryEventBuilder](LogEntryEventBuilder)
+[LogEntryEventBuilder](../Logger-Engine/LogEntryEventBuilder.md)
 
 ---
 

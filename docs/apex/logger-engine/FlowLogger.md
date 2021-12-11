@@ -8,15 +8,15 @@ Handles some common logic used by `FlowLogEntry`, `FlowRecordLogEntry` and `Flow
 
 ### Related
 
-[FlowLogEntry](FlowLogEntry)
+[FlowLogEntry](../Logger-Engine/FlowLogEntry.md)
 
-[FlowRecordLogEntry](FlowRecordLogEntry)
+[FlowRecordLogEntry](../Logger-Engine/FlowRecordLogEntry.md)
 
-[FlowCollectionLogEntry](FlowCollectionLogEntry)
+[FlowCollectionLogEntry](../Logger-Engine/FlowCollectionLogEntry.md)
 
-[Logger](Logger)
+[Logger](../Logger-Engine/Logger.md)
 
-[LogEntryEventBuilder](LogEntryEventBuilder)
+[LogEntryEventBuilder](../Logger-Engine/LogEntryEventBuilder.md)
 
 ---
 

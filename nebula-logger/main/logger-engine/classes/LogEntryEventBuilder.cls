@@ -501,7 +501,7 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Appends the tag to the existing list of tags
-     * @param tags The string to use as a tag for the current entry
+     * @param tags The list of strings to use as tags for the current entry
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTags(List<String> tags) {
