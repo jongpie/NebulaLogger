@@ -59,9 +59,7 @@ export default class LogViewer extends LightningElement {
 
         // I figure it might be nice to also include the parsed JSON in the console
         /* eslint-disable-next-line no-console */
-        console.log('Log data successfully copied to clipboard:');
-        /* eslint-disable-next-line no-console */
-        console.log(JSON.parse(value));
+        console.log('Log data successfully copied to clipboard', JSON.parse(value));
 
         this.jsonCopied = true;
 
