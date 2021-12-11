@@ -28,7 +28,7 @@
             </template>
         </div>
         <div>
-            <lightning-datatable columns={columns} data={records} hide-checkbox-column key-field="Id" onrowaction={handleRowActions} show-row-number-column>
+            <lightning-datatable columns={columns} data={records} hide-checkbox-column key-field="Id" onrowaction={handleRowAction} show-row-number-column>
             </lightning-datatable>
         </div>
     </lightning-card>
@@ -405,8 +405,21 @@
 
                 <!-- Record modal footer -->
                 <footer class="slds-modal__footer" if:false={isReadOnlyMode}>
-                    <lightning-button class="slds-p-around--xx-small" label="Cancel" onclick={closeRecordModal} title="Cancel"></lightning-button>
-                    <lightning-button class="slds-p-around--xx-small" data-id="save-btn" label="Save" onclick={saveCurrentRecord} title="Save" variant="brand"></lightning-button>
+                    <lightning-button
+                        class="slds-p-around--xx-small"
+                        data-id="cancel-btn"
+                        label="Cancel"
+                        onclick={closeRecordModal}
+                        title="Cancel"
+                    ></lightning-button>
+                    <lightning-button
+                        class="slds-p-around--xx-small"
+                        data-id="save-btn"
+                        label="Save"
+                        onclick={saveCurrentRecord}
+                        title="Save"
+                        variant="brand"
+                    ></lightning-button>
                 </footer>
             </div>
         </section>

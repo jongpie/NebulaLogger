@@ -154,7 +154,7 @@ describe('Logger Settings lwc tests', () => {
         expect(datatable.data).toEqual(mockRecords);
     });
 
-    it('shows record modal when new button is clicked', async () => {
+    it("shows record modal when 'new' button is clicked", async () => {
         const loggerSettingsElement = await initializeElement(true);
         createRecord.mockResolvedValue(mockNewRecord);
 
@@ -217,7 +217,57 @@ describe('Logger Settings lwc tests', () => {
         expect(isAnonymousModeEnabled__cField.checked).toEqual(mockNewRecord.IsAnonymousModeEnabled__c);
     });
 
-    it('saves new organization record when save button is clicked', async () => {
+    it("closes record modal when 'cancel' button is clicked", async () => {
+        const loggerSettingsElement = await initializeElement(true);
+        createRecord.mockResolvedValue(mockNewRecord);
+
+        // Clickety click
+        const newRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="new-btn"]');
+        newRecordBtn.click();
+        // Yes, 2 calls for Promise.resolve() are needed... because of... reasons?
+        await Promise.resolve();
+        await Promise.resolve();
+
+        // Check the modal
+        expect(createRecord).toHaveBeenCalledTimes(1);
+        let recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
+        expect(recordModal).toBeTruthy();
+
+        const cancelBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="cancel-btn"]');
+        cancelBtn.click();
+        await Promise.resolve();
+        recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
+        expect(recordModal).toBeFalsy();
+    });
+
+    it("closes record modal when 'Escape' key is pressed", async () => {
+        const loggerSettingsElement = await initializeElement(true);
+        createRecord.mockResolvedValue(mockNewRecord);
+
+        // Clickety click
+        const newRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="new-btn"]');
+        newRecordBtn.click();
+        // Yes, 2 calls for Promise.resolve() are needed... because of... reasons?
+        await Promise.resolve();
+        await Promise.resolve();
+
+        const datatable = loggerSettingsElement.shadowRoot.querySelector('lightning-datatable');
+        expect(datatable).toBeTruthy();
+        expect(datatable.data).toEqual(mockRecords);
+
+        // Check the modal
+        expect(createRecord).toHaveBeenCalledTimes(1);
+        let recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
+        expect(recordModal).toBeTruthy();
+
+        const escapeKeyboardShortcutEvent = new KeyboardEvent('keydown', { code: 'Escape' });
+        recordModal.dispatchEvent(escapeKeyboardShortcutEvent);
+        await Promise.resolve();
+        recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
+        expect(recordModal).toBeFalsy();
+    });
+
+    it("saves new organization record when 'save' button is clicked", async () => {
         const loggerSettingsElement = await initializeElement(true);
         createRecord.mockResolvedValue(mockNewRecord);
         saveRecord.mockResolvedValue(null);
@@ -233,37 +283,161 @@ describe('Logger Settings lwc tests', () => {
         expect(datatable).toBeTruthy();
         expect(datatable.data).toEqual(mockRecords);
 
-        // Check the modal
-        expect(createRecord).toHaveBeenCalledTimes(1);
-        const recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
-        expect(recordModal).toBeTruthy();
-
-        // Check each of the fields within the modal to ensure the default field values are populated
+        // Set the values of the required fields
         const setupOwnerTypeField = loggerSettingsElement.shadowRoot.querySelector('[data-id="setupOwnerType"]');
         setupOwnerTypeField.value = 'Organization';
-        expect(setupOwnerTypeField).toBeTruthy();
-        expect(setupOwnerTypeField.options).toEqual(mockPicklistOptions.setupOwnerTypeOptions);
+        setupOwnerTypeField.dispatchEvent(new CustomEvent('change'));
 
+        const specifiedLoggingLevel = 'FINEST';
         const loggingLevelField = loggerSettingsElement.shadowRoot.querySelector('[data-id="LoggingLevel__c"]');
-        expect(loggingLevelField).toBeTruthy();
-        expect(loggingLevelField.options).toEqual(mockPicklistOptions.loggingLevelOptions);
-        expect(loggingLevelField.value).toEqual(mockNewRecord.LoggingLevel__c);
+        loggingLevelField.value = specifiedLoggingLevel;
+        loggingLevelField.dispatchEvent(new CustomEvent('change'));
 
+        const specifiedSaveMethod = 'QUEUEABLE';
         const defaultSaveMethodField = loggerSettingsElement.shadowRoot.querySelector('[data-id="DefaultSaveMethod__c"]');
-        expect(defaultSaveMethodField).toBeTruthy();
-        expect(defaultSaveMethodField.options).toEqual(mockPicklistOptions.saveMethodOptions);
-        expect(defaultSaveMethodField.value).toEqual(mockNewRecord.DefaultSaveMethod__c);
+        defaultSaveMethodField.value = specifiedSaveMethod;
+        defaultSaveMethodField.dispatchEvent(new CustomEvent('change'));
 
+        // Save the record & verify the call to the Apex controller
         const expectedNewRecord = { ...mockNewRecord };
+        expectedNewRecord.SetupOwnerId = mockOrganization.Id;
+        expectedNewRecord.LoggingLevel__c = specifiedLoggingLevel;
+        expectedNewRecord.DefaultSaveMethod__c = specifiedSaveMethod;
         const expectedApexParameter = { settingsRecord: expectedNewRecord };
-        const saveRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="save-btn"]');
+        const saveRecordBtn = loggerSettingsElement.shadowRoot.querySelector('[data-id="save-btn"]');
         saveRecordBtn.click();
         await Promise.resolve();
         expect(saveRecord).toHaveBeenCalledTimes(1);
         expect(saveRecord.mock.calls[0][0]).toEqual(expectedApexParameter);
     });
 
-    it('deletes record when delete row action is clicked', async () => {
+    it("saves new organization record when 'ctrl + s' shortcut is pressed", async () => {
+        const loggerSettingsElement = await initializeElement(true);
+        createRecord.mockResolvedValue(mockNewRecord);
+        saveRecord.mockResolvedValue(null);
+
+        // Clickety click
+        const newRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="new-btn"]');
+        newRecordBtn.click();
+        // Yes, 2 calls for Promise.resolve() are needed... because of... reasons?
+        await Promise.resolve();
+        await Promise.resolve();
+
+        const datatable = loggerSettingsElement.shadowRoot.querySelector('lightning-datatable');
+        expect(datatable).toBeTruthy();
+        expect(datatable.data).toEqual(mockRecords);
+
+        // Set the values of the required fields
+        const setupOwnerTypeField = loggerSettingsElement.shadowRoot.querySelector('[data-id="setupOwnerType"]');
+        setupOwnerTypeField.value = 'Organization';
+        setupOwnerTypeField.dispatchEvent(new CustomEvent('change'));
+
+        const specifiedLoggingLevel = 'FINEST';
+        const loggingLevelField = loggerSettingsElement.shadowRoot.querySelector('[data-id="LoggingLevel__c"]');
+        loggingLevelField.value = specifiedLoggingLevel;
+        loggingLevelField.dispatchEvent(new CustomEvent('change'));
+
+        const specifiedSaveMethod = 'QUEUEABLE';
+        const defaultSaveMethodField = loggerSettingsElement.shadowRoot.querySelector('[data-id="DefaultSaveMethod__c"]');
+        defaultSaveMethodField.value = specifiedSaveMethod;
+        defaultSaveMethodField.dispatchEvent(new CustomEvent('change'));
+
+        // Save the record & verify the call to the Apex controller
+        const expectedNewRecord = { ...mockNewRecord };
+        expectedNewRecord.SetupOwnerId = mockOrganization.Id;
+        expectedNewRecord.LoggingLevel__c = specifiedLoggingLevel;
+        expectedNewRecord.DefaultSaveMethod__c = specifiedSaveMethod;
+        const expectedApexParameter = { settingsRecord: expectedNewRecord };
+
+        const saveKeyboardShortcutEvent = new KeyboardEvent('keydown', { code: 'KeyS', ctrlKey: true });
+        let recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
+        recordModal.dispatchEvent(saveKeyboardShortcutEvent);
+        await Promise.resolve();
+        await Promise.resolve();
+        recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
+        expect(recordModal).toBeFalsy();
+        expect(saveRecord).toHaveBeenCalledTimes(1);
+        expect(saveRecord.mock.calls[0][0]).toEqual(expectedApexParameter);
+    });
+
+    it("shows existing record as read-only when 'view' row action is clicked", async () => {
+        const loggerSettingsElement = await initializeElement(true);
+        deleteRecord.mockResolvedValue(null);
+
+        // Verify the expected Apex/framework calls
+        expect(deleteRecord).toHaveBeenCalledTimes(0);
+
+        // Check the component
+        const datatable = loggerSettingsElement.shadowRoot.querySelector('lightning-datatable');
+        const firstRowRecordId = datatable.data[0].record.Id;
+        const rowActionEvent = new CustomEvent('rowaction', {
+            detail: {
+                action: { name: 'view' },
+                row: { Id: firstRowRecordId }
+            }
+        });
+        datatable.dispatchEvent(rowActionEvent);
+        await Promise.resolve();
+
+        const recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
+        expect(recordModal).toBeTruthy();
+        const saveBtn = loggerSettingsElement.shadowRoot.querySelector('[data-id="save-btn"]');
+        expect(saveBtn).toBeFalsy();
+        const cancelBtn = loggerSettingsElement.shadowRoot.querySelector('[data-id="cancel-btn"]');
+        expect(cancelBtn).toBeFalsy();
+
+        const inputFields = loggerSettingsElement.shadowRoot.querySelectorAll('lightning-input, lightning-combobox');
+        expect(inputFields.length).toBeGreaterThanOrEqual(1);
+        inputFields.forEach(inputField => {
+            expect(inputField.readOnly).toBe(true);
+        });
+    });
+
+    it("shows existing record as editable when 'edit' row action is clicked", async () => {
+        const loggerSettingsElement = await initializeElement(true);
+        deleteRecord.mockResolvedValue(null);
+
+        // Verify the expected Apex/framework calls
+        expect(deleteRecord).toHaveBeenCalledTimes(0);
+
+        // Check the component
+        const datatable = loggerSettingsElement.shadowRoot.querySelector('lightning-datatable');
+        const firstRowRecordId = datatable.data[0].record.Id;
+        const rowActionEvent = new CustomEvent('rowaction', {
+            detail: {
+                action: { name: 'edit' },
+                row: { Id: firstRowRecordId }
+            }
+        });
+        datatable.dispatchEvent(rowActionEvent);
+        await Promise.resolve();
+
+        const recordModal = loggerSettingsElement.shadowRoot.querySelector('.slds-modal');
+        expect(recordModal).toBeTruthy();
+        const saveBtn = loggerSettingsElement.shadowRoot.querySelector('[data-id="save-btn"]');
+        expect(saveBtn).toBeTruthy();
+        const cancelBtn = loggerSettingsElement.shadowRoot.querySelector('[data-id="cancel-btn"]');
+        expect(cancelBtn).toBeTruthy();
+
+        const expectedEditableFields = [
+            'IsEnabled__c',
+            'LoggingLevel__c',
+            'DefaultNumberOfDaysToRetainLogs__c',
+            'DefaultLogShareAccessLevel__c',
+            'DefaultSaveMethod__c',
+            'IsApexSystemDebugLoggingEnabled__c',
+            'IsComponentConsoleLoggingEnabled__c',
+            'IsDataMaskingEnabled__c',
+            'StripInaccessibleRecordFields__c',
+            'IsAnonymousModeEnabled__c'
+        ];
+        expectedEditableFields.forEach(fieldDataId => {
+            const inputField = loggerSettingsElement.shadowRoot.querySelector('[data-id="' + fieldDataId + '"]');
+            expect(inputField.readOnly).toBe(false);
+        });
+    });
+
+    it("deletes record when 'delete' row action is clicked", async () => {
         const loggerSettingsElement = await initializeElement(true);
         deleteRecord.mockResolvedValue(null);
 

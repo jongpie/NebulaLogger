@@ -63,15 +63,13 @@ export default class LoggerSettings extends LightningElement {
     }
 
     @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_OBJECT })
-    getLoggerSettingsObjectInfo({ data, error }) {
+    getLoggerSettingsObjectInfo({ data }) {
         if (data) {
             this.loggerSettingsFields = data.fields;
             canUserModifyLoggerSettings().then(result => {
                 this.canUserModifyLoggerSettings = result;
                 this._loadTableColumns();
             });
-        } else if (error) {
-            this._handleError(error);
         }
     }
 
@@ -99,7 +97,7 @@ export default class LoggerSettings extends LightningElement {
             .catch(this._handleError);
     }
 
-    handleRowActions(event) {
+    handleRowAction(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
         /* eslint-disable-next-line default-case */
@@ -146,9 +144,7 @@ export default class LoggerSettings extends LightningElement {
                     this.setupOwnerSearchResults = results;
                     this.showDropdown = true;
                 })
-                .catch(error => {
-                    this._handleError(error);
-                });
+                .catch(this._handleError);
         } else {
             this.showDropdown = false;
         }
@@ -204,6 +200,7 @@ export default class LoggerSettings extends LightningElement {
 
     _setIsNewOrganizationRecord() {
         this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.setupOwnerType === 'Organization';
+        this.currentRecord.SetupOwnerId = this.organization.Id;
         this.currentRecord.setupOwnerName = this.organization.Name;
     }
 
