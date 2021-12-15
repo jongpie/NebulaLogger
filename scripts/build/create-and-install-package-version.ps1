@@ -98,12 +98,12 @@ $packageVersionId = Create-New-Package-Version
 $packageVersionId = "$packageVersionId".Trim()
 Write-Output "Created new package version ID $packageVersionId"
 Write-Output "Adding new package version to $sfdxProjectJsonPath"
-prettier --write $sfdxProjectJsonPath
+npx prettier --write $sfdxProjectJsonPath
 git add $sfdxProjectJsonPath
 
 Write-Output "Adding new package version to $readmePath"
 Update-README-Package-Version-Id $packageVersionId
-prettier --write $readmePath
+npx prettier --write $readmePath
 git add $readmePath
 
 Write-Output "Installing new package version ID $packageVersionId for target user $targetusername"
