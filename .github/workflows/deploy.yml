@@ -62,14 +62,11 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: 'Install Salesforce CLI'
-              run: npm install sfdx-cli --global
-
             - name: 'Verify package version number is updated'
               if: ${{ github.event_name == 'pull_request' }}
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
                   rm ./DEVHUB_SFDX_URL.txt
                   npm run package:version:number:verify
               env:
@@ -143,14 +140,11 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: 'Install Salesforce CLI'
-              run: npm install sfdx-cli --global
-
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
               env:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
@@ -193,14 +187,11 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: 'Install Salesforce CLI'
-              run: npm install sfdx-cli --global
-
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
               env:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
@@ -264,14 +255,11 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: 'Install Salesforce CLI'
-              run: npm install sfdx-cli --global
-
             - name: 'Authorize Packaging Org'
               shell: bash
               run: |
                   echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
               env:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
@@ -279,7 +267,7 @@ jobs:
               shell: bash
               run: |
                   echo ${{ env.PKG_DEMO_ORG_SFDX_URL }} > ./PKG_DEMO_ORG_SFDX_URL.txt
-                  sfdx auth:sfdxurl:store --sfdxurlfile ./PKG_DEMO_ORG_SFDX_URL.txt --setalias nebula-logger-package-demo
+                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./PKG_DEMO_ORG_SFDX_URL.txt --setalias nebula-logger-package-demo
               env:
                   PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 

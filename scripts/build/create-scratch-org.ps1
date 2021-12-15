@@ -12,7 +12,7 @@ if ($devHubs -ne $null) {
     # Otherwise, get the configured default dev hub if no devHubs have been specified via parameter
     Write-Output "No dev hubs specified, checking for default dev hub instead"
 
-    $defaultDevHub = (sfdx config:get defaultdevhubusername  --json | ConvertFrom-Json).result.value
+    $defaultDevHub = (npx sfdx config:get defaultdevhubusername  --json | ConvertFrom-Json).result.value
     Write-Output "Default Dev Hub: $defaultDevHub"
 
     [string[]]$devHubs = $defaultDevHub
@@ -29,22 +29,22 @@ Write-Output "Scratch org duration in days: $durationdays"
 
 foreach($devHub in $devHubs) {
     Write-Output "Trying dev hub: $devHub"
-    $scratchOrgAllotment = ((sfdx force:limits:api:display --json --targetusername $devHub | ConvertFrom-Json).result | Where-Object -Property name -eq "DailyScratchOrgs").remaining
+    $scratchOrgAllotment = ((npx sfdx force:limits:api:display --json --targetusername $devHub | ConvertFrom-Json).result | Where-Object -Property name -eq "DailyScratchOrgs").remaining
     Write-Output "Total remaining scratch orgs for the day for $devHub : $scratchOrgAllotment"
 
     if($scratchOrgAllotment -gt 0) {
         Write-Output "Beginning scratch org creation"
         # Create Scratch Org
         try {
-            $scratchOrgCreateMessage = sfdx force:org:create --setdefaultusername --targetdevhubusername $devHub --durationdays $durationdays --definitionfile $definitionFile --wait 10
-            # Sometimes SFDX lies (UTC date problem?) about the number of scratch orgs remaining in a given day
+            $scratchOrgCreateMessage = npx sfdx force:org:create --setdefaultusername --targetdevhubusername $devHub --durationdays $durationdays --definitionfile $definitionFile --wait 10
+            # Sometimes npx sfdx lies (UTC date problem?) about the number of scratch orgs remaining in a given day
             # The other issue is that this doesn't throw, so we have to test the response message ourselves
             Write-Output "Scratch org creation mesage: $scratchOrgCreateMessage"
             if($scratchOrgCreateMessage -eq 'The signup request failed because this organization has reached its active scratch org limit') {
                 throw $1
             }
 
-            $defaultUsername = (sfdx config:get defaultusername  --json | ConvertFrom-Json).result.value
+            $defaultUsername = (npx sfdx config:get defaultusername  --json | ConvertFrom-Json).result.value
             if ($defaultUsername -ne $null) {
                 Write-Output "Scratch org created in dev hub $devHub, default username is: $defaultUsername"
                 break
@@ -55,7 +55,7 @@ foreach($devHub in $devHubs) {
     }
 }
 
-$defaultUsername = (sfdx config:get defaultusername  --json | ConvertFrom-Json).result.value
+$defaultUsername = (npx sfdx config:get defaultusername  --json | ConvertFrom-Json).result.value
 if ($defaultUsername -eq $null) {
     throw "Scratch org creation failed"
 }
