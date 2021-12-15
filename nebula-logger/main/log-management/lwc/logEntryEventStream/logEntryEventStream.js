@@ -70,9 +70,14 @@ export default class LogEntryEventStream extends LightningElement {
         this.cancelSubscription();
     }
 
-    createSubscription() {
-        subscribe(this._channel, -1, this.subscriptionCallback).then(response => {
-            this._subscription = response;
+    async createSubscription() {
+        this._subscription = await subscribe(this._channel, -2, event => {
+            const logEntryEvent = event.data.payload;
+            // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
+            // but it doesn't seem to be populated via empApi, so use a synthetic key instead
+            logEntryEvent.key = logEntryEvent.TransactionId__c + '__' + logEntryEvent.TransactionEntryNumber__c;
+            this.unfilteredEvents.unshift(logEntryEvent);
+            this._filterEvents();
         });
     }
 
@@ -105,15 +110,6 @@ export default class LogEntryEventStream extends LightningElement {
         // eslint-disable-next-line
         this.isStreamEnabled ? this.createSubscription() : this.cancelSubscription();
     }
-
-    subscriptionCallback = response => {
-        const logEntryEvent = response.data.payload;
-        // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
-        // but it doesn't seem to be populated via empApi, so use a synthetic key instead
-        logEntryEvent.key = logEntryEvent.TransactionId__c + '__' + logEntryEvent.TransactionEntryNumber__c;
-        this.unfilteredEvents.unshift(logEntryEvent);
-        this._filterEvents();
-    };
 
     // Private functions
     _filterEvents() {
