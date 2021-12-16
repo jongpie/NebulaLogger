@@ -99,6 +99,7 @@
                                                 <template if:false={showPill}>
                                                     <lightning-input
                                                         autocomplete="off"
+                                                        data-id="SetupOwnerRecordSearch"
                                                         label="Setup Owner"
                                                         onblur={handleRecordSearchBlur}
                                                         onchange={handleRecordSearch}
@@ -138,13 +139,14 @@
                                                 <!-- Dropdown List -->
                                                 <template if:true={showDropdown}>
                                                     <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid">
-                                                        <ul class="slds-listbox slds-listbox_vertical">
+                                                        <ul class="slds-listbox slds-listbox_vertical" data-id="SetupOwnerSearchResults">
                                                             <template for:each={setupOwnerSearchResults} for:item="matchingRecord">
                                                                 <li
                                                                     key={matchingRecord.recordId}
                                                                     data-key={matchingRecord.recordId}
+                                                                    data-label={matchingRecord.label}
                                                                     class="slds-listbox__item"
-                                                                    onmousedown={handleSearchResultSelection}
+                                                                    onclick={handleSearchResultSelection}
                                                                 >
                                                                     <div
                                                                         class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"

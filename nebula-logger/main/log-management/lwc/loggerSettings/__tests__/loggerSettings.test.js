@@ -23,6 +23,7 @@ const mockPicklistOptions = require('./data/getPicklistOptions.json');
 // Mock data
 const mockRecords = require('./data/getRecords.json');
 const mockNewRecord = require('./data/createRecord.json');
+const mockSearchResults = require('./data/searchForSetupOwner.json');
 
 jest.mock(
     '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings',
@@ -94,6 +95,16 @@ jest.mock(
     { virtual: true }
 );
 
+jest.mock(
+    '@salesforce/apex/LoggerSettingsController.searchForSetupOwner',
+    () => {
+        return {
+            default: jest.fn()
+        };
+    },
+    { virtual: true }
+);
+
 async function initializeElement(enableModifyAccess) {
     // Assign mock values for resolved Apex promises
     canUserModifyLoggerSettings.mockResolvedValue(enableModifyAccess);
@@ -110,6 +121,13 @@ async function initializeElement(enableModifyAccess) {
 
     return loggerSettingsElement;
 }
+
+test.todo('test for search term too short (2 characters or less)');
+test.todo('test for no search results');
+test.todo('test for handleRecordSearchBlur()');
+test.todo('test for handleRemoveSetupOwner()');
+test.todo('test for invalid inputs when saving');
+test.todo('test for error handling via toast messages');
 
 describe('Logger Settings lwc tests', () => {
     afterEach(() => {
@@ -328,16 +346,16 @@ describe('Logger Settings lwc tests', () => {
         loggingLevelField.value = specifiedLoggingLevel;
         loggingLevelField.dispatchEvent(new CustomEvent('change'));
 
-        const specifiedSaveMethod = 'QUEUEABLE';
-        const defaultSaveMethodField = loggerSettingsElement.shadowRoot.querySelector('[data-id="DefaultSaveMethod__c"]');
-        defaultSaveMethodField.value = specifiedSaveMethod;
-        defaultSaveMethodField.dispatchEvent(new CustomEvent('change'));
+        const isDataMaskingEnabled = false;
+        const isDataMaskingEnabledField = loggerSettingsElement.shadowRoot.querySelector('[data-id="IsDataMaskingEnabled__c"]');
+        isDataMaskingEnabledField.checked = isDataMaskingEnabled;
+        isDataMaskingEnabledField.dispatchEvent(new CustomEvent('change'));
 
         // Save the record & verify the call to the Apex controller
         const expectedNewRecord = { ...mockNewRecord };
         expectedNewRecord.SetupOwnerId = mockOrganization.Id;
         expectedNewRecord.LoggingLevel__c = specifiedLoggingLevel;
-        expectedNewRecord.DefaultSaveMethod__c = specifiedSaveMethod;
+        expectedNewRecord.IsDataMaskingEnabled__c = isDataMaskingEnabled;
         const expectedApexParameter = { settingsRecord: expectedNewRecord };
 
         const saveKeyboardShortcutEvent = new KeyboardEvent('keydown', { code: 'KeyS', ctrlKey: true });
@@ -349,6 +367,79 @@ describe('Logger Settings lwc tests', () => {
         expect(recordModal).toBeFalsy();
         expect(saveRecord).toHaveBeenCalledTimes(1);
         expect(saveRecord.mock.calls[0][0]).toEqual(expectedApexParameter);
+    });
+
+    it("saves new user record when 'save' button is clicked", async () => {
+        const loggerSettingsElement = await initializeElement(true);
+        createRecord.mockResolvedValue(mockNewRecord);
+        searchForSetupOwner.mockResolvedValue(mockSearchResults);
+        saveRecord.mockResolvedValue(null);
+
+        // Clickety click
+        const newRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="new-btn"]');
+        newRecordBtn.click();
+        // Yes, 2 calls for Promise.resolve() are needed... because of... reasons?
+        await Promise.resolve();
+        await Promise.resolve();
+
+        const datatable = loggerSettingsElement.shadowRoot.querySelector('lightning-datatable');
+        expect(datatable).toBeTruthy();
+        expect(datatable.data).toEqual(mockRecords);
+
+        // Set the values of the required fields
+        const setupOwnerTypeField = loggerSettingsElement.shadowRoot.querySelector('[data-id="setupOwnerType"]');
+        setupOwnerTypeField.value = 'User';
+        setupOwnerTypeField.dispatchEvent(new CustomEvent('change'));
+        await Promise.resolve();
+
+        // Simulate a record search
+        const specifieUserSearchTerm = 'some.user@fakesearch.com';
+        const setupOwnerRecordSearchField = loggerSettingsElement.shadowRoot.querySelector('[data-id="SetupOwnerRecordSearch"]');
+        expect(setupOwnerRecordSearchField).toBeTruthy();
+        setupOwnerRecordSearchField.value = specifieUserSearchTerm;
+        setupOwnerRecordSearchField.dispatchEvent(
+            new CustomEvent('change', {
+                detail: {
+                    value: specifieUserSearchTerm
+                }
+            })
+        );
+        await Promise.resolve();
+        await Promise.resolve();
+        const expectedApexSearchParameter = { setupOwnerType: 'User', searchTerm: specifieUserSearchTerm };
+        expect(searchForSetupOwner.mock.calls[0][0]).toEqual(expectedApexSearchParameter);
+
+        // Verify that the search results are displayed
+        const setupOwnerSearchResultsElement = loggerSettingsElement.shadowRoot.querySelector('[data-id="SetupOwnerSearchResults"');
+        expect(setupOwnerSearchResultsElement).toBeTruthy();
+        const renderedSearchResults = Object.values(setupOwnerSearchResultsElement.querySelectorAll('li'));
+        expect(renderedSearchResults.length).toBe(mockSearchResults.length);
+
+        // Select a search result
+        const expectedResult = mockSearchResults[0];
+        const selectedResult = renderedSearchResults[0];
+        expect(selectedResult.dataset.key).toBe(expectedResult.recordId);
+        selectedResult.dispatchEvent(
+            new CustomEvent('click', {
+                currentTarget: {
+                    dataset: { key: expectedResult.recordId }
+                }
+            })
+        );
+        await Promise.resolve();
+        await Promise.resolve();
+
+        // Save the record & verify the call to the Apex controller
+        const expectedNewRecord = { ...mockNewRecord };
+        expectedNewRecord.SetupOwnerId = expectedResult.recordId;
+        expectedNewRecord.setupOwnerName = expectedResult.label;
+        expectedNewRecord.setupOwnerType = 'User';
+        const expectedApexSaveParameter = { settingsRecord: expectedNewRecord };
+        const saveRecordBtn = loggerSettingsElement.shadowRoot.querySelector('[data-id="save-btn"]');
+        saveRecordBtn.click();
+        await Promise.resolve();
+        expect(saveRecord).toHaveBeenCalledTimes(1);
+        expect(saveRecord.mock.calls[0][0]).toEqual(expectedApexSaveParameter);
     });
 
     it("shows existing record as read-only when 'view' row action is clicked", async () => {

@@ -134,6 +134,7 @@ export default class LoggerSettings extends LightningElement {
     }
 
     handleRecordSearch(event) {
+        this.showDropdown = false;
         this.setupOwnerSearchTerm = event.detail.value;
         if (this.setupOwnerSearchTerm && this.setupOwnerSearchTerm.length >= 2) {
             searchForSetupOwner({
@@ -145,8 +146,6 @@ export default class LoggerSettings extends LightningElement {
                     this.showDropdown = true;
                 })
                 .catch(this._handleError);
-        } else {
-            this.showDropdown = false;
         }
     }
 
@@ -157,6 +156,7 @@ export default class LoggerSettings extends LightningElement {
     handleSearchResultSelection(event) {
         if (event.currentTarget.dataset.key) {
             this.currentRecord.SetupOwnerId = event.currentTarget.dataset.key;
+            this.currentRecord.setupOwnerName = event.currentTarget.dataset.label;
 
             let index = this.setupOwnerSearchResults.findIndex(x => x.recordId === event.currentTarget.dataset.key);
             if (index !== -1) {
