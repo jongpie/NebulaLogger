@@ -48,6 +48,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.ERROR`
+     * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
@@ -57,6 +58,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.WARN`
+     * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
@@ -66,6 +68,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.INFO`
+     * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
@@ -75,6 +78,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.DEBUG`
+     * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
@@ -84,6 +88,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINE`
+     * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
@@ -93,6 +98,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINER`
+     * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api
@@ -102,6 +108,7 @@ export default class Logger extends LightningElement {
 
     /**
      * @description Creates a new log entry with logging level == `LoggingLevel.FINEST`
+     * @param {String} message The string to use to set the entry's message field
      * @return {LogEntryBuilder} The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     @api

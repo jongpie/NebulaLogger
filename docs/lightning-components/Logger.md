@@ -8,25 +8,25 @@
 <dd><p>Sets the scenario name for the current transaction - this is stored in <code>LogEntryEvent__e.Scenario__c</code>
              and <code>Log__c.Scenario__c</code>, and can be used to filter &amp; group logs</p>
 </dd>
-<dt><a href="#error">error()</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#error">error(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.ERROR</code></p>
 </dd>
-<dt><a href="#warn">warn()</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#warn">warn(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.WARN</code></p>
 </dd>
-<dt><a href="#info">info()</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#info">info(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.INFO</code></p>
 </dd>
-<dt><a href="#debug">debug()</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#debug">debug(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.DEBUG</code></p>
 </dd>
-<dt><a href="#fine">fine()</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#fine">fine(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.FINE</code></p>
 </dd>
-<dt><a href="#finer">finer()</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#finer">finer(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.FINER</code></p>
 </dd>
-<dt><a href="#finest">finest()</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#finest">finest(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.FINEST</code></p>
 </dd>
 <dt><a href="#getBufferSize">getBufferSize()</a> <code>Integer</code></dt>
@@ -64,60 +64,95 @@ and `Log__c.Scenario__c`, and can be used to filter & group logs
 
 <a name="error"></a>
 
-## error() <code>LogEntryBuilder</code>
+## error(message) <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
 **Kind**: global function  
-**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods  
+**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+
+| Param   | Type                | Description                                        |
+| ------- | ------------------- | -------------------------------------------------- |
+| message | <code>String</code> | The string to use to set the entry's message field |
+
 <a name="warn"></a>
 
-## warn() <code>LogEntryBuilder</code>
+## warn(message) <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
 
 **Kind**: global function  
-**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods  
+**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+
+| Param   | Type                | Description                                        |
+| ------- | ------------------- | -------------------------------------------------- |
+| message | <code>String</code> | The string to use to set the entry's message field |
+
 <a name="info"></a>
 
-## info() <code>LogEntryBuilder</code>
+## info(message) <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
 
 **Kind**: global function  
-**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods  
+**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+
+| Param   | Type                | Description                                        |
+| ------- | ------------------- | -------------------------------------------------- |
+| message | <code>String</code> | The string to use to set the entry's message field |
+
 <a name="debug"></a>
 
-## debug() <code>LogEntryBuilder</code>
+## debug(message) <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
 **Kind**: global function  
-**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods  
+**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+
+| Param   | Type                | Description                                        |
+| ------- | ------------------- | -------------------------------------------------- |
+| message | <code>String</code> | The string to use to set the entry's message field |
+
 <a name="fine"></a>
 
-## fine() <code>LogEntryBuilder</code>
+## fine(message) <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
 
 **Kind**: global function  
-**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods  
+**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+
+| Param   | Type                | Description                                        |
+| ------- | ------------------- | -------------------------------------------------- |
+| message | <code>String</code> | The string to use to set the entry's message field |
+
 <a name="finer"></a>
 
-## finer() <code>LogEntryBuilder</code>
+## finer(message) <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
 
 **Kind**: global function  
-**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods  
+**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+
+| Param   | Type                | Description                                        |
+| ------- | ------------------- | -------------------------------------------------- |
+| message | <code>String</code> | The string to use to set the entry's message field |
+
 <a name="finest"></a>
 
-## finest() <code>LogEntryBuilder</code>
+## finest(message) <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
 **Kind**: global function  
-**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods  
+**Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
+
+| Param   | Type                | Description                                        |
+| ------- | ------------------- | -------------------------------------------------- |
+| message | <code>String</code> | The string to use to set the entry's message field |
+
 <a name="getBufferSize"></a>
 
 ## getBufferSize() <code>Integer</code>
