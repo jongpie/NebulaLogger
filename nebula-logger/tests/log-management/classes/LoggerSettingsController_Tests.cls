@@ -118,7 +118,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_setupOwnerType_picklist_options() {
-        List<String> expectedSetupOwnerType = new List<String>{ 'Organization', 'Profile', 'User' };
+        Set<String> expectedSetupOwnerType = new Set<String>{ 'Organization', 'Profile', 'User' };
         Integer expectedSetupOwnerTypeSize = 4; // Options are org, profile, and user, and '--NONE--' is automatically included
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().setupOwnerTypeOptions;
         System.assertEquals(expectedSetupOwnerTypeSize, picklistOptions.size());
@@ -127,14 +127,14 @@ private class LoggerSettingsController_Tests {
                 System.assertEquals('--None--', picklistOption.label);
             } else {
                 System.assertEquals(picklistOption.value, picklistOption.label);
-                System.assertEquals(true, new Set<String>(expectedSetupOwnerType).contains(picklistOption.value));
+                System.assertEquals(true, expectedSetupOwnerType.contains(picklistOption.value));
             }
         }
     }
 
     @IsTest
     static void it_should_return_shareAccessLevel_picklist_options() {
-        List<String> expectedShareAccessLevels = new List<String>();
+        Set<String> expectedShareAccessLevels = new Set<String>();
         for (Schema.PicklistEntry picklistEntry : Schema.Log__Share.AccessLevel.getDescribe().getPicklistValues()) {
             // The 'All' access level is an internal value and can't be granted
             if (picklistEntry.value != 'All') {
@@ -149,7 +149,7 @@ private class LoggerSettingsController_Tests {
                 System.assertEquals('--None--', picklistOption.label);
             } else {
                 System.assertEquals(picklistOption.value, picklistOption.label);
-                System.assertEquals(true, new Set<String>(expectedShareAccessLevels).contains(picklistOption.value));
+                System.assertEquals(true, expectedShareAccessLevels.contains(picklistOption.value));
             }
         }
     }
@@ -176,12 +176,8 @@ private class LoggerSettingsController_Tests {
         System.assertEquals(testSettingsRecordsById.size(), recordResults.size());
         for (LoggerSettingsController.SettingsRecordResult result : recordResults) {
             LoggerSettings__c matchingRecord = testSettingsRecordsById.get(result.record.Id);
-            // String expectedSetupOwnerType = matchingRecord.SetupOwner.Type;
-            // String expectedSetupOwnerName = matchingRecord.SetupOwner.Name;
             System.assertNotEquals(null, matchingRecord);
             System.assertEquals(matchingRecord, result.record);
-            // System.assertEquals(expectedSetupOwnerType, result.setupOwnerType);
-            // System.assertEquals(expectedSetupOwnerName, result.setupOwnerName);
             System.assertEquals(matchingRecord.CreatedBy.Username, result.createdByUsername);
             System.assertEquals(matchingRecord.LastModifiedBy.Username, result.lastModifiedByUsername);
         }
@@ -225,18 +221,11 @@ private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_throw_exception_when_saving_invalid_record() {
         LoggerSettings__c invalidRecord = null;
-        String expectedExceptionMessage;
-        try {
-            upsert invalidRecord;
-        } catch (Exception ex) {
-            expectedExceptionMessage = ex.getMessage();
-        }
-
         try {
             LoggerSettingsController.saveRecord(invalidRecord);
             System.assert(false, 'Expected exception from previous line, this assert should not run');
         } catch (Exception ex) {
-            System.assert(ex.getMessage().contains(expectedExceptionMessage), 'Exception did not contain expected message, received: ' + ex.getMessage());
+            System.assertEquals(AuraHandledException.class.getName(), ex.getTypeName());
         }
     }
 

@@ -142,7 +142,6 @@ describe('Logger Settings lwc tests', () => {
 
         // Check the component
         expect(document.title).toEqual('Logger Settings');
-        // expect(getObjectInfo.getLastConfig()).toEqual(mockObjectInfo);
         const refreshBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="refresh-btn"]');
         expect(refreshBtn).toBeTruthy();
         const newRecordBtn = loggerSettingsElement.shadowRoot.querySelector('lightning-button[data-id="new-btn"]');

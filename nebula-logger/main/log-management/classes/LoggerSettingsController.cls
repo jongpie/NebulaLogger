@@ -342,15 +342,17 @@ public without sharing class LoggerSettingsController {
          */
         public Integer compareTo(Object compareTo) {
             SettingsRecordResult that = (SettingsRecordResult) compareTo;
-            String thisCompositeName = this.setupOwnerType + '.' + this.setupOwnerName;
-            String thatCompositeName = that.setupOwnerType + '.' + that.setupOwnerName;
-            if (thisCompositeName == thatCompositeName) {
+            if (this.getCompositeName() == that.getCompositeName()) {
                 return 0;
-            } else if (thisCompositeName > thatCompositeName) {
+            } else if (this.getCompositeName() > that.getCompositeName()) {
                 return 1;
             } else {
                 return -1;
             }
+        }
+
+        private String getCompositeName() {
+            return this.setupOwnerType + '.' + this.setupOwnerName;
         }
     }
 

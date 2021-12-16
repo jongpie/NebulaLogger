@@ -200,8 +200,10 @@ export default class LoggerSettings extends LightningElement {
 
     _setIsNewOrganizationRecord() {
         this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.setupOwnerType === 'Organization';
-        this.currentRecord.SetupOwnerId = this.organization.Id;
-        this.currentRecord.setupOwnerName = this.organization.Name;
+        if (this.isNewOrganizationRecord === true) {
+            this.currentRecord.SetupOwnerId = this.organization.Id;
+            this.currentRecord.setupOwnerName = this.organization.Name;
+        }
     }
 
     _setShowSetupOwnerLookup() {
@@ -289,6 +291,7 @@ export default class LoggerSettings extends LightningElement {
         ];
 
         // For all other fields, use object API info to dynamically get field details
+        // TODO - make this array configurable by storing in LoggerParameter__mdt
         const tableColumnNames = [
             'IsEnabled__c',
             'LoggingLevel__c',
@@ -327,9 +330,9 @@ export default class LoggerSettings extends LightningElement {
         });
     }
 
-    _handleError(error) {
+    _handleError = error => {
         /* eslint-disable-next-line no-console */
-        console.error(error);
+        console.error(error.body.message, error);
         this.dispatchEvent(
             new ShowToastEvent({
                 mode: 'sticky',
@@ -338,5 +341,5 @@ export default class LoggerSettings extends LightningElement {
             })
         );
         this.showLoadingSpinner = false;
-    }
+    };
 }
