@@ -5,17 +5,20 @@
     "packageDirectories": [
         {
             "package": "Nebula Logger - Unlocked Package",
-            "path": "nebula-logger",
-            "default": false,
+            "path": "nebula-logger/core",
+            "default": true,
             "definitionFile": "config/scratch-orgs/experience-cloud-scratch-def.json",
             "versionNumber": "4.6.14.0",
             "versionName": "New Logger Settings Component",
             "versionDescription": "Adds a new loggerSettings lwc for managing LoggerSettings__c records",
-            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
+            "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
+            "unpackagedMetadata": {
+                "path": "nebula-logger/extra-tests"
+            }
         },
         {
             "package": "Nebula Logger Plugin - Logger Admin Dashboard",
-            "path": "nebula-logger-plugins/Logger-Admin-Dashboard/plugin",
+            "path": "nebula-logger/plugins/Logger-Admin-Dashboard/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Unlocked Package@4.6.12-0-log-scenario-rules"
@@ -28,7 +31,7 @@
         },
         {
             "package": "Nebula Logger Plugin - Slack",
-            "path": "nebula-logger-plugins/Slack",
+            "path": "nebula-logger/plugins/Slack",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Unlocked Package@4.6.9-0-custom-metadata-types-optimized"
@@ -40,8 +43,12 @@
             "default": false
         },
         {
-            "path": "extra-tests",
-            "default": true
+            "path": "nebula-logger/extra-tests",
+            "default": false
+        },
+        {
+            "path": "nebula-logger/recipes",
+            "default": false
         }
     ],
     "packageAliases": {
