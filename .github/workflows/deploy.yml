@@ -272,7 +272,7 @@ jobs:
                   PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 
             - name: 'Create & Install Package Version'
-              run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetusername nebula-logger-package-demo
+              run: npx pwsh ./config/scripts/build/create-and-install-package-version.ps1 -targetusername nebula-logger-package-demo
 
             - name: 'Commit New Package Version'
               run: |
