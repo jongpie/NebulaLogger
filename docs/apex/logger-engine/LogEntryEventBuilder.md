@@ -67,9 +67,9 @@ Appends the tag to the existing list of tags
 
 ##### Parameters
 
-| Param  | Description                                      |
-| ------ | ------------------------------------------------ |
-| `tags` | The string to use as a tag for the current entry |
+| Param  | Description                                              |
+| ------ | -------------------------------------------------------- |
+| `tags` | The list of strings to use as tags for the current entry |
 
 ##### Return
 

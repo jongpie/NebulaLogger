@@ -1,7 +1,8 @@
 <!--**********************************************************************************************
-* This file is part of the Nebula Logger project, released under the MIT License.                *
-* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
-***********************************************************************************************-->
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
 <template>
     <template if:true={log.data}>
         <div class="slds-col modal-header slds-modal__header">
@@ -14,6 +15,7 @@
 
         <div class="slds-col modal-footer slds-modal__footer">
             <lightning-button-stateful
+                data-id="copy-json-btn"
                 label-when-off="Copy JSON to Clipboard"
                 label-when-on="JSON Copied to Clipboard"
                 icon-name-when-off="utility:copy_to_clipboard"

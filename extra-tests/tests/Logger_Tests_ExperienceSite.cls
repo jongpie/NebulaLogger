@@ -7,7 +7,7 @@
  * @group Extra Tests
  * @description Additional integration tests for orgs with Experience Sites (Communities) enabled
  */
-@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.NcssMethodCount')
 @IsTest
 private class Logger_Tests_ExperienceSite {
     private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Schema.getGlobalDescribe().containsKey('Network');
@@ -30,10 +30,7 @@ private class Logger_Tests_ExperienceSite {
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license did not match Guest User License.');
 
         User guestUser = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
-
-        PermissionSet logCreatorPermissionSet = [SELECT Id, Name FROM PermissionSet WHERE Name = :LOG_CREATOR_PERMISSION_SET_NAME];
-        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = guestUser.Id, PermissionSetId = logCreatorPermissionSet.Id);
-        insert permissionSetAssignment;
+        LoggerTestUtils.assignLogCreatorPermissionSet(guestUser.Id);
     }
 
     @IsTest

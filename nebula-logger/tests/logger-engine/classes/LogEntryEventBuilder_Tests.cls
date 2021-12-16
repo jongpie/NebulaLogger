@@ -107,7 +107,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_apply_data_mask_rule_to_message_when_enabled() {
-        Logger.getUserSettings().ApplyDataMaskRules__c = true;
+        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = true;
         rule.ApplyToRecordJson__c = false;
@@ -131,7 +131,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_apply_data_mask_rule_to_record_json_when_enabled() {
-        Logger.getUserSettings().ApplyDataMaskRules__c = true;
+        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = false;
         rule.ApplyToRecordJson__c = true;
@@ -155,7 +155,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_apply_data_mask_rule_to_record_list_json_when_enabled() {
-        Logger.getUserSettings().ApplyDataMaskRules__c = true;
+        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = false;
         rule.ApplyToRecordJson__c = true;
@@ -179,7 +179,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_not_data_mask_rule_when_disabled_for_message_and_json() {
-        Logger.getUserSettings().ApplyDataMaskRules__c = true;
+        Logger.getUserSettings().IsDataMaskingEnabled__c = true;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = false;
         rule.ApplyToRecordJson__c = false;
@@ -199,7 +199,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_not_data_mask_rule_when_disabled_for_user() {
-        Logger.getUserSettings().ApplyDataMaskRules__c = false;
+        Logger.getUserSettings().IsDataMaskingEnabled__c = false;
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = true;
         rule.ApplyToRecordJson__c = true;

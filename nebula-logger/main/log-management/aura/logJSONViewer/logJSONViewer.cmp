@@ -1,7 +1,8 @@
 <!--**********************************************************************************************
-* This file is part of the Nebula Logger project, released under the MIT License.                *
-* See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    *
-***********************************************************************************************-->
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
 <aura:component controller="Logger" implements="force:hasRecordId,force:lightningQuickActionWithoutHeader">
     <!-- TODO: recordId is a reserved keyword in LWC, can't name the variable recordId till LWC quick actions are GA -->
     <c:logViewer logId="{!v.recordId}"></c:logViewer>

@@ -53,6 +53,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LoggerSettingsController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>RelatedLogEntriesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -76,6 +80,10 @@
         <enabled>true</enabled>
         <name>LoggerPlugin__mdt</name>
     </customMetadataTypeAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>CanModifyLoggerSettings</name>
+    </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>
         <name>LoggerSettings__c</name>
@@ -593,12 +601,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordJson__c</field>
+        <field>LogEntry__c.RecordJsonMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordJsonMasked__c</field>
+        <field>LogEntry__c.RecordJson__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1112,6 +1120,10 @@
     </tabSettings>
     <tabSettings>
         <tab>Log__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LoggerSettings</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

@@ -43,13 +43,17 @@ function Create-New-Package-Version {
     }
 
     # Create a new package version
-    $packageVersionCreateResult = sfdx force:package:version:create --json --package (Get-Package-Name) --codecoverage --installationkeybypass --wait 30 | ConvertFrom-Json
+    $packageVersionCreateResult = npx sfdx force:package:version:create --json --package (Get-Package-Name) --codecoverage --installationkeybypass --wait 30 | ConvertFrom-Json
     $packageVersionId = $packageVersionCreateResult.result.SubscriberPackageVersionId
+
+    if ($packageVersionId -eq $null -or $packageVersionId -eq "") {
+        throw "Error creating package version ID"
+    }
 
     # Now delete the old package version (if there is one)
     # Purposefully commented-out - not 100% I want to keep this, I might move this to happen after a PR is merged
     # if($oldPackageVersionId -ne $null) {
-    #     sfdx force:package:version:delete --noprompt --package $oldPackageVersionId --json | ConvertFrom-Json
+    #     npx sfdx force:package:version:delete --noprompt --package $oldPackageVersionId --json | ConvertFrom-Json
     # }
 
     # Add the new package version alias & sort all of the package aliases
@@ -86,7 +90,7 @@ function Install-Package-Version {
         $packageVersionId
     )
     $packageVersionId = "$packageVersionId".Trim()
-    sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --package $packageVersionId
+    npx sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --package $packageVersionId
 }
 
 Write-Output "Creating new package version"

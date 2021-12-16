@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <inlineHelpText
     >When enabled, any time an SObject record is logged, only fields that the current user can access will be included in the record&apos;s JSON.</inlineHelpText>
-    <label>Strip Inaccessible Fields</label>
+    <label>Strip Inaccessible Record Fields</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

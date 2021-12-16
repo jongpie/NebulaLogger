@@ -9,11 +9,13 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
-@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
+@SuppressWarnings(
+    'PMD.ApexCrudViolation, PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength'
+)
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.6.13';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.6.14';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     @TestVisible
@@ -2462,7 +2464,7 @@ global with sharing class Logger {
             matchingScenarioRule = scenarioRule;
         }
 
-        if (Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest() == true) {
             matchingScenarioRule = SCENARIO_TO_MOCK_SCENARIO_RULE.get(scenario);
         }
 

@@ -143,7 +143,7 @@ public inherited sharing class ComponentLogger {
         public Boolean isEnabled { get; set; }
 
         /**
-         * @description Indicates if logging via the browser's `console.log()` is enabled for the current user, based on `Logger.IsComponentConsoleLoggingEnabled__c`
+         * @description Indicates if logging via the browser's `console.log()` is enabled for the current user, based on `Logger.IsJavaScriptConsoleLoggingEnabled__c`
          */
         @AuraEnabled
         public Boolean isConsoleLoggingEnabled { get; set; }
@@ -163,7 +163,7 @@ public inherited sharing class ComponentLogger {
         private ComponentLoggerSettings() {
             this.defaultSaveMethodName = Logger.getSaveMethod().name();
             this.isEnabled = Logger.getUserSettings().IsEnabled__c;
-            this.isConsoleLoggingEnabled = Logger.getUserSettings().IsComponentConsoleLoggingEnabled__c;
+            this.isConsoleLoggingEnabled = Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c;
             this.supportedLoggingLevels = getSupportedLoggingLevels();
             this.userLoggingLevel = getUserLoggingLevel();
         }

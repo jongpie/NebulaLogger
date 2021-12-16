@@ -1,7 +1,8 @@
-//------------------------------------------------------------------------------------------------//
-// This file is part of the Nebula Logger project, released under the MIT License.                //
-// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
-//------------------------------------------------------------------------------------------------//
+/*************************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ ************************************************************************************************/
+
 import { api, LightningElement, track, wire } from 'lwc';
 import getLog from '@salesforce/apex/Logger.getLog';
 
@@ -58,9 +59,7 @@ export default class LogViewer extends LightningElement {
 
         // I figure it might be nice to also include the parsed JSON in the console
         /* eslint-disable-next-line no-console */
-        console.log('Log data successfully copied to clipboard:');
-        /* eslint-disable-next-line no-console */
-        console.log(JSON.parse(value));
+        console.log('Log data successfully copied to clipboard', JSON.parse(value));
 
         this.jsonCopied = true;
 

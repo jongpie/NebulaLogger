@@ -4997,8 +4997,9 @@ Inner class for publishing log entries via the Queueable interface.
 Required by the Queueable interface, this method contains the logic executed when the current instance of the queue runs.
 
 ####### Parameters
-|Param|Description|
-|-----|-----------|
-|`queueableContext` | The context of the current queue. |
+
+| Param              | Description                       |
+| ------------------ | --------------------------------- |
+| `queueableContext` | The context of the current queue. |
 
 ---

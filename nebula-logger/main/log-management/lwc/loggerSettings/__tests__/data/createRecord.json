@@ -1,0 +1,14 @@
+{
+    "attributes": { "type": "LoggerSettings__c" },
+    "DefaultLogShareAccessLevel__c": "Read",
+    "DefaultNumberOfDaysToRetainLogs__c": 14,
+    "DefaultSaveMethod__c": "EVENT_BUS",
+    "IsAnonymousModeEnabled__c": false,
+    "IsApexSystemDebugLoggingEnabled__c": true,
+    "IsJavaScriptConsoleLoggingEnabled__c": true,
+    "IsDataMaskingEnabled__c": true,
+    "IsDeleted": false,
+    "IsEnabled__c": true,
+    "LoggingLevel__c": "DEBUG",
+    "StripInaccessibleRecordFields__c": false
+}

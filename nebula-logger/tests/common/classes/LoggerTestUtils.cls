@@ -3,10 +3,94 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.PropertyNamingConventions')
 @IsTest
 public class LoggerTestUtils {
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
     private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
+
+    // Lazy-load & cache permission sets
+    private static final Map<String, PermissionSet> PERMISSION_SETS_BY_NAME {
+        get {
+            if (PERMISSION_SETS_BY_NAME == null) {
+                PERMISSION_SETS_BY_NAME = queryPermissionSets();
+            }
+            return PERMISSION_SETS_BY_NAME;
+        }
+        private set;
+    }
+
+    private static final PermissionSet LOGGER_ADMIN_PERMISSION_SET {
+        get {
+            if (LOGGER_ADMIN_PERMISSION_SET == null) {
+                LOGGER_ADMIN_PERMISSION_SET = PERMISSION_SETS_BY_NAME.get('LoggerAdmin');
+            }
+            return LOGGER_ADMIN_PERMISSION_SET;
+        }
+        private set;
+    }
+
+    private static final PermissionSet LOGGER_LOG_VIEWER_PERMISSION_SET {
+        get {
+            if (LOGGER_LOG_VIEWER_PERMISSION_SET == null) {
+                LOGGER_LOG_VIEWER_PERMISSION_SET = PERMISSION_SETS_BY_NAME.get('LoggerLogViewer');
+            }
+            return LOGGER_LOG_VIEWER_PERMISSION_SET;
+        }
+        private set;
+    }
+
+    private static final PermissionSet LOGGER_END_USER_PERMISSION_SET {
+        get {
+            if (LOGGER_END_USER_PERMISSION_SET == null) {
+                LOGGER_END_USER_PERMISSION_SET = PERMISSION_SETS_BY_NAME.get('LoggerEndUser');
+            }
+            return LOGGER_END_USER_PERMISSION_SET;
+        }
+        private set;
+    }
+
+    private static final PermissionSet LOGGER_LOG_CREATOR_PERMISSION_SET {
+        get {
+            if (LOGGER_LOG_CREATOR_PERMISSION_SET == null) {
+                LOGGER_LOG_CREATOR_PERMISSION_SET = PERMISSION_SETS_BY_NAME.get('LoggerLogCreator');
+            }
+            return LOGGER_LOG_CREATOR_PERMISSION_SET;
+        }
+        private set;
+    }
+
+    /**
+     * @description Assigns the permission set `LoggerAdmin` to the specified user ID
+     * @param  userId The ID of the user that should be assigned the permission set
+     */
+    public static void assignAdminPermissionSet(Id userId) {
+        assignPermissionSet(userId, LOGGER_ADMIN_PERMISSION_SET);
+    }
+
+    /**
+     * @description Assigns the permission set `LoggerLogViewer` to the specified user ID
+     * @param  userId The ID of the user that should be assigned the permission set
+     */
+    public static void assignLogViewerPermissionSet(Id userId) {
+        assignPermissionSet(userId, LOGGER_LOG_VIEWER_PERMISSION_SET);
+    }
+
+    /**
+     * @description Assigns the permission set `LoggerEndUser` to the specified user ID
+     * @param  userId The ID of the user that should be assigned the permission set
+     */
+    public static void assignEndUserPermissionSet(Id userId) {
+        assignPermissionSet(userId, LOGGER_END_USER_PERMISSION_SET);
+    }
+
+    /**
+     * @description Assigns the permission set `LoggerLogCreator` to the specified user ID
+     * @param  userId The ID of the user that should be assigned the permission set
+     */
+    public static void assignLogCreatorPermissionSet(Id userId) {
+        assignPermissionSet(userId, LOGGER_LOG_CREATOR_PERMISSION_SET);
+    }
 
     /**
      * @description Instances of `AggregateResult` can not be created directly in Apex.
@@ -128,5 +212,20 @@ public class LoggerTestUtils {
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
+    }
+
+    // Helper methods
+    private static void assignPermissionSet(Id userId, PermissionSet permissionSet) {
+        PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = userId, PermissionSetId = permissionSet.Id);
+        insert permissionSetAssignment;
+    }
+
+    private static Map<String, PermissionSet> queryPermissionSets() {
+        List<String> permissionSetNames = new List<String>{ 'LoggerAdmin', 'LoggerLogViewer', 'LoggerEndUser', 'LoggerLogCreator' };
+        Map<String, PermissionSet> results = new Map<String, PermissionSet>();
+        for (PermissionSet permissionSet : [SELECT Id, Name FROM PermissionSet WHERE Name IN :permissionSetNames]) {
+            results.put(permissionSet.Name, permissionSet);
+        }
+        return results;
     }
 }

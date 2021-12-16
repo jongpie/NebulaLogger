@@ -153,7 +153,7 @@ global with sharing class LogEntryEventBuilder {
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(LogMessage logMessage) {
-        if (this.shouldSave == false && Test.isRunningTest() == false) {
+        if (this.shouldSave == false && System.Test.isRunningTest() == false) {
             return this;
         }
 
@@ -167,7 +167,7 @@ global with sharing class LogEntryEventBuilder {
      */
     global LogEntryEventBuilder setMessage(String message) {
         // To help with debugging unit tests, always run System.debug statement in a test context
-        if ((this.shouldSave == true || Test.isRunningTest() == true) && this.logEntryEvent != null) {
+        if ((this.shouldSave == true || System.Test.isRunningTest() == true) && this.logEntryEvent != null) {
             String cleanedMessage = applyDataMaskRules(message, true, false);
             Boolean messageMasked = cleanedMessage != message;
             String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
@@ -501,7 +501,7 @@ global with sharing class LogEntryEventBuilder {
 
     /**
      * @description Appends the tag to the existing list of tags
-     * @param tags The string to use as a tag for the current entry
+     * @param tags The list of strings to use as tags for the current entry
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTags(List<String> tags) {
@@ -597,7 +597,7 @@ global with sharing class LogEntryEventBuilder {
 
         // Lazy-loading of some details to help minimize Apex heap size usage until needed
         if (this.detailsAreSet == false) {
-            if (Logger.getUserSettings().AnonymousMode__c == false) {
+            if (Logger.getUserSettings().IsAnonymousModeEnabled__c == false) {
                 this.setUserDetails();
                 this.setUserSessionDetails();
             }
@@ -743,7 +743,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
-        if (Logger.getUserSettings().ApplyDataMaskRules__c == false) {
+        if (Logger.getUserSettings().IsDataMaskingEnabled__c == false) {
             return dataInput;
         }
 
@@ -772,7 +772,7 @@ global with sharing class LogEntryEventBuilder {
                 activeDataMaskRules.add(dataMaskRule);
             }
         }
-        if (Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest() == true) {
             // Tests shouldn't rely on the actual CMDT rules in the org
             // Clear the org's loaded records during tests, and mock via addMockDataMaskRule()
             activeDataMaskRules.clear();

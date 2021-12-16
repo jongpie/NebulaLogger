@@ -16,8 +16,7 @@ public class LoggerParameter {
     /**
      * @description Indicates if Logger will make an async callout to https://api.status.salesforce.com
      *              to get additional details about the current org, which is then stored on the Log__c record.
-     *              Controlled by the custom metadata record LoggerParamer.CallStatusApi
-     * @return The configured value, or `false` as the default
+     *              Controlled by the custom metadata record LoggerParamer.CallStatusApi, or `false` as the default
      */
     public static final Boolean CALL_STATUS_API {
         get {
@@ -31,8 +30,7 @@ public class LoggerParameter {
 
     /**
      * @description Indicates if Logger will append its own log entries about the logging system.
-     *              Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages
-     * @return The configured value, or `false` as the default
+     *              Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages, or `false` as the default
      */
     public static final Boolean ENABLE_SYSTEM_MESSAGES {
         get {
@@ -46,8 +44,7 @@ public class LoggerParameter {
 
     /**
      * @description Indicates if Logger will send an error email notification if any internal exceptions occur.
-     *              Controlled by the custom metadata record LoggerParamer.SendErrorEmailNotifications
-     * @return The configured value, or `true` as the default
+     *              Controlled by the custom metadata record LoggerParamer.SendErrorEmailNotifications, or `true` as the default
      */
     public static final Boolean SEND_ERROR_EMAIL_NOTIFICATIONS {
         get {
@@ -61,8 +58,7 @@ public class LoggerParameter {
 
     /**
      * @description The merge-field syntax to use when calling System.debug().
-     *              Controlled by the custom metadata record LoggerParamer.SystemDebugMessageFormat
-     * @return The configured value, or `{OriginLocation__c}\n{Message__c}` as the default
+     *              Controlled by the custom metadata record LoggerParamer.SystemDebugMessageFormat, or `{OriginLocation__c}\n{Message__c}` as the default
      */
     public static final String SYSTEM_DEBUG_MESSAGE_FORMAT {
         get {
@@ -80,8 +76,7 @@ public class LoggerParameter {
 
     /**
      * @description Indicates if Logger's tagging system is enabled.
-     *              Controlled by the custom metadata record LoggerParamer.EnableTagging
-     * @return The configured value, or `true` as the default
+     *              Controlled by the custom metadata record LoggerParamer.EnableTagging, or `true` as the default
      */
     public static final Boolean TAGGING_IS_ENABLED {
         get {
@@ -94,8 +89,7 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Indicates if Logger's tagging will use Topic and TopicAssignment for storing tags
-     * @return The configured value, or `false` as the default
+     * @description Indicates if Logger's tagging will use Topic and TopicAssignment for storing tags, or `false` as the default
      */
     public static final Boolean TAG_USING_TOPICS {
         get {
@@ -367,7 +361,7 @@ public class LoggerParameter {
         Boolean useMockParameter =
             parametersToLoadDuringTests.contains(parameterDeveloperName) == false ||
             mockParameterByDeveloperName.containsKey(parameterDeveloperName) == true;
-        if (Test.isRunningTest() == true && useMockParameter == true) {
+        if (System.Test.isRunningTest() == true && useMockParameter == true) {
             // During tests, don't actually use the org's CMDT records - only use mock records
             parameterValue = (String) mockParameterByDeveloperName.get(parameterDeveloperName)?.get('Value__c');
         }

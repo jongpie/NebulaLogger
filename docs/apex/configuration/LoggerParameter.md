@@ -12,27 +12,27 @@ Provides a centralized way to load parameters for SObject handlers &amp; plugins
 
 #### `CALL_STATUS_API` → `Boolean`
 
-Indicates if Logger will make an async callout to https://api.status.salesforce.com to get additional details about the current org, which is then stored on the Log\_\_c record. Controlled by the custom metadata record LoggerParamer.CallStatusApi @return The configured value, or `false` as the default
+Indicates if Logger will make an async callout to https://api.status.salesforce.com to get additional details about the current org, which is then stored on the Log\_\_c record. Controlled by the custom metadata record LoggerParamer.CallStatusApi, or `false` as the default
 
 #### `ENABLE_SYSTEM_MESSAGES` → `Boolean`
 
-Indicates if Logger will append its own log entries about the logging system. Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages @return The configured value, or `false` as the default
+Indicates if Logger will append its own log entries about the logging system. Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages, or `false` as the default
 
 #### `SEND_ERROR_EMAIL_NOTIFICATIONS` → `Boolean`
 
-Indicates if Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record LoggerParamer.SendErrorEmailNotifications @return The configured value, or `true` as the default
+Indicates if Logger will send an error email notification if any internal exceptions occur. Controlled by the custom metadata record LoggerParamer.SendErrorEmailNotifications, or `true` as the default
 
 #### `SYSTEM_DEBUG_MESSAGE_FORMAT` → `String`
 
-The merge-field syntax to use when calling System.debug(). Controlled by the custom metadata record LoggerParamer.SystebugMessageFormat @return The configured value, or `{OriginLocation__c}\n{Message__c}` as the default
+The merge-field syntax to use when calling System.debug(). Controlled by the custom metadata record LoggerParamer.SystebugMessageFormat, or `{OriginLocation__c}\n{Message__c}` as the default
 
 #### `TAGGING_IS_ENABLED` → `Boolean`
 
-Indicates if Logger&apos;s tagging system is enabled. Controlled by the custom metadata record LoggerParamer.EnableTagging @return The configured value, or `true` as the default
+Indicates if Logger&apos;s tagging system is enabled. Controlled by the custom metadata record LoggerParamer.EnableTagging, or `true` as the default
 
 #### `TAG_USING_TOPICS` → `Boolean`
 
-Indicates if Logger&apos;s tagging will use Topic and TopicAssignment for storing tags @return The configured value, or `false` as the default
+Indicates if Logger&apos;s tagging will use Topic and TopicAssignment for storing tags, or `false` as the default
 
 ---
 

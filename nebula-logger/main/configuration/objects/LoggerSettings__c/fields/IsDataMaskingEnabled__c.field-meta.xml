@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>ApplyDataMaskRules__c</fullName>
+    <fullName>IsDataMaskingEnabled__c</fullName>
     <defaultValue>true</defaultValue>
     <externalId>false</externalId>
     <inlineHelpText
     >When enabled, any data-mask rules (configured in LogEntryDataMaskRule__mdt) will be automatically applied to log entry messages.</inlineHelpText>
-    <label>Apply Data Masking</label>
+    <label>Enable Data Masking</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

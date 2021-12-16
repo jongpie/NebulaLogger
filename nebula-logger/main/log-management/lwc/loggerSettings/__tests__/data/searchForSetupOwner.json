@@ -1,0 +1,30 @@
+[
+    {
+        "secondaryLabel": "Name: Platform Integration User",
+        "recordId": "005R000000A6BAYIA3",
+        "label": "cloud@00dr0000002jgh9mao",
+        "image": "https://data-force-4393--c.documentforce.com/profilephoto/005/T",
+        "icon": "standard:people"
+    },
+    {
+        "secondaryLabel": "Name: Security User",
+        "recordId": "005R000000A6BAZIA3",
+        "label": "insightssecurity@00dr0000002jgh9mao.com",
+        "image": "https://data-force-4393--c.documentforce.com/profilephoto/005/T",
+        "icon": "standard:people"
+    },
+    {
+        "secondaryLabel": "Name: Integration User",
+        "recordId": "005R000000A6BAOIA3",
+        "label": "integration@00dr0000002jgh9mao.com",
+        "image": "https://data-force-4393--c.documentforce.com/profilephoto/005/T",
+        "icon": "standard:people"
+    },
+    {
+        "secondaryLabel": "Name: User User",
+        "recordId": "005R0000009tIsDIAU",
+        "label": "test-ghsv1imtoehu@example.com",
+        "image": "https://data-force-4393--c.documentforce.com/profilephoto/729R0000002Grkr/T",
+        "icon": "standard:people"
+    }
+]
