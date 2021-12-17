@@ -3,10 +3,8 @@
 .settings/
 .sfdx/
 .vscode/
-coverage/
 nebula-logger/**/main/default/
-.vim-force.com
-tests/apex/
+test-coverage/
 temp/
 
 # NPM

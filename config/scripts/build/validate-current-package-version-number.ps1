@@ -9,7 +9,7 @@ function Get-SFDX-Project-Version-Number {
 }
 
 function Get-Released-Versions {
-    $releasedPackageVersions = (npx sfdx force:package:version:list --packages "Nebula Logger - Unlocked Package" --released --orderby "MajorVersion DESC, MinorVersion DESC, PatchVersion DESC" --json | ConvertFrom-Json).result
+    $releasedPackageVersions = (npx sfdx force:package:version:list --packages "Nebula Logger - Core" --released --orderby "MajorVersion DESC, MinorVersion DESC, PatchVersion DESC" --json | ConvertFrom-Json).result
     return $releasedPackageVersions
 }
 

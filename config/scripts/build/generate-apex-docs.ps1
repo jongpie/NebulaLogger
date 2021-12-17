@@ -5,7 +5,7 @@ rm -rf ./docs/apex/logger-engine/
 rm -rf ./docs/apex/log-management/
 rm -rf ./docs/apex/plugin-framework/
 
-npx apexdocs-generate --configPath config/apexdocs.json --scope global public --sourceDir nebula-logger/main/ --targetDir docs/apex --targetGenerator jekyll
+npx apexdocs-generate --configPath ./config/docs/apexdocs.json --scope global public --sourceDir ./nebula-logger/core/main/ --targetDir ./docs/apex --targetGenerator jekyll
 
 # Make a few adjustments to the generated markdown files so that they work correctly in Github Pages
 $indexPageFile = "docs/apex/index.md"

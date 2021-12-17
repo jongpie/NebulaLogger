@@ -4,7 +4,7 @@ param ([string]$targetusername)
 
 Write-Output "Target Username: $targetusername"
 
-npx sfdx force:package:version:create --json --package "Nebula Logger - Unlocked Package" --skipvalidation --installationkeybypass --wait 30 > package-create-output.json
+npx sfdx force:package:version:create --json --package "Nebula Logger - Core" --skipvalidation --installationkeybypass --wait 30 > package-create-output.json
 $packageVersionCreateOutput = Get-Content -Path ./package-create-output.json | ConvertFrom-Json
 Write-Output "Package Version Create Output: $packageVersionCreateOutput"
 
