@@ -1,10 +1,10 @@
 coverage:
-  status:
-    project:
-      default:
-        target: 90
-        threshold: 2%
-        if_ci_failed: success
-    patch: off
+    status:
+        project:
+            default:
+                target: 90
+                threshold: 2%
+                if_ci_failed: success
+        patch: off
 ignore:
-  - "nebula-logger-recipes/**/*"
+    - 'nebula-logger-recipes/**/*'

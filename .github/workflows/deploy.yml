@@ -217,7 +217,7 @@ jobs:
 
             # TODO revisit this part - for now, CodeCov.io upload will only run in the Experience Cloud org
             - name: 'Delete unsupported code coverage files'
-              run: rm ./tests/apex/test-result-707*-codecoverage.json
+              run: rm ./test-coverage/apex/test-result-707*-codecoverage.json
 
             - name: 'Upload Apex test code coverage to Codecov.io'
               uses: codecov/codecov-action@v2.0.2
