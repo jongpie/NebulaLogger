@@ -31,7 +31,7 @@
         },
         {
             "package": "Nebula Logger - Core Plugin - Slack",
-            "path": "nebula-logger/plugins/Slack",
+            "path": "nebula-logger/plugins/Slack/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Core@4.6.9-0-custom-metadata-types-optimized"

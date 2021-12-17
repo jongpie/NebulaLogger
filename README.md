@@ -7,15 +7,15 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Unlocked Package - v4.6.14
 
-[![Install Unlocked Package in a Sandbox](./content/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lB0QAI)
-[![Install Unlocked Package in Production](./content/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lB0QAI)
-[![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lB0QAI)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lB0QAI)
+[![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ## Managed Package - v4.6.0
 
-[![Install Managed Package in a Sandbox](./content/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
-[![Install Managed Package in Production](./content/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
-[![View Milestone](./content/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/6)
+[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/6)
 
 ---
 
@@ -119,7 +119,7 @@ Logger.saveLog();
 
 This results in 1 `Log__c` record with several related `LogEntry__c` records.
 
-![Apex Log Results](./content/apex-log.png)
+![Apex Log Results](./images/apex-log.png)
 
 ---
 
@@ -161,15 +161,15 @@ logger.saveLog();
 
 Within Flow & Process Builder, you can select 1 of the several Logging actions
 
-![Flow Logger Actions](./content/flow-logger-actions.png)
+![Flow Logger Actions](./images/flow-logger-actions.png)
 
 In this simple example, a Flow is configured after-insert and after-update to log a Case record (using the action 'Add Log Entry for an SObject Record')
 
-![Flow Builder: Log Case](./content/flow-builder-log-case.png)
+![Flow Builder: Log Case](./images/flow-builder-log-case.png)
 
 This results in a `Log__c` record with related `LogEntry__c` records.
 
-![Flow Log Results](./content/flow-log.png)
+![Flow Log Results](./images/flow-log.png)
 
 ---
 
@@ -191,7 +191,7 @@ Logger.saveLog();
 
 This generates 1 consolidated `Log__c`, containing `LogEntry__c` records from both Apex and Flow
 
-![Flow Log Results](./content/combined-apex-flow-log.png)
+![Flow Log Results](./images/combined-apex-flow-log.png)
 
 ---
 
@@ -375,11 +375,11 @@ For lightning component developers, the included `logger` lwc can be used in oth
 
 Once you've incorporated `logger` into your lightning components, you can see your `LogEntry__c` records using the included list view "All Component Log Entries'.
 
-![Component Log Entries List View](./content/component-entries-list-view.png)
+![Component Log Entries List View](./images/component-entries-list-view.png)
 
 Each `LogEntry__c` record automatically stores the component's type ('Aura' or 'LWC'), the component name, and the component function that called `logger`. This information is shown in the section "Lightning Component Information"
 
-![Component Log Entry Record](./content/component-entry-record-detail.png)
+![Component Log Entry Record](./images/component-entry-record-detail.png)
 
 #### Example LWC Usage
 
@@ -458,7 +458,7 @@ Within Flow (and Process Builder), there are 4 invocable actions that you can us
 3. 'Add Log Entry for an SObject Record Collection' - uses the class `FlowCollectionLogEntry` to add a log entry with a specified message for an SObject record collection
 4. 'Save Log' - uses the class `Logger` to save any pending logs
 
-![Flow Builder: Logging Invocable Actions](./content/flow-builder-logging-invocable-actions.png)
+![Flow Builder: Logging Invocable Actions](./images/flow-builder-logging-invocable-actions.png)
 
 ---
 
@@ -483,7 +483,7 @@ Logger.debug('my log message').addTags(myTags);
 
 Flow builders can use the `Tags` property to specify a comma-separated list of tags to apply to the log entry. This feature is available for all 3 Flow classes: `FlowLogEntry`, `FlowRecordLogEntry` and `FlowCollectionLogEntry`.
 
-![Flow Logging with Tags](./content/flow-builder-log-with-tags.png)
+![Flow Logging with Tags](./images/flow-builder-log-with-tags.png)
 
 ### Adding Tags with Custom Metadata Records
 
@@ -506,7 +506,7 @@ Rules can be set up by configuring a custom metadata record with these fields co
 
 Below is an example of what a rule looks like once configured. Based on this rule, any `LogEntry__c` records that contain "My Important Text" in the `Message__c` field will automatically have 2 tags added - "Really important tag" and "A tag with an emoji, whynot?! 🔥"
 
-![Tag Rule Example](./content/tag-rule-example.png)
+![Tag Rule Example](./images/tag-rule-example.png)
 
 ### Choosing a Tagging Mode
 
@@ -573,7 +573,7 @@ Once you've implementing log entry tagging within Apex or Flow, you can choose h
 
 The Logger Console app provides access to the tabs for Logger's objects: `Log__c`, `LogEntry__c`, `LogEntryTag__c` and `LoggerTag__c` (for any users with the correct access).
 
-![Logger Console app](./content/logger-console-app.png)
+![Logger Console app](./images/logger-console-app.png)
 
 ### Log's 'Manage' Quick Action
 
@@ -581,7 +581,7 @@ To help development and support teams better manage logs (and any underlying cod
 
 -   All editable fields on `Log__c` can be updated via the 'Manage Log' quick action (shown below)
 
-    ![Manage Log QuickAction](./content/manage-log-quickaction.png)
+    ![Manage Log QuickAction](./images/manage-log-quickaction.png)
 
 -   Additional fields are automatically set based on changes to `Log__c.Status__c`
     -   `Log__c.ClosedBy__c` - The user who closed the log
@@ -596,9 +596,9 @@ To help development and support teams better manage logs (and any underlying cod
 
 Everyone loves JSON - so to make it easy to see a JSON version of a `Log__c` record, you can use the 'View JSON' quick action button. It displays the current `Log__c` + all related `LogEntry__c` records in JSON format, as well as a handy button to copy the JSON to your clipboard. All fields that the current user can view (based on field-level security) are dynamically returned, including any custom fields added directly in your org or by plugins.
 
-![View JSON Log QuickAction Button](./content/view-json-log-quickaction-btn.png)
+![View JSON Log QuickAction Button](./images/view-json-log-quickaction-btn.png)
 
-![View JSON Log QuickAction](./content/view-json-log-quickaction.png)
+![View JSON Log QuickAction](./images/view-json-log-quickaction.png)
 
 ---
 
@@ -606,7 +606,7 @@ Everyone loves JSON - so to make it easy to see a JSON version of a `Log__c` rec
 
 Within Logger Console app, the Log Entry Event Stream tab provides real-time monitoring of `LogEntryEvent__e` platform events. Simply open the tab to start monitoring, and use the filters to further refine with `LogEntryEvent__e` records display in the stream.
 
-![Log Entry Event Stream](./content/log-entry-event-stream.png)
+![Log Entry Event Stream](./images/log-entry-event-stream.png)
 
 ---
 
@@ -621,7 +621,7 @@ Within App Builder, admins can add the 'Related Log Entries' lightning web compo
     -   Record-Level Security - Users will only see records that have been shared with them
     -   Field-Level Security - Users will only see the fields within the field set that they have access to
 
-![Related Log Entries](./content/relate-log-entries-lwc.png)
+![Related Log Entries](./images/relate-log-entries-lwc.png)
 
 ---
 
@@ -635,11 +635,11 @@ Salesforce (still) does not support mass deleting records out-of-the-box. There'
 
 1. Admins can select 1 or more `Log__c` records from the list view to choose which logs will be deleted
 
-![Mass Delete Selection](./content/log-mass-delete-selection.png)
+![Mass Delete Selection](./images/log-mass-delete-selection.png)
 
 2. The button shows a Visualforce page `LogMassDelete` to confirm that the user wants to delete the records
 
-![Mass Delete Confirmation](./content/log-mass-delete-confirmation.png)
+![Mass Delete Confirmation](./images/log-mass-delete-confirmation.png)
 
 #### Batch Deleting with Apex Jobs
 
@@ -704,7 +704,7 @@ The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula
 
 Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on how to install & customize the plugin
 
-![Slack plugin: notification](./nebula-logger-plugins/Slack/.content/slack-plugin-notification.png)
+![Slack plugin: notification](./nebula-logger-plugins/Slack/images/slack-plugin-notification.png)
 
 ---
 
@@ -712,4 +712,4 @@ Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on
 
 If you want to remove the unlocked or managed packages, you can do so by simply uninstalling them in your org under Setup --> Installed Packages.
 
-![Uninstall Packages](./content/installed-packages-uninstall-option.png)
+![Uninstall Packages](./images/installed-packages-uninstall-option.png)

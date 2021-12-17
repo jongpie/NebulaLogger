@@ -7,8 +7,7 @@ nebula-logger/managed-package/sfdx-project.json
 
 # Directory/package-specific README files
 **/README.md
-**/.content/**
-**/content/**
+**/images/**
 
 # LWC configuration files
 **/jsconfig.json
