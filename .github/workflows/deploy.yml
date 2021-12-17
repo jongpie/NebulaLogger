@@ -229,10 +229,10 @@ jobs:
               run: npm run org:delete:noprompt
               if: ${{ always() }}
 
-    create-and-install-package-version:
-        name: 'Create & Install Package Version'
+    # TODO - WIP, finish up managed package version creation
+    create-and-install-unlocked-package-version:
+        name: 'Create & Install Unlocked Package Version'
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
-        if: ${{ github.event_name == 'pull_request' }}
         runs-on: ubuntu-latest
         environment: Test
         steps:
@@ -282,3 +282,41 @@ jobs:
                   git add ./sfdx-project.json
                   git commit -m "Created new package version"
                   git push
+
+    create-beta-managed-package-version:
+        name: 'Create Beta Managed Package Version'
+        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+        runs-on: ubuntu-latest
+        environment: Test
+        steps:
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }}
+
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
+              with:
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
+
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
+
+            - name: 'Authorize Packaging Org'
+              shell: bash
+              run: |
+                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
+                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+              env:
+                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+
+            - name: 'Create Beta Managed Package Version'
+              run: |
+                  npm run package:version:create:managed
+                  prettier --write ./nebula-logger/managed-package/sfdx-project.json
