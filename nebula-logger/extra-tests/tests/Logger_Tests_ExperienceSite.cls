@@ -29,7 +29,13 @@ private class Logger_Tests_ExperienceSite {
         Profile loggerSiteProfile = matchingProfiles.get(0);
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license did not match Guest User License.');
 
-        User guestUser = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
+        List<User> guestUsers = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        if (guestUsers.isEmpty() == true) {
+            return;
+        }
+
+        User guestUser = guestUsers.get(0);
         LoggerTestUtils.assignLogCreatorPermissionSet(guestUser.Id);
     }
 
@@ -45,7 +51,13 @@ private class Logger_Tests_ExperienceSite {
 
         Test.startTest();
 
-        User guestUser = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
+        List<User> guestUsers = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        if (guestUsers.isEmpty() == true) {
+            return;
+        }
+
+        User guestUser = guestUsers.get(0);
         try {
             log.OwnerId = guestUser.Id;
             update log;
@@ -67,7 +79,13 @@ private class Logger_Tests_ExperienceSite {
         Profile loggerSiteProfile = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license was NOT the guest user license.');
 
-        User guestUser = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
+        List<User> guestUsers = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        if (guestUsers.isEmpty() == true) {
+            return;
+        }
+
+        User guestUser = guestUsers.get(0);
         String message = 'testing logging as a guest user';
 
         System.runAs(guestUser) {

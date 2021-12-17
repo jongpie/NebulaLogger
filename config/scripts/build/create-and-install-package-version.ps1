@@ -47,7 +47,7 @@ function Create-New-Package-Version {
     $packageVersionId = $packageVersionCreateResult.result.SubscriberPackageVersionId
 
     if ($packageVersionId -eq $null -or $packageVersionId -eq "") {
-        throw "Error creating package version ID"
+        throw "Error creating package version ID: $packageVersionCreateResult"
     }
 
     # Now delete the old package version (if there is one)

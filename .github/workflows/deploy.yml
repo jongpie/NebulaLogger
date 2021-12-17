@@ -229,9 +229,8 @@ jobs:
               run: npm run org:delete:noprompt
               if: ${{ always() }}
 
-    # TODO - WIP, finish up managed package version creation
-    create-and-install-unlocked-package-version:
-        name: 'Create & Install Unlocked Package Version'
+    create-unlocked-package-release-candidate:
+        name: 'Create Unlocked Package Release Candidate'
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
         runs-on: ubuntu-latest
         environment: Test
@@ -283,8 +282,8 @@ jobs:
                   git commit -m "Created new package version"
                   git push
 
-    create-beta-managed-package-version:
-        name: 'Create Beta Managed Package Version'
+    create-managed-package-beta:
+        name: 'Create Managed Package Beta'
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
         runs-on: ubuntu-latest
         environment: Test
@@ -317,6 +316,4 @@ jobs:
                   DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
 
             - name: 'Create Beta Managed Package Version'
-              run: |
-                  npm run package:version:create:managed
-                  prettier --write ./nebula-logger/managed-package/sfdx-project.json
+              run: npm run package:version:create:managed

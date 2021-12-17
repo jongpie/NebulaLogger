@@ -11,9 +11,6 @@
             "versionName": "New Logger Settings Component",
             "versionDescription": "Adds a new loggerSettings lwc for managing LoggerSettings__c records",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
-            "unpackagedMetadata": {
-                "path": "./nebula-logger/extra-tests"
-            },
             "default": true
         },
         {

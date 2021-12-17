@@ -4,6 +4,7 @@
 
 nebula-logger/**/main/default/
 nebula-logger/managed-package/sfdx-project.json
+nebula-logger/managed-package/**/testSuites/**
 
 # Directory/package-specific README files
 **/README.md
