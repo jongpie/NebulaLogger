@@ -73,7 +73,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         for (ApexClass apexClass : [
             SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
             FROM ApexClass
-            WHERE Name IN :apexClassNames
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name IN :apexClassNames
         ]) {
             classNameToApexClass.put(apexClass.Name, apexClass);
         }
@@ -320,5 +320,12 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         return displayFieldApiName;
+    }
+
+    private static String getNamespacePrefix() {
+        String className = LogEntryHandler.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
     }
 }
