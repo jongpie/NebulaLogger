@@ -14,7 +14,10 @@ Copy-Item -Path $managedProject -Destination $rootProject -Force
 
 # Create a beta of the managed package version (no `--codecoverage` flag)
 cp -R ./nebula-logger/core/ ./nebula-logger/managed-package/
-npx sfdx force:package:version:create --json --package "Nebula Logger - Managed Package" --installationkeybypass --wait 30
+$gitBranch = (git branch --show-current)
+$gitCommit = (git rev-parse HEAD)
+npx sfdx force:package:version:create --json --package "Nebula Logger - Managed Package" --skipvalidation --installationkeybypass --wait 30 --branch $gitBranch --tag $gitCommit
+git clean -df -- nebula-logger/managed-package/core
 
 # Restore the sfdx-project.json files to their original locations
 Write-Output "Restoring unlocked package's version of sfdx-project.json"
