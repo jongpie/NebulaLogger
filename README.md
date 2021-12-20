@@ -5,17 +5,17 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-## Unlocked Package - v4.6.14
+## Unlocked Package - v4.6.15
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lCXQAY)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lCXQAY)
-[![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
+[![Install Unlocked Package in a Sandbox](./content/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lB0QAI)
+[![Install Unlocked Package in Production](./content/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lB0QAI)
+[![View Documentation](./content/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ## Managed Package - v4.6.0
 
-[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
-[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
-[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/6)
+[![Install Managed Package in a Sandbox](./content/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![Install Managed Package in Production](./content/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![View Milestone](./content/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/6)
 
 ---
 

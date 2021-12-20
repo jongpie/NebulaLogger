@@ -4,7 +4,7 @@
 $sfdxProjectJsonPath = "./sfdx-project.json"
 $packageJsonPath = "./package.json"
 $readmeClassPath = "./README.md"
-$loggerClassPath = "./nebula-logger/main/logger-engine/classes/Logger.cls"
+$loggerClassPath = "./nebula-logger/core/main/logger-engine/classes/Logger.cls"
 
 function Get-SFDX-Project-JSON {
     Get-Content -Path $sfdxProjectJsonPath | ConvertFrom-Json
