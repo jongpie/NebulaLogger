@@ -56,7 +56,7 @@
         "plugin:version:create:log-retention-rules": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Log Retention Rules\" --codecoverage --installationkeybypass --wait 30",
         "plugin:version:create:logger-admin-dashboard": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Logger Admin Dashboard\" --codecoverage --installationkeybypass --wait 30",
         "plugin:version:create:slack": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Slack\" --codecoverage --installationkeybypass --wait 30",
-        "prepare": "husky install && chmod +x ./.husky/pre-commit && sfdx plugins:link ./node_modules/@salesforce/sfdx-scanner",
+        "prepare": "husky install && chmod +x ./.husky/pre-commit && npx sfdx plugins:link ./node_modules/@salesforce/sfdx-scanner",
         "prettier:fix": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
         "source:push": "sfdx force:source:push --forceoverwrite",
