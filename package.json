@@ -48,7 +48,7 @@
         "org:delete:noprompt": "sfdx force:org:delete --json --noprompt",
         "org:details": "sfdx force:org:display --json --verbose",
         "org:open": "sfdx force:org:open",
-        "package:version:create:managed": "pwsh ./config/scripts/build/create-beta-managed-package-version.ps1",
+        "package:version:create:managed": "pwsh ./config/scripts/build/create-managed-package-beta-version.ps1",
         "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Core\" --codecoverage --installationkeybypass --wait 30",
         "package:version:number:fix": "pwsh ./config/scripts/build/sync-package-version-number.ps1",
         "package:version:number:verify": "pwsh ./config/scripts/build/validate-current-package-version-number.ps1",
