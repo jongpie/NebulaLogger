@@ -30,7 +30,7 @@ function Update-Package-JSON {
 
     $packageJson.version = $versionNumber
     ConvertTo-Json -InputObject $packageJson | Set-Content -Path $packageJsonPath -NoNewline
-    prettier --write $packageJsonPath
+    npx  prettier --write $packageJsonPath
     git add $packageJsonPath
 }
 
@@ -49,7 +49,7 @@ function Update-README {
     $targetRegEx = "(.+ Unlocked Package - )(.+)"
     $replacementRegEx = '$1' + $versionNumber
     $readmeContents -replace $targetRegEx, $replacementRegEx | Set-Content -Path $readmeClassPath -NoNewline
-    prettier --write $readmeClassPath
+    npx  prettier --write $readmeClassPath
     git add $readmeClassPath
 }
 
@@ -68,7 +68,7 @@ function Update-Logger-Class {
     $targetRegEx = "(.+CURRENT_VERSION_NUMBER = ')(.+)(';)"
     $replacementRegEx = '$1' + $versionNumber + '$3'
     $loggerClassContents -replace $targetRegEx, $replacementRegEx | Set-Content -Path $loggerClassPath -NoNewline
-    prettier --write $loggerClassPath
+    npx  prettier --write $loggerClassPath
     git add $loggerClassPath
 }
 
