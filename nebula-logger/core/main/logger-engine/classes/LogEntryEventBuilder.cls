@@ -153,7 +153,7 @@ global with sharing class LogEntryEventBuilder {
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setMessage(LogMessage logMessage) {
-        if (this.shouldSave == false && System.Test.isRunningTest() == false) {
+        if (this.shouldSave == false && System.Test.isRunningTest() == false || logMessage == null) {
             return this;
         }
 
@@ -743,7 +743,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
-        if (Logger.getUserSettings().IsDataMaskingEnabled__c == false) {
+        if (Logger.getUserSettings().IsDataMaskingEnabled__c == false || String.isBlank(dataInput) == true) {
             return dataInput;
         }
 

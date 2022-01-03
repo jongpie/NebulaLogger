@@ -91,6 +91,21 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_message_fields_for_null_logMessage() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageMasked__c);
+        System.assertEquals(null, builder.getLogEntryEvent().Message__c);
+
+        LogMessage logMessage = null;
+        builder.setMessage(logMessage);
+
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageMasked__c);
+        System.assertEquals(null, builder.getLogEntryEvent().Message__c);
+    }
+
+    @IsTest
     static void it_should_set_message_fields_for_string() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
@@ -98,6 +113,21 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().Message__c);
 
         String message = 'The time is ' + String.valueOf(System.now());
+        builder.setMessage(message);
+
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageMasked__c);
+        System.assertEquals(message, builder.getLogEntryEvent().Message__c);
+    }
+
+    @IsTest
+    static void it_should_set_message_fields_for_null_string() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
+        System.assertEquals(false, builder.getLogEntryEvent().MessageMasked__c);
+        System.assertEquals(null, builder.getLogEntryEvent().Message__c);
+
+        String message = null;
         builder.setMessage(message);
 
         System.assertEquals(false, builder.getLogEntryEvent().MessageTruncated__c);
