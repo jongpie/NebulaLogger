@@ -92,7 +92,10 @@ function Install-Package-Version {
         $packageVersionId
     )
     $packageVersionId = "$packageVersionId".Trim()
-    npx sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --package $packageVersionId
+    $installationResult = npx sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --package $packageVersionId
+    if ($installationResult -like "*ERROR*") {
+        throw "Error installing package version ID: $packageVersionId"
+    }
 }
 
 Write-Output "Creating new package version"
