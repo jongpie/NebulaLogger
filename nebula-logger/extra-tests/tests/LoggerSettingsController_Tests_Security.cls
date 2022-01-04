@@ -11,7 +11,7 @@
  */
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest
-private class LoggerSettingsController_SecurityTests {
+private class LoggerSettingsController_Tests_Security {
     private static final String CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME = 'CanModifyLoggerSettings';
 
     @IsTest
