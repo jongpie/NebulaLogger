@@ -12,22 +12,21 @@
     'PMD.NcssTypeCount, PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.PropertyNamingConventions, PMD.CognitiveComplexity, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
-    private final LogEntryEvent__e logEntryEvent;
-    private final LoggingLevel entryLoggingLevel;
-
-    @TestVisible
-    private String debugMessage = '';
-
-    private Boolean detailsAreSet = false;
-    private Boolean shouldSave;
-    private Set<String> tags = new Set<String>();
-    private Boolean tagDetailsAreSet = true;
-
     private static final String API_VERSION = getApiVersion();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
+
+    private final LogEntryEvent__e logEntryEvent;
+    private final LoggingLevel entryLoggingLevel;
+
+    @TestVisible
+    private String debugMessage = '';
+    private Boolean detailsAreSet = false;
+    private Boolean shouldSave;
+    private Set<String> tags = new Set<String>();
+    private Boolean tagDetailsAreSet = true;
 
     // These constants all involve queries and/or increasing heap size, so custom getters are used for lazy-loading
     // This avoids unnecessarily consuming resources when logging is disabled, etc.
