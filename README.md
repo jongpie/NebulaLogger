@@ -13,8 +13,8 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Managed Package - v4.6.0
 
-[![Install Managed Package in a Sandbox](./content/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
-[![Install Managed Package in Production](./content/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015keOQAQ)
+[![Install Managed Package in a Sandbox](./content/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015keOQAQ)
+[![Install Managed Package in Production](./content/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015keOQAQ)
 [![View Milestone](./content/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/6)
 
 ---
