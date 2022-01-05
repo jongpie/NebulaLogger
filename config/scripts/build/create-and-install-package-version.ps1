@@ -16,6 +16,10 @@ function Get-Package-Info {
     $sfdxProjectJson = Get-SFDX-Project-JSON
     $packageDirectories = $sfdxProjectJson.packageDirectories
     $packageInfo
+
+    # TODO WHYYYY IS THIS NECESSARY?!
+    $targetpackagealias = $targetpackagealias -replace '"', ''
+
     Write-Debug "Checking $sfdxProjectJsonPath for target package $targetpackagealias"
     foreach ($packageDirectory in $packageDirectories) {
         $currentPackageName = $packageDirectory.package
