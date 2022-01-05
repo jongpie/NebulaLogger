@@ -230,7 +230,7 @@ jobs:
               if: ${{ always() }}
 
     create-unlocked-package-release-candidate:
-        name: 'Create Unlocked Package Release Candidate'
+        name: 'Create Core Package Release Candidate'
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
         if: ${{ github.ref != 'refs/heads/main' }}
         runs-on: ubuntu-latest

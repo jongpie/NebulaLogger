@@ -8,8 +8,8 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/experience-cloud-scratch-def.json",
             "versionNumber": "4.6.15.0",
-            "versionName": "TODO - Pipeline enhancements",
-            "versionDescription": "TODO",
+            "versionName": "Small bugfixes and test improvements",
+            "versionDescription": "Fixes an issue with logging a null string & fixes issues with tests that failed in some orgs",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },
