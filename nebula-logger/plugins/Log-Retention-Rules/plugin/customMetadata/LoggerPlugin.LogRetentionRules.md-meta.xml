@@ -4,13 +4,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Slack integration</label>
+    <label>Log Retention Rules</label>
     <protected>false</protected>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">Adds a Slack integration for Nebula Logger.
-
-Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackLoggingLevelThreshold&apos; will send a notification to Slack</value>
+        <value
+            xsi:type="xsd:string"
+        >Adds the ability to create &amp; deploy advanced, configurable rules for setting the retention date of Log__c records, using custom metadata types LogRetentionRule__mdt and LogRetentionRuleCondition__mdt.</value>
     </values>
     <values>
         <field>ExecutionOrder__c</field>
@@ -22,7 +22,7 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
     </values>
     <values>
         <field>IsLogEnabled__c</field>
-        <value xsi:type="xsd:boolean">false</value>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>IsLogEntryEnabled__c</field>
@@ -42,11 +42,11 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
     </values>
     <values>
         <field>Link__c</field>
-        <value xsi:type="xsd:string">https://github.com/jongpie/NebulaLogger/tree/main/nebula-logger/plugins/Slack</value>
+        <value xsi:nil="true" />
     </values>
     <values>
         <field>PluginApiName__c</field>
-        <value xsi:type="xsd:string">SlackLoggerPlugin</value>
+        <value xsi:type="xsd:string">LogRetentionRulesPlugin</value>
     </values>
     <values>
         <field>PluginType__c</field>
@@ -54,7 +54,7 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
     </values>
     <values>
         <field>SObjectType__c</field>
-        <value xsi:type="xsd:string">Log__c</value>
+        <value xsi:type="xsd:string">LogEntry__c</value>
     </values>
     <values>
         <field>VersionNumber__c</field>

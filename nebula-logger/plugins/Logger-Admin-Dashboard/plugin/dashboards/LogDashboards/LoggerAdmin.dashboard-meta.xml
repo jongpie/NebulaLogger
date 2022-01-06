@@ -335,6 +335,7 @@
     </dashboardGridLayout>
     <dashboardType>LoggedInUser</dashboardType>
     <isGridLayout>true</isGridLayout>
+    <runningUser>test-ghsv1imtoehu@example.com</runningUser>
     <textColor>#000000</textColor>
     <title>Logger Admin Dashboard</title>
     <titleColor>#000000</titleColor>

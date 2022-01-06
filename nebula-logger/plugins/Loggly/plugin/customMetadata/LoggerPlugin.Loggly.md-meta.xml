@@ -4,13 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Slack integration</label>
+    <label>Loggly Integration</label>
     <protected>false</protected>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">Adds a Slack integration for Nebula Logger.
-
-Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackLoggingLevelThreshold&apos; will send a notification to Slack</value>
+        <value xsi:type="xsd:string">TODO - pushes log &amp; log entry data to Loggly</value>
     </values>
     <values>
         <field>ExecutionOrder__c</field>
@@ -46,7 +44,7 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
     </values>
     <values>
         <field>PluginApiName__c</field>
-        <value xsi:type="xsd:string">SlackLoggerPlugin</value>
+        <value xsi:type="xsd:string">TODO</value>
     </values>
     <values>
         <field>PluginType__c</field>
@@ -58,6 +56,6 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
     </values>
     <values>
         <field>VersionNumber__c</field>
-        <value xsi:type="xsd:string">0.9.0</value>
+        <value xsi:type="xsd:string">0.0.0</value>
     </values>
 </CustomMetadata>

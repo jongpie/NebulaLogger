@@ -7,11 +7,50 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/experience-cloud-scratch-def.json",
-            "versionNumber": "4.6.15.0",
-            "versionName": "Small bugfixes and test improvements",
-            "versionDescription": "Fixes an issue with logging a null string & fixes issues with tests that failed in some orgs",
+            "versionNumber": "4.6.16.0",
+            "versionName": "Plugin Framework Overhaul",
+            "versionDescription": "TODO",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
+        },
+        {
+            "package": "Nebula Logger - Plugin - BigObject Archiving",
+            "path": "./nebula-logger/plugins/BigObject/plugin",
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
+                }
+            ],
+            "versionName": "TODO",
+            "versionNumber": "0.0.0.0",
+            "versionDescription": "TODO",
+            "default": false
+        },
+        {
+            "package": "Nebula Logger - Plugin - Filtered Log Entry Events",
+            "path": "./nebula-logger/plugins/Filtered-Log-Entry-Events/plugin",
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
+                }
+            ],
+            "versionName": "TODO",
+            "versionNumber": "0.0.0.0",
+            "versionDescription": "TODO",
+            "default": false
+        },
+        {
+            "package": "Nebula Logger - Plugin - Log Retention Rules",
+            "path": "./nebula-logger/plugins/Log-Retention-Rules/plugin",
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
+                }
+            ],
+            "versionName": "TODO",
+            "versionNumber": "0.0.0.0",
+            "versionDescription": "TODO",
+            "default": false
         },
         {
             "package": "Nebula Logger - Plugin - Logger Admin Dashboard",
@@ -27,16 +66,29 @@
             "default": false
         },
         {
+            "package": "Nebula Logger - Plugin - Loggly Integration",
+            "path": "./nebula-logger/plugins/Loggly/plugin",
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
+                }
+            ],
+            "versionName": "TODO",
+            "versionNumber": "0.0.0.0",
+            "versionDescription": "TODO",
+            "default": false
+        },
+        {
             "package": "Nebula Logger - Plugin - Slack",
             "path": "./nebula-logger/plugins/Slack/plugin",
             "dependencies": [
                 {
-                    "package": "Nebula Logger - Core@4.6.9-0-custom-metadata-types-optimized"
+                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
                 }
             ],
             "versionName": "Beta Release: Round 3",
-            "versionNumber": "0.9.2.0",
-            "versionDescription": "Updated Slack plugin metadata to use Logger v4.6.9's renamed custom metadata type LoggerParameter__mdt",
+            "versionNumber": "0.10.0.0",
+            "versionDescription": "TODO",
             "default": false
         },
         {
