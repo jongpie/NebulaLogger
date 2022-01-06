@@ -92,7 +92,6 @@
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
         "pwsh": "latest",
-        "sfdoc": "git+https://github.com/jongpie/SFDoc.git#init",
         "sfdx-cli": "latest"
     }
 }
