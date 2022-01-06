@@ -58,6 +58,6 @@
     </values>
     <values>
         <field>VersionNumber__c</field>
-        <value xsi:type="xsd:string">0.9.0</value>
+        <value xsi:type="xsd:string">v0.9.0</value>
     </values>
 </CustomMetadata>

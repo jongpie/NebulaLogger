@@ -45,6 +45,26 @@
         <value xsi:type="xsd:string">https://github.com/jongpie/NebulaLogger/tree/main/nebula-logger/plugins/Slack</value>
     </values>
     <values>
+        <field>LogEntryEventExecutionOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>LogEntryExecutionOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>LogEntryTagExecutionOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>LogExecutionOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>LoggerTagExecutionOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>PluginApiName__c</field>
         <value xsi:type="xsd:string">TODO</value>
     </values>
@@ -58,6 +78,6 @@
     </values>
     <values>
         <field>VersionNumber__c</field>
-        <value xsi:type="xsd:string">0.5.0</value>
+        <value xsi:type="xsd:string">v0.5.0</value>
     </values>
 </CustomMetadata>
