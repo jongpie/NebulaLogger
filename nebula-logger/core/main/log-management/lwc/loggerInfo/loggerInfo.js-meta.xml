@@ -4,7 +4,6 @@
     <isExposed>true</isExposed>
     <masterLabel>Logger Info</masterLabel>
     <targets>
-        <target>lightning__HomePage</target>
         <target>lightning__UtilityBar</target>
     </targets>
 </LightningComponentBundle>
