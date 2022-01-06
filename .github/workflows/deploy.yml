@@ -217,7 +217,7 @@ jobs:
 
             # TODO revisit this part - for now, CodeCov.io upload will only run in the Experience Cloud org
             - name: 'Delete unsupported code coverage files'
-              run: rm ./tests/apex/test-result-707*-codecoverage.json
+              run: rm ./test-coverage/apex/test-result-707*-codecoverage.json
 
             - name: 'Upload Apex test code coverage to Codecov.io'
               uses: codecov/codecov-action@v2.0.2
@@ -229,10 +229,10 @@ jobs:
               run: npm run org:delete:noprompt
               if: ${{ always() }}
 
-    create-and-install-package-version:
-        name: 'Create & Install Package Version'
+    create-unlocked-package-release-candidate:
+        name: 'Create Core Package Release Candidate'
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
         runs-on: ubuntu-latest
         environment: Test
         steps:
@@ -272,7 +272,7 @@ jobs:
                   PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 
             - name: 'Create & Install Package Version'
-              run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetusername nebula-logger-package-demo
+              run: npx pwsh ./config/scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
 
             - name: 'Commit New Package Version'
               run: |
@@ -282,3 +282,40 @@ jobs:
                   git add ./sfdx-project.json
                   git commit -m "Created new package version"
                   git push
+
+    create-managed-package-beta:
+        name: 'Create Managed Package Beta'
+        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+        if: ${{ github.ref != 'refs/heads/main' }}
+        runs-on: ubuntu-latest
+        environment: Test
+        steps:
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }}
+
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
+              with:
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
+
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
+
+            - name: 'Authorize Packaging Org'
+              shell: bash
+              run: |
+                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
+                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+              env:
+                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+
+            - name: 'Create Beta Managed Package Version'
+              run: npm run package:version:create:managed

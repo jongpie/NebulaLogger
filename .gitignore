@@ -3,11 +3,8 @@
 .settings/
 .sfdx/
 .vscode/
-coverage/
-nebula-logger/main/default/
-nebula-logger/managed-package/
-.vim-force.com
-tests/apex/
+nebula-logger/**/main/default/
+test-coverage/
 temp/
 
 # NPM
@@ -16,3 +13,4 @@ yarn.lock
 
 # Files to exclude
 *.log
+**/lwc/jsconfig.json

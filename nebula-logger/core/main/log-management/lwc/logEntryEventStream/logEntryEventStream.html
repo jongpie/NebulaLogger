@@ -1,0 +1,117 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-4">
+            <lightning-card title="Stream Settings" icon-name="custom:custom27" class="slds-m-around_medium slds-p-around_medium">
+                <div class="slds-p-horizontal_small">
+                    <lightning-input
+                        label="Max Number of Events to Display"
+                        onchange={handleMaxEventsChange}
+                        placeholder="Specify Max Events"
+                        type="number"
+                        value={maxEvents}
+                    ></lightning-input>
+                    <lightning-combobox
+                        data-id="loggingLevelFilter"
+                        label="Minimum Logging Level"
+                        onchange={handleFilterChange}
+                        options={loggingLevelOptions}
+                        placeholder="Select Logging Level"
+                        value={loggingLevelFilter}
+                    ></lightning-combobox>
+                    <lightning-combobox
+                        data-id="originTypeFilter"
+                        label="Origin Type"
+                        onchange={handleFilterChange}
+                        options={originTypeOptions}
+                        placeholder="Select Origin Type"
+                        value={originTypeFilter}
+                    ></lightning-combobox>
+                    <lightning-input
+                        data-id="originLocationFilter"
+                        label="Origin Location"
+                        onchange={handleFilterChange}
+                        placeholder="Specify Origin Location"
+                        value={originLocationFilter}
+                    ></lightning-input>
+                    <lightning-input
+                        data-id="scenarioFilter"
+                        label="Scenario"
+                        onchange={handleFilterChange}
+                        placeholder="Specify Scenario"
+                        value={scenarioFilter}
+                    ></lightning-input>
+                    <lightning-input
+                        data-id="loggedByFilter"
+                        label="Logged By"
+                        onchange={handleFilterChange}
+                        placeholder="Specify Username"
+                        value={loggedByFilter}
+                    ></lightning-input>
+                    <lightning-textarea
+                        data-id="messageFilter"
+                        label="Message"
+                        onchange={handleFilterChange}
+                        placeholder="Message Contains"
+                        value={messageFilter}
+                    ></lightning-textarea>
+                </div>
+            </lightning-card>
+        </div>
+        <div class="slds-col slds-size_3-of-4">
+            <lightning-card title={title} class="slds-p-around_medium" data-id="event-stream-console">
+                <div slot="actions">
+                    <lightning-button-group>
+                        <lightning-button-stateful
+                            data-id="toggle-stream"
+                            icon-name-when-hover="utility:close"
+                            icon-name-when-off="utility:pause_alt"
+                            icon-name-when-on="utility:play"
+                            label-when-hover="  Pause  "
+                            label-when-off="Paused"
+                            label-when-on="Streaming"
+                            onclick={onToggleStream}
+                            selected={isStreamEnabled}
+                            variant={streamButtonVariant}
+                        >
+                        </lightning-button-stateful>
+                        <lightning-button
+                            data-id="clear"
+                            label="Clear"
+                            icon-name="utility:delete"
+                            name="clear"
+                            onclick={onClear}
+                            variant="destructive"
+                        ></lightning-button>
+                        <!-- <lightning-button-stateful
+                            data-id="expand-toggle"
+                            icon-name-when-off="utility:expand"
+                            icon-name-when-on="utility:contract"
+                            label-when-off="Expand"
+                            label-when-on="Contract"
+                            onclick={onToggleExpand}
+                            selected={isExpanded}
+                            variant="brand"
+                        >
+                        </lightning-button-stateful> -->
+                    </lightning-button-group>
+                </div>
+                <div class="slds-m-top_medium slds-p-horizontal_medium event-stream">
+                    <template for:each={logEntryEvents} for:item="logEntryEvent">
+                        <div key={logEntryEvent.key} class="event-stream-entry">
+                            <span key={logEntryEvent.key} class="timestamp">{logEntryEvent.Timestamp__c}</span>
+                            <span key={logEntryEvent.key} class="logged-by">{logEntryEvent.LoggedByUsername__c} - {logEntryEvent.key}</span>
+                            <span key={logEntryEvent.key} class="origin">{logEntryEvent.OriginType__c}.{logEntryEvent.OriginLocation__c} </span>
+                            <span key={logEntryEvent.key} class="logging-level">{logEntryEvent.LoggingLevel__c}</span>
+                            <span key={logEntryEvent.key} class="message">{logEntryEvent.Message__c}</span>
+                        </div>
+                    </template>
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template>

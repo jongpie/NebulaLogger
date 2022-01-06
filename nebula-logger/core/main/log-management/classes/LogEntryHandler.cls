@@ -1,0 +1,331 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group Log Management
+ * @description Manages setting fields on `LogEntry__c` before insert & before update
+ */
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
+public without sharing class LogEntryHandler extends LoggerSObjectHandler {
+    @TestVisible
+    private List<LogEntry__c> logEntries;
+
+    /**
+     * @description Returns SObject Type that the handler is responsible for processing
+     * @return      The instance of `SObjectType`
+     */
+    public override SObjectType getSObjectType() {
+        return Schema.LogEntry__c.SObjectType;
+    }
+
+    protected override void executeBeforeInsert(List<SObject> triggerNew) {
+        this.logEntries = (List<LogEntry__c>) triggerNew;
+
+        this.setCheckboxFields();
+        this.setApexClassFields();
+        this.setComponentFields();
+        this.setFlowDefinitionFields();
+        this.setFlowVersionFields();
+        this.setRecordNames();
+    }
+
+    protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
+        this.logEntries = (List<LogEntry__c>) triggerNewMap.values();
+
+        // Realistically, these checkbox fields probably only need to be set on insert
+        // but some admins & devs might decide to update/append data in some of the related fields
+        // and it conceptually feels weird for there to be scenarios where these fields could be inaccurate,
+        // so keep them up to date just to be safe
+        this.setCheckboxFields();
+    }
+
+    private void setCheckboxFields() {
+        // A formula field can't be used for checking if a long text area field is set/null
+        // So, this code handles maintaing some checkbox fields via Apex instead
+        for (LogEntry__c logEntry : this.logEntries) {
+            logEntry.HasExceptionStackTrace__c = logEntry.ExceptionStackTrace__c != null;
+            logEntry.HasRecordJson__c = logEntry.RecordJson__c != null;
+            logEntry.HasStackTrace__c = logEntry.StackTrace__c != null;
+        }
+    }
+
+    private void setApexClassFields() {
+        List<String> apexClassNames = new List<String>();
+        List<LogEntry__c> apexLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.OriginType__c == 'Apex' && String.isNotBlank(logEntry.OriginLocation__c)) {
+                // OriginLocation__c contains the class name + method name. Examples:
+                // MyClass.someMethod
+                // MyClass.MyInnerClass.someMethod
+                String apexClassName = logEntry.OriginLocation__c.substringBefore('.');
+                apexClassNames.add(apexClassName);
+                apexLogEntries.add(logEntry);
+            }
+        }
+
+        if (apexClassNames.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, ApexClass> classNameToApexClass = new Map<String, ApexClass>();
+        for (ApexClass apexClass : [
+            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
+            FROM ApexClass
+            WHERE NamespacePrefix = :getNamespacePrefix() AND Name IN :apexClassNames
+        ]) {
+            classNameToApexClass.put(apexClass.Name, apexClass);
+        }
+
+        for (LogEntry__c logEntry : apexLogEntries) {
+            String topLevelApexClassName = logEntry.OriginLocation__c?.substringBefore('.');
+            ApexClass topLevelApexClass = classNameToApexClass.get(topLevelApexClassName);
+            if (topLevelApexClass == null) {
+                continue;
+            }
+
+            String methodName = logEntry.OriginLocation__c.substringAfterLast('.');
+            String innerApexClassName = logEntry.OriginLocation__c.substringAfter(topLevelApexClassName + '.').substringBeforeLast('.');
+            if (innerApexClassName == topLevelApexClassName || innerApexClassName == methodName) {
+                innerApexClassName = null;
+            } else if (innerApexClassName.startsWith(topLevelApexClassName + '.')) {
+                innerApexClassName = innerApexClassName.substringAfter(topLevelApexClassName + '.');
+            }
+
+            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
+            // logEntry.ApexClassCreatedById__c = topLevelApexClass.CreatedById;
+            // logEntry.ApexClassLastModifiedById__c = apexClass.LastModifiedById;
+
+            logEntry.ApexClassApiVersion__c = 'v' + topLevelApexClass.ApiVersion;
+            logEntry.ApexClassCreatedDate__c = topLevelApexClass.CreatedDate;
+            logEntry.ApexClassId__c = topLevelApexClass.Id;
+            logEntry.ApexClassLastModifiedDate__c = topLevelApexClass.LastModifiedDate;
+            logEntry.ApexClassName__c = topLevelApexClassName;
+            logEntry.ApexInnerClassName__c = innerApexClassName;
+            logEntry.ApexMethodName__c = methodName;
+        }
+    }
+
+    private void setComponentFields() {
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.OriginType__c == 'Component' && String.isNotBlank(logEntry.OriginLocation__c)) {
+                logEntry.ComponentApiName__c = logEntry.OriginLocation__c.substringBefore('.');
+                logEntry.ComponentFunctionName__c = logEntry.OriginLocation__c.substringAfterLast('.');
+            }
+        }
+    }
+
+    private void setFlowDefinitionFields() {
+        List<String> flowApiNames = new List<String>();
+        List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.OriginType__c == 'Flow' && String.isNotBlank(logEntry.OriginLocation__c)) {
+                flowApiNames.add(logEntry.OriginLocation__c);
+                flowLogEntries.add(logEntry);
+            }
+        }
+
+        if (flowApiNames.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, FlowDefinitionView> flowApiNameToDefinition = new Map<String, FlowDefinitionView>();
+        for (
+            FlowDefinitionView flowDefinition : [
+                SELECT
+                    ActiveVersionId,
+                    ApiName,
+                    Description,
+                    DurableId,
+                    Label,
+                    LastModifiedBy, // This is a text field of the person's name - it's NOT a lookup to User :'(
+                    LastModifiedDate,
+                    ManageableState,
+                    ProcessType,
+                    TriggerType
+                FROM FlowDefinitionView
+                WHERE ApiName IN :flowApiNames AND IsActive = TRUE
+            ]
+        ) {
+            flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
+        }
+
+        for (LogEntry__c logEntry : flowLogEntries) {
+            FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginLocation__c);
+            if (flowDefinition == null) {
+                continue;
+            }
+
+            logEntry.FlowActiveVersionId__c = flowDefinition.ActiveVersionId;
+            logEntry.FlowDescription__c = flowDefinition.Description;
+            logEntry.FlowDurableId__c = flowDefinition.DurableId;
+            logEntry.FlowLabel__c = flowDefinition.Label;
+            logEntry.FlowLastModifiedByName__c = flowDefinition.LastModifiedBy;
+            logEntry.FlowLastModifiedDate__c = flowDefinition.LastModifiedDate;
+            logEntry.FlowProcessType__c = flowDefinition.ProcessType;
+            logEntry.FlowTriggerType__c = flowDefinition.TriggerType;
+        }
+    }
+
+    private void setFlowVersionFields() {
+        List<String> flowActiveVersionIds = new List<String>();
+        List<LogEntry__c> flowLogEntries = new List<LogEntry__c>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.OriginType__c == 'Flow' && String.isNotBlank(logEntry.FlowActiveVersionId__c)) {
+                flowActiveVersionIds.add(logEntry.FlowActiveVersionId__c);
+                flowLogEntries.add(logEntry);
+            }
+        }
+
+        if (flowActiveVersionIds.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, FlowVersionView> flowDurableId = new Map<String, FlowVersionView>();
+        for (FlowVersionView flowVersionView : [
+            SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber
+            FROM FlowVersionView
+            WHERE DurableId IN :flowActiveVersionIds
+        ]) {
+            // Filtering on Status in SOQL seems to always return 0 results, so filter in code instead
+            if (flowVersionView.Status == 'Active') {
+                flowDurableId.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
+            }
+        }
+
+        for (LogEntry__c logEntry : flowLogEntries) {
+            FlowVersionView flowVersionView = flowDurableId.get(logEntry.FlowDurableId__c);
+            if (flowVersionView == null) {
+                continue;
+            }
+
+            logEntry.FlowVersionApiVersionRuntime__c = 'v' + flowVersionView.ApiVersionRuntime + '.0';
+            logEntry.FlowVersionRunInMode__c = flowVersionView.RunInMode;
+            logEntry.FlowVersionNumber__c = flowVersionView.VersionNumber;
+        }
+    }
+
+    @SuppressWarnings('PMD.OperationWithLimitsInLoop')
+    private void setRecordNames() {
+        // Assumption - only valid record IDs will be populated in LogEntry__c.RecordId__c
+        // If that changes, then extra checks may be needed before casting to Id, using getSObjectType(), etc.
+        // TODO: This method is pretty long & it's doing multiple things - consider breaking it up into separate methods or an inner class
+
+        // 1. Figure out which SObjects & record IDs to query
+        Map<Schema.SObjectType, List<Id>> sobjectTypeToRecords = new Map<Schema.SObjectType, List<Id>>();
+        for (LogEntry__c logEntry : this.logEntries) {
+            // Skip the log entry if there's no related record ID
+            if (logEntry.RecordId__c == null) {
+                continue;
+            }
+
+            // Based on the related record ID, get the SObject Type
+            Id recordId = (Id) logEntry.RecordId__c;
+            Schema.SObjectType sobjectType = recordId.getSObjectType();
+
+            List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
+            if (sobjectTypeRecordIds == null) {
+                sobjectTypeRecordIds = new List<Id>();
+            }
+            sobjectTypeRecordIds.add(recordId);
+            sobjectTypeToRecords.put(sobjectType, sobjectTypeRecordIds);
+        }
+
+        // 2. Run the queries and store the results in the map
+        Map<Id, SObject> recordIdToRecord = new Map<Id, SObject>();
+        for (Schema.SObjectType sobjectType : sobjectTypeToRecords.keySet()) {
+            // Stop if we've used up all the queries
+            if (Limits.getQueries() == Limits.getLimitQueries()) {
+                return;
+            }
+            List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
+            String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
+
+            if (sobjectDisplayFieldName == null) {
+                continue;
+            }
+
+            String query = String.format(
+                'SELECT Id, {0} FROM {1} WHERE Id IN :sobjectTypeRecordIds',
+                new List<Object>{ sobjectDisplayFieldName, sobjectType, sobjectTypeRecordIds }
+            );
+
+            List<SObject> results = Database.query(query);
+            recordIdToRecord.putAll(results);
+        }
+
+        // 3. Finally, save the record name on the log entry
+        for (LogEntry__c logEntry : this.logEntries) {
+            // Skip the log entry if there's no related record ID
+            if (logEntry.RecordId__c == null) {
+                continue;
+            }
+
+            Id recordId = (Id) logEntry.RecordId__c;
+            Schema.SObjectType sobjectType = recordId.getSObjectType();
+
+            String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
+            if (sobjectDisplayFieldName != null) {
+                if (recordIdToRecord.containsKey(logEntry.RecordId__c)) {
+                    String recordName = (String) recordIdToRecord.get(logEntry.RecordId__c).get(sobjectDisplayFieldName);
+                    logEntry.RecordName__c = recordName;
+                }
+            }
+        }
+    }
+
+    private String getDisplayFieldApiName(Schema.SObjectType sobjectType) {
+        // Use username instead of name for user
+        if (sobjectType == Schema.User.SObjectType) {
+            return Schema.User.Username.getDescribe().getName();
+        }
+
+        // There are several commonly used names for the display field name - typically, Name
+        // The order of the field names has been sorted based on number of objects in a dev org with that field
+        List<String> educatedGuesses = new List<String>{
+            'Name',
+            'DeveloperName',
+            'ApiName',
+            'Title',
+            'Subject',
+            'AssetRelationshipNumber',
+            'CaseNumber',
+            'ContractNumber',
+            'Domain',
+            'FriendlyName',
+            'FunctionName',
+            'Label',
+            'LocalPart',
+            'OrderItemNumber',
+            'OrderNumber',
+            'SolutionName',
+            'TestSuiteName'
+        };
+
+        String displayFieldApiName;
+        for (String fieldName : educatedGuesses) {
+            Schema.SObjectField field = sobjectType.getDescribe().fields.getMap().get(fieldName);
+
+            if (field == null) {
+                continue;
+            }
+
+            Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
+
+            if (fieldDescribe.isNameField()) {
+                displayFieldApiName = fieldDescribe.getName();
+                break;
+            }
+        }
+
+        return displayFieldApiName;
+    }
+
+    private static String getNamespacePrefix() {
+        String className = LogEntryHandler.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
+    }
+}

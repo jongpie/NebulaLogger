@@ -8,6 +8,7 @@
 .sfdx/
 .vscode/
 scripts/
+test-coverage/
 
 # NPM
 node_modules/

@@ -2,11 +2,13 @@
 # More information: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_exclude_source.htm
 #
 
-nebula-logger/main/default/**
+nebula-logger/**/main/default/
+nebula-logger/managed-package/sfdx-project.json
+nebula-logger/managed-package/**/testSuites/**
 
 # Directory/package-specific README files
 **/README.md
-**/.content/**
+**/images/**
 
 # LWC configuration files
 **/jsconfig.json
