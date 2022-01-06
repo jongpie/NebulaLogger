@@ -4,7 +4,7 @@
     <description>The sequential number of this log entry within the transaction</description>
     <externalId>false</externalId>
     <inlineHelpText>The sequential number of this log entry within the transaction</inlineHelpText>
-    <label>Entry Number</label>
+    <label>Entry #</label>
     <precision>10</precision>
     <required>false</required>
     <scale>0</scale>
