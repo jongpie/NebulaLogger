@@ -31,4 +31,8 @@ export default class LoggerSystemInfo extends LightningElement {
         const releaseNotesUrl = 'https://github.com/jongpie/NebulaLogger/releases/tag/' + this.versionNumber;
         window.open(releaseNotesUrl);
     }
+
+    viewPluginsWikiPage() {
+        window.open('https://github.com/jongpie/NebulaLogger/wiki/Plugin-Framework');
+    }
 }

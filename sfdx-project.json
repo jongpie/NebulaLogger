@@ -15,7 +15,7 @@
         },
         {
             "package": "Nebula Logger - Plugin - BigObject Archiving",
-            "path": "./nebula-logger/plugins/BigObject/plugin",
+            "path": "./nebula-logger/plugins/big-object-archiving/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
@@ -28,7 +28,20 @@
         },
         {
             "package": "Nebula Logger - Plugin - Filtered Log Entry Events",
-            "path": "./nebula-logger/plugins/Filtered-Log-Entry-Events/plugin",
+            "path": "./nebula-logger/plugins/filtered-log-entry-events/plugin",
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
+                }
+            ],
+            "versionName": "TODO",
+            "versionNumber": "0.0.0.0",
+            "versionDescription": "TODO",
+            "default": false
+        },
+        {
+            "package": "Nebula Logger - Plugin - Log Assignment Rules",
+            "path": "./nebula-logger/plugins/log-assignment-rules/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
@@ -41,7 +54,7 @@
         },
         {
             "package": "Nebula Logger - Plugin - Log Retention Rules",
-            "path": "./nebula-logger/plugins/Log-Retention-Rules/plugin",
+            "path": "./nebula-logger/plugins/log-retention-rules/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
@@ -54,7 +67,7 @@
         },
         {
             "package": "Nebula Logger - Plugin - Logger Admin Dashboard",
-            "path": "./nebula-logger/plugins/Logger-Admin-Dashboard/plugin",
+            "path": "./nebula-logger/plugins/logger-admin-dashboard/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Core@4.6.12-0-log-scenario-rules"
@@ -67,7 +80,7 @@
         },
         {
             "package": "Nebula Logger - Plugin - Loggly Integration",
-            "path": "./nebula-logger/plugins/Loggly/plugin",
+            "path": "./nebula-logger/plugins/loggly/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
@@ -80,7 +93,7 @@
         },
         {
             "package": "Nebula Logger - Plugin - Slack",
-            "path": "./nebula-logger/plugins/Slack/plugin",
+            "path": "./nebula-logger/plugins/slack/plugin",
             "dependencies": [
                 {
                     "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
