@@ -3216,6 +3216,20 @@ LoggingLevel
 
 The matching instance of LoggingLevel (or a default value if a match is not found)
 
+#### `getNamespacePrefix()` → `String`
+
+Returns the current namespace of Nebula Logger
+
+##### Return
+
+**Type**
+
+String
+
+**Description**
+
+The current namespace prefix, or an empty string when no namespace is being used
+
 #### `getParentLogTransactionId()` → `String`
 
 Returns the transaction ID value that will be used to relate the current transaction&apos;s log to a parent log
@@ -3319,6 +3333,20 @@ String
 **Description**
 
 A string containing the UUID value.
+
+#### `getVersionNumber()` → `String`
+
+Returns the current version number of Nebula Logger
+
+##### Return
+
+**Type**
+
+String
+
+**Description**
+
+The current version number, in the format `v0.0.0`
 
 #### `info(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 

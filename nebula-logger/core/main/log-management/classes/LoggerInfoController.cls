@@ -14,15 +14,28 @@
  * @description Controller class for lwc `loggerInfo`, used to display system information about Nebula Logger
  */
 public without sharing class LoggerInfoController {
-    @AuraEnabled
+    /**
+     * @description Returns the current version number of Nebula Logger
+     * @return The current version number, in the format `v0.0.0`
+     */
+    @AuraEnabled(cacheable=true)
     public static String getVersionNumber() {
         return Logger.getVersionNumber();
     }
-    @AuraEnabled
+
+    /**
+     * @description Returns the current namespace of Nebula Logger
+     * @return   The current namespace prefix, or an empty string when no namespace is being used
+     */
+    @AuraEnabled(cacheable=true)
     public static String getNamespacePrefix() {
         return Logger.getNamespacePrefix();
     }
 
+    /**
+     * @description Returns the list of plugins installed/deployed to the org
+     * @return   The list of configured plugins, based on the custom metadata type `LoggerPlugin__mdt`
+     */
     @AuraEnabled
     public static List<LoggerPlugin__mdt> getPlugins() {
         List<LoggerPlugin__mdt> plugins = LoggerPlugin__mdt.getAll().values();
