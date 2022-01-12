@@ -27,19 +27,6 @@
             "default": false
         },
         {
-            "package": "Nebula Logger - Plugin - Filtered Log Entry Events",
-            "path": "./nebula-logger/plugins/filtered-log-entry-events/plugin",
-            "dependencies": [
-                {
-                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
-                }
-            ],
-            "versionName": "TODO",
-            "versionNumber": "0.0.0.0",
-            "versionDescription": "TODO",
-            "default": false
-        },
-        {
             "package": "Nebula Logger - Plugin - Log Assignment Rules",
             "path": "./nebula-logger/plugins/log-assignment-rules/plugin",
             "dependencies": [

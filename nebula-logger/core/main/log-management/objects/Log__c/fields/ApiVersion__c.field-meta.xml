@@ -28,11 +28,6 @@
                 <default>false</default>
                 <label>v54.0 - Spring &apos;22 Release</label>
             </value>
-            <value>
-                <fullName>v53.0</fullName>
-                <default>false</default>
-                <label>v53.0 - Winter &apos;22 Release</label>
-            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
