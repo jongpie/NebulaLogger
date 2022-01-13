@@ -3,33 +3,36 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
  ************************************************************************************************/
 
-import { api, LightningElement, track, wire } from 'lwc';
+import { api, LightningElement, wire } from 'lwc';
 import getLog from '@salesforce/apex/Logger.getLog';
 
-export default class LogViewer extends LightningElement {
-    // TODO: recordId is a reserved keyword in LWC that only works if the component has been inserted by means of Flexipage
-    // onto a record page. We can rename this variable (probably) once LWC quick actions are GA'd
+export default class LogJSON extends LightningElement {
     @api
-    logId;
+    recordId;
 
-    @wire(getLog, { logId: '$logId' })
     log;
-
-    @track
+    logJSON;
     jsonCopied = false;
 
-    get logJSON() {
+    @wire(getLog, { logId: '$recordId' })
+    wiredGetLog(result) {
+        console.log('running wired getLog function', result);
+        this.log = result;
+        // console.log('this.log', this.log);
+
         let formattedLog;
         // Sort the keys (fields) in the log object
-        if (this.log.data) {
-            formattedLog = Object.keys(this.log.data)
+        if (result.data) {
+            formattedLog = Object.keys(result.data)
                 .sort()
                 .reduce((obj, key) => {
-                    obj[key] = this.log.data[key];
+                    obj[key] = result.data[key];
                     return obj;
                 }, {});
         }
-        return formattedLog ? JSON.stringify(formattedLog, null, '\t') : '';
+        // return formattedLog ? JSON.stringify(formattedLog, null, '\t') : '';
+        this.logJSON = JSON.stringify(formattedLog, null, '\t');
+        console.log('loaded log JSON', this.logJSON);
     }
 
     @api
@@ -57,10 +60,8 @@ export default class LogViewer extends LightningElement {
         document.execCommand('copy');
         document.body.removeChild(textArea);
 
-        // I figure it might be nice to also include the parsed JSON in the console
         /* eslint-disable-next-line no-console */
         console.log('Log data successfully copied to clipboard', JSON.parse(value));
-
         this.jsonCopied = true;
 
         /* eslint-disable-next-line @lwc/lwc/no-async-operation */
