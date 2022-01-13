@@ -16,9 +16,7 @@ export default class LogJSON extends LightningElement {
 
     @wire(getLog, { logId: '$recordId' })
     wiredGetLog(result) {
-        console.log('running wired getLog function', result);
         this.log = result;
-        // console.log('this.log', this.log);
 
         let formattedLog;
         // Sort the keys (fields) in the log object
@@ -30,9 +28,7 @@ export default class LogJSON extends LightningElement {
                     return obj;
                 }, {});
         }
-        // return formattedLog ? JSON.stringify(formattedLog, null, '\t') : '';
         this.logJSON = JSON.stringify(formattedLog, null, '\t');
-        console.log('loaded log JSON', this.logJSON);
     }
 
     @api
