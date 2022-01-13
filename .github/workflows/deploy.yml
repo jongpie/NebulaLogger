@@ -43,7 +43,6 @@ jobs:
     code-quality-tests:
         name: 'Run Code Quality Tests'
         runs-on: ubuntu-latest
-        environment: Test
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -88,7 +87,6 @@ jobs:
         name: 'Run LWC Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
-        environment: Test
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -121,7 +119,7 @@ jobs:
         name: 'Run Base Scratch Org Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
-        environment: Test
+        environment: 'Base Scratch Org'
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -168,7 +166,7 @@ jobs:
         name: 'Run Experience Cloud Scratch Org Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
-        environment: Test
+        environment: 'Experience Cloud Scratch Org'
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -234,7 +232,7 @@ jobs:
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
         if: ${{ github.ref != 'refs/heads/main' }}
         runs-on: ubuntu-latest
-        environment: Test
+        environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -288,7 +286,7 @@ jobs:
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
         if: ${{ github.ref != 'refs/heads/main' }}
         runs-on: ubuntu-latest
-        environment: Test
+        environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
