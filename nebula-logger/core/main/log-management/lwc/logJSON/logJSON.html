@@ -4,16 +4,11 @@
  **********************************************************************************************-->
 
 <template>
-    <template if:true={log.data}>
-        <div class="slds-col modal-header slds-modal__header">
-            <h2 class="title slds-text-heading--medium">{title}</h2>
-        </div>
-
-        <div class="slds-col modal-body scrollable slds-p-around--medium">
+    <lightning-quick-action-panel header={title}>
+        <template if:true={log.data}>
             <pre>{logJSON}</pre>
-        </div>
-
-        <div class="slds-col modal-footer slds-modal__footer">
+        </template>
+        <div slot="footer">
             <lightning-button-stateful
                 data-id="copy-json-btn"
                 label-when-off="Copy JSON to Clipboard"
@@ -25,5 +20,5 @@
                 variant={variant}
             ></lightning-button-stateful>
         </div>
-    </template>
+    </lightning-quick-action-panel>
 </template>

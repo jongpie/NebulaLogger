@@ -1,5 +1,5 @@
 import { createElement } from 'lwc';
-import LogViewer from 'c/logViewer';
+import LogJSON from 'c/logJSON';
 import getLog from '@salesforce/apex/Logger.getLog';
 import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 
@@ -30,7 +30,7 @@ describe('Logger JSON Viewer lwc tests', () => {
     });
 
     it('sets document title', async () => {
-        const logViewerElement = createElement('c-log-viewer', { is: LogViewer });
+        const logViewerElement = createElement('c-log-json', { is: LogJSON });
         document.body.appendChild(logViewerElement);
         getLogAdapter.emit(mockGetLog);
 
@@ -39,7 +39,7 @@ describe('Logger JSON Viewer lwc tests', () => {
     });
 
     it('defaults to brand button variant', async () => {
-        const logViewer = createElement('c-log-viewer', { is: LogViewer });
+        const logViewer = createElement('c-log-json', { is: LogJSON });
         document.body.appendChild(logViewer);
 
         getLogAdapter.emit(mockGetLog);
@@ -51,7 +51,7 @@ describe('Logger JSON Viewer lwc tests', () => {
     });
 
     it('copies the JSON to the clipboard', async () => {
-        const logViewer = createElement('c-log-viewer', { is: LogViewer });
+        const logViewer = createElement('c-log-json', { is: LogJSON });
         document.body.appendChild(logViewer);
 
         getLogAdapter.emit(mockGetLog);

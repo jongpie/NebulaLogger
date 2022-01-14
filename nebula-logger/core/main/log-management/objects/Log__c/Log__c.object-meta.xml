@@ -179,7 +179,6 @@
         <customTabListAdditionalFields>TotalERRORLogEntries__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalWARNLogEntries__c</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
-        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>Import</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>

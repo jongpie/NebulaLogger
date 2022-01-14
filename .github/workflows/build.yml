@@ -1,5 +1,5 @@
 # Pipeline for Nebula Logger
-name: Deployment
+name: Build
 
 on:
     push:
@@ -43,7 +43,6 @@ jobs:
     code-quality-tests:
         name: 'Run Code Quality Tests'
         runs-on: ubuntu-latest
-        environment: Test
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -88,7 +87,6 @@ jobs:
         name: 'Run LWC Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
-        environment: Test
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -116,12 +114,11 @@ jobs:
                   token: ${{ secrets.CODECOV_TOKEN }}
                   flags: LWC
 
-    # TODO find a way to consolidate duplicated LOC for scratch org steps
     base-scratch-org-tests:
         name: 'Run Base Scratch Org Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
-        environment: Test
+        environment: 'Base Scratch Org'
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -168,7 +165,7 @@ jobs:
         name: 'Run Experience Cloud Scratch Org Tests'
         needs: [code-quality-tests]
         runs-on: ubuntu-latest
-        environment: Test
+        environment: 'Experience Cloud Scratch Org'
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -215,7 +212,6 @@ jobs:
             - name: 'Run Apex Tests'
               run: npm run test:apex
 
-            # TODO revisit this part - for now, CodeCov.io upload will only run in the Experience Cloud org
             - name: 'Delete unsupported code coverage files'
               run: rm ./test-coverage/apex/test-result-707*-codecoverage.json
 
@@ -234,7 +230,7 @@ jobs:
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
         if: ${{ github.ref != 'refs/heads/main' }}
         runs-on: ubuntu-latest
-        environment: Test
+        environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -288,7 +284,7 @@ jobs:
         needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
         if: ${{ github.ref != 'refs/heads/main' }}
         runs-on: ubuntu-latest
-        environment: Test
+        environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
               uses: actions/checkout@v2
@@ -319,3 +315,37 @@ jobs:
 
             - name: 'Create Beta Managed Package Version'
               run: npm run package:version:create:managed
+
+    promote-package-versions:
+        name: 'Promote Package Versions'
+        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+        if: ${{ github.ref == 'refs/heads/main' }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
+              with:
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
+
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
+
+            - name: 'Authorize Packaging Org'
+              shell: bash
+              run: |
+                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
+                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+              env:
+                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+
+            - name: 'Promote package versions'
+              run: npx pwsh ./config/scripts/build/promote-readme-packages.ps1
