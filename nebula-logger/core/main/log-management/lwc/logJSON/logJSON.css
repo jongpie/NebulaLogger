@@ -1,0 +1,11 @@
+pre {
+    max-height: 500px;
+    margin: auto 10px;
+    overflow-y: scroll;
+}
+
+.slds-modal__content {
+    overflow-y: hidden !important;
+    height: unset !important;
+    max-height: unset !important;
+}

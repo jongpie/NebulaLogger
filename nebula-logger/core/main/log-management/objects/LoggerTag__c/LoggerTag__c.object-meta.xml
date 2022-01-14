@@ -171,9 +171,7 @@
     <searchLayouts>
         <customTabListAdditionalFields>OWNER.ALIAS</customTabListAdditionalFields>
         <customTabListAdditionalFields>TotalLogEntries__c</customTabListAdditionalFields>
-        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
-        <excludedStandardButtons>IsotopeSubscription</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <excludedStandardButtons>Import</excludedStandardButtons>
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>
