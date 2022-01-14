@@ -2,7 +2,7 @@
 <QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionSubtype>ScreenAction</actionSubtype>
     <description>Shows the current log &amp; log entries in JSON format</description>
-    <label>View Log JSON</label>
+    <label>View JSON</label>
     <lightningWebComponent>logJSON</lightningWebComponent>
     <optionsCreateFeedItem>false</optionsCreateFeedItem>
     <type>LightningWebComponent</type>
