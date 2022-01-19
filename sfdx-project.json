@@ -7,8 +7,8 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/experience-cloud-scratch-def.json",
-            "versionNumber": "4.6.16.0",
-            "versionName": "UI Cleanup",
+            "versionNumber": "4.7.0.0",
+            "versionName": "Spring '22 Release",
             "versionDescription": "Replaced the old aura cmp logJSONViewer with a new lwc quickaction, cleaned up flexipages, fixed an issue with some standard buttons being excluded",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true

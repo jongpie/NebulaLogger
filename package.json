@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.6.16",
+    "version": "4.7.0",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
@@ -71,6 +71,10 @@
         "trim-newlines": "^4.0.2"
     },
     "devDependencies": {
+        "follow-redirects": ">=1.14.7",
+        "marked": ">=4.0.10",
+        "markdown-it": ">=12.3.2",
+        "shelljs": ">=0.8.5",
         "@babel/core": "latest",
         "@babel/eslint-parser": "latest",
         "@cparra/apexdocs": "latest",
@@ -88,7 +92,6 @@
         "husky": "latest",
         "jsdoc-to-markdown": "latest",
         "lint-staged": "latest",
-        "parse-salesforce-object": "latest",
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
         "pwsh": "latest",
