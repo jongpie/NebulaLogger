@@ -9,6 +9,18 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 // LoggerSettings__c metadata
 import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
+import DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultLogShareAccessLevel__c';
+import DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultNumberOfDaysToRetainLogs__c';
+import DEFAULT_SAVE_METHOD_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultSaveMethod__c';
+import IS_ANONYMOUS_MODE_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsAnonymousModeEnabled__c';
+import IS_APEX_SYSTEM_DEBUG_LOGGING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsApexSystemDebugLoggingEnabled__c';
+import IS_DATA_MASKING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsDataMaskingEnabled__c';
+import IS_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsEnabled__c';
+import IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c';
+import LOGGING_LEVEL_FIELD from '@salesforce/schema/LoggerSettings__c.LoggingLevel__c';
+import STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD from '@salesforce/schema/LoggerSettings__c.StripInaccessibleRecordFields__c';
+
+// Additional metadata
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
@@ -198,6 +210,86 @@ export default class LoggerSettings extends LightningElement {
         return isExistingRecord;
     }
 
+    // LoggerSettings__c data - field-describe & field-value getters
+    get isEnabledField() {
+        return this.loggerSettingsFields[IS_ENABLED_FIELD.fieldApiName];
+    }
+
+    get isEnabledFieldValue() {
+        return this.currentRecord[IS_ENABLED_FIELD.fieldApiName];
+    }
+    get loggingLevelField() {
+        return this.loggerSettingsFields[LOGGING_LEVEL_FIELD.fieldApiName];
+    }
+
+    get loggingLevelFieldValue() {
+        return this.currentRecord[LOGGING_LEVEL_FIELD.fieldApiName];
+    }
+
+    get defaultNumberOfDaysToRetainLogsField() {
+        return this.loggerSettingsFields[DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD.fieldApiName];
+    }
+
+    get defaultNumberOfDaysToRetainLogsFieldValue() {
+        return this.currentRecord[DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD.fieldApiName];
+    }
+
+    get defaultLogShareAccessLevelField() {
+        return this.loggerSettingsFields[DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD.fieldApiName];
+    }
+
+    get defaultLogShareAccessLevelFieldValue() {
+        return this.currentRecord[DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD.fieldApiName];
+    }
+
+    get defaultSaveMethodField() {
+        return this.loggerSettingsFields[DEFAULT_SAVE_METHOD_FIELD.fieldApiName];
+    }
+
+    get defaultSaveMethodFieldValue() {
+        return this.currentRecord[DEFAULT_SAVE_METHOD_FIELD.fieldApiName];
+    }
+
+    get isApexSystemDebugLoggingEnabledField() {
+        return this.loggerSettingsFields[IS_APEX_SYSTEM_DEBUG_LOGGING_ENABLED_FIELD.fieldApiName];
+    }
+
+    get isApexSystemDebugLoggingEnabledFieldValue() {
+        return this.currentRecord[IS_APEX_SYSTEM_DEBUG_LOGGING_ENABLED_FIELD.fieldApiName];
+    }
+
+    get isJavaScriptConsoleLoggingEnabledField() {
+        return this.loggerSettingsFields[IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD.fieldApiName];
+    }
+
+    get isJavaScriptConsoleLoggingEnabledFieldValue() {
+        return this.currentRecord[IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD.fieldApiName];
+    }
+
+    get isDataMaskingEnabledField() {
+        return this.loggerSettingsFields[IS_DATA_MASKING_ENABLED_FIELD.fieldApiName];
+    }
+
+    get isDataMaskingEnabledFieldValue() {
+        return this.currentRecord[IS_DATA_MASKING_ENABLED_FIELD.fieldApiName];
+    }
+
+    get stripInaccessibleRecordFieldsField() {
+        return this.loggerSettingsFields[STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD.fieldApiName];
+    }
+
+    get stripInaccessibleRecordFieldsFieldValue() {
+        return this.currentRecord[STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD.fieldApiName];
+    }
+
+    get isAnonymousModeEnabledField() {
+        return this.loggerSettingsFields[IS_ANONYMOUS_MODE_ENABLED_FIELD.fieldApiName];
+    }
+
+    get isAnonymousModeEnabledFieldValue() {
+        return this.currentRecord[IS_ANONYMOUS_MODE_ENABLED_FIELD.fieldApiName];
+    }
+
     _setIsNewOrganizationRecord() {
         this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.setupOwnerType === 'Organization';
         if (this.isNewOrganizationRecord === true) {
@@ -293,12 +385,12 @@ export default class LoggerSettings extends LightningElement {
         // For all other fields, use object API info to dynamically get field details
         // TODO - make this array configurable by storing in LoggerParameter__mdt
         const tableColumnNames = [
-            'IsEnabled__c',
-            'LoggingLevel__c',
-            'IsDataMaskingEnabled__c',
-            'DefaultSaveMethod__c',
-            'DefaultNumberOfDaysToRetainLogs__c',
-            'DefaultLogShareAccessLevel__c'
+            IS_ENABLED_FIELD.fieldApiName,
+            LOGGING_LEVEL_FIELD.fieldApiName,
+            IS_DATA_MASKING_ENABLED_FIELD.fieldApiName,
+            DEFAULT_SAVE_METHOD_FIELD.fieldApiName,
+            DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD.fieldApiName,
+            DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD.fieldApiName
         ];
         for (let i = 0; i < tableColumnNames.length; i++) {
             const field = this.loggerSettingsFields[tableColumnNames[i]];

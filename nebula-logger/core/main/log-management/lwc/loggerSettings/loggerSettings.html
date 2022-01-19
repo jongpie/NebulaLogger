@@ -192,10 +192,10 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    checked={currentRecord.IsEnabled__c}
-                                    data-id="IsEnabled__c"
-                                    field-level-help={loggerSettingsFields.IsEnabled__c.inlineHelpText}
-                                    label={loggerSettingsFields.IsEnabled__c.label}
+                                    checked={isEnabledFieldValue}
+                                    data-id={isEnabledField.apiName}
+                                    field-level-help={isEnabledField.inlineHelpText}
+                                    label={isEnabledField.label}
                                     onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
@@ -203,9 +203,9 @@
                                 ></lightning-input>
                                 <lightning-combobox
                                     class="slds-m-top_large"
-                                    data-id="LoggingLevel__c"
-                                    field-level-help={loggerSettingsFields.LoggingLevel__c.inlineHelpText}
-                                    label={loggerSettingsFields.LoggingLevel__c.label}
+                                    data-id={loggingLevelField.apiName}
+                                    field-level-help={loggingLevelField.inlineHelpText}
+                                    label={loggingLevelField.label}
                                     onchange={handleFieldChange}
                                     options={loggerSettingsPicklistOptions.loggingLevelOptions}
                                     read-only={isReadOnlyMode}
@@ -225,9 +225,9 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    data-id="DefaultNumberOfDaysToRetainLogs__c"
-                                    field-level-help={loggerSettingsFields.DefaultNumberOfDaysToRetainLogs__c.inlineHelpText}
-                                    label={loggerSettingsFields.DefaultNumberOfDaysToRetainLogs__c.label}
+                                    data-id={defaultNumberOfDaysToRetainLogsField.apiName}
+                                    field-level-help={defaultNumberOfDaysToRetainLogsField.inlineHelpText}
+                                    label={defaultNumberOfDaysToRetainLogsField.label}
                                     onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="number"
@@ -237,9 +237,9 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
-                                    data-id="DefaultLogShareAccessLevel__c"
-                                    field-level-help={loggerSettingsFields.DefaultLogShareAccessLevel__c.inlineHelpText}
-                                    label={loggerSettingsFields.DefaultLogShareAccessLevel__c.label}
+                                    data-id={defaultLogShareAccessLevelField.apiName}
+                                    field-level-help={defaultLogShareAccessLevelField.inlineHelpText}
+                                    label={defaultLogShareAccessLevelField.label}
                                     onchange={handleFieldChange}
                                     options={loggerSettingsPicklistOptions.shareAccessLevelOptions}
                                     read-only={isReadOnlyMode}
@@ -258,9 +258,9 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
-                                    data-id="DefaultSaveMethod__c"
-                                    field-level-help={loggerSettingsFields.DefaultSaveMethod__c.inlineHelpText}
-                                    label={loggerSettingsFields.DefaultSaveMethod__c.label}
+                                    data-id={defaultSaveMethodField.apiName}
+                                    field-level-help={defaultSaveMethodField.inlineHelpText}
+                                    label={defaultSaveMethodField.label}
                                     onchange={handleFieldChange}
                                     options={loggerSettingsPicklistOptions.saveMethodOptions}
                                     read-only={isReadOnlyMode}
@@ -272,9 +272,9 @@
                             <lightning-layout-item size="6">
                                 <lightning-input
                                     checked={currentRecord.IsApexSystemDebugLoggingEnabled__c}
-                                    data-id="IsApexSystemDebugLoggingEnabled__c"
-                                    field-level-help={loggerSettingsFields.IsApexSystemDebugLoggingEnabled__c.inlineHelpText}
-                                    label={loggerSettingsFields.IsApexSystemDebugLoggingEnabled__c.label}
+                                    data-id={isApexSystemDebugLoggingEnabledField.apiName}
+                                    field-level-help={isApexSystemDebugLoggingEnabledField.inlineHelpText}
+                                    label={isApexSystemDebugLoggingEnabledField.label}
                                     onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
@@ -282,9 +282,9 @@
                                 ></lightning-input>
                                 <lightning-input
                                     checked={currentRecord.IsJavaScriptConsoleLoggingEnabled__c}
-                                    data-id="IsJavaScriptConsoleLoggingEnabled__c"
-                                    field-level-help={loggerSettingsFields.IsJavaScriptConsoleLoggingEnabled__c.inlineHelpText}
-                                    label={loggerSettingsFields.IsJavaScriptConsoleLoggingEnabled__c.label}
+                                    data-id={isJavaScriptConsoleLoggingEnabledField.apiName}
+                                    field-level-help={isJavaScriptConsoleLoggingEnabledField.inlineHelpText}
+                                    label={isJavaScriptConsoleLoggingEnabledField.label}
                                     onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
@@ -303,9 +303,9 @@
                             <lightning-layout-item size="6">
                                 <lightning-input
                                     checked={currentRecord.IsDataMaskingEnabled__c}
-                                    data-id="IsDataMaskingEnabled__c"
-                                    field-level-help={loggerSettingsFields.IsDataMaskingEnabled__c.inlineHelpText}
-                                    label={loggerSettingsFields.IsDataMaskingEnabled__c.label}
+                                    data-id={isDataMaskingEnabledField.apiName}
+                                    field-level-help={isDataMaskingEnabledField.inlineHelpText}
+                                    label={isDataMaskingEnabledField.label}
                                     onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
@@ -315,9 +315,9 @@
                             <lightning-layout-item size="6">
                                 <lightning-input
                                     checked={currentRecord.StripInaccessibleRecordFields__c}
-                                    data-id="StripInaccessibleRecordFields__c"
-                                    field-level-help={loggerSettingsFields.StripInaccessibleRecordFields__c.inlineHelpText}
-                                    label={loggerSettingsFields.StripInaccessibleRecordFields__c.label}
+                                    data-id={stripInaccessibleRecordFieldsField.apiName}
+                                    field-level-help={stripInaccessibleRecordFieldsField.inlineHelpText}
+                                    label={stripInaccessibleRecordFieldsField.label}
                                     onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
@@ -325,9 +325,9 @@
                                 ></lightning-input>
                                 <lightning-input
                                     checked={currentRecord.IsAnonymousModeEnabled__c}
-                                    data-id="IsAnonymousModeEnabled__c"
-                                    field-level-help={loggerSettingsFields.IsAnonymousModeEnabled__c.inlineHelpText}
-                                    label={loggerSettingsFields.IsAnonymousModeEnabled__c.label}
+                                    data-id={isAnonymousModeEnabledField.apiName}
+                                    field-level-help={isAnonymousModeEnabledField.inlineHelpText}
+                                    label={isAnonymousModeEnabledField.label}
                                     onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="checkbox"
