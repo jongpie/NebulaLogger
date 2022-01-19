@@ -8,6 +8,8 @@
 public class LoggerTestUtils {
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
 
+    private static Boolean cacheQueries = true;
+
     // Lazy-load & cache permission sets & profiles
     private static final Map<String, PermissionSet> PERMISSION_SETS_BY_NAME {
         get {
@@ -61,7 +63,7 @@ public class LoggerTestUtils {
 
     private static final Profile STANDARD_USER_PROFILE {
         get {
-            if (STANDARD_USER_PROFILE == null) {
+            if (STANDARD_USER_PROFILE == null || cacheQueries == false) {
                 STANDARD_USER_PROFILE = queryStandardUserProfile();
             }
             return STANDARD_USER_PROFILE;
@@ -240,36 +242,37 @@ public class LoggerTestUtils {
 
     private static Profile queryStandardUserProfile() {
         // The Profile object does not have a DeveloperName field, and tandard profile names are (annoyingly) translated
-        // to the current user's language - to ensure that this // query works for all languages, the translated names
-        // have been included for these languages:
-        // 'en_US', 'de', 'es', 'fr', 'it', 'ja', 'sv', 'ko', 'zh_TW', 'zh_CN', 'pt_BR', 'nl_NL', 'da', 'th', 'fi', 'ru', 'es_MX', 'no'
-        List<String> translatedProfileNames = new List<String>{
-            'Standard User',
-            'Standardbenutzer',
-            'Usuario estándar',
-            'Utilisateur standard',
-            'Utente standard',
-            '標準ユーザ',
-            'Standardanvändare',
-            '표준 사용자',
-            '標準使用者',
-            '标准用户',
-            'Usuário Padrão',
-            'Standaardgebruiker',
-            'Standardbruger',
-            'ผู้ใช้มาตรฐาน',
-            'Vakiokäyttäjä',
-            'Стандартный пользователь',
-            'Usuario estándar',
-            'Standardbruker'
+        // to the current user's language - to ensure that this query works for all languages, the translated names
+        // have been as part of the query's filter.
+        // And no, this doesn't have to be a map (only .values() is used below), but it makes maintenance & readability easier
+        Map<String, String> profileNamesByLanguageLocaleKey = new Map<String, String>{
+            'da' => 'Standardbruger',
+            'de' => 'Standardbenutzer',
+            'en_US' => 'Standard User',
+            'es_MX' => 'Usuario estándar',
+            'es' => 'Usuario estándar',
+            'fi' => 'Vakiokäyttäjä',
+            'fr' => 'Utilisateur standard',
+            'it' => 'Utente standard',
+            'ja' => '標準ユーザ',
+            'ko' => '표준 사용자',
+            'nl_NL' => 'Standaardgebruiker',
+            'no' => 'Standardbruker',
+            'pt_BR' => 'Usuário Padrão',
+            'ru' => 'Стандартный пользователь',
+            'sv' => 'Standardanvändare',
+            'th' => 'ผู้ใช้มาตรฐาน',
+            'zh_CN' => '标准用户',
+            'zh_TW' => '標準使用者'
         };
-        return [SELECT Id FROM Profile WHERE Name IN :translatedProfileNames LIMIT 1];
+        return [SELECT Id, Name FROM Profile WHERE Name IN :profileNamesByLanguageLocaleKey.values() LIMIT 1];
     }
 
-    // Actual test methods for LoggerTestUtils - the goal of this class is to be a utility class for other test classes,
-    // but this test ensures that this utility class is working as expected. Yes, this does DML in a for-loop, which is normally
-    // HORRIBLE to do, but in this case, it's the only way to ensure that the current user's language has been updated
-    // to ensure that the profile's name is using the expected language
+    // Actual test methods for LoggerTestUtils - the goal of this class is to be a utility class for other test classes
+    // (instead of actually containing tests), but this verifies that this utility class is working as expected.
+    // Yes, this does DML in a for-loop, which is HORRIBLE to do, but in this case, it's within the governor limits,
+    // it's only in a test class, and it ensures that the current user's language has been updated
+    // so that the profile's name is using the expected language
     @SuppressWarnings('PMD.OperationWithLimitsInLoop')
     @IsTest
     static void it_should_return_standard_user_profile_in_all_languages() {
@@ -284,9 +287,10 @@ public class LoggerTestUtils {
         }
         // Test that each value of LanguageLocaleKey returns a value for STANDARD_USER_PROFILE
         for (PicklistEntry picklistEntry : Schema.User.LanguageLocaleKey.getDescribe().getPickListValues()) {
-            User user = new User(Id = UserInfo.getUserId(), LanguageLocaleKey = picklistEntry.getValue());
-            update user;
-            System.runAs(user) {
+            currentUser.LanguageLocaleKey = picklistEntry.getValue();
+            update currentUser;
+            System.runAs(currentUser) {
+                cacheQueries = false;
                 currentUser = [SELECT Id, LanguageLocaleKey FROM User WHERE Id = :UserInfo.getUserId()];
                 System.assertEquals(picklistEntry.getValue(), currentUser.LanguageLocaleKey);
                 System.assertEquals(expectedProfile.Id, STANDARD_USER_PROFILE.Id);

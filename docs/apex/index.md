@@ -72,10 +72,6 @@ Manages setting fields on `Log__c` before insert &amp; before update
 
 Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
 
-### [LoggerInfoController](log-management/LoggerInfoController)
-
-Controller class for lwc `loggerInfo`, used to display system information about Nebula Logger
-
 ### [LoggerSObjectHandler](log-management/LoggerSObjectHandler)
 
 Abstract class used by trigger handlers for shared logic
@@ -103,10 +99,6 @@ Builds and sends email notifications when internal exceptions occur within the l
 Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
 
 ## Plugin Framework
-
-### [LoggerPlugin](plugin-framework/LoggerPlugin)
-
-Abstract class used to create custom Apex &amp; Flow plugins
 
 ### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
 
