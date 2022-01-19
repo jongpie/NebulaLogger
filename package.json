@@ -66,10 +66,6 @@
         "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerConfiguration,LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage --skipApiVersionCheck --verbose"
     },
-    "dependencies": {
-        "set-value": ">=4.0.1",
-        "trim-newlines": "^4.0.2"
-    },
     "devDependencies": {
         "follow-redirects": ">=1.14.7",
         "marked": ">=4.0.10",
