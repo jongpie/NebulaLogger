@@ -1,35 +1,35 @@
 ## Functions
 
 <dl>
-<dt><a href="#getUserSettings">getUserSettings()</a> <code>ComponentLogger.ComponentLoggerSettings</code></dt>
+<dt><a href="#getUserSettings">getUserSettings()</a> ⇒ <code>ComponentLogger.ComponentLoggerSettings</code></dt>
 <dd><p>Returns information about the current user&#39;s settings, stored in <code>LoggerSettings__c</code></p>
 </dd>
 <dt><a href="#setScenario">setScenario(scenario)</a></dt>
 <dd><p>Sets the scenario name for the current transaction - this is stored in <code>LogEntryEvent__e.Scenario__c</code>
              and <code>Log__c.Scenario__c</code>, and can be used to filter &amp; group logs</p>
 </dd>
-<dt><a href="#error">error(message)</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#error">error(message)</a> ⇒ <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.ERROR</code></p>
 </dd>
-<dt><a href="#warn">warn(message)</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#warn">warn(message)</a> ⇒ <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.WARN</code></p>
 </dd>
-<dt><a href="#info">info(message)</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#info">info(message)</a> ⇒ <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.INFO</code></p>
 </dd>
-<dt><a href="#debug">debug(message)</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#debug">debug(message)</a> ⇒ <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.DEBUG</code></p>
 </dd>
-<dt><a href="#fine">fine(message)</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#fine">fine(message)</a> ⇒ <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.FINE</code></p>
 </dd>
-<dt><a href="#finer">finer(message)</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#finer">finer(message)</a> ⇒ <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.FINER</code></p>
 </dd>
-<dt><a href="#finest">finest(message)</a> <code>LogEntryBuilder</code></dt>
+<dt><a href="#finest">finest(message)</a> ⇒ <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.FINEST</code></p>
 </dd>
-<dt><a href="#getBufferSize">getBufferSize()</a> <code>Integer</code></dt>
+<dt><a href="#getBufferSize">getBufferSize()</a> ⇒ <code>Integer</code></dt>
 <dd><p>Returns the number of entries that have been generated but not yet saved</p>
 </dd>
 <dt><a href="#flushBuffer">flushBuffer()</a></dt>
@@ -43,7 +43,7 @@
 
 <a name="getUserSettings"></a>
 
-## getUserSettings() <code>ComponentLogger.ComponentLoggerSettings</code>
+## getUserSettings() ⇒ <code>ComponentLogger.ComponentLoggerSettings</code>
 
 Returns information about the current user's settings, stored in `LoggerSettings__c`
 
@@ -64,7 +64,7 @@ and `Log__c.Scenario__c`, and can be used to filter & group logs
 
 <a name="error"></a>
 
-## error(message) <code>LogEntryBuilder</code>
+## error(message) ⇒ <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
@@ -77,7 +77,7 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
 <a name="warn"></a>
 
-## warn(message) <code>LogEntryBuilder</code>
+## warn(message) ⇒ <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
 
@@ -90,7 +90,7 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 
 <a name="info"></a>
 
-## info(message) <code>LogEntryBuilder</code>
+## info(message) ⇒ <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
 
@@ -103,7 +103,7 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 
 <a name="debug"></a>
 
-## debug(message) <code>LogEntryBuilder</code>
+## debug(message) ⇒ <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
@@ -116,7 +116,7 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
 <a name="fine"></a>
 
-## fine(message) <code>LogEntryBuilder</code>
+## fine(message) ⇒ <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
 
@@ -129,7 +129,7 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 
 <a name="finer"></a>
 
-## finer(message) <code>LogEntryBuilder</code>
+## finer(message) ⇒ <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
 
@@ -142,7 +142,7 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 
 <a name="finest"></a>
 
-## finest(message) <code>LogEntryBuilder</code>
+## finest(message) ⇒ <code>LogEntryBuilder</code>
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
@@ -155,7 +155,7 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
 <a name="getBufferSize"></a>
 
-## getBufferSize() <code>Integer</code>
+## getBufferSize() ⇒ <code>Integer</code>
 
 Returns the number of entries that have been generated but not yet saved
 
