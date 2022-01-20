@@ -60,23 +60,23 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-combobox
-                                    data-id="setupOwnerType"
-                                    label="Setup Location"
+                                    data-id={setupOwnerTypeField.apiName}
+                                    label={setupOwnerTypeField.label}
                                     onchange={handleSetupOwnerTypeFieldChange}
                                     options={loggerSettingsPicklistOptions.setupOwnerTypeOptions}
                                     read-only={isExistingRecord}
                                     required
-                                    value={currentRecord.setupOwnerType}
+                                    value={setupOwnerTypeField.value}
                                     variant="label-stacked"
                                 ></lightning-combobox>
                                 <template if:true={isExistingRecord}>
                                     <lightning-input
-                                        data-id="setupOwnerName"
-                                        label="Setup Owner"
+                                        data-id={setupOwnerNameField.apiName}
+                                        label={setupOwnerNameField.label}
                                         read-only
                                         required
                                         type="text"
-                                        value={currentRecord.setupOwnerName}
+                                        value={setupOwnerNameField.value}
                                         variant="label-stacked"
                                     ></lightning-input>
                                 </template>
@@ -192,7 +192,7 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    checked={isEnabledFieldValue}
+                                    checked={isEnabledField.value}
                                     data-id={isEnabledField.apiName}
                                     field-level-help={isEnabledField.inlineHelpText}
                                     label={isEnabledField.label}
@@ -210,7 +210,7 @@
                                     options={loggerSettingsPicklistOptions.loggingLevelOptions}
                                     read-only={isReadOnlyMode}
                                     required
-                                    value={currentRecord.LoggingLevel__c}
+                                    value={loggingLevelField.value}
                                     variant="label-stacked"
                                 ></lightning-combobox>
                             </lightning-layout-item>
@@ -231,7 +231,7 @@
                                     onchange={handleFieldChange}
                                     read-only={isReadOnlyMode}
                                     type="number"
-                                    value={currentRecord.DefaultNumberOfDaysToRetainLogs__c}
+                                    value={defaultNumberOfDaysToRetainLogsField.value}
                                     variant="label-stacked"
                                 ></lightning-input>
                             </lightning-layout-item>
@@ -243,7 +243,7 @@
                                     onchange={handleFieldChange}
                                     options={loggerSettingsPicklistOptions.shareAccessLevelOptions}
                                     read-only={isReadOnlyMode}
-                                    value={currentRecord.DefaultLogShareAccessLevel__c}
+                                    value={defaultLogShareAccessLevelField.value}
                                     variant="label-stacked"
                                 ></lightning-combobox>
                             </lightning-layout-item>
@@ -265,13 +265,13 @@
                                     options={loggerSettingsPicklistOptions.saveMethodOptions}
                                     read-only={isReadOnlyMode}
                                     required
-                                    value={currentRecord.DefaultSaveMethod__c}
+                                    value={defaultSaveMethodField.value}
                                     variant="label-stacked"
                                 ></lightning-combobox>
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    checked={currentRecord.IsApexSystemDebugLoggingEnabled__c}
+                                    checked={isApexSystemDebugLoggingEnabledField.value}
                                     data-id={isApexSystemDebugLoggingEnabledField.apiName}
                                     field-level-help={isApexSystemDebugLoggingEnabledField.inlineHelpText}
                                     label={isApexSystemDebugLoggingEnabledField.label}
@@ -281,7 +281,7 @@
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-input
-                                    checked={currentRecord.IsJavaScriptConsoleLoggingEnabled__c}
+                                    checked={isJavaScriptConsoleLoggingEnabledField.value}
                                     data-id={isJavaScriptConsoleLoggingEnabledField.apiName}
                                     field-level-help={isJavaScriptConsoleLoggingEnabledField.inlineHelpText}
                                     label={isJavaScriptConsoleLoggingEnabledField.label}
@@ -302,7 +302,7 @@
                         <lightning-layout>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    checked={currentRecord.IsDataMaskingEnabled__c}
+                                    checked={isDataMaskingEnabledField.value}
                                     data-id={isDataMaskingEnabledField.apiName}
                                     field-level-help={isDataMaskingEnabledField.inlineHelpText}
                                     label={isDataMaskingEnabledField.label}
@@ -314,7 +314,7 @@
                             </lightning-layout-item>
                             <lightning-layout-item size="6">
                                 <lightning-input
-                                    checked={currentRecord.StripInaccessibleRecordFields__c}
+                                    checked={stripInaccessibleRecordFieldsField.value}
                                     data-id={stripInaccessibleRecordFieldsField.apiName}
                                     field-level-help={stripInaccessibleRecordFieldsField.inlineHelpText}
                                     label={stripInaccessibleRecordFieldsField.label}
@@ -324,7 +324,7 @@
                                     variant="label-stacked"
                                 ></lightning-input>
                                 <lightning-input
-                                    checked={currentRecord.IsAnonymousModeEnabled__c}
+                                    checked={isAnonymousModeEnabledField.value}
                                     data-id={isAnonymousModeEnabledField.apiName}
                                     field-level-help={isAnonymousModeEnabledField.inlineHelpText}
                                     label={isAnonymousModeEnabledField.label}
@@ -346,17 +346,17 @@
                             <lightning-layout>
                                 <lightning-layout-item size="6">
                                     <lightning-input
-                                        data-id="CreatedByUsername"
-                                        field-level-help={loggerSettingsFields.CreatedById.inlineHelpText}
-                                        label={loggerSettingsFields.CreatedById.label}
+                                        data-id={createdByIdField.apiName}
+                                        field-level-help={createdByIdField.inlineHelpText}
+                                        label={createdByIdField.label}
                                         onchange={handleFieldChange}
                                         read-only
                                         type="text"
-                                        value={currentRecord.createdByUsername}
+                                        value={createdByIdField.value}
                                         variant="label-stacked"
                                     ></lightning-input>
                                     <div class="slds-form-element">
-                                        <label class="slds-form-element__label">{loggerSettingsFields.CreatedDate.label}</label>
+                                        <label class="slds-form-element__label">{createdDateField.label}</label>
                                         <div class="slds-form-element__control">
                                             <lightning-formatted-date-time
                                                 year="numeric"
@@ -364,24 +364,24 @@
                                                 day="2-digit"
                                                 hour="2-digit"
                                                 minute="2-digit"
-                                                value={currentRecord.CreatedDate}
+                                                value={createdDateField.value}
                                             ></lightning-formatted-date-time>
                                         </div>
                                     </div>
                                 </lightning-layout-item>
                                 <lightning-layout-item size="6">
                                     <lightning-input
-                                        data-id="LastModifiedByUsername"
-                                        field-level-help={loggerSettingsFields.LastModifiedById.inlineHelpText}
-                                        label={loggerSettingsFields.LastModifiedById.label}
+                                        data-id={lastModifiedByIdField.apiName}
+                                        field-level-help={lastModifiedByIdField.inlineHelpText}
+                                        label={lastModifiedByIdField.label}
                                         onchange={handleFieldChange}
                                         read-only
                                         type="text"
-                                        value={currentRecord.lastModifiedByUsername}
+                                        value={lastModifiedByIdField.value}
                                         variant="label-stacked"
                                     ></lightning-input>
                                     <div class="slds-form-element">
-                                        <label class="slds-form-element__label">{loggerSettingsFields.LastModifiedDate.label}</label>
+                                        <label class="slds-form-element__label">{lastModifiedDateField.label}</label>
                                         <div class="slds-form-element__control">
                                             <lightning-formatted-date-time
                                                 year="numeric"
@@ -389,7 +389,7 @@
                                                 day="2-digit"
                                                 hour="2-digit"
                                                 minute="2-digit"
-                                                value={currentRecord.LastModifiedDate}
+                                                value={lastModifiedDateField.value}
                                             ></lightning-formatted-date-time>
                                         </div>
                                     </div>
@@ -437,7 +437,7 @@
 
                 <!-- Delete modal body -->
                 <div class="slds-modal__content slds-p-around_medium">
-                    Are you sure you want to delete the Logger Settings record for {currentRecord.setupOwnerName}?
+                    Are you sure you want to delete the Logger Settings record for {setupOwnerNameField.value}?
                 </div>
 
                 <!-- Delete modal footer -->

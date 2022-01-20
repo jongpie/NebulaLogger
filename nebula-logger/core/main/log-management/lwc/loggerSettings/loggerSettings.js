@@ -8,19 +8,7 @@ import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 // LoggerSettings__c metadata
-import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
-import DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultLogShareAccessLevel__c';
-import DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultNumberOfDaysToRetainLogs__c';
-import DEFAULT_SAVE_METHOD_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultSaveMethod__c';
-import IS_ANONYMOUS_MODE_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsAnonymousModeEnabled__c';
-import IS_APEX_SYSTEM_DEBUG_LOGGING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsApexSystemDebugLoggingEnabled__c';
-import IS_DATA_MASKING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsDataMaskingEnabled__c';
-import IS_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsEnabled__c';
-import IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c';
-import LOGGING_LEVEL_FIELD from '@salesforce/schema/LoggerSettings__c.LoggingLevel__c';
-import STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD from '@salesforce/schema/LoggerSettings__c.StripInaccessibleRecordFields__c';
-
-// Additional metadata
+import LOGGER_SETTINGS_SCHEMA from './loggerSettingsSchema';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
@@ -51,13 +39,13 @@ export default class LoggerSettings extends LightningElement {
 
     // LoggerSettings__c metadata
     canUserModifyLoggerSettings;
-    loggerSettingsFields;
     loggerSettingsPicklistOptions;
+    _loggerSettingsFields;
 
     // LoggerSettings__c data
     records;
-    currentRecord;
     selectedSetupOwner;
+    _currentRecord;
 
     connectedCallback() {
         document.title = this.title;
@@ -74,10 +62,10 @@ export default class LoggerSettings extends LightningElement {
         this.showLoadingSpinner = false;
     }
 
-    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_OBJECT })
+    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_SCHEMA.sobject })
     getLoggerSettingsObjectInfo({ data }) {
         if (data) {
-            this.loggerSettingsFields = data.fields;
+            this._loggerSettingsFields = data.fields;
             canUserModifyLoggerSettings().then(result => {
                 this.canUserModifyLoggerSettings = result;
                 this._loadTableColumns();
@@ -94,7 +82,7 @@ export default class LoggerSettings extends LightningElement {
                     settingsRecords[i] = record;
                 }
                 this.records = settingsRecords;
-                this.currentRecord = null;
+                this._currentRecord = null;
                 this.setupOwnerSearchTerm = null;
                 this.showSetupOwnerLookup = false;
                 this.setupOwnerSearchResults = null;
@@ -139,7 +127,7 @@ export default class LoggerSettings extends LightningElement {
         } else {
             value = event.target.value;
         }
-        this.currentRecord[event.target.dataset.id] = value;
+        this._currentRecord[event.target.dataset.id] = value;
 
         this._setIsNewOrganizationRecord();
         this._setShowSetupOwnerLookup();
@@ -150,7 +138,7 @@ export default class LoggerSettings extends LightningElement {
         this.setupOwnerSearchTerm = event.detail.value;
         if (this.setupOwnerSearchTerm && this.setupOwnerSearchTerm.length >= 2) {
             searchForSetupOwner({
-                setupOwnerType: this.currentRecord.setupOwnerType,
+                setupOwnerType: this._currentRecord.setupOwnerType,
                 searchTerm: this.setupOwnerSearchTerm
             })
                 .then(results => {
@@ -167,8 +155,8 @@ export default class LoggerSettings extends LightningElement {
 
     handleSearchResultSelection(event) {
         if (event.currentTarget.dataset.key) {
-            this.currentRecord.SetupOwnerId = event.currentTarget.dataset.key;
-            this.currentRecord.setupOwnerName = event.currentTarget.dataset.label;
+            this._currentRecord.SetupOwnerId = event.currentTarget.dataset.key;
+            this._currentRecord.setupOwnerName = event.currentTarget.dataset.label;
 
             let index = this.setupOwnerSearchResults.findIndex(x => x.recordId === event.currentTarget.dataset.key);
             if (index !== -1) {
@@ -204,122 +192,98 @@ export default class LoggerSettings extends LightningElement {
 
     get isExistingRecord() {
         let isExistingRecord = false;
-        if (this.currentRecord.Id) {
+        if (this._currentRecord.Id) {
             isExistingRecord = true;
         }
         return isExistingRecord;
     }
 
-    // LoggerSettings__c data - field-describe & field-value getters
-    get isEnabledField() {
-        return this.loggerSettingsFields[IS_ENABLED_FIELD.fieldApiName];
+    // Getters for each LoggerSettings__c field describes & data - these handle dealing with using a namespace for the package
+    get createdByIdField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.CreatedById, 'createdByUsername');
     }
-
-    get isEnabledFieldValue() {
-        return this.currentRecord[IS_ENABLED_FIELD.fieldApiName];
-    }
-    get loggingLevelField() {
-        return this.loggerSettingsFields[LOGGING_LEVEL_FIELD.fieldApiName];
-    }
-
-    get loggingLevelFieldValue() {
-        return this.currentRecord[LOGGING_LEVEL_FIELD.fieldApiName];
-    }
-
-    get defaultNumberOfDaysToRetainLogsField() {
-        return this.loggerSettingsFields[DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD.fieldApiName];
-    }
-
-    get defaultNumberOfDaysToRetainLogsFieldValue() {
-        return this.currentRecord[DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD.fieldApiName];
+    get createdDateField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.CreatedDate);
     }
 
     get defaultLogShareAccessLevelField() {
-        return this.loggerSettingsFields[DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD.fieldApiName];
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c);
     }
 
-    get defaultLogShareAccessLevelFieldValue() {
-        return this.currentRecord[DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD.fieldApiName];
+    get defaultNumberOfDaysToRetainLogsField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.DefaultNumberOfDaysToRetainLogs__c);
     }
 
     get defaultSaveMethodField() {
-        return this.loggerSettingsFields[DEFAULT_SAVE_METHOD_FIELD.fieldApiName];
-    }
-
-    get defaultSaveMethodFieldValue() {
-        return this.currentRecord[DEFAULT_SAVE_METHOD_FIELD.fieldApiName];
-    }
-
-    get isApexSystemDebugLoggingEnabledField() {
-        return this.loggerSettingsFields[IS_APEX_SYSTEM_DEBUG_LOGGING_ENABLED_FIELD.fieldApiName];
-    }
-
-    get isApexSystemDebugLoggingEnabledFieldValue() {
-        return this.currentRecord[IS_APEX_SYSTEM_DEBUG_LOGGING_ENABLED_FIELD.fieldApiName];
-    }
-
-    get isJavaScriptConsoleLoggingEnabledField() {
-        return this.loggerSettingsFields[IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD.fieldApiName];
-    }
-
-    get isJavaScriptConsoleLoggingEnabledFieldValue() {
-        return this.currentRecord[IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD.fieldApiName];
-    }
-
-    get isDataMaskingEnabledField() {
-        return this.loggerSettingsFields[IS_DATA_MASKING_ENABLED_FIELD.fieldApiName];
-    }
-
-    get isDataMaskingEnabledFieldValue() {
-        return this.currentRecord[IS_DATA_MASKING_ENABLED_FIELD.fieldApiName];
-    }
-
-    get stripInaccessibleRecordFieldsField() {
-        return this.loggerSettingsFields[STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD.fieldApiName];
-    }
-
-    get stripInaccessibleRecordFieldsFieldValue() {
-        return this.currentRecord[STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD.fieldApiName];
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.DefaultSaveMethod__c);
     }
 
     get isAnonymousModeEnabledField() {
-        return this.loggerSettingsFields[IS_ANONYMOUS_MODE_ENABLED_FIELD.fieldApiName];
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsAnonymousModeEnabled__c);
     }
 
-    get isAnonymousModeEnabledFieldValue() {
-        return this.currentRecord[IS_ANONYMOUS_MODE_ENABLED_FIELD.fieldApiName];
+    get isApexSystemDebugLoggingEnabledField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsApexSystemDebugLoggingEnabled__c);
     }
 
-    _setIsNewOrganizationRecord() {
-        this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.setupOwnerType === 'Organization';
-        if (this.isNewOrganizationRecord === true) {
-            this.currentRecord.SetupOwnerId = this.organization.Id;
-            this.currentRecord.setupOwnerName = this.organization.Name;
-        }
+    get isDataMaskingEnabledField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsDataMaskingEnabled__c);
     }
 
-    _setShowSetupOwnerLookup() {
-        this.showSetupOwnerLookup = this.isExistingRecord === false && this.currentRecord?.setupOwnerType !== 'Organization';
+    get isEnabledField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsEnabled__c);
+    }
+
+    get isJavaScriptConsoleLoggingEnabledField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsJavaScriptConsoleLoggingEnabled__c);
+    }
+
+    get lastModifiedByIdField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.LastModifiedById, 'lastModifiedByUsername');
+    }
+
+    get lastModifiedDateField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.LastModifiedDate);
+    }
+
+    get loggingLevelField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.LoggingLevel__c);
+    }
+
+    get setupOwnerNameField() {
+        return this._loadField('setupOwnerName', 'setupOwnerName', 'Setup Owner');
+    }
+
+    get setupOwnerTypeField() {
+        return this._loadField('setupOwnerType', 'setupOwnerType', 'Setup Location');
+    }
+
+    get stripInaccessibleRecordFieldsField() {
+        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.StripInaccessibleRecordFields__c);
     }
 
     createNewRecord() {
         createRecord()
             .then(result => {
-                this.currentRecord = result;
+                this._currentRecord = result;
+                this.selectedSetupOwner = null;
+                this.isNewOrganizationRecord = false;
                 this.isReadOnlyMode = false;
+                this.showPill = false;
                 this.showRecordModal = true;
+                this.showSetupOwnerLookup = false;
             })
             .catch(this._handleError);
     }
 
     viewCurrentRecord(currentRow) {
-        this.currentRecord = currentRow;
+        this._currentRecord = currentRow;
         this.isReadOnlyMode = true;
         this.showRecordModal = true;
     }
 
     editCurrentRecord(currentRow) {
-        this.currentRecord = currentRow;
+        this._currentRecord = currentRow;
         this.isReadOnlyMode = false;
         this.showRecordModal = true;
     }
@@ -336,10 +300,10 @@ export default class LoggerSettings extends LightningElement {
 
         this.showLoadingSpinner = true;
 
-        saveRecord({ settingsRecord: this.currentRecord })
+        saveRecord({ settingsRecord: this._currentRecord })
             .then(() => {
                 this.loadSettingsRecords();
-                const setupOwnerName = this.selectedSetupOwner ? this.selectedSetupOwner.label : this.currentRecord.setupOwnerName;
+                const setupOwnerName = this.selectedSetupOwner ? this.selectedSetupOwner.label : this._currentRecord.setupOwnerName;
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: this.title + ' record for ' + setupOwnerName + ' successfully saved',
@@ -354,13 +318,13 @@ export default class LoggerSettings extends LightningElement {
 
     deleteCurrentRecord(currentRow) {
         this.showDeleteModal = true;
-        this.currentRecord = currentRow;
+        this._currentRecord = currentRow;
     }
 
     confirmDeleteCurrentRecord() {
         this.showLoadingSpinner = true;
-        const setupOwnerName = this.currentRecord.setupOwnerName;
-        deleteRecord({ settingsRecord: this.currentRecord })
+        const setupOwnerName = this._currentRecord.setupOwnerName;
+        deleteRecord({ settingsRecord: this._currentRecord })
             .then(() => {
                 this.loadSettingsRecords();
                 this.dispatchEvent(
@@ -374,26 +338,27 @@ export default class LoggerSettings extends LightningElement {
             .catch(this._handleError);
     }
 
+    // Private functions
     _loadTableColumns() {
         // The columns setupOwnerType and setupOwnerName are not true fields
         // They're flattened versions of SetupOwner.Type and SetupOwner.Name, so object API info isn't used here
         this.columns = [
             { fieldName: 'setupOwnerType', label: 'Setup Location', type: 'text' },
-            { fieldName: 'setupOwnerName', label: 'Setup Owner Name', type: 'text' }
+            { fieldName: 'setupOwnerName', label: 'Setup Owner', type: 'text' }
         ];
 
         // For all other fields, use object API info to dynamically get field details
         // TODO - make this array configurable by storing in LoggerParameter__mdt
         const tableColumnNames = [
-            IS_ENABLED_FIELD.fieldApiName,
-            LOGGING_LEVEL_FIELD.fieldApiName,
-            IS_DATA_MASKING_ENABLED_FIELD.fieldApiName,
-            DEFAULT_SAVE_METHOD_FIELD.fieldApiName,
-            DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD.fieldApiName,
-            DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD.fieldApiName
+            LOGGER_SETTINGS_SCHEMA.fields.IsEnabled__c,
+            LOGGER_SETTINGS_SCHEMA.fields.LoggingLevel__c,
+            LOGGER_SETTINGS_SCHEMA.fields.IsDataMaskingEnabled__c,
+            LOGGER_SETTINGS_SCHEMA.fields.DefaultSaveMethod__c,
+            LOGGER_SETTINGS_SCHEMA.fields.DefaultNumberOfDaysToRetainLogs__c,
+            LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c
         ];
         for (let i = 0; i < tableColumnNames.length; i++) {
-            const field = this.loggerSettingsFields[tableColumnNames[i]];
+            const field = this._loggerSettingsFields[tableColumnNames[i]];
             const column = {
                 fieldName: field.apiName,
                 label: field.label,
@@ -422,13 +387,51 @@ export default class LoggerSettings extends LightningElement {
         });
     }
 
+    _loadField(fieldApiName, recordFieldApiName, recordFieldLabel) {
+        if (!recordFieldApiName) {
+            recordFieldApiName = fieldApiName;
+        }
+
+        let fieldDescribe;
+        if (fieldApiName && this._loggerSettingsFields[fieldApiName]) {
+            fieldDescribe = { ...this._loggerSettingsFields[fieldApiName] };
+        } else {
+            fieldDescribe = { apiName: fieldApiName };
+        }
+
+        if (this._currentRecord) {
+            fieldDescribe.value = this._currentRecord[recordFieldApiName];
+        }
+
+        if (recordFieldLabel) {
+            fieldDescribe.label = recordFieldLabel;
+        }
+
+        return fieldDescribe;
+    }
+
+    _setIsNewOrganizationRecord() {
+        console.warn('checking _setIsNewOrganizationRecord', this._currentRecord);
+        this.isNewOrganizationRecord = this.isExistingRecord === false && this._currentRecord?.setupOwnerType === 'Organization';
+        if (this.isNewOrganizationRecord === true) {
+            this._currentRecord.SetupOwnerId = this.organization.Id;
+            this._currentRecord.setupOwnerName = this.organization.Name;
+        }
+        console.warn('checking _setIsNewOrganizationRecord again', this._currentRecord);
+    }
+
+    _setShowSetupOwnerLookup() {
+        this.showSetupOwnerLookup = this.isExistingRecord === false && this._currentRecord?.setupOwnerType !== 'Organization';
+    }
+
     _handleError = error => {
+        const errorMessage = error.body ? error.body.message : error.message;
         /* eslint-disable-next-line no-console */
-        console.error(error.body.message, error);
+        console.error(errorMessage, error);
         this.dispatchEvent(
             new ShowToastEvent({
                 mode: 'sticky',
-                title: error.body.message,
+                title: errorMessage,
                 variant: 'error'
             })
         );
