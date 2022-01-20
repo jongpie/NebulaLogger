@@ -411,13 +411,11 @@ export default class LoggerSettings extends LightningElement {
     }
 
     _setIsNewOrganizationRecord() {
-        console.warn('checking _setIsNewOrganizationRecord', this._currentRecord);
         this.isNewOrganizationRecord = this.isExistingRecord === false && this._currentRecord?.setupOwnerType === 'Organization';
         if (this.isNewOrganizationRecord === true) {
             this._currentRecord.SetupOwnerId = this.organization.Id;
             this._currentRecord.setupOwnerName = this.organization.Name;
         }
-        console.warn('checking _setIsNewOrganizationRecord again', this._currentRecord);
     }
 
     _setShowSetupOwnerLookup() {

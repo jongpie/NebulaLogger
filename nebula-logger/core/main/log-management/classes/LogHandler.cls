@@ -109,7 +109,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setPriority() {
-        List<PicklistEntry> picklistEntries = Schema.Log__c.Priority__c.getDescribe().getPicklistValues();
+        List<Schema.PicklistEntry> picklistEntries = Schema.Log__c.Priority__c.getDescribe().getPicklistValues();
 
         // 3 assumptions
         //   1. Assume that that there will always be 3+ picklist values for the Priority__c field (out of the box, the values are: High, Medium, Low)
