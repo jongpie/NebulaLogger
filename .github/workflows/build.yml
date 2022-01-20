@@ -77,8 +77,9 @@ jobs:
             - name: 'Verify Apex with SFDX Scanner'
               run: npm run lint:verify:apex
 
-            - name: 'Verify docs are updated'
-              run: npm run docs:verify
+            # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
+            # - name: 'Verify docs are updated'
+            #   run: npm run docs:verify
 
             - name: 'Verify formatting with Prettier'
               run: npm run prettier:verify
