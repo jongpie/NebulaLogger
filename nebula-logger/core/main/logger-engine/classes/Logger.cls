@@ -65,25 +65,6 @@ global with sharing class Logger {
         SYNCHRONOUS_DML
     }
 
-    // System info methods
-
-    /**
-     * @description Returns the current version number of Nebula Logger
-     * @return The current version number, in the format `v0.0.0`
-     */
-    public static String getVersionNumber() {
-        return CURRENT_VERSION_NUMBER;
-    }
-
-    /**
-     * @description Returns the current namespace of Nebula Logger
-     * @return   The current namespace prefix, or an empty string when no namespace is being used
-     */
-    public static String getNamespacePrefix() {
-        String className = Logger.class.getName();
-        return className.contains('.') ? className.substringBefore('.') : '';
-    }
-
     // Settings management methods
 
     /**
