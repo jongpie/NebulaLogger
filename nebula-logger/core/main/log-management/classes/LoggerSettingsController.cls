@@ -256,30 +256,12 @@ public without sharing class LoggerSettingsController {
     }
 
     private static List<LoggerSettings__c> queryLoggerSettings() {
-        return [
-            SELECT
-                CreatedBy.Username,
-                CreatedById,
-                CreatedDate,
-                DefaultLogShareAccessLevel__c,
-                DefaultNumberOfDaysToRetainLogs__c,
-                DefaultSaveMethod__c,
-                Id,
-                IsAnonymousModeEnabled__c,
-                IsApexSystemDebugLoggingEnabled__c,
-                IsJavaScriptConsoleLoggingEnabled__c,
-                IsDataMaskingEnabled__c,
-                IsEnabled__c,
-                LastModifiedBy.Username,
-                LastModifiedById,
-                LastModifiedDate,
-                LoggingLevel__c,
-                SetupOwner.Name,
-                SetupOwner.Type,
-                SetupOwnerId,
-                StripInaccessibleRecordFields__c
-            FROM LoggerSettings__c
-        ];
+        List<String> fieldNames = new List<String>(Schema.LoggerSettings__c.SObjectType.getDescribe().fields.getMap().keySet());
+        fieldNames.add('CreatedBy.Username');
+        fieldNames.add('LastModifiedBy.Username');
+        fieldNames.add('SetupOwner.Name');
+        fieldNames.add('SetupOwner.Type');
+        return (List<LoggerSettings__c>) Database.query('SELECT ' + String.join(fieldNames, ', ') + ' FROM ' + Schema.LoggerSettings__c.SObjectType);
     }
 
     private static Map<Id, String> querySetupOwnerNames(List<Id> setupOwnerIds) {

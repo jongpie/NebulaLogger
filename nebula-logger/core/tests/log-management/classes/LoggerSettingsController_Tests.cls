@@ -99,7 +99,7 @@ private class LoggerSettingsController_Tests {
         for (LoggerSettingsController.SettingsRecordResult result : recordResults) {
             LoggerSettings__c matchingRecord = testSettingsRecordsById.get(result.record.Id);
             System.assertNotEquals(null, matchingRecord);
-            System.assertEquals(matchingRecord, result.record);
+            System.assertEquals(matchingRecord.SetupOwnerId, result.record.SetupOwnerId);
             System.assertEquals(matchingRecord.CreatedBy.Username, result.createdByUsername);
             System.assertEquals(matchingRecord.LastModifiedBy.Username, result.lastModifiedByUsername);
         }
@@ -273,6 +273,8 @@ private class LoggerSettingsController_Tests {
                     IsDataMaskingEnabled__c,
                     IsEnabled__c,
                     IsJavaScriptConsoleLoggingEnabled__c,
+                    IsPlatformEventStorageEnabled__c,
+                    IsSavingEnabled__c,
                     LastModifiedBy.Username,
                     LastModifiedById,
                     LastModifiedDate,

@@ -9,6 +9,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 // LoggerSettings__c metadata
 import LOGGER_SETTINGS_SCHEMA from './loggerSettingsSchema';
+import { generatePageLayout } from './loggerSettingsPageLayout';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
@@ -40,7 +41,7 @@ export default class LoggerSettings extends LightningElement {
     // LoggerSettings__c metadata
     canUserModifyLoggerSettings;
     loggerSettingsPicklistOptions;
-    _loggerSettingsFields;
+    _sobjectDescribe;
 
     // LoggerSettings__c data
     records;
@@ -52,20 +53,19 @@ export default class LoggerSettings extends LightningElement {
         this.showLoadingSpinner = true;
 
         Promise.all([getOrganization(), getPicklistOptions()])
-            .then(([organization, loggerSettingsPicklistOptions]) => {
-                this.organization = organization;
-                this.loggerSettingsPicklistOptions = loggerSettingsPicklistOptions;
+            .then(([organizationRecord, apexPicklistOptions]) => {
+                this.organization = organizationRecord;
+                this.loggerSettingsPicklistOptions = apexPicklistOptions;
             })
             .catch(this._handleError);
-
         this.loadSettingsRecords();
         this.showLoadingSpinner = false;
     }
 
-    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_SCHEMA.sobject })
+    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_SCHEMA.apiName })
     getLoggerSettingsObjectInfo({ data }) {
         if (data) {
-            this._loggerSettingsFields = data.fields;
+            this._sobjectDescribe = data;
             canUserModifyLoggerSettings().then(result => {
                 this.canUserModifyLoggerSettings = result;
                 this._loadTableColumns();
@@ -199,43 +199,22 @@ export default class LoggerSettings extends LightningElement {
     }
 
     // Getters for each LoggerSettings__c field describes & data - these handle dealing with using a namespace for the package
+    // TODO - this is a legacy approach where separate getters were used for each field - the audit fields & "general info" fields still use this approach
+    // but should be updated to leverage the new approach, loggerSettingsPageLayout.js
+    get layoutData() {
+        return generatePageLayout(this._sobjectDescribe, this.loggerSettingsPicklistOptions, this.isReadOnlyMode, this._currentRecord);
+    }
+
     get createdByIdField() {
         return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.CreatedById, 'createdByUsername');
     }
+
     get createdDateField() {
         return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.CreatedDate);
     }
 
-    get defaultLogShareAccessLevelField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c);
-    }
-
-    get defaultNumberOfDaysToRetainLogsField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.DefaultNumberOfDaysToRetainLogs__c);
-    }
-
-    get defaultSaveMethodField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.DefaultSaveMethod__c);
-    }
-
-    get isAnonymousModeEnabledField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsAnonymousModeEnabled__c);
-    }
-
-    get isApexSystemDebugLoggingEnabledField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsApexSystemDebugLoggingEnabled__c);
-    }
-
-    get isDataMaskingEnabledField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsDataMaskingEnabled__c);
-    }
-
     get isEnabledField() {
         return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsEnabled__c);
-    }
-
-    get isJavaScriptConsoleLoggingEnabledField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsJavaScriptConsoleLoggingEnabled__c);
     }
 
     get lastModifiedByIdField() {
@@ -256,10 +235,6 @@ export default class LoggerSettings extends LightningElement {
 
     get setupOwnerTypeField() {
         return this._loadField('setupOwnerType', 'setupOwnerType', 'Setup Location');
-    }
-
-    get stripInaccessibleRecordFieldsField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.StripInaccessibleRecordFields__c);
     }
 
     createNewRecord() {
@@ -352,13 +327,15 @@ export default class LoggerSettings extends LightningElement {
         const tableColumnNames = [
             LOGGER_SETTINGS_SCHEMA.fields.IsEnabled__c,
             LOGGER_SETTINGS_SCHEMA.fields.LoggingLevel__c,
-            LOGGER_SETTINGS_SCHEMA.fields.IsDataMaskingEnabled__c,
+            LOGGER_SETTINGS_SCHEMA.fields.IsSavingEnabled__c,
             LOGGER_SETTINGS_SCHEMA.fields.DefaultSaveMethod__c,
+            LOGGER_SETTINGS_SCHEMA.fields.IsPlatformEventStorageEnabled__c,
+            LOGGER_SETTINGS_SCHEMA.fields.IsDataMaskingEnabled__c,
             LOGGER_SETTINGS_SCHEMA.fields.DefaultNumberOfDaysToRetainLogs__c,
             LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c
         ];
         for (let i = 0; i < tableColumnNames.length; i++) {
-            const field = this._loggerSettingsFields[tableColumnNames[i]];
+            const field = this._sobjectDescribe.fields[tableColumnNames[i]];
             const column = {
                 fieldName: field.apiName,
                 label: field.label,
@@ -387,14 +364,15 @@ export default class LoggerSettings extends LightningElement {
         });
     }
 
+    // TODO delete??
     _loadField(fieldApiName, recordFieldApiName, recordFieldLabel) {
         if (!recordFieldApiName) {
             recordFieldApiName = fieldApiName;
         }
 
         let fieldDescribe;
-        if (fieldApiName && this._loggerSettingsFields[fieldApiName]) {
-            fieldDescribe = { ...this._loggerSettingsFields[fieldApiName] };
+        if (fieldApiName && this._sobjectDescribe.fields[fieldApiName]) {
+            fieldDescribe = { ...this._sobjectDescribe.fields[fieldApiName] };
         } else {
             fieldDescribe = { apiName: fieldApiName };
         }

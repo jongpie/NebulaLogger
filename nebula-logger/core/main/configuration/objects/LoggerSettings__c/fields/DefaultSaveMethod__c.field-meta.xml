@@ -2,21 +2,11 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DefaultSaveMethod__c</fullName>
     <defaultValue>&apos;EVENT_BUS&apos;</defaultValue>
-    <description>Defaults to &apos;EVENT_BUS&apos;. This controls the default save method used by Logger when calling saveLog().
-
-Possible values:
-EVENT_BUS
-QUEUEABLE
-REST
-SYNCHRONOUS_DML</description>
+    <description
+    >Defaults to EVENT_BUS. This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.</description>
     <externalId>false</externalId>
-    <inlineHelpText>Defaults to &apos;EVENT_BUS&apos;. This controls the default save method used by Logger when calling saveLog().
-
-Possible values:
-EVENT_BUS
-QUEUEABLE
-REST
-SYNCHRONOUS_DML</inlineHelpText>
+    <inlineHelpText
+    >Defaults to EVENT_BUS. This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.</inlineHelpText>
     <label>Save Method</label>
     <length>255</length>
     <required>true</required>

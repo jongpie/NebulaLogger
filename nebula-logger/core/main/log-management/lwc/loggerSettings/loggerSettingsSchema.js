@@ -14,6 +14,8 @@ import IS_APEX_SYSTEM_DEBUG_LOGGING_ENABLED_FIELD from '@salesforce/schema/Logge
 import IS_DATA_MASKING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsDataMaskingEnabled__c';
 import IS_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsEnabled__c';
 import IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c';
+import IS_SAVING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsSavingEnabled__c';
+import IS_PLATFORM_EVENT_STORAGE_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsPlatformEventStorageEnabled__c';
 import LAST_MODIFIED_BY_ID_FIELD from '@salesforce/schema/LoggerSettings__c.LastModifiedById';
 import LAST_MODIFIED_DATE_FIELD from '@salesforce/schema/LoggerSettings__c.LastModifiedDate';
 import LOGGING_LEVEL_FIELD from '@salesforce/schema/LoggerSettings__c.LoggingLevel__c';
@@ -21,7 +23,7 @@ import STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD from '@salesforce/schema/LoggerSet
 import SETUP_OWNER_ID_FIELD from '@salesforce/schema/LoggerSettings__c.SetupOwnerId';
 
 const LOGGER_SETTINGS_SCHEMA = {
-    sobject: LOGGER_SETTINGS_OBJECT,
+    apiName: LOGGER_SETTINGS_OBJECT.objectApiName,
     fields: {
         CreatedById: CREATED_BY_ID_FIELD.fieldApiName,
         CreatedDate: CREATED_DATE_FIELD.fieldApiName,
@@ -33,6 +35,8 @@ const LOGGER_SETTINGS_SCHEMA = {
         IsDataMaskingEnabled__c: IS_DATA_MASKING_ENABLED_FIELD.fieldApiName,
         IsEnabled__c: IS_ENABLED_FIELD.fieldApiName,
         IsJavaScriptConsoleLoggingEnabled__c: IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD.fieldApiName,
+        IsPlatformEventStorageEnabled__c: IS_PLATFORM_EVENT_STORAGE_ENABLED_FIELD.fieldApiName,
+        IsSavingEnabled__c: IS_SAVING_ENABLED_FIELD.fieldApiName,
         LastModifiedById: LAST_MODIFIED_BY_ID_FIELD.fieldApiName,
         LastModifiedDate: LAST_MODIFIED_DATE_FIELD.fieldApiName,
         LoggingLevel__c: LOGGING_LEVEL_FIELD.fieldApiName,
