@@ -5,6 +5,7 @@
 
 import { LightningElement } from 'lwc';
 import { isEmpEnabled, subscribe, unsubscribe } from 'lightning/empApi';
+import LOGGER_ENTRY_EVENT_SCHEMA from './logEntryEventSchema';
 
 export default class LogEntryEventStream extends LightningElement {
     unfilteredEvents = [];
@@ -21,7 +22,7 @@ export default class LogEntryEventStream extends LightningElement {
     scenarioFilter;
     maxEvents = 50;
 
-    _channel = '/event/LogEntryEvent__e'; // TODO need to support namespace in managed package
+    _channel;
     _subscription = {};
 
     get title() {
@@ -61,6 +62,11 @@ export default class LogEntryEventStream extends LightningElement {
 
     async connectedCallback() {
         document.title = 'Log Entry Event Stream';
+
+        // For reasons unknown, the platform returns `LogEntryEvent__c` instead of `LogEntryEvent__e`
+        const objectApiName = LOGGER_ENTRY_EVENT_SCHEMA.apiName;
+        this._channel = '/event/' + objectApiName;
+
         if (isEmpEnabled()) {
             this.createSubscription();
         }
@@ -75,7 +81,10 @@ export default class LogEntryEventStream extends LightningElement {
             const logEntryEvent = event.data.payload;
             // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
             // but it doesn't seem to be populated via empApi, so use a synthetic key instead
-            logEntryEvent.key = logEntryEvent.TransactionId__c + '__' + logEntryEvent.TransactionEntryNumber__c;
+            logEntryEvent.key =
+                logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.TransactionId__c] +
+                '__' +
+                logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.TransactionEntryNumber__c];
             this.unfilteredEvents.unshift(logEntryEvent);
             this._filterEvents();
         });
@@ -129,31 +138,31 @@ export default class LogEntryEventStream extends LightningElement {
     }
 
     _meetsLoggedByFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.loggedByFilter, logEntryEvent.LoggedByUsername__c);
+        return this._matchesTextFilter(this.loggedByFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.LoggedByUsername__c]);
     }
 
     _meetsLoggingLevelFilter(logEntryEvent) {
         let matches = false;
-        if (!this.loggingLevelFilter || Number(logEntryEvent.LoggingLevelOrdinal__c) >= Number(this.loggingLevelFilter)) {
+        if (!this.loggingLevelFilter || Number(logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.LoggingLevelOrdinal__c]) >= Number(this.loggingLevelFilter)) {
             matches = true;
         }
         return matches;
     }
 
     _meetsMessageFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.messageFilter, logEntryEvent.Message__c);
+        return this._matchesTextFilter(this.messageFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.Message__c]);
     }
 
     _meetsOriginLocationFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.originLocationFilter, logEntryEvent.OriginLocation__c);
+        return this._matchesTextFilter(this.originLocationFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.OriginLocation__c]);
     }
 
     _meetsOriginTypeFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.originTypeFilter, logEntryEvent.OriginType__c);
+        return this._matchesTextFilter(this.originTypeFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.OriginType__c]);
     }
 
     _meetsScenarioFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent.Scenario__c);
+        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.Scenario__c]);
     }
 
     _matchesTextFilter(filterCriteria = '', text = '') {
