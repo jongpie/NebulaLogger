@@ -276,23 +276,24 @@ public class LoggerTestUtils {
     @SuppressWarnings('PMD.OperationWithLimitsInLoop')
     @IsTest
     static void it_should_return_standard_user_profile_in_all_languages() {
-        User currentUser = new User(Id = UserInfo.getUserId(), LanguageLocaleKey = 'en_US');
-        update currentUser;
+        User testUser = createStandardUser();
+        testUser.LanguageLocaleKey = 'en_US';
+        insert testUser;
         Profile expectedProfile;
         // Using 'en_US', get the expected profile using the name 'Standard Profile'
-        System.runAs(currentUser) {
-            currentUser = [SELECT Id, LanguageLocaleKey FROM User WHERE Id = :UserInfo.getUserId()];
-            System.assertEquals('en_US', currentUser.LanguageLocaleKey);
+        System.runAs(testUser) {
+            testUser = [SELECT Id, LanguageLocaleKey FROM User WHERE Id = :testUser.Id];
+            System.assertEquals('en_US', testUser.LanguageLocaleKey);
             expectedProfile = [SELECT Id, Name FROM Profile WHERE Name = 'Standard User'];
         }
         // Test that each value of LanguageLocaleKey returns a value for STANDARD_USER_PROFILE
         for (PicklistEntry picklistEntry : Schema.User.LanguageLocaleKey.getDescribe().getPickListValues()) {
-            currentUser.LanguageLocaleKey = picklistEntry.getValue();
-            update currentUser;
-            System.runAs(currentUser) {
+            testUser.LanguageLocaleKey = picklistEntry.getValue();
+            update testUser;
+            System.runAs(testUser) {
                 cacheQueries = false;
-                currentUser = [SELECT Id, LanguageLocaleKey FROM User WHERE Id = :UserInfo.getUserId()];
-                System.assertEquals(picklistEntry.getValue(), currentUser.LanguageLocaleKey);
+                testUser = [SELECT Id, LanguageLocaleKey FROM User WHERE Id = :testUser.Id];
+                System.assertEquals(picklistEntry.getValue(), testUser.LanguageLocaleKey);
                 System.assertEquals(expectedProfile.Id, STANDARD_USER_PROFILE.Id);
             }
         }
