@@ -960,7 +960,7 @@ global with sharing class LogEntryEventBuilder {
 
     private static List<SObject> stripInaccessible(List<SObject> records) {
         if (
-            Logger.getUserSettings().StripInaccessibleRecordFields__c == false ||
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c == false ||
             records == null ||
             records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType
         ) {

@@ -838,7 +838,7 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAggregateResult);
         }
 
@@ -852,7 +852,7 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAggregateResults);
         }
 

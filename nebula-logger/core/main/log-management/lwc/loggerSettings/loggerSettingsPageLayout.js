@@ -38,7 +38,7 @@ const PAGE_LAYOUT_CONFIG = {
             columns: [
                 { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.IsDataMaskingEnabled__c], size: 6 },
                 {
-                    fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.StripInaccessibleRecordFields__c, LOGGER_SETTINGS_SCHEMA.fields.IsAnonymousModeEnabled__c],
+                    fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.IsRecordFieldStrippingEnabled__c, LOGGER_SETTINGS_SCHEMA.fields.IsAnonymousModeEnabled__c],
                     size: 6
                 }
             ]

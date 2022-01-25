@@ -274,6 +274,7 @@ private class LoggerSettingsController_Tests {
                     IsEnabled__c,
                     IsJavaScriptConsoleLoggingEnabled__c,
                     IsPlatformEventStorageEnabled__c,
+                    IsRecordFieldStrippingEnabled__c,
                     IsSavingEnabled__c,
                     LastModifiedBy.Username,
                     LastModifiedById,
@@ -281,8 +282,7 @@ private class LoggerSettingsController_Tests {
                     LoggingLevel__c,
                     SetupOwner.Name,
                     SetupOwner.Type,
-                    SetupOwnerId,
-                    StripInaccessibleRecordFields__c
+                    SetupOwnerId
                 FROM LoggerSettings__c
                 WHERE Id IN :recordsToQuery
             ]

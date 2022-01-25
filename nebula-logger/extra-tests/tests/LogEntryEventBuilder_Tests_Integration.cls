@@ -32,7 +32,7 @@ private class LogEntryEventBuilder_Tests_Integration {
             System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible(), 'AccountBrand Name was accessible, and should not have been.');
             System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
 
-            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrand);
         }
 
@@ -73,7 +73,7 @@ private class LogEntryEventBuilder_Tests_Integration {
             System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible(), 'AccountBrand Name was accessible, and should not have been.');
             System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
 
-            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrands);
         }
 

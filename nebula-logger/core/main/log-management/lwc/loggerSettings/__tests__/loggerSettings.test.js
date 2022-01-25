@@ -211,8 +211,8 @@ describe('Logger Settings lwc tests', () => {
             'IsJavaScriptConsoleLoggingEnabled__c',
             'IsDataMaskingEnabled__c',
             'IsEnabled__c',
-            'LoggingLevel__c',
-            'StripInaccessibleRecordFields__c'
+            'IsRecordFieldStrippingEnabled__c',
+            'LoggingLevel__c'
         ];
         expectedFieldNames.forEach(fieldName => {
             const inputField = loggerSettingsElement.shadowRoot.querySelector('[data-id="' + fieldName + '"]');
@@ -509,7 +509,7 @@ describe('Logger Settings lwc tests', () => {
             'IsApexSystemDebugLoggingEnabled__c',
             'IsJavaScriptConsoleLoggingEnabled__c',
             'IsDataMaskingEnabled__c',
-            'StripInaccessibleRecordFields__c',
+            'IsRecordFieldStrippingEnabled__c',
             'IsAnonymousModeEnabled__c'
         ];
         expectedEditableFields.forEach(fieldDataId => {

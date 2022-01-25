@@ -9,6 +9,6 @@
     "IsDataMaskingEnabled__c": true,
     "IsDeleted": false,
     "IsEnabled__c": true,
-    "LoggingLevel__c": "DEBUG",
-    "StripInaccessibleRecordFields__c": false
+    "IsRecordFieldStrippingEnabled__c": false,
+    "LoggingLevel__c": "DEBUG"
 }

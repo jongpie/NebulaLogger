@@ -17,10 +17,10 @@ import IS_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsEnabled__c'
 import IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsJavaScriptConsoleLoggingEnabled__c';
 import IS_SAVING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsSavingEnabled__c';
 import IS_PLATFORM_EVENT_STORAGE_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsPlatformEventStorageEnabled__c';
+import IS_RECORD_FIELD_STRIPPING_ENABLED_FIELD from '@salesforce/schema/LoggerSettings__c.IsRecordFieldStrippingEnabled__c';
 import LAST_MODIFIED_BY_ID_FIELD from '@salesforce/schema/LoggerSettings__c.LastModifiedById';
 import LAST_MODIFIED_DATE_FIELD from '@salesforce/schema/LoggerSettings__c.LastModifiedDate';
 import LOGGING_LEVEL_FIELD from '@salesforce/schema/LoggerSettings__c.LoggingLevel__c';
-import STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD from '@salesforce/schema/LoggerSettings__c.StripInaccessibleRecordFields__c';
 import SETUP_OWNER_ID_FIELD from '@salesforce/schema/LoggerSettings__c.SetupOwnerId';
 
 const LOGGER_SETTINGS_SCHEMA = {
@@ -38,12 +38,12 @@ const LOGGER_SETTINGS_SCHEMA = {
         IsEnabled__c: IS_ENABLED_FIELD.fieldApiName,
         IsJavaScriptConsoleLoggingEnabled__c: IS_JAVA_SCRIPT_CONSOLE_LOGGING_ENABLED_FIELD.fieldApiName,
         IsPlatformEventStorageEnabled__c: IS_PLATFORM_EVENT_STORAGE_ENABLED_FIELD.fieldApiName,
+        IsRecordFieldStrippingEnabled__c: IS_RECORD_FIELD_STRIPPING_ENABLED_FIELD.fieldApiName,
         IsSavingEnabled__c: IS_SAVING_ENABLED_FIELD.fieldApiName,
         LastModifiedById: LAST_MODIFIED_BY_ID_FIELD.fieldApiName,
         LastModifiedDate: LAST_MODIFIED_DATE_FIELD.fieldApiName,
         LoggingLevel__c: LOGGING_LEVEL_FIELD.fieldApiName,
-        SetupOwnerId: SETUP_OWNER_ID_FIELD.fieldApiName,
-        StripInaccessibleRecordFields__c: STRIP_INACCESSIBLE_RECORD_FIELDS_FIELD.fieldApiName
+        SetupOwnerId: SETUP_OWNER_ID_FIELD.fieldApiName
     }
 };
 
