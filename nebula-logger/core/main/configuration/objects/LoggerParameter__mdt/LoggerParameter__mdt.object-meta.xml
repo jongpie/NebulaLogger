@@ -3,5 +3,5 @@
     <description>Used to store additional key-value pair parameters used by Logger</description>
     <label>Logger Parameter</label>
     <pluralLabel>Logger Parameters</pluralLabel>
-    <visibility>Protected</visibility>
+    <visibility>Public</visibility>
 </CustomObject>
