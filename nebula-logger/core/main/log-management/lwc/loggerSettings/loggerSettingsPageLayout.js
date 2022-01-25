@@ -50,7 +50,7 @@ const PAGE_LAYOUT_CONFIG = {
             showInEditMode: true,
             columns: [
                 { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.DefaultNumberOfDaysToRetainLogs__c], size: 6 },
-                { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c], size: 6 }
+                { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.DefaultLogOwner__c, LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c], size: 6 }
             ]
         },
         {

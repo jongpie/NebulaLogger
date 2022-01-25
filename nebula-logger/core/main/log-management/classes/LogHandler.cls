@@ -19,16 +19,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private Map<Id, Log__c> oldLogsById;
 
-    private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
-        Map<String, LogStatus__mdt> logStatusNameToStatus = new Map<String, LogStatus__mdt>();
-        for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
-            if (logStatus.IsActive__c == true) {
-                logStatusNameToStatus.put(logStatus.MasterLabel, logStatus);
-            }
-        }
-        return logStatusNameToStatus;
-    }
-
     /**
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
@@ -41,6 +31,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.logs = (List<Log__c>) triggerNew;
 
         this.setClosedStatusFields();
+        // The log OwnerId field should support being manually changed, so only auto-set it on insert
+        this.setOwnerId();
         // The log retention date field should support being manually changed, so only auto-set it on insert
         this.setLogRetentionDate();
     }
@@ -76,6 +68,56 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             } else {
                 log.ClosedBy__c = log.ClosedBy__c == null ? UserInfo.getUserId() : log.ClosedBy__c;
                 log.ClosedDate__c = log.ClosedDate__c == null ? System.now() : log.ClosedDate__c;
+            }
+        }
+    }
+
+    private void setOwnerId() {
+        // Loop through the logs and figure out what value has been configured as the default owner (if any)
+        // TODO refactor this into smaller helper methods
+        Map<Id, String> ownerUsernamesByLoggingUserId = new Map<Id, String>();
+        List<Log__c> logsOwnedByUsernames = new List<Log__c>();
+        Map<Id, String> ownerQueueNamesByLoggingUserId = new Map<Id, String>();
+        List<Log__c> logsOwnedByQueues = new List<Log__c>();
+        for (Log__c log : this.logs) {
+            String loggingUserDefaultLogOwner = Logger.getUserSettings(new User(Id = log.LoggedBy__c)).DefaultLogOwner__c;
+
+            if (String.isBlank(loggingUserDefaultLogOwner) == true) {
+                continue;
+            } else if (loggingUserDefaultLogOwner instanceof Id) {
+                // We already have an ID here, so just set it & move on - no additional querying needed
+                log.OwnerId = Id.valueOf(loggingUserDefaultLogOwner);
+            } else if (loggingUserDefaultLogOwner.contains('@')) {
+                ownerUsernamesByLoggingUserId.put(log.LoggedBy__c, loggingUserDefaultLogOwner);
+                logsOwnedByUsernames.add(log);
+            } else {
+                ownerQueueNamesByLoggingUserId.put(log.LoggedBy__c, loggingUserDefaultLogOwner);
+                logsOwnedByQueues.add(log);
+            }
+        }
+
+        // Populate OwnerId based on configured usernames
+        Map<String, User> usersByUsername = new Map<String, User>();
+        for (User user : [SELECT Id, Username FROM User WHERE Username IN :ownerUsernamesByLoggingUserId.values()]) {
+            usersByUsername.put(user.Username, user);
+        }
+        for (Log__c log : logsOwnedByUsernames) {
+            String loggingUserDefaultLogOwner = Logger.getUserSettings(new User(Id = log.LoggedBy__c)).DefaultLogOwner__c;
+            if (usersByUsername.containsKey(loggingUserDefaultLogOwner)) {
+                log.OwnerId = usersByUsername.get(loggingUserDefaultLogOwner).Id;
+            }
+        }
+
+        // Populate OwnerId based on configured queue developer names
+        Map<String, Group> queuesByDeveloperName = new Map<String, Group>();
+        for (Group queue : [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :ownerQueueNamesByLoggingUserId.values()]) {
+            queuesByDeveloperName.put(queue.DeveloperName, queue);
+        }
+        for (Log__c log : logsOwnedByQueues) {
+            String loggingUserDefaultLogOwner = Logger.getUserSettings(new User(Id = log.LoggedBy__c)).DefaultLogOwner__c;
+
+            if (queuesByDeveloperName.containsKey(loggingUserDefaultLogOwner)) {
+                log.OwnerId = queuesByDeveloperName.get(loggingUserDefaultLogOwner).Id;
             }
         }
     }
@@ -180,5 +222,15 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
         SCENARIO_TO_MOCK_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
+    }
+
+    private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
+        Map<String, LogStatus__mdt> logStatusNameToStatus = new Map<String, LogStatus__mdt>();
+        for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
+            if (logStatus.IsActive__c == true) {
+                logStatusNameToStatus.put(logStatus.MasterLabel, logStatus);
+            }
+        }
+        return logStatusNameToStatus;
     }
 }

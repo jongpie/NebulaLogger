@@ -87,7 +87,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LogEntryEventBuilder_IntegrationTests</apexClass>
+        <apexClass>LogEntryEventBuilder_Tests_Integration</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

@@ -5,7 +5,7 @@
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
-private class LogEntryEventBuilder_IntegrationTests {
+private class LogEntryEventBuilder_Tests_Integration {
     @IsTest
     static void stripInaccessibleFieldsForRecordWhenEnabled() {
         User standardUser = LoggerTestUtils.createStandardUser();

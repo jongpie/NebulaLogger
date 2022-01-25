@@ -94,6 +94,82 @@ private class LogHandler_Tests {
     }
 
     @IsTest
+    static void it_should_set_owner_when_default_configured_with_user_id() {
+        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User expectedLogOwnerUser = LoggerTestUtils.createStandardUser();
+        insert expectedLogOwnerUser;
+        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
+        currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Id;
+        insert currentUserSettings;
+
+        Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+        insert log;
+
+        log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedLogOwnerUser.Id, log.OwnerId, log);
+    }
+
+    @IsTest
+    static void it_should_set_owner_when_default_configured_with_username() {
+        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User expectedLogOwnerUser = LoggerTestUtils.createStandardUser();
+        insert expectedLogOwnerUser;
+        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
+        currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Username;
+        insert currentUserSettings;
+
+        Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+        insert log;
+
+        log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedLogOwnerUser.Id, log.OwnerId, log);
+    }
+
+    @IsTest
+    static void it_should_set_owner_when_default_configured_with_queue_id() {
+        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        Group expectedLogOwnerQueue = LoggerTestUtils.insertQueue(Schema.Log__c.SObjectType);
+        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
+        currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.Id;
+        insert currentUserSettings;
+
+        Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+        insert log;
+
+        log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedLogOwnerQueue.Id, log.OwnerId, log);
+    }
+
+    @IsTest
+    static void it_should_set_owner_when_default_configured_with_queue_developer_name() {
+        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        Group expectedLogOwnerQueue = LoggerTestUtils.insertQueue(Schema.Log__c.SObjectType);
+        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
+        currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.DeveloperName;
+        insert currentUserSettings;
+
+        Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+        insert log;
+
+        log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedLogOwnerQueue.Id, log.OwnerId, log);
+    }
+
+    @IsTest
+    static void it_should_use_current_user_as_owner_when_no_default_configured() {
+        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
+        currentUserSettings.DefaultLogOwner__c = null;
+        insert currentUserSettings;
+
+        Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+        insert log;
+
+        log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(UserInfo.getUserId(), log.OwnerId, log);
+    }
+
+    @IsTest
     static void it_should_keep_existing_retention_date_when_populated() {
         Integer defaultDaysToRetainLog = 10;
 

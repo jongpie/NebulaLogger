@@ -6,6 +6,7 @@
 import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
 import CREATED_BY_ID_FIELD from '@salesforce/schema/LoggerSettings__c.CreatedById';
 import CREATED_DATE_FIELD from '@salesforce/schema/LoggerSettings__c.CreatedDate';
+import DEFAULT_LOG_OWNER_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultLogOwner__c';
 import DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultLogShareAccessLevel__c';
 import DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultNumberOfDaysToRetainLogs__c';
 import DEFAULT_SAVE_METHOD_FIELD from '@salesforce/schema/LoggerSettings__c.DefaultSaveMethod__c';
@@ -28,6 +29,7 @@ const LOGGER_SETTINGS_SCHEMA = {
         CreatedById: CREATED_BY_ID_FIELD.fieldApiName,
         CreatedDate: CREATED_DATE_FIELD.fieldApiName,
         DefaultLogShareAccessLevel__c: DEFAULT_LOG_SHARE_ACCESS_LEVEL_FIELD.fieldApiName,
+        DefaultLogOwner__c: DEFAULT_LOG_OWNER_FIELD.fieldApiName,
         DefaultNumberOfDaysToRetainLogs__c: DEFAULT_NUMBER_OF_DAYS_TO_RETAIN_LOGS_FIELD.fieldApiName,
         DefaultSaveMethod__c: DEFAULT_SAVE_METHOD_FIELD.fieldApiName,
         IsAnonymousModeEnabled__c: IS_ANONYMOUS_MODE_ENABLED_FIELD.fieldApiName,
