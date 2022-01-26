@@ -276,6 +276,67 @@
                             </lightning-layout>
                         </div>
                     </template>
+
+                    <!-- Audit fields -->
+                    <template if:true={isExistingRecord}>
+                        <div class="slds-section slds-is-open">
+                            <h3 class="slds-section__title slds-theme_shade">
+                                <span class="slds-truncate slds-p-horizontal_small" title="System Information">System Information</span>
+                            </h3>
+                            <lightning-layout>
+                                <lightning-layout-item size="6">
+                                    <lightning-input
+                                        data-id="CreatedByUsername"
+                                        field-level-help={createdByIdField.inlineHelpText}
+                                        label={createdByIdField.label}
+                                        onchange={handleFieldChange}
+                                        read-only
+                                        type="text"
+                                        value={createdByIdField.value}
+                                        variant="label-stacked"
+                                    ></lightning-input>
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label">{createdDateField.label}</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-formatted-date-time
+                                                year="numeric"
+                                                month="long"
+                                                day="2-digit"
+                                                hour="2-digit"
+                                                minute="2-digit"
+                                                value={createdDateField.value}
+                                            ></lightning-formatted-date-time>
+                                        </div>
+                                    </div>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="6">
+                                    <lightning-input
+                                        data-id="lastModifiedByIdField"
+                                        field-level-help={lastModifiedByIdField.inlineHelpText}
+                                        label={lastModifiedByIdField.label}
+                                        onchange={handleFieldChange}
+                                        read-only
+                                        type="text"
+                                        value={lastModifiedByIdField.value}
+                                        variant="label-stacked"
+                                    ></lightning-input>
+                                    <div class="slds-form-element">
+                                        <label class="slds-form-element__label">{lastModifiedDateField.label}</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-formatted-date-time
+                                                year="numeric"
+                                                month="long"
+                                                day="2-digit"
+                                                hour="2-digit"
+                                                minute="2-digit"
+                                                value={lastModifiedDateField.value}
+                                            ></lightning-formatted-date-time>
+                                        </div>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                    </template>
                 </div>
 
                 <!-- Record modal footer -->

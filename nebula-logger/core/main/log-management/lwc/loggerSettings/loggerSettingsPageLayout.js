@@ -52,16 +52,6 @@ const PAGE_LAYOUT_CONFIG = {
                 { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.DefaultNumberOfDaysToRetainLogs__c], size: 6 },
                 { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.DefaultLogOwner__c, LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c], size: 6 }
             ]
-        },
-        {
-            key: 'systemInformation',
-            label: 'System Information',
-            showInReadOnlyMode: true,
-            showInEditMode: false,
-            columns: [
-                { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.CreatedById, LOGGER_SETTINGS_SCHEMA.fields.CreatedDate], size: 6 },
-                { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.LastModifiedById, LOGGER_SETTINGS_SCHEMA.fields.LastModifiedDate], size: 6 }
-            ]
         }
     ]
 };
