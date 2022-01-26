@@ -121,13 +121,20 @@ export default class LoggerSettings extends LightningElement {
     }
 
     handleFieldChange(event) {
-        let value;
-        if (event.target.type === 'checkbox' || event.target.type === 'checkbox-button' || event.target.type === 'toggle') {
-            value = event.target.checked;
-        } else {
-            value = event.target.value;
-        }
+        const value =
+            event.target.type === 'checkbox' || event.target.type === 'checkbox-button' || event.target.type === 'toggle'
+                ? event.target.checked
+                : event.target.value;
         this._currentRecord[event.target.dataset.id] = value;
+        if (value && event.target.dataset.id === LOGGER_SETTINGS_SCHEMA.fields.IsSavingEnabled__c) {
+            const checkbox = this.template.querySelector(`[data-id="${LOGGER_SETTINGS_SCHEMA.fields.IsPlatformEventStorageEnabled__c}"]`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+            this.handleFieldChange({
+                target: { type: 'checkbox', checked: true, dataset: { id: LOGGER_SETTINGS_SCHEMA.fields.IsPlatformEventStorageEnabled__c } }
+            });
+        }
 
         this._setIsNewOrganizationRecord();
         this._setShowSetupOwnerLookup();
