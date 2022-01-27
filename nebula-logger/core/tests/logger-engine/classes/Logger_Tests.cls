@@ -634,24 +634,23 @@ private class Logger_Tests {
     @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
-        User currentUser = new User(Id = UserInfo.getUserId(), TimeZoneSidKey = UserInfo.getTimeZone().getId());
+        User testStandardUser = LoggerTestUtils.createStandardUser();
 
-        // Make sure that the current user has a different time zone from the automated process user
-        if (automatedProcessUser.TimeZoneSidKey == currentUser.TimeZoneSidKey) {
+        // Make sure that the test user has a different time zone from the automated process user
+        if (automatedProcessUser.TimeZoneSidKey == testStandardUser.TimeZoneSidKey) {
             switch on automatedProcessUser.TimeZoneSidKey {
                 when 'America/Los_Angeles' {
-                    currentUser.TimeZoneSidKey = 'America/New_York';
+                    testStandardUser.TimeZoneSidKey = 'America/New_York';
                 }
                 when else {
-                    currentUser.TimeZoneSidKey = 'America/Los_Angeles';
+                    testStandardUser.TimeZoneSidKey = 'America/Los_Angeles';
                 }
             }
-            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, currentUser.TimeZoneSidKey);
-            update currentUser;
+            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, testStandardUser.TimeZoneSidKey);
         }
 
         Datetime originalTimestamp;
-        System.runAs(currentUser) {
+        System.runAs(testStandardUser) {
             Logger.getUserSettings().IsEnabled__c = true;
             Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
 
