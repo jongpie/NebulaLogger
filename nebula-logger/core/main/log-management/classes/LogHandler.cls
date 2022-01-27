@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `Log__c` before insert & before update
  */
-@SuppressWarnings('PMD.ApexCrudViolation')
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private static final Map<String, LogStatus__mdt> LOG_STATUS_NAME_TO_STATUS = loadActiveLogStatuses();
@@ -74,50 +74,34 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     private void setOwnerId() {
         // Loop through the logs and figure out what value has been configured as the default owner (if any)
-        // TODO refactor this into smaller helper methods
-        Map<Id, String> ownerUsernamesByLoggingUserId = new Map<Id, String>();
-        List<Log__c> logsOwnedByUsernames = new List<Log__c>();
-        Map<Id, String> ownerQueueNamesByLoggingUserId = new Map<Id, String>();
-        List<Log__c> logsOwnedByQueues = new List<Log__c>();
+        Map<Id, String> ownerNamesByLoggingUserId = new Map<Id, String>();
+        List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : this.logs) {
             String loggingUserDefaultLogOwner = Logger.getUserSettings(new User(Id = log.LoggedBy__c)).DefaultLogOwner__c;
 
             if (String.isBlank(loggingUserDefaultLogOwner) == true) {
                 continue;
             } else if (loggingUserDefaultLogOwner instanceof Id) {
-                // We already have an ID here, so just set it & move on - no additional querying needed
                 log.OwnerId = Id.valueOf(loggingUserDefaultLogOwner);
-            } else if (loggingUserDefaultLogOwner.contains('@')) {
-                ownerUsernamesByLoggingUserId.put(log.LoggedBy__c, loggingUserDefaultLogOwner);
-                logsOwnedByUsernames.add(log);
             } else {
-                ownerQueueNamesByLoggingUserId.put(log.LoggedBy__c, loggingUserDefaultLogOwner);
-                logsOwnedByQueues.add(log);
+                ownerNamesByLoggingUserId.put(log.LoggedBy__c, loggingUserDefaultLogOwner);
+                logsToUpdate.add(log);
             }
+        }
+
+        if (logsToUpdate.isEmpty()) {
+            return;
         }
 
         // Populate OwnerId based on configured usernames
-        Map<String, User> usersByUsername = new Map<String, User>();
-        for (User user : [SELECT Id, Username FROM User WHERE Username IN :ownerUsernamesByLoggingUserId.values()]) {
-            usersByUsername.put(user.Username, user);
-        }
-        for (Log__c log : logsOwnedByUsernames) {
-            String loggingUserDefaultLogOwner = Logger.getUserSettings(new User(Id = log.LoggedBy__c)).DefaultLogOwner__c;
-            if (usersByUsername.containsKey(loggingUserDefaultLogOwner)) {
-                log.OwnerId = usersByUsername.get(loggingUserDefaultLogOwner).Id;
-            }
-        }
+        Map<String, Id> ownerIdByOwnerName = new Map<String, Id>();
+        ownerIdByOwnerName.putAll(queryQueues(ownerNamesByLoggingUserId.values()));
+        ownerIdByOwnerName.putAll(queryUsers(ownerNamesByLoggingUserId.values()));
 
-        // Populate OwnerId based on configured queue developer names
-        Map<String, Group> queuesByDeveloperName = new Map<String, Group>();
-        for (Group queue : [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :ownerQueueNamesByLoggingUserId.values()]) {
-            queuesByDeveloperName.put(queue.DeveloperName, queue);
-        }
-        for (Log__c log : logsOwnedByQueues) {
+        for (Log__c log : logsToUpdate) {
             String loggingUserDefaultLogOwner = Logger.getUserSettings(new User(Id = log.LoggedBy__c)).DefaultLogOwner__c;
-
-            if (queuesByDeveloperName.containsKey(loggingUserDefaultLogOwner)) {
-                log.OwnerId = queuesByDeveloperName.get(loggingUserDefaultLogOwner).Id;
+            if (ownerIdByOwnerName.containsKey(loggingUserDefaultLogOwner)) {
+                log.OwnerId = ownerIdByOwnerName.get(loggingUserDefaultLogOwner);
             }
         }
     }
@@ -198,6 +182,22 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             logShares.add(logShare);
         }
         Database.insert(logShares, false);
+    }
+
+    private static Map<String, Id> queryQueues(List<String> possibleQueueNames) {
+        Map<String, Id> queuesByDeveloperName = new Map<String, Id>();
+        for (Group queue : [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :possibleQueueNames]) {
+            queuesByDeveloperName.put(queue.DeveloperName, queue.Id);
+        }
+        return queuesByDeveloperName;
+    }
+
+    private static Map<String, Id> queryUsers(List<String> possibleUsernames) {
+        Map<String, Id> usersByUsername = new Map<String, Id>();
+        for (User user : [SELECT Id, Username FROM User WHERE Username IN :possibleUsernames]) {
+            usersByUsername.put(user.Username, user.Id);
+        }
+        return usersByUsername;
     }
 
     private static Map<String, LogScenarioRule__mdt> queryScenarioRules(List<Log__c> logs) {
