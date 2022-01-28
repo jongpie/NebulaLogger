@@ -78,7 +78,7 @@ public with sharing class RelatedLogEntriesController {
         return (List<LogEntry__c>) Search.query(logEntrySearch).get(0);
     }
 
-    @SuppressWarnings('PMD.ExcessiveParameterList, PMD.AvoidDebugStatements')
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     private static List<LogEntry__c> query(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
         List<Object> queryTextReplacements = new List<Object>{
             fieldsClause,
@@ -90,7 +90,7 @@ public with sharing class RelatedLogEntriesController {
         String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
         logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
 
-        return (List<LogEntry__c>) Database.query(logEntryQuery);
+        return (List<LogEntry__c>) Database.query(String.escapeSingleQuotes(logEntryQuery));
     }
 
     private static String getFieldsClause(List<FieldMetadata> fields) {

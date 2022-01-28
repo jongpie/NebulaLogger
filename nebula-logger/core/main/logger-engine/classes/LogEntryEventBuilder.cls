@@ -942,8 +942,8 @@ global with sharing class LogEntryEventBuilder {
 
         // Networks (aka experience sites aka community sites aka portal sites ò_ô)
         // may not be enabled in the org (no Network object), so run everything dynamically
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
-        return Database.query(queryString);
+        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
+        return Database.query(String.escapeSingleQuotes(query));
     }
 
     private static Organization queryOrganization() {

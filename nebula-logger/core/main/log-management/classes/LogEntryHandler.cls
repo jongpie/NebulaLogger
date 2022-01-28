@@ -251,7 +251,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 new List<Object>{ sobjectDisplayFieldName, sobjectType, sobjectTypeRecordIds }
             );
 
-            List<SObject> results = Database.query(query);
+            List<SObject> results = Database.query(String.escapeSingleQuotes(query));
             recordIdToRecord.putAll(results);
         }
 

@@ -300,12 +300,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         LoggerEmailUtils.sendErrorEmail(tagAssignmentSObjectType, saveResults);
     }
 
-    @SuppressWarnings('PMD.ApexSOQLInjection')
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
         Map<String, Id> tagNameToId = new Map<String, Id>();
 
         String tagQuery = 'SELECT Id, Name FROM ' + tagSObjectType + ' WHERE Name IN :tagNames';
-        for (SObject tag : Database.query(tagQuery)) {
+        for (SObject tag : Database.query(String.escapeSingleQuotes(tagQuery))) {
             tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
         }
         tagNameToId.putAll(this.insertMissingTags(tagSObjectType, tagNameToId));

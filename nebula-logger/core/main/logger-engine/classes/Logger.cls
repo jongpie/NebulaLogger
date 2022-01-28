@@ -2643,7 +2643,7 @@ global with sharing class Logger {
             textReplacements
         );
 
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(query));
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(String.escapeSingleQuotes(query)));
         return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
     }
 

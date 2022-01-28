@@ -207,9 +207,8 @@ public class LoggerTestUtils {
             return null;
         }
 
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
-
-        return Database.query(queryString);
+        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
+        return Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
