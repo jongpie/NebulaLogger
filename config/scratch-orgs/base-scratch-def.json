@@ -12,9 +12,6 @@
         "communitiesSettings": {
             "enableNetworksEnabled": false
         },
-        "experienceBundleSettings": {
-            "enableExperienceBundleMetadata": false
-        },
         "userManagementSettings": {
             "enableEnhancedPermsetMgmt": true,
             "enableEnhancedProfileMgmt": true,
