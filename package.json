@@ -37,6 +37,7 @@
         "docs:fix:lwc": "pwsh ./config/scripts/build/generate-lwc-docs.ps1 && git add ./docs/lightning-components",
         "docs:verify": "pwsh ./config/scripts/build/verify-docs-up-to-date.ps1",
         "experience:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",
+        "experience:deploy": "sfdx force:source:deploy --sourcepath ./nebula-logger/experience-cloud",
         "husky:pre-commit": "lint-staged --config ./config/linters/lint-staged.config.js",
         "lint:fix:lwc": "eslint --config ./config/linters/.eslintrc.json **/lwc/** --fix && eslint --config ./config/linters/.eslintrc.json **/aura/** --fix",
         "lint:verify": "npm run lint:verify:apex && npm run lint:verify:lwc",

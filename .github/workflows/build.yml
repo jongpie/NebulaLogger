@@ -208,13 +208,8 @@ jobs:
             - name: 'Create Experience Cloud Scratch Org'
               run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --setdefaultusername --json
 
-            - name: 'Create Test Experience Site'
-              run: npm run experience:create
-
-            - name: 'Wait for Experience Site creation'
-              uses: maddox/actions/sleep@master
-              with:
-                  args: '120'
+            - name: 'Deploy Test Experience Site Metadata'
+              run: npm run experience:deploy
 
             - name: 'Push Source to Scratch Org'
               run: npm run source:push
