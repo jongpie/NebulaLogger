@@ -138,13 +138,18 @@ public class LoggerTestUtils {
     }
 
     /**
-     * @description Creates a `User` record for testing purposes, using the 'Standard User' profile
+     * @description Creates a `User` record for testing purposes, using the current user's profile
      * @return   The generated `User` record - it is not automatically inserted into the database.
      */
     public static User createUser() {
         return createUser(UserInfo.getProfileId());
     }
 
+    /**
+     * @description Creates a `User` record for testing purposes, using the specified profile ID
+     * @param  profileId The `Profile` ID to use for the created `User`
+     * @return   The generated `User` record - it is not automatically inserted into the database.
+     */
     public static User createUser(Id profileId) {
         return new User(
             Alias = 'log_xyz',

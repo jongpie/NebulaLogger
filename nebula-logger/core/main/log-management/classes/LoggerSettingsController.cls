@@ -261,7 +261,8 @@ public without sharing class LoggerSettingsController {
         fieldNames.add('LastModifiedBy.Username');
         fieldNames.add('SetupOwner.Name');
         fieldNames.add('SetupOwner.Type');
-        return (List<LoggerSettings__c>) Database.query('SELECT ' + String.join(fieldNames, ', ') + ' FROM ' + Schema.LoggerSettings__c.SObjectType);
+        String query = String.escapeSingleQuotes('SELECT ' + String.join(fieldNames, ', ') + ' FROM ' + Schema.LoggerSettings__c.SObjectType);
+        return (List<LoggerSettings__c>) Database.query(query);
     }
 
     private static Map<Id, String> querySetupOwnerNames(List<Id> setupOwnerIds) {
