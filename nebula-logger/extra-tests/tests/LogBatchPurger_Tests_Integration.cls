@@ -7,7 +7,7 @@
 @IsTest
 private class LogBatchPurger_Tests_Integration {
     private static final Integer NUMBER_OF_LOG_ENTRIES = 10;
-    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name = 'Standard User'];
+    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
     @TestSetup
     static void setupData() {

@@ -6,7 +6,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogEntryEventBuilder_Tests_Integration {
-    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name = 'Standard User'];
+    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
     @IsTest
     static void stripInaccessibleFieldsForRecordWhenEnabled() {
