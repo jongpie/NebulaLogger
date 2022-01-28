@@ -96,7 +96,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_user_id() {
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        User expectedLogOwnerUser = LoggerTestUtils.createStandardUser();
+        User expectedLogOwnerUser = LoggerTestUtils.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Id;
@@ -112,7 +112,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_username() {
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        User expectedLogOwnerUser = LoggerTestUtils.createStandardUser();
+        User expectedLogOwnerUser = LoggerTestUtils.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Username;

@@ -61,16 +61,6 @@ public class LoggerTestUtils {
         private set;
     }
 
-    private static final Profile STANDARD_USER_PROFILE {
-        get {
-            if (STANDARD_USER_PROFILE == null || cacheQueries == false) {
-                STANDARD_USER_PROFILE = queryStandardUserProfile();
-            }
-            return STANDARD_USER_PROFILE;
-        }
-        private set;
-    }
-
     /**
      * @description Assigns the permission set `LoggerAdmin` to the specified user ID
      * @param  userId The ID of the user that should be assigned the permission set
@@ -151,7 +141,11 @@ public class LoggerTestUtils {
      * @description Creates a `User` record for testing purposes, using the 'Standard User' profile
      * @return   The generated `User` record - it is not automatically inserted into the database.
      */
-    public static User createStandardUser() {
+    public static User createUser() {
+        return createUser(UserInfo.getProfileId());
+    }
+
+    public static User createUser(Id profileId) {
         return new User(
             Alias = 'log_xyz',
             Email = 'logger_xyz@test.com.net.org',
@@ -159,7 +153,7 @@ public class LoggerTestUtils {
             LanguageLocaleKey = 'en_US',
             LastName = 'Logger test user',
             LocaleSidKey = 'en_US',
-            ProfileId = STANDARD_USER_PROFILE.Id,
+            ProfileId = profileId,
             TimeZoneSidKey = 'America/Los_Angeles',
             Username = 'logger_xyz@test.com.net.org'
         );
@@ -256,62 +250,5 @@ public class LoggerTestUtils {
             results.put(permissionSet.Name, permissionSet);
         }
         return results;
-    }
-
-    private static Profile queryStandardUserProfile() {
-        User currentUser = new User(Id = UserInfo.getUserId(), LanguageLocaleKey = UserInfo.getLanguage());
-        if (currentUser.LanguageLocaleKey != 'en_US') {
-            currentUser.LanguageLocaleKey = 'en_US';
-            update currentUser;
-        }
-        List<Profile> results;
-        System.runAs(currentUser) {
-            results = [SELECT Id, Name FROM Profile WHERE Name = 'Standard User' LIMIT 1];
-        }
-        if (results.isEmpty() == true) {
-            Exception ex = new NoDataFoundException();
-            ex.setMessage('Could not find the  profile "Standard User" for language locale: ' + UserInfo.getLanguage());
-            throw ex;
-        }
-
-        return results.get(0);
-    }
-
-    // Actual test methods for LoggerTestUtils - the goal of this class is to be a utility class for other test classes
-    // (instead of actually containing tests), but this verifies that this utility class is working as expected.
-    // Yes, this does DML in a for-loop, which is HORRIBLE to do, but in this case, it's within the governor limits,
-    // it's only in a test class, and it ensures that the current user's language has been updated
-    // so that the profile's name is using the expected language
-    @SuppressWarnings('PMD.OperationWithLimitsInLoop')
-    @IsTest
-    static void it_should_return_standard_user_profile_in_all_languages() {
-        Map<String, User> testUsersByLanguageLocale = new Map<String, User>();
-        for (PicklistEntry picklistEntry : Schema.User.LanguageLocaleKey.getDescribe().getPickListValues()) {
-            User testUser = createStandardUser();
-            testUser.LanguageLocaleKey = picklistEntry.getValue();
-            testUser.Username = picklistEntry.getValue() + testUser.Username;
-            testUsersByLanguageLocale.put(testUser.LanguageLocaleKey, testUser);
-        }
-        insert testUsersByLanguageLocale.values();
-        Profile expectedProfile;
-        // Using 'en_US', get the expected profile using the name 'Standard Profile'
-        System.runAs(testUsersByLanguageLocale.get('en_US')) {
-            expectedProfile = [SELECT Id, Name FROM Profile WHERE Name = 'Standard User'];
-        }
-        for (PicklistEntry picklistEntry : Schema.User.LanguageLocaleKey.getDescribe().getPickListValues()) {
-            // During package version creation, there are several additional languages included in the org that aren't included in the "normal" scratch orgs
-            // If we get to the DML limit, it's probably safe to assume that the functionality is working, so break out of the loop & assume/hope things are working in all languages
-            // The custom getter for STANDARD_USER_PROFILE uses 1 DML statement when the current user's language is not 'en-US', so sutract 1 from Limits.getLimitDmlStatements()
-            if (Limits.getDmlStatements() == (Limits.getLimitDmlStatements() - 1)) {
-                break;
-            }
-
-            User testUser = testUsersByLanguageLocale.get(picklistEntry.getValue());
-            System.runAs(testUser) {
-                cacheQueries = false;
-                System.assertEquals(picklistEntry.getValue(), testUser.LanguageLocaleKey);
-                System.assertEquals(expectedProfile.Id, STANDARD_USER_PROFILE.Id);
-            }
-        }
     }
 }

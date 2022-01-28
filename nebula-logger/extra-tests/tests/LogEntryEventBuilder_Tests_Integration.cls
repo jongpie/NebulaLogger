@@ -6,9 +6,11 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogEntryEventBuilder_Tests_Integration {
+    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name = 'Standard User'];
+
     @IsTest
     static void stripInaccessibleFieldsForRecordWhenEnabled() {
-        User standardUser = LoggerTestUtils.createStandardUser();
+        User standardUser = LoggerTestUtils.createUser(STANDARD_USER_PROFILE.Id);
         AccountBrand mockAccountBrand = new AccountBrand(
             Id = LoggerTestUtils.createMockId(Schema.AccountBrand.SObjectType),
             CompanyName = 'Some Company, Inc.',
@@ -42,7 +44,7 @@ private class LogEntryEventBuilder_Tests_Integration {
 
     @IsTest
     static void stripInaccessibleFieldsForRecordsWhenEnabled() {
-        User standardUser = LoggerTestUtils.createStandardUser();
+        User standardUser = LoggerTestUtils.createUser(STANDARD_USER_PROFILE.Id);
         List<AccountBrand> mockAccountBrands = new List<AccountBrand>();
         List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
         for (Integer i = 0; i < 5; i++) {

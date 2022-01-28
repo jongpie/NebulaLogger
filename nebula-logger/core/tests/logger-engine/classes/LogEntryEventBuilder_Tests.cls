@@ -833,7 +833,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_result() {
-        User standardUser = LoggerTestUtils.createStandardUser();
+        User standardUser = LoggerTestUtils.createUser();
         AggregateResult mockAggregateResult = LoggerTestUtils.createMockAggregateResult();
 
         LogEntryEventBuilder builder;
@@ -847,7 +847,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_results() {
-        User standardUser = LoggerTestUtils.createStandardUser();
+        User standardUser = LoggerTestUtils.createUser();
         List<AggregateResult> mockAggregateResults = new List<AggregateResult>{ LoggerTestUtils.createMockAggregateResult() };
 
         LogEntryEventBuilder builder;
