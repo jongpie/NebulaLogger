@@ -17,12 +17,16 @@ cp -R ./nebula-logger/core/ ./nebula-logger/managed-package/
 $gitBranch = (git branch --show-current)
 $gitCommit = (git rev-parse HEAD)
 npx sfdx force:package:version:create --json --package "Nebula Logger - Managed Package" --skipvalidation --installationkeybypass --wait 30 --branch $gitBranch --tag $gitCommit
+if ($LASTEXITCODE -ne 0) {
+    throw "Error creating package version for managed package"
+}
 git clean -df -- nebula-logger/managed-package/core
 
 # Restore the sfdx-project.json files to their original locations
 Write-Output "Restoring unlocked package's version of sfdx-project.json"
 Write-Output "Copying $rootProject to $managedProject"
 Copy-Item -Path $rootProject -Destination $managedProject -Force
+npx prettier --write $managedProject
 Write-Output "Overwriting $rootProject with $unlockedProject"
 Copy-Item -Path $unlockedProject -Destination $rootProject -Force
 Remove-Item -Path $unlockedProject

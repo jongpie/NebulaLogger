@@ -125,8 +125,8 @@ function Install-Package-Version {
     )
 
     $packageVersionId = "$packageVersionId".Trim()
-    $installationResult = npx sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --package $packageVersionId
-    if ($installationResult -like "*ERROR*") {
+    npx sfdx force:package:install --noprompt --targetusername $targetusername --wait 20 --package $packageVersionId
+    if ($LASTEXITCODE -ne 0) {
         throw "Error installing package version ID: $packageVersionId"
     }
     else {
