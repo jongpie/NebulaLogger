@@ -5,7 +5,7 @@
 
 import { LightningElement } from 'lwc';
 import { isEmpEnabled, subscribe, unsubscribe } from 'lightning/empApi';
-import LOGGER_ENTRY_EVENT_SCHEMA from './logEntryEventSchema';
+import getLogEntryEventSchema from '@salesforce/apex/LoggerSObjectMetadata.getLogEntryEventSchema';
 
 export default class LogEntryEventStream extends LightningElement {
     unfilteredEvents = [];
@@ -22,8 +22,31 @@ export default class LogEntryEventStream extends LightningElement {
     scenarioFilter;
     maxEvents = 50;
 
+    _logEntryEventSchema;
     _channel;
     _subscription = {};
+
+    async connectedCallback() {
+        document.title = 'Log Entry Event Stream';
+
+        getLogEntryEventSchema().then(result => {
+            this._logEntryEventSchema = result;
+            console.log('this._logEntryEventSchema', this._logEntryEventSchema);
+
+            // For reasons unknown, the platform returns `LogEntryEvent__c` instead of `LogEntryEvent__e`
+            const objectApiName = this._logEntryEventSchema.apiName;
+            console.info('objectApiName', objectApiName);
+            this._channel = '/event/' + objectApiName;
+
+            if (isEmpEnabled() === true) {
+                this.createSubscription();
+            }
+        });
+    }
+
+    disconnectedCallback() {
+        this.cancelSubscription();
+    }
 
     get title() {
         let logEntryString = ' Log Entry Events';
@@ -60,31 +83,16 @@ export default class LogEntryEventStream extends LightningElement {
         ];
     }
 
-    async connectedCallback() {
-        document.title = 'Log Entry Event Stream';
-
-        // For reasons unknown, the platform returns `LogEntryEvent__c` instead of `LogEntryEvent__e`
-        const objectApiName = LOGGER_ENTRY_EVENT_SCHEMA.apiName;
-        this._channel = '/event/' + objectApiName;
-
-        if (isEmpEnabled()) {
-            this.createSubscription();
-        }
-    }
-
-    disconnectedCallback() {
-        this.cancelSubscription();
-    }
-
     async createSubscription() {
         this._subscription = await subscribe(this._channel, -2, event => {
             const logEntryEvent = event.data.payload;
+            console.log('logEntryEvent', logEntryEvent);
             // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
             // but it doesn't seem to be populated via empApi, so use a synthetic key instead
             logEntryEvent.key =
-                logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.TransactionId__c] +
+                logEntryEvent[this._logEntryEventSchema.fields.TransactionId__c] +
                 '__' +
-                logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.TransactionEntryNumber__c];
+                logEntryEvent[this._logEntryEventSchema.fields.TransactionEntryNumber__c];
             this.unfilteredEvents.unshift(logEntryEvent);
             this._filterEvents();
         });
@@ -138,31 +146,31 @@ export default class LogEntryEventStream extends LightningElement {
     }
 
     _meetsLoggedByFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.loggedByFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.LoggedByUsername__c]);
+        return this._matchesTextFilter(this.loggedByFilter, logEntryEvent[this._logEntryEventSchema.fields.LoggedByUsername__c]);
     }
 
     _meetsLoggingLevelFilter(logEntryEvent) {
         let matches = false;
-        if (!this.loggingLevelFilter || Number(logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.LoggingLevelOrdinal__c]) >= Number(this.loggingLevelFilter)) {
+        if (!this.loggingLevelFilter || Number(logEntryEvent[this._logEntryEventSchema.fields.LoggingLevelOrdinal__c]) >= Number(this.loggingLevelFilter)) {
             matches = true;
         }
         return matches;
     }
 
     _meetsMessageFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.messageFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.Message__c]);
+        return this._matchesTextFilter(this.messageFilter, logEntryEvent[this._logEntryEventSchema.fields.Message__c]);
     }
 
     _meetsOriginLocationFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.originLocationFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.OriginLocation__c]);
+        return this._matchesTextFilter(this.originLocationFilter, logEntryEvent[this._logEntryEventSchema.fields.OriginLocation__c]);
     }
 
     _meetsOriginTypeFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.originTypeFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.OriginType__c]);
+        return this._matchesTextFilter(this.originTypeFilter, logEntryEvent[this._logEntryEventSchema.fields.OriginType__c]);
     }
 
     _meetsScenarioFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent[LOGGER_ENTRY_EVENT_SCHEMA.fields.Scenario__c]);
+        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent[this._logEntryEventSchema.fields.Scenario__c]);
     }
 
     _matchesTextFilter(filterCriteria = '', text = '') {

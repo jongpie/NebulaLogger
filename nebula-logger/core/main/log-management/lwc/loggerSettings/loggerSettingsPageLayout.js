@@ -3,8 +3,7 @@
  * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
  ************************************************************************************************/
 
-import LOGGER_SETTINGS_SCHEMA from './loggerSettingsSchema';
-
+// All field API names below use the local name - that is, the name without a namespace (even if the code is running in a namespaced package)
 const PAGE_LAYOUT_CONFIG = {
     sections: [
         {
@@ -14,18 +13,11 @@ const PAGE_LAYOUT_CONFIG = {
             showInEditMode: true,
             columns: [
                 {
-                    fieldApiNames: [
-                        LOGGER_SETTINGS_SCHEMA.fields.IsSavingEnabled__c,
-                        LOGGER_SETTINGS_SCHEMA.fields.DefaultSaveMethod__c,
-                        LOGGER_SETTINGS_SCHEMA.fields.IsPlatformEventStorageEnabled__c
-                    ],
+                    fieldApiNames: ['IsSavingEnabled__c', 'DefaultSaveMethod__c', 'IsPlatformEventStorageEnabled__c'],
                     size: 6
                 },
                 {
-                    fieldApiNames: [
-                        LOGGER_SETTINGS_SCHEMA.fields.IsApexSystemDebugLoggingEnabled__c,
-                        LOGGER_SETTINGS_SCHEMA.fields.IsJavaScriptConsoleLoggingEnabled__c
-                    ],
+                    fieldApiNames: ['IsApexSystemDebugLoggingEnabled__c', 'IsJavaScriptConsoleLoggingEnabled__c'],
                     size: 6
                 }
             ]
@@ -36,9 +28,9 @@ const PAGE_LAYOUT_CONFIG = {
             showInReadOnlyMode: true,
             showInEditMode: true,
             columns: [
-                { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.IsDataMaskingEnabled__c], size: 6 },
+                { fieldApiNames: ['IsDataMaskingEnabled__c'], size: 6 },
                 {
-                    fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.IsRecordFieldStrippingEnabled__c, LOGGER_SETTINGS_SCHEMA.fields.IsAnonymousModeEnabled__c],
+                    fieldApiNames: ['IsRecordFieldStrippingEnabled__c', 'IsAnonymousModeEnabled__c'],
                     size: 6
                 }
             ]
@@ -49,32 +41,32 @@ const PAGE_LAYOUT_CONFIG = {
             showInReadOnlyMode: true,
             showInEditMode: true,
             columns: [
-                { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.DefaultNumberOfDaysToRetainLogs__c], size: 6 },
-                { fieldApiNames: [LOGGER_SETTINGS_SCHEMA.fields.DefaultLogOwner__c, LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c], size: 6 }
+                { fieldApiNames: ['DefaultNumberOfDaysToRetainLogs__c'], size: 6 },
+                { fieldApiNames: ['DefaultLogShareAccessLevel__c', 'DefaultLogOwner__c'], size: 6 }
             ]
         }
     ]
 };
 
 const LoggerSettingsPageLayout = class {
-    constructor(sobjectDescribe, apexPicklistOptions, isReadOnlyMode, record) {
+    constructor(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record) {
         const picklistOptions = this._parsePicklistOptions(apexPicklistOptions);
 
-        this._buildPageLayoutSectionFields(sobjectDescribe, picklistOptions, isReadOnlyMode, record);
+        this._buildPageLayoutSectionFields(sobjectSchema, picklistOptions, isReadOnlyMode, record);
     }
 
     _parsePicklistOptions(apexPicklistOptions) {
         // TODO - long term, this feels like the wrong place for this mapping to live, but it'll live here for now
         const picklistOptions = {
-            [LOGGER_SETTINGS_SCHEMA.fields.LoggingLevel__c]: apexPicklistOptions.loggingLevelOptions,
-            [LOGGER_SETTINGS_SCHEMA.fields.DefaultSaveMethod__c]: apexPicklistOptions.saveMethodOptions,
-            [LOGGER_SETTINGS_SCHEMA.fields.DefaultLogShareAccessLevel__c]: apexPicklistOptions.shareAccessLevelOptions
+            LoggingLevel__c: apexPicklistOptions.loggingLevelOptions,
+            DefaultSaveMethod__c: apexPicklistOptions.saveMethodOptions,
+            DefaultLogShareAccessLevel__c: apexPicklistOptions.shareAccessLevelOptions
         };
 
         return picklistOptions;
     }
 
-    _buildPageLayoutSectionFields(sobjectDescribe, picklistOptions, isReadOnlyMode, record) {
+    _buildPageLayoutSectionFields(sobjectSchema, picklistOptions, isReadOnlyMode, record) {
         this.sections = [];
 
         let layoutConfigSections = [...PAGE_LAYOUT_CONFIG.sections];
@@ -91,7 +83,7 @@ const LoggerSettingsPageLayout = class {
                 column.fields = [];
                 let fieldCounter = 0;
                 column.fieldApiNames.forEach(fieldApiName => {
-                    let field = { ...sobjectDescribe.fields[fieldApiName] };
+                    let field = { ...sobjectSchema.fields[fieldApiName] };
                     field.key = column.key + 'field' + fieldCounter++;
                     field.value = record[fieldApiName];
                     this._setFieldTypeDetails(field, picklistOptions);
@@ -115,11 +107,11 @@ const LoggerSettingsPageLayout = class {
         }
 
         field.useCombobox = false;
-        switch (field.dataType) {
-            case 'Boolean':
+        switch (field.type) {
+            case 'boolean':
                 field.type = 'checkbox';
                 break;
-            case 'Double':
+            case 'double':
                 field.type = 'number';
                 break;
             default:
@@ -129,6 +121,6 @@ const LoggerSettingsPageLayout = class {
     }
 };
 
-export function generatePageLayout(sobjectDescribe, apexPicklistOptions, isReadOnlyMode, record) {
-    return new LoggerSettingsPageLayout(sobjectDescribe, apexPicklistOptions, isReadOnlyMode, record);
+export function generatePageLayout(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record) {
+    return new LoggerSettingsPageLayout(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record);
 }

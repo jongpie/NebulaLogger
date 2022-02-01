@@ -8,9 +8,8 @@ import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 // LoggerSettings__c metadata
-import LOGGER_SETTINGS_SCHEMA from './loggerSettingsSchema';
 import { generatePageLayout } from './loggerSettingsPageLayout';
-import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
@@ -41,7 +40,7 @@ export default class LoggerSettings extends LightningElement {
     // LoggerSettings__c metadata
     canUserModifyLoggerSettings;
     loggerSettingsPicklistOptions;
-    _sobjectDescribe;
+    _loggerSettingsSchema;
 
     // LoggerSettings__c data
     records;
@@ -49,28 +48,23 @@ export default class LoggerSettings extends LightningElement {
     _currentRecord;
 
     connectedCallback() {
+        console.info('running connecteedCallback!');
         document.title = this.title;
         this.showLoadingSpinner = true;
-
-        Promise.all([getOrganization(), getPicklistOptions()])
-            .then(([organizationRecord, apexPicklistOptions]) => {
+        Promise.all([getOrganization(), getLoggerSettingsSchema(), getPicklistOptions(), canUserModifyLoggerSettings()])
+            .then(([organizationRecord, loggerSettingsSchema, apexPicklistOptions, canUserModifyLoggerSettings]) => {
+                console.info('running then!');
                 this.organization = organizationRecord;
+                this._loggerSettingsSchema = loggerSettingsSchema;
+                console.info('this._loggerSettingsSchema', this._loggerSettingsSchema);
                 this.loggerSettingsPicklistOptions = apexPicklistOptions;
+                this.canUserModifyLoggerSettings = canUserModifyLoggerSettings;
+
+                this._loadTableColumns();
+                this.loadSettingsRecords();
+                this.showLoadingSpinner = false;
             })
             .catch(this._handleError);
-        this.loadSettingsRecords();
-        this.showLoadingSpinner = false;
-    }
-
-    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_SCHEMA.apiName })
-    getLoggerSettingsObjectInfo({ data }) {
-        if (data) {
-            this._sobjectDescribe = data;
-            canUserModifyLoggerSettings().then(result => {
-                this.canUserModifyLoggerSettings = result;
-                this._loadTableColumns();
-            });
-        }
     }
 
     loadSettingsRecords() {
@@ -126,13 +120,13 @@ export default class LoggerSettings extends LightningElement {
                 ? event.target.checked
                 : event.target.value;
         this._currentRecord[event.target.dataset.id] = value;
-        if (value && event.target.dataset.id === LOGGER_SETTINGS_SCHEMA.fields.IsSavingEnabled__c) {
-            const checkbox = this.template.querySelector(`[data-id="${LOGGER_SETTINGS_SCHEMA.fields.IsPlatformEventStorageEnabled__c}"]`);
+        if (value && event.target.dataset.id === this._loggerSettingsSchema.fields.IsSavingEnabled__c) {
+            const checkbox = this.template.querySelector(`[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c}"]`);
             if (checkbox) {
                 checkbox.checked = true;
             }
             this.handleFieldChange({
-                target: { type: 'checkbox', checked: true, dataset: { id: LOGGER_SETTINGS_SCHEMA.fields.IsPlatformEventStorageEnabled__c } }
+                target: { type: 'checkbox', checked: true, dataset: { id: this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c } }
             });
         }
 
@@ -209,31 +203,33 @@ export default class LoggerSettings extends LightningElement {
     // TODO - this is a legacy approach where separate getters were used for each field - the audit fields & "general info" fields still use this approach
     // but should be updated to leverage the new approach, loggerSettingsPageLayout.js
     get layoutData() {
-        return generatePageLayout(this._sobjectDescribe, this.loggerSettingsPicklistOptions, this.isReadOnlyMode, this._currentRecord);
+        return generatePageLayout(this._loggerSettingsSchema, this.loggerSettingsPicklistOptions, this.isReadOnlyMode, this._currentRecord);
     }
 
     get createdByIdField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.CreatedById, 'createdByUsername');
+        return this._loadField(this._loggerSettingsSchema.fields.CreatedById.apiName, 'createdByUsername');
     }
 
     get createdDateField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.CreatedDate);
+        const field = this._loadField(this._loggerSettingsSchema.fields.CreatedDate.apiName);
+        console.info('createdDateField', field);
+        return field;
     }
 
     get isEnabledField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.IsEnabled__c);
+        return this._loadField(this._loggerSettingsSchema.fields.IsEnabled__c.apiName);
     }
 
     get lastModifiedByIdField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.LastModifiedById, 'lastModifiedByUsername');
+        return this._loadField(this._loggerSettingsSchema.fields.LastModifiedById.apiName, 'lastModifiedByUsername');
     }
 
     get lastModifiedDateField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.LastModifiedDate);
+        return this._loadField(this._loggerSettingsSchema.fields.LastModifiedDate.apiName);
     }
 
     get loggingLevelField() {
-        return this._loadField(LOGGER_SETTINGS_SCHEMA.fields.LoggingLevel__c);
+        return this._loadField(this._loggerSettingsSchema.fields.LoggingLevel__c.apiName);
     }
 
     get setupOwnerNameField() {
@@ -331,17 +327,19 @@ export default class LoggerSettings extends LightningElement {
 
         // For all other fields, use object API info to dynamically get field details
         // TODO - make this array configurable by storing in LoggerParameter__mdt
+        console.log('this._loggerSettingsSchema', this._loggerSettingsSchema);
         const tableColumnNames = [
-            LOGGER_SETTINGS_SCHEMA.fields.IsEnabled__c,
-            LOGGER_SETTINGS_SCHEMA.fields.LoggingLevel__c,
-            LOGGER_SETTINGS_SCHEMA.fields.IsSavingEnabled__c,
-            LOGGER_SETTINGS_SCHEMA.fields.DefaultSaveMethod__c,
-            LOGGER_SETTINGS_SCHEMA.fields.IsPlatformEventStorageEnabled__c,
-            LOGGER_SETTINGS_SCHEMA.fields.DefaultNumberOfDaysToRetainLogs__c,
-            LOGGER_SETTINGS_SCHEMA.fields.DefaultLogOwner__c
+            'IsEnabled__c',
+            'LoggingLevel__c',
+            'IsSavingEnabled__c',
+            'DefaultSaveMethod__c',
+            'IsPlatformEventStorageEnabled__c',
+            'DefaultNumberOfDaysToRetainLogs__c',
+            'DefaultLogOwner__c'
         ];
+        console.log('tableColumnNames', tableColumnNames);
         for (let i = 0; i < tableColumnNames.length; i++) {
-            const field = this._sobjectDescribe.fields[tableColumnNames[i]];
+            const field = this._loggerSettingsSchema.fields[tableColumnNames[i]];
             const column = {
                 fieldName: field.apiName,
                 label: field.label,
@@ -377,13 +375,14 @@ export default class LoggerSettings extends LightningElement {
         }
 
         let fieldDescribe;
-        if (fieldApiName && this._sobjectDescribe.fields[fieldApiName]) {
-            fieldDescribe = { ...this._sobjectDescribe.fields[fieldApiName] };
+        if (fieldApiName && this._loggerSettingsSchema.fields[fieldApiName]) {
+            fieldDescribe = { ...this._loggerSettingsSchema.fields[fieldApiName] };
         } else {
             fieldDescribe = { apiName: fieldApiName };
         }
 
         if (this._currentRecord) {
+            console.info('getting field value on current record for ' + fieldApiName, JSON.parse(JSON.stringify(this._currentRecord)));
             fieldDescribe.value = this._currentRecord[recordFieldApiName];
         }
 
