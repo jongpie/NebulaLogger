@@ -325,6 +325,25 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_default_scenario_when_configured() {
+        String transactionScenarioName = 'some test scenario for this transaction';
+        LoggerSettings__c userSettings = LoggerSettings__c.getInstance();
+        userSettings.DefaultLogScenario__c = transactionScenarioName;
+        upsert userSettings;
+
+        String transactionId = Logger.getTransactionId();
+        for (Integer i = 0; i < 5; i++) {
+            Logger.info('my log entry');
+        }
+        Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
+        Test.getEventBus().deliver();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+    }
+
+    @IsTest
     static void it_should_set_scenario() {
         String transactionId = Logger.getTransactionId();
         String transactionScenarioName = 'some test scenario for this transaction';
@@ -334,6 +353,7 @@ private class Logger_Tests {
             Logger.info('my log entry');
         }
         Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
         Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
@@ -354,6 +374,7 @@ private class Logger_Tests {
             Logger.finer('my log entry');
         }
         Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
         Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
@@ -376,6 +397,7 @@ private class Logger_Tests {
         }
         Logger.setScenario(lastTransactionScenarioName);
         Logger.saveLog();
+        System.assertEquals(lastTransactionScenarioName, Logger.getScenario());
         Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];

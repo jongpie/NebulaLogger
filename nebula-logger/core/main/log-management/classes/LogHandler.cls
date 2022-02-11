@@ -184,6 +184,16 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         Database.insert(logShares, false);
     }
 
+    private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
+        Map<String, LogStatus__mdt> logStatusNameToStatus = new Map<String, LogStatus__mdt>();
+        for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
+            if (logStatus.IsActive__c == true) {
+                logStatusNameToStatus.put(logStatus.MasterLabel, logStatus);
+            }
+        }
+        return logStatusNameToStatus;
+    }
+
     private static Map<String, Id> queryQueues(List<String> possibleQueueNames) {
         Map<String, Id> queuesByDeveloperName = new Map<String, Id>();
         for (Group queue : [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :possibleQueueNames]) {
@@ -222,15 +232,5 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     @TestVisible
     private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
         SCENARIO_TO_MOCK_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
-    }
-
-    private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {
-        Map<String, LogStatus__mdt> logStatusNameToStatus = new Map<String, LogStatus__mdt>();
-        for (LogStatus__mdt logStatus : LogStatus__mdt.getAll().values()) {
-            if (logStatus.IsActive__c == true) {
-                logStatusNameToStatus.put(logStatus.MasterLabel, logStatus);
-            }
-        }
-        return logStatusNameToStatus;
     }
 }

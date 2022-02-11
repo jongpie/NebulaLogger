@@ -25,7 +25,7 @@ global with sharing class Logger {
 
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
-    private static String transactionScenario;
+    private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
     private static Boolean suspendSaving = false;
     private static LoggerSettings__c userSettings;
 
@@ -2450,6 +2450,15 @@ global with sharing class Logger {
     }
 
     // Save control methods
+    /**
+     * @description Returns the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
+     *              and `Log__c.Scenario__c`, and can be used to filter & group logs
+     * @return   The value currently set as the current transaction's scenario
+     */
+    global static String getScenario() {
+        return transactionScenario;
+    }
+
     /**
      * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs

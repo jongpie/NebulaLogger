@@ -70,7 +70,7 @@ public without sharing class LoggerSettingsController {
      * @description Creates a new, unsaved `LoggerSettings__c` record
      * @return   A new `LoggerSettings__c` record, with all fields populated with default values
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static LoggerSettings__c createRecord() {
         return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
     }
@@ -110,7 +110,7 @@ public without sharing class LoggerSettingsController {
      * @description Returns the `Organization` record for the current environment
      * @return   The current environment's `Organization` record
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Organization getOrganization() {
         return [SELECT Id, Name FROM Organization];
     }

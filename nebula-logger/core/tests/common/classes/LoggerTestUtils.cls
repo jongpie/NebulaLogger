@@ -8,8 +8,6 @@
 public class LoggerTestUtils {
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
 
-    private static Boolean cacheQueries = true;
-
     // Lazy-load & cache permission sets & profiles
     private static final Map<String, PermissionSet> PERMISSION_SETS_BY_NAME {
         get {

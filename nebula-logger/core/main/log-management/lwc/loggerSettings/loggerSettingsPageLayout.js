@@ -41,7 +41,7 @@ const PAGE_LAYOUT_CONFIG = {
             showInReadOnlyMode: true,
             showInEditMode: true,
             columns: [
-                { fieldApiNames: ['DefaultNumberOfDaysToRetainLogs__c'], size: 6 },
+                { fieldApiNames: ['DefaultNumberOfDaysToRetainLogs__c', 'DefaultLogScenario__c'], size: 6 },
                 { fieldApiNames: ['DefaultLogShareAccessLevel__c', 'DefaultLogOwner__c'], size: 6 }
             ]
         }
@@ -122,5 +122,7 @@ const LoggerSettingsPageLayout = class {
 };
 
 export function generatePageLayout(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record) {
-    return new LoggerSettingsPageLayout(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record);
+    const layout = new LoggerSettingsPageLayout(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record);
+    console.info('finished generating layout', layout);
+    return layout;
 }
