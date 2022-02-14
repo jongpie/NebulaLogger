@@ -9,7 +9,7 @@
             "default": true,
             "definitionFile": "./config/scratch-orgs/experience-cloud-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "ancestorVersion": "4.6.0.0",
+            "ancestorVersion": "HIGHEST",
             "versionNumber": "4.7.0.0",
             "versionName": "Spring '22 Release",
             "versionDescription": "TODO",

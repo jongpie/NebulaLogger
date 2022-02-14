@@ -1,12 +1,13 @@
 {
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "53.0",
+    "sourceApiVersion": "54.0",
     "packageDirectories": [
         {
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/experience-cloud-scratch-def.json",
+            "ancestorVersion": "HIGHEST",
             "versionNumber": "4.7.0.0",
             "versionName": "Spring '22 Release",
             "versionDescription": "Replaced the old aura cmp logJSONViewer with a new lwc quickaction, cleaned up flexipages, fixed an issue with some standard buttons being excluded",
