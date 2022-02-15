@@ -66,7 +66,7 @@ private class LogEntryTagHandler_Tests {
             insert duplicateLogEntryTag;
             System.assert(false, 'Exception expected on previous line');
         } catch (Exception ex) {
-            String expectedDuplicateError = 'DUPLICATE_VALUE, duplicate value found';
+            String expectedDuplicateError = 'DUPLICATE_VALUE';
             System.assert(ex.getMessage().contains(expectedDuplicateError), ex.getMessage());
         }
     }
