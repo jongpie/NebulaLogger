@@ -3,8 +3,8 @@ import { createElement } from 'lwc';
 import LoggerSettings from 'c/loggerSettings';
 
 // LoggerSettings__c metadata
-import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
+import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
@@ -16,7 +16,7 @@ import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
 
 // Mock metadata
-const mockObjectInfo = require('./data/getObjectInfo.json');
+const mockLoggerSettingsSchema = require('./data/getLoggerSettingsSchema.json');
 const mockOrganization = require('./data/getOrganization.json');
 const mockPicklistOptions = require('./data/getPicklistOptions.json');
 
@@ -105,9 +105,20 @@ jest.mock(
     { virtual: true }
 );
 
+jest.mock(
+    '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema',
+    () => {
+        return {
+            default: jest.fn()
+        };
+    },
+    { virtual: true }
+);
+
 async function initializeElement(enableModifyAccess) {
     // Assign mock values for resolved Apex promises
     canUserModifyLoggerSettings.mockResolvedValue(enableModifyAccess);
+    getLoggerSettingsSchema.mockResolvedValue(mockLoggerSettingsSchema);
     getPicklistOptions.mockResolvedValue(mockPicklistOptions);
     getRecords.mockResolvedValue(mockRecords);
 
@@ -115,9 +126,7 @@ async function initializeElement(enableModifyAccess) {
     const loggerSettingsElement = createElement('c-logger-settings', { is: LoggerSettings });
     document.body.appendChild(loggerSettingsElement);
 
-    // Emit data from @wire
-    await getObjectInfo.emit(mockObjectInfo);
-    await Promise.resolve();
+    await new Promise(resolve => setTimeout(resolve, 0));
 
     return loggerSettingsElement;
 }
@@ -156,6 +165,7 @@ describe('Logger Settings lwc tests', () => {
 
         // Verify the expected Apex/framework calls
         expect(canUserModifyLoggerSettings).toHaveBeenCalledTimes(1);
+        expect(getLoggerSettingsSchema).toHaveBeenCalledTimes(1);
         expect(getPicklistOptions).toHaveBeenCalledTimes(1);
         expect(getRecords).toHaveBeenCalledTimes(1);
         expect(createRecord).toHaveBeenCalledTimes(0);
@@ -348,6 +358,7 @@ describe('Logger Settings lwc tests', () => {
         const isDataMaskingEnabled = false;
         const isDataMaskingEnabledField = loggerSettingsElement.shadowRoot.querySelector('[data-id="IsDataMaskingEnabled__c"]');
         isDataMaskingEnabledField.checked = isDataMaskingEnabled;
+        isDataMaskingEnabledField.value = isDataMaskingEnabled;
         isDataMaskingEnabledField.dispatchEvent(new CustomEvent('change'));
 
         // Save the record & verify the call to the Apex controller

@@ -9,8 +9,8 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 // LoggerSettings__c metadata
 import { generatePageLayout } from './loggerSettingsPageLayout';
-import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
+import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
@@ -48,15 +48,12 @@ export default class LoggerSettings extends LightningElement {
     _currentRecord;
 
     connectedCallback() {
-        console.info('running connecteedCallback!');
         document.title = this.title;
         this.showLoadingSpinner = true;
         Promise.all([getOrganization(), getLoggerSettingsSchema(), getPicklistOptions(), canUserModifyLoggerSettings()])
             .then(([organizationRecord, loggerSettingsSchema, apexPicklistOptions, canUserModifyLoggerSettings]) => {
-                console.info('running then!');
                 this.organization = organizationRecord;
                 this._loggerSettingsSchema = loggerSettingsSchema;
-                console.info('this._loggerSettingsSchema', this._loggerSettingsSchema);
                 this.loggerSettingsPicklistOptions = apexPicklistOptions;
                 this.canUserModifyLoggerSettings = canUserModifyLoggerSettings;
 
@@ -120,13 +117,17 @@ export default class LoggerSettings extends LightningElement {
                 ? event.target.checked
                 : event.target.value;
         this._currentRecord[event.target.dataset.id] = value;
-        if (value && event.target.dataset.id === this._loggerSettingsSchema.fields.IsSavingEnabled__c) {
-            const checkbox = this.template.querySelector(`[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c}"]`);
+        if (value && event.target.dataset.id === this._loggerSettingsSchema.fields.IsSavingEnabled__c.apiName) {
+            const checkbox = this.template.querySelector(`[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.apiName}"]`);
             if (checkbox) {
                 checkbox.checked = true;
             }
             this.handleFieldChange({
-                target: { type: 'checkbox', checked: true, dataset: { id: this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c } }
+                target: {
+                    type: 'checkbox',
+                    checked: true,
+                    dataset: { id: this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.apiName }
+                }
             });
         }
 
@@ -211,9 +212,7 @@ export default class LoggerSettings extends LightningElement {
     }
 
     get createdDateField() {
-        const field = this._loadField(this._loggerSettingsSchema.fields.CreatedDate.apiName);
-        console.info('createdDateField', field);
-        return field;
+        return this._loadField(this._loggerSettingsSchema.fields.CreatedDate.apiName);
     }
 
     get isEnabledField() {
@@ -327,7 +326,6 @@ export default class LoggerSettings extends LightningElement {
 
         // For all other fields, use object API info to dynamically get field details
         // TODO - make this array configurable by storing in LoggerParameter__mdt
-        console.log('this._loggerSettingsSchema', this._loggerSettingsSchema);
         const tableColumnNames = [
             'IsEnabled__c',
             'LoggingLevel__c',
@@ -337,13 +335,12 @@ export default class LoggerSettings extends LightningElement {
             'DefaultNumberOfDaysToRetainLogs__c',
             'DefaultLogOwner__c'
         ];
-        console.log('tableColumnNames', tableColumnNames);
         for (let i = 0; i < tableColumnNames.length; i++) {
             const field = this._loggerSettingsSchema.fields[tableColumnNames[i]];
             const column = {
                 fieldName: field.apiName,
                 label: field.label,
-                type: field.dataType?.toLowerCase()
+                type: field.type.toLowerCase()
             };
             if (column.type === 'string') {
                 column.type = 'text';
@@ -382,7 +379,6 @@ export default class LoggerSettings extends LightningElement {
         }
 
         if (this._currentRecord) {
-            console.info('getting field value on current record for ' + fieldApiName, JSON.parse(JSON.stringify(this._currentRecord)));
             fieldDescribe.value = this._currentRecord[recordFieldApiName];
         }
 
