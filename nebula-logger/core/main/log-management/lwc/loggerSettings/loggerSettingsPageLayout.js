@@ -122,7 +122,5 @@ const LoggerSettingsPageLayout = class {
 };
 
 export function generatePageLayout(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record) {
-    const layout = new LoggerSettingsPageLayout(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record);
-    console.info('finished generating layout', layout);
-    return layout;
+    return new LoggerSettingsPageLayout(sobjectSchema, apexPicklistOptions, isReadOnlyMode, record);
 }

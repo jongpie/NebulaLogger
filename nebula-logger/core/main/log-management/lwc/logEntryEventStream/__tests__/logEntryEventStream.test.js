@@ -1,6 +1,7 @@
 import { createElement } from 'lwc';
 import LogEntryEventStream from 'c/logEntryEventStream';
 import { jestMockPublish } from 'lightning/empApi';
+import getLogEntryEventSchema from '@salesforce/apex/LoggerSObjectMetadata.getLogEntryEventSchema';
 
 const loggingLevels = {
     FINEST: 2,
@@ -23,6 +24,18 @@ const mockLogEntryEventTemplate = {
     TransactionId__c: 'ABC-1234',
     TransactionEntryNumber__c: 1
 };
+
+const mockLogEntryEventSchema = require('./data/getLogEntryEventSchema.json');
+
+jest.mock(
+    '@salesforce/apex/LoggerSObjectMetadata.getLogEntryEventSchema',
+    () => {
+        return {
+            default: jest.fn()
+        };
+    },
+    { virtual: true }
+);
 
 function getPlatformEventText(mockLogEntryEvent) {
     return (
@@ -48,6 +61,8 @@ describe('LogEntryEventStream tests', () => {
         }
     });
     it('streams a single log entry event', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -66,6 +81,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('toggles streaming when button clicked', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -83,6 +100,8 @@ describe('LogEntryEventStream tests', () => {
             });
     });
     it('clears stream when clear button clicked', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -107,6 +126,8 @@ describe('LogEntryEventStream tests', () => {
         });
     });
     it('includes matching log entry event for logging level filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -131,6 +152,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for logging level filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -154,6 +177,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBeFalsy();
     });
     it('includes matching log entry event for origin type filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -177,6 +202,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for origin type filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -199,6 +226,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBeFalsy();
     });
     it('includes matching log entry event for origin location filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -222,6 +251,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for origin location filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -244,6 +275,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBeFalsy();
     });
     it('includes matching log entry event for logged by filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -267,6 +300,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for logged by filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -289,6 +324,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBeFalsy();
     });
     it('includes matching log entry event using string for message filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -312,6 +349,8 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for message filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -335,6 +374,8 @@ describe('LogEntryEventStream tests', () => {
     });
 
     it('includes matching log entry event using regex for message filter', async () => {
+        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
+
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });

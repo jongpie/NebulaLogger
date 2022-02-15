@@ -4,7 +4,7 @@
  ************************************************************************************************/
 
 import { LightningElement } from 'lwc';
-import { isEmpEnabled, subscribe, unsubscribe } from 'lightning/empApi';
+import { subscribe, unsubscribe } from 'lightning/empApi';
 import getLogEntryEventSchema from '@salesforce/apex/LoggerSObjectMetadata.getLogEntryEventSchema';
 
 export default class LogEntryEventStream extends LightningElement {
@@ -31,16 +31,9 @@ export default class LogEntryEventStream extends LightningElement {
 
         getLogEntryEventSchema().then(result => {
             this._logEntryEventSchema = result;
-            console.log('this._logEntryEventSchema', this._logEntryEventSchema);
+            this._channel = '/event/' + this._logEntryEventSchema.apiName;
 
-            // For reasons unknown, the platform returns `LogEntryEvent__c` instead of `LogEntryEvent__e`
-            const objectApiName = this._logEntryEventSchema.apiName;
-            console.info('objectApiName', objectApiName);
-            this._channel = '/event/' + objectApiName;
-
-            if (isEmpEnabled() === true) {
-                this.createSubscription();
-            }
+            this.createSubscription();
         });
     }
 
@@ -86,13 +79,12 @@ export default class LogEntryEventStream extends LightningElement {
     async createSubscription() {
         this._subscription = await subscribe(this._channel, -2, event => {
             const logEntryEvent = event.data.payload;
-            console.log('logEntryEvent', logEntryEvent);
             // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
             // but it doesn't seem to be populated via empApi, so use a synthetic key instead
             logEntryEvent.key =
-                logEntryEvent[this._logEntryEventSchema.fields.TransactionId__c] +
+                logEntryEvent[this._logEntryEventSchema.fields.TransactionId__c.apiName] +
                 '__' +
-                logEntryEvent[this._logEntryEventSchema.fields.TransactionEntryNumber__c];
+                logEntryEvent[this._logEntryEventSchema.fields.TransactionEntryNumber__c.apiName];
             this.unfilteredEvents.unshift(logEntryEvent);
             this._filterEvents();
         });
@@ -146,31 +138,34 @@ export default class LogEntryEventStream extends LightningElement {
     }
 
     _meetsLoggedByFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.loggedByFilter, logEntryEvent[this._logEntryEventSchema.fields.LoggedByUsername__c]);
+        return this._matchesTextFilter(this.loggedByFilter, logEntryEvent[this._logEntryEventSchema.fields.LoggedByUsername__c.apiName]);
     }
 
     _meetsLoggingLevelFilter(logEntryEvent) {
         let matches = false;
-        if (!this.loggingLevelFilter || Number(logEntryEvent[this._logEntryEventSchema.fields.LoggingLevelOrdinal__c]) >= Number(this.loggingLevelFilter)) {
+        if (
+            !this.loggingLevelFilter ||
+            Number(logEntryEvent[this._logEntryEventSchema.fields.LoggingLevelOrdinal__c.apiName]) >= Number(this.loggingLevelFilter)
+        ) {
             matches = true;
         }
         return matches;
     }
 
     _meetsMessageFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.messageFilter, logEntryEvent[this._logEntryEventSchema.fields.Message__c]);
+        return this._matchesTextFilter(this.messageFilter, logEntryEvent[this._logEntryEventSchema.fields.Message__c.apiName]);
     }
 
     _meetsOriginLocationFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.originLocationFilter, logEntryEvent[this._logEntryEventSchema.fields.OriginLocation__c]);
+        return this._matchesTextFilter(this.originLocationFilter, logEntryEvent[this._logEntryEventSchema.fields.OriginLocation__c.apiName]);
     }
 
     _meetsOriginTypeFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.originTypeFilter, logEntryEvent[this._logEntryEventSchema.fields.OriginType__c]);
+        return this._matchesTextFilter(this.originTypeFilter, logEntryEvent[this._logEntryEventSchema.fields.OriginType__c.apiName]);
     }
 
     _meetsScenarioFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent[this._logEntryEventSchema.fields.Scenario__c]);
+        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent[this._logEntryEventSchema.fields.Scenario__c.apiName]);
     }
 
     _matchesTextFilter(filterCriteria = '', text = '') {

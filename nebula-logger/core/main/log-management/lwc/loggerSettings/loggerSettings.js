@@ -4,7 +4,7 @@
  ************************************************************************************************/
 
 // UI
-import { LightningElement, wire } from 'lwc';
+import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 // LoggerSettings__c metadata
@@ -38,7 +38,7 @@ export default class LoggerSettings extends LightningElement {
     showPill = false;
 
     // LoggerSettings__c metadata
-    canUserModifyLoggerSettings;
+    canModifyLoggerSettings;
     loggerSettingsPicklistOptions;
     _loggerSettingsSchema;
 
@@ -51,11 +51,11 @@ export default class LoggerSettings extends LightningElement {
         document.title = this.title;
         this.showLoadingSpinner = true;
         Promise.all([getOrganization(), getLoggerSettingsSchema(), getPicklistOptions(), canUserModifyLoggerSettings()])
-            .then(([organizationRecord, loggerSettingsSchema, apexPicklistOptions, canUserModifyLoggerSettings]) => {
-                this.organization = organizationRecord;
-                this._loggerSettingsSchema = loggerSettingsSchema;
-                this.loggerSettingsPicklistOptions = apexPicklistOptions;
-                this.canUserModifyLoggerSettings = canUserModifyLoggerSettings;
+            .then(([organizationRecordResult, loggerSettingsSchemaResult, apexPicklistOptionsResult, canUserModifyLoggerSettingsResult]) => {
+                this.organization = organizationRecordResult;
+                this._loggerSettingsSchema = loggerSettingsSchemaResult;
+                this.loggerSettingsPicklistOptions = apexPicklistOptionsResult;
+                this.canModifyLoggerSettings = canUserModifyLoggerSettingsResult;
 
                 this._loadTableColumns();
                 this.loadSettingsRecords();
