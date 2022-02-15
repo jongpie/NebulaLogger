@@ -3244,6 +3244,20 @@ SaveMethod
 
 The enum value of Logger.SaveMethod to use for any calls to saveLog() in the current transaction
 
+#### `getScenario()` → `String`
+
+Returns the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c` and `Log__c.Scenario__c`, and can be used to filter &amp; group logs
+
+##### Return
+
+**Type**
+
+String
+
+**Description**
+
+The value currently set as the current transaction&apos;s scenario
+
 #### `getTransactionId()` → `String`
 
 Returns the unique ID for a particular transaction, stored in Log**c.TransactionId**c
