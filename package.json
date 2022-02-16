@@ -69,11 +69,19 @@
         "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerConfiguration,LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage --skipApiVersionCheck --verbose"
     },
+    "dependencies": {
+        "follow-redirects": ">=1.14.8",
+        "markdown-it": ">=12.3.2",
+        "marked": ">=4.0.10",
+        "nanoid": ">=3.1.31",
+        "shelljs": ">=0.8.5",
+        "simple-get": ">=4.0.1"
+    },
     "devDependencies": {
         "@babel/core": "latest",
         "@babel/eslint-parser": "latest",
         "@cparra/apexdocs": "latest",
-        "@jongpie/sfdx-bummer-plugin": "0.0.16",
+        "@jongpie/sfdx-bummer-plugin": "latest",
         "@ljharb/eslint-config": "latest",
         "@lwc/eslint-plugin-lwc": "latest",
         "@prettier/plugin-xml": "latest",
@@ -85,18 +93,12 @@
         "eslint": "latest",
         "eslint-config-prettier": "latest",
         "eslint-plugin-import": "latest",
-        "follow-redirects": ">=1.14.7",
         "husky": "latest",
         "jsdoc-to-markdown": "latest",
         "lint-staged": "latest",
-        "markdown-it": ">=12.3.2",
-        "marked": ">=4.0.10",
-        "nanoid": ">=3.1.31",
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
         "pwsh": "latest",
-        "sfdx-cli": "latest",
-        "shelljs": ">=0.8.5",
-        "simple-get": ">=4.0.1"
+        "sfdx-cli": "latest"
     }
 }

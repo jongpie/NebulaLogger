@@ -1,7 +1,7 @@
 {
     "namespace": "Nebula",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "53.0",
+    "sourceApiVersion": "54.0",
     "packageDirectories": [
         {
             "package": "Nebula Logger - Managed Package",
@@ -10,9 +10,9 @@
             "definitionFile": "./config/scratch-orgs/experience-cloud-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
             "ancestorVersion": "HIGHEST",
-            "versionNumber": "4.7.0.0",
+            "versionNumber": "4.7.0.NEXT",
             "versionName": "Spring '22 Release",
-            "versionDescription": "TODO",
+            "versionDescription": "Added new settings fields for controlling saving, default log scenario, default log owner, bugfixes & cleanup",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
