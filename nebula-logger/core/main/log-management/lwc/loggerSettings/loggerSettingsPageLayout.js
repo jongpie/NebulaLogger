@@ -107,7 +107,7 @@ const LoggerSettingsPageLayout = class {
         }
 
         field.useCombobox = false;
-        switch (field.type) {
+        switch (field.type?.toLowerCase()) {
             case 'boolean':
                 field.type = 'checkbox';
                 break;

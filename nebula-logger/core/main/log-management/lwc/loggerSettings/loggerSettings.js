@@ -38,7 +38,7 @@ export default class LoggerSettings extends LightningElement {
     showPill = false;
 
     // LoggerSettings__c metadata
-    canModifyLoggerSettings;
+    canUserModifyLoggerSettings;
     loggerSettingsPicklistOptions;
     _loggerSettingsSchema;
 
@@ -55,7 +55,7 @@ export default class LoggerSettings extends LightningElement {
                 this.organization = organizationRecordResult;
                 this._loggerSettingsSchema = loggerSettingsSchemaResult;
                 this.loggerSettingsPicklistOptions = apexPicklistOptionsResult;
-                this.canModifyLoggerSettings = canUserModifyLoggerSettingsResult;
+                this.canUserModifyLoggerSettings = canUserModifyLoggerSettingsResult;
 
                 this._loadTableColumns();
                 this.loadSettingsRecords();
@@ -112,15 +112,18 @@ export default class LoggerSettings extends LightningElement {
     }
 
     handleFieldChange(event) {
-        const value =
+        const fieldApiName = event.target.dataset.id;
+        const fieldValue =
             event.target.type === 'checkbox' || event.target.type === 'checkbox-button' || event.target.type === 'toggle'
                 ? event.target.checked
                 : event.target.value;
-        this._currentRecord[event.target.dataset.id] = value;
-        if (value && event.target.dataset.id === this._loggerSettingsSchema.fields.IsSavingEnabled__c.apiName) {
-            const checkbox = this.template.querySelector(`[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.apiName}"]`);
-            if (checkbox) {
-                checkbox.checked = true;
+        this._currentRecord[fieldApiName] = fieldValue;
+        if (fieldValue && fieldApiName === this._loggerSettingsSchema.fields.IsSavingEnabled__c.apiName) {
+            const storageEnabledCheckbox = this.template.querySelector(
+                `[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.apiName}"]`
+            );
+            if (storageEnabledCheckbox) {
+                storageEnabledCheckbox.checked = true;
             }
             this.handleFieldChange({
                 target: {
@@ -242,7 +245,7 @@ export default class LoggerSettings extends LightningElement {
     createNewRecord() {
         createRecord()
             .then(result => {
-                this._currentRecord = result;
+                this._currentRecord = { ...result };
                 this.selectedSetupOwner = null;
                 this.isNewOrganizationRecord = false;
                 this.isReadOnlyMode = false;

@@ -1,0 +1,5 @@
+.github/
+.husky/
+.sfdx/
+.vscode/
+test-coverage/

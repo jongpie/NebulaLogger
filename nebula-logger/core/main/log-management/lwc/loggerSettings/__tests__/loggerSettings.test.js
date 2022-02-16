@@ -321,6 +321,8 @@ describe('Logger Settings lwc tests', () => {
         expectedNewRecord.SetupOwnerId = mockOrganization.Id;
         expectedNewRecord.LoggingLevel__c = specifiedLoggingLevel;
         expectedNewRecord.DefaultSaveMethod__c = specifiedSaveMethod;
+        expectedNewRecord.setupOwnerName = mockOrganization.Name;
+        expectedNewRecord.setupOwnerType = setupOwnerTypeField.value;
         const expectedApexParameter = { settingsRecord: expectedNewRecord };
         const saveRecordBtn = loggerSettingsElement.shadowRoot.querySelector('[data-id="save-btn"]');
         saveRecordBtn.click();
@@ -358,7 +360,6 @@ describe('Logger Settings lwc tests', () => {
         const isDataMaskingEnabled = false;
         const isDataMaskingEnabledField = loggerSettingsElement.shadowRoot.querySelector('[data-id="IsDataMaskingEnabled__c"]');
         isDataMaskingEnabledField.checked = isDataMaskingEnabled;
-        isDataMaskingEnabledField.value = isDataMaskingEnabled;
         isDataMaskingEnabledField.dispatchEvent(new CustomEvent('change'));
 
         // Save the record & verify the call to the Apex controller
@@ -366,6 +367,8 @@ describe('Logger Settings lwc tests', () => {
         expectedNewRecord.SetupOwnerId = mockOrganization.Id;
         expectedNewRecord.LoggingLevel__c = specifiedLoggingLevel;
         expectedNewRecord.IsDataMaskingEnabled__c = isDataMaskingEnabled;
+        expectedNewRecord.setupOwnerName = mockOrganization.Name;
+        expectedNewRecord.setupOwnerType = setupOwnerTypeField.value;
         const expectedApexParameter = { settingsRecord: expectedNewRecord };
 
         const saveKeyboardShortcutEvent = new KeyboardEvent('keydown', { code: 'KeyS', ctrlKey: true });

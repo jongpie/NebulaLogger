@@ -15,7 +15,7 @@
                 onclick={loadSettingsRecords}
                 title="Refresh Records"
             ></lightning-button>
-            <template if:true={canModifyLoggerSettings}>
+            <template if:true={canUserModifyLoggerSettings}>
                 <lightning-button
                     data-id="new-btn"
                     class="slds-m-horizontal_xx-small"
