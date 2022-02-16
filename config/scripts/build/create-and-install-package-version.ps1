@@ -69,7 +69,7 @@ function Build-New-Package-Version {
     $gitBranch = (git branch --show-current)
     $gitCommit = (git rev-parse HEAD)
 
-    $packageVersionCreateResult = npx sfdx force:package:version:create --json --package $targetpackagealias --codecoverage --installationkeybypass --wait 30 --branch $gitBranch --tag $gitCommit | ConvertFrom-Json
+    $packageVersionCreateResult = npx sfdx force:package:version:create --json --skipancestorcheck --package $targetpackagealias --codecoverage --installationkeybypass --wait 30 --branch $gitBranch --tag $gitCommit | ConvertFrom-Json
     $packageVersionId = $packageVersionCreateResult.result.SubscriberPackageVersionId
 
     if ($null -eq $packageVersionId -or $packageVersionId -eq "") {
