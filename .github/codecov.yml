@@ -8,3 +8,5 @@ coverage:
         patch: off
 ignore:
     - 'nebula-logger-recipes/**/*'
+comment:
+    behavior: new
