@@ -368,7 +368,9 @@ export default class LoggerSettings extends LightningElement {
         });
     }
 
-    // TODO delete??
+    // This function is a legacy approach for getting field metadata & data - the new approach is to use
+    // loggerSettingsPageLayout.js,  but it does not fully handle some fields like CreatedyBy.Username, SetupOwner.Type, etc.
+    // TODO - in a future release, eliminate this function + improve loggerSettingsPageLayout.js to handle this logic
     _loadField(fieldApiName, recordFieldApiName, recordFieldLabel) {
         if (!recordFieldApiName) {
             recordFieldApiName = fieldApiName;

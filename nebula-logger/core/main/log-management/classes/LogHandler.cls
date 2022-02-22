@@ -77,7 +77,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         Map<Id, String> ownerNamesByLoggingUserId = new Map<Id, String>();
         List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : this.logs) {
-            String loggingUserDefaultLogOwner = Logger.getUserSettings(new User(Id = log.LoggedBy__c)).DefaultLogOwner__c;
+            String loggingUserDefaultLogOwner = getLoggingUserSettings(log).DefaultLogOwner__c;
 
             if (String.isBlank(loggingUserDefaultLogOwner) == true) {
                 continue;
@@ -99,7 +99,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         ownerIdByOwnerName.putAll(queryUsers(ownerNamesByLoggingUserId.values()));
 
         for (Log__c log : logsToUpdate) {
-            String loggingUserDefaultLogOwner = Logger.getUserSettings(new User(Id = log.LoggedBy__c)).DefaultLogOwner__c;
+            String loggingUserDefaultLogOwner = getLoggingUserSettings(log).DefaultLogOwner__c;
             if (ownerIdByOwnerName.containsKey(loggingUserDefaultLogOwner)) {
                 log.OwnerId = ownerIdByOwnerName.get(loggingUserDefaultLogOwner);
             }
@@ -115,8 +115,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
 
             // Load the logging user's settings
-            User loggingUser = new User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
-            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
+            LoggerSettings__c loggingUserSettings = getLoggingUserSettings(log);
 
             // Load the configured scenario rule (if one exists)
             LogScenarioRule__mdt matchingScenarioRule = scenarioToScenarioRule.get(log.Scenario__c);
@@ -165,8 +164,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
 
             // Load the logging user's settings
-            User loggingUser = new User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
-            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
+            LoggerSettings__c loggingUserSettings = getLoggingUserSettings(log);
 
             // Ignore blank and unsupported values
             if (loggingUserSettings.DefaultLogShareAccessLevel__c != 'Read' && loggingUserSettings.DefaultLogShareAccessLevel__c != 'Edit') {
@@ -182,6 +180,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             logShares.add(logShare);
         }
         Database.insert(logShares, false);
+    }
+
+    private static LoggerSettings__c getLoggingUserSettings(Log__c log) {
+        User loggingUser = new User(Id = log.LoggedBy__c, ProfileId = log.ProfileId__c);
+        return Logger.getUserSettings(loggingUser);
     }
 
     private static Map<String, LogStatus__mdt> loadActiveLogStatuses() {

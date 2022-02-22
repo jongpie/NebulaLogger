@@ -42,12 +42,24 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
      * @param triggerNew list of new LogEntryEvent events
      */
     public override void executeAfterInsert(List<SObject> triggerNew) {
-        this.logEntryEvents = (List<LogEntryEvent__e>) triggerNew;
+        this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
         this.upsertLogs();
         this.insertLogEntries();
         this.appendRuleBasedTags();
         this.insertLogEntryTags();
+    }
+
+    private List<LogEntryEvent__e> filterLogEntryEventsToSave(List<LogEntryEvent__e> newLogEntryEvents) {
+        List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
+        for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
+            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
+            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
+            if (loggingUserSettings.IsPlatformEventStorageEnabled__c == true) {
+                logEntryEventsToSave.add(logEntryEvent);
+            }
+        }
+        return logEntryEventsToSave;
     }
 
     private void upsertLogs() {
@@ -56,13 +68,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
 
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
-            // Load the logging user's settings
-            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
-            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
-            if (loggingUserSettings.IsPlatformEventStorageEnabled__c == false) {
-                continue;
-            }
-
             // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
             // In case the list contains entries tied to multiple transactions, use the TRANSACTION_ID_TO_LOG map to create 1 Log__c per transaction ID
             if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
@@ -148,12 +153,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     private void insertLogEntries() {
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
-            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
-            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
-            if (loggingUserSettings.IsPlatformEventStorageEnabled__c == false) {
-                continue;
-            }
-
             // Workaround field for platform issue w/ accurate datetimes
             Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
                 ? Datetime.valueOf(Long.valueOf(logEntryEvent.TimestampString__c))
