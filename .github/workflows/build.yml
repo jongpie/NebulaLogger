@@ -81,7 +81,9 @@ jobs:
               run: npm run lint:verify:lwc
 
             - name: 'Verify Apex with SFDX Scanner'
-              run: npm run lint:verify:apex
+              run: |
+                  npm run sfdx:plugin:link:scanner
+                  npm run lint:verify:apex
 
             # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
             # - name: 'Verify docs are updated'
