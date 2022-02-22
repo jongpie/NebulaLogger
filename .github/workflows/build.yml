@@ -287,6 +287,8 @@ jobs:
               run: |
                   git config --local user.email "action@github.com"
                   git config --local user.name "GitHub Action Bot"
+                  npm run sfdx:plugins:link:bummer
+                  npx sfdx bummer:package:aliases:sort
                   npx prettier --write ./sfdx-project.json
                   git add ./sfdx-project.json
                   git commit -m "Created new package version"

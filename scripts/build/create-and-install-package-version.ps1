@@ -70,6 +70,8 @@ function Build-New-Package-Version {
     $gitCommit = (git rev-parse HEAD)
 
     $packageVersionCreateResult = npx sfdx force:package:version:create --json --skipancestorcheck --package $targetpackagealias --codecoverage --installationkeybypass --wait 30 --branch $gitBranch --tag $gitCommit | ConvertFrom-Json
+    $result = $packageVersionCreateResult.result
+    Write-Debug "Package version creation result: $result"
     $packageVersionId = $packageVersionCreateResult.result.SubscriberPackageVersionId
 
     if ($null -eq $packageVersionId -or $packageVersionId -eq "") {
