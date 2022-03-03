@@ -78,14 +78,23 @@ export default class LogEntryEventStream extends LightningElement {
 
     async createSubscription() {
         this._subscription = await subscribe(this._channel, -2, event => {
-            const logEntryEvent = event.data.payload;
+            const logEntryEvent = JSON.parse(JSON.stringify(event.data.payload));
+
+            // To handle the namespaced managed package, convert all of the field API names from the fully-qualified name (that includes the namespace)
+            // to instead use just the local field name
+            // Example: `Nebula__LoggingLevel__c` becomes `LoggingLevel__c`
+            // This makes it easier for the rest of the code in this lwc to just reference the field without worrying about if there is a namespace
+            const cleanedLogEntryEvent = {};
+            Object.keys(logEntryEvent).forEach(eventFieldApiName => {
+                if (this._logEntryEventSchema.fields[eventFieldApiName]) {
+                    const localFieldApiName = this._logEntryEventSchema.fields[eventFieldApiName].localApiName;
+                    cleanedLogEntryEvent[localFieldApiName] = logEntryEvent[eventFieldApiName];
+                }
+            });
             // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
             // but it doesn't seem to be populated via empApi, so use a synthetic key instead
-            logEntryEvent.key =
-                logEntryEvent[this._logEntryEventSchema.fields.TransactionId__c.apiName] +
-                '__' +
-                logEntryEvent[this._logEntryEventSchema.fields.TransactionEntryNumber__c.apiName];
-            this.unfilteredEvents.unshift(logEntryEvent);
+            cleanedLogEntryEvent.key = cleanedLogEntryEvent.TransactionId__c + '__' + cleanedLogEntryEvent.TransactionEntryNumber__c;
+            this.unfilteredEvents.unshift(cleanedLogEntryEvent);
             this._filterEvents();
         });
     }
@@ -138,34 +147,31 @@ export default class LogEntryEventStream extends LightningElement {
     }
 
     _meetsLoggedByFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.loggedByFilter, logEntryEvent[this._logEntryEventSchema.fields.LoggedByUsername__c.apiName]);
+        return this._matchesTextFilter(this.loggedByFilter, logEntryEvent.LoggedByUsername__c);
     }
 
     _meetsLoggingLevelFilter(logEntryEvent) {
         let matches = false;
-        if (
-            !this.loggingLevelFilter ||
-            Number(logEntryEvent[this._logEntryEventSchema.fields.LoggingLevelOrdinal__c.apiName]) >= Number(this.loggingLevelFilter)
-        ) {
+        if (!this.loggingLevelFilter || Number(logEntryEvent.LoggingLevelOrdinal__c) >= Number(this.loggingLevelFilter)) {
             matches = true;
         }
         return matches;
     }
 
     _meetsMessageFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.messageFilter, logEntryEvent[this._logEntryEventSchema.fields.Message__c.apiName]);
+        return this._matchesTextFilter(this.messageFilter, logEntryEvent.Message__c);
     }
 
     _meetsOriginLocationFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.originLocationFilter, logEntryEvent[this._logEntryEventSchema.fields.OriginLocation__c.apiName]);
+        return this._matchesTextFilter(this.originLocationFilter, logEntryEvent.OriginLocation__c);
     }
 
     _meetsOriginTypeFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.originTypeFilter, logEntryEvent[this._logEntryEventSchema.fields.OriginType__c.apiName]);
+        return this._matchesTextFilter(this.originTypeFilter, logEntryEvent.OriginType__c);
     }
 
     _meetsScenarioFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent[this._logEntryEventSchema.fields.Scenario__c.apiName]);
+        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent.Scenario__c);
     }
 
     _matchesTextFilter(filterCriteria = '', text = '') {
