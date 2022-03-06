@@ -6,12 +6,12 @@
 
 -   [LogEntryBuilder](#LogEntryBuilder)
     -   [new LogEntryBuilder(loggingLevel, shouldSave, isConsoleLoggingEnabled)](#new_LogEntryBuilder_new)
-    -   [.setMessage(message)](#LogEntryBuilder+setMessage) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.setRecordId(recordId)](#LogEntryBuilder+setRecordId) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.setRecord(record)](#LogEntryBuilder+setRecord) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.setError(error)](#LogEntryBuilder+setError) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.addTag(tag)](#LogEntryBuilder+addTag) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
-    -   [.addTags(tags)](#LogEntryBuilder+addTags) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.setMessage(message)](#LogEntryBuilder+setMessage) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.setRecordId(recordId)](#LogEntryBuilder+setRecordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.setRecord(record)](#LogEntryBuilder+setRecord) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.setError(error)](#LogEntryBuilder+setError) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.addTag(tag)](#LogEntryBuilder+addTag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+    -   [.addTags(tags)](#LogEntryBuilder+addTags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
 <a name="new_LogEntryBuilder_new"></a>
 
@@ -28,7 +28,7 @@ This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
 
 <a name="LogEntryBuilder+setMessage"></a>
 
-### logEntryBuilder.setMessage(message) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+### logEntryBuilder.setMessage(message) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
 Sets the log entry event's message field
 
@@ -41,7 +41,7 @@ Sets the log entry event's message field
 
 <a name="LogEntryBuilder+setRecordId"></a>
 
-### logEntryBuilder.setRecordId(recordId) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+### logEntryBuilder.setRecordId(recordId) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
 Sets the log entry event's record fields
 
@@ -54,7 +54,7 @@ Sets the log entry event's record fields
 
 <a name="LogEntryBuilder+setRecord"></a>
 
-### logEntryBuilder.setRecord(record) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+### logEntryBuilder.setRecord(record) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
 Sets the log entry event's record fields
 
@@ -67,7 +67,7 @@ Sets the log entry event's record fields
 
 <a name="LogEntryBuilder+setError"></a>
 
-### logEntryBuilder.setError(error) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+### logEntryBuilder.setError(error) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
 Sets the log entry event's exception fields
 
@@ -80,7 +80,7 @@ Sets the log entry event's exception fields
 
 <a name="LogEntryBuilder+addTag"></a>
 
-### logEntryBuilder.addTag(tag) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+### logEntryBuilder.addTag(tag) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
 Appends the tag to the existing list of tags
 
@@ -93,7 +93,7 @@ Appends the tag to the existing list of tags
 
 <a name="LogEntryBuilder+addTags"></a>
 
-### logEntryBuilder.addTags(tags) ⇒ [<code>LogEntryBuilder</code>](#LogEntryBuilder)
+### logEntryBuilder.addTags(tags) [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 
 Appends the tag to the existing list of tags
 
