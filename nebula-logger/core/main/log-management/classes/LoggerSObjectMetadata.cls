@@ -32,6 +32,7 @@ public without sharing class LoggerSObjectMetadata {
         schema.localApiName = describe.getLocalName();
         schema.label = describe.getLabel();
         schema.labelPlural = describe.getLabelPlural();
+        schema.namespacePrefix = describe.getLocalName() == describe.getName() ? '' : describe.getName().removeEnd(describe.getLocalName());
 
         schema.fields = new Map<String, FieldSchema>();
         for (Schema.SObjectField field : describe.fields.getMap().values()) {

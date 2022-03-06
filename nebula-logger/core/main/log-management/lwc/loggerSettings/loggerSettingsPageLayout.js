@@ -98,8 +98,8 @@ const LoggerSettingsPageLayout = class {
     _setFieldTypeDetails(field, picklistOptions) {
         // Picklists are handled differently, since these aren't actually picklist fields
         // (Custom settings objects don't have picklist fields - custom Apex is used for generating picklist options)
-        if (picklistOptions[field.apiName]) {
-            field.picklistOptions = picklistOptions[field.apiName];
+        if (picklistOptions[field.localApiName]) {
+            field.picklistOptions = picklistOptions[field.localApiName];
             field.type = 'picklist';
             field.useCombobox = true;
 

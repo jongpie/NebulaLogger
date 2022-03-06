@@ -70,7 +70,7 @@ export default class LoggerSettings extends LightningElement {
             .then(settingsRecords => {
                 for (let i = 0; i < settingsRecords.length; i++) {
                     const record = { ...settingsRecords[i], ...settingsRecords[i].record };
-                    settingsRecords[i] = record;
+                    settingsRecords[i] = this._removeFieldNamespace(record);
                 }
                 this.records = settingsRecords;
                 this._currentRecord = null;
@@ -211,27 +211,27 @@ export default class LoggerSettings extends LightningElement {
     }
 
     get createdByIdField() {
-        return this._loadField(this._loggerSettingsSchema.fields.CreatedById.apiName, 'createdByUsername');
+        return this._loadField(this._loggerSettingsSchema.fields.CreatedById.localApiName, 'createdByUsername');
     }
 
     get createdDateField() {
-        return this._loadField(this._loggerSettingsSchema.fields.CreatedDate.apiName);
+        return this._loadField(this._loggerSettingsSchema.fields.CreatedDate.localApiName);
     }
 
     get isEnabledField() {
-        return this._loadField(this._loggerSettingsSchema.fields.IsEnabled__c.apiName);
+        return this._loadField(this._loggerSettingsSchema.fields.IsEnabled__c.localApiName);
     }
 
     get lastModifiedByIdField() {
-        return this._loadField(this._loggerSettingsSchema.fields.LastModifiedById.apiName, 'lastModifiedByUsername');
+        return this._loadField(this._loggerSettingsSchema.fields.LastModifiedById.localApiName, 'lastModifiedByUsername');
     }
 
     get lastModifiedDateField() {
-        return this._loadField(this._loggerSettingsSchema.fields.LastModifiedDate.apiName);
+        return this._loadField(this._loggerSettingsSchema.fields.LastModifiedDate.localApiName);
     }
 
     get loggingLevelField() {
-        return this._loadField(this._loggerSettingsSchema.fields.LoggingLevel__c.apiName);
+        return this._loadField(this._loggerSettingsSchema.fields.LoggingLevel__c.localApiName);
     }
 
     get setupOwnerNameField() {
@@ -245,7 +245,7 @@ export default class LoggerSettings extends LightningElement {
     createNewRecord() {
         createRecord()
             .then(result => {
-                this._currentRecord = { ...result };
+                this._currentRecord = this._removeFieldNamespace({ ...result });
                 this.selectedSetupOwner = null;
                 this.isNewOrganizationRecord = false;
                 this.isReadOnlyMode = false;
@@ -280,7 +280,8 @@ export default class LoggerSettings extends LightningElement {
 
         this.showLoadingSpinner = true;
 
-        saveRecord({ settingsRecord: this._currentRecord })
+        const recordWithNamespace = this._addFieldNamespace(this._currentRecord);
+        saveRecord({ settingsRecord: recordWithNamespace })
             .then(() => {
                 this.loadSettingsRecords();
                 const setupOwnerName = this.selectedSetupOwner ? this.selectedSetupOwner.label : this._currentRecord.setupOwnerName;
@@ -341,7 +342,7 @@ export default class LoggerSettings extends LightningElement {
         for (let i = 0; i < tableColumnNames.length; i++) {
             const field = this._loggerSettingsSchema.fields[tableColumnNames[i]];
             const column = {
-                fieldName: field.apiName,
+                fieldName: field.localApiName,
                 label: field.label,
                 type: field.type.toLowerCase()
             };
@@ -404,6 +405,34 @@ export default class LoggerSettings extends LightningElement {
 
     _setShowSetupOwnerLookup() {
         this.showSetupOwnerLookup = this.isExistingRecord === false && this._currentRecord?.setupOwnerType !== 'Organization';
+    }
+
+    _addFieldNamespace(record) {
+        const cleanedRecord = {};
+        const namespacePrefix = this._loggerSettingsSchema.namespacePrefix;
+        if (!namespacePrefix) {
+            return record;
+        }
+
+        Object.keys(record).forEach(key => {
+            const fullApiName = this._loggerSettingsSchema.fields[key] ? this._loggerSettingsSchema.fields[key].apiName : key;
+            cleanedRecord[fullApiName] = record[key];
+        });
+        return cleanedRecord;
+    }
+
+    _removeFieldNamespace(record) {
+        const cleanedRecord = {};
+        const namespacePrefix = this._loggerSettingsSchema.namespacePrefix;
+        if (!namespacePrefix) {
+            return record;
+        }
+
+        Object.keys(record).forEach(key => {
+            const localApiName = key.replace(namespacePrefix, '');
+            cleanedRecord[localApiName] = record[key];
+        });
+        return cleanedRecord;
     }
 
     _handleError = error => {
