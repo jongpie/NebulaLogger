@@ -53,11 +53,11 @@ function generateLogEntryEventSchema(namespace) {
     const schemaTemplate = { ...mockLogEntryEventSchemaTemplate };
     const schema = { ...schemaTemplate };
     schema.apiName += namespace;
+    schema.namespacePrefix = namespace;
     schema.fields = {};
     Object.keys(schemaTemplate.fields).forEach(templateKey => {
-        const key = namespace + templateKey;
-        schema.fields[key] = schemaTemplate.fields[templateKey];
-        schema.fields[key].apiName = key;
+        schema.fields[templateKey] = schemaTemplate.fields[templateKey];
+        schema.fields[templateKey].apiName = namespace + templateKey;
     });
     return schema;
 }

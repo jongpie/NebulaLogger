@@ -80,17 +80,21 @@ export default class LogEntryEventStream extends LightningElement {
         this._subscription = await subscribe(this._channel, -2, event => {
             const logEntryEvent = JSON.parse(JSON.stringify(event.data.payload));
 
-            // To handle the namespaced managed package, convert all of the field API names from the fully-qualified name (that includes the namespace)
-            // to instead use just the local field name
-            // Example: `Nebula__LoggingLevel__c` becomes `LoggingLevel__c`
-            // This makes it easier for the rest of the code in this lwc to just reference the field without worrying about if there is a namespace
-            const cleanedLogEntryEvent = {};
-            Object.keys(logEntryEvent).forEach(eventFieldApiName => {
-                if (this._logEntryEventSchema.fields[eventFieldApiName]) {
-                    const localFieldApiName = this._logEntryEventSchema.fields[eventFieldApiName].localApiName;
+            let cleanedLogEntryEvent;
+            if (!this._logEntryEventSchema.namespacePrefix) {
+                cleanedLogEntryEvent = logEntryEvent;
+            } else {
+                // To handle the namespaced managed package, convert all of the field API names from the fully-qualified name (that includes the namespace)
+                // to instead use just the local field name
+                // Example: `Nebula__LoggingLevel__c` becomes `LoggingLevel__c`
+                // This makes it easier for the rest of the code in this lwc to just reference the field without worrying about if there is a namespace
+                cleanedLogEntryEvent = {};
+                Object.keys(logEntryEvent).forEach(eventFieldApiName => {
+                    const localFieldApiName = eventFieldApiName.replace(this._logEntryEventSchema.namespacePrefix, '');
                     cleanedLogEntryEvent[localFieldApiName] = logEntryEvent[eventFieldApiName];
-                }
-            });
+                });
+            }
+
             // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
             // but it doesn't seem to be populated via empApi, so use a synthetic key instead
             cleanedLogEntryEvent.key = cleanedLogEntryEvent.TransactionId__c + '__' + cleanedLogEntryEvent.TransactionEntryNumber__c;
