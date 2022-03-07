@@ -118,9 +118,9 @@ export default class LoggerSettings extends LightningElement {
                 ? event.target.checked
                 : event.target.value;
         this._currentRecord[fieldApiName] = fieldValue;
-        if (fieldValue && fieldApiName === this._loggerSettingsSchema.fields.IsSavingEnabled__c.apiName) {
+        if (fieldValue && fieldApiName === this._loggerSettingsSchema.fields.IsSavingEnabled__c.localApiName) {
             const storageEnabledCheckbox = this.template.querySelector(
-                `[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.apiName}"]`
+                `[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.localApiName}"]`
             );
             if (storageEnabledCheckbox) {
                 storageEnabledCheckbox.checked = true;
@@ -129,7 +129,7 @@ export default class LoggerSettings extends LightningElement {
                 target: {
                     type: 'checkbox',
                     checked: true,
-                    dataset: { id: this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.apiName }
+                    dataset: { id: this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.localApiName }
                 }
             });
         }

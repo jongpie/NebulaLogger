@@ -230,9 +230,9 @@
                                         <template for:each={column.fields} for:item="field">
                                             <template if:true={field.useCombobox}>
                                                 <lightning-combobox
-                                                    data-id={field.apiName}
+                                                    data-id={field.localApiName}
                                                     field-level-help={field.inlineHelpText}
-                                                    key={field.apiName}
+                                                    key={field.localApiName}
                                                     label={field.label}
                                                     onchange={handleFieldChange}
                                                     options={field.picklistOptions}
@@ -260,7 +260,7 @@
                                                 <lightning-input
                                                     checked={field.value}
                                                     value={field.value}
-                                                    data-id={field.apiName}
+                                                    data-id={field.localApiName}
                                                     field-level-help={field.inlineHelpText}
                                                     key={field.key}
                                                     label={field.label}
