@@ -3,8 +3,8 @@ import { createElement } from 'lwc';
 import LoggerSettings from 'c/loggerSettings';
 
 // LoggerSettings__c metadata
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
-import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
@@ -16,7 +16,7 @@ import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
 
 // Mock metadata
-const mockLoggerSettingsSchema = require('./data/getLoggerSettingsSchema.json');
+const mockObjectInfo = require('./data/getObjectInfo.json');
 const mockOrganization = require('./data/getOrganization.json');
 const mockPicklistOptions = require('./data/getPicklistOptions.json');
 
@@ -105,20 +105,9 @@ jest.mock(
     { virtual: true }
 );
 
-jest.mock(
-    '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema',
-    () => {
-        return {
-            default: jest.fn()
-        };
-    },
-    { virtual: true }
-);
-
 async function initializeElement(enableModifyAccess) {
     // Assign mock values for resolved Apex promises
     canUserModifyLoggerSettings.mockResolvedValue(enableModifyAccess);
-    getLoggerSettingsSchema.mockResolvedValue(mockLoggerSettingsSchema);
     getPicklistOptions.mockResolvedValue(mockPicklistOptions);
     getRecords.mockResolvedValue(mockRecords);
 
@@ -126,7 +115,9 @@ async function initializeElement(enableModifyAccess) {
     const loggerSettingsElement = createElement('c-logger-settings', { is: LoggerSettings });
     document.body.appendChild(loggerSettingsElement);
 
-    await new Promise(resolve => setTimeout(resolve, 0));
+    // Emit data from @wire
+    await getObjectInfo.emit(mockObjectInfo);
+    await Promise.resolve();
 
     return loggerSettingsElement;
 }
@@ -165,7 +156,6 @@ describe('Logger Settings lwc tests', () => {
 
         // Verify the expected Apex/framework calls
         expect(canUserModifyLoggerSettings).toHaveBeenCalledTimes(1);
-        expect(getLoggerSettingsSchema).toHaveBeenCalledTimes(1);
         expect(getPicklistOptions).toHaveBeenCalledTimes(1);
         expect(getRecords).toHaveBeenCalledTimes(1);
         expect(createRecord).toHaveBeenCalledTimes(0);
@@ -221,8 +211,8 @@ describe('Logger Settings lwc tests', () => {
             'IsJavaScriptConsoleLoggingEnabled__c',
             'IsDataMaskingEnabled__c',
             'IsEnabled__c',
-            'IsRecordFieldStrippingEnabled__c',
-            'LoggingLevel__c'
+            'LoggingLevel__c',
+            'StripInaccessibleRecordFields__c'
         ];
         expectedFieldNames.forEach(fieldName => {
             const inputField = loggerSettingsElement.shadowRoot.querySelector('[data-id="' + fieldName + '"]');
@@ -321,8 +311,6 @@ describe('Logger Settings lwc tests', () => {
         expectedNewRecord.SetupOwnerId = mockOrganization.Id;
         expectedNewRecord.LoggingLevel__c = specifiedLoggingLevel;
         expectedNewRecord.DefaultSaveMethod__c = specifiedSaveMethod;
-        expectedNewRecord.setupOwnerName = mockOrganization.Name;
-        expectedNewRecord.setupOwnerType = setupOwnerTypeField.value;
         const expectedApexParameter = { settingsRecord: expectedNewRecord };
         const saveRecordBtn = loggerSettingsElement.shadowRoot.querySelector('[data-id="save-btn"]');
         saveRecordBtn.click();
@@ -367,8 +355,6 @@ describe('Logger Settings lwc tests', () => {
         expectedNewRecord.SetupOwnerId = mockOrganization.Id;
         expectedNewRecord.LoggingLevel__c = specifiedLoggingLevel;
         expectedNewRecord.IsDataMaskingEnabled__c = isDataMaskingEnabled;
-        expectedNewRecord.setupOwnerName = mockOrganization.Name;
-        expectedNewRecord.setupOwnerType = setupOwnerTypeField.value;
         const expectedApexParameter = { settingsRecord: expectedNewRecord };
 
         const saveKeyboardShortcutEvent = new KeyboardEvent('keydown', { code: 'KeyS', ctrlKey: true });
@@ -523,7 +509,7 @@ describe('Logger Settings lwc tests', () => {
             'IsApexSystemDebugLoggingEnabled__c',
             'IsJavaScriptConsoleLoggingEnabled__c',
             'IsDataMaskingEnabled__c',
-            'IsRecordFieldStrippingEnabled__c',
+            'StripInaccessibleRecordFields__c',
             'IsAnonymousModeEnabled__c'
         ];
         expectedEditableFields.forEach(fieldDataId => {

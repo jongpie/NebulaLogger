@@ -6,7 +6,7 @@
         {
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
-            "definitionFile": "./config/scratch-orgs/experience-cloud-scratch-def.json",
+            "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "versionNumber": "4.7.0.NEXT",
             "versionName": "Spring '22 Release",
             "versionDescription": "Added new settings fields for controlling saving, default log scenario, default log owner, bugfixes & cleanup",

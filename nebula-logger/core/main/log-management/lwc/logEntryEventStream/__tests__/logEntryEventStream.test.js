@@ -1,7 +1,6 @@
 import { createElement } from 'lwc';
 import LogEntryEventStream from 'c/logEntryEventStream';
 import { jestMockPublish } from 'lightning/empApi';
-import getLogEntryEventSchema from '@salesforce/apex/LoggerSObjectMetadata.getLogEntryEventSchema';
 
 const loggingLevels = {
     FINEST: 2,
@@ -25,83 +24,21 @@ const mockLogEntryEventTemplate = {
     TransactionEntryNumber__c: 1
 };
 
-const mockLogEntryEventSchemaTemplate = require('./data/getLogEntryEventSchema.json');
-
-jest.mock(
-    '@salesforce/apex/LoggerSObjectMetadata.getLogEntryEventSchema',
-    () => {
-        return {
-            default: jest.fn()
-        };
-    },
-    { virtual: true }
-);
-
-async function createStreamElement(namespace) {
-    const mockLogEntryEventSchema = generateLogEntryEventSchema(namespace);
-    getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchema);
-    const element = createElement('log-entry-event-stream', {
-        is: LogEntryEventStream
-    });
-    document.body.appendChild(element);
-    await Promise.resolve();
-    return element;
-}
-
-function generateLogEntryEventSchema(namespace) {
-    namespace = !!namespace ? namespace + '__' : '';
-    const schemaTemplate = { ...mockLogEntryEventSchemaTemplate };
-    const schema = { ...schemaTemplate };
-    schema.apiName += namespace;
-    schema.namespacePrefix = namespace;
-    schema.fields = {};
-    Object.keys(schemaTemplate.fields).forEach(templateKey => {
-        schema.fields[templateKey] = schemaTemplate.fields[templateKey];
-        schema.fields[templateKey].apiName = namespace + templateKey;
-    });
-    return schema;
-}
-
-function generatePlatformEvent(namespace) {
-    namespace = !!namespace ? namespace + '__' : '';
-    return {
-        [namespace + 'LoggedByUsername__c']: 'some.person@test.com',
-        [namespace + 'LoggingLevel__c']: 'INFO',
-        [namespace + 'LoggingLevelOrdinal__c']: 6,
-        [namespace + 'Message__c']: 'My important log entry message',
-        [namespace + 'OriginType__c']: 'Apex',
-        [namespace + 'OriginLocation__c']: 'SomeClass.someMethod',
-        [namespace + 'Timestamp__c']: new Date().toISOString(),
-        [namespace + 'TransactionId__c']: 'ABC-1234',
-        [namespace + 'TransactionEntryNumber__c']: 1
-    };
-}
-
-function getPlatformEventText(mockLogEntryEvent, namespace) {
-    namespace = !!namespace ? namespace + '__' : '';
+function getPlatformEventText(mockLogEntryEvent) {
     return (
-        mockLogEntryEvent[namespace + 'Timestamp__c'] +
-        mockLogEntryEvent[namespace + 'LoggedByUsername__c'] +
+        mockLogEntryEvent.Timestamp__c +
+        mockLogEntryEvent.LoggedByUsername__c +
         ' - ' +
-        mockLogEntryEvent[namespace + 'TransactionId__c'] +
+        mockLogEntryEvent.TransactionId__c +
         '__' +
-        mockLogEntryEvent[namespace + 'TransactionEntryNumber__c'] +
-        mockLogEntryEvent[namespace + 'OriginType__c'] +
+        mockLogEntryEvent.TransactionEntryNumber__c +
+        mockLogEntryEvent.OriginType__c +
         '.' +
-        mockLogEntryEvent[namespace + 'OriginLocation__c'] +
+        mockLogEntryEvent.OriginLocation__c +
         ' ' +
-        mockLogEntryEvent[namespace + 'LoggingLevel__c'] +
-        mockLogEntryEvent[namespace + 'Message__c']
+        mockLogEntryEvent.LoggingLevel__c +
+        mockLogEntryEvent.Message__c
     );
-}
-
-async function publishPlatformEvent(namespace, mockLogEntryEvent) {
-    const mockLogEntryEventSchema = generateLogEntryEventSchema(namespace);
-    await jestMockPublish('/event/' + mockLogEntryEventSchema.apiName, {
-        data: {
-            payload: mockLogEntryEvent
-        }
-    });
 }
 
 describe('LogEntryEventStream tests', () => {
@@ -110,108 +47,113 @@ describe('LogEntryEventStream tests', () => {
             document.body.removeChild(document.body.firstChild);
         }
     });
-
-    const namespaces = ['', 'SomeNamespace'];
     it('streams a single log entry event', async () => {
-        await Promise.all(
-            namespaces.map(async namespace => {
-                const element = await createStreamElement(namespace);
-                const mockLogEntryEvent = await generatePlatformEvent(namespace);
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
 
-                await publishPlatformEvent(namespace, mockLogEntryEvent);
+        const mockLogEntryEvent = { ...mockLogEntryEventTemplate };
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: mockLogEntryEvent
+            }
+        });
 
-                const expectedStreamText = getPlatformEventText(mockLogEntryEvent, namespace);
-                const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
-                expect(eventStreamDiv.textContent).toBe(expectedStreamText);
-            })
-        );
+        const expectedStreamText = getPlatformEventText(mockLogEntryEvent);
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('toggles streaming when button clicked', async () => {
-        await Promise.all(
-            namespaces.map(async namespace => {
-                const element = await createStreamElement(namespace);
-                const toggleButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="toggle-stream"]');
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const toggleButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="toggle-stream"]');
 
-                return Promise.resolve()
-                    .then(() => {
-                        expect(toggleButton.variant).toBe('success');
-                        toggleButton.click();
-                    })
-                    .then(() => {
-                        expect(toggleButton.variant).toBe('brand');
-                    });
+        return Promise.resolve()
+            .then(() => {
+                expect(toggleButton.variant).toBe('success');
+                toggleButton.click();
             })
-        );
+            .then(() => {
+                expect(toggleButton.variant).toBe('brand');
+            });
     });
     it('clears stream when clear button clicked', async () => {
-        await Promise.all(
-            namespaces.map(async namespace => {
-                const element = await createStreamElement(namespace);
-                const mockLogEntryEvent = await generatePlatformEvent(namespace);
-                await publishPlatformEvent(namespace, mockLogEntryEvent);
-                const expectedStreamText = getPlatformEventText(mockLogEntryEvent, namespace);
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const mockLogEntryEvent = { ...mockLogEntryEventTemplate };
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: mockLogEntryEvent
+            }
+        });
+        const expectedStreamText = getPlatformEventText(mockLogEntryEvent);
+        let eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBe(expectedStreamText);
 
-                let eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
-                expect(eventStreamDiv.textContent).toBe(expectedStreamText);
+        const clearButton = element.shadowRoot.querySelector('lightning-button[data-id="clear"]');
+        clearButton.click();
 
-                const clearButton = element.shadowRoot.querySelector('lightning-button[data-id="clear"]');
-                clearButton.click();
-
-                return Promise.resolve().then(() => {
-                    eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
-                    expect(eventStreamDiv.textContent).toBeFalsy();
-                });
-            })
-        );
+        return Promise.resolve().then(() => {
+            eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+            expect(eventStreamDiv.textContent).toBeFalsy();
+        });
     });
     it('includes matching log entry event for logging level filter', async () => {
-        await Promise.all(
-            namespaces.map(async namespace => {
-                const element = await createStreamElement(namespace);
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="loggingLevelFilter"]');
+        loggingLevelFilterDropdown.value = loggingLevels.DEBUG;
+        loggingLevelFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
-                const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="loggingLevelFilter"]');
-                loggingLevelFilterDropdown.value = loggingLevels.DEBUG;
-                loggingLevelFilterDropdown.dispatchEvent(new CustomEvent('change'));
+        const matchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        matchingLogEntryEvent.LoggingLevel__c = 'INFO';
+        matchingLogEntryEvent.LoggingLevelOrdinal__c = loggingLevels.INFO;
+        expect(matchingLogEntryEvent.LoggingLevelOrdinal__c).toBeGreaterThan(Number(loggingLevelFilterDropdown.value));
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: matchingLogEntryEvent
+            }
+        });
 
-                const matchingLogEntryEvent = generatePlatformEvent(namespace);
-                const namespacePrefix = !!namespace ? namespace + '__' : '';
-                matchingLogEntryEvent[namespacePrefix + 'LoggingLevel__c'] = 'INFO';
-                matchingLogEntryEvent[namespacePrefix + 'LoggingLevelOrdinal__c'] = loggingLevels.INFO;
-                expect(matchingLogEntryEvent[namespacePrefix + 'LoggingLevelOrdinal__c']).toBeGreaterThan(Number(loggingLevelFilterDropdown.value));
-
-                await publishPlatformEvent(namespace, matchingLogEntryEvent);
-
-                const expectedStreamText = getPlatformEventText(matchingLogEntryEvent, namespace);
-                const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
-                expect(eventStreamDiv.textContent).toBe(expectedStreamText);
-            })
-        );
+        const expectedStreamText = getPlatformEventText(matchingLogEntryEvent);
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for logging level filter', async () => {
-        await Promise.all(
-            namespaces.map(async namespace => {
-                const element = await createStreamElement(namespace);
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        document.body.appendChild(element);
+        await Promise.resolve();
+        const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="loggingLevelFilter"]');
+        loggingLevelFilterDropdown.value = loggingLevels.DEBUG;
+        loggingLevelFilterDropdown.dispatchEvent(new CustomEvent('change'));
 
-                const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="loggingLevelFilter"]');
-                loggingLevelFilterDropdown.value = loggingLevels.DEBUG;
-                loggingLevelFilterDropdown.dispatchEvent(new CustomEvent('change'));
+        const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        nonMatchingLogEntryEvent.LoggingLevel__c = 'FINEST';
+        nonMatchingLogEntryEvent.LoggingLevelOrdinal__c = loggingLevels.FINEST;
+        expect(nonMatchingLogEntryEvent.LoggingLevelOrdinal__c).toBeLessThan(Number(loggingLevelFilterDropdown.value));
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: nonMatchingLogEntryEvent
+            }
+        });
 
-                const matchingLogEntryEvent = generatePlatformEvent(namespace);
-                const namespacePrefix = !!namespace ? namespace + '__' : '';
-                matchingLogEntryEvent[namespacePrefix + 'LoggingLevel__c'] = 'FINEST';
-                matchingLogEntryEvent[namespacePrefix + 'LoggingLevelOrdinal__c'] = loggingLevels.FINEST;
-                expect(matchingLogEntryEvent[namespacePrefix + 'LoggingLevelOrdinal__c']).toBeLessThan(Number(loggingLevelFilterDropdown.value));
-
-                await publishPlatformEvent(namespace, matchingLogEntryEvent);
-
-                const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
-                expect(eventStreamDiv.textContent).toBeFalsy();
-            })
-        );
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+        expect(eventStreamDiv.textContent).toBeFalsy();
     });
     it('includes matching log entry event for origin type filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -235,8 +177,6 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for origin type filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -259,8 +199,6 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBeFalsy();
     });
     it('includes matching log entry event for origin location filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -284,8 +222,6 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for origin location filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -308,8 +244,6 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBeFalsy();
     });
     it('includes matching log entry event for logged by filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -333,8 +267,6 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for logged by filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -357,8 +289,6 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBeFalsy();
     });
     it('includes matching log entry event using string for message filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -382,8 +312,6 @@ describe('LogEntryEventStream tests', () => {
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
     });
     it('excludes non-matching log entry event for message filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -407,8 +335,6 @@ describe('LogEntryEventStream tests', () => {
     });
 
     it('includes matching log entry event using regex for message filter', async () => {
-        getLogEntryEventSchema.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
