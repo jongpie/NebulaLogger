@@ -4,13 +4,13 @@
  ************************************************************************************************/
 
 // UI
-import { LightningElement, wire } from 'lwc';
+import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 // LoggerSettings__c metadata
-import LOGGER_SETTINGS_OBJECT from '@salesforce/schema/LoggerSettings__c';
-import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { generatePageLayout } from './loggerSettingsPageLayout';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
+import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
@@ -39,38 +39,29 @@ export default class LoggerSettings extends LightningElement {
 
     // LoggerSettings__c metadata
     canUserModifyLoggerSettings;
-    loggerSettingsFields;
     loggerSettingsPicklistOptions;
+    _loggerSettingsSchema;
 
     // LoggerSettings__c data
     records;
-    currentRecord;
     selectedSetupOwner;
+    _currentRecord;
 
     connectedCallback() {
         document.title = this.title;
         this.showLoadingSpinner = true;
+        Promise.all([getOrganization(), getLoggerSettingsSchema(), getPicklistOptions(), canUserModifyLoggerSettings()])
+            .then(([organizationRecordResult, loggerSettingsSchemaResult, apexPicklistOptionsResult, canUserModifyLoggerSettingsResult]) => {
+                this.organization = organizationRecordResult;
+                this._loggerSettingsSchema = loggerSettingsSchemaResult;
+                this.loggerSettingsPicklistOptions = apexPicklistOptionsResult;
+                this.canUserModifyLoggerSettings = canUserModifyLoggerSettingsResult;
 
-        Promise.all([getOrganization(), getPicklistOptions()])
-            .then(([organization, loggerSettingsPicklistOptions]) => {
-                this.organization = organization;
-                this.loggerSettingsPicklistOptions = loggerSettingsPicklistOptions;
+                this._loadTableColumns();
+                this.loadSettingsRecords();
+                this.showLoadingSpinner = false;
             })
             .catch(this._handleError);
-
-        this.loadSettingsRecords();
-        this.showLoadingSpinner = false;
-    }
-
-    @wire(getObjectInfo, { objectApiName: LOGGER_SETTINGS_OBJECT })
-    getLoggerSettingsObjectInfo({ data }) {
-        if (data) {
-            this.loggerSettingsFields = data.fields;
-            canUserModifyLoggerSettings().then(result => {
-                this.canUserModifyLoggerSettings = result;
-                this._loadTableColumns();
-            });
-        }
     }
 
     loadSettingsRecords() {
@@ -79,10 +70,10 @@ export default class LoggerSettings extends LightningElement {
             .then(settingsRecords => {
                 for (let i = 0; i < settingsRecords.length; i++) {
                     const record = { ...settingsRecords[i], ...settingsRecords[i].record };
-                    settingsRecords[i] = record;
+                    settingsRecords[i] = this._removeFieldNamespace(record);
                 }
                 this.records = settingsRecords;
-                this.currentRecord = null;
+                this._currentRecord = null;
                 this.setupOwnerSearchTerm = null;
                 this.showSetupOwnerLookup = false;
                 this.setupOwnerSearchResults = null;
@@ -121,13 +112,27 @@ export default class LoggerSettings extends LightningElement {
     }
 
     handleFieldChange(event) {
-        let value;
-        if (event.target.type === 'checkbox' || event.target.type === 'checkbox-button' || event.target.type === 'toggle') {
-            value = event.target.checked;
-        } else {
-            value = event.target.value;
+        const fieldApiName = event.target.dataset.id;
+        const fieldValue =
+            event.target.type === 'checkbox' || event.target.type === 'checkbox-button' || event.target.type === 'toggle'
+                ? event.target.checked
+                : event.target.value;
+        this._currentRecord[fieldApiName] = fieldValue;
+        if (fieldValue && fieldApiName === this._loggerSettingsSchema.fields.IsSavingEnabled__c.apiName) {
+            const storageEnabledCheckbox = this.template.querySelector(
+                `[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.apiName}"]`
+            );
+            if (storageEnabledCheckbox) {
+                storageEnabledCheckbox.checked = true;
+            }
+            this.handleFieldChange({
+                target: {
+                    type: 'checkbox',
+                    checked: true,
+                    dataset: { id: this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.apiName }
+                }
+            });
         }
-        this.currentRecord[event.target.dataset.id] = value;
 
         this._setIsNewOrganizationRecord();
         this._setShowSetupOwnerLookup();
@@ -138,7 +143,7 @@ export default class LoggerSettings extends LightningElement {
         this.setupOwnerSearchTerm = event.detail.value;
         if (this.setupOwnerSearchTerm && this.setupOwnerSearchTerm.length >= 2) {
             searchForSetupOwner({
-                setupOwnerType: this.currentRecord.setupOwnerType,
+                setupOwnerType: this._currentRecord.setupOwnerType,
                 searchTerm: this.setupOwnerSearchTerm
             })
                 .then(results => {
@@ -155,8 +160,8 @@ export default class LoggerSettings extends LightningElement {
 
     handleSearchResultSelection(event) {
         if (event.currentTarget.dataset.key) {
-            this.currentRecord.SetupOwnerId = event.currentTarget.dataset.key;
-            this.currentRecord.setupOwnerName = event.currentTarget.dataset.label;
+            this._currentRecord.SetupOwnerId = event.currentTarget.dataset.key;
+            this._currentRecord.setupOwnerName = event.currentTarget.dataset.label;
 
             let index = this.setupOwnerSearchResults.findIndex(x => x.recordId === event.currentTarget.dataset.key);
             if (index !== -1) {
@@ -192,42 +197,73 @@ export default class LoggerSettings extends LightningElement {
 
     get isExistingRecord() {
         let isExistingRecord = false;
-        if (this.currentRecord.Id) {
+        if (this._currentRecord.Id) {
             isExistingRecord = true;
         }
         return isExistingRecord;
     }
 
-    _setIsNewOrganizationRecord() {
-        this.isNewOrganizationRecord = this.isExistingRecord === false && this.currentRecord?.setupOwnerType === 'Organization';
-        if (this.isNewOrganizationRecord === true) {
-            this.currentRecord.SetupOwnerId = this.organization.Id;
-            this.currentRecord.setupOwnerName = this.organization.Name;
-        }
+    // Getters for each LoggerSettings__c field describes & data - these handle dealing with using a namespace for the package
+    // TODO - this is a legacy approach where separate getters were used for each field - the audit fields & "general info" fields still use this approach
+    // but should be updated to leverage the new approach, loggerSettingsPageLayout.js
+    get layoutData() {
+        return generatePageLayout(this._loggerSettingsSchema, this.loggerSettingsPicklistOptions, this.isReadOnlyMode, this._currentRecord);
     }
 
-    _setShowSetupOwnerLookup() {
-        this.showSetupOwnerLookup = this.isExistingRecord === false && this.currentRecord?.setupOwnerType !== 'Organization';
+    get createdByIdField() {
+        return this._loadField(this._loggerSettingsSchema.fields.CreatedById.localApiName, 'createdByUsername');
+    }
+
+    get createdDateField() {
+        return this._loadField(this._loggerSettingsSchema.fields.CreatedDate.localApiName);
+    }
+
+    get isEnabledField() {
+        return this._loadField(this._loggerSettingsSchema.fields.IsEnabled__c.localApiName);
+    }
+
+    get lastModifiedByIdField() {
+        return this._loadField(this._loggerSettingsSchema.fields.LastModifiedById.localApiName, 'lastModifiedByUsername');
+    }
+
+    get lastModifiedDateField() {
+        return this._loadField(this._loggerSettingsSchema.fields.LastModifiedDate.localApiName);
+    }
+
+    get loggingLevelField() {
+        return this._loadField(this._loggerSettingsSchema.fields.LoggingLevel__c.localApiName);
+    }
+
+    get setupOwnerNameField() {
+        return this._loadField('setupOwnerName', 'setupOwnerName', 'Setup Owner');
+    }
+
+    get setupOwnerTypeField() {
+        return this._loadField('setupOwnerType', 'setupOwnerType', 'Setup Location');
     }
 
     createNewRecord() {
         createRecord()
             .then(result => {
-                this.currentRecord = result;
+                this._currentRecord = this._removeFieldNamespace({ ...result });
+                this.selectedSetupOwner = null;
+                this.isNewOrganizationRecord = false;
                 this.isReadOnlyMode = false;
+                this.showPill = false;
                 this.showRecordModal = true;
+                this.showSetupOwnerLookup = false;
             })
             .catch(this._handleError);
     }
 
     viewCurrentRecord(currentRow) {
-        this.currentRecord = currentRow;
+        this._currentRecord = currentRow;
         this.isReadOnlyMode = true;
         this.showRecordModal = true;
     }
 
     editCurrentRecord(currentRow) {
-        this.currentRecord = currentRow;
+        this._currentRecord = currentRow;
         this.isReadOnlyMode = false;
         this.showRecordModal = true;
     }
@@ -244,10 +280,11 @@ export default class LoggerSettings extends LightningElement {
 
         this.showLoadingSpinner = true;
 
-        saveRecord({ settingsRecord: this.currentRecord })
+        const recordWithNamespace = this._addFieldNamespace(this._currentRecord);
+        saveRecord({ settingsRecord: recordWithNamespace })
             .then(() => {
                 this.loadSettingsRecords();
-                const setupOwnerName = this.selectedSetupOwner ? this.selectedSetupOwner.label : this.currentRecord.setupOwnerName;
+                const setupOwnerName = this.selectedSetupOwner ? this.selectedSetupOwner.label : this._currentRecord.setupOwnerName;
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: this.title + ' record for ' + setupOwnerName + ' successfully saved',
@@ -262,13 +299,13 @@ export default class LoggerSettings extends LightningElement {
 
     deleteCurrentRecord(currentRow) {
         this.showDeleteModal = true;
-        this.currentRecord = currentRow;
+        this._currentRecord = currentRow;
     }
 
     confirmDeleteCurrentRecord() {
         this.showLoadingSpinner = true;
-        const setupOwnerName = this.currentRecord.setupOwnerName;
-        deleteRecord({ settingsRecord: this.currentRecord })
+        const setupOwnerName = this._currentRecord.setupOwnerName;
+        deleteRecord({ settingsRecord: this._currentRecord })
             .then(() => {
                 this.loadSettingsRecords();
                 this.dispatchEvent(
@@ -282,12 +319,13 @@ export default class LoggerSettings extends LightningElement {
             .catch(this._handleError);
     }
 
+    // Private functions
     _loadTableColumns() {
         // The columns setupOwnerType and setupOwnerName are not true fields
         // They're flattened versions of SetupOwner.Type and SetupOwner.Name, so object API info isn't used here
         this.columns = [
             { fieldName: 'setupOwnerType', label: 'Setup Location', type: 'text' },
-            { fieldName: 'setupOwnerName', label: 'Setup Owner Name', type: 'text' }
+            { fieldName: 'setupOwnerName', label: 'Setup Owner', type: 'text' }
         ];
 
         // For all other fields, use object API info to dynamically get field details
@@ -295,17 +333,18 @@ export default class LoggerSettings extends LightningElement {
         const tableColumnNames = [
             'IsEnabled__c',
             'LoggingLevel__c',
-            'IsDataMaskingEnabled__c',
+            'IsSavingEnabled__c',
             'DefaultSaveMethod__c',
+            'IsPlatformEventStorageEnabled__c',
             'DefaultNumberOfDaysToRetainLogs__c',
-            'DefaultLogShareAccessLevel__c'
+            'DefaultLogOwner__c'
         ];
         for (let i = 0; i < tableColumnNames.length; i++) {
-            const field = this.loggerSettingsFields[tableColumnNames[i]];
+            const field = this._loggerSettingsSchema.fields[tableColumnNames[i]];
             const column = {
-                fieldName: field.apiName,
+                fieldName: field.localApiName,
                 label: field.label,
-                type: field.dataType?.toLowerCase()
+                type: field.type.toLowerCase()
             };
             if (column.type === 'string') {
                 column.type = 'text';
@@ -330,13 +369,80 @@ export default class LoggerSettings extends LightningElement {
         });
     }
 
+    // This function is a legacy approach for getting field metadata & data - the new approach is to use
+    // loggerSettingsPageLayout.js,  but it does not fully handle some fields like CreatedyBy.Username, SetupOwner.Type, etc.
+    // TODO - in a future release, eliminate this function + improve loggerSettingsPageLayout.js to handle this logic
+    _loadField(fieldApiName, recordFieldApiName, recordFieldLabel) {
+        if (!recordFieldApiName) {
+            recordFieldApiName = fieldApiName;
+        }
+
+        let fieldDescribe;
+        if (fieldApiName && this._loggerSettingsSchema.fields[fieldApiName]) {
+            fieldDescribe = { ...this._loggerSettingsSchema.fields[fieldApiName] };
+        } else {
+            fieldDescribe = { apiName: fieldApiName };
+        }
+
+        if (this._currentRecord) {
+            fieldDescribe.value = this._currentRecord[recordFieldApiName];
+        }
+
+        if (recordFieldLabel) {
+            fieldDescribe.label = recordFieldLabel;
+        }
+
+        return fieldDescribe;
+    }
+
+    _setIsNewOrganizationRecord() {
+        this.isNewOrganizationRecord = this.isExistingRecord === false && this._currentRecord?.setupOwnerType === 'Organization';
+        if (this.isNewOrganizationRecord === true) {
+            this._currentRecord.SetupOwnerId = this.organization.Id;
+            this._currentRecord.setupOwnerName = this.organization.Name;
+        }
+    }
+
+    _setShowSetupOwnerLookup() {
+        this.showSetupOwnerLookup = this.isExistingRecord === false && this._currentRecord?.setupOwnerType !== 'Organization';
+    }
+
+    _addFieldNamespace(record) {
+        const cleanedRecord = {};
+        const namespacePrefix = this._loggerSettingsSchema.namespacePrefix;
+        if (!namespacePrefix) {
+            return record;
+        }
+
+        Object.keys(record).forEach(key => {
+            const fullApiName = this._loggerSettingsSchema.fields[key] ? this._loggerSettingsSchema.fields[key].apiName : key;
+            cleanedRecord[fullApiName] = record[key];
+        });
+        return cleanedRecord;
+    }
+
+    _removeFieldNamespace(record) {
+        const cleanedRecord = {};
+        const namespacePrefix = this._loggerSettingsSchema.namespacePrefix;
+        if (!namespacePrefix) {
+            return record;
+        }
+
+        Object.keys(record).forEach(key => {
+            const localApiName = key.replace(namespacePrefix, '');
+            cleanedRecord[localApiName] = record[key];
+        });
+        return cleanedRecord;
+    }
+
     _handleError = error => {
+        const errorMessage = error.body ? error.body.message : error.message;
         /* eslint-disable-next-line no-console */
-        console.error(error.body.message, error);
+        console.error(errorMessage, error);
         this.dispatchEvent(
             new ShowToastEvent({
                 mode: 'sticky',
-                title: error.body.message,
+                title: errorMessage,
                 variant: 'error'
             })
         );

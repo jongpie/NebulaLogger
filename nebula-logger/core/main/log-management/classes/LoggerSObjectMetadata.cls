@@ -26,29 +26,16 @@ public without sharing class LoggerSObjectMetadata {
         return buildSObjectSchema(Schema.LoggerSettings__c.SObjectType.getDescribe());
     }
 
-    private static String getNamespacePrefix() {
-        String className = LoggerSObjectMetadata.class.getName();
-        String namespacePrefix = className.contains('.') ? className.substringBefore('.') + '__' : '';
-
-        return namespacePrefix;
-    }
-
-    private static SObjectSchema buildSObjectSchema(Schema.DescribeSObjectResult sobjectDescribe) {
-        String namespacePrefix = getNamespacePrefix();
-        String fullName = sobjectDescribe.getName();
-        String localName = sobjectDescribe.getName().startsWith(namespacePrefix)
-            ? sobjectDescribe.getName().removeStart(namespacePrefix)
-            : sobjectDescribe.getName();
-
+    private static SObjectSchema buildSObjectSchema(Schema.DescribeSObjectResult describe) {
         SObjectSchema schema = new SObjectSchema();
-        schema.apiName = fullName;
-        schema.localApiName = localName;
-        schema.label = sobjectDescribe.getLabel();
-        schema.labelPlural = sobjectDescribe.getLabelPlural();
-        schema.namespacePrefix = namespacePrefix;
+        schema.apiName = describe.getName();
+        schema.localApiName = describe.getLocalName();
+        schema.label = describe.getLabel();
+        schema.labelPlural = describe.getLabelPlural();
+        schema.namespacePrefix = describe.getLocalName() == describe.getName() ? '' : describe.getName().removeEnd(describe.getLocalName());
 
         schema.fields = new Map<String, FieldSchema>();
-        for (Schema.SObjectField field : sobjectDescribe.fields.getMap().values()) {
+        for (Schema.SObjectField field : describe.fields.getMap().values()) {
             Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
             schema.fields.put(fieldDescribe.getLocalName(), buildFieldSchema(fieldDescribe));
         }
@@ -56,13 +43,9 @@ public without sharing class LoggerSObjectMetadata {
     }
 
     private static FieldSchema buildFieldSchema(Schema.DescribeFieldResult fieldDescribe) {
-        String namespacePrefix = getNamespacePrefix();
-        String fullName = fieldDescribe.getName();
-        String localName = fieldDescribe.getName().startsWith(namespacePrefix) ? fieldDescribe.getName().removeStart(namespacePrefix) : fieldDescribe.getName();
-
         FieldSchema schema = new FieldSchema();
-        schema.apiName = fullName;
-        schema.localApiName = localName;
+        schema.apiName = fieldDescribe.getName();
+        schema.localApiName = fieldDescribe.getLocalName();
         schema.inlineHelpText = fieldDescribe.getInlineHelpText();
         schema.label = fieldDescribe.getLabel();
         schema.type = fieldDescribe.getType().name().toLowerCase();

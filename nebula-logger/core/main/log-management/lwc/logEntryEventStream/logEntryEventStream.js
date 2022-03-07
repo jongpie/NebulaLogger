@@ -4,7 +4,8 @@
  ************************************************************************************************/
 
 import { LightningElement } from 'lwc';
-import { isEmpEnabled, subscribe, unsubscribe } from 'lightning/empApi';
+import { subscribe, unsubscribe } from 'lightning/empApi';
+import getLogEntryEventSchema from '@salesforce/apex/LoggerSObjectMetadata.getLogEntryEventSchema';
 
 export default class LogEntryEventStream extends LightningElement {
     unfilteredEvents = [];
@@ -21,8 +22,24 @@ export default class LogEntryEventStream extends LightningElement {
     scenarioFilter;
     maxEvents = 50;
 
-    _channel = '/event/LogEntryEvent__e'; // TODO need to support namespace in managed package
+    _logEntryEventSchema;
+    _channel;
     _subscription = {};
+
+    async connectedCallback() {
+        document.title = 'Log Entry Event Stream';
+
+        getLogEntryEventSchema().then(result => {
+            this._logEntryEventSchema = result;
+            this._channel = '/event/' + this._logEntryEventSchema.apiName;
+
+            this.createSubscription();
+        });
+    }
+
+    disconnectedCallback() {
+        this.cancelSubscription();
+    }
 
     get title() {
         let logEntryString = ' Log Entry Events';
@@ -59,24 +76,29 @@ export default class LogEntryEventStream extends LightningElement {
         ];
     }
 
-    async connectedCallback() {
-        document.title = 'Log Entry Event Stream';
-        if (isEmpEnabled()) {
-            this.createSubscription();
-        }
-    }
-
-    disconnectedCallback() {
-        this.cancelSubscription();
-    }
-
     async createSubscription() {
         this._subscription = await subscribe(this._channel, -2, event => {
-            const logEntryEvent = event.data.payload;
+            const logEntryEvent = JSON.parse(JSON.stringify(event.data.payload));
+
+            let cleanedLogEntryEvent;
+            if (!this._logEntryEventSchema.namespacePrefix) {
+                cleanedLogEntryEvent = logEntryEvent;
+            } else {
+                // To handle the namespaced managed package, convert all of the field API names from the fully-qualified name (that includes the namespace)
+                // to instead use just the local field name
+                // Example: `Nebula__LoggingLevel__c` becomes `LoggingLevel__c`
+                // This makes it easier for the rest of the code in this lwc to just reference the field without worrying about if there is a namespace
+                cleanedLogEntryEvent = {};
+                Object.keys(logEntryEvent).forEach(eventFieldApiName => {
+                    const localFieldApiName = eventFieldApiName.replace(this._logEntryEventSchema.namespacePrefix, '');
+                    cleanedLogEntryEvent[localFieldApiName] = logEntryEvent[eventFieldApiName];
+                });
+            }
+
             // As of API v52.0 (Summer '21), platform events have a unique field, EventUUID
             // but it doesn't seem to be populated via empApi, so use a synthetic key instead
-            logEntryEvent.key = logEntryEvent.TransactionId__c + '__' + logEntryEvent.TransactionEntryNumber__c;
-            this.unfilteredEvents.unshift(logEntryEvent);
+            cleanedLogEntryEvent.key = cleanedLogEntryEvent.TransactionId__c + '__' + cleanedLogEntryEvent.TransactionEntryNumber__c;
+            this.unfilteredEvents.unshift(cleanedLogEntryEvent);
             this._filterEvents();
         });
     }
