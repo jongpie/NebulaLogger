@@ -222,7 +222,7 @@ public class LoggerTestUtils {
     }
 
     /**
-     * @description Creates and inserts a `Group` record for testing queues, using the 'Standard User' profile
+     * @description Creates and inserts a `Group` record for testing queues, using the specified SObject Type
      * @param  sobjectType The SObjectType that the queue should be able to own (stored in `QueueSObject`)
      * @return   The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
      */
@@ -232,7 +232,7 @@ public class LoggerTestUtils {
 
         // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            QueueSObject loggerQueueSObject = new QueueSObject(QueueId = loggerQueue.id, SObjectType = sobjectType.getDescribe().getName());
+            QueueSObject loggerQueueSObject = new QueueSObject(QueueId = loggerQueue.Id, SObjectType = sobjectType.getDescribe().getName());
             insert loggerQueueSObject;
         }
 
