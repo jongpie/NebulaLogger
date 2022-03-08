@@ -523,6 +523,12 @@
                 <componentName>flexipage:fieldSection</componentName>
                 <identifier>flexipage_fieldSection8</identifier>
                 <visibilityRule>
+                    <booleanFilter>1 OR 2</booleanFilter>
+                    <criteria>
+                        <leftValue>{!Record.HasRecordId__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>true</rightValue>
+                    </criteria>
                     <criteria>
                         <leftValue>{!Record.HasRecordJson__c}</leftValue>
                         <operator>EQUAL</operator>

@@ -73,7 +73,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         for (ApexClass apexClass : [
             SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
             FROM ApexClass
-            WHERE NamespacePrefix = :getNamespacePrefix() AND Name IN :apexClassNames
+            WHERE Name IN :apexClassNames
+            ORDER BY NamespacePrefix NULLS LAST
         ]) {
             classNameToApexClass.put(apexClass.Name, apexClass);
         }

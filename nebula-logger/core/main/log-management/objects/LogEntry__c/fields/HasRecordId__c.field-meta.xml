@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <formula>RecordId__c != null</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Has Related Record</label>
+    <label>Has Related Record ID</label>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

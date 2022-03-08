@@ -551,12 +551,14 @@ global with sharing class LogEntryEventBuilder {
                     continue;
                 }
             }
-
-            if (ignoreLine) {
-                continue;
+            // Some lines, especially in the managed package, can result in '()' or '(Nebula)'
+            if (isValidStackTrace(currentStackTraceLine) == false) {
+                ignoreLine = true;
             }
 
-            stackTraceLines.add(currentStackTraceLine);
+            if (ignoreLine == false) {
+                stackTraceLines.add(currentStackTraceLine);
+            }
         }
 
         // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
