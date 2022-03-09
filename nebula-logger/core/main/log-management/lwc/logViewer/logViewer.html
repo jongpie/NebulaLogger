@@ -1,0 +1,36 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
+<template>
+    <template if:true={isLoaded}>
+        <lightning-quick-action-panel header={title}>
+            <lightning-tabset>
+                <lightning-tab data-id="json-content" label="Record JSON" value="json" onactive={handleTabActivated}>
+                    <div class="content">
+                        <pre>{currentMode.data}</pre>
+                    </div>
+                </lightning-tab>
+                <lightning-tab data-id="file-content" label="Log File" value="file" onactive={handleTabActivated}>
+                    <div class="content">
+                        <pre>{currentMode.data}</pre>
+                    </div>
+                </lightning-tab>
+            </lightning-tabset>
+            <div slot="footer">
+                <lightning-button label={downloadButtonLabel} class="slds-m-right_small" onclick={downloadFile}></lightning-button>
+                <lightning-button-stateful
+                    data-id="copy-btn"
+                    label-when-off="Copy to Clipboard"
+                    label-when-on="Copied to Clipboard"
+                    icon-name-when-off="utility:copy_to_clipboard"
+                    icon-name-when-on="utility:check"
+                    selected={dataCopied}
+                    onclick={copyToClipboard}
+                    variant={variant}
+                ></lightning-button-stateful>
+            </div>
+        </lightning-quick-action-panel>
+    </template>
+</template>

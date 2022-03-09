@@ -2646,9 +2646,13 @@ global with sharing class Logger {
         logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
         List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
 
-        List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), String.join(logEntryFieldNames, ',') };
+        List<String> textReplacements = new List<String>{
+            String.join(logFieldNames, ','),
+            String.join(logEntryFieldNames, ','),
+            Schema.LogEntry__c.TransactionEntryNumber__c.getDescribe().getName()
+        };
         String query = String.format(
-            'SELECT {0}, (SELECT {1} FROM LogEntries__r) FROM Log__c WHERE Id = :logId OR TransactionId__c = :logId',
+            'SELECT {0}, (SELECT {1} FROM LogEntries__r ORDER BY {2}) FROM Log__c WHERE Id = :logId OR TransactionId__c = :logId',
             textReplacements
         );
 

@@ -1,0 +1,9 @@
+.content {
+    height: calc(100vh - 550px);
+}
+
+.content pre {
+    height: 100%;
+    margin: auto 10px;
+    overflow-y: scroll;
+}
