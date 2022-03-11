@@ -13,6 +13,11 @@ import LOG_ENTRY_STACK_TRACE_FIELD from '@salesforce/schema/LogEntry__c.StackTra
 import LOG_ORGANIZATION_ID_FIELD from '@salesforce/schema/Log__c.OrganizationId__c';
 
 export default class LogViewer extends LightningElement {
+    // logId is deprecated - it was used before quickActions supported LWC.
+    // recordId is now used instead, but logId has to be kept for the managed package
+    @api
+    logId; // Deprecated
+
     @api
     recordId;
 
@@ -67,7 +72,6 @@ export default class LogViewer extends LightningElement {
     }
 
     async copyToClipboard() {
-        // const value = this.template.querySelector('pre').textContent;
         const value = this.currentMode.data;
 
         const textArea = document.createElement('textarea');
