@@ -76,6 +76,10 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 
 Abstract class used by trigger handlers for shared logic
 
+### [LoggerSObjectMetadata](log-management/LoggerSObjectMetadata)
+
+Provides details to LWCs about Logger&apos;s `SObjects`, using `@AuraEnabled` properties
+
 ### [LoggerSettingsController](log-management/LoggerSettingsController)
 
 Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`

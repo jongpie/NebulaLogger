@@ -20,6 +20,24 @@ public without sharing class LoggerEmailUtils {
         set;
     }
 
+    private static Boolean IS_EMAIL_DELIVERABILITY_ENABLED {
+        get {
+            if (IS_EMAIL_DELIVERABILITY_ENABLED == null) {
+                try {
+                    Messaging.reserveSingleEmailCapacity(1);
+                    Messaging.reserveMassEmailCapacity(1);
+                    IS_EMAIL_DELIVERABILITY_ENABLED = true;
+                    return IS_EMAIL_DELIVERABILITY_ENABLED;
+                } catch (System.NoAccessException e) {
+                    IS_EMAIL_DELIVERABILITY_ENABLED = false;
+                    return IS_EMAIL_DELIVERABILITY_ENABLED;
+                }
+            }
+            return IS_EMAIL_DELIVERABILITY_ENABLED;
+        }
+        set;
+    }
+
     @TestVisible
     private static final List<Messaging.SingleEmailMessage> SENT_EMAILS {
         get {
@@ -107,13 +125,15 @@ public without sharing class LoggerEmailUtils {
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     private static void sendEmail(Messaging.SingleEmailMessage message) {
-        List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
-        List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
-        SENT_EMAILS.add(message);
-        if (emailResults[0].success == true) {
-            System.debug(LoggingLevel.INFO, 'Logger - The email was sent successfully');
-        } else {
-            System.debug(LoggingLevel.INFO, 'Logger - The email failed to send: ' + emailResults[0].errors[0].message);
+        if (IS_EMAIL_DELIVERABILITY_ENABLED == true) {
+            List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
+            List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
+            SENT_EMAILS.add(message);
+            if (emailResults[0].success == true) {
+                System.debug(LoggingLevel.INFO, 'Logger - The email was sent successfully');
+            } else {
+                System.debug(LoggingLevel.INFO, 'Logger - The email failed to send: ' + emailResults[0].errors[0].message);
+            }
         }
     }
 

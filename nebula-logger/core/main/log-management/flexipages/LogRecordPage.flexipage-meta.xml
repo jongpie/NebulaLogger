@@ -7,7 +7,7 @@
                     <name>actionNames</name>
                     <valueList>
                         <valueListItems>
-                            <value>Log__c.ViewLogJSON</value>
+                            <value>Log__c.OpenViewer</value>
                         </valueListItems>
                         <valueListItems>
                             <value>ChangeOwnerOne</value>

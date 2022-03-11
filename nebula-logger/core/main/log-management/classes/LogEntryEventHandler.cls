@@ -42,12 +42,24 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
      * @param triggerNew list of new LogEntryEvent events
      */
     public override void executeAfterInsert(List<SObject> triggerNew) {
-        this.logEntryEvents = (List<LogEntryEvent__e>) triggerNew;
+        this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
         this.upsertLogs();
         this.insertLogEntries();
         this.appendRuleBasedTags();
         this.insertLogEntryTags();
+    }
+
+    private List<LogEntryEvent__e> filterLogEntryEventsToSave(List<LogEntryEvent__e> newLogEntryEvents) {
+        List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
+        for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
+            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
+            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
+            if (loggingUserSettings.IsPlatformEventStorageEnabled__c == true) {
+                logEntryEventsToSave.add(logEntryEvent);
+            }
+        }
+        return logEntryEventsToSave;
     }
 
     private void upsertLogs() {
@@ -287,12 +299,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         LoggerEmailUtils.sendErrorEmail(tagAssignmentSObjectType, saveResults);
     }
 
-    @SuppressWarnings('PMD.ApexSOQLInjection')
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
         Map<String, Id> tagNameToId = new Map<String, Id>();
 
         String tagQuery = 'SELECT Id, Name FROM ' + tagSObjectType + ' WHERE Name IN :tagNames';
-        for (SObject tag : Database.query(tagQuery)) {
+        for (SObject tag : Database.query(String.escapeSingleQuotes(tagQuery))) {
             tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
         }
         tagNameToId.putAll(this.insertMissingTags(tagSObjectType, tagNameToId));

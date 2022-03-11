@@ -3,14 +3,6 @@
     <fullName>LoggingLevel__c</fullName>
     <defaultValue>&apos;DEBUG&apos;</defaultValue>
     <externalId>false</externalId>
-    <inlineHelpText>Possible values:
-ERROR
-WARN
-INFO
-DEBUG
-FINE
-FINER
-FINEST</inlineHelpText>
     <label>Logging Level</label>
     <length>255</length>
     <required>true</required>

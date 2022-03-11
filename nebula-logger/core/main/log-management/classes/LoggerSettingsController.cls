@@ -70,7 +70,7 @@ public without sharing class LoggerSettingsController {
      * @description Creates a new, unsaved `LoggerSettings__c` record
      * @return   A new `LoggerSettings__c` record, with all fields populated with default values
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static LoggerSettings__c createRecord() {
         return (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
     }
@@ -110,7 +110,7 @@ public without sharing class LoggerSettingsController {
      * @description Returns the `Organization` record for the current environment
      * @return   The current environment's `Organization` record
      */
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static Organization getOrganization() {
         return [SELECT Id, Name FROM Organization];
     }
@@ -256,30 +256,13 @@ public without sharing class LoggerSettingsController {
     }
 
     private static List<LoggerSettings__c> queryLoggerSettings() {
-        return [
-            SELECT
-                CreatedBy.Username,
-                CreatedById,
-                CreatedDate,
-                DefaultLogShareAccessLevel__c,
-                DefaultNumberOfDaysToRetainLogs__c,
-                DefaultSaveMethod__c,
-                Id,
-                IsAnonymousModeEnabled__c,
-                IsApexSystemDebugLoggingEnabled__c,
-                IsJavaScriptConsoleLoggingEnabled__c,
-                IsDataMaskingEnabled__c,
-                IsEnabled__c,
-                LastModifiedBy.Username,
-                LastModifiedById,
-                LastModifiedDate,
-                LoggingLevel__c,
-                SetupOwner.Name,
-                SetupOwner.Type,
-                SetupOwnerId,
-                StripInaccessibleRecordFields__c
-            FROM LoggerSettings__c
-        ];
+        List<String> fieldNames = new List<String>(Schema.LoggerSettings__c.SObjectType.getDescribe().fields.getMap().keySet());
+        fieldNames.add('CreatedBy.Username');
+        fieldNames.add('LastModifiedBy.Username');
+        fieldNames.add('SetupOwner.Name');
+        fieldNames.add('SetupOwner.Type');
+        String query = 'SELECT ' + String.join(fieldNames, ', ') + ' FROM ' + Schema.LoggerSettings__c.SObjectType;
+        return (List<LoggerSettings__c>) Database.query(String.escapeSingleQuotes(query));
     }
 
     private static Map<Id, String> querySetupOwnerNames(List<Id> setupOwnerIds) {

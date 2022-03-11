@@ -61,24 +61,33 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
+            - name: 'Authorize Dev Hub'
+              if: ${{ github.event_name == 'pull_request' }}
+              shell: bash
+              run: |
+                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+              env:
+                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+
             - name: 'Verify package version number is updated'
               if: ${{ github.event_name == 'pull_request' }}
-              run: |
-                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
-                  rm ./DEVHUB_SFDX_URL.txt
-                  npm run package:version:number:verify
-              env:
-                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+              run: npm run package:version:number:verify
 
             - name: 'Verify LWC with ESLint'
               run: npm run lint:verify:lwc
 
             - name: 'Verify Apex with SFDX Scanner'
-              run: npm run lint:verify:apex
+              run: |
+                  npm run sfdx:plugins:link:scanner
+                  npm run lint:verify:apex
 
-            - name: 'Verify docs are updated'
-              run: npm run docs:verify
+            # TODO - uncomment - temporarily commented-out due to an issue with apexdocs in the pipeline
+            # - name: 'Verify docs are updated'
+            #   run: npm run docs:verify
 
             - name: 'Verify formatting with Prettier'
               run: npm run prettier:verify
@@ -140,13 +149,16 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
-                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
               env:
-                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Create Base Scratch Org'
-              run: npm run org:create:base -- -durationdays 1 -devhubs nebula-logger-packaging
+              run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/base-scratch-def.json --wait 20 --setdefaultusername --json
 
             - name: 'Push Source to Scratch Org'
               run: npm run source:push
@@ -187,21 +199,19 @@ jobs:
             - name: 'Authorize Dev Hub'
               shell: bash
               run: |
-                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
               env:
-                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
-            - name: 'Create Scratch Org with Experience Sites Enabled'
-              run: npm run org:create:experience-cloud -- -durationdays 1 -devhubs nebula-logger-packaging
+            - name: 'Create Experience Cloud Scratch Org'
+              run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/experience-cloud-scratch-def.json --wait 20 --setdefaultusername --json
 
-            - name: 'Create Test Experience Site'
-              run: npm run experience:create
-
-            - name: 'Wait for Experience Site creation'
-              uses: maddox/actions/sleep@master
-              with:
-                  args: '120'
+            - name: 'Deploy Test Experience Site Metadata'
+              run: npm run experience:deploy
 
             - name: 'Push Source to Scratch Org'
               run: npm run source:push
@@ -251,13 +261,16 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: 'Authorize Packaging Org'
+            - name: 'Authorize Dev Hub'
               shell: bash
               run: |
-                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
               env:
-                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Authorize Demo Org'
               shell: bash
@@ -268,12 +281,14 @@ jobs:
                   PKG_DEMO_ORG_SFDX_URL: ${{ secrets.NEBULA_PKG_DEMO_SANDBOX_SFDX_URL }}
 
             - name: 'Create & Install Package Version'
-              run: npx pwsh ./config/scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
+              run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
 
             - name: 'Commit New Package Version'
               run: |
                   git config --local user.email "action@github.com"
                   git config --local user.name "GitHub Action Bot"
+                  npm run sfdx:plugins:link:bummer
+                  npx sfdx bummer:package:aliases:sort
                   npx prettier --write ./sfdx-project.json
                   git add ./sfdx-project.json
                   git commit -m "Created new package version"
@@ -305,13 +320,16 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: 'Authorize Packaging Org'
+            - name: 'Authorize Dev Hub'
               shell: bash
               run: |
-                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
               env:
-                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Create Beta Managed Package Version'
               run: npm run package:version:create:managed
@@ -339,13 +357,16 @@ jobs:
               if: steps.cache-npm.outputs.cache-hit != 'true'
               run: npm ci
 
-            - name: 'Authorize Packaging Org'
+            - name: 'Authorize Dev Hub'
               shell: bash
               run: |
-                  echo ${{ env.DEVHUB_SFDX_URL }} > ./DEVHUB_SFDX_URL.txt
-                  npx sfdx auth:sfdxurl:store --sfdxurlfile ./DEVHUB_SFDX_URL.txt --setalias nebula-logger-packaging --setdefaultdevhubusername
+                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
               env:
-                  DEVHUB_SFDX_URL: ${{ secrets.DEVHUB_SFDX_URL }}
+                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
 
             - name: 'Promote package versions'
-              run: npx pwsh ./config/scripts/build/promote-readme-packages.ps1
+              run: npx pwsh ./scripts/build/promote-readme-packages.ps1

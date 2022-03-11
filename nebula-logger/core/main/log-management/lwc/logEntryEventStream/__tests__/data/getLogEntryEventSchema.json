@@ -1,0 +1,807 @@
+{
+    "namespacePrefix": null,
+    "localApiName": "LogEntryEvent__e",
+    "labelPlural": "Log Entry Events",
+    "label": "Log Entry Event",
+    "fields": {
+        "UserType__c": {
+            "type": "string",
+            "localApiName": "UserType__c",
+            "label": "User Type",
+            "inlineHelpText": null,
+            "apiName": "UserType__c"
+        },
+        "UserRoleName__c": {
+            "type": "string",
+            "localApiName": "UserRoleName__c",
+            "label": "User Role Name",
+            "inlineHelpText": null,
+            "apiName": "UserRoleName__c"
+        },
+        "UserRoleId__c": {
+            "type": "string",
+            "localApiName": "UserRoleId__c",
+            "label": "User Role ID",
+            "inlineHelpText": null,
+            "apiName": "UserRoleId__c"
+        },
+        "UserLoggingLevel__c": {
+            "type": "string",
+            "localApiName": "UserLoggingLevel__c",
+            "label": "User Logging Level",
+            "inlineHelpText": null,
+            "apiName": "UserLoggingLevel__c"
+        },
+        "UserLoggingLevelOrdinal__c": {
+            "type": "double",
+            "localApiName": "UserLoggingLevelOrdinal__c",
+            "label": "User Logging Level Ordinal",
+            "inlineHelpText": null,
+            "apiName": "UserLoggingLevelOrdinal__c"
+        },
+        "UserLicenseName__c": {
+            "type": "string",
+            "localApiName": "UserLicenseName__c",
+            "label": "User License Name",
+            "inlineHelpText": null,
+            "apiName": "UserLicenseName__c"
+        },
+        "UserLicenseId__c": {
+            "type": "string",
+            "localApiName": "UserLicenseId__c",
+            "label": "User License ID",
+            "inlineHelpText": null,
+            "apiName": "UserLicenseId__c"
+        },
+        "UserLicenseDefinitionKey__c": {
+            "type": "string",
+            "localApiName": "UserLicenseDefinitionKey__c",
+            "label": "User License Definition Key",
+            "inlineHelpText": null,
+            "apiName": "UserLicenseDefinitionKey__c"
+        },
+        "TriggerSObjectType__c": {
+            "type": "string",
+            "localApiName": "TriggerSObjectType__c",
+            "label": "Trigger SObject Type",
+            "inlineHelpText": null,
+            "apiName": "TriggerSObjectType__c"
+        },
+        "TriggerOperationType__c": {
+            "type": "string",
+            "localApiName": "TriggerOperationType__c",
+            "label": "Trigger Operation Type",
+            "inlineHelpText": null,
+            "apiName": "TriggerOperationType__c"
+        },
+        "TriggerIsExecuting__c": {
+            "type": "boolean",
+            "localApiName": "TriggerIsExecuting__c",
+            "label": "Trigger Is Executing",
+            "inlineHelpText": null,
+            "apiName": "TriggerIsExecuting__c"
+        },
+        "TransactionId__c": {
+            "type": "string",
+            "localApiName": "TransactionId__c",
+            "label": "Transaction ID",
+            "inlineHelpText": null,
+            "apiName": "TransactionId__c"
+        },
+        "TransactionEntryNumber__c": {
+            "type": "double",
+            "localApiName": "TransactionEntryNumber__c",
+            "label": "Transaction Entry Number",
+            "inlineHelpText": null,
+            "apiName": "TransactionEntryNumber__c"
+        },
+        "Topics__c": {
+            "type": "textarea",
+            "localApiName": "Topics__c",
+            "label": "DEPRECATED: Topics",
+            "inlineHelpText": null,
+            "apiName": "Topics__c"
+        },
+        "Timestamp__c": {
+            "type": "datetime",
+            "localApiName": "Timestamp__c",
+            "label": "Timestamp",
+            "inlineHelpText": null,
+            "apiName": "Timestamp__c"
+        },
+        "TimestampString__c": {
+            "type": "string",
+            "localApiName": "TimestampString__c",
+            "label": "Timestamp String",
+            "inlineHelpText": null,
+            "apiName": "TimestampString__c"
+        },
+        "TimeZoneName__c": {
+            "type": "string",
+            "localApiName": "TimeZoneName__c",
+            "label": "Time Zone Name",
+            "inlineHelpText": null,
+            "apiName": "TimeZoneName__c"
+        },
+        "TimeZoneId__c": {
+            "type": "string",
+            "localApiName": "TimeZoneId__c",
+            "label": "Time Zone ID",
+            "inlineHelpText": null,
+            "apiName": "TimeZoneId__c"
+        },
+        "ThemeDisplayed__c": {
+            "type": "string",
+            "localApiName": "ThemeDisplayed__c",
+            "label": "Theme Displayed",
+            "inlineHelpText": null,
+            "apiName": "ThemeDisplayed__c"
+        },
+        "Tags__c": {
+            "type": "textarea",
+            "localApiName": "Tags__c",
+            "label": "Tags",
+            "inlineHelpText": null,
+            "apiName": "Tags__c"
+        },
+        "SystemMode__c": {
+            "type": "string",
+            "localApiName": "SystemMode__c",
+            "label": "System Mode",
+            "inlineHelpText": null,
+            "apiName": "SystemMode__c"
+        },
+        "StackTrace__c": {
+            "type": "textarea",
+            "localApiName": "StackTrace__c",
+            "label": "Stack Trace",
+            "inlineHelpText": null,
+            "apiName": "StackTrace__c"
+        },
+        "SourceIp__c": {
+            "type": "string",
+            "localApiName": "SourceIp__c",
+            "label": "Source IP",
+            "inlineHelpText": null,
+            "apiName": "SourceIp__c"
+        },
+        "SessionType__c": {
+            "type": "string",
+            "localApiName": "SessionType__c",
+            "label": "Session Type",
+            "inlineHelpText": null,
+            "apiName": "SessionType__c"
+        },
+        "SessionSecurityLevel__c": {
+            "type": "string",
+            "localApiName": "SessionSecurityLevel__c",
+            "label": "Session Security Level",
+            "inlineHelpText": null,
+            "apiName": "SessionSecurityLevel__c"
+        },
+        "SessionId__c": {
+            "type": "string",
+            "localApiName": "SessionId__c",
+            "label": "SessionId",
+            "inlineHelpText": null,
+            "apiName": "SessionId__c"
+        },
+        "Scenario__c": {
+            "type": "string",
+            "localApiName": "Scenario__c",
+            "label": "Scenario",
+            "inlineHelpText": null,
+            "apiName": "Scenario__c"
+        },
+        "RecordSObjectType__c": {
+            "type": "string",
+            "localApiName": "RecordSObjectType__c",
+            "label": "Related Record SObject Type",
+            "inlineHelpText": null,
+            "apiName": "RecordSObjectType__c"
+        },
+        "RecordSObjectTypeNamespace__c": {
+            "type": "string",
+            "localApiName": "RecordSObjectTypeNamespace__c",
+            "label": "Related Record Object Namespace",
+            "inlineHelpText": null,
+            "apiName": "RecordSObjectTypeNamespace__c"
+        },
+        "RecordSObjectClassification__c": {
+            "type": "string",
+            "localApiName": "RecordSObjectClassification__c",
+            "label": "Related Record SObject Classification",
+            "inlineHelpText": null,
+            "apiName": "RecordSObjectClassification__c"
+        },
+        "RecordJson__c": {
+            "type": "textarea",
+            "localApiName": "RecordJson__c",
+            "label": "Related Record JSON",
+            "inlineHelpText": null,
+            "apiName": "RecordJson__c"
+        },
+        "RecordJsonMasked__c": {
+            "type": "boolean",
+            "localApiName": "RecordJsonMasked__c",
+            "label": "Record JSON Masked",
+            "inlineHelpText": null,
+            "apiName": "RecordJsonMasked__c"
+        },
+        "RecordId__c": {
+            "type": "string",
+            "localApiName": "RecordId__c",
+            "label": "Related Record ID",
+            "inlineHelpText": null,
+            "apiName": "RecordId__c"
+        },
+        "RecordCollectionType__c": {
+            "type": "string",
+            "localApiName": "RecordCollectionType__c",
+            "label": "Related Record Collection Type",
+            "inlineHelpText": null,
+            "apiName": "RecordCollectionType__c"
+        },
+        "ProfileName__c": {
+            "type": "string",
+            "localApiName": "ProfileName__c",
+            "label": "Profile Name",
+            "inlineHelpText": null,
+            "apiName": "ProfileName__c"
+        },
+        "ProfileId__c": {
+            "type": "string",
+            "localApiName": "ProfileId__c",
+            "label": "Profile ID",
+            "inlineHelpText": null,
+            "apiName": "ProfileId__c"
+        },
+        "ParentLogTransactionId__c": {
+            "type": "string",
+            "localApiName": "ParentLogTransactionId__c",
+            "label": "Parent Log Transaction ID",
+            "inlineHelpText": null,
+            "apiName": "ParentLogTransactionId__c"
+        },
+        "OriginType__c": {
+            "type": "string",
+            "localApiName": "OriginType__c",
+            "label": "Origin Type",
+            "inlineHelpText": null,
+            "apiName": "OriginType__c"
+        },
+        "OriginLocation__c": {
+            "type": "string",
+            "localApiName": "OriginLocation__c",
+            "label": "Origin Location",
+            "inlineHelpText": null,
+            "apiName": "OriginLocation__c"
+        },
+        "OrganizationType__c": {
+            "type": "string",
+            "localApiName": "OrganizationType__c",
+            "label": "Organization Type",
+            "inlineHelpText": null,
+            "apiName": "OrganizationType__c"
+        },
+        "OrganizationNamespacePrefix__c": {
+            "type": "string",
+            "localApiName": "OrganizationNamespacePrefix__c",
+            "label": "Organization Namespace Prefix",
+            "inlineHelpText": null,
+            "apiName": "OrganizationNamespacePrefix__c"
+        },
+        "OrganizationName__c": {
+            "type": "string",
+            "localApiName": "OrganizationName__c",
+            "label": "Organization Name",
+            "inlineHelpText": null,
+            "apiName": "OrganizationName__c"
+        },
+        "OrganizationInstanceName__c": {
+            "type": "string",
+            "localApiName": "OrganizationInstanceName__c",
+            "label": "Organization Instance Name",
+            "inlineHelpText": null,
+            "apiName": "OrganizationInstanceName__c"
+        },
+        "OrganizationId__c": {
+            "type": "string",
+            "localApiName": "OrganizationId__c",
+            "label": "Organization ID",
+            "inlineHelpText": null,
+            "apiName": "OrganizationId__c"
+        },
+        "OrganizationEnvironmentType__c": {
+            "type": "string",
+            "localApiName": "OrganizationEnvironmentType__c",
+            "label": "Organization Environment Type",
+            "inlineHelpText": null,
+            "apiName": "OrganizationEnvironmentType__c"
+        },
+        "OrganizationDomainUrl__c": {
+            "type": "string",
+            "localApiName": "OrganizationDomainUrl__c",
+            "label": "Organization Domain URL",
+            "inlineHelpText": null,
+            "apiName": "OrganizationDomainUrl__c"
+        },
+        "NetworkUrlPathPrefix__c": {
+            "type": "string",
+            "localApiName": "NetworkUrlPathPrefix__c",
+            "label": "Site URL Path Prefix",
+            "inlineHelpText": null,
+            "apiName": "NetworkUrlPathPrefix__c"
+        },
+        "NetworkSelfRegistrationUrl__c": {
+            "type": "string",
+            "localApiName": "NetworkSelfRegistrationUrl__c",
+            "label": "Site Self Registration URL",
+            "inlineHelpText": null,
+            "apiName": "NetworkSelfRegistrationUrl__c"
+        },
+        "NetworkName__c": {
+            "type": "string",
+            "localApiName": "NetworkName__c",
+            "label": "Site Name",
+            "inlineHelpText": null,
+            "apiName": "NetworkName__c"
+        },
+        "NetworkLogoutUrl__c": {
+            "type": "string",
+            "localApiName": "NetworkLogoutUrl__c",
+            "label": "Site Logout URL",
+            "inlineHelpText": null,
+            "apiName": "NetworkLogoutUrl__c"
+        },
+        "NetworkLoginUrl__c": {
+            "type": "string",
+            "localApiName": "NetworkLoginUrl__c",
+            "label": "Site Login URL",
+            "inlineHelpText": null,
+            "apiName": "NetworkLoginUrl__c"
+        },
+        "NetworkId__c": {
+            "type": "string",
+            "localApiName": "NetworkId__c",
+            "label": "Network ID",
+            "inlineHelpText": null,
+            "apiName": "NetworkId__c"
+        },
+        "Message__c": {
+            "type": "textarea",
+            "localApiName": "Message__c",
+            "label": "Message",
+            "inlineHelpText": null,
+            "apiName": "Message__c"
+        },
+        "MessageTruncated__c": {
+            "type": "boolean",
+            "localApiName": "MessageTruncated__c",
+            "label": "Message Truncated",
+            "inlineHelpText": null,
+            "apiName": "MessageTruncated__c"
+        },
+        "MessageMasked__c": {
+            "type": "boolean",
+            "localApiName": "MessageMasked__c",
+            "label": "Message Masked",
+            "inlineHelpText": null,
+            "apiName": "MessageMasked__c"
+        },
+        "LogoutUrl__c": {
+            "type": "string",
+            "localApiName": "LogoutUrl__c",
+            "label": "Logout URL",
+            "inlineHelpText": null,
+            "apiName": "LogoutUrl__c"
+        },
+        "LoginType__c": {
+            "type": "string",
+            "localApiName": "LoginType__c",
+            "label": "Login Type",
+            "inlineHelpText": null,
+            "apiName": "LoginType__c"
+        },
+        "LoginPlatform__c": {
+            "type": "string",
+            "localApiName": "LoginPlatform__c",
+            "label": "Login Platform",
+            "inlineHelpText": null,
+            "apiName": "LoginPlatform__c"
+        },
+        "LoginHistoryId__c": {
+            "type": "string",
+            "localApiName": "LoginHistoryId__c",
+            "label": "Login History ID",
+            "inlineHelpText": null,
+            "apiName": "LoginHistoryId__c"
+        },
+        "LoginDomain__c": {
+            "type": "string",
+            "localApiName": "LoginDomain__c",
+            "label": "DEPRECATED: Login Domain",
+            "inlineHelpText": null,
+            "apiName": "LoginDomain__c"
+        },
+        "LoginBrowser__c": {
+            "type": "string",
+            "localApiName": "LoginBrowser__c",
+            "label": "Login Browser",
+            "inlineHelpText": null,
+            "apiName": "LoginBrowser__c"
+        },
+        "LoginApplication__c": {
+            "type": "string",
+            "localApiName": "LoginApplication__c",
+            "label": "Login Application",
+            "inlineHelpText": null,
+            "apiName": "LoginApplication__c"
+        },
+        "LoggingLevel__c": {
+            "type": "string",
+            "localApiName": "LoggingLevel__c",
+            "label": "Logging Level",
+            "inlineHelpText": null,
+            "apiName": "LoggingLevel__c"
+        },
+        "LoggingLevelOrdinal__c": {
+            "type": "double",
+            "localApiName": "LoggingLevelOrdinal__c",
+            "label": "Logging Level Ordinal",
+            "inlineHelpText": null,
+            "apiName": "LoggingLevelOrdinal__c"
+        },
+        "LoggerVersionNumber__c": {
+            "type": "string",
+            "localApiName": "LoggerVersionNumber__c",
+            "label": "Logger Version Number",
+            "inlineHelpText": null,
+            "apiName": "LoggerVersionNumber__c"
+        },
+        "LoggedByUsername__c": {
+            "type": "string",
+            "localApiName": "LoggedByUsername__c",
+            "label": "Username",
+            "inlineHelpText": null,
+            "apiName": "LoggedByUsername__c"
+        },
+        "LoggedById__c": {
+            "type": "string",
+            "localApiName": "LoggedById__c",
+            "label": "Logged By ID",
+            "inlineHelpText": null,
+            "apiName": "LoggedById__c"
+        },
+        "Locale__c": {
+            "type": "string",
+            "localApiName": "Locale__c",
+            "label": "Locale",
+            "inlineHelpText": null,
+            "apiName": "Locale__c"
+        },
+        "LimitsSoslSearchesUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsSoslSearchesUsed__c",
+            "label": "SOSL Searches Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsSoslSearchesUsed__c"
+        },
+        "LimitsSoslSearchesMax__c": {
+            "type": "double",
+            "localApiName": "LimitsSoslSearchesMax__c",
+            "label": "SOSL Searches Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsSoslSearchesMax__c"
+        },
+        "LimitsSoqlQueryRowsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsSoqlQueryRowsUsed__c",
+            "label": "SOQL Query Rows Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsSoqlQueryRowsUsed__c"
+        },
+        "LimitsSoqlQueryRowsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsSoqlQueryRowsMax__c",
+            "label": "SOQL Query Rows Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsSoqlQueryRowsMax__c"
+        },
+        "LimitsSoqlQueryLocatorRowsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsSoqlQueryLocatorRowsUsed__c",
+            "label": "SOQL Query Locator Rows Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsSoqlQueryLocatorRowsUsed__c"
+        },
+        "LimitsSoqlQueryLocatorRowsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsSoqlQueryLocatorRowsMax__c",
+            "label": "SOQL Query Locator Rows Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsSoqlQueryLocatorRowsMax__c"
+        },
+        "LimitsSoqlQueriesUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsSoqlQueriesUsed__c",
+            "label": "SOQL Queries Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsSoqlQueriesUsed__c"
+        },
+        "LimitsSoqlQueriesMax__c": {
+            "type": "double",
+            "localApiName": "LimitsSoqlQueriesMax__c",
+            "label": "SOQL Queries Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsSoqlQueriesMax__c"
+        },
+        "LimitsQueueableJobsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsQueueableJobsUsed__c",
+            "label": "Queueable Jobs Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsQueueableJobsUsed__c"
+        },
+        "LimitsQueueableJobsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsQueueableJobsMax__c",
+            "label": "Queueable Jobs Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsQueueableJobsMax__c"
+        },
+        "LimitsPublishImmediateDmlStatementsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsPublishImmediateDmlStatementsUsed__c",
+            "label": "Publish Immediate Statements DML Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsPublishImmediateDmlStatementsUsed__c"
+        },
+        "LimitsPublishImmediateDmlStatementsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsPublishImmediateDmlStatementsMax__c",
+            "label": "Publish Immediate Statements DML Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsPublishImmediateDmlStatementsMax__c"
+        },
+        "LimitsMobilePushApexCallsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsMobilePushApexCallsUsed__c",
+            "label": "Mobile Push Apex Calls Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsMobilePushApexCallsUsed__c"
+        },
+        "LimitsMobilePushApexCallsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsMobilePushApexCallsMax__c",
+            "label": "Mobile Push Apex Calls Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsMobilePushApexCallsMax__c"
+        },
+        "LimitsHeapSizeUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsHeapSizeUsed__c",
+            "label": "Heap Size Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsHeapSizeUsed__c"
+        },
+        "LimitsHeapSizeMax__c": {
+            "type": "double",
+            "localApiName": "LimitsHeapSizeMax__c",
+            "label": "Heap Size Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsHeapSizeMax__c"
+        },
+        "LimitsFutureCallsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsFutureCallsUsed__c",
+            "label": "Future Calls Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsFutureCallsUsed__c"
+        },
+        "LimitsFutureCallsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsFutureCallsMax__c",
+            "label": "Future Calls Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsFutureCallsMax__c"
+        },
+        "LimitsEmailInvocationsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsEmailInvocationsUsed__c",
+            "label": "Email Invocations Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsEmailInvocationsUsed__c"
+        },
+        "LimitsEmailInvocationsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsEmailInvocationsMax__c",
+            "label": "Email Invocations Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsEmailInvocationsMax__c"
+        },
+        "LimitsDmlStatementsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsDmlStatementsUsed__c",
+            "label": "DML Statements Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsDmlStatementsUsed__c"
+        },
+        "LimitsDmlStatementsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsDmlStatementsMax__c",
+            "label": "DML Statements Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsDmlStatementsMax__c"
+        },
+        "LimitsDmlRowsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsDmlRowsUsed__c",
+            "label": "DML Rows Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsDmlRowsUsed__c"
+        },
+        "LimitsDmlRowsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsDmlRowsMax__c",
+            "label": "DML Rows Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsDmlRowsMax__c"
+        },
+        "LimitsCpuTimeUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsCpuTimeUsed__c",
+            "label": "CPU Time Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsCpuTimeUsed__c"
+        },
+        "LimitsCpuTimeMax__c": {
+            "type": "double",
+            "localApiName": "LimitsCpuTimeMax__c",
+            "label": "CPU Time Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsCpuTimeMax__c"
+        },
+        "LimitsCalloutsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsCalloutsUsed__c",
+            "label": "Callouts Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsCalloutsUsed__c"
+        },
+        "LimitsCalloutsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsCalloutsMax__c",
+            "label": "Callouts Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsCalloutsMax__c"
+        },
+        "LimitsAsyncCallsUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsAsyncCallsUsed__c",
+            "label": "Async Calls Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsAsyncCallsUsed__c"
+        },
+        "LimitsAsyncCallsMax__c": {
+            "type": "double",
+            "localApiName": "LimitsAsyncCallsMax__c",
+            "label": "Async Calls Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsAsyncCallsMax__c"
+        },
+        "LimitsAggregateQueryMax__c": {
+            "type": "double",
+            "localApiName": "LimitsAggregateQueryMax__c",
+            "label": "Limits AggregateQueryMax_",
+            "inlineHelpText": null,
+            "apiName": "LimitsAggregateQueryMax__c"
+        },
+        "LimitsAggregateQueriesUsed__c": {
+            "type": "double",
+            "localApiName": "LimitsAggregateQueriesUsed__c",
+            "label": "Aggregate Queries Used",
+            "inlineHelpText": null,
+            "apiName": "LimitsAggregateQueriesUsed__c"
+        },
+        "LimitsAggregateQueriesMax__c": {
+            "type": "double",
+            "localApiName": "LimitsAggregateQueriesMax__c",
+            "label": "Aggregate Queries Max",
+            "inlineHelpText": null,
+            "apiName": "LimitsAggregateQueriesMax__c"
+        },
+        "ExceptionType__c": {
+            "type": "string",
+            "localApiName": "ExceptionType__c",
+            "label": "Exception Type",
+            "inlineHelpText": null,
+            "apiName": "ExceptionType__c"
+        },
+        "ExceptionStackTrace__c": {
+            "type": "textarea",
+            "localApiName": "ExceptionStackTrace__c",
+            "label": "Exception Stack Trace",
+            "inlineHelpText": null,
+            "apiName": "ExceptionStackTrace__c"
+        },
+        "ExceptionMessage__c": {
+            "type": "textarea",
+            "localApiName": "ExceptionMessage__c",
+            "label": "Exception Message",
+            "inlineHelpText": null,
+            "apiName": "ExceptionMessage__c"
+        },
+        "EpochTimestamp__c": {
+            "type": "double",
+            "localApiName": "EpochTimestamp__c",
+            "label": "Epoch Timestamp",
+            "inlineHelpText": null,
+            "apiName": "EpochTimestamp__c"
+        },
+        "DatabaseResultType__c": {
+            "type": "string",
+            "localApiName": "DatabaseResultType__c",
+            "label": "Database Result Type",
+            "inlineHelpText": null,
+            "apiName": "DatabaseResultType__c"
+        },
+        "DatabaseResultJson__c": {
+            "type": "textarea",
+            "localApiName": "DatabaseResultJson__c",
+            "label": "Database Result JSON",
+            "inlineHelpText": null,
+            "apiName": "DatabaseResultJson__c"
+        },
+        "DatabaseResultCollectionType__c": {
+            "type": "string",
+            "localApiName": "DatabaseResultCollectionType__c",
+            "label": "Database Result Collection Type",
+            "inlineHelpText": null,
+            "apiName": "DatabaseResultCollectionType__c"
+        },
+        "ComponentType__c": {
+            "type": "string",
+            "localApiName": "ComponentType__c",
+            "label": "Component Type",
+            "inlineHelpText": null,
+            "apiName": "ComponentType__c"
+        },
+        "ApiVersion__c": {
+            "type": "string",
+            "localApiName": "ApiVersion__c",
+            "label": "API Version",
+            "inlineHelpText": null,
+            "apiName": "ApiVersion__c"
+        },
+        "EventUuid": {
+            "type": "string",
+            "localApiName": "EventUuid",
+            "label": "Event UUID",
+            "inlineHelpText": null,
+            "apiName": "EventUuid"
+        },
+        "CreatedById": {
+            "type": "reference",
+            "localApiName": "CreatedById",
+            "label": "Created By ID",
+            "inlineHelpText": null,
+            "apiName": "CreatedById"
+        },
+        "CreatedDate": {
+            "type": "datetime",
+            "localApiName": "CreatedDate",
+            "label": "Created Date",
+            "inlineHelpText": null,
+            "apiName": "CreatedDate"
+        },
+        "ReplayId": {
+            "type": "string",
+            "localApiName": "ReplayId",
+            "label": "Replay ID",
+            "inlineHelpText": null,
+            "apiName": "ReplayId"
+        }
+    },
+    "apiName": "LogEntryEvent__e"
+}

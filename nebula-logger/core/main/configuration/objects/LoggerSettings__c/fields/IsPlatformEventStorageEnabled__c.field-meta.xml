@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IsPlatformEventStorageEnabled__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description
+    >Controls if LogEntryEvent__e platform events are transformed &amp; stored in the custom objects Log__c and LogEntry__c (when IsSavingEnabled__c == true).</description>
+    <externalId>false</externalId>
+    <inlineHelpText
+    >Controls if LogEntryEvent__e platform events are transformed &amp; stored in the custom objects Log__c and LogEntry__c (when IsSavingEnabled__c == true).</inlineHelpText>
+    <label>Store Platform Events</label>
+    <type>Checkbox</type>
+</CustomField>

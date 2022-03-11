@@ -28,12 +28,26 @@ private class LogEntryTagHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_unique_id() {
+    static void it_should_set_unique_id_on_insert() {
         LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
         LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
 
         LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
         insert logEntryTag;
+
+        logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
+        System.assertEquals(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
+    }
+
+    @IsTest
+    static void it_should_set_unique_id_on_update() {
+        LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
+        LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
+
+        LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
+        insert logEntryTag;
+        logEntryTag.UniqueId__c = 'something else';
+        update logEntryTag;
 
         logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
         System.assertEquals(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
@@ -52,7 +66,7 @@ private class LogEntryTagHandler_Tests {
             insert duplicateLogEntryTag;
             System.assert(false, 'Exception expected on previous line');
         } catch (Exception ex) {
-            String expectedDuplicateError = 'DUPLICATE_VALUE, duplicate value found';
+            String expectedDuplicateError = 'DUPLICATE_VALUE';
             System.assert(ex.getMessage().contains(expectedDuplicateError), ex.getMessage());
         }
     }

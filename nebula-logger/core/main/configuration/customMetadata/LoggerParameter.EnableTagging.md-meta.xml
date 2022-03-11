@@ -5,7 +5,7 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
     <label>Enable Tagging</label>
-    <protected>true</protected>
+    <protected>false</protected>
     <values>
         <field>Description__c</field>
         <value

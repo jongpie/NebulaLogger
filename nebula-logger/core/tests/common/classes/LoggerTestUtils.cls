@@ -3,13 +3,12 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.PropertyNamingConventions')
+@SuppressWarnings('PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest
 public class LoggerTestUtils {
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
-    private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
 
-    // Lazy-load & cache permission sets
+    // Lazy-load & cache permission sets & profiles
     private static final Map<String, PermissionSet> PERMISSION_SETS_BY_NAME {
         get {
             if (PERMISSION_SETS_BY_NAME == null) {
@@ -137,10 +136,19 @@ public class LoggerTestUtils {
     }
 
     /**
-     * @description Creates a `User` record for testing purposes, using the 'Standard User' profile
+     * @description Creates a `User` record for testing purposes, using the current user's profile
      * @return   The generated `User` record - it is not automatically inserted into the database.
      */
-    public static User createStandardUser() {
+    public static User createUser() {
+        return createUser(UserInfo.getProfileId());
+    }
+
+    /**
+     * @description Creates a `User` record for testing purposes, using the specified profile ID
+     * @param  profileId The `Profile` ID to use for the created `User`
+     * @return   The generated `User` record - it is not automatically inserted into the database.
+     */
+    public static User createUser(Id profileId) {
         return new User(
             Alias = 'log_xyz',
             Email = 'logger_xyz@test.com.net.org',
@@ -148,7 +156,7 @@ public class LoggerTestUtils {
             LanguageLocaleKey = 'en_US',
             LastName = 'Logger test user',
             LocaleSidKey = 'en_US',
-            ProfileId = STANDARD_USER_PROFILE.Id,
+            ProfileId = profileId,
             TimeZoneSidKey = 'America/Los_Angeles',
             Username = 'logger_xyz@test.com.net.org'
         );
@@ -197,9 +205,8 @@ public class LoggerTestUtils {
             return null;
         }
 
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
-
-        return Database.query(queryString);
+        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
+        return Database.query(String.escapeSingleQuotes(query));
     }
 
     /**
@@ -212,6 +219,24 @@ public class LoggerTestUtils {
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
+    }
+
+    /**
+     * @description Creates and inserts a `Group` record for testing queues, using the specified SObject Type
+     * @param  sobjectType The SObjectType that the queue should be able to own (stored in `QueueSObject`)
+     * @return   The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
+     */
+    public static Group insertQueue(Schema.SObjectType sobjectType) {
+        Group loggerQueue = new Group(DeveloperName = 'Some_Log_Queue', Name = 'Some Log Queue', Type = 'Queue');
+        insert loggerQueue;
+
+        // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            QueueSObject loggerQueueSObject = new QueueSObject(QueueId = loggerQueue.Id, SObjectType = sobjectType.getDescribe().getName());
+            insert loggerQueueSObject;
+        }
+
+        return loggerQueue;
     }
 
     // Helper methods

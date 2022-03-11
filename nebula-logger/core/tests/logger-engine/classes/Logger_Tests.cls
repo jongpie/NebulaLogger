@@ -325,6 +325,25 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_default_scenario_when_configured() {
+        String transactionScenarioName = 'some test scenario for this transaction';
+        LoggerSettings__c userSettings = LoggerSettings__c.getInstance();
+        userSettings.DefaultLogScenario__c = transactionScenarioName;
+        upsert userSettings;
+
+        String transactionId = Logger.getTransactionId();
+        for (Integer i = 0; i < 5; i++) {
+            Logger.info('my log entry');
+        }
+        Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
+        Test.getEventBus().deliver();
+
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+    }
+
+    @IsTest
     static void it_should_set_scenario() {
         String transactionId = Logger.getTransactionId();
         String transactionScenarioName = 'some test scenario for this transaction';
@@ -334,6 +353,7 @@ private class Logger_Tests {
             Logger.info('my log entry');
         }
         Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
         Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
@@ -354,6 +374,7 @@ private class Logger_Tests {
             Logger.finer('my log entry');
         }
         Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
         Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
@@ -376,6 +397,7 @@ private class Logger_Tests {
         }
         Logger.setScenario(lastTransactionScenarioName);
         Logger.saveLog();
+        System.assertEquals(lastTransactionScenarioName, Logger.getScenario());
         Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
@@ -634,24 +656,23 @@ private class Logger_Tests {
     @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
-        User currentUser = new User(Id = UserInfo.getUserId(), TimeZoneSidKey = UserInfo.getTimeZone().getId());
+        User testStandardUser = LoggerTestUtils.createUser();
 
-        // Make sure that the current user has a different time zone from the automated process user
-        if (automatedProcessUser.TimeZoneSidKey == currentUser.TimeZoneSidKey) {
+        // Make sure that the test user has a different time zone from the automated process user
+        if (automatedProcessUser.TimeZoneSidKey == testStandardUser.TimeZoneSidKey) {
             switch on automatedProcessUser.TimeZoneSidKey {
                 when 'America/Los_Angeles' {
-                    currentUser.TimeZoneSidKey = 'America/New_York';
+                    testStandardUser.TimeZoneSidKey = 'America/New_York';
                 }
                 when else {
-                    currentUser.TimeZoneSidKey = 'America/Los_Angeles';
+                    testStandardUser.TimeZoneSidKey = 'America/Los_Angeles';
                 }
             }
-            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, currentUser.TimeZoneSidKey);
-            update currentUser;
+            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, testStandardUser.TimeZoneSidKey);
         }
 
         Datetime originalTimestamp;
-        System.runAs(currentUser) {
+        System.runAs(testStandardUser) {
             Logger.getUserSettings().IsEnabled__c = true;
             Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
 
@@ -683,6 +704,36 @@ private class Logger_Tests {
         Test.stopTest();
 
         System.assertEquals(2, Logger.getBufferSize());
+    }
+
+    @IsTest
+    static void it_should_not_save_when_saving_is_disabled() {
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+
+        setUserLoggingLevel(LoggingLevel.DEBUG);
+
+        Logger.getUserSettings().IsSavingEnabled__c = false;
+
+        System.assertEquals(Logger.SaveMethod.EVENT_BUS, Logger.transactionSaveMethod);
+
+        Logger.debug('test log entry');
+        Logger.debug('another test log entry');
+
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+
+        Test.startTest();
+
+        Logger.saveLog();
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, Limits.getDmlStatements());
+
+        Test.stopTest();
+
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
     }
 
     @IsTest
