@@ -39,26 +39,6 @@ private class LogBatchPurger_Tests {
     }
 
     @IsTest
-    static void it_should_throw_exception_when_user_does_not_have_delete_access() {
-        Integer originalCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-
-        User standardUser = LoggerTestUtils.createStandardUser();
-        System.runAs(standardUser) {
-            System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
-
-            try {
-                Test.startTest();
-                Database.executeBatch(new LogBatchPurger());
-                Test.stopTest();
-            } catch (NoAccessException ex) {
-                System.assertEquals(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
-            }
-        }
-        Integer updatedCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(originalCountOfLogEntries, updatedCountOfLogEntries);
-    }
-
-    @IsTest
     static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_enabled() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;

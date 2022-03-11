@@ -1,18 +1,18 @@
 {
     "namespace": "Nebula",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "53.0",
+    "sourceApiVersion": "54.0",
     "packageDirectories": [
         {
             "package": "Nebula Logger - Managed Package",
             "path": "./nebula-logger/managed-package/core",
             "default": true,
-            "definitionFile": "./config/scratch-orgs/experience-cloud-scratch-def.json",
+            "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
-            "ancestorVersion": "4.6.0.0",
-            "versionNumber": "4.7.0.0",
+            "ancestorVersion": "HIGHEST",
+            "versionNumber": "4.7.0.NEXT",
             "versionName": "Spring '22 Release",
-            "versionDescription": "TODO",
+            "versionDescription": "View the v4.7.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/7",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
@@ -24,6 +24,6 @@
         "Nebula Logger - Managed Package@4.4.0-2-configurable-default-save-method": "04t5Y0000027FFgQAM",
         "Nebula Logger - Managed Package@4.5.0-0-logger-plugin-framework": "04t5Y0000027FMhQAM",
         "Nebula Logger - Managed Package@4.6.0-0-tagging-system-overhaul": "04t5Y0000015keOQAQ",
-        "Nebula Logger - Managed Package@4.7.0-0": "04t5Y0000015lBAQAY"
+        "Nebula Logger - Managed Package@4.7.0-30-spring-22-release": "04t5Y0000015lXNQAY"
     }
 }

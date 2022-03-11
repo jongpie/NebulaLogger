@@ -32,6 +32,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -55,6 +56,7 @@ private class FlowLogEntry_Tests {
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
         flowEntry.saveLog = true;
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -85,6 +87,7 @@ private class FlowLogEntry_Tests {
         flowEntry.saveLog = true;
         flowEntry.saveMethodName = Logger.SaveMethod.QUEUEABLE.name();
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
+        Test.getEventBus().deliver();
 
         System.assertEquals(1, Limits.getQueueableJobs(), 'Log entries should have been saved using the QUEUEABLE save method');
         Test.stopTest();
@@ -113,6 +116,7 @@ private class FlowLogEntry_Tests {
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
+        Test.getEventBus().deliver();
 
         System.assertEquals(0, Logger.getBufferSize());
 
@@ -136,6 +140,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -169,6 +174,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -199,6 +205,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
         String transactionId = Logger.getTransactionId();
 
         Test.stopTest();
@@ -226,6 +233,7 @@ private class FlowLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 

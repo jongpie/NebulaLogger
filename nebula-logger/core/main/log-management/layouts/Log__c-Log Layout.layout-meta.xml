@@ -321,7 +321,7 @@
     <platformActionList>
         <actionListContext>Record</actionListContext>
         <platformActionListItems>
-            <actionName>Log__c.ViewJSON</actionName>
+            <actionName>Log__c.OpenViewer</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>0</sortOrder>
         </platformActionListItems>

@@ -551,12 +551,14 @@ global with sharing class LogEntryEventBuilder {
                     continue;
                 }
             }
-
-            if (ignoreLine) {
-                continue;
+            // Some lines, especially in the managed package, can result in '()' or '(Nebula)'
+            if (isValidStackTrace(currentStackTraceLine) == false) {
+                ignoreLine = true;
             }
 
-            stackTraceLines.add(currentStackTraceLine);
+            if (ignoreLine == false) {
+                stackTraceLines.add(currentStackTraceLine);
+            }
         }
 
         // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
@@ -942,8 +944,8 @@ global with sharing class LogEntryEventBuilder {
 
         // Networks (aka experience sites aka community sites aka portal sites ò_ô)
         // may not be enabled in the org (no Network object), so run everything dynamically
-        String queryString = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
-        return Database.query(queryString);
+        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
+        return Database.query(String.escapeSingleQuotes(query));
     }
 
     private static Organization queryOrganization() {
@@ -960,7 +962,7 @@ global with sharing class LogEntryEventBuilder {
 
     private static List<SObject> stripInaccessible(List<SObject> records) {
         if (
-            Logger.getUserSettings().StripInaccessibleRecordFields__c == false ||
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c == false ||
             records == null ||
             records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType
         ) {

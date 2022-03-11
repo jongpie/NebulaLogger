@@ -80,6 +80,10 @@ Controller class for lwc `loggerInfo`, used to display system information about 
 
 Abstract class used by trigger handlers for shared logic
 
+### [LoggerSObjectMetadata](log-management/LoggerSObjectMetadata)
+
+Provides details to LWCs about Logger&apos;s `SObjects`, using `@AuraEnabled` properties
+
 ### [LoggerSettingsController](log-management/LoggerSettingsController)
 
 Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`

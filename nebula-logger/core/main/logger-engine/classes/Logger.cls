@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.6.16';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.7.0';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     @TestVisible
@@ -25,7 +25,7 @@ global with sharing class Logger {
 
     private static Integer currentTransactionEntryNumber = 1;
     private static String parentLogTransactionId;
-    private static String transactionScenario;
+    private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
     private static Boolean suspendSaving = false;
     private static LoggerSettings__c userSettings;
 
@@ -2470,6 +2470,15 @@ global with sharing class Logger {
 
     // Save control methods
     /**
+     * @description Returns the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
+     *              and `Log__c.Scenario__c`, and can be used to filter & group logs
+     * @return   The value currently set as the current transaction's scenario
+     */
+    global static String getScenario() {
+        return transactionScenario;
+    }
+
+    /**
      * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
      * @param  scenario The name to use for the current transaction's scenario
@@ -2528,7 +2537,7 @@ global with sharing class Logger {
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     global static void saveLog(SaveMethod saveMethod) {
-        if (LOG_ENTRIES_BUFFER.isEmpty()) {
+        if (LOG_ENTRIES_BUFFER.isEmpty() || getUserSettings().IsSavingEnabled__c == false) {
             return;
         }
 
@@ -2656,13 +2665,17 @@ global with sharing class Logger {
         logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
         List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
 
-        List<String> textReplacements = new List<String>{ String.join(logFieldNames, ','), String.join(logEntryFieldNames, ',') };
+        List<String> textReplacements = new List<String>{
+            String.join(logFieldNames, ','),
+            String.join(logEntryFieldNames, ','),
+            Schema.LogEntry__c.TransactionEntryNumber__c.getDescribe().getName()
+        };
         String query = String.format(
-            'SELECT {0}, (SELECT {1} FROM LogEntries__r) FROM Log__c WHERE Id = :logId OR TransactionId__c = :logId',
+            'SELECT {0}, (SELECT {1} FROM LogEntries__r ORDER BY {2}) FROM Log__c WHERE Id = :logId OR TransactionId__c = :logId',
             textReplacements
         );
 
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(query));
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(String.escapeSingleQuotes(query)));
         return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
     }
 

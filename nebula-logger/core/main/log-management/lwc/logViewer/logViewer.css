@@ -1,26 +1,9 @@
-:host {
-    height: 100%;
+.content {
+    height: calc(100vh - 550px);
 }
 
-pre {
-    max-height: 500px;
+.content pre {
+    height: 100%;
     margin: auto 10px;
     overflow-y: scroll;
-}
-
-.slds-p-around--medium {
-    padding: 0rem !important;
-}
-
-.slds-modal__content {
-    overflow-y: hidden !important;
-    height: unset !important;
-    max-height: unset !important;
-}
-
-@media screen and (max-width: 768px) {
-    .slds-modal__container_large {
-        max-width: 85rem !important;
-        width: 85% !important;
-    }
 }

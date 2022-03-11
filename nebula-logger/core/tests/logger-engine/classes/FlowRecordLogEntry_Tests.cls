@@ -40,6 +40,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -82,6 +83,7 @@ private class FlowRecordLogEntry_Tests {
         flowRecordEntry.saveLog = true;
         flowRecordEntry.saveMethodName = Logger.SaveMethod.QUEUEABLE.name();
         FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
+        Test.getEventBus().deliver();
 
         System.assertEquals(1, Limits.getQueueableJobs(), 'Log entries should have been saved using the QUEUEABLE save method');
         Test.stopTest();
@@ -123,6 +125,7 @@ private class FlowRecordLogEntry_Tests {
         flowRecordEntry.record = currentUser;
         flowRecordEntry.saveLog = true;
         FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -162,6 +165,7 @@ private class FlowRecordLogEntry_Tests {
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
         flowRecordEntry.record = currentUser;
         FlowRecordLogEntry.addFlowRecordEntries(new List<FlowRecordLogEntry>{ flowRecordEntry });
+        Test.getEventBus().deliver();
 
         System.assertEquals(0, Logger.getBufferSize());
 
@@ -185,6 +189,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -218,6 +223,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -248,6 +254,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
         String transactionId = Logger.getTransactionId();
 
         Test.stopTest();
@@ -275,6 +282,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 

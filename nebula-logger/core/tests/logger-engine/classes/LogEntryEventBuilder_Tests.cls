@@ -833,12 +833,12 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_result() {
-        User standardUser = LoggerTestUtils.createStandardUser();
+        User standardUser = LoggerTestUtils.createUser();
         AggregateResult mockAggregateResult = LoggerTestUtils.createMockAggregateResult();
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAggregateResult);
         }
 
@@ -847,12 +847,12 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_results() {
-        User standardUser = LoggerTestUtils.createStandardUser();
+        User standardUser = LoggerTestUtils.createUser();
         List<AggregateResult> mockAggregateResults = new List<AggregateResult>{ LoggerTestUtils.createMockAggregateResult() };
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
-            Logger.getUserSettings().StripInaccessibleRecordFields__c = true;
+            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
             builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAggregateResults);
         }
 

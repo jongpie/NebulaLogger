@@ -28,11 +28,44 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_is_disabled() {
+        Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+
+        Logger.getUserSettings().IsSavingEnabled__c = true;
+        LoggerSettings__c settings = Logger.getUserSettings();
+        settings.IsPlatformEventStorageEnabled__c = false;
+        upsert settings;
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            EpochTimestamp__c = System.now().getTime(),
+            LoggedById__c = UserInfo.getUserId(),
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            TransactionEntryNumber__c = 1,
+            TransactionId__c = '123-456-789-0'
+        );
+
+        Test.startTest();
+        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
+        Test.stopTest();
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+
+        countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+    }
+
+    @IsTest
     static void it_should_normalize_simple_event_data_into_log_and_log_entry() {
         String transactionId = '123-456-789-0';
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
+            LoggedById__c = UserInfo.getUserId(),
             Message__c = 'my message',
             Timestamp__c = System.now(),
             TransactionEntryNumber__c = 1,
@@ -99,6 +132,7 @@ private class LogEntryEventHandler_Tests {
             LimitsSoslSearchesUsed__c = 123,
             Locale__c = 'es-ES',
             LoggerVersionNumber__c = 'v4.6.10',
+            LoggedById__c = UserInfo.getUserId(),
             LoggingLevel__c = 'DEBUG',
             LoggingLevelOrdinal__c = 9,
             LoginDomain__c = 'https://fake.my.salesforce.com',

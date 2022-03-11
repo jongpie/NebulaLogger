@@ -28,6 +28,7 @@ private class FlowLogger_Tests {
         System.assertEquals(1, Logger.getBufferSize());
 
         Logger.saveLog();
+        Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -53,6 +54,7 @@ private class FlowLogger_Tests {
         System.assertEquals(0, [SELECT COUNT() FROM LogEntry__c]);
 
         FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ logEntry });
+        Test.getEventBus().deliver();
         System.assertEquals(0, Logger.getBufferSize());
 
         Test.stopTest();
@@ -81,6 +83,7 @@ private class FlowLogger_Tests {
         System.assertEquals(0, [SELECT COUNT() FROM LogEntry__c]);
 
         FlowLogger.addEntries(new List<FlowLogger.LogEntry>{ logEntry });
+        Test.getEventBus().deliver();
         System.assertEquals(0, Logger.getBufferSize());
 
         System.assertEquals(1, Limits.getQueueableJobs(), 'Log entries should have been saved using the QUEUEABLE save method');
