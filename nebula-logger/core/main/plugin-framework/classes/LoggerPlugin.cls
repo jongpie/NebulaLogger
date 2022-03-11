@@ -20,6 +20,10 @@ public abstract class LoggerPlugin {
      */
     public class PluginInput {
         public TriggerOperation triggerOperationType;
+        public List<SObject> triggerNew;
+        public Map<Id, SObject> triggerNewMap;
+        public List<SObject> triggerOld;
+        public Map<Id, SObject> triggerOldMap;
 
         @InvocableVariable(label='Trigger Operation Name')
         public String triggerOperationTypeName;

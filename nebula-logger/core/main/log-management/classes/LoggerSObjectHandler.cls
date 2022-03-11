@@ -148,28 +148,42 @@ public without sharing abstract class LoggerSObjectHandler {
             return;
         }
 
+        LoggerPlugin.PluginInput pluginInput = this.createPluginInput();
         for (LoggerPlugin__mdt pluginConfiguration : this.plugins) {
             switch on pluginConfiguration.PluginType__c {
                 when 'Apex' {
-                    this.executeApexPlugin(pluginConfiguration.PluginApiName__c);
+                    this.executeApexPlugin(pluginConfiguration.PluginApiName__c, pluginInput);
                 }
                 when 'Flow' {
-                    this.executeFlowPlugin(pluginConfiguration.PluginApiName__c);
+                    this.executeFlowPlugin(pluginConfiguration.PluginApiName__c, pluginInput);
                 }
             }
         }
     }
 
-    private void executeApexPlugin(String apexClassName) {
-        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
-        apexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
+    private void executeApexPlugin(String apexClassName, LoggerPlugin.PluginInput pluginInput) {
+        Object untypedApexPlugin = Type.forName(apexClassName).newInstance();
+        // Legacy approach - TODO, eliminate long term
+        if (untypedApexPlugin instanceof LoggerSObjectHandlerPlugin) {
+            LoggerSObjectHandlerPlugin legacyApexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
+            legacyApexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
+        } else {
+            LoggerPlugin fancyApexPlugin = (LoggerPlugin) Type.forName(apexClassName).newInstance();
+            fancyApexPlugin.execute(pluginInput);
+        }
     }
 
-    private void executeFlowPlugin(String flowApiName) {
+    private void executeFlowPlugin(String flowApiName, LoggerPlugin.PluginInput pluginInput) {
+        // TODO - switch using new plugin implementation LoggerPlugin
         Map<String, Object> flowInputs = new Map<String, Object>();
+
+        // Legacy inputs - TODO, eliminate long term
         flowInputs.put('triggerOperationType', this.triggerOperationType?.name());
         flowInputs.put('triggerNew', this.triggerNew);
         flowInputs.put('triggerOld', this.triggerOld);
+
+        // New input
+        flowInputs.put('pluginInput', pluginInput);
 
         Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
         flowPlugin.start();
@@ -178,5 +192,31 @@ public without sharing abstract class LoggerSObjectHandler {
         if (updatedTriggerNew != null && updatedTriggerNew.size() == this.triggerNew.size()) {
             this.triggerNew = updatedTriggerNew;
         }
+    }
+
+    private LoggerPlugin.PluginInput createPluginInput() {
+        LoggerPlugin.PluginInput pluginInput = new LoggerPlugin.PluginInput();
+        pluginInput.triggerOperationType = this.triggerOperationType;
+        pluginInput.triggerOperationTypeName = this.triggerOperationType?.name();
+
+        // PluginRecordInput for Apex Developers
+        pluginInput.triggerNew = this.triggerNew;
+        pluginInput.triggerNewMap = this.triggerNewMap;
+        pluginInput.triggerOld = this.triggerOld;
+        pluginInput.triggerOldMap = this.triggerOldMap;
+
+        // PluginRecordInput for Flow Builders (and Apex Developers too, if they want to use them)
+        pluginInput.triggerRecords = new List<LoggerPlugin.PluginRecordInput>();
+        // TODO - handle triggerOperationTypes where triggerNew is null (e.g., AFTER_DELETE)
+        for (SObject record : this.triggerNew) {
+            LoggerPlugin.PluginRecordInput recordInput = new LoggerPlugin.PluginRecordInput();
+            recordInput.triggerRecordNew = record;
+            if (this.triggerOldMap != null && record.Id != null) {
+                recordInput.triggerRecordOld = this.triggerOldMap.get(record.Id);
+            }
+
+            pluginInput.triggerRecords.add(recordInput);
+        }
+        return pluginInput;
     }
 }

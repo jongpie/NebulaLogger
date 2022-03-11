@@ -66,7 +66,11 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
      */
     @SuppressWarnings('PMD.AvoidDebugStatements')
     public void execute(System.QueueableContext queueableContext) {
-        // SInce this runs in an async context, requery the logs just in case any field values have changed
+        if (String.isBlank(endpoint) == true) {
+            return;
+        }
+
+        // Since this runs in an async context, requery the logs just in case any field values have changed
         this.requeryLogs();
 
         if (this.logs.isEmpty() == true) {
