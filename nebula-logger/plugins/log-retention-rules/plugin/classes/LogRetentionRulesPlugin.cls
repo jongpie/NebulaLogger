@@ -14,16 +14,10 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         this.loadConfiguredFilters();
     }
 
-    public override void execute(
-        TriggerOperation triggerOperationType,
-        List<SObject> triggerNew,
-        Map<Id, SObject> triggerNewMap,
-        List<SObject> triggerOld,
-        Map<Id, SObject> triggerOldMap
-    ) {
-        switch on triggerOperationType {
+    public override void execute(LoggerSObjectHandlerPlugin.PluginInput input) {
+        switch on input.triggerOperationType {
             when AFTER_INSERT {
-                List<LogEntry__c> logEntries = requeryLogEntries((List<LogEntry__c>) triggerNew);
+                List<LogEntry__c> logEntries = requeryLogEntries((List<LogEntry__c>) input.triggerNew);
                 this.setLogRetentionDate(logEntries);
             }
         }

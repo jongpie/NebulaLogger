@@ -34,23 +34,12 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
 
     /**
      * @description Handles the queuable execute logic.
-     * @param triggerOperationType Defines the trigger operation type
-     * @param triggerNew contains a list of the new trigger context / records.
-     * @param triggerNewMap contains a map of ids to new trigger records.
-     * @param triggerOld old contains a list of the old trigger context / records.
-     * @param triggerOldMap contains a map of ids to old trigger records.
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public override void execute(
-        TriggerOperation triggerOperationType,
-        List<SObject> triggerNew,
-        Map<Id, SObject> triggerNewMap,
-        List<SObject> triggerOld,
-        Map<Id, SObject> triggerOldMap
-    ) {
-        this.logs = (List<Log__c>) triggerNew;
+    public override void execute(LoggerSObjectHandlerPlugin.PluginInput input) {
+        this.logs = (List<Log__c>) input.triggerNew;
 
-        switch on triggerOperationType {
+        switch on input.triggerOperationType {
             when BEFORE_INSERT, BEFORE_UPDATE {
                 this.flagLogsForSlackNotification();
             }

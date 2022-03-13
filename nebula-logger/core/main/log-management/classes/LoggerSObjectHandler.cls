@@ -122,8 +122,8 @@ public without sharing abstract class LoggerSObjectHandler {
     private void queryPluginConfigurations() {
         // Dynamically query the LoggerPlugin__mdt CMDT object so the records are filtered by the current SObjectType, and so the records are sorted correctly
         List<String> fieldsToQuery = new List<String>{
-            Schema.LoggerPlugin__mdt.PluginType__c.getDescribe().getName(),
-            Schema.LoggerPlugin__mdt.PluginApiName__c.getDescribe().getName()
+            Schema.LoggerPlugin__mdt.PluginApiName__c.getDescribe().getName(),
+            Schema.LoggerPlugin__mdt.PluginType__c.getDescribe().getName()
         };
         List<String> filterConditions = new List<String>{
             Schema.LoggerPlugin__mdt.IsEnabled__c.getDescribe().getName() + ' = TRUE',
@@ -161,7 +161,7 @@ public without sharing abstract class LoggerSObjectHandler {
             return;
         }
 
-        LoggerPlugin.PluginInput pluginInput = this.createPluginInput();
+        LoggerSObjectHandlerPlugin.PluginInput pluginInput = this.createPluginInput();
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
             switch on pluginConfiguration.PluginType__c {
                 when 'Apex' {
@@ -174,20 +174,15 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
-    private void executeApexPlugin(String apexClassName, LoggerPlugin.PluginInput pluginInput) {
-        Object untypedApexPlugin = Type.forName(apexClassName).newInstance();
-        if (untypedApexPlugin instanceof LoggerSObjectHandlerPlugin) {
-            // TODO Legacy approach - eliminate long term
-            LoggerSObjectHandlerPlugin legacyApexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
-            legacyApexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
-        } else {
-            // TODO Potentially new approach - still a WIP
-            LoggerPlugin fancyApexPlugin = (LoggerPlugin) Type.forName(apexClassName).newInstance();
-            fancyApexPlugin.execute(pluginInput);
-        }
+    private void executeApexPlugin(String apexClassName, LoggerSObjectHandlerPlugin.PluginInput pluginInput) {
+        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
+        // TODO Legacy approach - eliminate long term
+        apexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
+        // TODO Potentially new approach - still a WIP
+        apexPlugin.execute(pluginInput);
     }
 
-    private void executeFlowPlugin(String flowApiName, LoggerPlugin.PluginInput pluginInput) {
+    private void executeFlowPlugin(String flowApiName, LoggerSObjectHandlerPlugin.PluginInput pluginInput) {
         Map<String, Object> flowInputs = new Map<String, Object>();
 
         // TODO Legacy inputs - eliminate long term
@@ -208,10 +203,11 @@ public without sharing abstract class LoggerSObjectHandler {
         // FIXME Possibly need to capture output parameters from Flow?
     }
 
-    private LoggerPlugin.PluginInput createPluginInput() {
-        LoggerPlugin.PluginInput pluginInput = new LoggerPlugin.PluginInput();
+    private LoggerSObjectHandlerPlugin.PluginInput createPluginInput() {
+        LoggerSObjectHandlerPlugin.PluginInput pluginInput = new LoggerSObjectHandlerPlugin.PluginInput();
 
         // Trigger variables for Apex Developers
+        pluginInput.sobjectType = this.getSObjectType();
         pluginInput.triggerOperationType = this.triggerOperationType;
         pluginInput.triggerNew = this.triggerNew;
         pluginInput.triggerNewMap = this.triggerNewMap;
@@ -219,11 +215,12 @@ public without sharing abstract class LoggerSObjectHandler {
         pluginInput.triggerOldMap = this.triggerOldMap;
 
         // PluginRecordInput for Flow Builders (and Apex Developers too, if they want to use them)
+        pluginInput.sobjectTypeName = this.getSObjectType().getDescribe().getName();
         pluginInput.triggerOperationTypeName = this.triggerOperationType?.name();
-        pluginInput.triggerRecords = new List<LoggerPlugin.PluginRecordInput>();
+        pluginInput.triggerRecords = new List<LoggerSObjectHandlerPlugin.PluginRecordInput>();
         if (this.triggerNew != null) {
             for (SObject record : this.triggerNew) {
-                LoggerPlugin.PluginRecordInput recordInput = new LoggerPlugin.PluginRecordInput();
+                LoggerSObjectHandlerPlugin.PluginRecordInput recordInput = new LoggerSObjectHandlerPlugin.PluginRecordInput();
                 recordInput.triggerRecordNew = record;
                 if (this.triggerOldMap != null && record.Id != null) {
                     recordInput.triggerRecordOld = this.triggerOldMap.get(record.Id);
@@ -233,7 +230,7 @@ public without sharing abstract class LoggerSObjectHandler {
             }
         } else if (this.triggerOld != null) {
             for (SObject record : this.triggerOld) {
-                LoggerPlugin.PluginRecordInput recordInput = new LoggerPlugin.PluginRecordInput();
+                LoggerSObjectHandlerPlugin.PluginRecordInput recordInput = new LoggerSObjectHandlerPlugin.PluginRecordInput();
                 recordInput.triggerRecordOld = record;
 
                 pluginInput.triggerRecords.add(recordInput);

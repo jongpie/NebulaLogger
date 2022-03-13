@@ -9,16 +9,10 @@ private class LoggerSObjectHandlerPlugin_Tests {
     private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
     public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
-        public override void execute(
-            TriggerOperation triggerOperationType,
-            List<SObject> triggerNew,
-            Map<Id, SObject> triggerNewMap,
-            List<SObject> triggerOld,
-            Map<Id, SObject> triggerOldMap
-        ) {
-            switch on triggerOperationType {
+        public override void execute(LoggerSObjectHandlerPlugin.PluginInput input) {
+            switch on input.triggerOperationType {
                 when BEFORE_INSERT {
-                    for (Log__c log : (List<Log__c>) triggerNew) {
+                    for (Log__c log : (List<Log__c>) input.triggerNew) {
                         log.Status__c = PLUGIN_LOG_STATUS;
                     }
                 }
@@ -30,13 +24,12 @@ private class LoggerSObjectHandlerPlugin_Tests {
     static void it_should_execute_plugin_logic() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         System.assertEquals(null, log.Status__c);
-
-        Test.startTest();
+        LoggerSObjectHandlerPlugin.PluginInput input = new LoggerSObjectHandlerPlugin.PluginInput();
+        input.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        input.triggerNew = new List<Log__c>{ log };
 
         ExamplePlugin plugin = new ExamplePlugin();
-        plugin.execute(triggerOperation.BEFORE_INSERT, new List<Log__c>{ log }, null, null, null);
-
-        Test.stopTest();
+        plugin.execute(input);
 
         System.assertEquals(PLUGIN_LOG_STATUS, log.Status__c);
     }

@@ -7,15 +7,9 @@
 @IsTest
 private class LogEntryHandler_Tests {
     public class LogEntryPluginTest extends LoggerSObjectHandlerPlugin {
-        public override void execute(
-            TriggerOperation triggerOperationType,
-            List<SObject> triggerNew,
-            Map<Id, SObject> triggerNewMap,
-            List<SObject> triggerOld,
-            Map<Id, SObject> triggerOldMap
-        ) {
-            if (triggerOperationType == TriggerOperation.BEFORE_INSERT) {
-                for (LogEntry__c logEntry : (List<LogEntry__c>) triggerNew) {
+        public override void execute(LoggerSObjectHandlerPlugin.PluginInput input) {
+            if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
+                for (LogEntry__c logEntry : (List<LogEntry__c>) input.triggerNew) {
                     // The specific field changed doesn't really matter - we just want to ensure that whatever
                     // logic implemented in the instance of LoggerSObjectHandlerPlugin is executed
                     logEntry.Message__c = 'Some String';

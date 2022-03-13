@@ -5,11 +5,8 @@
 
 /**
  * @group Plugin Framework
- * @description Abstract class used to create custom Apex plugins to execute for all trigger operations on `Log__c` or `LogEntry__c`
+ * @description Abstract class used to create custom Apex & Flow plugins
  */
-// TODO: If possible, convert to `global` for the managed package - there are some additional platform limitations
-//       and restrictions with making future changes to abstract classes & interfaces within managed packages
-//       which could lead to a lot of problems, so for now/indefinitely, plugins will only work in the unlocked package
 public abstract class LoggerSObjectHandlerPlugin {
     /**
      * @description All instances of `LoggerSObjectHandlerPlugin` are dynamically created, which requires a parameterless constructor
@@ -19,7 +16,7 @@ public abstract class LoggerSObjectHandlerPlugin {
     }
 
     /**
-     * @description This method is the entry point for plugins to execute any custom logic.
+     * @deprecated Deprecated, will be removed: This method is the entry point for plugins to execute any custom logic.
      *              It is automatically called by the logging system for any enabled plugins.
      *              Several trigger-based parameters are provided - these parameters should be used by plugins,
      *              instead of calling the platform's static variables directly
@@ -31,11 +28,51 @@ public abstract class LoggerSObjectHandlerPlugin {
      * @param  triggerOldMap        The value `Trigger.oldMap` at the time that the handler class is created
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public abstract void execute(
+    public virtual void execute(
         TriggerOperation triggerOperationType,
         List<SObject> triggerNew,
         Map<Id, SObject> triggerNewMap,
         List<SObject> triggerOld,
         Map<Id, SObject> triggerOldMap
-    );
+    ) {
+    }
+
+    /**
+     * @description This method is the entry point for plugins to execute any custom logic.
+     *              It is automatically called by the logging system for any enabled plugins.
+     * @param  input The instance of `LoggerSObjectHandlerPlugin.PluginInput`, provided by the logging system
+     */
+    public abstract void execute(PluginInput input);
+
+    /**
+     * @description Class used by the logging system to provide context & record details to logger plugins
+     */
+    public class PluginInput {
+        public Schema.SObjectType sobjectType;
+        public TriggerOperation triggerOperationType;
+        public List<SObject> triggerNew;
+        public Map<Id, SObject> triggerNewMap;
+        public List<SObject> triggerOld;
+        public Map<Id, SObject> triggerOldMap;
+
+        @InvocableVariable(label='SObject Type Name')
+        public String sobjectTypeName;
+
+        @InvocableVariable(label='Trigger Operation Name')
+        public String triggerOperationTypeName;
+
+        @InvocableVariable(label='Trigger Records')
+        public List<PluginRecordInput> triggerRecords;
+    }
+
+    /**
+     * @description Class used by the logging system to provide record details to logger plugins
+     */
+    public class PluginRecordInput {
+        @InvocableVariable(label='Trigger.new Record')
+        public SObject triggerRecordNew;
+
+        @InvocableVariable(label='Trigger.old Record')
+        public SObject triggerRecordOld;
+    }
 }
