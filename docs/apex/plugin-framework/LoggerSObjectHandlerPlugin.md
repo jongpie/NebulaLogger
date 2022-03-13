@@ -14,16 +14,6 @@ Abstract class used to create custom Apex &amp; Flow plugins
 
 ## All instances of `LoggerSObjectHandlerPlugin` are dynamically created, which requires a parameterless constructor
 
-### Properties
-
-#### `triggerRecordNew` → `SObject`
-
-Class used by the logging system to provide record details to logger plugins
-
-#### `triggerRecordOld` → `SObject`
-
----
-
 ### Methods
 
 #### `execute(TriggerOperation triggerOperationType,List<SObject> triggerNew,Map<Id, SObject> triggerNewMap,List<SObject> triggerOld,Map<Id, SObject> triggerOldMap)` → `void`
@@ -40,44 +30,14 @@ Class used by the logging system to provide record details to logger plugins
 | `triggerOld`           | The value `Trigger.old` at the time that the handler class is created                      |
 | `triggerOldMap`        | The value `Trigger.oldMap` at the time that the handler class is created                   |
 
-#### `execute(PluginInput input)` → `void`
+#### `execute(LoggerSObjectHandler.SObjectHandlerInput input)` → `void`
 
 This method is the entry point for plugins to execute any custom logic. It is automatically called by the logging system for any enabled plugins.
 
 ##### Parameters
 
-| Param   | Description                                                                              |
-| ------- | ---------------------------------------------------------------------------------------- |
-| `input` | The instance of `LoggerSObjectHandlerPlugin.PluginInput`, provided by the logging system |
-
----
-
-### Inner Classes
-
-#### LoggerSObjectHandlerPlugin.PluginInput class
-
-Class used by the logging system to provide context &amp; record details to logger plugins
-
----
-
-##### Properties
-
-###### `sobjectType` → `Schema.SObjectType`
-
-###### `sobjectTypeName` → `String`
-
-###### `triggerNew` → `List<SObject>`
-
-###### `triggerNewMap` → `Map<Id, SObject>`
-
-###### `triggerOld` → `List<SObject>`
-
-###### `triggerOldMap` → `Map<Id, SObject>`
-
-###### `triggerOperationType` → `TriggerOperation`
-
-###### `triggerOperationTypeName` → `String`
-
-###### `triggerRecords` → `List<PluginRecordInput>`
+| Param   | Description                                                                                      |
+| ------- | ------------------------------------------------------------------------------------------------ |
+| `input` | The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system |
 
 ---

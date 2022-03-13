@@ -36,7 +36,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
      * @description Handles the queuable execute logic.
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public override void execute(LoggerSObjectHandlerPlugin.PluginInput input) {
+    public override void execute(LoggerSObjectHandler.SObjectHandlerInput input) {
         this.logs = (List<Log__c>) input.triggerNew;
 
         switch on input.triggerOperationType {

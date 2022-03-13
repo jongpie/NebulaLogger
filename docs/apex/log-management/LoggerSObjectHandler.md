@@ -35,3 +35,47 @@ SObjectType
 The instance of `SObjectType`
 
 ---
+
+### Inner Classes
+
+#### LoggerSObjectHandler.SObjectHandlerInput class
+
+Class used by the logging system to for trigger context details
+
+---
+
+##### Properties
+
+###### `sobjectType` → `Schema.SObjectType`
+
+###### `sobjectTypeName` → `String`
+
+###### `triggerNew` → `List<SObject>`
+
+###### `triggerNewMap` → `Map<Id, SObject>`
+
+###### `triggerOld` → `List<SObject>`
+
+###### `triggerOldMap` → `Map<Id, SObject>`
+
+###### `triggerOperationType` → `TriggerOperation`
+
+###### `triggerOperationTypeName` → `String`
+
+###### `triggerRecords` → `List<SObjectHandlerRecordInput>`
+
+---
+
+#### LoggerSObjectHandler.SObjectHandlerRecordInput class
+
+Class used by the logging system to provide trigger record details
+
+---
+
+##### Properties
+
+###### `triggerRecordNew` → `SObject`
+
+###### `triggerRecordOld` → `SObject`
+
+---

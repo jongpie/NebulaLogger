@@ -14,7 +14,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         this.loadConfiguredFilters();
     }
 
-    public override void execute(LoggerSObjectHandlerPlugin.PluginInput input) {
+    public override void execute(LoggerSObjectHandler.SObjectHandlerInput input) {
         switch on input.triggerOperationType {
             when AFTER_INSERT {
                 List<LogEntry__c> logEntries = requeryLogEntries((List<LogEntry__c>) input.triggerNew);

@@ -9,9 +9,7 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.EmptyStatementBlock')
 public without sharing abstract class LoggerSObjectHandler {
-    @TestVisible
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
-    @TestVisible
     private static final Map<Schema.SObjectType, Boolean> SOBJECT_TYPE_TO_HANDLER_CONTROL = new Map<Schema.SObjectType, Boolean>{
         Schema.Log__c.SObjectType => LoggerParameter.getBoolean('EnableLogHandler', true),
         Schema.LogEntry__c.SObjectType => LoggerParameter.getBoolean('EnableLogEntryHandler', true),
@@ -28,17 +26,8 @@ public without sharing abstract class LoggerSObjectHandler {
     };
     private static final Map<Schema.SObjectType, List<LoggerPlugin__mdt>> SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS = new Map<Schema.SObjectType, List<LoggerPlugin__mdt>>();
 
+    private SObjectHandlerInput input;
     private List<LoggerPlugin__mdt> pluginConfigurations;
-    @TestVisible
-    private TriggerOperation triggerOperationType;
-    @TestVisible
-    private List<SObject> triggerNew;
-    @TestVisible
-    private Map<Id, SObject> triggerNewMap;
-    @TestVisible
-    private List<SObject> triggerOld;
-    @TestVisible
-    private Map<Id, SObject> triggerOldMap;
 
     @TestVisible
     private static Map<Schema.SObjectType, List<LoggerSObjectHandler>> getExecutedHandlers() {
@@ -57,12 +46,7 @@ public without sharing abstract class LoggerSObjectHandler {
      * @description Default constructor
      */
     public LoggerSObjectHandler() {
-        this.triggerOperationType = Trigger.operationType;
-        this.triggerNew = Trigger.new;
-        this.triggerNewMap = Trigger.newMap;
-        this.triggerOld = Trigger.old;
-        this.triggerOldMap = Trigger.oldMap;
-
+        this.createSObjectHandlerInput();
         this.queryPluginConfigurations();
     }
 
@@ -73,7 +57,7 @@ public without sharing abstract class LoggerSObjectHandler {
     public abstract SObjectType getSObjectType();
 
     /**
-     * @description Runs the handler class's logic
+     * @description Runs the handler class's logic, as well as any configured plugins
      */
     public void execute() {
         Boolean shouldExecute = SOBJECT_TYPE_TO_HANDLER_CONTROL.get(this.getSObjectType());
@@ -81,31 +65,31 @@ public without sharing abstract class LoggerSObjectHandler {
             return;
         }
 
-        switch on this.triggerOperationType {
+        switch on this.input.triggerOperationType {
             when BEFORE_INSERT {
-                this.executeBeforeInsert(this.triggerNew);
+                this.executeBeforeInsert(this.input.triggerNew);
             }
             when BEFORE_UPDATE {
-                this.executeBeforeUpdate(this.triggerNewMap, this.triggerOldMap);
+                this.executeBeforeUpdate(this.input.triggerNewMap, this.input.triggerOldMap);
             }
             when BEFORE_DELETE {
-                this.executeBeforeDelete(this.triggerNewMap);
+                this.executeBeforeDelete(this.input.triggerNewMap);
             }
             when AFTER_INSERT {
                 // Platform Events don't have an ID field, thus Trigger.newMap doesn't work for LogEntryEvent__e
                 // For custom objects, Map<Id, SObject> is more convenient since it provides both the keys & values
                 // 2 AFTER_INSERT methods are used here in the framework, with the expectation that only 1 will be implemented per handler class
-                this.executeAfterInsert(this.triggerNew);
-                this.executeAfterInsert(this.triggerNewMap);
+                this.executeAfterInsert(this.input.triggerNew);
+                this.executeAfterInsert(this.input.triggerNewMap);
             }
             when AFTER_UPDATE {
-                this.executeAfterUpdate(this.triggerNewMap, this.triggerOldMap);
+                this.executeAfterUpdate(this.input.triggerNewMap, this.input.triggerOldMap);
             }
             when AFTER_DELETE {
-                this.executeAfterDelete(this.triggerNewMap);
+                this.executeAfterDelete(this.input.triggerNewMap);
             }
             when AFTER_UNDELETE {
-                this.executeAfterUndelete(this.triggerNewMap);
+                this.executeAfterUndelete(this.input.triggerNewMap);
             }
         }
 
@@ -142,6 +126,87 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
+    }
+
+    private void createSObjectHandlerInput() {
+        this.input = new SObjectHandlerInput();
+
+        // Trigger variables for Apex Developers
+        input.sobjectType = this.getSObjectType();
+        input.triggerOperationType = Trigger.operationType;
+        input.triggerNew = Trigger.new;
+        input.triggerNewMap = Trigger.newMap;
+        input.triggerOld = Trigger.old;
+        input.triggerOldMap = Trigger.oldMap;
+
+        // Additional variables for Flow Builders (and Apex Developers too, if they want to use them)
+        input.sobjectTypeName = this.getSObjectType().getDescribe().getName();
+        input.triggerOperationTypeName = Trigger.operationType?.name();
+        input.triggerRecords = new List<SObjectHandlerRecordInput>();
+        if (input.triggerNew != null) {
+            for (SObject record : input.triggerNew) {
+                SObjectHandlerRecordInput recordInput = new SObjectHandlerRecordInput();
+                recordInput.triggerRecordNew = record;
+                if (input.triggerOldMap != null && record.Id != null) {
+                    recordInput.triggerRecordOld = input.triggerOldMap.get(record.Id);
+                }
+
+                input.triggerRecords.add(recordInput);
+            }
+        } else if (input.triggerOld != null) {
+            for (SObject record : input.triggerOld) {
+                SObjectHandlerRecordInput recordInput = new SObjectHandlerRecordInput();
+                recordInput.triggerRecordOld = record;
+
+                input.triggerRecords.add(recordInput);
+            }
+        }
+    }
+
+    private void executePlugins() {
+        if (this.pluginConfigurations == null || this.pluginConfigurations.isEmpty() == true) {
+            return;
+        }
+
+        for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
+            switch on pluginConfiguration.PluginType__c {
+                when 'Apex' {
+                    this.executeApexPlugin(pluginConfiguration.PluginApiName__c);
+                }
+                when 'Flow' {
+                    this.executeFlowPlugin(pluginConfiguration.PluginApiName__c);
+                }
+            }
+        }
+    }
+
+    private void executeApexPlugin(String apexClassName) {
+        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
+        // TODO Legacy approach - eliminate long term
+        apexPlugin.execute(this.input.triggerOperationType, this.input.triggerNew, this.input.triggerNewMap, this.input.triggerOld, this.input.triggerOldMap);
+        // TODO Potentially new approach - still a WIP
+        apexPlugin.execute(this.input);
+    }
+
+    private void executeFlowPlugin(String flowApiName) {
+        Map<String, Object> flowInputs = new Map<String, Object>();
+
+        // TODO Legacy inputs - eliminate long term
+        flowInputs.put('triggerOperationType', this.input.triggerOperationType?.name());
+        flowInputs.put('triggerNew', this.input.triggerNew);
+        flowInputs.put('triggerOld', this.input.triggerOld);
+
+        // TODO New input - still a WIP
+        flowInputs.put('pluginInput', this.input);
+
+        Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
+        flowPlugin.start();
+
+        List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
+        if (updatedTriggerNew != null && updatedTriggerNew.size() == this.input.triggerNew.size()) {
+            this.input.triggerNew = updatedTriggerNew;
+        }
+        // FIXME Possibly need to capture output parameters from Flow?
     }
 
     private void queryPluginConfigurations() {
@@ -181,87 +246,35 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
-    private LoggerSObjectHandlerPlugin.PluginInput createPluginInput() {
-        LoggerSObjectHandlerPlugin.PluginInput pluginInput = new LoggerSObjectHandlerPlugin.PluginInput();
+    /**
+     * @description Class used by the logging system to for trigger context details
+     */
+    public class SObjectHandlerInput {
+        public Schema.SObjectType sobjectType;
+        public TriggerOperation triggerOperationType;
+        public List<SObject> triggerNew;
+        public Map<Id, SObject> triggerNewMap;
+        public List<SObject> triggerOld;
+        public Map<Id, SObject> triggerOldMap;
 
-        // Trigger variables for Apex Developers
-        pluginInput.sobjectType = this.getSObjectType();
-        pluginInput.triggerOperationType = this.triggerOperationType;
-        pluginInput.triggerNew = this.triggerNew;
-        pluginInput.triggerNewMap = this.triggerNewMap;
-        pluginInput.triggerOld = this.triggerOld;
-        pluginInput.triggerOldMap = this.triggerOldMap;
+        @InvocableVariable(label='SObject Type Name')
+        public String sobjectTypeName;
 
-        // PluginRecordInput for Flow Builders (and Apex Developers too, if they want to use them)
-        pluginInput.sobjectTypeName = this.getSObjectType().getDescribe().getName();
-        pluginInput.triggerOperationTypeName = this.triggerOperationType?.name();
-        pluginInput.triggerRecords = new List<LoggerSObjectHandlerPlugin.PluginRecordInput>();
-        if (this.triggerNew != null) {
-            for (SObject record : this.triggerNew) {
-                LoggerSObjectHandlerPlugin.PluginRecordInput recordInput = new LoggerSObjectHandlerPlugin.PluginRecordInput();
-                recordInput.triggerRecordNew = record;
-                if (this.triggerOldMap != null && record.Id != null) {
-                    recordInput.triggerRecordOld = this.triggerOldMap.get(record.Id);
-                }
+        @InvocableVariable(label='Trigger Operation Name')
+        public String triggerOperationTypeName;
 
-                pluginInput.triggerRecords.add(recordInput);
-            }
-        } else if (this.triggerOld != null) {
-            for (SObject record : this.triggerOld) {
-                LoggerSObjectHandlerPlugin.PluginRecordInput recordInput = new LoggerSObjectHandlerPlugin.PluginRecordInput();
-                recordInput.triggerRecordOld = record;
-
-                pluginInput.triggerRecords.add(recordInput);
-            }
-        }
-
-        return pluginInput;
+        @InvocableVariable(label='Trigger Records')
+        public List<SObjectHandlerRecordInput> triggerRecords;
     }
 
-    private void executePlugins() {
-        if (this.pluginConfigurations == null || this.pluginConfigurations.isEmpty() == true) {
-            return;
-        }
+    /**
+     * @description Class used by the logging system to provide trigger record details
+     */
+    public class SObjectHandlerRecordInput {
+        @InvocableVariable(label='Trigger.new Record')
+        public SObject triggerRecordNew;
 
-        LoggerSObjectHandlerPlugin.PluginInput pluginInput = this.createPluginInput();
-        for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
-            switch on pluginConfiguration.PluginType__c {
-                when 'Apex' {
-                    this.executeApexPlugin(pluginConfiguration.PluginApiName__c, pluginInput);
-                }
-                when 'Flow' {
-                    this.executeFlowPlugin(pluginConfiguration.PluginApiName__c, pluginInput);
-                }
-            }
-        }
-    }
-
-    private void executeApexPlugin(String apexClassName, LoggerSObjectHandlerPlugin.PluginInput pluginInput) {
-        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
-        // TODO Legacy approach - eliminate long term
-        apexPlugin.execute(this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOld, this.triggerOldMap);
-        // TODO Potentially new approach - still a WIP
-        apexPlugin.execute(pluginInput);
-    }
-
-    private void executeFlowPlugin(String flowApiName, LoggerSObjectHandlerPlugin.PluginInput pluginInput) {
-        Map<String, Object> flowInputs = new Map<String, Object>();
-
-        // TODO Legacy inputs - eliminate long term
-        flowInputs.put('triggerOperationType', this.triggerOperationType?.name());
-        flowInputs.put('triggerNew', this.triggerNew);
-        flowInputs.put('triggerOld', this.triggerOld);
-
-        // TODO New input - still a WIP
-        flowInputs.put('pluginInput', pluginInput);
-
-        Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
-        flowPlugin.start();
-
-        List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
-        if (updatedTriggerNew != null && updatedTriggerNew.size() == this.triggerNew.size()) {
-            this.triggerNew = updatedTriggerNew;
-        }
-        // FIXME Possibly need to capture output parameters from Flow?
+        @InvocableVariable(label='Trigger.old Record')
+        public SObject triggerRecordOld;
     }
 }
