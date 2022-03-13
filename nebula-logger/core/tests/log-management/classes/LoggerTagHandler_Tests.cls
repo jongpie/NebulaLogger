@@ -7,7 +7,18 @@
 @IsTest
 private class LoggerTagHandler_Tests {
     @IsTest
-    static void it_should_set_unique_id_when_enabled() {
+    static void it_should_not_run_when_disabled_via_configuration() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerTagHandler', Value__c = 'false');
+        LoggerParameter.setMockParameter(mockParameter);
+
+        LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
+        insert tag;
+
+        System.assertEquals(null, LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType), LoggerSObjectHandler.getExecutedHandlers());
+    }
+
+    @IsTest
+    static void it_should_set_unique_id() {
         LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
         insert tag;
 

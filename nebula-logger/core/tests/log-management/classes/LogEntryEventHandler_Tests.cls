@@ -17,6 +17,30 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_not_run_when_disabled_via_configuration() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventHandler', Value__c = 'false');
+        LoggerParameter.setMockParameter(mockParameter);
+        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
+            EpochTimestamp__c = System.now().getTime(),
+            LoggedById__c = UserInfo.getUserId(),
+            Message__c = 'my message',
+            Timestamp__c = System.now(),
+            TransactionEntryNumber__c = 1,
+            TransactionId__c = '123-456-789-0'
+        );
+
+        Test.startTest();
+        EventBus.publish(logEntryEvent);
+        Test.stopTest();
+
+        System.assertEquals(
+            null,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType),
+            LoggerSObjectHandler.getExecutedHandlers()
+        );
+    }
+
+    @IsTest
     static void it_should_gracefully_skip_execution_when_logEntryEvents_list_is_empty() {
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         System.assert(logEntryEvents.isEmpty());

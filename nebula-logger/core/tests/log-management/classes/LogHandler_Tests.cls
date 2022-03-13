@@ -45,6 +45,24 @@ private class LogHandler_Tests {
     }
 
     @IsTest
+    static void it_should_not_run_when_disabled_via_configuration() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogHandler', Value__c = 'false');
+        LoggerParameter.setMockParameter(mockParameter);
+
+        Log__c log = new Log__c(
+            ClosedBy__c = UserInfo.getUserId(),
+            ClosedDate__c = System.now(),
+            IsClosed__c = true,
+            IsResolved__c = true,
+            Status__c = FIRST_STATUS,
+            TransactionId__c = '1234'
+        );
+        insert log;
+
+        System.assertEquals(null, LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType), LoggerSObjectHandler.getExecutedHandlers());
+    }
+
+    @IsTest
     static void it_should_clear_closed_status_fields_when_open() {
         Log__c log = new Log__c(
             ClosedBy__c = UserInfo.getUserId(),

@@ -28,6 +28,23 @@ private class LogEntryTagHandler_Tests {
     }
 
     @IsTest
+    static void it_should_not_run_when_disabled_via_configuration() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryTagHandler', Value__c = 'false');
+        LoggerParameter.setMockParameter(mockParameter);
+        LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
+        LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
+
+        LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
+        insert logEntryTag;
+
+        System.assertEquals(
+            null,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryTag__c.SObjectType),
+            LoggerSObjectHandler.getExecutedHandlers()
+        );
+    }
+
+    @IsTest
     static void it_should_set_unique_id_on_insert() {
         LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
         LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];

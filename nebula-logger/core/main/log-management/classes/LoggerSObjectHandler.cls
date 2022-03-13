@@ -9,14 +9,24 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.EmptyStatementBlock')
 public without sharing abstract class LoggerSObjectHandler {
-    private static final Map<SObjectType, Schema.SObjectField> SOBJECT_TYPE_TO_CONFIGURATION_FIELD = new Map<SObjectType, Schema.SObjectField>{
+    @TestVisible
+    private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
+    @TestVisible
+    private static final Map<Schema.SObjectType, Boolean> SOBJECT_TYPE_TO_HANDLER_CONTROL = new Map<Schema.SObjectType, Boolean>{
+        Schema.Log__c.SObjectType => LoggerParameter.getBoolean('EnableLogHandler', true),
+        Schema.LogEntry__c.SObjectType => LoggerParameter.getBoolean('EnableLogEntryHandler', true),
+        Schema.LogEntryEvent__e.SObjectType => LoggerParameter.getBoolean('EnableLogEntryEventHandler', true),
+        Schema.LogEntryTag__c.SObjectType => LoggerParameter.getBoolean('EnableLogEntryTagHandler', true),
+        Schema.LoggerTag__c.SObjectType => LoggerParameter.getBoolean('EnableLoggerTagHandler', true)
+    };
+    private static final Map<SObjectType, Schema.SObjectField> SOBJECT_TYPE_TO_PLUGIN_CONTROL_FIELD = new Map<Schema.SObjectType, Schema.SObjectField>{
         Schema.Log__c.SObjectType => Schema.LoggerPlugin__mdt.IsLogEnabled__c,
         Schema.LogEntry__c.SObjectType => Schema.LoggerPlugin__mdt.IsLogEntryEnabled__c,
         Schema.LogEntryEvent__e.SObjectType => Schema.LoggerPlugin__mdt.IsLogEntryEventEnabled__c,
         Schema.LogEntryTag__c.SObjectType => Schema.LoggerPlugin__mdt.IsLogEntryTagEnabled__c,
         Schema.LoggerTag__c.SObjectType => Schema.LoggerPlugin__mdt.IsLoggerTagEnabled__c
     };
-    private static Map<SObjectType, List<LoggerPlugin__mdt>> sobjectTypeToMockPluginConfigurations = new Map<SObjectType, List<LoggerPlugin__mdt>>();
+    private static final Map<Schema.SObjectType, List<LoggerPlugin__mdt>> SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS = new Map<Schema.SObjectType, List<LoggerPlugin__mdt>>();
 
     private List<LoggerPlugin__mdt> pluginConfigurations;
     @TestVisible
@@ -31,13 +41,16 @@ public without sharing abstract class LoggerSObjectHandler {
     private Map<Id, SObject> triggerOldMap;
 
     @TestVisible
+    private static Map<Schema.SObjectType, List<LoggerSObjectHandler>> getExecutedHandlers() {
+        return SOBJECT_TYPE_TO_EXECUTED_HANDLERS;
+    }
+
+    @TestVisible
     private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerPlugin__mdt plugin) {
-        List<LoggerPlugin__mdt> pluginConfigurations = sobjectTypeToMockPluginConfigurations.get(sobjectType);
-        if (pluginConfigurations == null) {
-            pluginConfigurations = new List<LoggerPlugin__mdt>();
+        if (SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.containsKey(sobjectType) == false) {
+            SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.put(sobjectType, new List<LoggerPlugin__mdt>());
         }
-        pluginConfigurations.add(plugin);
-        sobjectTypeToMockPluginConfigurations.put(sobjectType, pluginConfigurations);
+        SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(sobjectType).add(plugin);
     }
 
     /**
@@ -63,6 +76,11 @@ public without sharing abstract class LoggerSObjectHandler {
      * @description Runs the handler class's logic
      */
     public void execute() {
+        Boolean shouldExecute = SOBJECT_TYPE_TO_HANDLER_CONTROL.get(this.getSObjectType());
+        if (shouldExecute == false) {
+            return;
+        }
+
         switch on this.triggerOperationType {
             when BEFORE_INSERT {
                 this.executeBeforeInsert(this.triggerNew);
@@ -92,6 +110,13 @@ public without sharing abstract class LoggerSObjectHandler {
         }
 
         this.executePlugins();
+
+        if (Test.isRunningTest() == true) {
+            if (SOBJECT_TYPE_TO_EXECUTED_HANDLERS.containsKey(this.getSObjectType()) == false) {
+                SOBJECT_TYPE_TO_EXECUTED_HANDLERS.put(this.getSObjectType(), new List<LoggerSObjectHandler>());
+            }
+            SOBJECT_TYPE_TO_EXECUTED_HANDLERS.get(this.getSObjectType()).add(this);
+        }
     }
 
     protected virtual void executeBeforeInsert(List<SObject> triggerNew) {
@@ -127,7 +152,7 @@ public without sharing abstract class LoggerSObjectHandler {
         };
         List<String> filterConditions = new List<String>{
             Schema.LoggerPlugin__mdt.IsEnabled__c.getDescribe().getName() + ' = TRUE',
-            SOBJECT_TYPE_TO_CONFIGURATION_FIELD.get(this.getSObjectType()).getDescribe().getName() + ' = TRUE'
+            SOBJECT_TYPE_TO_PLUGIN_CONTROL_FIELD.get(this.getSObjectType()).getDescribe().getName() + ' = TRUE'
         };
         List<String> orderByConditions = new List<String>{
             Schema.LoggerPlugin__mdt.ExecutionOrder__c.getDescribe().getName() + ' NULLS LAST',
@@ -149,11 +174,48 @@ public without sharing abstract class LoggerSObjectHandler {
             // Clear the org's loaded records during tests, and mock via setMockConfiguration()
             this.pluginConfigurations.clear();
 
-            List<LoggerPlugin__mdt> mockPluginConfigurations = sobjectTypeToMockPluginConfigurations.get(this.getSObjectType());
+            List<LoggerPlugin__mdt> mockPluginConfigurations = SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(this.getSObjectType());
             if (mockPluginConfigurations != null && mockPluginConfigurations.isEmpty() == false) {
                 this.pluginConfigurations.addAll(mockPluginConfigurations);
             }
         }
+    }
+
+    private LoggerSObjectHandlerPlugin.PluginInput createPluginInput() {
+        LoggerSObjectHandlerPlugin.PluginInput pluginInput = new LoggerSObjectHandlerPlugin.PluginInput();
+
+        // Trigger variables for Apex Developers
+        pluginInput.sobjectType = this.getSObjectType();
+        pluginInput.triggerOperationType = this.triggerOperationType;
+        pluginInput.triggerNew = this.triggerNew;
+        pluginInput.triggerNewMap = this.triggerNewMap;
+        pluginInput.triggerOld = this.triggerOld;
+        pluginInput.triggerOldMap = this.triggerOldMap;
+
+        // PluginRecordInput for Flow Builders (and Apex Developers too, if they want to use them)
+        pluginInput.sobjectTypeName = this.getSObjectType().getDescribe().getName();
+        pluginInput.triggerOperationTypeName = this.triggerOperationType?.name();
+        pluginInput.triggerRecords = new List<LoggerSObjectHandlerPlugin.PluginRecordInput>();
+        if (this.triggerNew != null) {
+            for (SObject record : this.triggerNew) {
+                LoggerSObjectHandlerPlugin.PluginRecordInput recordInput = new LoggerSObjectHandlerPlugin.PluginRecordInput();
+                recordInput.triggerRecordNew = record;
+                if (this.triggerOldMap != null && record.Id != null) {
+                    recordInput.triggerRecordOld = this.triggerOldMap.get(record.Id);
+                }
+
+                pluginInput.triggerRecords.add(recordInput);
+            }
+        } else if (this.triggerOld != null) {
+            for (SObject record : this.triggerOld) {
+                LoggerSObjectHandlerPlugin.PluginRecordInput recordInput = new LoggerSObjectHandlerPlugin.PluginRecordInput();
+                recordInput.triggerRecordOld = record;
+
+                pluginInput.triggerRecords.add(recordInput);
+            }
+        }
+
+        return pluginInput;
     }
 
     private void executePlugins() {
@@ -201,42 +263,5 @@ public without sharing abstract class LoggerSObjectHandler {
             this.triggerNew = updatedTriggerNew;
         }
         // FIXME Possibly need to capture output parameters from Flow?
-    }
-
-    private LoggerSObjectHandlerPlugin.PluginInput createPluginInput() {
-        LoggerSObjectHandlerPlugin.PluginInput pluginInput = new LoggerSObjectHandlerPlugin.PluginInput();
-
-        // Trigger variables for Apex Developers
-        pluginInput.sobjectType = this.getSObjectType();
-        pluginInput.triggerOperationType = this.triggerOperationType;
-        pluginInput.triggerNew = this.triggerNew;
-        pluginInput.triggerNewMap = this.triggerNewMap;
-        pluginInput.triggerOld = this.triggerOld;
-        pluginInput.triggerOldMap = this.triggerOldMap;
-
-        // PluginRecordInput for Flow Builders (and Apex Developers too, if they want to use them)
-        pluginInput.sobjectTypeName = this.getSObjectType().getDescribe().getName();
-        pluginInput.triggerOperationTypeName = this.triggerOperationType?.name();
-        pluginInput.triggerRecords = new List<LoggerSObjectHandlerPlugin.PluginRecordInput>();
-        if (this.triggerNew != null) {
-            for (SObject record : this.triggerNew) {
-                LoggerSObjectHandlerPlugin.PluginRecordInput recordInput = new LoggerSObjectHandlerPlugin.PluginRecordInput();
-                recordInput.triggerRecordNew = record;
-                if (this.triggerOldMap != null && record.Id != null) {
-                    recordInput.triggerRecordOld = this.triggerOldMap.get(record.Id);
-                }
-
-                pluginInput.triggerRecords.add(recordInput);
-            }
-        } else if (this.triggerOld != null) {
-            for (SObject record : this.triggerOld) {
-                LoggerSObjectHandlerPlugin.PluginRecordInput recordInput = new LoggerSObjectHandlerPlugin.PluginRecordInput();
-                recordInput.triggerRecordOld = record;
-
-                pluginInput.triggerRecords.add(recordInput);
-            }
-        }
-
-        return pluginInput;
     }
 }

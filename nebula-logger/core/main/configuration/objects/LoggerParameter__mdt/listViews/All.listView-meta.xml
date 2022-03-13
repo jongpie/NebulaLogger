@@ -5,6 +5,7 @@
     <columns>DeveloperName</columns>
     <columns>Value__c</columns>
     <columns>Description__c</columns>
+    <columns>IsProtected</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

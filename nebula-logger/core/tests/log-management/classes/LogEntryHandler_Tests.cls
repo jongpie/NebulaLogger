@@ -40,6 +40,18 @@ private class LogEntryHandler_Tests {
     }
 
     @IsTest
+    static void it_should_not_run_when_disabled_via_configuration() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryHandler', Value__c = 'false');
+        LoggerParameter.setMockParameter(mockParameter);
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = null);
+
+        insert logEntry;
+
+        System.assertEquals(null, LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType), LoggerSObjectHandler.getExecutedHandlers());
+    }
+
+    @IsTest
     static void it_should_save_log_entry_without_related_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
 

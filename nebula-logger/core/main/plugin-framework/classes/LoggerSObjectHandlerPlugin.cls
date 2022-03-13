@@ -27,7 +27,7 @@ public abstract class LoggerSObjectHandlerPlugin {
      * @param  triggerOld           The value `Trigger.old` at the time that the handler class is created
      * @param  triggerOldMap        The value `Trigger.oldMap` at the time that the handler class is created
      */
-    @SuppressWarnings('PMD.ExcessiveParameterList')
+    @SuppressWarnings('PMD.EmptyStatementBlock, PMD.ExcessiveParameterList')
     public virtual void execute(
         TriggerOperation triggerOperationType,
         List<SObject> triggerNew,
