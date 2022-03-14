@@ -8,7 +8,7 @@
 private class LoggerTagHandler_Tests {
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerTagHandler', Value__c = 'false');
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLoggerTagHandlerEnabled', Value__c = 'false');
         LoggerParameter.setMockParameter(mockParameter);
 
         LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');

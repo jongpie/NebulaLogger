@@ -11,11 +11,11 @@
 public without sharing abstract class LoggerSObjectHandler {
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
     private static final Map<Schema.SObjectType, Boolean> SOBJECT_TYPE_TO_HANDLER_CONTROL = new Map<Schema.SObjectType, Boolean>{
-        Schema.Log__c.SObjectType => LoggerParameter.getBoolean('EnableLogHandler', true),
-        Schema.LogEntry__c.SObjectType => LoggerParameter.getBoolean('EnableLogEntryHandler', true),
-        Schema.LogEntryEvent__e.SObjectType => LoggerParameter.getBoolean('EnableLogEntryEventHandler', true),
-        Schema.LogEntryTag__c.SObjectType => LoggerParameter.getBoolean('EnableLogEntryTagHandler', true),
-        Schema.LoggerTag__c.SObjectType => LoggerParameter.getBoolean('EnableLoggerTagHandler', true)
+        Schema.Log__c.SObjectType => LoggerParameter.getBoolean('IsLogHandlerEnabled', true),
+        Schema.LogEntry__c.SObjectType => LoggerParameter.getBoolean('IsLogEntryHandlerEnabled', true),
+        Schema.LogEntryEvent__e.SObjectType => LoggerParameter.getBoolean('IsLogEntryEventHandlerEnabled', true),
+        Schema.LogEntryTag__c.SObjectType => LoggerParameter.getBoolean('IsLogEntryTagHandlerEnabled', true),
+        Schema.LoggerTag__c.SObjectType => LoggerParameter.getBoolean('IsLoggerTagHandlerEnabled', true)
     };
     private static final Map<SObjectType, Schema.SObjectField> SOBJECT_TYPE_TO_PLUGIN_CONTROL_FIELD = new Map<Schema.SObjectType, Schema.SObjectField>{
         Schema.Log__c.SObjectType => Schema.LoggerPlugin__mdt.IsLogEnabled__c,

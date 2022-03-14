@@ -18,7 +18,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryEventHandler', Value__c = 'false');
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogEntryEventHandlerEnabled', Value__c = 'false');
         LoggerParameter.setMockParameter(mockParameter);
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),

@@ -46,7 +46,7 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogHandler', Value__c = 'false');
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogHandlerEnabled', Value__c = 'false');
         LoggerParameter.setMockParameter(mockParameter);
 
         Log__c log = new Log__c(

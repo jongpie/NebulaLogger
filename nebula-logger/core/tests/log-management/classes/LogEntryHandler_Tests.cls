@@ -41,7 +41,7 @@ private class LogEntryHandler_Tests {
 
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLogEntryHandler', Value__c = 'false');
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogEntryHandlerEnabled', Value__c = 'false');
         LoggerParameter.setMockParameter(mockParameter);
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = null);
