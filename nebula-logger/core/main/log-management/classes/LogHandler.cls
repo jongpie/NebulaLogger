@@ -27,6 +27,25 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return Schema.Log__c.SObjectType;
     }
 
+    /**
+     * @description Returns the string value of the `LoggerParameter__mdt` record that controls if the handler is enabled.
+     *          The `LoggerSObjectHandler` class uses this method to retrieve the corresponding `LoggerParameter__mdt` to
+     *          determine if the class should execute.
+     * @return   The `DeveloperName` value of the `LoggerParameter__mdt` that controls if the handler is enabled
+     */
+    public override String getHandlerControlParameterName() {
+        return 'IsLogHandlerEnabled';
+    }
+
+    /**
+     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls if plugins are enabled
+     *          for the handler's `SObjectType`
+     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
+     */
+    public override Schema.SObjectField getHandlerPluginControlField() {
+        return Schema.LoggerPlugin__mdt.IsLogEnabled__c;
+    }
+
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logs = (List<Log__c>) triggerNew;
 

@@ -10,20 +10,6 @@
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.EmptyStatementBlock')
 public without sharing abstract class LoggerSObjectHandler {
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
-    private static final Map<Schema.SObjectType, Boolean> SOBJECT_TYPE_TO_HANDLER_CONTROL = new Map<Schema.SObjectType, Boolean>{
-        Schema.Log__c.SObjectType => LoggerParameter.getBoolean('IsLogHandlerEnabled', true),
-        Schema.LogEntry__c.SObjectType => LoggerParameter.getBoolean('IsLogEntryHandlerEnabled', true),
-        Schema.LogEntryEvent__e.SObjectType => LoggerParameter.getBoolean('IsLogEntryEventHandlerEnabled', true),
-        Schema.LogEntryTag__c.SObjectType => LoggerParameter.getBoolean('IsLogEntryTagHandlerEnabled', true),
-        Schema.LoggerTag__c.SObjectType => LoggerParameter.getBoolean('IsLoggerTagHandlerEnabled', true)
-    };
-    private static final Map<SObjectType, Schema.SObjectField> SOBJECT_TYPE_TO_PLUGIN_CONTROL_FIELD = new Map<Schema.SObjectType, Schema.SObjectField>{
-        Schema.Log__c.SObjectType => Schema.LoggerPlugin__mdt.IsLogEnabled__c,
-        Schema.LogEntry__c.SObjectType => Schema.LoggerPlugin__mdt.IsLogEntryEnabled__c,
-        Schema.LogEntryEvent__e.SObjectType => Schema.LoggerPlugin__mdt.IsLogEntryEventEnabled__c,
-        Schema.LogEntryTag__c.SObjectType => Schema.LoggerPlugin__mdt.IsLogEntryTagEnabled__c,
-        Schema.LoggerTag__c.SObjectType => Schema.LoggerPlugin__mdt.IsLoggerTagEnabled__c
-    };
     private static final Map<Schema.SObjectType, List<LoggerPlugin__mdt>> SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS = new Map<Schema.SObjectType, List<LoggerPlugin__mdt>>();
 
     private SObjectHandlerInput input;
@@ -41,13 +27,28 @@ public without sharing abstract class LoggerSObjectHandler {
      * @description Returns the SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
      */
-    public abstract SObjectType getSObjectType();
+    public abstract Schema.SObjectType getSObjectType();
+
+    /**
+     * @description Returns the string value of the `LoggerParameter__mdt` record that controls if the handler is enabled.
+     *          The `LoggerSObjectHandler` class uses this method to retrieve the corresponding `LoggerParameter__mdt` to
+     *          determine if the class should execute.
+     * @return   The `DeveloperName` value of the `LoggerParameter__mdt` that controls if the handler is enabled
+     */
+    public abstract String getHandlerControlParameterName();
+
+    /**
+     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls if plugins are enabled
+     *          for the handler's `SObjectType`
+     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
+     */
+    public abstract Schema.SObjectField getHandlerPluginControlField();
 
     /**
      * @description Runs the handler class's logic, as well as any configured plugins
      */
     public void execute() {
-        Boolean shouldExecute = SOBJECT_TYPE_TO_HANDLER_CONTROL.get(this.getSObjectType());
+        Boolean shouldExecute = LoggerParameter.getBoolean(this.getHandlerControlParameterName(), true);
         if (shouldExecute == false) {
             return;
         }
@@ -205,7 +206,7 @@ public without sharing abstract class LoggerSObjectHandler {
         };
         List<String> filterConditions = new List<String>{
             Schema.LoggerPlugin__mdt.IsEnabled__c.getDescribe().getName() + ' = TRUE',
-            SOBJECT_TYPE_TO_PLUGIN_CONTROL_FIELD.get(this.getSObjectType()).getDescribe().getName() + ' = TRUE'
+            this.getHandlerPluginControlField().getDescribe().getName() + ' = TRUE'
         };
         List<String> orderByConditions = new List<String>{
             Schema.LoggerPlugin__mdt.ExecutionOrder__c.getDescribe().getName() + ' NULLS LAST',

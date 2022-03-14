@@ -18,9 +18,37 @@ Abstract class used by trigger handlers for shared logic
 
 #### `execute()` → `void`
 
-Runs the handler class&apos;s logic
+Runs the handler class&apos;s logic, as well as any configured plugins
 
-#### `getSObjectType()` → `SObjectType`
+#### `getHandlerControlParameterName()` → `String`
+
+Returns the string value of the `LoggerParameter_t` record that controls if the handler is enabled. The `LoggerSObjectHandler` class uses this method to retrieve the corresponding `LoggerParameter_t` to determine if the class should execute.
+
+##### Return
+
+**Type**
+
+String
+
+**Description**
+
+The `DeveloperName` value of the `LoggerParameter_t` that controls if the handler is enabled
+
+#### `getHandlerPluginControlField()` → `Schema.SObjectField`
+
+Returns the `SObjectField` on `LoggerPlugin_t` that controls if plugins are enabled for the handler&apos;s `SObjectType`
+
+##### Return
+
+**Type**
+
+Schema.SObjectField
+
+**Description**
+
+The instance of `Schema.SObjectField` on `LoggerPlugin_t` for the current `SObjectType`
+
+#### `getSObjectType()` → `Schema.SObjectType`
 
 Returns the SObject Type that the handler is responsible for processing
 
@@ -28,7 +56,7 @@ Returns the SObject Type that the handler is responsible for processing
 
 **Type**
 
-SObjectType
+Schema.SObjectType
 
 **Description**
 
