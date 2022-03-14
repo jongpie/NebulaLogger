@@ -43,7 +43,7 @@ private class SlackLoggerPlugin_Tests {
     }
 
     static void mockConfigurations(LoggingLevel notificationLoggingLevel) {
-        // Set the plugin's parameters
+        // Set the plugin's configuration
         LoggerPlugin__mdt slackPluginConfig = new LoggerPlugin__mdt(
             IsEnabled__c = true,
             PluginApiName__c = SlackLoggerPlugin.class.getName(),
@@ -51,9 +51,14 @@ private class SlackLoggerPlugin_Tests {
         );
         LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, slackPluginConfig);
 
-        // Set the plugin's internal variables
-        SlackLoggerPlugin.endpoint = 'https://fake.slack.com/';
-        SlackLoggerPlugin.notificationLoggingLevel = notificationLoggingLevel;
+        // Set the plugin's parameters
+        LoggerParameter__mdt endpointParameter = new LoggerParameter__mdt(DeveloperName = 'SlackEndpoint', Value__c = 'https://fake.slack.com/');
+        LoggerParameter.setMockParameter(endpointParameter);
+        LoggerParameter__mdt notificationLoggingLevelParameter = new LoggerParameter__mdt(
+            DeveloperName = 'SlackNotificationLoggingLevel',
+            Value__c = notificationLoggingLevel.name()
+        );
+        LoggerParameter.setMockParameter(notificationLoggingLevelParameter);
     }
 
     static void verifyLogEntryCountEquals(Integer expectedCount) {
@@ -112,10 +117,10 @@ private class SlackLoggerPlugin_Tests {
 
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         mockConfigurations(logEntryLoggingLevel);
-        System.assert(
-            logEntryLoggingLevel.ordinal() >= SlackLoggerPlugin.notificationLoggingLevel.ordinal(),
-            'The notification logging level ordinal was incorrect.'
-        );
+        // System.assert(
+        //     logEntryLoggingLevel.ordinal() >= SlackLoggerPlugin.notificationLoggingLevel.ordinal(),
+        //     'The notification logging level ordinal was incorrect.'
+        // );
 
         // Update the records to trigger the handler framework, which will then run the Slack plugin
         update log;
@@ -167,7 +172,7 @@ private class SlackLoggerPlugin_Tests {
         LoggingLevel slackLoggingLevel = LoggingLevel.ERROR;
         System.assert(logEntryLoggingLevel.ordinal() < slackLoggingLevel.ordinal(), 'Slack logging level ordinal was incorrect.');
         mockConfigurations(slackLoggingLevel);
-        System.assert(logEntryLoggingLevel.ordinal() < SlackLoggerPlugin.notificationLoggingLevel.ordinal(), 'Slack logging level ordinal was incorrect.');
+        // System.assert(logEntryLoggingLevel.ordinal() < SlackLoggerPlugin.notificationLoggingLevel.ordinal(), 'Slack logging level ordinal was incorrect.');
 
         // Update the records to trigger the handler framework, which will then run the Slack plugin
         update log;

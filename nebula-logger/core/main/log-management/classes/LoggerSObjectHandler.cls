@@ -29,19 +29,6 @@ public without sharing abstract class LoggerSObjectHandler {
     private SObjectHandlerInput input;
     private List<LoggerPlugin__mdt> pluginConfigurations;
 
-    @TestVisible
-    private static Map<Schema.SObjectType, List<LoggerSObjectHandler>> getExecutedHandlers() {
-        return SOBJECT_TYPE_TO_EXECUTED_HANDLERS;
-    }
-
-    @TestVisible
-    private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerPlugin__mdt plugin) {
-        if (SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.containsKey(sobjectType) == false) {
-            SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.put(sobjectType, new List<LoggerPlugin__mdt>());
-        }
-        SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(sobjectType).add(plugin);
-    }
-
     /**
      * @description Default constructor
      */
@@ -171,42 +158,43 @@ public without sharing abstract class LoggerSObjectHandler {
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
             switch on pluginConfiguration.PluginType__c {
                 when 'Apex' {
-                    this.executeApexPlugin(pluginConfiguration.PluginApiName__c);
+                    this.executeApexPlugin(pluginConfiguration);
                 }
                 when 'Flow' {
-                    this.executeFlowPlugin(pluginConfiguration.PluginApiName__c);
+                    this.executeFlowPlugin(pluginConfiguration);
                 }
             }
         }
     }
 
-    private void executeApexPlugin(String apexClassName) {
-        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(apexClassName).newInstance();
-        // TODO Legacy approach - eliminate long term
+    private void executeApexPlugin(LoggerPlugin__mdt configuration) {
+        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(configuration.PluginApiName__c).newInstance();
+        apexPlugin.execute(configuration, this.input);
+
+        // TODO Legacy approach, remove in a future release
         apexPlugin.execute(this.input.triggerOperationType, this.input.triggerNew, this.input.triggerNewMap, this.input.triggerOld, this.input.triggerOldMap);
-        // TODO Potentially new approach - still a WIP
-        apexPlugin.execute(this.input);
     }
 
-    private void executeFlowPlugin(String flowApiName) {
+    private void executeFlowPlugin(LoggerPlugin__mdt configuration) {
         Map<String, Object> flowInputs = new Map<String, Object>();
+        flowInputs.put('pluginConfiguration', configuration);
+        flowInputs.put('pluginInput', this.input);
 
-        // TODO Legacy inputs - eliminate long term
+        // TODO Legacy approach, remove in a future release
         flowInputs.put('triggerOperationType', this.input.triggerOperationType?.name());
         flowInputs.put('triggerNew', this.input.triggerNew);
         flowInputs.put('triggerOld', this.input.triggerOld);
 
-        // TODO New input - still a WIP
-        flowInputs.put('pluginInput', this.input);
-
-        Flow.Interview flowPlugin = Flow.Interview.createInterview(flowApiName, flowInputs);
+        Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.PluginApiName__c, flowInputs);
         flowPlugin.start();
 
         List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
         if (updatedTriggerNew != null && updatedTriggerNew.size() == this.input.triggerNew.size()) {
             this.input.triggerNew = updatedTriggerNew;
+            if (this.input.triggerNewMap != null) {
+                this.input.triggerNewMap = new Map<Id, SObject>(updatedTriggerNew);
+            }
         }
-        // FIXME Possibly need to capture output parameters from Flow?
     }
 
     private void queryPluginConfigurations() {
@@ -244,6 +232,19 @@ public without sharing abstract class LoggerSObjectHandler {
                 this.pluginConfigurations.addAll(mockPluginConfigurations);
             }
         }
+    }
+
+    @TestVisible
+    private static Map<Schema.SObjectType, List<LoggerSObjectHandler>> getExecutedHandlers() {
+        return SOBJECT_TYPE_TO_EXECUTED_HANDLERS;
+    }
+
+    @TestVisible
+    private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerPlugin__mdt plugin) {
+        if (SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.containsKey(sobjectType) == false) {
+            SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.put(sobjectType, new List<LoggerPlugin__mdt>());
+        }
+        SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(sobjectType).add(plugin);
     }
 
     /**

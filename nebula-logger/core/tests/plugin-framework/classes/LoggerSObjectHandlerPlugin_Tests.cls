@@ -9,7 +9,7 @@ private class LoggerSObjectHandlerPlugin_Tests {
     private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
     public class ExamplePlugin extends LoggerSObjectHandlerPlugin {
-        public override void execute(LoggerSObjectHandler.SObjectHandlerInput input) {
+        public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
             switch on input.triggerOperationType {
                 when BEFORE_INSERT {
                     for (Log__c log : (List<Log__c>) input.triggerNew) {
@@ -29,7 +29,7 @@ private class LoggerSObjectHandlerPlugin_Tests {
         input.triggerNew = new List<Log__c>{ log };
 
         ExamplePlugin plugin = new ExamplePlugin();
-        plugin.execute(input);
+        plugin.execute(new LoggerPlugin__mdt(), input);
 
         System.assertEquals(PLUGIN_LOG_STATUS, log.Status__c);
     }

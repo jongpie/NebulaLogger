@@ -9,14 +9,10 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
-    @TestVisible
-    private static String endpoint = LoggerParameter.getString('SlackEndpoint', null);
-    @TestVisible
-    private static LoggingLevel notificationLoggingLevel = Logger.getLoggingLevel(LoggerParameter.getString('SlackNotificationLoggingLevel', null));
+    private static String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
+    private static LoggingLevel NOTIFICATION_LOGGING_LEVEL = Logger.getLoggingLevel(LoggerParameter.getString('SlackNotificationLoggingLevel', null));
 
     private List<Log__c> logs;
-
-    // Constructors
 
     /**
      * @description Default constructor
@@ -30,13 +26,11 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
         this.logs = unsentLogs;
     }
 
-    // Instance methods
-
     /**
      * @description Handles the queuable execute logic.
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public override void execute(LoggerSObjectHandler.SObjectHandlerInput input) {
+    public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
         this.logs = (List<Log__c>) input.triggerNew;
 
         switch on input.triggerOperationType {
@@ -55,7 +49,7 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
      */
     @SuppressWarnings('PMD.AvoidDebugStatements')
     public void execute(System.QueueableContext queueableContext) {
-        if (String.isBlank(endpoint) == true) {
+        if (String.isBlank(ENDPOINT) == true) {
             return;
         }
 
@@ -85,8 +79,8 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
                 request.setBody(notificationJson);
 
                 HttpResponse response = new Http().send(request);
-                System.debug(notificationLoggingLevel, 'response.getStatusCode()==' + response.getStatusCode());
-                System.debug(notificationLoggingLevel, 'response.getStatus()==' + response.getStatus());
+                System.debug(NOTIFICATION_LOGGING_LEVEL, 'response.getStatusCode()==' + response.getStatusCode());
+                System.debug(NOTIFICATION_LOGGING_LEVEL, 'response.getStatus()==' + response.getStatus());
 
                 log.SlackNotificationDate__c = System.now();
                 sentLogs.add(log);
@@ -101,12 +95,12 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     private void flagLogsForSlackNotification() {
-        if (notificationLoggingLevel == null) {
+        if (NOTIFICATION_LOGGING_LEVEL == null) {
             return;
         }
 
         for (Log__c log : this.logs) {
-            if (log.MaxLogEntryLoggingLevelOrdinal__c >= notificationLoggingLevel.ordinal()) {
+            if (log.MaxLogEntryLoggingLevelOrdinal__c >= NOTIFICATION_LOGGING_LEVEL.ordinal()) {
                 log.SendSlackNotification__c = true;
             }
         }
@@ -156,14 +150,14 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
                 (
                     SELECT Id, LoggingLevel__c, Message__c
                     FROM LogEntries__r
-                    WHERE LoggingLevelOrdinal__c >= :notificationLoggingLevel.ordinal()
+                    WHERE LoggingLevelOrdinal__c >= :NOTIFICATION_LOGGING_LEVEL.ordinal()
                     ORDER BY Timestamp__c DESC
                     LIMIT 1
                 )
             FROM Log__c
             WHERE
                 Id IN :this.logs
-                AND MaxLogEntryLoggingLevelOrdinal__c >= :notificationLoggingLevel.ordinal()
+                AND MaxLogEntryLoggingLevelOrdinal__c >= :NOTIFICATION_LOGGING_LEVEL.ordinal()
                 AND SendSlackNotification__c = TRUE
                 AND SlackNotificationDate__c = NULL
         ];
@@ -171,10 +165,10 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     private HttpRequest createSlackHttpRequest() {
-        System.debug(notificationLoggingLevel, 'endpoint==' + endpoint);
+        System.debug(NOTIFICATION_LOGGING_LEVEL, 'ENDPOINT==' + ENDPOINT);
 
         HttpRequest request = new HttpRequest();
-        request.setEndpoint(endpoint);
+        request.setEndpoint(ENDPOINT);
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
 
