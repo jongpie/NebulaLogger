@@ -127,7 +127,7 @@ public without sharing abstract class LoggerSObjectHandler {
         input.triggerOld = Trigger.old;
         input.triggerOldMap = Trigger.oldMap;
 
-        // Additional variables for Flow Builders (and Apex Developers too, if they want to use them)
+        // Additional invocable variables for Flow Builders (and Apex Developers too, if they want to use them)
         input.sobjectTypeName = this.getSObjectType().getDescribe().getName();
         input.triggerOperationTypeName = Trigger.operationType?.name();
         input.triggerRecords = new List<SObjectHandlerRecordInput>();
@@ -147,6 +147,40 @@ public without sharing abstract class LoggerSObjectHandler {
                 recordInput.triggerRecordOld = record;
 
                 input.triggerRecords.add(recordInput);
+            }
+        }
+    }
+
+    private void queryPluginConfigurations() {
+        // Dynamically query the LoggerPlugin__mdt CMDT object so the records are filtered by the current SObjectType, and so the records are sorted correctly
+        List<String> fieldsToQuery = new List<String>(Schema.LoggerPlugin__mdt.SObjectType.getDescribe().fields.getMap().keySet());
+        List<String> filterConditions = new List<String>{
+            Schema.LoggerPlugin__mdt.IsEnabled__c.getDescribe().getName() + ' = TRUE',
+            this.getHandlerPluginControlField().getDescribe().getName() + ' = TRUE'
+        };
+        List<String> orderByConditions = new List<String>{
+            Schema.LoggerPlugin__mdt.ExecutionOrder__c.getDescribe().getName() + ' NULLS LAST',
+            Schema.LoggerPlugin__mdt.DeveloperName.getDescribe().getName()
+        };
+
+        String queryTemplate = 'SELECT {0} FROM {1} WHERE {2} ORDER BY {3}';
+        List<Object> queryInputs = new List<Object>{
+            String.join(fieldsToQuery, ', '),
+            Schema.LoggerPlugin__mdt.SObjectType.getDescribe().getName(),
+            String.join(filterConditions, ' AND '),
+            String.join(orderByConditions, ', ')
+        };
+        String query = String.format(queryTemplate, queryInputs);
+        this.pluginConfigurations = (List<LoggerPlugin__mdt>) Database.query(query);
+
+        if (System.Test.isRunningTest() == true) {
+            // Tests shouldn't rely on the actual CMDT rules in the org
+            // Clear the org's loaded records during tests, and mock via setMockConfiguration()
+            this.pluginConfigurations.clear();
+
+            List<LoggerPlugin__mdt> mockPluginConfigurations = SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(this.getSObjectType());
+            if (mockPluginConfigurations != null && mockPluginConfigurations.isEmpty() == false) {
+                this.pluginConfigurations.addAll(mockPluginConfigurations);
             }
         }
     }
@@ -194,43 +228,6 @@ public without sharing abstract class LoggerSObjectHandler {
             this.input.triggerNew = updatedTriggerNew;
             if (this.input.triggerNewMap != null) {
                 this.input.triggerNewMap = new Map<Id, SObject>(updatedTriggerNew);
-            }
-        }
-    }
-
-    private void queryPluginConfigurations() {
-        // Dynamically query the LoggerPlugin__mdt CMDT object so the records are filtered by the current SObjectType, and so the records are sorted correctly
-        List<String> fieldsToQuery = new List<String>{
-            Schema.LoggerPlugin__mdt.PluginApiName__c.getDescribe().getName(),
-            Schema.LoggerPlugin__mdt.PluginType__c.getDescribe().getName()
-        };
-        List<String> filterConditions = new List<String>{
-            Schema.LoggerPlugin__mdt.IsEnabled__c.getDescribe().getName() + ' = TRUE',
-            this.getHandlerPluginControlField().getDescribe().getName() + ' = TRUE'
-        };
-        List<String> orderByConditions = new List<String>{
-            Schema.LoggerPlugin__mdt.ExecutionOrder__c.getDescribe().getName() + ' NULLS LAST',
-            Schema.LoggerPlugin__mdt.DeveloperName.getDescribe().getName()
-        };
-
-        String queryTemplate = 'SELECT {0} FROM {1} WHERE {2} ORDER BY {3}';
-        List<Object> queryInputs = new List<Object>{
-            String.join(fieldsToQuery, ', '),
-            Schema.LoggerPlugin__mdt.SObjectType.getDescribe().getName(),
-            String.join(filterConditions, ' AND '),
-            String.join(orderByConditions, ', ')
-        };
-        String query = String.format(queryTemplate, queryInputs);
-        this.pluginConfigurations = (List<LoggerPlugin__mdt>) Database.query(query);
-
-        if (System.Test.isRunningTest() == true) {
-            // Tests shouldn't rely on the actual CMDT rules in the org
-            // Clear the org's loaded records during tests, and mock via setMockConfiguration()
-            this.pluginConfigurations.clear();
-
-            List<LoggerPlugin__mdt> mockPluginConfigurations = SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(this.getSObjectType());
-            if (mockPluginConfigurations != null && mockPluginConfigurations.isEmpty() == false) {
-                this.pluginConfigurations.addAll(mockPluginConfigurations);
             }
         }
     }

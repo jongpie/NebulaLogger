@@ -189,10 +189,16 @@ public without sharing class LoggerSettingsController {
 
     private static List<PicklistOption> getSaveMethodOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
+        List<String> defaultSaveMethods = new List<String>();
         for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
+            defaultSaveMethods.add(saveMethod.name());
+        }
+
+        List<String> configuredSaveMethods = LoggerParameter.getStringList('AvailableSaveMethods', defaultSaveMethods);
+        for (String saveMethodName : configuredSaveMethods) {
             PicklistOption picklistOption = new PicklistOption();
-            picklistOption.label = saveMethod.name();
-            picklistOption.value = saveMethod.name();
+            picklistOption.label = saveMethodName;
+            picklistOption.value = saveMethodName;
 
             picklistOptions.add(picklistOption);
         }

@@ -29,17 +29,15 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
     private static LoggerSettings__c userSettings;
 
-    @TestVisible
-    private static SaveMethod transactionSaveMethod {
+    private static String transactionSaveMethodName {
         get {
-            if (transactionSaveMethod == null) {
-                transactionSaveMethod = getDefaultSaveMethod();
+            if (transactionSaveMethodName == null) {
+                transactionSaveMethodName = getUserSettings().DefaultSaveMethod__c;
             }
-            return transactionSaveMethod;
+            return transactionSaveMethodName;
         }
         set;
     }
-
     private static LoggingLevel userLoggingLevel {
         get {
             if (userLoggingLevel == null || userLoggingLevel.name() != getUserSettings().LoggingLevel__c) {
@@ -2511,7 +2509,11 @@ global with sharing class Logger {
      * @return   The enum value of Logger.SaveMethod to use for any calls to saveLog() in the current transaction
      */
     global static SaveMethod getSaveMethod() {
-        return transactionSaveMethod;
+        try {
+            return SaveMethod.valueOf(transactionSaveMethodName);
+        } catch (NoSuchElementException ex) {
+            return null;
+        }
     }
 
     /**
@@ -2519,7 +2521,7 @@ global with sharing class Logger {
      * @param  saveMethod The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
     global static void setSaveMethod(SaveMethod saveMethod) {
-        transactionSaveMethod = saveMethod;
+        transactionSaveMethodName = saveMethod.name();
     }
 
     /**
@@ -2527,7 +2529,16 @@ global with sharing class Logger {
      */
     @InvocableMethod(category='Logging' label='Save Log' description='Saves any log entries that have been generated')
     global static void saveLog() {
-        saveLog(transactionSaveMethod);
+        saveLog(transactionSaveMethodName);
+    }
+
+    /**
+     * @description Saves any entries in Logger's buffer, using the specified save method for only this call.
+     *   All subsequent calls to saveLog() will use the transaction save method.
+     * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
+     */
+    global static void saveLog(SaveMethod saveMethod) {
+        saveLog(saveMethod.name());
     }
 
     /**
@@ -2536,7 +2547,7 @@ global with sharing class Logger {
      * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
      */
     @SuppressWarnings('PMD.NcssMethodCount')
-    global static void saveLog(SaveMethod saveMethod) {
+    public static void saveLog(String saveMethodName) {
         if (LOG_ENTRIES_BUFFER.isEmpty() || getUserSettings().IsSavingEnabled__c == false) {
             return;
         }
@@ -2550,7 +2561,7 @@ global with sharing class Logger {
         }
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            finest(getSavingLogSystemMessage(saveMethod));
+            finest(getSavingLogSystemMessage(saveMethodName));
         }
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
@@ -2579,15 +2590,15 @@ global with sharing class Logger {
             return;
         }
 
-        switch on saveMethod {
-            when EVENT_BUS {
+        switch on saveMethodName {
+            when 'EVENT_BUS' {
                 List<Database.SaveResult> saveResults = EventBus.publish(logEntryEvents);
                 LoggerEmailUtils.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
-            when QUEUEABLE {
+            when 'QUEUEABLE' {
                 System.enqueueJob(new QueueableSaver(logEntryEvents));
             }
-            when REST {
+            when 'REST' {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
                 // To avoid that, use the EventBus instead (even though REST was specified)
                 if (String.isBlank(UserInfo.getSessionId())) {
@@ -2596,7 +2607,7 @@ global with sharing class Logger {
                     new RestApiSaver().insertRecords(logEntryEvents);
                 }
             }
-            when SYNCHRONOUS_DML {
+            when 'SYNCHRONOUS_DML' {
                 new LogEntryEventHandler().executeAfterInsert(logEntryEvents);
             }
         }
@@ -2773,7 +2784,7 @@ global with sharing class Logger {
         return 'Logger - Logging suspended, ignoring call to saveLog()';
     }
 
-    private static String getSavingLogSystemMessage(SaveMethod saveMethod) {
+    private static String getSavingLogSystemMessage(String saveMethodName) {
         String savingLogMessage = 'Logger - Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
         switch on getCurrentQuiddity() {
             when ANONYMOUS {
@@ -2807,7 +2818,7 @@ global with sharing class Logger {
                 savingLogMessage += getCurrentQuiddity()?.name();
             }
         }
-        savingLogMessage += ', save method is ' + saveMethod.name();
+        savingLogMessage += ', save method is ' + saveMethodName;
 
         return savingLogMessage;
     }

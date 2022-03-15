@@ -715,7 +715,7 @@ private class Logger_Tests {
 
         Logger.getUserSettings().IsSavingEnabled__c = false;
 
-        System.assertEquals(Logger.SaveMethod.EVENT_BUS, Logger.transactionSaveMethod);
+        System.assertEquals(Logger.SaveMethod.EVENT_BUS, Logger.getSaveMethod());
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -745,7 +745,7 @@ private class Logger_Tests {
 
         Logger.getUserSettings().DefaultSaveMethod__c = 'EVENT_BUS';
 
-        System.assertEquals(Logger.SaveMethod.EVENT_BUS, Logger.transactionSaveMethod);
+        System.assertEquals(Logger.SaveMethod.EVENT_BUS, Logger.getSaveMethod());
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -832,7 +832,7 @@ private class Logger_Tests {
 
         Test.startTest();
 
-        System.assertEquals(Logger.SaveMethod.QUEUEABLE, Logger.transactionSaveMethod);
+        System.assertEquals(Logger.SaveMethod.QUEUEABLE, Logger.getSaveMethod());
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -923,7 +923,7 @@ private class Logger_Tests {
 
         Logger.getUserSettings().DefaultSaveMethod__c = 'REST';
 
-        System.assertEquals(Logger.SaveMethod.REST, Logger.transactionSaveMethod);
+        System.assertEquals(Logger.SaveMethod.REST, Logger.getSaveMethod());
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -1032,7 +1032,7 @@ private class Logger_Tests {
 
         Logger.getUserSettings().DefaultSaveMethod__c = 'SYNCHRONOUS_DML';
 
-        System.assertEquals(Logger.SaveMethod.SYNCHRONOUS_DML, Logger.transactionSaveMethod);
+        System.assertEquals(Logger.SaveMethod.SYNCHRONOUS_DML, Logger.getSaveMethod());
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');

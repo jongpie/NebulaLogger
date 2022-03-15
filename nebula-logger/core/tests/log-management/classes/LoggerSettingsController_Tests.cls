@@ -33,7 +33,28 @@ private class LoggerSettingsController_Tests {
             } else {
                 System.assertEquals(picklistOption.value, picklistOption.label);
                 Logger.SaveMethod matchingLoggerSaveMethod = Logger.SaveMethod.valueOf(picklistOption.value);
-                System.assertEquals(matchingLoggerSaveMethod.name(), picklistOption.label);
+                System.assertEquals(matchingLoggerSaveMethod.name(), picklistOption.value);
+            }
+        }
+    }
+
+    @IsTest
+    static void it_should_return_custom_loggerSaveMethod_picklist_options_when_configured() {
+        Set<String> fakeSaveMethods = new Set<String>{ 'a fake save method', 'another one', 'some other save method' };
+        LoggerParameter.setMockParameter(
+            new LoggerParameter__mdt(DeveloperName = 'AvailableSaveMethods', Value__c = JSON.serialize(new List<String>(fakeSaveMethods)))
+        );
+
+        List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().saveMethodOptions;
+
+        Integer expectedLoggerSaveMethodSize = fakeSaveMethods.size() + 1; // '--NONE--' is automatically included
+        System.assertEquals(expectedLoggerSaveMethodSize, picklistOptions.size());
+        for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
+            if (String.isBlank(picklistOption.value) == true) {
+                System.assertEquals('--None--', picklistOption.label);
+            } else {
+                System.assertEquals(picklistOption.value, picklistOption.label);
+                System.assertEquals(true, fakeSaveMethods.contains(picklistOption.value));
             }
         }
     }
