@@ -39,22 +39,25 @@ private class LoggerSettingsController_Tests {
     }
 
     @IsTest
-    static void it_should_return_custom_loggerSaveMethod_picklist_options_when_configured() {
-        Set<String> fakeSaveMethods = new Set<String>{ 'a fake save method', 'another one', 'some other save method' };
-        LoggerParameter.setMockParameter(
-            new LoggerParameter__mdt(DeveloperName = 'AvailableSaveMethods', Value__c = JSON.serialize(new List<String>(fakeSaveMethods)))
-        );
+    static void it_should_append_custom_loggerSaveMethod_picklist_options_when_configured() {
+        List<String> fakeSaveMethods = new List<String>{ 'a fake save method', 'another one', 'some other save method' };
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'AdditionalSaveMethods', Value__c = JSON.serialize(fakeSaveMethods)));
 
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().saveMethodOptions;
 
-        Integer expectedLoggerSaveMethodSize = fakeSaveMethods.size() + 1; // '--NONE--' is automatically included
-        System.assertEquals(expectedLoggerSaveMethodSize, picklistOptions.size());
+        Set<String> expectedSaveMethods = new Set<String>();
+        expectedSaveMethods.addAll(fakeSaveMethods);
+        for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
+            expectedSaveMethods.add(saveMethod.name());
+        }
+        Integer expectedLoggerSaveMethodSize = expectedSaveMethods.size() + 1; // '--NONE--' is automatically included
+        System.assertEquals(expectedLoggerSaveMethodSize, picklistOptions.size(), picklistOptions);
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
             if (String.isBlank(picklistOption.value) == true) {
                 System.assertEquals('--None--', picklistOption.label);
             } else {
                 System.assertEquals(picklistOption.value, picklistOption.label);
-                System.assertEquals(true, fakeSaveMethods.contains(picklistOption.value));
+                System.assertEquals(true, expectedSaveMethods.contains(picklistOption.value));
             }
         }
     }
