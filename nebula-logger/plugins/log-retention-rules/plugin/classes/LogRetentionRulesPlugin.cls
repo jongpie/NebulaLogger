@@ -67,6 +67,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
     }
 
     // Private methods
+    @SuppressWarnings('PMD.ApexCRUDViolation')
     private void loadConfiguredFilters() {
         Map<String, LogRetentionRule__mdt> queriedRulesByDeveloperName = new Map<String, LogRetentionRule__mdt>();
         Map<String, List<LogRetentionRuleCondition__mdt>> queriedConditionsByRuleDeveloperName = new Map<String, List<LogRetentionRuleCondition__mdt>>();

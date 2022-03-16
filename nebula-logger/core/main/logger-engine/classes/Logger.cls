@@ -2544,7 +2544,7 @@ global with sharing class Logger {
     /**
      * @description Saves any entries in Logger's buffer, using the specified save method for only this call.
      *   All subsequent calls to saveLog() will use the transaction save method.
-     * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
+     * @param  saveMethodName The String value of the save method to use for this specific save action.
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     public static void saveLog(String saveMethodName) {

@@ -21,13 +21,20 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private Map<String, List<String>> logEntryEventUuidToTagNames = new Map<String, List<String>>();
     private Set<String> tagNames = new Set<String>();
 
+    /**
+     * @description Default constructor, used by the trigger `LogEntryEvent.trigger`
+     */
     public LogEntryEventHandler() {
         super();
     }
 
-    public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents, TriggerOperation triggerOperationType) {
+    /**
+     * @description Additional constructor specific to `LogEntryEvent__e`, used in `Logger` to simulate a `BEFORE_INSERT` context
+     * @param  triggerOperationType The instance of `TriggerOperation` that the handler class should use - this overrides the `TriggerOperation` provided by `LoggerSObjectHandler`
+     * @param  logEntryEvents       The list of `LogEntryEvent__e` records in Logger's buffer
+     */
+    public LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents) {
         this();
-        this.logEntryEvents = logEntryEvents;
         this.input.triggerNew = logEntryEvents;
         this.input.triggerOperationType = triggerOperationType;
         this.input.triggerOperationTypeName = triggerOperationType.name();

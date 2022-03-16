@@ -18,14 +18,15 @@ public abstract class LoggerSObjectHandlerPlugin {
     /**
      * @description This method is the entry point for plugins to execute any custom logic.
      *              It is automatically called by the logging system for any enabled plugins.
-     * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
      * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
+     * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
      */
     public abstract void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input);
 
     // TODO Legacy approach, remove in a future release
     /**
      * @deprecated Deprecated, will be removed: This method is the entry point for plugins to execute any custom logic.
+     * @description Deprecated, will be removed: This method is the entry point for plugins to execute any custom logic.
      *              It is automatically called by the logging system for any enabled plugins.
      *              Several trigger-based parameters are provided - these parameters should be used by plugins,
      *              instead of calling the platform's static variables directly

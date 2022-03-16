@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
 @IsTest
 private class LoggerSObjectHandler_Tests {
     private static final String HANDLER_CONTROL_PARAMETER_NAME = 'IsMockLogHandlerEnabled';

@@ -1,9 +1,25 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group Plugins
+ * @description Optional plugin that provides a BigObject, `LogEntryArchive__b`, as an alternative option
+ *              to the platform event `LogEntryEvent__e`
+ */
 public without sharing class LogEntryArchiveBuilder extends LoggerSObjectHandlerPlugin {
     @TestVisible
     private static final String BIG_OBJECT_SAVE_METHOD = 'BIG_OBJECT';
     @TestVisible
     private static List<LogEntryArchive__b> bigObjectsToInsert = new List<LogEntryArchive__b>();
 
+    /**
+     * @description Handles converting Logger's buffer of `LogEntryEvent__e` records into `LogEntryArchive__b` records
+     *              for any user with the included custom save method 'BIG_OBJECT'
+     * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
+     * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
+     */
     public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
         if (Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_SAVE_METHOD) {
             return;
@@ -20,7 +36,7 @@ public without sharing class LogEntryArchiveBuilder extends LoggerSObjectHandler
         Logger.flushBuffer();
     }
 
-    public LogEntryArchive__b getLogEntryArchive(LogEntryEvent__e logEntryEvent) {
+    private LogEntryArchive__b getLogEntryArchive(LogEntryEvent__e logEntryEvent) {
         return new LogEntryArchive__b(
             ApiVersion__c = logEntryEvent.ApiVersion__c,
             DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,

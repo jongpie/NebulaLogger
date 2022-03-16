@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Abstract class used by trigger handlers for shared logic
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.EmptyStatementBlock')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock')
 public without sharing abstract class LoggerSObjectHandler {
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
     private static final Map<Schema.SObjectType, List<LoggerPlugin__mdt>> SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS = new Map<Schema.SObjectType, List<LoggerPlugin__mdt>>();
@@ -223,6 +223,7 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
         Type apexPluginType = Type.forName(configuration.PluginApiName__c);
         if (apexPluginType == null) {
@@ -247,6 +248,7 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeFlowPlugin(LoggerPlugin__mdt configuration) {
         Map<String, Object> flowInputs = new Map<String, Object>();
         flowInputs.put('pluginConfiguration', configuration);

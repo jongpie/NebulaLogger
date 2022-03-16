@@ -1,12 +1,18 @@
-@isTest
-private class LogEntryArchiveBuilder_Tests {
-    private static String FAKE_DATA_STRING = 'someFakeData';
-    private static Integer FAKE_DATA_NUMBER = 1;
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
 
-    @isTest
+@SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
+@IsTest
+private class LogEntryArchiveBuilder_Tests {
+    private static final String FAKE_DATA_STRING = 'someFakeData';
+    private static final Integer FAKE_DATA_NUMBER = 1;
+
+    @IsTest
     static void it_should_write_all_fields_over_from_log_entry_event() {
-        Datetime now = System.now();
-        LogEntryEvent__e mockEvent = getMockEvent(now);
+        Datetime timestamp = System.timestamp();
+        LogEntryEvent__e mockEvent = getMockEvent(timestamp);
 
         LoggerPlugin__mdt pluginConfiguration = getPluginConfiguration();
         LoggerSObjectHandler.SObjectHandlerInput pluginInput = new LoggerSObjectHandler.SObjectHandlerInput();
@@ -17,13 +23,13 @@ private class LogEntryArchiveBuilder_Tests {
 
         List<LogEntryArchive__b> insertedBigObjects = LogEntryArchiveBuilder.bigObjectsToInsert;
         System.assertEquals(1, insertedBigObjects.size(), 'Should have been put into big object buffer');
-        assertAllFieldsMatch(now, mockEvent, insertedBigObjects[0]);
+        assertAllFieldsMatch(timestamp, mockEvent, insertedBigObjects[0]);
     }
 
-    @isTest
+    @IsTest
     static void it_should_not_create_big_object_with_other_save_methods() {
-        Datetime now = System.now();
-        LogEntryEvent__e mockEvent = getMockEvent(now);
+        Datetime timestamp = System.timestamp();
+        LogEntryEvent__e mockEvent = getMockEvent(timestamp);
 
         LoggerPlugin__mdt pluginConfiguration = getPluginConfiguration();
         LoggerSObjectHandler.SObjectHandlerInput pluginInput = new LoggerSObjectHandler.SObjectHandlerInput();
@@ -35,10 +41,8 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(0, LogEntryArchiveBuilder.bigObjectsToInsert.size(), 'Should not have tried to create big object');
     }
 
-    @isTest
+    @IsTest
     static void it_integrates_with_logger() {
-        Datetime now = System.now();
-
         Test.startTest();
         getPluginConfiguration();
         Logger.getUserSettings().DefaultSaveMethod__c = LogEntryArchiveBuilder.BIG_OBJECT_SAVE_METHOD;
@@ -56,7 +60,7 @@ private class LogEntryArchiveBuilder_Tests {
         assertAllFieldsMatch(createdEvent.Timestamp__c, createdEvent, insertedBigObjects[0]);
     }
 
-    private static LogEntryEvent__e getMockEvent(Datetime now) {
+    private static LogEntryEvent__e getMockEvent(Datetime timestamp) {
         return new LogEntryEvent__e(
             ApiVersion__c = '52',
             DatabaseResultCollectionType__c = FAKE_DATA_STRING,
@@ -135,8 +139,8 @@ private class LogEntryArchiveBuilder_Tests {
             StackTrace__c = FAKE_DATA_STRING,
             SystemMode__c = FAKE_DATA_STRING,
             ThemeDisplayed__c = FAKE_DATA_STRING,
-            Timestamp__c = now,
-            TimestampString__c = String.valueOf(now.getTime()),
+            Timestamp__c = timestamp,
+            TimestampString__c = String.valueOf(timestamp.getTime()),
             TimeZoneId__c = FAKE_DATA_STRING,
             Topics__c = FAKE_DATA_STRING,
             TransactionEntryNumber__c = FAKE_DATA_NUMBER,
@@ -164,7 +168,8 @@ private class LogEntryArchiveBuilder_Tests {
         return config;
     }
 
-    private static void assertAllFieldsMatch(Datetime now, LogEntryEvent__e mockEvent, LogEntryArchive__b logEntryArchive) {
+    @SuppressWarnings('PMD.NcssMethodCount')
+    private static void assertAllFieldsMatch(Datetime timestamp, LogEntryEvent__e mockEvent, LogEntryArchive__b logEntryArchive) {
         System.assertEquals(mockEvent.ApiVersion__c, logEntryArchive.ApiVersion__c);
         System.assertEquals(mockEvent.DatabaseResultCollectionType__c, logEntryArchive.DatabaseResultCollectionType__c);
         System.assertEquals(mockEvent.DatabaseResultJson__c, logEntryArchive.DatabaseResultJson__c);
@@ -244,8 +249,8 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(mockEvent.StackTrace__c, logEntryArchive.StackTrace__c);
         System.assertEquals(mockEvent.SystemMode__c, logEntryArchive.SystemMode__c);
         System.assertEquals(mockEvent.ThemeDisplayed__c, logEntryArchive.ThemeDisplayed__c);
-        System.assertEquals(now, logEntryArchive.Timestamp__c);
-        System.assertEquals(String.valueOf(now.getTime()), logEntryArchive.TimestampString__c);
+        System.assertEquals(timestamp, logEntryArchive.Timestamp__c);
+        System.assertEquals(String.valueOf(timestamp.getTime()), logEntryArchive.TimestampString__c);
         System.assertEquals(mockEvent.TimeZoneId__c, logEntryArchive.TimeZoneId__c);
         System.assertEquals(mockEvent.Topics__c, logEntryArchive.Topics__c);
         System.assertEquals(mockEvent.TransactionEntryNumber__c, logEntryArchive.TransactionEntryNumber__c);
