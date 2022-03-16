@@ -12,7 +12,7 @@
             <sorted>false</sorted>
             <value>
                 <fullName>AND</fullName>
-                <default>true</default>
+                <default>false</default>
                 <label>All Conditions Must Be Met (AND)</label>
             </value>
             <value>

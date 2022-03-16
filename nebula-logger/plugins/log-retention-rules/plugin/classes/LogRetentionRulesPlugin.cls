@@ -10,11 +10,13 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
     private static final Map<String, LogRetentionRule__mdt> RULE_NAME_TO_RULE = new Map<String, LogRetentionRule__mdt>();
     private static final Map<String, List<LogRetentionRuleCondition__mdt>> RULE_NAME_TO_CONDITIONS = new Map<String, List<LogRetentionRuleCondition__mdt>>();
 
-    public LogRetentionRulesPlugin() {
-        this.loadConfiguredFilters();
-    }
-
     public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+        if (input.sobjectType != Schema.LogEntry__c.SObjectType) {
+            return;
+        }
+
+        this.loadConfiguredFilters();
+
         switch on input.triggerOperationType {
             when AFTER_INSERT {
                 List<LogEntry__c> logEntries = requeryLogEntries((List<LogEntry__c>) input.triggerNew);
@@ -30,23 +32,24 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
         logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
         for (String logFieldName : logFieldNames) {
-            logEntryFieldNames.add('Log__r.' + logFieldName);
+            String logRelationshipPrefix = Schema.LogEntry__c.Log__c.getDescribe().getName().substringBeforeLast('__c') + '__r';
+            logEntryFieldNames.add(logRelationshipPrefix + '.' + logFieldName);
         }
 
-        List<String> textReplacements = new List<String>{ String.join(logEntryFieldNames, ',') };
-        String logEntryQuery = String.format('SELECT {0} FROM LogEntry__c WHERE Id IN :logEntries', textReplacements);
+        String queryTemplate = 'SELECT {0} FROM {1} WHERE {2} IN :logEntries';
+        List<String> queryInputs = new List<String>{
+            String.join(logEntryFieldNames, ','),
+            Schema.LogEntry__c.SObjectType.getDescribe().getName(),
+            Schema.LogEntry__c.Id.getDescribe().getName()
+        };
+        String logEntryQuery = String.escapeSingleQuotes(String.format(queryTemplate, queryInputs));
         return (List<LogEntry__c>) Database.query(logEntryQuery);
     }
 
     private void setLogRetentionDate(List<LogEntry__c> logEntries) {
-        System.debug('starting setLogRetentionDate==' + logEntries);
-
         Map<Id, Log__c> logIdToLog = new Map<Id, Log__c>();
         List<FilterResult> filterResults = this.runFilters(logEntries);
-        System.debug('filterResults==' + filterResults);
         for (FilterResult filterResult : filterResults) {
-            System.debug('filterResult==' + filterResult);
-            System.debug('filter matches for ' + filterResult.rule.DeveloperName + '==' + filterResult.matchesFilter);
             if (filterResult.matchesFilter == true) {
                 Id logId = (Id) filterResult.record.get(Schema.LogEntry__c.Log__c);
                 Log__c log = logIdToLog.get(logId);
@@ -60,7 +63,6 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
                 logIdToLog.put(log.Id, log);
             }
         }
-        System.debug('logIdToLog==' + logIdToLog.values());
         update logIdToLog.values();
     }
 
@@ -92,15 +94,12 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
     }
 
     private List<FilterResult> runFilters(List<SObject> records) {
-        System.debug('runFilters for records: ' + records);
-        System.debug('runFilters for RULE_NAME_TO_RULE: ' + RULE_NAME_TO_RULE);
         List<FilterResult> results = new List<FilterResult>();
         for (SObject record : records) {
             for (String filterDeveloperName : RULE_NAME_TO_RULE.keySet()) {
-                System.debug('processing filter: ' + filterDeveloperName);
                 LogRetentionRule__mdt filter = RULE_NAME_TO_RULE.get(filterDeveloperName);
-                List<LogRetentionRuleCondition__mdt> filerConditions = RULE_NAME_TO_CONDITIONS.get(filter.DeveloperName);
-                FilterResult filterResult = new FilterResult(record, filter, filerConditions);
+                List<LogRetentionRuleCondition__mdt> filterConditions = RULE_NAME_TO_CONDITIONS.get(filter.DeveloperName);
+                FilterResult filterResult = new FilterResult(record, filter, filterConditions);
 
                 results.add(filterResult);
             }
@@ -128,13 +127,12 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         public LogRetentionRule__mdt rule { get; private set; }
         public Boolean matchesFilter { get; private set; }
 
-        private List<LogRetentionRuleCondition__mdt> filerConditions;
+        private List<LogRetentionRuleCondition__mdt> filterConditions;
 
-        public FilterResult(SObject record, LogRetentionRule__mdt rule, List<LogRetentionRuleCondition__mdt> filerConditions) {
+        public FilterResult(SObject record, LogRetentionRule__mdt rule, List<LogRetentionRuleCondition__mdt> filterConditions) {
             this.record = record;
             this.rule = rule;
-            this.filerConditions = filerConditions;
-
+            this.filterConditions = filterConditions;
             this.conditions = new List<String>();
             this.conditionsLogic = this.getFilterConditionsLogic();
             this.conditionsLogicType = rule.ConditionLogicType__c;
@@ -144,10 +142,10 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
 
         private void process() {
             List<String> booleanValues = new List<String>();
-            for (LogRetentionRuleCondition__mdt filerCondition : this.filerConditions) {
-                FilterConditionResult filerConditionResult = new FilterConditionResult(this.record, filerCondition);
-                this.conditions.add(filerConditionResult.getCondition());
-                booleanValues.add(String.valueOf(filerConditionResult.matchesFilter));
+            for (LogRetentionRuleCondition__mdt filterCondition : this.filterConditions) {
+                FilterConditionResult filterConditionResult = new FilterConditionResult(this.record, filterCondition);
+                this.conditions.add(filterConditionResult.getCondition());
+                booleanValues.add(String.valueOf(filterConditionResult.matchesFilter));
             }
 
             String parsedConditionsLogic = String.format(this.getFilterConditionsLogic(), booleanValues);
@@ -160,7 +158,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
 
             if (this.rule.ConditionLogicType__c != 'Custom') {
                 List<String> standardLogicPieces = new List<String>();
-                for (Integer i = 0; i < this.filerConditions.size(); i++) {
+                for (Integer i = 0; i < this.filterConditions.size(); i++) {
                     standardLogicPieces.add(String.valueOf(i + 1));
                 }
                 conditionsLogic = '(' + String.join(standardLogicPieces, ' ' + this.rule.ConditionLogicType__c + ' ') + ')';
@@ -201,34 +199,34 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
     private class FilterConditionResult {
         private Boolean matchesFilter;
         private SObject record;
-        private LogRetentionRuleCondition__mdt filerCondition;
+        private LogRetentionRuleCondition__mdt filterCondition;
         private Schema.SObjectType sobjectType;
 
-        private FilterConditionResult(SObject record, LogRetentionRuleCondition__mdt filerCondition) {
+        private FilterConditionResult(SObject record, LogRetentionRuleCondition__mdt filterCondition) {
             this.sobjectType = record.getSObjectType();
             this.record = record;
-            this.filerCondition = filerCondition;
+            this.filterCondition = filterCondition;
 
             this.matchesFilter = this.matchesFilter();
         }
 
         public String getCondition() {
-            return this.filerCondition.FieldPath__c +
+            return this.filterCondition.FieldPath__c +
                 ' ' +
-                this.filerCondition.Operator__c +
+                this.filterCondition.Operator__c +
                 ' ' +
                 this.getComparisonValue() +
                 ' (' +
-                this.filerCondition.ValueType__c +
+                this.filterCondition.ValueType__c +
                 ')';
         }
 
         public Boolean matchesFilter() {
-            if (this.filerCondition.ValueType__c == 'RegEx') {
+            if (this.filterCondition.ValueType__c == 'RegEx') {
                 return this.matchesRegEx();
             }
 
-            Schema.SObjectField field = new FieldPath(this.sobjectType, this.filerCondition.FieldPath__c).getField();
+            Schema.SObjectField field = new FieldPath(this.sobjectType, this.filterCondition.FieldPath__c).getField();
 
             Object recordFieldValue = this.getFieldValue();
             Object comparisonValue = this.getComparisonValue();
@@ -244,30 +242,30 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
                     return this.compareString((String) recordFieldValue, String.valueOf(comparisonValue));
                 }
                 when else {
-                    throw new IllegalArgumentException('Could not process field path: ' + this.filerCondition.FieldPath__c);
+                    throw new IllegalArgumentException('Could not process field path: ' + this.filterCondition.FieldPath__c);
                 }
             }
         }
 
         private Boolean matchesRegEx() {
-            Pattern pattern = Pattern.compile(this.filerCondition.Value__c);
+            Pattern pattern = Pattern.compile(this.filterCondition.Value__c);
             return pattern.matcher(String.valueOf(this.getFieldValue())).matches();
         }
 
         private Object getFieldValue() {
-            return new FieldPath(this.sobjectType, this.filerCondition.FieldPath__c).getValue(this.record);
+            return new FieldPath(this.sobjectType, this.filterCondition.FieldPath__c).getValue(this.record);
         }
 
         private Object getComparisonValue() {
-            switch on this.filerCondition.ValueType__c {
+            switch on this.filterCondition.ValueType__c {
                 when 'Field' {
-                    return new FieldPath(this.sobjectType, this.filerCondition.Value__c).getValue(this.record);
+                    return new FieldPath(this.sobjectType, this.filterCondition.Value__c).getValue(this.record);
                 }
                 when 'RegEx' {
-                    return this.filerCondition.Value__c;
+                    return this.filterCondition.Value__c;
                 }
                 when 'Value' {
-                    return this.filerCondition.Value__c;
+                    return this.filterCondition.Value__c;
                 }
                 when else {
                     throw new IllegalArgumentException('Unknown Value Type, cannot parse comparison value');
@@ -305,7 +303,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
         //          Object yesterday = System.today().addDays(-1);
         //          System.assert(today > yesterday); // This line cannot execute since it's comparing Object
         private Boolean compareDatetime(Datetime recordFieldValue, Datetime comparisonValue) {
-            switch on this.filerCondition.Operator__c {
+            switch on this.filterCondition.Operator__c {
                 when 'EQUAL_TO' {
                     return recordFieldValue == comparisonValue;
                 }
@@ -325,13 +323,13 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
                     return recordFieldValue >= comparisonValue;
                 }
                 when else {
-                    throw new IllegalArgumentException('Unsupported operator for Datetime: ' + this.filerCondition.Operator__c);
+                    throw new IllegalArgumentException('Unsupported operator for Datetime: ' + this.filterCondition.Operator__c);
                 }
             }
         }
 
         private Boolean compareDecimal(Decimal recordFieldValue, Decimal comparisonValue) {
-            switch on this.filerCondition.Operator__c {
+            switch on this.filterCondition.Operator__c {
                 when 'EQUAL_TO' {
                     return recordFieldValue == comparisonValue;
                 }
@@ -351,13 +349,13 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
                     return recordFieldValue >= comparisonValue;
                 }
                 when else {
-                    throw new IllegalArgumentException('Unsupported operator for Decimal: ' + this.filerCondition.Operator__c);
+                    throw new IllegalArgumentException('Unsupported operator for Decimal: ' + this.filterCondition.Operator__c);
                 }
             }
         }
 
         private Boolean compareString(String recordFieldValue, String comparisonValue) {
-            switch on this.filerCondition.Operator__c {
+            switch on this.filterCondition.Operator__c {
                 when 'EQUAL_TO' {
                     return recordFieldValue == comparisonValue;
                 }
@@ -374,7 +372,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
                     return recordFieldValue.endsWith(comparisonValue);
                 }
                 when else {
-                    throw new IllegalArgumentException('Unsupported operator for String: ' + this.filerCondition.Operator__c);
+                    throw new IllegalArgumentException('Unsupported operator for String: ' + this.filterCondition.Operator__c);
                 }
             }
         }
