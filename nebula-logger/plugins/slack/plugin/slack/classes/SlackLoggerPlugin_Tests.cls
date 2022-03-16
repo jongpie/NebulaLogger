@@ -47,7 +47,7 @@ private class SlackLoggerPlugin_Tests {
         LoggerPlugin__mdt slackPluginConfig = new LoggerPlugin__mdt(
             IsEnabled__c = true,
             PluginApiName__c = SlackLoggerPlugin.class.getName(),
-            PluginType__c = 'Apex'
+            PluginType__c = 'SObject Handler - Apex'
         );
         LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, slackPluginConfig);
 

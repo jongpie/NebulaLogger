@@ -127,7 +127,7 @@ private class LogRetentionRulesPlugin_Tests {
             IsLogEnabled__c = true,
             IsLogEntryEnabled__c = true,
             PluginApiName__c = LogRetentionRulesPlugin.class.getName(),
-            PluginType__c = 'Apex'
+            PluginType__c = 'SObject Handler - Apex'
         );
         LoggerSObjectHandler.setMockPlugin(Schema.LogEntry__c.SObjectType, pluginConfiguration);
     }

@@ -213,10 +213,10 @@ public without sharing abstract class LoggerSObjectHandler {
 
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
             switch on pluginConfiguration.PluginType__c {
-                when 'Apex' {
+                when 'SObject Handler - Apex' {
                     this.executeApexPlugin(pluginConfiguration);
                 }
-                when 'Flow' {
+                when 'SObject Handler - Flow' {
                     this.executeFlowPlugin(pluginConfiguration);
                 }
             }

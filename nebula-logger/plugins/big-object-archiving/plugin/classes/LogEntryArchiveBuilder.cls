@@ -1,11 +1,11 @@
 public without sharing class LogEntryArchiveBuilder extends LoggerSObjectHandlerPlugin {
     @TestVisible
-    private static LogEntryEvent__e mockEvent;
+    private static final String BIG_OBJECT_SAVE_METHOD = 'BIG_OBJECT';
     @TestVisible
     private static List<LogEntryArchive__b> bigObjectsToInsert = new List<LogEntryArchive__b>();
 
     public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
-        if (Logger.getUserSettings().DefaultSaveMethod__c != 'BIG_OBJECT') {
+        if (Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_SAVE_METHOD) {
             return;
         }
 

@@ -358,7 +358,7 @@ private class LogEntryHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'Apex', PluginApiName__c = LogEntryPluginTest.class.getName());
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'SObject Handler - Apex', PluginApiName__c = LogEntryPluginTest.class.getName());
         LoggerSObjectHandler.setMockPlugin(Schema.LogEntry__c.SObjectType, plugin);
 
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');
