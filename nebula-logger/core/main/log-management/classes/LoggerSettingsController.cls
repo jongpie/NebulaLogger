@@ -194,9 +194,13 @@ public without sharing class LoggerSettingsController {
             saveMethodNames.add(saveMethod.name());
         }
 
-        List<String> additionalSaveMethods = LoggerParameter.getStringList('AdditionalSaveMethods', null);
-        if (additionalSaveMethods != null) {
-            saveMethodNames.addAll(additionalSaveMethods);
+        List<LoggerParameter__mdt> potentiallyMatchingParameters = [
+            SELECT Id, Value__c
+            FROM LoggerParameter__mdt
+            WHERE DeveloperName LIKE 'AdditionalSaveMethods%'
+        ];
+        for (LoggerParameter__mdt matchingAdditionalParameter : potentiallyMatchingParameters) {
+            saveMethodNames.add(matchingAdditionalParameter.Value__c);
         }
         saveMethodNames.sort();
         for (String saveMethodName : saveMethodNames) {

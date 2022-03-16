@@ -20,7 +20,7 @@ public without sharing abstract class LoggerSObjectHandler {
     private Map<Id, SObject> triggerNewMap;
     @TestVisible
     private Map<Id, SObject> triggerOldMap;
-    private SObjectHandlerInput input;
+    protected SObjectHandlerInput input;
     private List<LoggerPlugin__mdt> pluginConfigurations = new List<LoggerPlugin__mdt>();
     private List<LoggerSObjectHandlerPlugin> executedApexPlugins = new List<LoggerSObjectHandlerPlugin>();
 
@@ -34,6 +34,7 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerOldMap = Trigger.oldMap;
 
         this.queryPluginConfigurations();
+        this.createSObjectHandlerInput();
     }
 
     /**
@@ -72,8 +73,6 @@ public without sharing abstract class LoggerSObjectHandler {
         if (shouldExecute == false) {
             return;
         }
-
-        this.createSObjectHandlerInput();
 
         switch on this.input.triggerOperationType {
             when BEFORE_INSERT {
@@ -143,10 +142,10 @@ public without sharing abstract class LoggerSObjectHandler {
 
         // Trigger variables for Apex Developers
         input.sobjectType = this.getSObjectType();
-        input.triggerOperationType = triggerOperationType;
-        input.triggerNew = triggerNew;
-        input.triggerNewMap = triggerNewMap;
-        input.triggerOldMap = triggerOldMap;
+        input.triggerOperationType = this.triggerOperationType;
+        input.triggerNew = this.triggerNew;
+        input.triggerNewMap = this.triggerNewMap;
+        input.triggerOldMap = this.triggerOldMap;
 
         // Additional invocable variables for Flow Builders (and Apex Developers too, if they want to use them)
         input.sobjectTypeName = this.getSObjectType().getDescribe().getName();
@@ -192,6 +191,7 @@ public without sharing abstract class LoggerSObjectHandler {
             String.join(orderByConditions, ', ')
         };
         String query = String.format(queryTemplate, queryInputs);
+
         this.pluginConfigurations = (List<LoggerPlugin__mdt>) Database.query(query);
 
         if (System.Test.isRunningTest() == true) {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>InDevelopment</deploymentStatus>
+    <description>Big Object representation of Logger data. Can be used as a standalone archive, or in conjunction with platform events and the existing Log__c custom object.</description>
+    <label>Log Archive</label>
+    <pluralLabel>Log Archives</pluralLabel>
+</CustomObject>

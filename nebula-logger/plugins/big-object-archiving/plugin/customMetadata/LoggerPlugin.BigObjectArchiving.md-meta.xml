@@ -60,7 +60,7 @@
     </values>
     <values>
         <field>PluginApiName__c</field>
-        <value xsi:type="xsd:string">TODO</value>
+        <value xsi:type="xsd:string">LogEntryArchiveBuilder</value>
     </values>
     <values>
         <field>PluginType__c</field>

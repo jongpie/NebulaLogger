@@ -21,6 +21,18 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private Map<String, List<String>> logEntryEventUuidToTagNames = new Map<String, List<String>>();
     private Set<String> tagNames = new Set<String>();
 
+    public LogEntryEventHandler() {
+        super();
+    }
+
+    public LogEntryEventHandler(List<LogEntryEvent__e> logEntryEvents, TriggerOperation triggerOperationType) {
+        this();
+        this.logEntryEvents = logEntryEvents;
+        this.input.triggerNew = logEntryEvents;
+        this.input.triggerOperationType = triggerOperationType;
+        this.input.triggerOperationTypeName = triggerOperationType.name();
+    }
+
     /**
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
