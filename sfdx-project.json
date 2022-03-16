@@ -22,20 +22,7 @@
                 }
             ],
             "versionName": "TODO",
-            "versionNumber": "0.0.0.0",
-            "versionDescription": "TODO",
-            "default": false
-        },
-        {
-            "package": "Nebula Logger - Plugin - Log Assignment Rules",
-            "path": "./nebula-logger/plugins/log-assignment-rules/plugin",
-            "dependencies": [
-                {
-                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
-                }
-            ],
-            "versionName": "TODO",
-            "versionNumber": "0.0.0.0",
+            "versionNumber": "0.0.0.NEXT",
             "versionDescription": "TODO",
             "default": false
         },
@@ -48,7 +35,7 @@
                 }
             ],
             "versionName": "TODO",
-            "versionNumber": "0.0.0.0",
+            "versionNumber": "0.0.0.NEXT",
             "versionDescription": "TODO",
             "default": false
         },
@@ -61,21 +48,8 @@
                 }
             ],
             "versionName": "Beta Release",
-            "versionNumber": "0.9.0.0",
+            "versionNumber": "0.9.0.NEXT",
             "versionDescription": "Initial beta version of new dashboard plugin",
-            "default": false
-        },
-        {
-            "package": "Nebula Logger - Plugin - Loggly Integration",
-            "path": "./nebula-logger/plugins/loggly/plugin",
-            "dependencies": [
-                {
-                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
-                }
-            ],
-            "versionName": "TODO",
-            "versionNumber": "0.0.0.0",
-            "versionDescription": "TODO",
             "default": false
         },
         {
@@ -87,7 +61,7 @@
                 }
             ],
             "versionName": "Beta Release: Round 3",
-            "versionNumber": "0.10.0.0",
+            "versionNumber": "0.10.0.NEXT",
             "versionDescription": "TODO",
             "default": false
         },
@@ -133,6 +107,7 @@
         "Nebula Logger - Core@4.7.1-5": "04t5Y0000015lXwQAI",
         "Nebula Logger - Core@4.7.1-6": "04t5Y0000015lY1QAI",
         "Nebula Logger - Core@4.7.1-7": "04t5Y0000015lY6QAI",
+        "Nebula Logger - Plugin - BigObject Archiving": "0Ho5Y000000blMSSAY",
         "Nebula Logger - Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
         "Nebula Logger - Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",
         "Nebula Logger - Plugin - Logger Admin Dashboard@0.9.0-0": "04t5Y0000015l3yQAA",

@@ -8,9 +8,7 @@
     <protected>false</protected>
     <values>
         <field>Description__c</field>
-        <value
-            xsi:type="xsd:string"
-        >Adds the ability to log directly to the BigObject LogEntryArchive__b, as well as the ability to archive Log__c &amp; LogEntry__c records to LogEntryArchive__b</value>
+        <value xsi:type="xsd:string">Adds the ability to log directly to the BigObject LogEntryArchive__b</value>
     </values>
     <values>
         <field>IsEnabled__c</field>
@@ -18,7 +16,7 @@
     </values>
     <values>
         <field>IsLogEnabled__c</field>
-        <value xsi:type="xsd:boolean">true</value>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>IsLogEntryEnabled__c</field>
@@ -38,7 +36,7 @@
     </values>
     <values>
         <field>Link__c</field>
-        <value xsi:type="xsd:string">https://github.com/jongpie/NebulaLogger/tree/main/nebula-logger/plugins/Slack</value>
+        <value xsi:nil="true" />
     </values>
     <values>
         <field>LogEntryEventExecutionOrder__c</field>
@@ -70,6 +68,6 @@
     </values>
     <values>
         <field>VersionNumber__c</field>
-        <value xsi:type="xsd:string">v0.5.0</value>
+        <value xsi:nil="true" />
     </values>
 </CustomMetadata>
