@@ -4228,6 +4228,16 @@ Saves any entries in Logger&apos;s buffer, using the specified save method for o
 | ------------ | ------------------------------------------------------------------------- |
 | `saveMethod` | The enum value of Logger.SaveMethod to use for this specific save action. |
 
+#### `saveLog(String saveMethodName)` → `void`
+
+Saves any entries in Logger&apos;s buffer, using the specified save method for only this call. All subsequent calls to saveLog() will use the transaction save method.
+
+##### Parameters
+
+| Param            | Description                                                               |
+| ---------------- | ------------------------------------------------------------------------- |
+| `saveMethodName` | The String value of the save method to use for this specific save action. |
+
 #### `setParentLogTransactionId(String parentTransactionId)` → `void`
 
 Relates the current transaction&apos;s log to a parent log via the field Log**c.ParentLog**c This is useful for relating multiple asynchronous operations together, such as batch &amp; queueable jobs.

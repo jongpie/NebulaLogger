@@ -8,6 +8,25 @@ Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__
 
 ---
 
+### Constructors
+
+#### `LogEntryEventHandler()`
+
+Default constructor, used by the trigger `LogEntryEvent.trigger`
+
+#### `LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents)`
+
+Additional constructor specific to `LogEntryEvent__e`, used in `Logger` to simulate a `BEFORE_INSERT` context
+
+##### Parameters
+
+| Param                  | Description                                                                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `triggerOperationType` | The instance of `TriggerOperation` that the handler class should use - this overrides the `TriggerOperation` provided by `LoggerSObjectHandler` |
+| `logEntryEvents`       | The list of `LogEntryEvent__e` records in Logger&apos;s buffer                                                                                  |
+
+---
+
 ### Properties
 
 #### `releaseNumber` → `String`
@@ -59,6 +78,20 @@ The `DeveloperName` value of the `LoggerParameter_t` that controls if the handle
 #### `getHandlerPluginControlField()` → `Schema.SObjectField`
 
 Returns the `SObjectField` on `LoggerPlugin_t` that controls if plugins are enabled for the handler&apos;s `SObjectType`
+
+##### Return
+
+**Type**
+
+Schema.SObjectField
+
+**Description**
+
+The instance of `Schema.SObjectField` on `LoggerPlugin_t` for the current `SObjectType`
+
+#### `getHandlerPluginSortField()` → `Schema.SObjectField`
+
+Returns the `SObjectField` on `LoggerPlugin_t` that controls the sorting of plugins for the handler&apos;s `SObjectType`
 
 ##### Return
 
