@@ -11,10 +11,6 @@
         <value xsi:type="xsd:string">TODO - Adds the ability to assign logs to queues &amp; users, using rules configured in custom metadata types</value>
     </values>
     <values>
-        <field>ExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
         <field>IsEnabled__c</field>
         <value xsi:type="xsd:boolean">false</value>
     </values>
@@ -49,10 +45,6 @@
     <values>
         <field>PluginType__c</field>
         <value xsi:type="xsd:string">Apex</value>
-    </values>
-    <values>
-        <field>SObjectType__c</field>
-        <value xsi:type="xsd:string">Log__c</value>
     </values>
     <values>
         <field>VersionNumber__c</field>

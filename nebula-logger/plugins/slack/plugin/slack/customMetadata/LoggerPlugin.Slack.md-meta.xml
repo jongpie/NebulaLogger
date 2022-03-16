@@ -13,10 +13,6 @@
 Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackLoggingLevelThreshold&apos; will send a notification to Slack</value>
     </values>
     <values>
-        <field>ExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
         <field>IsEnabled__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
@@ -51,10 +47,6 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
     <values>
         <field>PluginType__c</field>
         <value xsi:type="xsd:string">Apex</value>
-    </values>
-    <values>
-        <field>SObjectType__c</field>
-        <value xsi:type="xsd:string">Log__c</value>
     </values>
     <values>
         <field>VersionNumber__c</field>

@@ -13,10 +13,6 @@
         >Adds the ability to create &amp; deploy advanced, configurable rules for setting the retention date of Log__c records, using custom metadata types LogRetentionRule__mdt and LogRetentionRuleCondition__mdt.</value>
     </values>
     <values>
-        <field>ExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
         <field>IsEnabled__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
@@ -51,10 +47,6 @@
     <values>
         <field>PluginType__c</field>
         <value xsi:type="xsd:string">Apex</value>
-    </values>
-    <values>
-        <field>SObjectType__c</field>
-        <value xsi:type="xsd:string">LogEntry__c</value>
     </values>
     <values>
         <field>VersionNumber__c</field>

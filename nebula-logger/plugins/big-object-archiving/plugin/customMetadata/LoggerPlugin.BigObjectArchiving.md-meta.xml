@@ -13,10 +13,6 @@
         >Adds the ability to log directly to the BigObject LogEntryArchive__b, as well as the ability to archive Log__c &amp; LogEntry__c records to LogEntryArchive__b</value>
     </values>
     <values>
-        <field>ExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
         <field>IsEnabled__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
@@ -71,10 +67,6 @@
     <values>
         <field>PluginType__c</field>
         <value xsi:type="xsd:string">Apex</value>
-    </values>
-    <values>
-        <field>SObjectType__c</field>
-        <value xsi:type="xsd:string">Log__c</value>
     </values>
     <values>
         <field>VersionNumber__c</field>
