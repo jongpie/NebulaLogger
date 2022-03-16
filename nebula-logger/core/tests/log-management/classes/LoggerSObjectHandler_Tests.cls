@@ -162,7 +162,7 @@ private class LoggerSObjectHandler_Tests {
             IsEnabled__c = true,
             IsLogEnabled__c = true,
             PluginApiName__c = 'Some_Fake_Apex_Class',
-            PluginType__c = 'Apex'
+            PluginType__c = 'SObject Handler - Apex'
         );
         handler.addMockPlugin(plugin);
 
@@ -183,7 +183,7 @@ private class LoggerSObjectHandler_Tests {
             IsEnabled__c = true,
             IsLogEnabled__c = true,
             PluginApiName__c = 'Some_Fake_Flow',
-            PluginType__c = 'Flow'
+            PluginType__c = 'SObject Handler - Flow'
         );
         handler.addMockPlugin(plugin);
 
