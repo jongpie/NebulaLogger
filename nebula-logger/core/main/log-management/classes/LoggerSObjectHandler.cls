@@ -45,6 +45,13 @@ public without sharing abstract class LoggerSObjectHandler {
     public abstract Schema.SObjectField getHandlerPluginControlField();
 
     /**
+     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
+     *          for the handler's `SObjectType`
+     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
+     */
+    public abstract Schema.SObjectField getHandlerPluginSortField();
+
+    /**
      * @description Runs the handler class's logic, as well as any configured plugins
      */
     public void execute() {
@@ -159,7 +166,7 @@ public without sharing abstract class LoggerSObjectHandler {
             this.getHandlerPluginControlField().getDescribe().getName() + ' = TRUE'
         };
         List<String> orderByConditions = new List<String>{
-            Schema.LoggerPlugin__mdt.ExecutionOrder__c.getDescribe().getName() + ' NULLS LAST',
+            this.getHandlerPluginSortField().getDescribe().getName() + ' NULLS LAST',
             Schema.LoggerPlugin__mdt.DeveloperName.getDescribe().getName()
         };
 
