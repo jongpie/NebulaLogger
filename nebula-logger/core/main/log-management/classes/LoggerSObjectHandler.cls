@@ -14,6 +14,7 @@ public without sharing abstract class LoggerSObjectHandler {
 
     private SObjectHandlerInput input;
     private List<LoggerPlugin__mdt> pluginConfigurations;
+    private List<LoggerSObjectHandlerPlugin> executedApexPlugins = new List<LoggerSObjectHandlerPlugin>();
 
     /**
      * @description Default constructor
@@ -210,11 +211,21 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
-        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) Type.forName(configuration.PluginApiName__c).newInstance();
+        Type apexPluginType = Type.forName(configuration.PluginApiName__c);
+        if (apexPluginType == null) {
+            System.debug(LoggingLevel.INFO, 'Unknown Apex class ' + configuration.PluginApiName__c + ', skipping plugin execution');
+            return;
+        }
+
+        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) apexPluginType.newInstance();
         apexPlugin.execute(configuration, this.input);
 
         // TODO Legacy approach, remove in a future release
         apexPlugin.execute(this.input.triggerOperationType, this.input.triggerNew, this.input.triggerNewMap, this.input.triggerOld, this.input.triggerOldMap);
+
+        if (Test.isRunningTest() == true) {
+            this.executedApexPlugins.add(apexPlugin);
+        }
     }
 
     private void executeFlowPlugin(LoggerPlugin__mdt configuration) {
@@ -227,18 +238,39 @@ public without sharing abstract class LoggerSObjectHandler {
         flowInputs.put('triggerNew', this.input.triggerNew);
         flowInputs.put('triggerOld', this.input.triggerOld);
 
-        Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.PluginApiName__c, flowInputs);
-        flowPlugin.start();
+        try {
+            Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.PluginApiName__c, flowInputs);
+            flowPlugin.start();
 
-        List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
-        if (updatedTriggerNew != null && updatedTriggerNew.size() == this.input.triggerNew.size()) {
-            this.input.triggerNew = updatedTriggerNew;
-            if (this.input.triggerNewMap != null) {
-                this.input.triggerNewMap = new Map<Id, SObject>(updatedTriggerNew);
+            List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
+            if (updatedTriggerNew != null && updatedTriggerNew.size() == this.input.triggerNew.size()) {
+                this.input.triggerNew = updatedTriggerNew;
+                if (this.input.triggerNewMap != null) {
+                    this.input.triggerNewMap = new Map<Id, SObject>(updatedTriggerNew);
+                }
             }
+        } catch (TypeException ex) {
+            System.debug(LoggingLevel.INFO, 'Unknown Flow ' + configuration.PluginApiName__c + ', skipping plugin execution');
         }
     }
 
+    // Instance test helper methods
+    @TestVisible
+    private void setMockInput(SObjectHandlerInput input) {
+        this.input = input;
+    }
+
+    @TestVisible
+    private void addMockPlugin(LoggerPlugin__mdt pluginConfiguration) {
+        this.pluginConfigurations.add(pluginConfiguration);
+    }
+
+    @TestVisible
+    private List<LoggerSObjectHandlerPlugin> getExecutedApexPlugins() {
+        return this.executedApexPlugins;
+    }
+
+    // Static test helper methods
     @TestVisible
     private static Map<Schema.SObjectType, List<LoggerSObjectHandler>> getExecutedHandlers() {
         return SOBJECT_TYPE_TO_EXECUTED_HANDLERS;

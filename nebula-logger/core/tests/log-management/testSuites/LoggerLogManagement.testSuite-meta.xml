@@ -7,6 +7,7 @@
     <testClassName>LogEntryHandler_Tests</testClassName>
     <testClassName>LogEntryTagHandler_Tests</testClassName>
     <testClassName>LoggerSettingsController_Tests</testClassName>
+    <testClassName>LoggerSObjectHandler_Tests</testClassName>
     <testClassName>LoggerSObjectMetadata_Tests</testClassName>
     <testClassName>LoggerTagHandler_Tests</testClassName>
     <testClassName>LogHandler_Tests</testClassName>
