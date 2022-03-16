@@ -11,7 +11,7 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_write_all_fields_over_from_log_entry_event() {
-        Datetime timestamp = System.timestamp();
+        Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = getMockEvent(timestamp);
 
         LoggerPlugin__mdt pluginConfiguration = getPluginConfiguration();
@@ -28,7 +28,7 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_not_create_big_object_with_other_save_methods() {
-        Datetime timestamp = System.timestamp();
+        Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = getMockEvent(timestamp);
 
         LoggerPlugin__mdt pluginConfiguration = getPluginConfiguration();
@@ -138,11 +138,11 @@ private class LogEntryArchiveBuilder_Tests {
             SourceIp__c = FAKE_DATA_STRING,
             StackTrace__c = FAKE_DATA_STRING,
             SystemMode__c = FAKE_DATA_STRING,
+            Tags__c = FAKE_DATA_STRING,
             ThemeDisplayed__c = FAKE_DATA_STRING,
             Timestamp__c = timestamp,
             TimestampString__c = String.valueOf(timestamp.getTime()),
             TimeZoneId__c = FAKE_DATA_STRING,
-            Topics__c = FAKE_DATA_STRING,
             TransactionEntryNumber__c = FAKE_DATA_NUMBER,
             TransactionId__c = FAKE_DATA_STRING,
             TriggerOperationType__c = FAKE_DATA_STRING,
@@ -171,9 +171,11 @@ private class LogEntryArchiveBuilder_Tests {
     @SuppressWarnings('PMD.NcssMethodCount')
     private static void assertAllFieldsMatch(Datetime timestamp, LogEntryEvent__e mockEvent, LogEntryArchive__b logEntryArchive) {
         System.assertEquals(mockEvent.ApiVersion__c, logEntryArchive.ApiVersion__c);
+        System.assertEquals(mockEvent.ComponentType__c, logEntryArchive.ComponentType__c);
         System.assertEquals(mockEvent.DatabaseResultCollectionType__c, logEntryArchive.DatabaseResultCollectionType__c);
         System.assertEquals(mockEvent.DatabaseResultJson__c, logEntryArchive.DatabaseResultJson__c);
         System.assertEquals(mockEvent.DatabaseResultType__c, logEntryArchive.DatabaseResultType__c);
+        System.assertEquals(mockEvent.EpochTimestamp__c, logEntryArchive.EpochTimestamp__c);
         System.assertEquals(mockEvent.ExceptionMessage__c, logEntryArchive.ExceptionMessage__c);
         System.assertEquals(mockEvent.ExceptionStackTrace__c, logEntryArchive.ExceptionStackTrace__c);
         System.assertEquals(mockEvent.ExceptionType__c, logEntryArchive.ExceptionType__c);
@@ -194,6 +196,8 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(mockEvent.LimitsFutureCallsUsed__c, logEntryArchive.LimitsFutureCallsUsed__c);
         System.assertEquals(mockEvent.LimitsHeapSizeMax__c, logEntryArchive.LimitsHeapSizeMax__c);
         System.assertEquals(mockEvent.LimitsHeapSizeUsed__c, logEntryArchive.LimitsHeapSizeUsed__c);
+        System.assertEquals(mockEvent.LimitsPublishImmediateDmlStatementsMax__c, logEntryArchive.LimitsPublishImmediateDmlStatementsMax__c);
+        System.assertEquals(mockEvent.LimitsPublishImmediateDmlStatementsUsed__c, logEntryArchive.LimitsPublishImmediateDmlStatementsUsed__c);
         System.assertEquals(mockEvent.LimitsMobilePushApexCallsMax__c, logEntryArchive.LimitsMobilePushApexCallsMax__c);
         System.assertEquals(mockEvent.LimitsMobilePushApexCallsUsed__c, logEntryArchive.LimitsMobilePushApexCallsUsed__c);
         System.assertEquals(mockEvent.LimitsQueueableJobsMax__c, logEntryArchive.LimitsQueueableJobsMax__c);
@@ -207,9 +211,10 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(mockEvent.LimitsSoslSearchesMax__c, logEntryArchive.LimitsSoslSearchesMax__c);
         System.assertEquals(mockEvent.LimitsSoslSearchesUsed__c, logEntryArchive.LimitsSoslSearchesUsed__c);
         System.assertEquals(mockEvent.Locale__c, logEntryArchive.Locale__c);
-        System.assertEquals(UserInfo.getUserId(), logEntryArchive.LoggedBy__c);
-        System.assertEquals(UserInfo.getUserId(), logEntryArchive.LoggedByString__c);
+        System.assertEquals(mockEvent.LoggedById__c, logEntryArchive.LoggedBy__c);
+        System.assertEquals(mockEvent.LoggedById__c, logEntryArchive.LoggedById__c);
         System.assertEquals(mockEvent.LoggedByUsername__c, logEntryArchive.LoggedByUsername__c);
+        System.assertEquals(mockEvent.LoggerVersionNumber__c, logEntryArchive.LoggerVersionNumber__c);
         System.assertEquals(mockEvent.LoggingLevel__c, logEntryArchive.LoggingLevel__c);
         System.assertEquals(mockEvent.LoggingLevelOrdinal__c, logEntryArchive.LoggingLevelOrdinal__c);
         System.assertEquals(mockEvent.LoginApplication__c, logEntryArchive.LoginApplication__c);
@@ -248,11 +253,11 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(mockEvent.SourceIp__c, logEntryArchive.SourceIp__c);
         System.assertEquals(mockEvent.StackTrace__c, logEntryArchive.StackTrace__c);
         System.assertEquals(mockEvent.SystemMode__c, logEntryArchive.SystemMode__c);
+        System.assertEquals(mockEvent.Tags__c, logEntryArchive.Tags__c);
         System.assertEquals(mockEvent.ThemeDisplayed__c, logEntryArchive.ThemeDisplayed__c);
         System.assertEquals(timestamp, logEntryArchive.Timestamp__c);
         System.assertEquals(String.valueOf(timestamp.getTime()), logEntryArchive.TimestampString__c);
         System.assertEquals(mockEvent.TimeZoneId__c, logEntryArchive.TimeZoneId__c);
-        System.assertEquals(mockEvent.Topics__c, logEntryArchive.Topics__c);
         System.assertEquals(mockEvent.TransactionEntryNumber__c, logEntryArchive.TransactionEntryNumber__c);
         System.assertEquals(mockEvent.TransactionId__c, logEntryArchive.TransactionId__c);
         System.assertEquals(mockEvent.TriggerOperationType__c, logEntryArchive.TriggerOperationType__c);

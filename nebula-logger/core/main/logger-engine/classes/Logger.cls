@@ -2583,7 +2583,7 @@ global with sharing class Logger {
         // This gives us a chance to run the handler class & handler plugins before insert,
         // allowing the plugins to make further changes to the `LogEntryEvent__e` records
         // So, execute the handler, which internally then executes any plugins
-        new LogEntryEventHandler(logEntryEvents, TriggerOperation.BEFORE_INSERT).execute();
+        new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents).execute();
 
         // Now that the plugins have run, double check to make sure that saving should still happen
         if (getBufferSize() == 0) {

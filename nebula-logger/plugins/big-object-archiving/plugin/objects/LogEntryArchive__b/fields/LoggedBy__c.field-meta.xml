@@ -4,7 +4,7 @@
     <externalId>false</externalId>
     <label>Logged By</label>
     <referenceTo>User</referenceTo>
-    <relationshipName>Log_Archives</relationshipName>
+    <relationshipName>LogEntryArchives</relationshipName>
     <required>false</required>
     <type>Lookup</type>
 </CustomField>
