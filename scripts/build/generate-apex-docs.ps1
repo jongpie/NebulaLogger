@@ -4,8 +4,9 @@ rm -rf ./docs/apex/configuration/
 rm -rf ./docs/apex/logger-engine/
 rm -rf ./docs/apex/log-management/
 rm -rf ./docs/apex/plugin-framework/
+rm -rf ./docs/apex/plugins/
 
-npx apexdocs-generate --configPath ./config/docs/apexdocs.json --scope global public --sourceDir ./nebula-logger/core/main/ --targetDir ./docs/apex --targetGenerator jekyll
+npx apexdocs-generate --configPath ./config/docs/apexdocs.json --scope global public --sourceDir ./nebula-logger/core/main/ ./nebula-logger/plugins/ --targetDir ./docs/apex --targetGenerator jekyll
 
 # Make a few adjustments to the generated markdown files so that they work correctly in Github Pages
 $indexPageFile = "docs/apex/index.md"
@@ -16,6 +17,7 @@ Write-Output "Processing file: $indexPageFile"
 (Get-Content -path $indexPageFile -Raw) -replace "/Logger-Engine/","logger-engine/" | Set-Content -Path $indexPageFile -NoNewline
 (Get-Content -path $indexPageFile -Raw) -replace "/Log-Management/","log-management/" | Set-Content -Path $indexPageFile -NoNewline
 (Get-Content -path $indexPageFile -Raw) -replace "/Plugin-Framework/","plugin-framework/" | Set-Content -Path $indexPageFile -NoNewline
+(Get-Content -path $indexPageFile -Raw) -replace "/Plugins/","plugins/" | Set-Content -Path $indexPageFile -NoNewline
 
 $docsSubdirectories = "docs/apex/*/*.*"
 foreach($file in Get-ChildItem $docsSubdirectories) {

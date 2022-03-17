@@ -4,12 +4,22 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.               //
 //-----------------------------------------------------------------------------------------------------------//
 
-// TODO revise suppressed PMD rules/clean up code
-@SuppressWarnings('PMD.ApexDoc, PMD.AvoidDebugStatements, PMD.DebugsShouldUseLoggingLevel, PMD.ExcessiveParameterList')
+/**
+ * @group Plugins
+ * @description Optional plugin that adds the ability to create & deploy advanced, configurable rules
+ *              for setting the retention date of `Log__c` records, using custom metadata types
+ *              `LogRetentionRule__mdt` and `LogRetentionRuleCondition__mdt`.
+ */
 public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandlerPlugin {
     private static final Map<String, LogRetentionRule__mdt> RULE_NAME_TO_RULE = new Map<String, LogRetentionRule__mdt>();
     private static final Map<String, List<LogRetentionRuleCondition__mdt>> RULE_NAME_TO_CONDITIONS = new Map<String, List<LogRetentionRuleCondition__mdt>>();
 
+    /**
+     * @description Handles converting Logger's buffer of `LogEntryEvent__e` records into `LogEntryArchive__b` records
+     *              for any user with the included custom save method 'BIG_OBJECT'
+     * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
+     * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
+     */
     public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
         if (input.sobjectType != Schema.LogEntry__c.SObjectType) {
             return;

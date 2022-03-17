@@ -11,7 +11,7 @@ private class SlackLoggerPlugin_Tests {
     /**
      * @description Inner class for handling mock HTTP callouts.
      */
-    public class SuccessCalloutMock implements HttpCalloutMock {
+    private class SuccessCalloutMock implements HttpCalloutMock {
         /**
          * @description Returns the mock HTTP response.
          * @param request The HTTP request to "receive"
