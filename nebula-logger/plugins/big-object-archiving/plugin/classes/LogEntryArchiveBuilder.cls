@@ -21,7 +21,7 @@ public without sharing class LogEntryArchiveBuilder extends LoggerSObjectHandler
      * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
      */
     public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
-        System.debug(LoggingLevel.FINER, 'Running LogEntryArchiveBuilder for logEntryEvents: ' + JSON.serializePretty(input.triggerNew));
+        System.debug(LoggingLevel.FINEST, 'Running LogEntryArchiveBuilder for ' + input.triggerNew.size() + ' logEntryEvents');
         if (Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_SAVE_METHOD) {
             return;
         }
@@ -80,7 +80,7 @@ public without sharing class LogEntryArchiveBuilder extends LoggerSObjectHandler
             LimitsSoslSearchesMax__c = logEntryEvent.LimitsSoslSearchesMax__c,
             LimitsSoslSearchesUsed__c = logEntryEvent.LimitsSoslSearchesUsed__c,
             Locale__c = logEntryEvent.Locale__c,
-            LoggedBy__c = logEntryEvent.LoggedById__c,
+            LoggedBy__c = String.isNotBlank(logEntryEvent.LoggedById__c) ? logEntryEvent.LoggedById__c : 'Anonymous',
             LoggedById__c = logEntryEvent.LoggedById__c,
             LoggedByUsername__c = logEntryEvent.LoggedByUsername__c,
             LoggerVersionNumber__c = logEntryEvent.LoggerVersionNumber__c,

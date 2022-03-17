@@ -6,8 +6,8 @@
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
     <label>Logging Level</label>
-    <length>255</length>
-    <required>false</required>
+    <length>10</length>
+    <required>true</required>
     <type>Text</type>
     <unique>false</unique>
 </CustomField>

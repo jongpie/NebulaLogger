@@ -211,7 +211,7 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(mockEvent.LimitsSoslSearchesMax__c, logEntryArchive.LimitsSoslSearchesMax__c);
         System.assertEquals(mockEvent.LimitsSoslSearchesUsed__c, logEntryArchive.LimitsSoslSearchesUsed__c);
         System.assertEquals(mockEvent.Locale__c, logEntryArchive.Locale__c);
-        System.assertEquals(mockEvent.LoggedById__c, logEntryArchive.LoggedBy__c);
+        System.assertEquals(String.isNotBlank(mockEvent.LoggedById__c) ? mockEvent.LoggedById__c : 'Anonymous', logEntryArchive.LoggedBy__c);
         System.assertEquals(mockEvent.LoggedById__c, logEntryArchive.LoggedById__c);
         System.assertEquals(mockEvent.LoggedByUsername__c, logEntryArchive.LoggedByUsername__c);
         System.assertEquals(mockEvent.LoggerVersionNumber__c, logEntryArchive.LoggerVersionNumber__c);
