@@ -9,6 +9,9 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerSettingsController {
+    private static final String ADDITIONAL_SAVE_METHODS_PREFIX = 'AdditionalSaveMethods';
+    private static final List<LoggerParameter__mdt> MOCK_ADDITIONAL_SAVE_METHOD_PARAMETERS = new List<LoggerParameter__mdt>();
+
     // Data methods
     /**
      * @description Indicates if the current user has access to modify `LoggerSettings__c` records,
@@ -163,6 +166,11 @@ public without sharing class LoggerSettingsController {
         }
     }
 
+    @TestVisible
+    private static void addMockCustomSaveMethod(LoggerParameter__mdt customSaveMethodParameter) {
+        MOCK_ADDITIONAL_SAVE_METHOD_PARAMETERS.add(customSaveMethodParameter);
+    }
+
     private static AuraHandledException createAuraHandledException(Exception ex) {
         AuraHandledException auraHandledException = new AuraHandledException(ex.getMessage());
         auraHandledException.setMessage(ex.getMessage());
@@ -194,11 +202,13 @@ public without sharing class LoggerSettingsController {
             saveMethodNames.add(saveMethod.name());
         }
 
-        List<LoggerParameter__mdt> potentiallyMatchingParameters = [
-            SELECT Id, Value__c
-            FROM LoggerParameter__mdt
-            WHERE DeveloperName LIKE 'AdditionalSaveMethods%'
-        ];
+        String soqlSearchTerm = ADDITIONAL_SAVE_METHODS_PREFIX + '%';
+        List<LoggerParameter__mdt> potentiallyMatchingParameters = [SELECT Id, Value__c FROM LoggerParameter__mdt WHERE DeveloperName LIKE :soqlSearchTerm];
+
+        if (Test.isRunningTest() == true) {
+            potentiallyMatchingParameters = MOCK_ADDITIONAL_SAVE_METHOD_PARAMETERS;
+        }
+
         for (LoggerParameter__mdt matchingAdditionalParameter : potentiallyMatchingParameters) {
             saveMethodNames.add(matchingAdditionalParameter.Value__c);
         }

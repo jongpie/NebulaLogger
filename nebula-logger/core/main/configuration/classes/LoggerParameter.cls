@@ -11,7 +11,7 @@
 @SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public class LoggerParameter {
     private static Set<String> parametersToLoadDuringTests = new Set<String>();
-    private static Map<String, SObject> mockParameterByDeveloperName = new Map<String, SObject>();
+    private static Map<String, LoggerParameter__mdt> mockParameterByDeveloperName = new Map<String, LoggerParameter__mdt>();
 
     /**
      * @description Indicates if Logger will make an async callout to https://api.status.salesforce.com
