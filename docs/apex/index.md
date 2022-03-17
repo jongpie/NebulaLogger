@@ -38,6 +38,12 @@ Provides the ability to generate string messages on demand, using String.format(
 
 The core class for logging
 
+## Miscellaneous
+
+### [FailureCalloutMock](/Miscellaneous/FailureCalloutMock)
+
+Inner class for handling mock HTTP callouts that should end in errors / exceptions.
+
 ## Log Management
 
 ### [LogBatchPurgeScheduler](log-management/LogBatchPurgeScheduler)
@@ -95,6 +101,20 @@ Handles trigger events for the `LoggerTag__c` object
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 
 Controller class for the lightning web component `related-log-entries`
+
+## Plugins
+
+### [LogEntryArchiveBuilder](plugins/LogEntryArchiveBuilder)
+
+Optional plugin that provides a BigObject, `LogEntryArchive__b`, as an alternative option to the platform event `LogEntryEvent__e`
+
+### [LogRetentionRulesPlugin](plugins/LogRetentionRulesPlugin)
+
+Optional plugin that adds the ability to create &amp; deploy advanced, configurable rules for setting the retention date of `Log__c` records, using custom metadata types `LogRetentionRule_t` and `LogRetentionRuleCondition_t`.
+
+### [SlackLoggerPlugin](plugins/SlackLoggerPlugin)
+
+Optional plugin that integrates with Slack to send alerts for important logs
 
 ## Configuration
 

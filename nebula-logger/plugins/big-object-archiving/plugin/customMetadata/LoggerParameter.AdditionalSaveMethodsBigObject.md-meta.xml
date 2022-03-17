@@ -4,12 +4,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Additional Save Methods</label>
+    <label>Additional Save Methods: Big Object</label>
     <protected>true</protected>
     <values>
         <field>Description__c</field>
         <value
             xsi:type="xsd:string"
         >An optional array of additional save methods to display when configuring the field LoggerSettings__c.DefaultSaveMethod__c in the LWC loggerSettings. When not configured, only the enum values of Logger.SaveMethod are used. This can be used to add new save methods that are provided by plugins.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">BIG_OBJECT</value>
     </values>
 </CustomMetadata>

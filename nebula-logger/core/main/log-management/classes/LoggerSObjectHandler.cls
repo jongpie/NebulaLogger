@@ -7,10 +7,20 @@
  * @group Log Management
  * @description Abstract class used by trigger handlers for shared logic
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.EmptyStatementBlock')
+@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock, PMD.FieldDeclarationsShouldBeAtStart')
 public without sharing abstract class LoggerSObjectHandler {
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
     private static final Map<Schema.SObjectType, List<LoggerPlugin__mdt>> SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS = new Map<Schema.SObjectType, List<LoggerPlugin__mdt>>();
+
+    protected SObjectHandlerInput input {
+        get {
+            if (input == null) {
+                input = this.createSObjectHandlerInput();
+            }
+            return input;
+        }
+        set;
+    }
 
     @TestVisible
     private TriggerOperation triggerOperationType;
@@ -20,7 +30,6 @@ public without sharing abstract class LoggerSObjectHandler {
     private Map<Id, SObject> triggerNewMap;
     @TestVisible
     private Map<Id, SObject> triggerOldMap;
-    private SObjectHandlerInput input;
     private List<LoggerPlugin__mdt> pluginConfigurations = new List<LoggerPlugin__mdt>();
     private List<LoggerSObjectHandlerPlugin> executedApexPlugins = new List<LoggerSObjectHandlerPlugin>();
 
@@ -32,8 +41,7 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerNew = Trigger.new;
         this.triggerNewMap = Trigger.newMap;
         this.triggerOldMap = Trigger.oldMap;
-
-        this.queryPluginConfigurations();
+        this.pluginConfigurations = this.queryPluginConfigurations();
     }
 
     /**
@@ -72,8 +80,6 @@ public without sharing abstract class LoggerSObjectHandler {
         if (shouldExecute == false) {
             return;
         }
-
-        this.createSObjectHandlerInput();
 
         switch on this.input.triggerOperationType {
             when BEFORE_INSERT {
@@ -138,15 +144,15 @@ public without sharing abstract class LoggerSObjectHandler {
     protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
     }
 
-    private void createSObjectHandlerInput() {
-        this.input = new SObjectHandlerInput();
+    private SObjectHandlerInput createSObjectHandlerInput() {
+        SObjectHandlerInput input = new SObjectHandlerInput();
 
         // Trigger variables for Apex Developers
         input.sobjectType = this.getSObjectType();
-        input.triggerOperationType = triggerOperationType;
-        input.triggerNew = triggerNew;
-        input.triggerNewMap = triggerNewMap;
-        input.triggerOldMap = triggerOldMap;
+        input.triggerOperationType = this.triggerOperationType;
+        input.triggerNew = this.triggerNew;
+        input.triggerNewMap = this.triggerNewMap;
+        input.triggerOldMap = this.triggerOldMap;
 
         // Additional invocable variables for Flow Builders (and Apex Developers too, if they want to use them)
         input.sobjectTypeName = this.getSObjectType().getDescribe().getName();
@@ -170,9 +176,11 @@ public without sharing abstract class LoggerSObjectHandler {
                 input.triggerRecords.add(recordInput);
             }
         }
+
+        return input;
     }
 
-    private void queryPluginConfigurations() {
+    private List<LoggerPlugin__mdt> queryPluginConfigurations() {
         // Dynamically query the LoggerPlugin__mdt CMDT object so the records are filtered by the current SObjectType, and so the records are sorted correctly
         List<String> fieldsToQuery = new List<String>(Schema.LoggerPlugin__mdt.SObjectType.getDescribe().fields.getMap().keySet());
         List<String> filterConditions = new List<String>{
@@ -192,18 +200,19 @@ public without sharing abstract class LoggerSObjectHandler {
             String.join(orderByConditions, ', ')
         };
         String query = String.format(queryTemplate, queryInputs);
-        this.pluginConfigurations = (List<LoggerPlugin__mdt>) Database.query(query);
+        List<LoggerPlugin__mdt> queriedPluginConfigurations = (List<LoggerPlugin__mdt>) Database.query(query);
 
         if (System.Test.isRunningTest() == true) {
             // Tests shouldn't rely on the actual CMDT rules in the org
             // Clear the org's loaded records during tests, and mock via setMockConfiguration()
-            this.pluginConfigurations.clear();
-
+            queriedPluginConfigurations.clear();
             List<LoggerPlugin__mdt> mockPluginConfigurations = SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(this.getSObjectType());
             if (mockPluginConfigurations != null && mockPluginConfigurations.isEmpty() == false) {
-                this.pluginConfigurations.addAll(mockPluginConfigurations);
+                queriedPluginConfigurations.addAll(mockPluginConfigurations);
             }
         }
+
+        return queriedPluginConfigurations;
     }
 
     private void executePlugins() {
@@ -213,16 +222,17 @@ public without sharing abstract class LoggerSObjectHandler {
 
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
             switch on pluginConfiguration.PluginType__c {
-                when 'Apex' {
+                when 'SObject Handler - Apex' {
                     this.executeApexPlugin(pluginConfiguration);
                 }
-                when 'Flow' {
+                when 'SObject Handler - Flow' {
                     this.executeFlowPlugin(pluginConfiguration);
                 }
             }
         }
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
         Type apexPluginType = Type.forName(configuration.PluginApiName__c);
         if (apexPluginType == null) {
@@ -247,6 +257,7 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
+    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeFlowPlugin(LoggerPlugin__mdt configuration) {
         Map<String, Object> flowInputs = new Map<String, Object>();
         flowInputs.put('pluginConfiguration', configuration);

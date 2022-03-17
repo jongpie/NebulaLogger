@@ -361,7 +361,7 @@ private class LogHandler_Tests {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'Apex', PluginApiName__c = LogPluginTest.class.getName());
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'SObject Handler - Apex', PluginApiName__c = LogPluginTest.class.getName());
         LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');

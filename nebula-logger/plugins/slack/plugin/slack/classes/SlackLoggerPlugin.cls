@@ -9,8 +9,8 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
-    private static String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
-    private static LoggingLevel NOTIFICATION_LOGGING_LEVEL = Logger.getLoggingLevel(LoggerParameter.getString('SlackNotificationLoggingLevel', null));
+    private static final String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
+    private static final LoggingLevel NOTIFICATION_LOGGING_LEVEL = Logger.getLoggingLevel(LoggerParameter.getString('SlackNotificationLoggingLevel', null));
 
     private List<Log__c> logs;
 
@@ -27,7 +27,9 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     }
 
     /**
-     * @description Handles the queuable execute logic.
+     * @description Handles the integration with Slack. This method is automatically called by Nebula Logger's plugin framework.
+     * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
+     * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
     public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {

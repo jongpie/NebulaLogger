@@ -13,14 +13,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Apex</fullName>
+                <fullName>SObject Handler - Apex</fullName>
                 <default>true</default>
-                <label>Apex</label>
+                <label>SObject Handler - Apex</label>
             </value>
             <value>
-                <fullName>Flow</fullName>
+                <fullName>SObject Handler - Flow</fullName>
                 <default>false</default>
-                <label>Flow</label>
+                <label>SObject Handler - Flow</label>
             </value>
         </valueSetDefinition>
     </valueSet>

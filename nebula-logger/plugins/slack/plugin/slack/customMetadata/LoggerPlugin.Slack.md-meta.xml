@@ -46,7 +46,7 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
     </values>
     <values>
         <field>PluginType__c</field>
-        <value xsi:type="xsd:string">Apex</value>
+        <value xsi:type="xsd:string">SObject Handler - Apex</value>
     </values>
     <values>
         <field>VersionNumber__c</field>

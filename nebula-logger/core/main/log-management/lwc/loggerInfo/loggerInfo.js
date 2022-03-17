@@ -10,7 +10,7 @@ import getVersionNumber from '@salesforce/apex/LoggerInfoController.getVersionNu
 import getNamespacePrefix from '@salesforce/apex/LoggerInfoController.getNamespacePrefix';
 import getPlugins from '@salesforce/apex/LoggerInfoController.getPlugins';
 
-export default class LoggerSystemInfo extends LightningElement {
+export default class LoggerInfo extends LightningElement {
     versionNumber;
     namespacePrefix;
     plugins = [];

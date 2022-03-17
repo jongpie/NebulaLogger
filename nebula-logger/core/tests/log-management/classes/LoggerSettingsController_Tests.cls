@@ -40,8 +40,10 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_append_custom_loggerSaveMethod_picklist_options_when_configured() {
-        List<String> fakeSaveMethods = new List<String>{ 'a fake save method', 'another one', 'some other save method' };
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'AdditionalSaveMethods', Value__c = JSON.serialize(fakeSaveMethods)));
+        List<String> fakeSaveMethods = new List<String>{ 'A_FAKE_SAVE_METHOD', 'ANOTHER_ONE', 'SOME_OTHER_SAVE_METHOD' };
+        for (String fakeSaveMethod : fakeSaveMethods) {
+            LoggerSettingsController.addMockCustomSaveMethod(new LoggerParameter__mdt(DeveloperName = fakeSaveMethod, Value__c = fakeSaveMethod));
+        }
 
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().saveMethodOptions;
 
@@ -56,8 +58,8 @@ private class LoggerSettingsController_Tests {
             if (String.isBlank(picklistOption.value) == true) {
                 System.assertEquals('--None--', picklistOption.label);
             } else {
-                System.assertEquals(picklistOption.value, picklistOption.label);
-                System.assertEquals(true, expectedSaveMethods.contains(picklistOption.value));
+                System.assertEquals(picklistOption.value, picklistOption.label, 'picklistOption==' + picklistOption);
+                System.assertEquals(true, expectedSaveMethods.contains(picklistOption.value), 'picklistOption==' + picklistOption);
             }
         }
     }

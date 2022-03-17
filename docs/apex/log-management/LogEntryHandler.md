@@ -38,6 +38,20 @@ Schema.SObjectField
 
 The instance of `Schema.SObjectField` on `LoggerPlugin_t` for the current `SObjectType`
 
+#### `getHandlerPluginSortField()` → `Schema.SObjectField`
+
+Returns the `SObjectField` on `LoggerPlugin_t` that controls the sorting of plugins for the handler&apos;s `SObjectType`
+
+##### Return
+
+**Type**
+
+Schema.SObjectField
+
+**Description**
+
+The instance of `Schema.SObjectField` on `LoggerPlugin_t` for the current `SObjectType`
+
 #### `getSObjectType()` → `SObjectType`
 
 Returns SObject Type that the handler is responsible for processing

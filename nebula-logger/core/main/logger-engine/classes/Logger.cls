@@ -2544,7 +2544,7 @@ global with sharing class Logger {
     /**
      * @description Saves any entries in Logger's buffer, using the specified save method for only this call.
      *   All subsequent calls to saveLog() will use the transaction save method.
-     * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
+     * @param  saveMethodName The String value of the save method to use for this specific save action.
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     public static void saveLog(String saveMethodName) {
@@ -2583,7 +2583,7 @@ global with sharing class Logger {
         // This gives us a chance to run the handler class & handler plugins before insert,
         // allowing the plugins to make further changes to the `LogEntryEvent__e` records
         // So, execute the handler, which internally then executes any plugins
-        new LogEntryEventHandler().executeBeforeInsert(logEntryEvents);
+        new LogEntryEventHandler(TriggerOperation.BEFORE_INSERT, logEntryEvents).execute();
 
         // Now that the plugins have run, double check to make sure that saving should still happen
         if (getBufferSize() == 0) {

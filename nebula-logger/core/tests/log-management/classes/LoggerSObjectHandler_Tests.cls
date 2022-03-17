@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
 @IsTest
 private class LoggerSObjectHandler_Tests {
     private static final String HANDLER_CONTROL_PARAMETER_NAME = 'IsMockLogHandlerEnabled';
@@ -162,12 +163,13 @@ private class LoggerSObjectHandler_Tests {
             IsEnabled__c = true,
             IsLogEnabled__c = true,
             PluginApiName__c = 'Some_Fake_Apex_Class',
-            PluginType__c = 'Apex'
+            PluginType__c = 'SObject Handler - Apex'
         );
         handler.addMockPlugin(plugin);
 
         handler.execute();
 
+        System.assertEquals(1, handler.executionCount);
         System.assertEquals(1, handler.getPluginConfigurations().size());
         System.assertEquals(0, handler.getExecutedApexPlugins().size());
     }
@@ -183,12 +185,13 @@ private class LoggerSObjectHandler_Tests {
             IsEnabled__c = true,
             IsLogEnabled__c = true,
             PluginApiName__c = 'Some_Fake_Flow',
-            PluginType__c = 'Flow'
+            PluginType__c = 'SObject Handler - Flow'
         );
         handler.addMockPlugin(plugin);
 
         handler.execute();
 
+        System.assertEquals(1, handler.executionCount);
         System.assertEquals(1, handler.getPluginConfigurations().size());
         System.assertEquals(0, handler.getExecutedApexPlugins().size());
     }

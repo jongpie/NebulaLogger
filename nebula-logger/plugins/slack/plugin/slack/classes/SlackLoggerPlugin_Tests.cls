@@ -11,7 +11,7 @@ private class SlackLoggerPlugin_Tests {
     /**
      * @description Inner class for handling mock HTTP callouts.
      */
-    public class SuccessCalloutMock implements HttpCalloutMock {
+    private class SuccessCalloutMock implements HttpCalloutMock {
         /**
          * @description Returns the mock HTTP response.
          * @param request The HTTP request to "receive"
@@ -47,7 +47,7 @@ private class SlackLoggerPlugin_Tests {
         LoggerPlugin__mdt slackPluginConfig = new LoggerPlugin__mdt(
             IsEnabled__c = true,
             PluginApiName__c = SlackLoggerPlugin.class.getName(),
-            PluginType__c = 'Apex'
+            PluginType__c = 'SObject Handler - Apex'
         );
         LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, slackPluginConfig);
 
