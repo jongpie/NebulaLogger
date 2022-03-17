@@ -21,7 +21,6 @@ public without sharing class LogEntryArchiveBuilder extends LoggerSObjectHandler
      * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
      */
     public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
-        System.debug(LoggingLevel.FINEST, 'Running LogEntryArchiveBuilder for ' + input.triggerNew.size() + ' logEntryEvents');
         if (Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_SAVE_METHOD) {
             return;
         }
