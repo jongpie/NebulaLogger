@@ -12,6 +12,16 @@ public without sharing abstract class LoggerSObjectHandler {
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
     private static final Map<Schema.SObjectType, List<LoggerPlugin__mdt>> SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS = new Map<Schema.SObjectType, List<LoggerPlugin__mdt>>();
 
+    protected SObjectHandlerInput input {
+        get {
+            if (input == null) {
+                input = this.createSObjectHandlerInput();
+            }
+            return input;
+        }
+        set;
+    }
+
     @TestVisible
     private TriggerOperation triggerOperationType;
     @TestVisible
@@ -20,7 +30,6 @@ public without sharing abstract class LoggerSObjectHandler {
     private Map<Id, SObject> triggerNewMap;
     @TestVisible
     private Map<Id, SObject> triggerOldMap;
-    protected SObjectHandlerInput input;
     private List<LoggerPlugin__mdt> pluginConfigurations = new List<LoggerPlugin__mdt>();
     private List<LoggerSObjectHandlerPlugin> executedApexPlugins = new List<LoggerSObjectHandlerPlugin>();
 
@@ -32,9 +41,7 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerNew = Trigger.new;
         this.triggerNewMap = Trigger.newMap;
         this.triggerOldMap = Trigger.oldMap;
-
-        this.queryPluginConfigurations();
-        this.createSObjectHandlerInput();
+        this.pluginConfigurations = this.queryPluginConfigurations();
     }
 
     /**
@@ -137,8 +144,8 @@ public without sharing abstract class LoggerSObjectHandler {
     protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
     }
 
-    private void createSObjectHandlerInput() {
-        this.input = new SObjectHandlerInput();
+    private SObjectHandlerInput createSObjectHandlerInput() {
+        SObjectHandlerInput input = new SObjectHandlerInput();
 
         // Trigger variables for Apex Developers
         input.sobjectType = this.getSObjectType();
@@ -169,9 +176,11 @@ public without sharing abstract class LoggerSObjectHandler {
                 input.triggerRecords.add(recordInput);
             }
         }
+
+        return input;
     }
 
-    private void queryPluginConfigurations() {
+    private List<LoggerPlugin__mdt> queryPluginConfigurations() {
         // Dynamically query the LoggerPlugin__mdt CMDT object so the records are filtered by the current SObjectType, and so the records are sorted correctly
         List<String> fieldsToQuery = new List<String>(Schema.LoggerPlugin__mdt.SObjectType.getDescribe().fields.getMap().keySet());
         List<String> filterConditions = new List<String>{
@@ -191,19 +200,19 @@ public without sharing abstract class LoggerSObjectHandler {
             String.join(orderByConditions, ', ')
         };
         String query = String.format(queryTemplate, queryInputs);
-
-        this.pluginConfigurations = (List<LoggerPlugin__mdt>) Database.query(query);
+        List<LoggerPlugin__mdt> queriedPluginConfigurations = (List<LoggerPlugin__mdt>) Database.query(query);
 
         if (System.Test.isRunningTest() == true) {
             // Tests shouldn't rely on the actual CMDT rules in the org
             // Clear the org's loaded records during tests, and mock via setMockConfiguration()
-            this.pluginConfigurations.clear();
-
+            queriedPluginConfigurations.clear();
             List<LoggerPlugin__mdt> mockPluginConfigurations = SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(this.getSObjectType());
             if (mockPluginConfigurations != null && mockPluginConfigurations.isEmpty() == false) {
-                this.pluginConfigurations.addAll(mockPluginConfigurations);
+                queriedPluginConfigurations.addAll(mockPluginConfigurations);
             }
         }
+
+        return queriedPluginConfigurations;
     }
 
     private void executePlugins() {

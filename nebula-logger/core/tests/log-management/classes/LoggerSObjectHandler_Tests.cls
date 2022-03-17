@@ -169,6 +169,7 @@ private class LoggerSObjectHandler_Tests {
 
         handler.execute();
 
+        System.assertEquals(1, handler.executionCount);
         System.assertEquals(1, handler.getPluginConfigurations().size());
         System.assertEquals(0, handler.getExecutedApexPlugins().size());
     }
@@ -190,6 +191,7 @@ private class LoggerSObjectHandler_Tests {
 
         handler.execute();
 
+        System.assertEquals(1, handler.executionCount);
         System.assertEquals(1, handler.getPluginConfigurations().size());
         System.assertEquals(0, handler.getExecutedApexPlugins().size());
     }
