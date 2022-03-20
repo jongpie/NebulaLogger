@@ -31,15 +31,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls if plugins are enabled
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginControlField() {
-        return Schema.LoggerPlugin__mdt.IsLogEntryEnabled__c;
-    }
-
-    /**
      * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
      *          for the handler's `SObjectType`
      * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`

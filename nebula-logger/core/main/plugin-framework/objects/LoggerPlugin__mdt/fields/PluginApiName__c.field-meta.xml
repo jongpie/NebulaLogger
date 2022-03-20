@@ -21,7 +21,7 @@ Flow: The API name of a Flow that supports these inputs:
  - triggerOld: record collection variable</inlineHelpText>
     <label>Plugin API Name</label>
     <length>255</length>
-    <required>true</required>
+    <required>false</required>
     <type>Text</type>
     <unique>false</unique>
 </CustomField>

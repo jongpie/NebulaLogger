@@ -8,7 +8,7 @@
  * @description Optional plugin that integrates with Slack to send alerts for important logs
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
-public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugin implements Queueable, Database.AllowsCallouts {
+public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerable, Queueable, Database.AllowsCallouts {
     private static final String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
     private static final LoggingLevel NOTIFICATION_LOGGING_LEVEL = Logger.getLoggingLevel(LoggerParameter.getString('SlackNotificationLoggingLevel', null));
 
@@ -29,10 +29,10 @@ public without sharing class SlackLoggerPlugin extends LoggerSObjectHandlerPlugi
     /**
      * @description Handles the integration with Slack. This method is automatically called by Nebula Logger's plugin framework.
      * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
-     * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
+     * @param  input The instance of `LoggerPlugin.Triggerable.SObjectHandlerInput`, provided by the logging system
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+    public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
         this.logs = (List<Log__c>) input.triggerNew;
 
         switch on input.triggerOperationType {

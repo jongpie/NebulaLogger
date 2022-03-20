@@ -9,8 +9,11 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerSettingsController {
-    private static final String ADDITIONAL_SAVE_METHODS_PREFIX = 'AdditionalSaveMethods';
-    private static final List<LoggerParameter__mdt> MOCK_ADDITIONAL_SAVE_METHOD_PARAMETERS = new List<LoggerParameter__mdt>();
+    private static final String CUSTOM_SAVE_METHOD_PREFIX = 'CustomSaveMethod';
+    private static final String CUSTOM_LOG_PURGE_ACTION_PREFIX = 'CustomLogPurgeAction';
+    private static final String DELETE_LOG_PURGE_ACTION = 'Delete';
+    private static final List<LoggerParameter__mdt> MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS = new List<LoggerParameter__mdt>();
+    private static final List<LoggerParameter__mdt> MOCK_CUSTOM_SAVE_METHOD_PARAMETERS = new List<LoggerParameter__mdt>();
 
     // Data methods
     /**
@@ -32,6 +35,7 @@ public without sharing class LoggerSettingsController {
     public static LoggerSettingsPicklistOptions getPicklistOptions() {
         LoggerSettingsPicklistOptions loggerSettingsPicklistOptions = new LoggerSettingsPicklistOptions();
         loggerSettingsPicklistOptions.loggingLevelOptions = getLoggingLevelOptions();
+        loggerSettingsPicklistOptions.purgeActionOptions = getPurgeActionOptions();
         loggerSettingsPicklistOptions.saveMethodOptions = getSaveMethodOptions();
         loggerSettingsPicklistOptions.setupOwnerTypeOptions = getSetupOwnerTypeOptions();
         loggerSettingsPicklistOptions.shareAccessLevelOptions = getShareAccessLevelOptions();
@@ -167,8 +171,13 @@ public without sharing class LoggerSettingsController {
     }
 
     @TestVisible
+    private static void addMockCustomLogPurgeAction(LoggerParameter__mdt customSaveMethodParameter) {
+        MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS.add(customSaveMethodParameter);
+    }
+
+    @TestVisible
     private static void addMockCustomSaveMethod(LoggerParameter__mdt customSaveMethodParameter) {
-        MOCK_ADDITIONAL_SAVE_METHOD_PARAMETERS.add(customSaveMethodParameter);
+        MOCK_CUSTOM_SAVE_METHOD_PARAMETERS.add(customSaveMethodParameter);
     }
 
     private static AuraHandledException createAuraHandledException(Exception ex) {
@@ -195,6 +204,31 @@ public without sharing class LoggerSettingsController {
         return picklistOptions;
     }
 
+    private static List<PicklistOption> getPurgeActionOptions() {
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
+        List<String> logPurgeActionNames = new List<String>{ DELETE_LOG_PURGE_ACTION };
+
+        String soqlSearchTerm = CUSTOM_LOG_PURGE_ACTION_PREFIX + '%';
+        List<LoggerParameter__mdt> potentiallyMatchingParameters = [SELECT Id, Value__c FROM LoggerParameter__mdt WHERE DeveloperName LIKE :soqlSearchTerm];
+
+        if (Test.isRunningTest() == true) {
+            potentiallyMatchingParameters = MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS;
+        }
+
+        for (LoggerParameter__mdt matchingAdditionalParameter : potentiallyMatchingParameters) {
+            logPurgeActionNames.add(matchingAdditionalParameter.Value__c);
+        }
+        logPurgeActionNames.sort();
+        for (String logPurgeActionName : logPurgeActionNames) {
+            PicklistOption picklistOption = new PicklistOption();
+            picklistOption.label = logPurgeActionName;
+            picklistOption.value = logPurgeActionName;
+
+            picklistOptions.add(picklistOption);
+        }
+        return picklistOptions;
+    }
+
     private static List<PicklistOption> getSaveMethodOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
         List<String> saveMethodNames = new List<String>();
@@ -202,11 +236,11 @@ public without sharing class LoggerSettingsController {
             saveMethodNames.add(saveMethod.name());
         }
 
-        String soqlSearchTerm = ADDITIONAL_SAVE_METHODS_PREFIX + '%';
+        String soqlSearchTerm = CUSTOM_SAVE_METHOD_PREFIX + '%';
         List<LoggerParameter__mdt> potentiallyMatchingParameters = [SELECT Id, Value__c FROM LoggerParameter__mdt WHERE DeveloperName LIKE :soqlSearchTerm];
 
         if (Test.isRunningTest() == true) {
-            potentiallyMatchingParameters = MOCK_ADDITIONAL_SAVE_METHOD_PARAMETERS;
+            potentiallyMatchingParameters = MOCK_CUSTOM_SAVE_METHOD_PARAMETERS;
         }
 
         for (LoggerParameter__mdt matchingAdditionalParameter : potentiallyMatchingParameters) {
@@ -306,6 +340,8 @@ public without sharing class LoggerSettingsController {
     public class LoggerSettingsPicklistOptions {
         @AuraEnabled
         public List<PicklistOption> loggingLevelOptions;
+        @AuraEnabled
+        public List<PicklistOption> purgeActionOptions;
         @AuraEnabled
         public List<PicklistOption> saveMethodOptions;
         @AuraEnabled

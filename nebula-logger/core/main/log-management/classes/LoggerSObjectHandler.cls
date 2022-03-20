@@ -59,13 +59,6 @@ public without sharing abstract class LoggerSObjectHandler {
     public abstract String getHandlerControlParameterName();
 
     /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls if plugins are enabled
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public abstract Schema.SObjectField getHandlerPluginControlField();
-
-    /**
      * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
      *          for the handler's `SObjectType`
      * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`

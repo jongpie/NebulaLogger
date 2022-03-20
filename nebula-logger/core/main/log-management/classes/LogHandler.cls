@@ -38,15 +38,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls if plugins are enabled
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginControlField() {
-        return Schema.LoggerPlugin__mdt.IsLogEnabled__c;
-    }
-
-    /**
      * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
      *          for the handler's `SObjectType`
      * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
@@ -62,7 +53,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
         this.setOwnerId();
         // The log retention date field should support being manually changed, so only auto-set it on insert
-        this.setLogRetentionDate();
+        this.setLogPurgeDetails();
     }
 
     protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -134,7 +125,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void setLogRetentionDate() {
+    private void setLogPurgeDetails() {
         Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = queryScenarioRules(this.logs);
         for (Log__c log : this.logs) {
             // If the retention date has already been populated, leave it as-is
@@ -158,6 +149,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             // When daysToRetainLog is null, assume that the log should be kept forever,
             // and set the retention date to null so that LogBatchPurger filters out/ignores the record
             log.LogRetentionDate__c = daysToRetainLog == null ? null : System.today().addDays(daysToRetainLog);
+            log.LogPurgeAction__c = loggingUserSettings.DefaultLogPurgeAction__c;
         }
     }
 

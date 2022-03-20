@@ -6,15 +6,20 @@
     <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText>The type of plugin that the logging system should dynamically execute - Apex or Flow.</inlineHelpText>
     <label>Plugin Type</label>
-    <required>true</required>
+    <required>false</required>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>Batch Purger - Apex</fullName>
+                <default>false</default>
+                <label>Batch Purger - Apex</label>
+            </value>
+            <value>
                 <fullName>SObject Handler - Apex</fullName>
-                <default>true</default>
+                <default>false</default>
                 <label>SObject Handler - Apex</label>
             </value>
             <value>

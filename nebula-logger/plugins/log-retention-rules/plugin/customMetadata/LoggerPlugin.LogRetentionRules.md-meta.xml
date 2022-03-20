@@ -17,26 +17,6 @@
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
-        <field>IsLogEnabled__c</field>
-        <value xsi:type="xsd:boolean">true</value>
-    </values>
-    <values>
-        <field>IsLogEntryEnabled__c</field>
-        <value xsi:type="xsd:boolean">true</value>
-    </values>
-    <values>
-        <field>IsLogEntryEventEnabled__c</field>
-        <value xsi:type="xsd:boolean">false</value>
-    </values>
-    <values>
-        <field>IsLogEntryTagEnabled__c</field>
-        <value xsi:type="xsd:boolean">false</value>
-    </values>
-    <values>
-        <field>IsLoggerTagEnabled__c</field>
-        <value xsi:type="xsd:boolean">false</value>
-    </values>
-    <values>
         <field>Link__c</field>
         <value xsi:nil="true" />
     </values>
