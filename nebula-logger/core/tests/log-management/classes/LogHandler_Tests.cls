@@ -368,23 +368,4 @@ private class LogHandler_Tests {
 
         System.assertEquals(0, logShares.size(), logShares);
     }
-
-    @IsTest
-    static void it_should_run_apex_plugin_when_configured() {
-        String expectedProfileName = 'Some String';
-
-        Test.startTest();
-
-        // Use the mock configurations
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'SObject Handler - Apex', PluginApiName__c = LogPluginTest.class.getName());
-        LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
-
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
-        insert log;
-
-        log = [SELECT Id, ProfileName__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(expectedProfileName, log.ProfileName__c);
-
-        Test.stopTest();
-    }
 }

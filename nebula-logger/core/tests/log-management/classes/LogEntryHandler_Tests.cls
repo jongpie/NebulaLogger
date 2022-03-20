@@ -348,25 +348,4 @@ private class LogEntryHandler_Tests {
         System.assertEquals(exampleInnerClassName, logEntry.ApexInnerClassName__c);
         System.assertEquals(methodName, logEntry.ApexMethodName__c);
     }
-
-    @IsTest
-    static void it_should_run_apex_plugin_when_configured() {
-        String expectedMessage = 'Some String';
-
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-
-        Test.startTest();
-
-        // Use the mock configurations
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'SObject Handler - Apex', PluginApiName__c = LogEntryPluginTest.class.getName());
-        LoggerSObjectHandler.setMockPlugin(Schema.LogEntry__c.SObjectType, plugin);
-
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');
-        insert logEntry;
-
-        logEntry = [SELECT Id, Message__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(expectedMessage, logEntry.Message__c);
-
-        Test.stopTest();
-    }
 }

@@ -9,9 +9,42 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock, PMD.FieldDeclarationsShouldBeAtStart')
 public without sharing abstract class LoggerSObjectHandler {
+    // private static final List<String> PLUGIN_TYPES = new List<String>{ 'SObject Handler - Apex', 'SObject Handler - Flow' };
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
     private static final Map<Schema.SObjectType, List<LoggerPlugin__mdt>> SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS = new Map<Schema.SObjectType, List<LoggerPlugin__mdt>>();
 
+    /**
+     * @description Class used by the logging system to for trigger context details
+     */
+    public class SObjectHandlerInput {
+        public Schema.SObjectType sobjectType;
+        public TriggerOperation triggerOperationType;
+        public List<SObject> triggerNew;
+        public Map<Id, SObject> triggerNewMap;
+        public Map<Id, SObject> triggerOldMap;
+
+        @InvocableVariable(label='SObject Type Name')
+        public String sobjectTypeName;
+
+        @InvocableVariable(label='Trigger Operation Name')
+        public String triggerOperationTypeName;
+
+        @InvocableVariable(label='Trigger Records')
+        public List<SObjectHandlerRecordInput> triggerRecords;
+    }
+
+    /**
+     * @description Class used by the logging system to provide trigger record details
+     */
+    public class SObjectHandlerRecordInput {
+        @InvocableVariable(label='Trigger.new Record')
+        public SObject triggerRecordNew;
+
+        @InvocableVariable(label='Trigger.old Record')
+        public SObject triggerRecordOld;
+    }
+
+    // Instance variables for top-level class
     protected SObjectHandlerInput input {
         get {
             if (input == null) {
@@ -31,7 +64,7 @@ public without sharing abstract class LoggerSObjectHandler {
     @TestVisible
     private Map<Id, SObject> triggerOldMap;
     private List<LoggerPlugin__mdt> pluginConfigurations = new List<LoggerPlugin__mdt>();
-    private List<LoggerSObjectHandlerPlugin> executedApexPlugins = new List<LoggerSObjectHandlerPlugin>();
+    private List<LoggerPlugin.Triggerable> executedApexPlugins = new List<LoggerPlugin.Triggerable>();
 
     /**
      * @description Default constructor
@@ -41,7 +74,13 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerNew = Trigger.new;
         this.triggerNewMap = Trigger.newMap;
         this.triggerOldMap = Trigger.oldMap;
-        this.pluginConfigurations = this.queryPluginConfigurations();
+        this.pluginConfigurations = LoggerPlugin.getSObjectHandlerPluginConfigurations(this.getHandlerPluginSortField());
+        if (Test.isRunningTest() == true) {
+            if (SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.containsKey(this.getSObjectType()) == false) {
+                SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.put(this.getSObjectType(), new List<LoggerPlugin__mdt>());
+            }
+            this.pluginConfigurations = SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(this.getSObjectType());
+        }
     }
 
     /**
@@ -173,79 +212,27 @@ public without sharing abstract class LoggerSObjectHandler {
         return input;
     }
 
-    private List<LoggerPlugin__mdt> queryPluginConfigurations() {
-        // Dynamically query the LoggerPlugin__mdt CMDT object so the records are filtered by the current SObjectType, and so the records are sorted correctly
-        List<String> fieldsToQuery = new List<String>(Schema.LoggerPlugin__mdt.SObjectType.getDescribe().fields.getMap().keySet());
-        List<String> filterConditions = new List<String>{
-            Schema.LoggerPlugin__mdt.IsEnabled__c.getDescribe().getName() + ' = TRUE',
-            this.getHandlerPluginControlField().getDescribe().getName() + ' = TRUE'
-        };
-        List<String> orderByConditions = new List<String>{
-            this.getHandlerPluginSortField().getDescribe().getName() + ' NULLS LAST',
-            Schema.LoggerPlugin__mdt.DeveloperName.getDescribe().getName()
-        };
-
-        String queryTemplate = 'SELECT {0} FROM {1} WHERE {2} ORDER BY {3}';
-        List<Object> queryInputs = new List<Object>{
-            String.join(fieldsToQuery, ', '),
-            Schema.LoggerPlugin__mdt.SObjectType.getDescribe().getName(),
-            String.join(filterConditions, ' AND '),
-            String.join(orderByConditions, ', ')
-        };
-        String query = String.format(queryTemplate, queryInputs);
-        List<LoggerPlugin__mdt> queriedPluginConfigurations = (List<LoggerPlugin__mdt>) Database.query(query);
-
-        if (System.Test.isRunningTest() == true) {
-            // Tests shouldn't rely on the actual CMDT rules in the org
-            // Clear the org's loaded records during tests, and mock via setMockConfiguration()
-            queriedPluginConfigurations.clear();
-            List<LoggerPlugin__mdt> mockPluginConfigurations = SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(this.getSObjectType());
-            if (mockPluginConfigurations != null && mockPluginConfigurations.isEmpty() == false) {
-                queriedPluginConfigurations.addAll(mockPluginConfigurations);
-            }
-        }
-
-        return queriedPluginConfigurations;
-    }
-
     private void executePlugins() {
         if (this.pluginConfigurations == null || this.pluginConfigurations.isEmpty() == true) {
             return;
         }
 
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
-            switch on pluginConfiguration.PluginType__c {
-                when 'SObject Handler - Apex' {
-                    this.executeApexPlugin(pluginConfiguration);
-                }
-                when 'SObject Handler - Flow' {
-                    this.executeFlowPlugin(pluginConfiguration);
-                }
+            if (String.isNotBlank(pluginConfiguration.SObjectHandlerApexClass__c)) {
+                this.executeApexPlugin(pluginConfiguration);
+            }
+            if (String.isNotBlank(pluginConfiguration.SObjectHandlerFlowName__c)) {
+                this.executeFlowPlugin(pluginConfiguration);
             }
         }
     }
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
-        Type apexPluginType = Type.forName(configuration.PluginApiName__c);
-        if (apexPluginType == null) {
-            System.debug(LoggingLevel.INFO, 'Unknown Apex class ' + configuration.PluginApiName__c + ', skipping plugin execution');
-            return;
-        }
+        LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration);
+        apexPlugin?.execute(configuration, this.input);
 
-        LoggerSObjectHandlerPlugin apexPlugin = (LoggerSObjectHandlerPlugin) apexPluginType.newInstance();
-        apexPlugin.execute(configuration, this.input);
-
-        // TODO Legacy approach, remove in a future release
-        apexPlugin.execute(
-            this.input.triggerOperationType,
-            this.input.triggerNew,
-            this.input.triggerNewMap,
-            this.input.triggerOldMap?.values(),
-            this.input.triggerOldMap
-        );
-
-        if (Test.isRunningTest() == true) {
+        if (Test.isRunningTest() == true && apexPlugin != null) {
             this.executedApexPlugins.add(apexPlugin);
         }
     }
@@ -262,7 +249,7 @@ public without sharing abstract class LoggerSObjectHandler {
         flowInputs.put('triggerOld', this.input.triggerOldMap?.values());
 
         try {
-            Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.PluginApiName__c, flowInputs);
+            Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.SObjectHandlerFlowName__c, flowInputs);
             flowPlugin.start();
 
             List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
@@ -289,7 +276,7 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     @TestVisible
-    private List<LoggerSObjectHandlerPlugin> getExecutedApexPlugins() {
+    private List<LoggerPlugin.Triggerable> getExecutedApexPlugins() {
         return this.executedApexPlugins;
     }
 
@@ -305,36 +292,5 @@ public without sharing abstract class LoggerSObjectHandler {
             SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.put(sobjectType, new List<LoggerPlugin__mdt>());
         }
         SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(sobjectType).add(plugin);
-    }
-
-    /**
-     * @description Class used by the logging system to for trigger context details
-     */
-    public class SObjectHandlerInput {
-        public Schema.SObjectType sobjectType;
-        public TriggerOperation triggerOperationType;
-        public List<SObject> triggerNew;
-        public Map<Id, SObject> triggerNewMap;
-        public Map<Id, SObject> triggerOldMap;
-
-        @InvocableVariable(label='SObject Type Name')
-        public String sobjectTypeName;
-
-        @InvocableVariable(label='Trigger Operation Name')
-        public String triggerOperationTypeName;
-
-        @InvocableVariable(label='Trigger Records')
-        public List<SObjectHandlerRecordInput> triggerRecords;
-    }
-
-    /**
-     * @description Class used by the logging system to provide trigger record details
-     */
-    public class SObjectHandlerRecordInput {
-        @InvocableVariable(label='Trigger.new Record')
-        public SObject triggerRecordNew;
-
-        @InvocableVariable(label='Trigger.old Record')
-        public SObject triggerRecordOld;
     }
 }

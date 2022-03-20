@@ -6,6 +6,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogHandler_Tests_Flow {
+    // TODO Rename this class + Flow to LoggerSObjectHandler_Tests_Flow?
     @IsTest
     static void runFlowPluginWhenConfigured() {
         // Assumption: the Flow LogHandler_Tests_Flow makes an update to the current user's FirstName
@@ -18,7 +19,7 @@ private class LogHandler_Tests_Flow {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'SObject Handler - Flow', PluginApiName__c = pluginFlowApiName);
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerFlowName__c = pluginFlowApiName);
         LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
 
         Log__c log = new Log__c(TransactionId__c = '1234');

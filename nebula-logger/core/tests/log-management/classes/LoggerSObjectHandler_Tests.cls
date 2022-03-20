@@ -159,19 +159,14 @@ private class LoggerSObjectHandler_Tests {
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
         handler.triggerNewMap = null;
         handler.triggerOldMap = null;
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
-            IsEnabled__c = true,
-            IsLogEnabled__c = true,
-            PluginApiName__c = 'Some_Fake_Apex_Class',
-            PluginType__c = 'SObject Handler - Apex'
-        );
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerApexClass__c = 'Some_Fake_Apex_Class');
         handler.addMockPlugin(plugin);
 
         handler.execute();
 
         System.assertEquals(1, handler.executionCount);
-        System.assertEquals(1, handler.getPluginConfigurations().size());
-        System.assertEquals(0, handler.getExecutedApexPlugins().size());
+        System.assertEquals(1, handler.getPluginConfigurations().size(), handler.getPluginConfigurations());
+        System.assertEquals(0, handler.getExecutedApexPlugins().size(), handler.getExecutedApexPlugins());
     }
 
     @IsTest
@@ -181,19 +176,14 @@ private class LoggerSObjectHandler_Tests {
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
         handler.triggerNewMap = null;
         handler.triggerOldMap = null;
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
-            IsEnabled__c = true,
-            IsLogEnabled__c = true,
-            PluginApiName__c = 'Some_Fake_Flow',
-            PluginType__c = 'SObject Handler - Flow'
-        );
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerFlowName__c = 'Some_Fake_Flow');
         handler.addMockPlugin(plugin);
 
         handler.execute();
 
         System.assertEquals(1, handler.executionCount);
-        System.assertEquals(1, handler.getPluginConfigurations().size());
-        System.assertEquals(0, handler.getExecutedApexPlugins().size());
+        System.assertEquals(1, handler.getPluginConfigurations().size(), handler.getPluginConfigurations());
+        System.assertEquals(0, handler.getExecutedApexPlugins().size(), handler.getExecutedApexPlugins());
     }
 
     public class MockLogHandler extends LoggerSObjectHandler {
@@ -209,10 +199,6 @@ private class LoggerSObjectHandler_Tests {
 
         public override String getHandlerControlParameterName() {
             return HANDLER_CONTROL_PARAMETER_NAME;
-        }
-
-        public override Schema.SObjectField getHandlerPluginControlField() {
-            return Schema.LoggerPlugin__mdt.IsLogEnabled__c;
         }
 
         public override Schema.SObjectField getHandlerPluginSortField() {

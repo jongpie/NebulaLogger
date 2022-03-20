@@ -1,3 +1,13 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group Plugin Framework
+ * @description The core of the plugin framework, used to create custom Apex & Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger`
+ *              based on configurations stored in the custom metadata type `LoggerPlugin__mdt`
+ */
 public without sharing class LoggerPlugin {
     /**
      * @description Interface used to create plugins that can be used within Logger's batch job `LogBatchPurger`
@@ -23,10 +33,10 @@ public without sharing class LoggerPlugin {
         return (Triggerable) Type.forName(pluginConfiguration.SObjectHandlerApexClass__c)?.newInstance();
     }
 
-    public static List<LoggerPlugin__mdt> queryBatchPurgerPluginConfigurations() {
+    public static List<LoggerPlugin__mdt> getBatchPurgerPluginConfigurations() {
         List<String> orderByConditions = new List<String>{ Schema.LoggerPlugin__mdt.BatchPurgerExecutionOrder__c.getDescribe().getName() + ' NULLS LAST' };
 
-        // CMDT objects don't support OR statements in SOQL, but (these) CMDT queries don't count towards,
+        // CMDT objects don't support OR statements in SOQL, but (these) CMDT queries don't count towards query limits,
         // so run 2 queries in place of using OR statements
         List<LoggerPlugin__mdt> plugins = new List<LoggerPlugin__mdt>();
         plugins.addAll(
@@ -44,10 +54,10 @@ public without sharing class LoggerPlugin {
         return plugins;
     }
 
-    public static List<LoggerPlugin__mdt> querySObjectHandlerPluginConfigurations(Schema.SObjectField handlerPluginSortField) {
+    public static List<LoggerPlugin__mdt> getSObjectHandlerPluginConfigurations(Schema.SObjectField handlerPluginSortField) {
         List<String> orderByConditions = new List<String>{ handlerPluginSortField.getDescribe().getName() + ' NULLS LAST' };
 
-        // CMDT objects don't support OR statements in SOQL, but (these) CMDT queries don't count towards,
+        // CMDT objects don't support OR statements in SOQL, but (these) CMDT queries don't count towards query limits,
         // so run 2 queries in place of using OR statements
         List<LoggerPlugin__mdt> plugins = new List<LoggerPlugin__mdt>();
         plugins.addAll(
