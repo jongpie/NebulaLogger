@@ -4,8 +4,8 @@
     <description>The type of plugin that the logging system should dynamically execute - Apex or Flow.</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <inlineHelpText>The type of plugin that the logging system should dynamically execute - Apex or Flow.</inlineHelpText>
-    <label>Plugin Type</label>
+    <inlineHelpText>Deprecated: This field is no longer being used, and will be deleted in a future release.</inlineHelpText>
+    <label>Deprecated: Plugin Type</label>
     <required>false</required>
     <type>Picklist</type>
     <valueSet>
