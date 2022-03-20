@@ -6,18 +6,6 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogEntryHandler_Tests {
-    public class LogEntryPluginTest implements LoggerPlugin.Triggerable {
-        public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
-            if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
-                for (LogEntry__c logEntry : (List<LogEntry__c>) input.triggerNew) {
-                    // The specific field changed doesn't really matter - we just want to ensure that whatever
-                    // logic implemented in the instance of LoggerPlugin.Triggerable is executed
-                    logEntry.Message__c = 'Some String';
-                }
-            }
-        }
-    }
-
     private static String getNamespacePrefix() {
         String className = LogEntryHandler_Tests.class.getName();
         String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';

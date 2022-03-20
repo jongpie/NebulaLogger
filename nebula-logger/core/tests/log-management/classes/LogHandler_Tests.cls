@@ -13,18 +13,6 @@ private class LogHandler_Tests {
     private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
-    public class LogPluginTest implements LoggerPlugin.Triggerable {
-        public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
-            if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
-                for (Log__c log : (List<Log__c>) input.triggerNew) {
-                    // The specific field changed doesn't really matter - we just want to ensure that whatever
-                    // logic implemented in the instance of LoggerPlugin.Triggerable is executed
-                    log.ProfileName__c = 'Some String';
-                }
-            }
-        }
-    }
-
     @TestSetup
     static void setupData() {
         Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();

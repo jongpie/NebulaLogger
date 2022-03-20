@@ -8,6 +8,13 @@
 private class LogBatchPurger_Tests {
     private static final Integer NUMBER_OF_LOG_ENTRIES = 10;
 
+    private static Boolean ranPluginStart = false;
+    private static Boolean ranPluginExecute = false;
+    private static Boolean ranPluginFinish = false;
+    private static LoggerPlugin__mdt pluginConfiguration;
+    private static LogBatchPurger.BatchPurgerInput pluginInput;
+    private static List<SObject> pluginRecords;
+
     @TestSetup
     static void setupData() {
         LoggerSettings__c settings = Logger.getUserSettings();
@@ -190,5 +197,130 @@ private class LogBatchPurger_Tests {
 
         List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(0, matchingLogs.size(), 'Test log should have been deleted');
+    }
+
+    @IsTest
+    static void it_should_run_plugin_start_method() {
+        LogBatchPurger instance = new LogBatchPurger();
+        LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
+            IsEnabled__c = true,
+            BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
+        );
+        instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
+        instance.addMockPlugin(mockPluginConfiguration);
+        System.assertEquals(false, ranPluginStart);
+        System.assertEquals(false, ranPluginExecute);
+        System.assertEquals(false, ranPluginFinish);
+        System.assertEquals(null, pluginConfiguration);
+        System.assertEquals(null, pluginInput);
+
+        MockBatchableContext mockBatchableContext = new MockBatchableContext('some_fake_job_id');
+        instance.start(mockBatchableContext);
+
+        LogBatchPurger.BatchPurgerInput expectedInput = new LogBatchPurger.BatchPurgerInput(mockBatchableContext, instance.currentSObjectType);
+        System.assertEquals(true, ranPluginStart);
+        System.assertEquals(false, ranPluginExecute);
+        System.assertEquals(false, ranPluginFinish);
+        System.assertEquals(mockPluginConfiguration, pluginConfiguration);
+        System.assertEquals(expectedInput.batchableContext, pluginInput.batchableContext);
+        System.assertEquals(expectedInput.sobjectType, pluginInput.sobjectType);
+    }
+
+    @IsTest
+    static void it_should_run_plugin_execute_method() {
+        LogBatchPurger instance = new LogBatchPurger();
+        LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
+            IsEnabled__c = true,
+            BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
+        );
+        instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
+        instance.addMockPlugin(mockPluginConfiguration);
+        System.assertEquals(false, ranPluginStart);
+        System.assertEquals(false, ranPluginExecute);
+        System.assertEquals(false, ranPluginFinish);
+        System.assertEquals(null, pluginConfiguration);
+        System.assertEquals(null, pluginInput);
+        List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
+        System.assertNotEquals(0, logsToDelete.size());
+
+        MockBatchableContext mockBatchableContext = new MockBatchableContext('some_fake_job_id');
+        instance.execute(mockBatchableContext, logsToDelete);
+
+        LogBatchPurger.BatchPurgerInput expectedInput = new LogBatchPurger.BatchPurgerInput(mockBatchableContext, instance.currentSObjectType);
+        System.assertEquals(false, ranPluginStart);
+        System.assertEquals(true, ranPluginExecute);
+        System.assertEquals(false, ranPluginFinish);
+        System.assertEquals(mockPluginConfiguration, pluginConfiguration);
+        System.assertEquals(expectedInput.batchableContext, pluginInput.batchableContext);
+        logsToDelete = [SELECT Id FROM Log__c WHERE Id IN :logsToDelete];
+        System.assertEquals(0, logsToDelete.size(), 'All logs should have still been deleted by LogBatchPurger after running plugins: ' + logsToDelete);
+    }
+
+    @IsTest
+    static void it_should_run_plugin_finish_method() {
+        LogBatchPurger instance = new LogBatchPurger();
+        LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
+            IsEnabled__c = true,
+            BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
+        );
+        instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
+        instance.addMockPlugin(mockPluginConfiguration);
+        System.assertEquals(false, ranPluginStart);
+        System.assertEquals(false, ranPluginExecute);
+        System.assertEquals(false, ranPluginFinish);
+        System.assertEquals(null, pluginConfiguration);
+        System.assertEquals(null, pluginInput);
+
+        MockBatchableContext mockBatchableContext = new MockBatchableContext('some_fake_job_id');
+        instance.finish(mockBatchableContext);
+
+        LogBatchPurger.BatchPurgerInput expectedInput = new LogBatchPurger.BatchPurgerInput(mockBatchableContext, instance.currentSObjectType);
+        System.assertEquals(false, ranPluginStart);
+        System.assertEquals(false, ranPluginExecute);
+        System.assertEquals(true, ranPluginFinish);
+        System.assertEquals(mockPluginConfiguration, pluginConfiguration);
+        System.assertEquals(expectedInput.sobjectType, pluginInput.sobjectType);
+    }
+
+    public class MockBatchableContext implements Database.BatchableContext {
+        private String childJobId, jobId;
+
+        public MockBatchableContext(String jobId) {
+            this(jobId, null);
+        }
+
+        public MockBatchableContext(String jobId, Id childJobId) {
+            this.jobId = jobId;
+            this.childJobId = childJobId;
+        }
+
+        public String getChildJobId() {
+            return childJobId;
+        }
+
+        public String getJobId() {
+            return jobId;
+        }
+    }
+
+    public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
+        public void start(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input) {
+            ranPluginStart = true;
+            pluginConfiguration = configuration;
+            pluginInput = input;
+        }
+
+        public void execute(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input, List<SObject> scope) {
+            ranPluginExecute = true;
+            pluginConfiguration = configuration;
+            pluginInput = input;
+            pluginRecords = scope;
+        }
+
+        public void finish(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input) {
+            ranPluginFinish = true;
+            pluginConfiguration = configuration;
+            pluginInput = input;
+        }
     }
 }

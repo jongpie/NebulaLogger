@@ -8,7 +8,7 @@
 private class LoggerPlugin_Tests {
     private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
-    public class ExampleBatchablePlugin implements LoggerPlugin.Batchable {
+    public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
         public void start(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input) {
         }
         public void execute(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input, List<SObject> scope) {
@@ -32,10 +32,10 @@ private class LoggerPlugin_Tests {
     @IsTest
     static void it_should_return_batch_purger_apex_plugin_instance_for_valid_class() {
         LoggerPlugin.Batchable batchPurgerApexPlugin = LoggerPlugin.newBatchableInstance(
-            new LoggerPlugin__mdt(IsEnabled__c = true, BatchPurgerApexClass__c = ExampleBatchablePlugin.class.getName())
+            new LoggerPlugin__mdt(IsEnabled__c = true, BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName())
         );
         System.assertNotEquals(null, batchPurgerApexPlugin);
-        System.assertEquals(true, batchPurgerApexPlugin instanceof ExampleBatchablePlugin);
+        System.assertEquals(true, batchPurgerApexPlugin instanceof ExampleBatchPurgerPlugin);
     }
 
     @IsTest

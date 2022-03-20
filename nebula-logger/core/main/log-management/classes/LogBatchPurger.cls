@@ -13,7 +13,23 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     @TestVisible
     private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
 
+    /**
+     * @description Class used by the logging system to for batch purge details
+     */
+    public class BatchPurgerInput {
+        public Database.BatchableContext batchableContext;
+        public Schema.SObjectType sobjectType;
+        public BatchPurgerInput(Database.BatchableContext batchableContext, Schema.SObjectType sobjectType) {
+            this.batchableContext = batchableContext;
+            this.sobjectType = sobjectType;
+        }
+    }
+
+    // Instance variables for top-level class
+    @TestVisible
     private SObjectType currentSObjectType;
+    @TestVisible
+    private List<LoggerPlugin__mdt> pluginConfigurations;
     private String originalTransactionId;
     private Integer totalProcessedRecords;
 
@@ -22,6 +38,11 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      */
     global LogBatchPurger() {
         this.totalProcessedRecords = 0;
+
+        this.pluginConfigurations = LoggerPlugin.getBatchPurgerPluginConfigurations();
+        if (Test.isRunningTest() == true) {
+            this.pluginConfigurations.clear();
+        }
     }
 
     /**
@@ -43,6 +64,15 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         // so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
         this.currentSObjectType = this.getInitialSObjectType();
+
+        BatchPurgerInput input = new BatchPurgerInput(batchableContext, this.currentSObjectType);
+        // this.pluginConfigurations = LoggerPlugin.getBatchPurgerPluginConfigurations();
+        for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
+            if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
+                LoggerPlugin.newBatchableInstance(pluginConfiguration)?.start(pluginConfiguration, input);
+            }
+            // TODO add support for running Flow plugins
+        }
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             Logger.info('Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
@@ -71,16 +101,25 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @param batchableContext - The context of the current batch job.
      * @param loggerRecords - The log records to purge.
      */
-    global void execute(Database.BatchableContext batchableContext, List<SObject> loggerRecords) {
+    global void execute(Database.BatchableContext batchableContext, List<SObject> scopeRecords) {
         try {
-            this.totalProcessedRecords += loggerRecords.size();
-            this.hardDelete(loggerRecords);
+            this.totalProcessedRecords += scopeRecords.size();
+            BatchPurgerInput input = new BatchPurgerInput(batchableContext, this.currentSObjectType);
+            for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
+                if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
+                    LoggerPlugin.newBatchableInstance(pluginConfiguration)?.execute(pluginConfiguration, input, scopeRecords);
+                }
+                // TODO add support for running Flow plugins
+            }
+
+            this.hardDelete(scopeRecords);
+            Logger.saveLog();
         } catch (Exception apexException) {
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
                 Logger.error('Logger - Error deleting logs', apexException);
             }
-        } finally {
             Logger.saveLog();
+            throw apexException;
         }
     }
 
@@ -90,6 +129,14 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @param batchableContext - The context of the batch jobs
      */
     global void finish(Database.BatchableContext batchableContext) {
+        BatchPurgerInput input = new BatchPurgerInput(batchableContext, this.currentSObjectType);
+        for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
+            if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
+                LoggerPlugin.newBatchableInstance(pluginConfiguration)?.finish(pluginConfiguration, input);
+            }
+            // TODO add support for running Flow plugins
+        }
+
         Id nextBatchJobId;
         if (this.currentSObjectType != Schema.Log__c.SObjectType) {
             nextBatchJobId = Database.executeBatch(new LogBatchPurger());
@@ -115,7 +162,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         // normally this would be an anti-pattern since most DML operations
         // are a no-op with an empty list - but emptyRecycleBin throws
         // for empty lists!
-        if (!records.isEmpty()) {
+        if (records.isEmpty() == false) {
             delete records;
             Database.emptyRecycleBin(records);
         }
@@ -190,5 +237,10 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
 
         return queryLocator;
+    }
+
+    @TestVisible
+    private void addMockPlugin(LoggerPlugin__mdt pluginConfiguration) {
+        this.pluginConfigurations.add(pluginConfiguration);
     }
 }

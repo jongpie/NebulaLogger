@@ -186,6 +186,19 @@ private class LoggerSObjectHandler_Tests {
         System.assertEquals(0, handler.getExecutedApexPlugins().size(), handler.getExecutedApexPlugins());
     }
 
+    @IsTest
+    static void it_should_execute_apex_plugin() {
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerApexClass__c = MockLogHandlerPlugin.class.getName());
+        LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '6789');
+        insert log;
+
+        String expectedProfileName = 'Some String';
+        log = [SELECT Id, ProfileName__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedProfileName, log.ProfileName__c);
+    }
+
     public class MockLogHandler extends LoggerSObjectHandler {
         public Integer executionCount = 0;
         public TriggerOperation executedTriggerOperationType;
@@ -253,6 +266,18 @@ private class LoggerSObjectHandler_Tests {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.AFTER_UNDELETE;
             this.executedTriggerNewMap = triggerNewMap;
+        }
+    }
+
+    public class MockLogHandlerPlugin implements LoggerPlugin.Triggerable {
+        public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+            if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
+                for (Log__c log : (List<Log__c>) input.triggerNew) {
+                    // The specific field changed doesn't really matter - we just want to ensure that whatever
+                    // logic implemented in the instance of LoggerPlugin.Triggerable is executed
+                    log.ProfileName__c = 'Some String';
+                }
+            }
         }
     }
 }
