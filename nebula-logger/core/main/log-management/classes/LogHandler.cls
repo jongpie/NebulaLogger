@@ -53,7 +53,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
         this.setOwnerId();
         // The log retention date field should support being manually changed, so only auto-set it on insert
-        this.setLogPurgeDetails();
+        this.setLogRetentionDetails();
     }
 
     protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -125,7 +125,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void setLogPurgeDetails() {
+    private void setLogRetentionDetails() {
         Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = queryScenarioRules(this.logs);
         for (Log__c log : this.logs) {
             // If the retention date has already been populated, leave it as-is
@@ -145,6 +145,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             Integer daysToRetainLog = Integer.valueOf(
                 matchingScenarioRule != null ? matchingScenarioRule.NumberOfDaysToRetainLogs__c : loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c
             );
+            // TODO Add new field to LogScenarioRule__mdt for setting the default log purge action (same concept as matchingScenarioRule.NumberOfDaysToRetainLogs__c above)
 
             // When daysToRetainLog is null, assume that the log should be kept forever,
             // and set the retention date to null so that LogBatchPurger filters out/ignores the record

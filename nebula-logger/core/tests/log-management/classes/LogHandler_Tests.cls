@@ -182,43 +182,56 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_keep_existing_retention_date_when_populated() {
+    static void it_should_keep_existing_retention_details_when_populated() {
         Integer defaultDaysToRetainLog = 10;
+        String defaultLogPurgeAction = 'Some Action';
 
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
+        settings.DefaultLogPurgeAction__c = defaultLogPurgeAction;
         upsert settings;
 
         Test.startTest();
 
         Integer specifiedDaysToRetainLog = 50;
         Date retentionDate = System.today().addDays(specifiedDaysToRetainLog);
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), LogRetentionDate__c = retentionDate, TransactionId__c = '1234');
+        String specifiedLogPurgeAction = 'A Different Action';
+        Log__c log = new Log__c(
+            LoggedBy__c = UserInfo.getUserId(),
+            LogPurgeAction__c = specifiedLogPurgeAction,
+            LogRetentionDate__c = retentionDate,
+            TransactionId__c = '1234'
+        );
         insert log;
 
         Test.stopTest();
 
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertNotEquals(defaultDaysToRetainLog, specifiedDaysToRetainLog);
+        System.assertNotEquals(defaultLogPurgeAction, specifiedLogPurgeAction);
+        System.assertEquals(specifiedLogPurgeAction, log.LogPurgeAction__c);
         System.assertEquals(retentionDate, log.LogRetentionDate__c);
     }
 
     @IsTest
-    static void it_should_set_retention_date_when_configured_via_logger_settings() {
+    static void it_should_set_retention_details_when_configured_via_logger_settings() {
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
+        String expectedLogPurgeAction = 'Some Action';
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
+        Logger.getUserSettings().DefaultLogPurgeAction__c = expectedLogPurgeAction;
         upsert Logger.getUserSettings();
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
         insert log;
 
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedLogPurgeAction, log.LogPurgeAction__c);
         System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
     }
 
     @IsTest
-    static void it_should_set_retention_date_when_configured_via_scenario_rules() {
+    static void it_should_set_retention_details_when_configured_via_scenario_rules() {
         Integer defaultDaysToRetainLog = 1;
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
@@ -236,9 +249,10 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_have_null_retention_date_when_no_retention_configured() {
+    static void it_should_have_null_retention_details_when_no_retention_configured() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultNumberOfDaysToRetainLogs__c = null;
+        settings.DefaultLogPurgeAction__c = null;
         upsert settings;
 
         Test.startTest();
@@ -248,7 +262,8 @@ private class LogHandler_Tests {
 
         Test.stopTest();
 
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(null, log.LogPurgeAction__c);
         System.assertEquals(null, log.LogRetentionDate__c);
     }
 

@@ -11,6 +11,7 @@
 public without sharing class LoggerSettingsController {
     private static final String CUSTOM_SAVE_METHOD_PREFIX = 'CustomSaveMethod';
     private static final String CUSTOM_LOG_PURGE_ACTION_PREFIX = 'CustomLogPurgeAction';
+    @TestVisible
     private static final String DELETE_LOG_PURGE_ACTION = 'Delete';
     private static final List<LoggerParameter__mdt> MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS = new List<LoggerParameter__mdt>();
     private static final List<LoggerParameter__mdt> MOCK_CUSTOM_SAVE_METHOD_PARAMETERS = new List<LoggerParameter__mdt>();
