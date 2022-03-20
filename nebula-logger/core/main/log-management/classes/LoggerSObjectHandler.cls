@@ -74,7 +74,7 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerNew = Trigger.new;
         this.triggerNewMap = Trigger.newMap;
         this.triggerOldMap = Trigger.oldMap;
-        this.pluginConfigurations = LoggerPlugin.getSObjectHandlerPluginConfigurations(this.getHandlerPluginSortField());
+        this.pluginConfigurations = LoggerPlugin.getSObjectHandlerPluginConfigurations();
         if (Test.isRunningTest() == true) {
             if (SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.containsKey(this.getSObjectType()) == false) {
                 SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.put(this.getSObjectType(), new List<LoggerPlugin__mdt>());
@@ -96,13 +96,6 @@ public without sharing abstract class LoggerSObjectHandler {
      * @return   The `DeveloperName` value of the `LoggerParameter__mdt` that controls if the handler is enabled
      */
     public abstract String getHandlerControlParameterName();
-
-    /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public abstract Schema.SObjectField getHandlerPluginSortField();
 
     /**
      * @description Runs the handler class's logic, as well as any configured plugins
@@ -260,7 +253,7 @@ public without sharing abstract class LoggerSObjectHandler {
                 }
             }
         } catch (TypeException ex) {
-            System.debug(LoggingLevel.INFO, 'Unknown Flow ' + configuration.PluginApiName__c + ', skipping plugin execution');
+            System.debug(LoggingLevel.INFO, 'Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution');
         }
     }
 

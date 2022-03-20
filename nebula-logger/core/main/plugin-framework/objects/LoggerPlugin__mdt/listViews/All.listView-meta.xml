@@ -4,10 +4,8 @@
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>IsEnabled__c</columns>
-    <columns>SObjectHandlerApexClass__c</columns>
-    <columns>SObjectHandlerFlowName__c</columns>
-    <columns>BatchPurgerApexClass__c</columns>
-    <columns>BatchPurgerFlowName__c</columns>
+    <columns>SObjectHandlerExecutionOrder__c</columns>
+    <columns>BatchPurgerExecutionOrder__c</columns>
     <columns>VersionNumber__c</columns>
     <columns>Description__c</columns>
     <filterScope>Everything</filterScope>

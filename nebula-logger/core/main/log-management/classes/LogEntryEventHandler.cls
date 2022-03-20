@@ -59,15 +59,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginSortField() {
-        return Schema.LoggerPlugin__mdt.LogEntryEventExecutionOrder__c;
-    }
-
-    /**
      * @description method so it can be called from Logger - this is unique to LogEntryEventHandler
      * @param triggerNew list of new LogEntryEvent events
      */

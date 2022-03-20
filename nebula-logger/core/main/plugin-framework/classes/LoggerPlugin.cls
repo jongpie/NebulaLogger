@@ -25,14 +25,6 @@ public without sharing class LoggerPlugin {
         void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input);
     }
 
-    public static Batchable newBatchableInstance(LoggerPlugin__mdt pluginConfiguration) {
-        return (Batchable) Type.forName(pluginConfiguration.BatchPurgerApexClass__c)?.newInstance();
-    }
-
-    public static Triggerable newTriggerableInstance(LoggerPlugin__mdt pluginConfiguration) {
-        return (Triggerable) Type.forName(pluginConfiguration.SObjectHandlerApexClass__c)?.newInstance();
-    }
-
     public static List<LoggerPlugin__mdt> getBatchPurgerPluginConfigurations() {
         List<String> orderByConditions = new List<String>{ Schema.LoggerPlugin__mdt.BatchPurgerExecutionOrder__c.getDescribe().getName() + ' NULLS LAST' };
 
@@ -54,8 +46,8 @@ public without sharing class LoggerPlugin {
         return plugins;
     }
 
-    public static List<LoggerPlugin__mdt> getSObjectHandlerPluginConfigurations(Schema.SObjectField handlerPluginSortField) {
-        List<String> orderByConditions = new List<String>{ handlerPluginSortField.getDescribe().getName() + ' NULLS LAST' };
+    public static List<LoggerPlugin__mdt> getSObjectHandlerPluginConfigurations() {
+        List<String> orderByConditions = new List<String>{ Schema.LoggerPlugin__mdt.SObjectHandlerExecutionOrder__c.getDescribe().getName() + ' NULLS LAST' };
 
         // CMDT objects don't support OR statements in SOQL, but (these) CMDT queries don't count towards query limits,
         // so run 2 queries in place of using OR statements
@@ -73,6 +65,14 @@ public without sharing class LoggerPlugin {
             )
         );
         return plugins;
+    }
+
+    public static Batchable newBatchableInstance(LoggerPlugin__mdt pluginConfiguration) {
+        return (Batchable) Type.forName(pluginConfiguration?.BatchPurgerApexClass__c)?.newInstance();
+    }
+
+    public static Triggerable newTriggerableInstance(LoggerPlugin__mdt pluginConfiguration) {
+        return (Triggerable) Type.forName(pluginConfiguration?.SObjectHandlerApexClass__c)?.newInstance();
     }
 
     private static List<LoggerPlugin__mdt> queryPluginConfigurations(List<String> filterConditions, List<String> orderByConditions) {

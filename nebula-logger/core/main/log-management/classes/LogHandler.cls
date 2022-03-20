@@ -37,15 +37,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return 'IsLogHandlerEnabled';
     }
 
-    /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginSortField() {
-        return Schema.LoggerPlugin__mdt.LogExecutionOrder__c;
-    }
-
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logs = (List<Log__c>) triggerNew;
 

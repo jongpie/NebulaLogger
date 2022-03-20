@@ -214,10 +214,6 @@ private class LoggerSObjectHandler_Tests {
             return HANDLER_CONTROL_PARAMETER_NAME;
         }
 
-        public override Schema.SObjectField getHandlerPluginSortField() {
-            return Schema.LoggerPlugin__mdt.LogExecutionOrder__c;
-        }
-
         protected override void executeBeforeInsert(List<SObject> triggerNew) {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.BEFORE_INSERT;
