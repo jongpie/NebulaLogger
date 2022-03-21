@@ -31,43 +31,15 @@
         <value xsi:nil="true" />
     </values>
     <values>
-        <field>LogEntryEventExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
-        <field>LogEntryExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
-        <field>LogEntryTagExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
-        <field>LogExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
-        <field>LoggerTagExecutionOrder__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
-        <field>PluginApiName__c</field>
-        <value xsi:type="xsd:string">LogEntryArchiveBuilder</value>
-    </values>
-    <values>
-        <field>PluginType__c</field>
-        <value xsi:type="xsd:string">SObject Handler - Apex</value>
-    </values>
-    <values>
         <field>SObjectHandlerApexClass__c</field>
-        <value xsi:type="xsd:string">LogEntryArchiveBuilder</value>
+        <value xsi:type="xsd:string">LogEntryArchivePlugin</value>
+    </values>
+    <values>
+        <field>SObjectHandlerExecutionOrder__c</field>
+        <value xsi:nil="true" />
     </values>
     <values>
         <field>SObjectHandlerFlowName__c</field>
-        <value xsi:nil="true" />
-    </values>
-    <values>
-        <field>SObjectType__c</field>
         <value xsi:nil="true" />
     </values>
     <values>

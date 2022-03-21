@@ -33,6 +33,10 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
     public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+        if (input.sobjectType != Schema.Log__c.SObjectType) {
+            return;
+        }
+
         this.logs = (List<Log__c>) input.triggerNew;
 
         switch on input.triggerOperationType {

@@ -7,6 +7,18 @@
     <label>Slack integration</label>
     <protected>false</protected>
     <values>
+        <field>BatchPurgerApexClass__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>BatchPurgerExecutionOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>BatchPurgerFlowName__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>Description__c</field>
         <value xsi:type="xsd:string">Adds a Slack integration for Nebula Logger.
 
@@ -21,12 +33,16 @@ Any logs with MaxLogEntryLoggingLevelOrdinal__c &gt;= the parameter &apos;SlackL
         <value xsi:type="xsd:string">https://github.com/jongpie/NebulaLogger/tree/main/nebula-logger/plugins/Slack</value>
     </values>
     <values>
-        <field>PluginApiName__c</field>
-        <value xsi:type="xsd:string">SlackLoggerPlugin</value>
+        <field>SObjectHandlerApexClass__c</field>
+          <value xsi:type="xsd:string">SlackLoggerPlugin</value>
     </values>
     <values>
-        <field>PluginType__c</field>
-        <value xsi:type="xsd:string">SObject Handler - Apex</value>
+        <field>SObjectHandlerExecutionOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>SObjectHandlerFlowName__c</field>
+        <value xsi:nil="true" />
     </values>
     <values>
         <field>VersionNumber__c</field>
