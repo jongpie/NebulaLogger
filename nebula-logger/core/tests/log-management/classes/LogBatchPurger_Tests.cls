@@ -201,13 +201,13 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_run_plugin_start_method() {
-        LogBatchPurger instance = new LogBatchPurger();
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             IsEnabled__c = true,
             BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
         );
+        LogBatchPurger.setMockPlugin(mockPluginConfiguration);
+        LogBatchPurger instance = new LogBatchPurger();
         instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
-        instance.addMockPlugin(mockPluginConfiguration);
         System.assertEquals(false, ranPluginStart);
         System.assertEquals(false, ranPluginExecute);
         System.assertEquals(false, ranPluginFinish);
@@ -228,13 +228,13 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_run_plugin_execute_method() {
-        LogBatchPurger instance = new LogBatchPurger();
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             IsEnabled__c = true,
             BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
         );
+        LogBatchPurger.setMockPlugin(mockPluginConfiguration);
+        LogBatchPurger instance = new LogBatchPurger();
         instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
-        instance.addMockPlugin(mockPluginConfiguration);
         System.assertEquals(false, ranPluginStart);
         System.assertEquals(false, ranPluginExecute);
         System.assertEquals(false, ranPluginFinish);
@@ -258,13 +258,13 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_run_plugin_finish_method() {
-        LogBatchPurger instance = new LogBatchPurger();
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             IsEnabled__c = true,
             BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
         );
+        LogBatchPurger.setMockPlugin(mockPluginConfiguration);
+        LogBatchPurger instance = new LogBatchPurger();
         instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
-        instance.addMockPlugin(mockPluginConfiguration);
         System.assertEquals(false, ranPluginStart);
         System.assertEquals(false, ranPluginExecute);
         System.assertEquals(false, ranPluginFinish);

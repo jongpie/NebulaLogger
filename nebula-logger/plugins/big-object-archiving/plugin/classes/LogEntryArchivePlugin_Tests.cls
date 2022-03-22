@@ -36,6 +36,41 @@ private class LogEntryArchivePlugin_Tests {
     }
 
     @IsTest
+    static void it_skips_log_entry_records_in_log_batch_purger_when_purge_action_is_not_archive() {
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
+        LogBatchPurger batchPurger = new LogBatchPurger();
+        Log__c logToArchive = new Log__c(
+            LogPurgeAction__c = LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION,
+            LogRetentionDate__c = System.today().addDays(-1),
+            TransactionId__c = '1234'
+        );
+        Log__c logToSkip = new Log__c(LogPurgeAction__c = 'Delete', LogRetentionDate__c = System.today().addDays(-1), TransactionId__c = '5678');
+        insert new List<Log__c>{ logToArchive, logToSkip };
+        List<LogEntry__c> logEntries = new List<LogEntry__c>();
+        for (Integer i = 0; i < 10; i++) {
+            logEntries.add(new LogEntry__c(Log__c = logToArchive.Id, Message__c = 'Some message to archive for ' + i, TransactionEntryNumber__c = i));
+            logEntries.add(new LogEntry__c(Log__c = logToSkip.Id, Message__c = 'Some message to skip for ' + i, TransactionEntryNumber__c = i));
+        }
+        insert logEntries;
+        Test.startTest();
+
+        Database.executeBatch(batchPurger);
+
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        Test.stopTest();
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(
+            logEntries.size() / 2,
+            LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(),
+            'Only half of the log entries should have been archived'
+        );
+        List<Log__c> existingLogs = [SELECT Id FROM Log__c];
+        System.assertEquals(0, existingLogs.size());
+    }
+
+    @IsTest
     static void it_includes_tags_for_log_entry_in_log_batch_purger_when_tags_exist() {
         LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
@@ -77,7 +112,7 @@ private class LogEntryArchivePlugin_Tests {
     @IsTest
     static void it_should_not_create_archive_in_logger_when_save_method_is_not_big_object() {
         Datetime timestamp = System.now();
-        LogEntryEvent__e mockEvent = LoggerTestUtils.createMockLogEntryEvent(timestamp);
+        LogEntryEvent__e mockEvent = LoggerTestUtils.createLogEntryEvent(timestamp);
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
         LoggerSObjectHandler.SObjectHandlerInput pluginInput = new LoggerSObjectHandler.SObjectHandlerInput();
         pluginInput.triggerNew = new List<LogEntryEvent__e>{ mockEvent };

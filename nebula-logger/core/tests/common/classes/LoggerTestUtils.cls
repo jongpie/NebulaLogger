@@ -94,50 +94,118 @@ public class LoggerTestUtils {
     }
 
     /**
-     * @description Instances of `AggregateResult` can not be created directly in Apex.
-     *              This method uses a workaround to generate a mock.
-     * @return   The mock instance of `AggregateResult`
+     * @description Creates a `Log__c` record that can be used in tests
+     * @return   An instance of `Log__c` with sample data populated
      */
-    public static AggregateResult createMockAggregateResult() {
-        Map<String, Object> defaultMockAggregateKeyValues = new Map<String, Object>{
-            'fieldAvg' => 62.5,
-            'fieldMax' => 100,
-            'fieldMin' => 25,
-            'fieldCount' => 4
-        };
-        return createMockAggregateResult(defaultMockAggregateKeyValues);
+    public static Log__c createLog() {
+        return new Log__c(
+            ApiVersion__c = '52',
+            Locale__c = FAKE_DATA_STRING,
+            LoggedBy__c = UserInfo.getUserId(),
+            LoggedByUsername__c = FAKE_DATA_STRING,
+            LoginApplication__c = FAKE_DATA_STRING,
+            LoginBrowser__c = FAKE_DATA_STRING,
+            LoginHistoryId__c = FAKE_DATA_STRING,
+            LoginPlatform__c = FAKE_DATA_STRING,
+            LoginType__c = FAKE_DATA_STRING,
+            LogoutUrl__c = FAKE_DATA_STRING,
+            NetworkId__c = FAKE_DATA_STRING,
+            NetworkLoginUrl__c = FAKE_DATA_STRING,
+            NetworkLogoutUrl__c = FAKE_DATA_STRING,
+            NetworkSelfRegistrationUrl__c = FAKE_DATA_STRING,
+            NetworkUrlPathPrefix__c = FAKE_DATA_STRING,
+            OrganizationDomainUrl__c = FAKE_DATA_STRING,
+            OrganizationEnvironmentType__c = FAKE_DATA_STRING,
+            OrganizationId__c = FAKE_DATA_STRING,
+            OrganizationInstanceName__c = FAKE_DATA_STRING,
+            OrganizationName__c = FAKE_DATA_STRING,
+            OrganizationNamespacePrefix__c = FAKE_DATA_STRING,
+            OrganizationType__c = FAKE_DATA_STRING,
+            ProfileId__c = FAKE_DATA_STRING,
+            ProfileName__c = FAKE_DATA_STRING,
+            SessionId__c = FAKE_DATA_STRING,
+            SessionSecurityLevel__c = FAKE_DATA_STRING,
+            SessionType__c = FAKE_DATA_STRING,
+            SourceIp__c = FAKE_DATA_STRING,
+            SystemMode__c = FAKE_DATA_STRING,
+            ThemeDisplayed__c = FAKE_DATA_STRING,
+            TimeZoneId__c = FAKE_DATA_STRING,
+            UserLicenseDefinitionKey__c = FAKE_DATA_STRING,
+            UserLicenseName__c = FAKE_DATA_STRING,
+            UserLoggingLevel__c = FAKE_DATA_STRING,
+            UserLoggingLevelOrdinal__c = FAKE_DATA_NUMBER,
+            UserRoleId__c = FAKE_DATA_STRING,
+            UserRoleName__c = FAKE_DATA_STRING,
+            UserType__c = FAKE_DATA_STRING,
+            TransactionId__c = '1234'
+        );
     }
 
     /**
-     * @description Instances of `AggregateResult` can not be created directly in Apex.
-     *              This method uses a workaround to generate a mock, using the provided map of aliases & aggregate values
-     * @param  mockAggregateKeyValues A map of aliases & aggregate values to use when creating the mock `AggregateResult`
-     * @return   The mock instance of `AggregateResult`
+     * @description Creates a `LogEntry__c` record that can be used in tests
+     * @return   An instance of `LogEntry__c` with sample data populated
      */
-    public static AggregateResult createMockAggregateResult(Map<String, Object> mockAggregateKeyValues) {
-        return (AggregateResult) JSON.deserialize(JSON.serialize(mockAggregateKeyValues), AggregateResult.class);
+    public static LogEntry__c createLogEntry() {
+        return new LogEntry__c(
+            DatabaseResultCollectionType__c = FAKE_DATA_STRING,
+            DatabaseResultJson__c = FAKE_DATA_STRING,
+            DatabaseResultType__c = FAKE_DATA_STRING,
+            ExceptionMessage__c = FAKE_DATA_STRING,
+            ExceptionStackTrace__c = FAKE_DATA_STRING,
+            ExceptionType__c = FAKE_DATA_STRING,
+            LimitsAggregateQueriesMax__c = FAKE_DATA_NUMBER,
+            LimitsAggregateQueriesUsed__c = FAKE_DATA_NUMBER,
+            LimitsAsyncCallsMax__c = FAKE_DATA_NUMBER,
+            LimitsAsyncCallsUsed__c = FAKE_DATA_NUMBER,
+            LimitsCalloutsUsed__c = FAKE_DATA_NUMBER,
+            LimitsCpuTimeMax__c = FAKE_DATA_NUMBER,
+            LimitsCpuTimeUsed__c = FAKE_DATA_NUMBER,
+            LimitsDmlRowsMax__c = FAKE_DATA_NUMBER,
+            LimitsDmlRowsUsed__c = FAKE_DATA_NUMBER,
+            LimitsDmlStatementsMax__c = FAKE_DATA_NUMBER,
+            LimitsDmlStatementsUsed__c = FAKE_DATA_NUMBER,
+            LimitsEmailInvocationsMax__c = FAKE_DATA_NUMBER,
+            LimitsEmailInvocationsUsed__c = FAKE_DATA_NUMBER,
+            LimitsFutureCallsMax__c = FAKE_DATA_NUMBER,
+            LimitsFutureCallsUsed__c = FAKE_DATA_NUMBER,
+            LimitsHeapSizeMax__c = FAKE_DATA_NUMBER,
+            LimitsHeapSizeUsed__c = FAKE_DATA_NUMBER,
+            LimitsMobilePushApexCallsMax__c = FAKE_DATA_NUMBER,
+            LimitsMobilePushApexCallsUsed__c = FAKE_DATA_NUMBER,
+            LimitsQueueableJobsMax__c = FAKE_DATA_NUMBER,
+            LimitsQueueableJobsUsed__c = FAKE_DATA_NUMBER,
+            LimitsSoqlQueriesMax__c = FAKE_DATA_NUMBER,
+            LimitsSoqlQueriesUsed__c = FAKE_DATA_NUMBER,
+            LimitsSoqlQueryLocatorRowsMax__c = FAKE_DATA_NUMBER,
+            LimitsSoqlQueryLocatorRowsUsed__c = FAKE_DATA_NUMBER,
+            LimitsSoqlQueryRowsMax__c = FAKE_DATA_NUMBER,
+            LimitsSoqlQueryRowsUsed__c = FAKE_DATA_NUMBER,
+            LimitsSoslSearchesMax__c = FAKE_DATA_NUMBER,
+            LimitsSoslSearchesUsed__c = FAKE_DATA_NUMBER,
+            LoggingLevel__c = FAKE_DATA_STRING,
+            LoggingLevelOrdinal__c = FAKE_DATA_NUMBER,
+            Message__c = FAKE_DATA_STRING,
+            OriginLocation__c = FAKE_DATA_STRING,
+            OriginType__c = FAKE_DATA_STRING,
+            RecordCollectionType__c = FAKE_DATA_STRING,
+            RecordId__c = FAKE_DATA_STRING,
+            RecordJson__c = FAKE_DATA_STRING,
+            RecordSObjectClassification__c = FAKE_DATA_STRING,
+            RecordSObjectType__c = FAKE_DATA_STRING,
+            RecordSObjectTypeNamespace__c = FAKE_DATA_STRING,
+            StackTrace__c = FAKE_DATA_STRING,
+            Timestamp__c = System.now(),
+            TransactionEntryNumber__c = FAKE_DATA_NUMBER,
+            TriggerOperationType__c = FAKE_DATA_STRING,
+            TriggerSObjectType__c = FAKE_DATA_STRING
+        );
     }
 
     /**
-     * @description Generates a mock record ID for the provided SObject Type
-     * @param  sobjectType The SObject Type for the generated mock record ID
-     * @return   The mock record ID for the specified SObject Type
+     * @description Creates a `LogEntryEvent__e` record that can be used in tests
+     * @return   An instance of `LogEntryEvent__e` with sample data populated
      */
-    public static String createMockId(Schema.SObjectType sobjectType) {
-        Integer recordIdNumber = 1;
-        if (SOBJECT_TYPE_TO_MOCK_ID_COUNT.containsKey(sobjectType)) {
-            recordIdNumber = SOBJECT_TYPE_TO_MOCK_ID_COUNT.get(sobjectType);
-        }
-        String recordIdSuffix = String.valueOf(recordIdNumber++);
-        SOBJECT_TYPE_TO_MOCK_ID_COUNT.put(sobjectType, recordIdNumber);
-
-        String recordIdKeyPrefix = sobjectType.getDescribe().getKeyPrefix();
-        Integer idFieldLength = sobjectType.getDescribe().fields.getMap().get('Id').getDescribe().getLength();
-        Integer recordIdCenterLength = idFieldLength - recordIdKeyPrefix.length() - recordIdSuffix.length();
-        return recordIdKeyPrefix + '0'.repeat(recordIdCenterLength) + recordIdSuffix;
-    }
-
-    public static LogEntryEvent__e createMockLogEntryEvent(Datetime timestamp) {
+    public static LogEntryEvent__e createLogEntryEvent(Datetime timestamp) {
         return new LogEntryEvent__e(
             ApiVersion__c = '52',
             DatabaseResultCollectionType__c = FAKE_DATA_STRING,
@@ -200,7 +268,6 @@ public class LoggerTestUtils {
             OrganizationType__c = FAKE_DATA_STRING,
             OriginLocation__c = FAKE_DATA_STRING,
             OriginType__c = FAKE_DATA_STRING,
-            ParentLogTransactionId__c = FAKE_DATA_STRING,
             ProfileId__c = FAKE_DATA_STRING,
             ProfileName__c = FAKE_DATA_STRING,
             RecordCollectionType__c = FAKE_DATA_STRING,
@@ -214,7 +281,6 @@ public class LoggerTestUtils {
             SessionType__c = FAKE_DATA_STRING,
             SourceIp__c = FAKE_DATA_STRING,
             StackTrace__c = FAKE_DATA_STRING,
-            SystemMode__c = FAKE_DATA_STRING,
             Tags__c = FAKE_DATA_STRING,
             ThemeDisplayed__c = FAKE_DATA_STRING,
             Timestamp__c = timestamp,
@@ -232,6 +298,50 @@ public class LoggerTestUtils {
             UserRoleName__c = FAKE_DATA_STRING,
             UserType__c = FAKE_DATA_STRING
         );
+    }
+
+    /**
+     * @description Instances of `AggregateResult` can not be created directly in Apex.
+     *              This method uses a workaround to generate a mock.
+     * @return   The mock instance of `AggregateResult`
+     */
+    public static AggregateResult createMockAggregateResult() {
+        Map<String, Object> defaultMockAggregateKeyValues = new Map<String, Object>{
+            'fieldAvg' => 62.5,
+            'fieldMax' => 100,
+            'fieldMin' => 25,
+            'fieldCount' => 4
+        };
+        return createMockAggregateResult(defaultMockAggregateKeyValues);
+    }
+
+    /**
+     * @description Instances of `AggregateResult` can not be created directly in Apex.
+     *              This method uses a workaround to generate a mock, using the provided map of aliases & aggregate values
+     * @param  mockAggregateKeyValues A map of aliases & aggregate values to use when creating the mock `AggregateResult`
+     * @return   The mock instance of `AggregateResult`
+     */
+    public static AggregateResult createMockAggregateResult(Map<String, Object> mockAggregateKeyValues) {
+        return (AggregateResult) JSON.deserialize(JSON.serialize(mockAggregateKeyValues), AggregateResult.class);
+    }
+
+    /**
+     * @description Generates a mock record ID for the provided SObject Type
+     * @param  sobjectType The SObject Type for the generated mock record ID
+     * @return   The mock record ID for the specified SObject Type
+     */
+    public static String createMockId(Schema.SObjectType sobjectType) {
+        Integer recordIdNumber = 1;
+        if (SOBJECT_TYPE_TO_MOCK_ID_COUNT.containsKey(sobjectType)) {
+            recordIdNumber = SOBJECT_TYPE_TO_MOCK_ID_COUNT.get(sobjectType);
+        }
+        String recordIdSuffix = String.valueOf(recordIdNumber++);
+        SOBJECT_TYPE_TO_MOCK_ID_COUNT.put(sobjectType, recordIdNumber);
+
+        String recordIdKeyPrefix = sobjectType.getDescribe().getKeyPrefix();
+        Integer idFieldLength = sobjectType.getDescribe().fields.getMap().get('Id').getDescribe().getLength();
+        Integer recordIdCenterLength = idFieldLength - recordIdKeyPrefix.length() - recordIdSuffix.length();
+        return recordIdKeyPrefix + '0'.repeat(recordIdCenterLength) + recordIdSuffix;
     }
 
     /**
