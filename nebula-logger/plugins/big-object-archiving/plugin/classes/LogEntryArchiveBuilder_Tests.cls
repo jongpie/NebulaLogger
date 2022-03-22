@@ -207,7 +207,7 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.LimitsSoslSearchesUsed__c, logEntryArchive.LimitsSoslSearchesUsed__c);
         System.assertEquals(logEntry.Log__r.Locale__c, logEntryArchive.Locale__c);
         System.assertEquals(logEntry.Log__r.LoggedBy__c, logEntryArchive.LoggedBy__c);
-        System.assertEquals(logEntry.Log__r.LoggedByUsername__c, logEntryArchive.LoggedById__c);
+        System.assertEquals(logEntry.Log__r.LoggedBy__c, logEntryArchive.LoggedById__c);
         System.assertEquals(logEntry.Log__r.LoggedByUsername__c, logEntryArchive.LoggedByUsername__c);
         System.assertEquals(logEntry.Log__r.LoggerVersionNumber__c, logEntryArchive.LoggerVersionNumber__c);
         System.assertEquals(logEntry.LoggingLevel__c, logEntryArchive.LoggingLevel__c);
