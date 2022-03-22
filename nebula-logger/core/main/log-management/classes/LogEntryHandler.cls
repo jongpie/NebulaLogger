@@ -104,10 +104,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 innerApexClassName = innerApexClassName.substringAfter(topLevelApexClassName + '.');
             }
 
-            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
-            // logEntry.ApexClassCreatedById__c = topLevelApexClass.CreatedById;
-            // logEntry.ApexClassLastModifiedById__c = apexClass.LastModifiedById;
-
             logEntry.ApexClassApiVersion__c = 'v' + topLevelApexClass.ApiVersion;
             logEntry.ApexClassCreatedDate__c = topLevelApexClass.CreatedDate;
             logEntry.ApexClassId__c = topLevelApexClass.Id;
@@ -250,6 +246,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             if (Limits.getQueries() == Limits.getLimitQueries()) {
                 return;
             }
+
             List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
 

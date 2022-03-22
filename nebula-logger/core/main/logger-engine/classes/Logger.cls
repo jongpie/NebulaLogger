@@ -18,7 +18,6 @@ global with sharing class Logger {
     private static final String CURRENT_VERSION_NUMBER = 'v4.7.1';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
-    @TestVisible
     private static final Map<String, LogScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = setTransactionId();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
