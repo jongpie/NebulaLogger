@@ -4,9 +4,6 @@
     <description
     >This field is used to circumvent a platform limitation - platform event datetimes are not accurately transferred to Apex triggers. This field stores a string version of the timestamp, which is then converted back to a datetime in Apex triggers.</description>
     <externalId>false</externalId>
-    <isFilteringDisabled>false</isFilteringDisabled>
-    <isNameField>false</isNameField>
-    <isSortingDisabled>false</isSortingDisabled>
     <label>Timestamp String</label>
     <length>40</length>
     <required>false</required>

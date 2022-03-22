@@ -18,9 +18,10 @@ private class LogEntryEventBuilder_Tests {
 
     static LogEntryDataMaskRule__mdt getSocialSecurityNumberDataMaskRule() {
         return new LogEntryDataMaskRule__mdt(
-            IsEnabled__c = true,
             ApplyToMessage__c = true,
             ApplyToRecordJson__c = true,
+            DeveloperName = 'SocialSecurityNumber',
+            IsEnabled__c = true,
             SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
             ReplacementRegEx__c = 'XXX-XX-$3'
         );

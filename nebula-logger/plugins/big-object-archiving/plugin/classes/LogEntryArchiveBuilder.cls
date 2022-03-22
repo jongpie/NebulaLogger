@@ -185,7 +185,7 @@ public without sharing class LogEntryArchiveBuilder {
             LimitsSoslSearchesUsed__c = this.logEntry.LimitsSoslSearchesUsed__c,
             Locale__c = this.logEntry.Log__r.Locale__c,
             LoggedBy__c = logEntry.Log__r.LoggedBy__c,
-            LoggedById__c = this.logEntry.Log__r.LoggedByUsername__c,
+            LoggedById__c = this.logEntry.Log__r.LoggedBy__c,
             LoggedByUsername__c = this.logEntry.Log__r.LoggedByUsername__c,
             LoggerVersionNumber__c = this.logEntry.Log__r.LoggerVersionNumber__c,
             LoggingLevel__c = this.logEntry.LoggingLevel__c,

@@ -3,9 +3,6 @@
     <fullName>EpochTimestamp__c</fullName>
     <description>Timestamp in milliseconds elapsed since 1 January 1970 of the log event</description>
     <externalId>false</externalId>
-    <isFilteringDisabled>false</isFilteringDisabled>
-    <isNameField>false</isNameField>
-    <isSortingDisabled>false</isSortingDisabled>
     <label>Epoch Timestamp</label>
     <precision>18</precision>
     <required>false</required>
