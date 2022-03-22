@@ -10,6 +10,7 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
+    private static final List<LoggerPlugin__mdt> MOCK_PLUGIN_CONFIGURATIONS = new List<LoggerPlugin__mdt>();
     @TestVisible
     private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
 
@@ -42,6 +43,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         this.pluginConfigurations = LoggerPlugin.getBatchPurgerPluginConfigurations();
         if (Test.isRunningTest() == true) {
             this.pluginConfigurations.clear();
+            this.pluginConfigurations.addAll(MOCK_PLUGIN_CONFIGURATIONS);
         }
     }
 
@@ -63,17 +65,16 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         // Each batchable method runs in a separate transaction,
         // so store the first transaction ID to later relate the other transactions
         this.originalTransactionId = Logger.getTransactionId();
-        this.currentSObjectType = this.getInitialSObjectType();
 
-        BatchPurgerInput input = new BatchPurgerInput(batchableContext, this.currentSObjectType);
-        // this.pluginConfigurations = LoggerPlugin.getBatchPurgerPluginConfigurations();
+        Schema.SObjectType initialSObjectType = this.getInitialSObjectType();
+        BatchPurgerInput input = new BatchPurgerInput(batchableContext, initialSObjectType);
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
             if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
                 LoggerPlugin.newBatchableInstance(pluginConfiguration)?.start(pluginConfiguration, input);
             }
             // TODO add support for running Flow plugins
         }
-
+        this.currentSObjectType = input.sobjectType;
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             Logger.info('Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
             Logger.saveLog();
@@ -240,7 +241,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     }
 
     @TestVisible
-    private void addMockPlugin(LoggerPlugin__mdt pluginConfiguration) {
-        this.pluginConfigurations.add(pluginConfiguration);
+    private static void setMockPlugin(LoggerPlugin__mdt pluginConfiguration) {
+        MOCK_PLUGIN_CONFIGURATIONS.add(pluginConfiguration);
     }
 }

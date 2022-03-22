@@ -69,18 +69,40 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     }
 
     private List<LogEntry__c> requeryLogEntriesToArchive(List<LogEntry__c> logEntries) {
-        // TODO Query LogEntry__c records to include Log__c parent-level fields, and LogEntryTag__c + LoggerTag__c fields via child query
-        List<LogEntry__c> logEntriesToArchive = [
-            SELECT Id
-            FROM LogEntry__c
-            WHERE Id IN :logEntries AND Log__r.LogPurgeAction__c = :BIG_OBJECT_LOG_PURGE_ACTION
-            ORDER BY Timestamp__c, Log__c
-        ];
-        return logEntriesToArchive;
+        String logLookupRelationshipName = Schema.LogEntry__c.Log__c.getDescribe().getName().removeEnd('__c') + '__r';
+        List<String> logFieldsToQuery = new List<String>();
+        for (String fieldName : Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet()) {
+            logFieldsToQuery.add(logLookupRelationshipName + '.' + fieldName);
+        }
+        String parentLogTransactionIdField =
+            logLookupRelationshipName +
+            '.' +
+            Schema.Log__c.ParentLog__c.getDescribe().getName().removeEnd('__c') +
+            '__r' +
+            '.' +
+            Schema.Log__c.TransactionId__c.getDescribe().getName();
+        logFieldsToQuery.add(parentLogTransactionIdField);
+        List<String> logEntryFieldsToQuery = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
+        logEntryFieldsToQuery.addAll(logFieldsToQuery);
+
+        String tagLookupRelationshipName = Schema.LogEntryTag__c.Tag__c.getDescribe().getName().removeEnd('__c') + '__r';
+        String tagNameField = tagLookupRelationshipName + '.' + Schema.LoggerTag__c.Name.getDescribe().getName();
+
+        String logPurgeActionParentFieldName = logLookupRelationshipName + '.' + Schema.Log__c.LogPurgeAction__c.getDescribe().getName();
+        String queryTemplate = 'SELECT {0}, (SELECT {1} FROM {2}) FROM {3} WHERE Id IN :logEntries AND {4} = :BIG_OBJECT_LOG_PURGE_ACTION';
+        List<Object> queryInputs = new List<Object>{
+            String.join(logEntryFieldsToQuery, ', '),
+            tagNameField,
+            'LogEntryTags__r', // TODO replace with strongly-typed reference or namespace-safe string
+            Schema.LogEntry__c.SObjectType.getDescribe().getName(),
+            logPurgeActionParentFieldName
+        };
+        String query = String.format(queryTemplate, queryInputs);
+        return (List<LogEntry__c>) Database.query(query);
     }
 
     private void saveLogEntryArchives() {
-        if (!Test.isRunningTest()) {
+        if (Test.isRunningTest() == false) {
             Database.insertImmediate(LOG_ENTRY_ARCHIVES_TO_SAVE);
             LOG_ENTRY_ARCHIVES_TO_SAVE.clear();
         }
