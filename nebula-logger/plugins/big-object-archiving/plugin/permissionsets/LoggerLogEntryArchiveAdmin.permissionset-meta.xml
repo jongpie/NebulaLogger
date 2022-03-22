@@ -517,4 +517,8 @@
         <object>LogEntryArchive__b</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+     <tabSettings>
+        <tab>LogEntryArchives</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>
