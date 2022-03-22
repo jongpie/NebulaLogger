@@ -19,8 +19,12 @@ private class LogHandler_Tests_Flow {
         Test.startTest();
 
         // Use the mock configurations
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerFlowName__c = pluginFlowApiName);
-        LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
+            DeveloperName = 'ExampleFlowPlugin',
+            IsEnabled__c = true,
+            SObjectHandlerFlowName__c = pluginFlowApiName
+        );
+        LoggerSObjectHandler.setMockPlugin(plugin);
 
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;

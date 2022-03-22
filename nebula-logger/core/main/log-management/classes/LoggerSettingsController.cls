@@ -13,8 +13,8 @@ public without sharing class LoggerSettingsController {
     private static final String CUSTOM_LOG_PURGE_ACTION_PREFIX = 'CustomLogPurgeAction';
     @TestVisible
     private static final String DELETE_LOG_PURGE_ACTION = 'Delete';
-    private static final List<LoggerParameter__mdt> MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS = new List<LoggerParameter__mdt>();
-    private static final List<LoggerParameter__mdt> MOCK_CUSTOM_SAVE_METHOD_PARAMETERS = new List<LoggerParameter__mdt>();
+    private static final Map<String, LoggerParameter__mdt> MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS = new Map<String, LoggerParameter__mdt>();
+    private static final Map<String, LoggerParameter__mdt> MOCK_CUSTOM_SAVE_METHOD_PARAMETERS = new Map<String, LoggerParameter__mdt>();
 
     // Data methods
     /**
@@ -172,13 +172,13 @@ public without sharing class LoggerSettingsController {
     }
 
     @TestVisible
-    private static void addMockCustomLogPurgeAction(LoggerParameter__mdt customSaveMethodParameter) {
-        MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS.add(customSaveMethodParameter);
+    private static void setMockCustomLogPurgeAction(LoggerParameter__mdt customSaveMethodParameter) {
+        MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS.put(customSaveMethodParameter.DeveloperName, customSaveMethodParameter);
     }
 
     @TestVisible
-    private static void addMockCustomSaveMethod(LoggerParameter__mdt customSaveMethodParameter) {
-        MOCK_CUSTOM_SAVE_METHOD_PARAMETERS.add(customSaveMethodParameter);
+    private static void setMockCustomSaveMethod(LoggerParameter__mdt customSaveMethodParameter) {
+        MOCK_CUSTOM_SAVE_METHOD_PARAMETERS.put(customSaveMethodParameter.DeveloperName, customSaveMethodParameter);
     }
 
     private static AuraHandledException createAuraHandledException(Exception ex) {
@@ -213,7 +213,7 @@ public without sharing class LoggerSettingsController {
         List<LoggerParameter__mdt> potentiallyMatchingParameters = [SELECT Id, Value__c FROM LoggerParameter__mdt WHERE DeveloperName LIKE :soqlSearchTerm];
 
         if (Test.isRunningTest() == true) {
-            potentiallyMatchingParameters = MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS;
+            potentiallyMatchingParameters = MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS.values();
         }
 
         for (LoggerParameter__mdt matchingAdditionalParameter : potentiallyMatchingParameters) {
@@ -241,7 +241,7 @@ public without sharing class LoggerSettingsController {
         List<LoggerParameter__mdt> potentiallyMatchingParameters = [SELECT Id, Value__c FROM LoggerParameter__mdt WHERE DeveloperName LIKE :soqlSearchTerm];
 
         if (Test.isRunningTest() == true) {
-            potentiallyMatchingParameters = MOCK_CUSTOM_SAVE_METHOD_PARAMETERS;
+            potentiallyMatchingParameters = MOCK_CUSTOM_SAVE_METHOD_PARAMETERS.values();
         }
 
         for (LoggerParameter__mdt matchingAdditionalParameter : potentiallyMatchingParameters) {

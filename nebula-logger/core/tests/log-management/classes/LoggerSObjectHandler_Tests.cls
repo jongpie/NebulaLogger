@@ -154,13 +154,13 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_gracefully_skip_non_existent_apex_plugin() {
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerApexClass__c = 'Some_Fake_Apex_Class');
+        LoggerSObjectHandler.setMockPlugin(plugin);
         MockLogHandler handler = new MockLogHandler();
         handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
         handler.triggerNewMap = null;
         handler.triggerOldMap = null;
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerApexClass__c = 'Some_Fake_Apex_Class');
-        handler.addMockPlugin(plugin);
 
         handler.execute();
 
@@ -171,13 +171,13 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_gracefully_skip_non_existent_flow_plugin() {
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerFlowName__c = 'Some_Fake_Flow');
+        LoggerSObjectHandler.setMockPlugin(plugin);
         MockLogHandler handler = new MockLogHandler();
         handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
         handler.triggerNewMap = null;
         handler.triggerOldMap = null;
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerFlowName__c = 'Some_Fake_Flow');
-        handler.addMockPlugin(plugin);
 
         handler.execute();
 
@@ -188,8 +188,12 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_execute_apex_plugin() {
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerApexClass__c = MockLogHandlerPlugin.class.getName());
-        LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
+            DeveloperName = 'ExampleApexPlugin',
+            IsEnabled__c = true,
+            SObjectHandlerApexClass__c = MockLogHandlerPlugin.class.getName()
+        );
+        LoggerSObjectHandler.setMockPlugin(plugin);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '6789');
         insert log;

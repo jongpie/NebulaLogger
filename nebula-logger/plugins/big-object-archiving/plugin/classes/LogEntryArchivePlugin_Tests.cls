@@ -143,12 +143,13 @@ private class LogEntryArchivePlugin_Tests {
 
     private static LoggerPlugin__mdt createPluginConfiguration() {
         LoggerPlugin__mdt configuration = new LoggerPlugin__mdt(
-            IsEnabled__c = true,
             BatchPurgerApexClass__c = LogEntryArchivePlugin.class.getName(),
+            DeveloperName = 'LogEntryArchivePlugin',
+            IsEnabled__c = true,
             SObjectHandlerApexClass__c = LogEntryArchivePlugin.class.getName()
         );
         LogBatchPurger.setMockPlugin(configuration);
-        LoggerSObjectHandler.setMockPlugin(Schema.LogEntryEvent__e.SObjectType, configuration);
+        LoggerSObjectHandler.setMockPlugin(configuration);
         return configuration;
     }
 }

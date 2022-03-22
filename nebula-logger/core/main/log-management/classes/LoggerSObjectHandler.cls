@@ -11,7 +11,7 @@
 public without sharing abstract class LoggerSObjectHandler {
     // private static final List<String> PLUGIN_TYPES = new List<String>{ 'SObject Handler - Apex', 'SObject Handler - Flow' };
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
-    private static final Map<Schema.SObjectType, List<LoggerPlugin__mdt>> SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS = new Map<Schema.SObjectType, List<LoggerPlugin__mdt>>();
+    private static final Map<String, LoggerPlugin__mdt> MOCK_PLUGIN_CONFIGURATIONS = new Map<String, LoggerPlugin__mdt>();
 
     /**
      * @description Class used by the logging system to for trigger context details
@@ -76,10 +76,8 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerOldMap = Trigger.oldMap;
         this.pluginConfigurations = LoggerPlugin.getSObjectHandlerPluginConfigurations();
         if (Test.isRunningTest() == true) {
-            if (SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.containsKey(this.getSObjectType()) == false) {
-                SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.put(this.getSObjectType(), new List<LoggerPlugin__mdt>());
-            }
-            this.pluginConfigurations = SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(this.getSObjectType());
+            this.pluginConfigurations.clear();
+            this.pluginConfigurations = MOCK_PLUGIN_CONFIGURATIONS.values();
         }
     }
 
@@ -264,11 +262,6 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     @TestVisible
-    private void addMockPlugin(LoggerPlugin__mdt pluginConfiguration) {
-        this.pluginConfigurations.add(pluginConfiguration);
-    }
-
-    @TestVisible
     private List<LoggerPlugin.Triggerable> getExecutedApexPlugins() {
         return this.executedApexPlugins;
     }
@@ -280,10 +273,7 @@ public without sharing abstract class LoggerSObjectHandler {
     }
 
     @TestVisible
-    private static void setMockPlugin(Schema.SObjectType sobjectType, LoggerPlugin__mdt plugin) {
-        if (SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.containsKey(sobjectType) == false) {
-            SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.put(sobjectType, new List<LoggerPlugin__mdt>());
-        }
-        SOBJECT_TYPE_TO_MOCK_PLUGIN_CONFIGURATIONS.get(sobjectType).add(plugin);
+    private static void setMockPlugin(LoggerPlugin__mdt plugin) {
+        MOCK_PLUGIN_CONFIGURATIONS.put(plugin.DeveloperName, plugin);
     }
 }

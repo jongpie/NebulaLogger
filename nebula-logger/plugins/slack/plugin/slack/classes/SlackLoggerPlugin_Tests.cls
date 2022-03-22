@@ -44,8 +44,12 @@ private class SlackLoggerPlugin_Tests {
 
     static void mockConfigurations(LoggingLevel notificationLoggingLevel) {
         // Set the plugin's configuration
-        LoggerPlugin__mdt slackPluginConfig = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerApexClass__c = SlackLoggerPlugin.class.getName());
-        LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, slackPluginConfig);
+        LoggerPlugin__mdt slackPluginConfig = new LoggerPlugin__mdt(
+            DeveloperName = 'SlackPlugin',
+            IsEnabled__c = true,
+            SObjectHandlerApexClass__c = SlackLoggerPlugin.class.getName()
+        );
+        LoggerSObjectHandler.setMockPlugin(slackPluginConfig);
 
         // Set the plugin's parameters
         LoggerParameter__mdt endpointParameter = new LoggerParameter__mdt(DeveloperName = 'SlackEndpoint', Value__c = 'https://fake.slack.com/');
