@@ -8,8 +8,8 @@
 private class LogEntryArchivePlugin_Tests {
     @IsTest
     static void it_archives_log_entry_records_in_log_batch_purger_when_purge_action_is_archive() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c log = new Log__c(
@@ -37,8 +37,8 @@ private class LogEntryArchivePlugin_Tests {
 
     @IsTest
     static void it_skips_log_entry_records_in_log_batch_purger_when_purge_action_is_not_archive() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c logToArchive = new Log__c(
@@ -72,8 +72,8 @@ private class LogEntryArchivePlugin_Tests {
 
     @IsTest
     static void it_includes_tags_for_log_entry_in_log_batch_purger_when_tags_exist() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c log = new Log__c(

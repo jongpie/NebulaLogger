@@ -95,7 +95,7 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
             queriedRulesByDeveloperName.put(rule.DeveloperName, rule);
             queriedConditionsByRuleDeveloperName.put(rule.DeveloperName, rule.LogRetentionRuleConditions__r);
 
-            if (Test.isRunningTest() == true) {
+            if (System.Test.isRunningTest() == true) {
                 queriedRulesByDeveloperName.clear();
                 queriedConditionsByRuleDeveloperName.clear();
             }

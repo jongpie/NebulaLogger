@@ -203,7 +203,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest() == true) {
             logStatusNameToStatus.clear();
             logStatusNameToStatus.putAll(MOCK_LOG_STATUS_NAME_TO_STATUS);
         }

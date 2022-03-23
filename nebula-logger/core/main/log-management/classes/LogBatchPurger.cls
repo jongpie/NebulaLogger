@@ -39,12 +39,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      */
     global LogBatchPurger() {
         this.totalProcessedRecords = 0;
-
         this.pluginConfigurations = LoggerPlugin.getBatchPurgerPluginConfigurations();
-        if (Test.isRunningTest() == true) {
-            this.pluginConfigurations.clear();
-            this.pluginConfigurations.addAll(MOCK_PLUGIN_CONFIGURATIONS);
-        }
     }
 
     /**
@@ -238,10 +233,5 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
 
         return queryLocator;
-    }
-
-    @TestVisible
-    private static void setMockPlugin(LoggerPlugin__mdt pluginConfiguration) {
-        MOCK_PLUGIN_CONFIGURATIONS.add(pluginConfiguration);
     }
 }

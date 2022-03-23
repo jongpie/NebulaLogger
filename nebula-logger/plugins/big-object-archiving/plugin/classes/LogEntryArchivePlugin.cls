@@ -102,7 +102,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     }
 
     private void saveLogEntryArchives() {
-        if (Test.isRunningTest() == false) {
+        if (System.Test.isRunningTest() == false) {
             Database.insertImmediate(LOG_ENTRY_ARCHIVES_TO_SAVE);
             LOG_ENTRY_ARCHIVES_TO_SAVE.clear();
         }

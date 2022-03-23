@@ -30,7 +30,7 @@ private class LogEntryTagHandler_Tests {
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogEntryTagHandlerEnabled', Value__c = 'false');
-        LoggerParameter.setMockParameter(mockParameter);
+        LoggerParameter.setMock(mockParameter);
         LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
         LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
 

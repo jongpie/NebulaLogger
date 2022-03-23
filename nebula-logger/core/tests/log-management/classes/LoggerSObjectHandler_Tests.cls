@@ -15,7 +15,7 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_not_run_when_disabled_via_logger_parameter() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = HANDLER_CONTROL_PARAMETER_NAME, Value__c = 'false'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = HANDLER_CONTROL_PARAMETER_NAME, Value__c = 'false'));
         MockLogHandler handler = new MockLogHandler();
         handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
@@ -154,8 +154,12 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_gracefully_skip_non_existent_apex_plugin() {
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerApexClass__c = 'Some_Fake_Apex_Class');
-        LoggerSObjectHandler.setMockPlugin(plugin);
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
+            DeveloperName = 'Mock_Plugin',
+            IsEnabled__c = true,
+            SObjectHandlerApexClass__c = 'Some_Fake_Apex_Class'
+        );
+        LoggerPlugin.setMock(plugin);
         MockLogHandler handler = new MockLogHandler();
         handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
@@ -171,8 +175,8 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_gracefully_skip_non_existent_flow_plugin() {
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(IsEnabled__c = true, SObjectHandlerFlowName__c = 'Some_Fake_Flow');
-        LoggerSObjectHandler.setMockPlugin(plugin);
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(DeveloperName = 'Mock_Plugin', IsEnabled__c = true, SObjectHandlerFlowName__c = 'Some_Fake_Flow');
+        LoggerPlugin.setMock(plugin);
         MockLogHandler handler = new MockLogHandler();
         handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
@@ -193,7 +197,7 @@ private class LoggerSObjectHandler_Tests {
             IsEnabled__c = true,
             SObjectHandlerApexClass__c = MockLogHandlerPlugin.class.getName()
         );
-        LoggerSObjectHandler.setMockPlugin(plugin);
+        LoggerPlugin.setMock(plugin);
 
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '6789');
         insert log;

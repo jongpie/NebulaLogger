@@ -9,7 +9,9 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerSettingsController {
+    @TestVisible
     private static final String CUSTOM_SAVE_METHOD_PREFIX = 'CustomSaveMethod';
+    @TestVisible
     private static final String CUSTOM_LOG_PURGE_ACTION_PREFIX = 'CustomLogPurgeAction';
     @TestVisible
     private static final String DELETE_LOG_PURGE_ACTION = 'Delete';
@@ -171,16 +173,6 @@ public without sharing class LoggerSettingsController {
         }
     }
 
-    @TestVisible
-    private static void setMockCustomLogPurgeAction(LoggerParameter__mdt customSaveMethodParameter) {
-        MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS.put(customSaveMethodParameter.DeveloperName, customSaveMethodParameter);
-    }
-
-    @TestVisible
-    private static void setMockCustomSaveMethod(LoggerParameter__mdt customSaveMethodParameter) {
-        MOCK_CUSTOM_SAVE_METHOD_PARAMETERS.put(customSaveMethodParameter.DeveloperName, customSaveMethodParameter);
-    }
-
     private static AuraHandledException createAuraHandledException(Exception ex) {
         AuraHandledException auraHandledException = new AuraHandledException(ex.getMessage());
         auraHandledException.setMessage(ex.getMessage());
@@ -206,20 +198,13 @@ public without sharing class LoggerSettingsController {
     }
 
     private static List<PicklistOption> getPurgeActionOptions() {
-        List<PicklistOption> picklistOptions = initializePicklistOptions();
         List<String> logPurgeActionNames = new List<String>{ DELETE_LOG_PURGE_ACTION };
-
-        String soqlSearchTerm = CUSTOM_LOG_PURGE_ACTION_PREFIX + '%';
-        List<LoggerParameter__mdt> potentiallyMatchingParameters = [SELECT Id, Value__c FROM LoggerParameter__mdt WHERE DeveloperName LIKE :soqlSearchTerm];
-
-        if (Test.isRunningTest() == true) {
-            potentiallyMatchingParameters = MOCK_CUSTOM_LOG_PURGE_ACTION_PARAMETERS.values();
-        }
-
-        for (LoggerParameter__mdt matchingAdditionalParameter : potentiallyMatchingParameters) {
+        for (LoggerParameter__mdt matchingAdditionalParameter : LoggerParameter.matchOnPrefix(CUSTOM_LOG_PURGE_ACTION_PREFIX)) {
             logPurgeActionNames.add(matchingAdditionalParameter.Value__c);
         }
         logPurgeActionNames.sort();
+
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
         for (String logPurgeActionName : logPurgeActionNames) {
             PicklistOption picklistOption = new PicklistOption();
             picklistOption.label = logPurgeActionName;
@@ -231,23 +216,16 @@ public without sharing class LoggerSettingsController {
     }
 
     private static List<PicklistOption> getSaveMethodOptions() {
-        List<PicklistOption> picklistOptions = initializePicklistOptions();
         List<String> saveMethodNames = new List<String>();
         for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
             saveMethodNames.add(saveMethod.name());
         }
-
-        String soqlSearchTerm = CUSTOM_SAVE_METHOD_PREFIX + '%';
-        List<LoggerParameter__mdt> potentiallyMatchingParameters = [SELECT Id, Value__c FROM LoggerParameter__mdt WHERE DeveloperName LIKE :soqlSearchTerm];
-
-        if (Test.isRunningTest() == true) {
-            potentiallyMatchingParameters = MOCK_CUSTOM_SAVE_METHOD_PARAMETERS.values();
-        }
-
-        for (LoggerParameter__mdt matchingAdditionalParameter : potentiallyMatchingParameters) {
+        for (LoggerParameter__mdt matchingAdditionalParameter : LoggerParameter.matchOnPrefix(CUSTOM_SAVE_METHOD_PREFIX)) {
             saveMethodNames.add(matchingAdditionalParameter.Value__c);
         }
         saveMethodNames.sort();
+
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
         for (String saveMethodName : saveMethodNames) {
             PicklistOption picklistOption = new PicklistOption();
             picklistOption.label = saveMethodName;

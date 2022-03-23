@@ -27,10 +27,8 @@ public without sharing class LoggerEmailUtils {
                     Messaging.reserveSingleEmailCapacity(1);
                     Messaging.reserveMassEmailCapacity(1);
                     IS_EMAIL_DELIVERABILITY_ENABLED = true;
-                    return IS_EMAIL_DELIVERABILITY_ENABLED;
                 } catch (System.NoAccessException e) {
                     IS_EMAIL_DELIVERABILITY_ENABLED = false;
-                    return IS_EMAIL_DELIVERABILITY_ENABLED;
                 }
             }
             return IS_EMAIL_DELIVERABILITY_ENABLED;

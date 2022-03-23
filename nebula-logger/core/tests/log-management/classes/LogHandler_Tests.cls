@@ -23,7 +23,7 @@ private class LogHandler_Tests {
     static void it_should_not_run_when_disabled_via_configuration() {
         setupConfigurations();
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogHandlerEnabled', Value__c = 'false');
-        LoggerParameter.setMockParameter(mockParameter);
+        LoggerParameter.setMock(mockParameter);
         Log__c log = new Log__c(
             ClosedBy__c = UserInfo.getUserId(),
             ClosedDate__c = System.now(),

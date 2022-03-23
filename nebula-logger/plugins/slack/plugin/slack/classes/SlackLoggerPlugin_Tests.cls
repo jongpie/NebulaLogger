@@ -53,12 +53,12 @@ private class SlackLoggerPlugin_Tests {
 
         // Set the plugin's parameters
         LoggerParameter__mdt endpointParameter = new LoggerParameter__mdt(DeveloperName = 'SlackEndpoint', Value__c = 'https://fake.slack.com/');
-        LoggerParameter.setMockParameter(endpointParameter);
+        LoggerParameter.setMock(endpointParameter);
         LoggerParameter__mdt notificationLoggingLevelParameter = new LoggerParameter__mdt(
             DeveloperName = 'SlackNotificationLoggingLevel',
             Value__c = notificationLoggingLevel.name()
         );
-        LoggerParameter.setMockParameter(notificationLoggingLevelParameter);
+        LoggerParameter.setMock(notificationLoggingLevelParameter);
     }
 
     static void verifyLogEntryCountEquals(Integer expectedCount) {

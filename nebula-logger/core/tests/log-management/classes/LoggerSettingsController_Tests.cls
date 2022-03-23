@@ -26,7 +26,12 @@ private class LoggerSettingsController_Tests {
     static void it_should_return_logPurgeAction_picklist_options() {
         List<String> fakeLogPurgeActions = new List<String>{ 'A_FAKE_PURGE_ACTION', 'ANOTHER_ONE', 'SOME_OTHER_PURGE_ACTION' };
         for (String fakeLogPurgeAction : fakeLogPurgeActions) {
-            LoggerSettingsController.setMockCustomLogPurgeAction(new LoggerParameter__mdt(DeveloperName = fakeLogPurgeAction, Value__c = fakeLogPurgeAction));
+            LoggerParameter.setMock(
+                new LoggerParameter__mdt(
+                    DeveloperName = LoggerSettingsController.CUSTOM_LOG_PURGE_ACTION_PREFIX + fakeLogPurgeAction,
+                    Value__c = fakeLogPurgeAction
+                )
+            );
         }
 
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().purgeActionOptions;
@@ -65,7 +70,9 @@ private class LoggerSettingsController_Tests {
     static void it_should_append_custom_loggerSaveMethod_picklist_options_when_configured() {
         List<String> fakeSaveMethods = new List<String>{ 'A_FAKE_SAVE_METHOD', 'ANOTHER_ONE', 'SOME_OTHER_SAVE_METHOD' };
         for (String fakeSaveMethod : fakeSaveMethods) {
-            LoggerSettingsController.setMockCustomSaveMethod(new LoggerParameter__mdt(DeveloperName = fakeSaveMethod, Value__c = fakeSaveMethod));
+            LoggerParameter.setMock(
+                new LoggerParameter__mdt(DeveloperName = LoggerSettingsController.CUSTOM_SAVE_METHOD_PREFIX + fakeSaveMethod, Value__c = fakeSaveMethod)
+            );
         }
 
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().saveMethodOptions;

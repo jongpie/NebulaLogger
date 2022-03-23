@@ -9,9 +9,7 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock, PMD.FieldDeclarationsShouldBeAtStart')
 public without sharing abstract class LoggerSObjectHandler {
-    // private static final List<String> PLUGIN_TYPES = new List<String>{ 'SObject Handler - Apex', 'SObject Handler - Flow' };
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
-    private static final Map<String, LoggerPlugin__mdt> MOCK_PLUGIN_CONFIGURATIONS = new Map<String, LoggerPlugin__mdt>();
 
     /**
      * @description Class used by the logging system to for trigger context details
@@ -75,10 +73,6 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerNewMap = Trigger.newMap;
         this.triggerOldMap = Trigger.oldMap;
         this.pluginConfigurations = LoggerPlugin.getSObjectHandlerPluginConfigurations();
-        if (Test.isRunningTest() == true) {
-            this.pluginConfigurations.clear();
-            this.pluginConfigurations = MOCK_PLUGIN_CONFIGURATIONS.values();
-        }
     }
 
     /**
@@ -134,7 +128,7 @@ public without sharing abstract class LoggerSObjectHandler {
 
         this.executePlugins();
 
-        if (Test.isRunningTest() == true) {
+        if (System.Test.isRunningTest() == true) {
             if (SOBJECT_TYPE_TO_EXECUTED_HANDLERS.containsKey(this.getSObjectType()) == false) {
                 SOBJECT_TYPE_TO_EXECUTED_HANDLERS.put(this.getSObjectType(), new List<LoggerSObjectHandler>());
             }
@@ -223,7 +217,7 @@ public without sharing abstract class LoggerSObjectHandler {
         LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration);
         apexPlugin?.execute(configuration, this.input);
 
-        if (Test.isRunningTest() == true && apexPlugin != null) {
+        if (System.Test.isRunningTest() == true && apexPlugin != null) {
             this.executedApexPlugins.add(apexPlugin);
         }
     }
@@ -270,10 +264,5 @@ public without sharing abstract class LoggerSObjectHandler {
     @TestVisible
     private static Map<Schema.SObjectType, List<LoggerSObjectHandler>> getExecutedHandlers() {
         return SOBJECT_TYPE_TO_EXECUTED_HANDLERS;
-    }
-
-    @TestVisible
-    private static void setMockPlugin(LoggerPlugin__mdt plugin) {
-        MOCK_PLUGIN_CONFIGURATIONS.put(plugin.DeveloperName, plugin);
     }
 }
