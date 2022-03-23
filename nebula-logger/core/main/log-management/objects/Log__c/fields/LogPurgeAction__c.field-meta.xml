@@ -6,8 +6,8 @@
     >Used by the batch job LogBatchPurger, this indicates the action that should be taken for a Log__c record when LogRetentionDate__c &lt; TODAY. Out of the box, only &apos;Delete&apos; is used by Logger, but plugins can add &amp; use new values.</inlineHelpText>
     <label>Log Purge Action</label>
     <required>false</required>
-    <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>false</trackHistory>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>

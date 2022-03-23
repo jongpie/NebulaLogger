@@ -12,6 +12,9 @@
         "communitiesSettings": {
             "enableNetworksEnabled": false
         },
+        "pathAssistantSettings": {
+            "pathAssistantEnabled": false
+        },
         "userManagementSettings": {
             "enableEnhancedPermsetMgmt": true,
             "enableEnhancedProfileMgmt": true,
