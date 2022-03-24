@@ -91,23 +91,6 @@ public without sharing class LoggerPlugin {
         }
     }
 
-    private static List<LoggerPlugin__mdt> queryPluginConfigurations(List<String> filterConditions, List<String> orderByConditions) {
-        // Dynamically query the LoggerPlugin__mdt CMDT object so the records are filtered and sorted correctly
-        List<String> fieldsToQuery = new List<String>(Schema.LoggerPlugin__mdt.SObjectType.getDescribe().fields.getMap().keySet());
-        filterConditions.add(Schema.LoggerPlugin__mdt.IsEnabled__c.getDescribe().getName() + ' = TRUE');
-        orderByConditions.add(Schema.LoggerPlugin__mdt.DeveloperName.getDescribe().getName());
-
-        String queryTemplate = 'SELECT {0} FROM {1} WHERE {2} ORDER BY {3}';
-        List<Object> queryInputs = new List<Object>{
-            String.join(fieldsToQuery, ', '),
-            Schema.LoggerPlugin__mdt.SObjectType.getDescribe().getName(),
-            String.join(filterConditions, ' AND '),
-            String.join(orderByConditions, ', ')
-        };
-        String query = String.format(queryTemplate, queryInputs);
-        return (List<LoggerPlugin__mdt>) Database.query(query);
-    }
-
     private class PluginConfigurationSorter implements Comparable {
         public LoggerPlugin__mdt pluginConfiguration;
         private List<Schema.SObjectField> sortByFields = new List<Schema.SObjectField>();
