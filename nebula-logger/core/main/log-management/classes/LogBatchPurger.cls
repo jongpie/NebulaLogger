@@ -39,7 +39,10 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      */
     global LogBatchPurger() {
         this.totalProcessedRecords = 0;
-        this.pluginConfigurations = LoggerPlugin.getBatchPurgerPluginConfigurations();
+        this.pluginConfigurations = LoggerPlugin.getFilteredPluginConfigurations(
+            new List<Schema.SObjectField>{ Schema.LoggerPlugin__mdt.BatchPurgerApexClass__c, Schema.LoggerPlugin__mdt.BatchPurgerFlowName__c },
+            Schema.LoggerPlugin__mdt.BatchPurgerExecutionOrder__c
+        );
     }
 
     /**

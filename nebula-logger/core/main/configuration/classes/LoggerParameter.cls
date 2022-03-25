@@ -353,12 +353,17 @@ public class LoggerParameter {
     private static Map<String, LoggerParameter__mdt> loadRecords() {
         Map<String, LoggerParameter__mdt> parameters = LoggerParameter__mdt.getAll().clone();
         if (System.Test.isRunningTest() == true) {
-            parameters.clear();
+            // Keep a copy of any records that *should* be loaded during tests
+            // Currently, only the record `SystemDebugMessageFormat` has a use case for this functionality,
+            // but others can be easily added if other use cases are found
+            Map<String, LoggerParameter__mdt> parametersToLoadDuringTests = new Map<String, LoggerParameter__mdt>();
             for (String testContextParameterName : PARAMETERS_TO_LOAD_DURING_TESTS) {
-                if (LoggerParameter__mdt.getAll().containsKey(testContextParameterName) == true) {
-                    parameters.put(testContextParameterName, LoggerParameter__mdt.getInstance(testContextParameterName));
+                if (parameters.containsKey(testContextParameterName) == true) {
+                    parametersToLoadDuringTests.put(testContextParameterName, parameters.get(testContextParameterName));
                 }
             }
+            parameters.clear();
+            parameters.putAll(parametersToLoadDuringTests);
         }
         return parameters;
     }

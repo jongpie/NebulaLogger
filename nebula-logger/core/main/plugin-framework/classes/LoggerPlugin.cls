@@ -27,33 +27,19 @@ public without sharing class LoggerPlugin {
         void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input);
     }
 
-    public static List<LoggerPlugin__mdt> getBatchPurgerPluginConfigurations() {
+    public static List<LoggerPlugin__mdt> getFilteredPluginConfigurations(List<Schema.SObjectField> populatedFilterFields, Schema.SObjectField sortByField) {
         List<PluginConfigurationSorter> matchingPluginConfigurationSorters = new List<PluginConfigurationSorter>();
         for (LoggerPlugin__mdt pluginConfiguration : DEVELOPER_NAME_TO_RECORD.values()) {
-            if (pluginConfiguration.BatchPurgerApexClass__c != null || pluginConfiguration.BatchPurgerFlowName__c != null) {
-                matchingPluginConfigurationSorters.add(
-                    new PluginConfigurationSorter(pluginConfiguration)
-                        .sortBy(Schema.LoggerPlugin__mdt.BatchPurgerExecutionOrder__c)
-                        .sortBy(Schema.LoggerPlugin__mdt.DeveloperName)
-                );
+            Boolean matchesFilterFields = false;
+            for (Schema.SObjectField filterField : populatedFilterFields) {
+                if (pluginConfiguration.get(filterField) != null) {
+                    matchesFilterFields = true;
+                    break;
+                }
             }
-        }
-        matchingPluginConfigurationSorters.sort();
-        List<LoggerPlugin__mdt> matchingPluginConfigurations = new List<LoggerPlugin__mdt>();
-        for (PluginConfigurationSorter sorter : matchingPluginConfigurationSorters) {
-            matchingPluginConfigurations.add(sorter.pluginConfiguration);
-        }
-        return matchingPluginConfigurations;
-    }
-
-    public static List<LoggerPlugin__mdt> getSObjectHandlerPluginConfigurations() {
-        List<PluginConfigurationSorter> matchingPluginConfigurationSorters = new List<PluginConfigurationSorter>();
-        for (LoggerPlugin__mdt pluginConfiguration : DEVELOPER_NAME_TO_RECORD.values()) {
-            if (pluginConfiguration.SObjectHandlerApexClass__c != null || pluginConfiguration.SObjectHandlerFlowName__c != null) {
+            if (matchesFilterFields == true) {
                 matchingPluginConfigurationSorters.add(
-                    new PluginConfigurationSorter(pluginConfiguration)
-                        .sortBy(Schema.LoggerPlugin__mdt.SObjectHandlerExecutionOrder__c)
-                        .sortBy(Schema.LoggerPlugin__mdt.DeveloperName)
+                    new PluginConfigurationSorter(pluginConfiguration).sortBy(sortByField).sortBy(Schema.LoggerPlugin__mdt.DeveloperName)
                 );
             }
         }
@@ -110,13 +96,10 @@ public without sharing class LoggerPlugin {
             for (Schema.SObjectField field : this.sortByFields) {
                 // Ugly block to handle numeric comparisons vs string comparisons (based on the field type)
                 Boolean thisIsGreaterThanThat = false;
-                if (
-                    field.getDescribe().getSoapType() == Schema.SoapType.DOUBLE &&
-                    (Decimal) this.pluginConfiguration.get(field) > (Decimal) that.pluginConfiguration.get(field)
-                ) {
-                    thisIsGreaterThanThat = true;
-                } else if ((String) this.pluginConfiguration.get(field) > (String) that.pluginConfiguration.get(field)) {
-                    thisIsGreaterThanThat = true;
+                if (field.getDescribe().getSoapType() == Schema.SoapType.DOUBLE) {
+                    thisIsGreaterThanThat = (Decimal) this.pluginConfiguration.get(field) > (Decimal) that.pluginConfiguration.get(field);
+                } else {
+                    thisIsGreaterThanThat = (String) this.pluginConfiguration.get(field) > (String) that.pluginConfiguration.get(field);
                 }
 
                 // Now, the actual comparisons

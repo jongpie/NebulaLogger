@@ -73,7 +73,10 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerNew = Trigger.new;
         this.triggerNewMap = Trigger.newMap;
         this.triggerOldMap = Trigger.oldMap;
-        this.pluginConfigurations = LoggerPlugin.getSObjectHandlerPluginConfigurations();
+        this.pluginConfigurations = LoggerPlugin.getFilteredPluginConfigurations(
+            new List<Schema.SObjectField>{ Schema.LoggerPlugin__mdt.SObjectHandlerApexClass__c, Schema.LoggerPlugin__mdt.SObjectHandlerFlowName__c },
+            Schema.LoggerPlugin__mdt.SObjectHandlerExecutionOrder__c
+        );
     }
 
     /**

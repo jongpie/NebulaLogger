@@ -6,6 +6,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
 @IsTest
 private class LoggerSObjectHandler_Tests {
+    private static final String FAKE_PROFILE_NAME = 'Some String';
     private static final String HANDLER_CONTROL_PARAMETER_NAME = 'IsMockLogHandlerEnabled';
 
     @TestSetup
@@ -203,9 +204,8 @@ private class LoggerSObjectHandler_Tests {
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '6789');
         insert log;
 
-        String expectedProfileName = 'Some String';
         log = [SELECT Id, ProfileName__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(expectedProfileName, log.ProfileName__c);
+        System.assertEquals(FAKE_PROFILE_NAME, log.ProfileName__c);
     }
 
     public class MockLogHandler extends LoggerSObjectHandler {
@@ -280,7 +280,7 @@ private class LoggerSObjectHandler_Tests {
                 for (Log__c log : (List<Log__c>) input.triggerNew) {
                     // The specific field changed doesn't really matter - we just want to ensure that whatever
                     // logic implemented in the instance of LoggerPlugin.Triggerable is executed
-                    log.ProfileName__c = 'Some String';
+                    log.ProfileName__c = FAKE_PROFILE_NAME;
                 }
             }
         }
