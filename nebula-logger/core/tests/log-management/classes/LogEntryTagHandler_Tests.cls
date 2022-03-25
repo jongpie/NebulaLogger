@@ -8,6 +8,8 @@
 private class LogEntryTagHandler_Tests {
     @TestSetup
     static void setupData() {
+        LoggerSObjectHandler.shouldExecute(false);
+
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
 

@@ -9,6 +9,7 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock, PMD.FieldDeclarationsShouldBeAtStart')
 public without sharing abstract class LoggerSObjectHandler {
+    private static Boolean isEnabled = true;
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
 
     /**
@@ -93,7 +94,7 @@ public without sharing abstract class LoggerSObjectHandler {
      * @description Runs the handler class's logic, as well as any configured plugins
      */
     public void execute() {
-        Boolean shouldExecute = LoggerParameter.getBoolean(this.getHandlerControlParameterName(), true);
+        Boolean shouldExecute = isEnabled && LoggerParameter.getBoolean(this.getHandlerControlParameterName(), true);
         if (shouldExecute == false) {
             return;
         }
@@ -264,5 +265,12 @@ public without sharing abstract class LoggerSObjectHandler {
     @TestVisible
     private static Map<Schema.SObjectType, List<LoggerSObjectHandler>> getExecutedHandlers() {
         return SOBJECT_TYPE_TO_EXECUTED_HANDLERS;
+    }
+
+    @TestVisible
+    private static void shouldExecute(Boolean shouldExecute) {
+        // Only used for testing purposes so tests can disable triggers to speed up
+        // DML statements that don't rely on trigger logic to run
+        isEnabled = shouldExecute;
     }
 }

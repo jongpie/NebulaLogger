@@ -15,6 +15,7 @@ private class LogEntryHandler_Tests {
 
     @TestSetup
     static void setupData() {
+        LoggerSObjectHandler.shouldExecute(false);
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         Test.setCreatedDate(log.Id, System.now().addDays(-8));

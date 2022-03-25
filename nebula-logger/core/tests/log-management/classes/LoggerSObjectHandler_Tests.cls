@@ -10,6 +10,7 @@ private class LoggerSObjectHandler_Tests {
 
     @TestSetup
     static void setupData() {
+        LoggerSObjectHandler.shouldExecute(false);
         insert new Log__c(TransactionId__c = '1234');
     }
 

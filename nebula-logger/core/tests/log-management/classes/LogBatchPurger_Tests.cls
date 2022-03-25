@@ -17,6 +17,7 @@ private class LogBatchPurger_Tests {
 
     @TestSetup
     static void setupData() {
+        LoggerSObjectHandler.shouldExecute(false);
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = false;
         settings.LoggingLevel__c = LoggingLevel.FINEST.name();
@@ -70,6 +71,7 @@ private class LogBatchPurger_Tests {
         System.assert(log.LogRetentionDate__c < System.today());
 
         Test.startTest();
+        LoggerSObjectHandler.shouldExecute(false);
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
@@ -102,6 +104,7 @@ private class LogBatchPurger_Tests {
         System.assert(log.LogRetentionDate__c < System.today());
 
         Test.startTest();
+        LoggerSObjectHandler.shouldExecute(false);
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
@@ -113,6 +116,7 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_not_delete_a_log_before_scheduled_deletion_date() {
+        LoggerSObjectHandler.shouldExecute(false);
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
 
@@ -127,6 +131,7 @@ private class LogBatchPurger_Tests {
         System.assert(log.LogRetentionDate__c > System.today());
 
         Test.startTest();
+        LoggerSObjectHandler.shouldExecute(false);
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
@@ -138,6 +143,7 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_not_delete_a_log_without_a_scheduled_deletion_date_and_with_log_entries() {
+        LoggerSObjectHandler.shouldExecute(false);
         List<Log__c> logs = [SELECT Id, TotalLogEntries__c, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
 
@@ -153,6 +159,7 @@ private class LogBatchPurger_Tests {
         System.assertEquals(null, log.LogRetentionDate__c);
 
         Test.startTest();
+        LoggerSObjectHandler.shouldExecute(false);
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
@@ -164,6 +171,7 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_delete_a_log_with_a_scheduled_deletion_date_and_without_log_entries() {
+        LoggerSObjectHandler.shouldExecute(false);
         Date retentionDate = System.today().addDays(-1);
         Log__c log = new Log__c(TransactionId__c = '5678');
         insert log;
@@ -174,6 +182,7 @@ private class LogBatchPurger_Tests {
         System.assertEquals(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
 
         Test.startTest();
+        LoggerSObjectHandler.shouldExecute(false);
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
@@ -183,6 +192,7 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_delete_a_log_without_a_scheduled_deletion_date_and_without_log_entries() {
+        LoggerSObjectHandler.shouldExecute(false);
         Log__c log = new Log__c(TransactionId__c = '5678');
         insert log;
         log.LogRetentionDate__c = null;
@@ -192,6 +202,7 @@ private class LogBatchPurger_Tests {
         System.assertEquals(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
 
         Test.startTest();
+        LoggerSObjectHandler.shouldExecute(false);
         Database.executeBatch(new LogBatchPurger());
         Test.stopTest();
 
@@ -201,6 +212,7 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_run_plugin_start_method() {
+        LoggerSObjectHandler.shouldExecute(false);
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             DeveloperName = 'Mock_Plugin',
             IsEnabled__c = true,
@@ -229,6 +241,7 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_run_plugin_execute_method() {
+        LoggerSObjectHandler.shouldExecute(false);
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             DeveloperName = 'Mock_Plugin',
             IsEnabled__c = true,
@@ -260,6 +273,7 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_should_run_plugin_finish_method() {
+        LoggerSObjectHandler.shouldExecute(false);
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             DeveloperName = 'Mock_Plugin',
             IsEnabled__c = true,
