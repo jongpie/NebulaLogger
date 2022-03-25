@@ -13,6 +13,7 @@ export default class LogEntryArchives extends LightningElement {
 
         getLogEntryArchives().then(results => {
             this.logEntryArchives = JSON.parse(JSON.stringify(results));
+            /* eslint-disable-next-line no-console */
             console.info('Loaded LogEntryArchive__b records', this.logEntryArchives);
         });
     }

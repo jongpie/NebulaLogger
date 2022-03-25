@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest
 private class LogEntryArchiveController_Tests {
     private static final String FAKE_TRANSACTION_ID = '1234';
