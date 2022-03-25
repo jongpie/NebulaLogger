@@ -127,7 +127,7 @@ private class LogRetentionRulesPlugin_Tests {
             IsEnabled__c = true,
             SObjectHandlerApexClass__c = LogRetentionRulesPlugin.class.getName()
         );
-        LoggerSObjectHandler.setMockPlugin(pluginConfiguration);
+        LoggerPlugin.setMock(pluginConfiguration);
     }
 
     static LogRetentionRule__mdt createMockRule(String developerName, String conditionLogicType, Integer numberOfDaysToRetainLogs) {

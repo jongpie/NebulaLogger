@@ -203,6 +203,7 @@ public class LoggerTestUtils {
 
     /**
      * @description Creates a `LogEntryEvent__e` record that can be used in tests
+     * @param  timestamp The `Datetime` value to use for the `Timestamp__c` field on `LogEntryEvent__e`
      * @return   An instance of `LogEntryEvent__e` with sample data populated
      */
     public static LogEntryEvent__e createLogEntryEvent(Datetime timestamp) {

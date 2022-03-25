@@ -6,20 +6,34 @@
 /**
  * @group Plugins
  * @description Builder class to create an instance of `LogEntryArchive__b`, used by the BigObject plugin
+ * @see LogEntryArchivePlugin
+ * @see LogEntryEventBuilder
  */
 public without sharing class LogEntryArchiveBuilder {
     private LogEntryEvent__e logEntryEvent;
     private LogEntry__c logEntry;
     private LogEntryArchive__b logEntryArchive;
 
+    /**
+     * @description Used by `LogEntryArchivePlugin` to instantiate a new instance of `LogEntryArchiveBuilder`
+     * @param  logEntryEvent The `LogEntryEvent__e` record that will be converted to a `LogEntryArchive__b` record
+     */
     public LogEntryArchiveBuilder(LogEntryEvent__e logEntryEvent) {
         this.logEntryEvent = logEntryEvent;
     }
 
+    /**
+     * @description Used by `LogEntryArchivePlugin` to instantiate a new instance of `LogEntryArchiveBuilder`
+     * @param  logEntry The `LogEntry__c` record that will be converted to a `LogEntryArchive__b` record
+     */
     public LogEntryArchiveBuilder(LogEntry__c logEntry) {
         this.logEntry = logEntry;
     }
 
+    /**
+     * @description Returns the `LogEntryArchive__b` record for this instance of LogEntryEventBuilder
+     * @return The `LogEntryArchive__b` record
+     */
     public LogEntryArchive__b getLogEntryArchive() {
         if (this.logEntryArchive == null && this.logEntryEvent != null) {
             this.convertLogEntryEventToLogEntryArchive();

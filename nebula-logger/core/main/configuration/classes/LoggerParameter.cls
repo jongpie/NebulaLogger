@@ -340,6 +340,11 @@ public class LoggerParameter {
         return parameterValue != null ? parameterValue : defaultValue;
     }
 
+    /**
+     * @description matchOnPrefix description
+     * @param  developerNamePrefix A prefix that has been used in the `DeveloperName` for multiple `LoggerParameter__mdt` records
+     * @return                     The list of matching `LoggerParameter__mdt` records
+     */
     public static List<LoggerParameter__mdt> matchOnPrefix(String developerNamePrefix) {
         List<LoggerParameter__mdt> matchingParameters = new List<LoggerParameter__mdt>();
         for (String parameterDeveloperName : DEVELOPER_NAME_TO_RECORD.keySet()) {

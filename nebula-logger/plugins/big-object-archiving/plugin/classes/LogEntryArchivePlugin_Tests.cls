@@ -10,7 +10,7 @@ private class LogEntryArchivePlugin_Tests {
     static void it_archives_log_entry_records_in_log_batch_purger_when_purge_action_is_archive() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
-        LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
+        createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c log = new Log__c(
             LogPurgeAction__c = LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION,
@@ -39,7 +39,7 @@ private class LogEntryArchivePlugin_Tests {
     static void it_skips_log_entry_records_in_log_batch_purger_when_purge_action_is_not_archive() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
-        LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
+        createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c logToArchive = new Log__c(
             LogPurgeAction__c = LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION,
@@ -74,7 +74,7 @@ private class LogEntryArchivePlugin_Tests {
     static void it_includes_tags_for_log_entry_in_log_batch_purger_when_tags_exist() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
-        LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
+        createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c log = new Log__c(
             LogPurgeAction__c = LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION,
@@ -114,7 +114,7 @@ private class LogEntryArchivePlugin_Tests {
         Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = LoggerTestUtils.createLogEntryEvent(timestamp);
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
-        LoggerSObjectHandler.SObjectHandlerInput pluginInput = new LoggerSObjectHandler.SObjectHandlerInput();
+        LoggerTriggerableContext pluginInput = new LoggerTriggerableContext();
         pluginInput.triggerNew = new List<LogEntryEvent__e>{ mockEvent };
         Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
 
@@ -128,7 +128,7 @@ private class LogEntryArchivePlugin_Tests {
         Test.startTest();
         createPluginConfiguration();
         Logger.getUserSettings().DefaultSaveMethod__c = LogEntryArchivePlugin.BIG_OBJECT_LOGGER_SAVE_METHOD;
-        LogEntryEvent__e createdEvent = Logger.info('Testing big object creation').getLogEntryEvent();
+        Logger.info('Testing big object creation').getLogEntryEvent();
 
         Logger.saveLog();
 
@@ -138,6 +138,7 @@ private class LogEntryArchivePlugin_Tests {
             'Should not have actually used the event bus in tests because big objects actually get inserted, yikes'
         );
         Test.stopTest();
+        System.assertEquals(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
         System.assertEquals(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
     }
 
@@ -148,8 +149,7 @@ private class LogEntryArchivePlugin_Tests {
             IsEnabled__c = true,
             SObjectHandlerApexClass__c = LogEntryArchivePlugin.class.getName()
         );
-        LogBatchPurger.setMockPlugin(configuration);
-        LoggerSObjectHandler.setMockPlugin(configuration);
+        LoggerPlugin.setMock(configuration);
         return configuration;
     }
 }

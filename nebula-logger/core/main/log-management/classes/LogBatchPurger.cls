@@ -14,18 +14,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     @TestVisible
     private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
 
-    /**
-     * @description Class used by the logging system to for batch purge details
-     */
-    public class BatchPurgerInput {
-        public Database.BatchableContext batchableContext;
-        public Schema.SObjectType sobjectType;
-        public BatchPurgerInput(Database.BatchableContext batchableContext, Schema.SObjectType sobjectType) {
-            this.batchableContext = batchableContext;
-            this.sobjectType = sobjectType;
-        }
-    }
-
     // Instance variables for top-level class
     @TestVisible
     private SObjectType currentSObjectType;
@@ -65,7 +53,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         this.originalTransactionId = Logger.getTransactionId();
 
         Schema.SObjectType initialSObjectType = this.getInitialSObjectType();
-        BatchPurgerInput input = new BatchPurgerInput(batchableContext, initialSObjectType);
+        LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, initialSObjectType);
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
             if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
                 LoggerPlugin.newBatchableInstance(pluginConfiguration)?.start(pluginConfiguration, input);
@@ -98,12 +86,12 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @description Required by the Database.Batchable interface, this method executes the logic for purging
      * log records.
      * @param batchableContext - The context of the current batch job.
-     * @param loggerRecords - The log records to purge.
+     * @param scopeRecords - The log records to purge.
      */
     global void execute(Database.BatchableContext batchableContext, List<SObject> scopeRecords) {
         try {
             this.totalProcessedRecords += scopeRecords.size();
-            BatchPurgerInput input = new BatchPurgerInput(batchableContext, this.currentSObjectType);
+            LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
             for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
                 if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
                     LoggerPlugin.newBatchableInstance(pluginConfiguration)?.execute(pluginConfiguration, input, scopeRecords);
@@ -128,7 +116,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @param batchableContext - The context of the batch jobs
      */
     global void finish(Database.BatchableContext batchableContext) {
-        BatchPurgerInput input = new BatchPurgerInput(batchableContext, this.currentSObjectType);
+        LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
             if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
                 LoggerPlugin.newBatchableInstance(pluginConfiguration)?.finish(pluginConfiguration, input);

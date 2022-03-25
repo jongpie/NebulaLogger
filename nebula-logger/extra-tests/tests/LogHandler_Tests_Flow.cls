@@ -24,7 +24,7 @@ private class LogHandler_Tests_Flow {
             IsEnabled__c = true,
             SObjectHandlerFlowName__c = pluginFlowApiName
         );
-        LoggerSObjectHandler.setMockPlugin(plugin);
+        LoggerPlugin.setMock(plugin);
 
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;

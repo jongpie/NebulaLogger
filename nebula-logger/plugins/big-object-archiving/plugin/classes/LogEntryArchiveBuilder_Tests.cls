@@ -13,6 +13,7 @@ private class LogEntryArchiveBuilder_Tests {
 
         LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockEvent).getLogEntryArchive();
 
+        System.assertNotEquals(null, logEntryArchive);
         assertAllFieldsMatch(timestamp, mockEvent, logEntryArchive);
     }
 
@@ -36,6 +37,7 @@ private class LogEntryArchiveBuilder_Tests {
 
         LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(logEntry).getLogEntryArchive();
 
+        System.assertNotEquals(null, logEntryArchive);
         assertAllFieldsMatch(logEntry, logEntryArchive);
     }
 

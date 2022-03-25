@@ -29,10 +29,10 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     /**
      * @description Handles the integration with Slack. This method is automatically called by Nebula Logger's plugin framework.
      * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
-     * @param  input The instance of `LoggerPlugin.Triggerable.SObjectHandlerInput`, provided by the logging system
+     * @param  input The instance of `LoggerTriggerableContext`, provided by the logging system
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+    public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
         if (input.sobjectType != Schema.Log__c.SObjectType) {
             return;
         }

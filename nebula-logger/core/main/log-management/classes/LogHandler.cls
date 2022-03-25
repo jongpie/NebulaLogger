@@ -9,7 +9,7 @@
  */
 @SuppressWarnings('PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class LogHandler extends LoggerSObjectHandler {
-    private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_NAME_TO_STATUS = new Map<String, LogStatus__mdt>();
+    private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_LABEL_TO_STATUS = new Map<String, LogStatus__mdt>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
 
     @TestVisible
@@ -205,7 +205,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
         if (System.Test.isRunningTest() == true) {
             logStatusNameToStatus.clear();
-            logStatusNameToStatus.putAll(MOCK_LOG_STATUS_NAME_TO_STATUS);
+            logStatusNameToStatus.putAll(MOCK_LOG_STATUS_LABEL_TO_STATUS);
         }
 
         return logStatusNameToStatus;
@@ -254,7 +254,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     @TestVisible
     private static void setMockLogStatus(LogStatus__mdt logStatus) {
-        MOCK_LOG_STATUS_NAME_TO_STATUS.put(logStatus.MasterLabel, logStatus);
+        MOCK_LOG_STATUS_LABEL_TO_STATUS.put(logStatus.MasterLabel, logStatus);
     }
 
     @TestVisible

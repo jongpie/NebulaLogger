@@ -275,7 +275,7 @@ private class LoggerSObjectHandler_Tests {
     }
 
     public class MockLogHandlerPlugin implements LoggerPlugin.Triggerable {
-        public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+        public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
             if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
                 for (Log__c log : (List<Log__c>) input.triggerNew) {
                     // The specific field changed doesn't really matter - we just want to ensure that whatever

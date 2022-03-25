@@ -18,9 +18,9 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
      * @description Handles converting Logger's buffer of `LogEntryEvent__e` records into `LogEntryArchive__b` records
      *              for any user with the included custom save method 'BIG_OBJECT'
      * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
-     * @param  input The instance of `LoggerPlugin.Triggerable.SObjectHandlerInput`, provided by the logging system
+     * @param  input The instance of `LoggerTriggerableContext`, provided by the logging system
      */
-    public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+    public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
         if (input.sobjectType != Schema.LogEntry__c.SObjectType) {
             return;
         }

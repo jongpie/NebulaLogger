@@ -7,6 +7,7 @@
  * @group Plugins
  * @description Optional plugin that provides a BigObject, `LogEntryArchive__b`, as an alternative option
  *              to the platform event `LogEntryEvent__e`
+ * @see LoggerPlugin
  */
 public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batchable, LoggerPlugin.Triggerable {
     @TestVisible
@@ -16,11 +17,21 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     @TestVisible
     private static final List<LogEntryArchive__b> LOG_ENTRY_ARCHIVES_TO_SAVE = new List<LogEntryArchive__b>();
 
+    /**
+     * @description Default constructor
+     */
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     public LogEntryArchivePlugin() {
     }
 
     // Batchable interface methods
-    public void start(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input) {
+    /**
+     * @description Skips directly deleting `LogEntryTag__c` records in `LogBatchPurger` so that the tags
+     *             can be included when `LogEntry__c` records are archived into `LogEntryArchive__b`
+     * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
+     * @param  input The instance of `LoggerBatchableContext`, provided by the logging system
+     */
+    public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
         // Skip directly deleting LogEntryTag__c records so that the tags can be included when LogEntry__c records
         // are archived into LogEntryArchive__b
         if (input.sobjectType == Schema.LogEntryTag__c.SObjectType) {
@@ -28,7 +39,13 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         }
     }
 
-    public void execute(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input, List<SObject> loggerRecords) {
+    /**
+     * @description Converts any `LogEntry__c` records into `LogEntryArchive__b` records
+     * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
+     * @param  input The instance of `LoggerBatchableContext`, provided by the logging system
+     * @param  loggerRecords The list of `SObject` scope records provider by `LogBatchPurger`
+     */
+    public void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> loggerRecords) {
         if (input.sobjectType != Schema.LogEntry__c.SObjectType) {
             return;
         }
@@ -40,7 +57,13 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         this.saveLogEntryArchives();
     }
 
-    public void finish(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input) {
+    /**
+     * @description No-op method, required by the interface `LoggerPlugin.Batchable`
+     * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
+     * @param  input The instance of `LoggerBatchableContext`, provided by the logging system
+     */
+    @SuppressWarnings('PMD.EmptyStatementBlock')
+    public void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
         // No-op
     }
 
@@ -49,9 +72,9 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
      * @description Handles converting Logger's buffer of `LogEntryEvent__e` records into `LogEntryArchive__b` records
      *              for any user with the included custom save method 'BIG_OBJECT'
      * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
-     * @param  input The instance of `LoggerPlugin.Triggerable.SObjectHandlerInput`, provided by the logging system
+     * @param  input The instance of `LoggerTriggerableContext`, provided by the logging system
      */
-    public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+    public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
         if (
             input.sobjectType != Schema.LogEntryEvent__e.SObjectType ||
             input.triggerOperationType != TriggerOperation.BEFORE_INSERT ||

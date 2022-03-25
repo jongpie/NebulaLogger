@@ -14,19 +14,28 @@ public without sharing class LoggerPlugin {
     /**
      * @description Interface used to create plugins that can be used within Logger's batch job `LogBatchPurger`
      */
+    @SuppressWarnings('PMD.ApexDoc')
     public interface Batchable {
-        void start(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input);
-        void execute(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input, List<SObject> loggerRecords);
-        void finish(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input);
+        void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input);
+        void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scopeRecords);
+        void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input);
     }
 
     /**
      * @description Interface used to create plugins that can be used within Logger's trigger handler framework `LoggerSObjectHandler`
      */
+    @SuppressWarnings('PMD.ApexDoc')
     public interface Triggerable {
-        void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input);
+        void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input);
     }
 
+    /**
+     * @description Filters the configured `LoggerPlugin__mdt` records based on a list of `SObjectField` - only records that have a value for 1 or more
+     *              of the specified `populatedFilterFields` will be returned, sorted by the specified `SObjectField` parameter `sortByField`
+     * @param  populatedFilterFields The list of `SObjectField` to check on each `LoggerPlugin__mdt` record - filtering logic checks for a non-null value
+     * @param  sortByField           The `SObjectField` to use to sort the list of matches. The method also uses `DeveloperName` as a secondary field for sorting.
+     * @return                       The list of matching `LoggerPlugin__mdt` records
+     */
     public static List<LoggerPlugin__mdt> getFilteredPluginConfigurations(List<Schema.SObjectField> populatedFilterFields, Schema.SObjectField sortByField) {
         List<PluginConfigurationSorter> matchingPluginConfigurationSorters = new List<PluginConfigurationSorter>();
         for (LoggerPlugin__mdt pluginConfiguration : DEVELOPER_NAME_TO_RECORD.values()) {
@@ -51,10 +60,22 @@ public without sharing class LoggerPlugin {
         return matchingPluginConfigurations;
     }
 
+    /**
+     * @description Creates an instance of the class `LoggerPlugin.Batchable` based on the provided `LoggerPlugin__mdt` configuration
+     * @param  pluginConfiguration The instance of `LoggerPlugin__mdt` to use to dynamically create an instance of `LoggerPlugin.Batchable`
+     * @return                     The dynamically created instance of `LoggerPlugin.Batchable`,
+     *                             or null if an instance could not be created based on the provided configuration
+     */
     public static Batchable newBatchableInstance(LoggerPlugin__mdt pluginConfiguration) {
         return (Batchable) Type.forName(pluginConfiguration?.BatchPurgerApexClass__c)?.newInstance();
     }
 
+    /**
+     * @description Creates an instance of the class `LoggerPlugin.Triggerable` based on the provided `LoggerPlugin__mdt` configuration
+     * @param  pluginConfiguration The instance of `LoggerPlugin__mdt` to use to dynamically create an instance of `LoggerPlugin.Triggerable`
+     * @return                     The dynamically created instance of `LoggerPlugin.Triggerable`,
+     *                             or null if an instance could not be created based on the provided configuration
+     */
     public static Triggerable newTriggerableInstance(LoggerPlugin__mdt pluginConfiguration) {
         return (Triggerable) Type.forName(pluginConfiguration?.SObjectHandlerApexClass__c)?.newInstance();
     }
@@ -77,6 +98,7 @@ public without sharing class LoggerPlugin {
         }
     }
 
+    @SuppressWarnings('PMD.ApexDoc')
     private class PluginConfigurationSorter implements Comparable {
         public LoggerPlugin__mdt pluginConfiguration;
         private List<Schema.SObjectField> sortByFields = new List<Schema.SObjectField>();

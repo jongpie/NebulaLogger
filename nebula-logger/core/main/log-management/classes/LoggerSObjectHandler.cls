@@ -12,42 +12,11 @@ public without sharing abstract class LoggerSObjectHandler {
     private static Boolean isEnabled = true;
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
 
-    /**
-     * @description Class used by the logging system to for trigger context details
-     */
-    public class SObjectHandlerInput {
-        public Schema.SObjectType sobjectType;
-        public TriggerOperation triggerOperationType;
-        public List<SObject> triggerNew;
-        public Map<Id, SObject> triggerNewMap;
-        public Map<Id, SObject> triggerOldMap;
-
-        @InvocableVariable(label='SObject Type Name')
-        public String sobjectTypeName;
-
-        @InvocableVariable(label='Trigger Operation Name')
-        public String triggerOperationTypeName;
-
-        @InvocableVariable(label='Trigger Records')
-        public List<SObjectHandlerRecordInput> triggerRecords;
-    }
-
-    /**
-     * @description Class used by the logging system to provide trigger record details
-     */
-    public class SObjectHandlerRecordInput {
-        @InvocableVariable(label='Trigger.new Record')
-        public SObject triggerRecordNew;
-
-        @InvocableVariable(label='Trigger.old Record')
-        public SObject triggerRecordOld;
-    }
-
     // Instance variables for top-level class
-    protected SObjectHandlerInput input {
+    protected LoggerTriggerableContext input {
         get {
             if (input == null) {
-                input = this.createSObjectHandlerInput();
+                input = this.createLoggerTriggerableContext();
             }
             return input;
         }
@@ -165,8 +134,8 @@ public without sharing abstract class LoggerSObjectHandler {
     protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
     }
 
-    private SObjectHandlerInput createSObjectHandlerInput() {
-        SObjectHandlerInput input = new SObjectHandlerInput();
+    private LoggerTriggerableContext createLoggerTriggerableContext() {
+        LoggerTriggerableContext input = new LoggerTriggerableContext();
 
         // Trigger variables for Apex Developers
         input.sobjectType = this.getSObjectType();
@@ -178,10 +147,10 @@ public without sharing abstract class LoggerSObjectHandler {
         // Additional invocable variables for Flow Builders (and Apex Developers too, if they want to use them)
         input.sobjectTypeName = this.getSObjectType().getDescribe().getName();
         input.triggerOperationTypeName = Trigger.operationType?.name();
-        input.triggerRecords = new List<SObjectHandlerRecordInput>();
+        input.triggerRecords = new List<LoggerTriggerableContext.RecordInput>();
         if (input.triggerNew != null) {
             for (SObject record : input.triggerNew) {
-                SObjectHandlerRecordInput recordInput = new SObjectHandlerRecordInput();
+                LoggerTriggerableContext.RecordInput recordInput = new LoggerTriggerableContext.RecordInput();
                 recordInput.triggerRecordNew = record;
                 if (input.triggerOldMap != null && record.Id != null) {
                     recordInput.triggerRecordOld = input.triggerOldMap.get(record.Id);
@@ -191,7 +160,7 @@ public without sharing abstract class LoggerSObjectHandler {
             }
         } else if (input.triggerOldMap != null) {
             for (SObject record : input.triggerOldMap.values()) {
-                SObjectHandlerRecordInput recordInput = new SObjectHandlerRecordInput();
+                LoggerTriggerableContext.RecordInput recordInput = new LoggerTriggerableContext.RecordInput();
                 recordInput.triggerRecordOld = record;
 
                 input.triggerRecords.add(recordInput);

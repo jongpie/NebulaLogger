@@ -8,17 +8,18 @@
 private class LoggerPlugin_Tests {
     private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
-        public void start(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input) {
+        public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
         }
-        public void execute(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input, List<SObject> scope) {
+        public void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scope) {
         }
-        public void finish(LoggerPlugin__mdt configuration, LogBatchPurger.BatchPurgerInput input) {
+        public void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
         }
     }
 
     public class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
-        public void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+        public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
             switch on input.triggerOperationType {
                 when BEFORE_INSERT {
                     for (Log__c log : (List<Log__c>) input.triggerNew) {

@@ -49,7 +49,7 @@ private class SlackLoggerPlugin_Tests {
             IsEnabled__c = true,
             SObjectHandlerApexClass__c = SlackLoggerPlugin.class.getName()
         );
-        LoggerSObjectHandler.setMockPlugin(slackPluginConfig);
+        LoggerPlugin.setMock(slackPluginConfig);
 
         // Set the plugin's parameters
         LoggerParameter__mdt endpointParameter = new LoggerParameter__mdt(DeveloperName = 'SlackEndpoint', Value__c = 'https://fake.slack.com/');
