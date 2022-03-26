@@ -5,7 +5,7 @@
     <fieldManageability>DeveloperControlled</fieldManageability>
     <description>Deprecated: This field is no longer used.</description>
     <inlineHelpText>Deprecated: This field is no longer used.</inlineHelpText>
-    <label>Logger SObject Type</label>
+    <label>Deprecated: Logger SObject Type</label>
     <referenceTo>EntityDefinition</referenceTo>
     <relationshipLabel>Logger Plugins</relationshipLabel>
     <relationshipName>LoggerSObjectHandlerPlugins</relationshipName>
