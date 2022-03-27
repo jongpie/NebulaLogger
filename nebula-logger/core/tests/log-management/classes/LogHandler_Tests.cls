@@ -23,7 +23,7 @@ private class LogHandler_Tests {
     static void it_should_not_run_when_disabled_via_configuration() {
         setupConfigurations();
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogHandlerEnabled', Value__c = 'false');
-        LoggerParameter.setMock(mockParameter);
+        LoggerTestUtils.setMock(mockParameter);
         Log__c log = new Log__c(
             ClosedBy__c = UserInfo.getUserId(),
             ClosedDate__c = System.now(),
@@ -216,7 +216,7 @@ private class LogHandler_Tests {
         upsert Logger.getUserSettings();
         String transactionScenarioName = 'some scenario';
         LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, NumberOfDaysToRetainLogs__c = daysToRetainLog);
-        LogHandler.setMockScenarioRule(scenarioRule);
+        LoggerTestUtils.setMock(scenarioRule);
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Scenario__c = transactionScenarioName, TransactionId__c = '1234');
 
         insert log;
@@ -335,9 +335,9 @@ private class LogHandler_Tests {
 
     static void setupConfigurations() {
         LogStatus__mdt openStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = FIRST_STATUS, IsClosed__c = false, IsResolved__c = false);
-        LogHandler.setMockLogStatus(openStatus);
+        LoggerTestUtils.setMock(openStatus);
 
         LogStatus__mdt closedStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = SECOND_STATUS, IsClosed__c = true, IsResolved__c = true);
-        LogHandler.setMockLogStatus(closedStatus);
+        LoggerTestUtils.setMock(closedStatus);
     }
 }

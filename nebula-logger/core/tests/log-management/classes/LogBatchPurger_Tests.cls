@@ -53,7 +53,7 @@ private class LogBatchPurger_Tests {
         settings.LoggingLevel__c = LoggingLevel.FINEST.name();
         upsert settings;
 
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
 
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
         System.assertEquals(true, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
@@ -86,7 +86,7 @@ private class LogBatchPurger_Tests {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
         upsert settings;
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(false)));
+        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(false)));
 
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
         System.assertEquals(false, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
@@ -218,7 +218,7 @@ private class LogBatchPurger_Tests {
             IsEnabled__c = true,
             BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
         );
-        LoggerPlugin.setMock(mockPluginConfiguration);
+        LoggerTestUtils.setMock(mockPluginConfiguration);
         LogBatchPurger instance = new LogBatchPurger();
         instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
         System.assertEquals(false, ranPluginStart);
@@ -247,7 +247,7 @@ private class LogBatchPurger_Tests {
             IsEnabled__c = true,
             BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
         );
-        LoggerPlugin.setMock(mockPluginConfiguration);
+        LoggerTestUtils.setMock(mockPluginConfiguration);
         LogBatchPurger instance = new LogBatchPurger();
         instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
         System.assertEquals(false, ranPluginStart);
@@ -279,7 +279,7 @@ private class LogBatchPurger_Tests {
             IsEnabled__c = true,
             BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
         );
-        LoggerPlugin.setMock(mockPluginConfiguration);
+        LoggerTestUtils.setMock(mockPluginConfiguration);
         LogBatchPurger instance = new LogBatchPurger();
         instance.currentSObjectType = Schema.LogEntry__c.SObjectType;
         System.assertEquals(false, ranPluginStart);

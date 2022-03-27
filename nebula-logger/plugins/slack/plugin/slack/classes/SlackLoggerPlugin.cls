@@ -194,6 +194,8 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         notification.title = log.Name;
         notification.title_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
 
+        // TODO add stack trace of lastLogEntry, with isShort = false
+
         // TODO: switch to dynamically creating Slack DTO fields based on a new `Log__c` field set parameter
         FieldDto startTimeField = new FieldDto();
         startTimeField.isShort = true;
@@ -218,6 +220,8 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         totalWARNEntriesField.title = Schema.Log__c.TotalWARNLogEntries__c.getDescribe().getLabel();
         totalWARNEntriesField.value = '`' + String.valueOf(log.TotalWARNLogEntries__c) + '`';
         notification.fields.add(totalWARNEntriesField);
+
+        // TODO Add Scenario__c field
 
         String logOwnerType = log.OwnerId.getSObjectType().getDescribe().getName();
         FieldDto logOwnerNameField = new FieldDto();
@@ -256,6 +260,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         orgApiVersion.value = '`' + log.ApiVersion__c + '`';
         notification.fields.add(orgApiVersion);
 
+        // TODO Switch to LogEntryTag__c
         List<String> topicNames = new List<String>();
         // TODO - dynamically get either LogEntryTag__c or TopicAssignment (based on handler parameter)
         for (TopicAssignment topicAssignment : log.TopicAssignments) {

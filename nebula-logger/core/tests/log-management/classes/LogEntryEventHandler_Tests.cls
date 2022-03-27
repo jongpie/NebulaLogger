@@ -19,7 +19,7 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogEntryEventHandlerEnabled', Value__c = 'false');
-        LoggerParameter.setMock(mockParameter);
+        LoggerTestUtils.setMock(mockParameter);
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = System.now().getTime(),
             LoggedById__c = UserInfo.getUserId(),
@@ -379,7 +379,7 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(
+        LoggerTestUtils.setMock(
             new LogEntryTagRule__mdt(
                 SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
                 ComparisonType__c = 'CONTAINS',
@@ -421,7 +421,7 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(
+        LoggerTestUtils.setMock(
             new LogEntryTagRule__mdt(
                 SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
                 ComparisonType__c = 'EQUALS',
@@ -465,7 +465,7 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(
+        LoggerTestUtils.setMock(
             new LogEntryTagRule__mdt(
                 SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
                 ComparisonType__c = 'MATCHES_REGEX',
@@ -507,7 +507,7 @@ private class LogEntryEventHandler_Tests {
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(
+        LoggerTestUtils.setMock(
             new LogEntryTagRule__mdt(
                 SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
                 ComparisonType__c = 'STARTS_WITH',
@@ -538,7 +538,7 @@ private class LogEntryEventHandler_Tests {
     static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
-        LoggerParameter.setMock(mockCallStatusApiParameter);
+        LoggerTestUtils.setMock(mockCallStatusApiParameter);
         System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
 
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -581,7 +581,7 @@ private class LogEntryEventHandler_Tests {
         insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
 
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
-        LoggerParameter.setMock(mockCallStatusApiParameter);
+        LoggerTestUtils.setMock(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -623,7 +623,7 @@ private class LogEntryEventHandler_Tests {
     static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
-        LoggerParameter.setMock(mockCallStatusApiParameter);
+        LoggerTestUtils.setMock(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
@@ -655,7 +655,7 @@ private class LogEntryEventHandler_Tests {
     static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
         Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
-        LoggerParameter.setMock(mockCallStatusApiParameter);
+        LoggerTestUtils.setMock(mockCallStatusApiParameter);
 
         String transactionId = '123-456-789-0';
         LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(

@@ -365,7 +365,7 @@ private class Logger_Tests {
         String transactionId = Logger.getTransactionId();
         String transactionScenarioName = 'some test scenario for this transaction';
         LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, UserLoggingLevel__c = LoggingLevel.FINER.name());
-        Logger.setMockScenarioRule(scenarioRule);
+        LoggerTestUtils.setMock(scenarioRule);
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
         System.assertNotEquals(Logger.getUserSettings().LoggingLevel__c, scenarioRule.UserLoggingLevel__c);
 

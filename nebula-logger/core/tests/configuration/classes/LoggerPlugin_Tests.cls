@@ -32,30 +32,30 @@ private class LoggerPlugin_Tests {
 
     @IsTest
     static void it_should_returned_filtered_plugin_configurations_in_sorted_order() {
-        // The mock LoggerPlugin__mdt records are purposeful being added to LoggerPlugin.setMock()
+        // The mock LoggerPlugin__mdt records are purposeful being added to LoggerTestUtils.setMock()
         // in an order that's different from the order when sorting on SObjectHandlerExecutionOrder__c.
         // This helps ensure that the returned results are truly being sorted, instead of just being returned
-        // in the same order that they're added via LoggerPlugin.setMock()
+        // in the same order that they're added via LoggerTestUtils.setMock()
         LoggerPlugin__mdt secondPluginConfiguration = createMockPluginConfiguration('secondPluginConfiguration');
         secondPluginConfiguration.SObjectHandlerApexClass__c = 'Also_A_Fake_Apex_Class';
         secondPluginConfiguration.SObjectHandlerExecutionOrder__c = 2;
-        LoggerPlugin.setMock(secondPluginConfiguration);
+        LoggerTestUtils.setMock(secondPluginConfiguration);
         LoggerPlugin__mdt fifthPluginConfiguration = createMockPluginConfiguration('zzzzz_sort_me_last_alphabetically_fifthPluginConfiguration');
         fifthPluginConfiguration.SObjectHandlerApexClass__c = 'Yeah_This_Is_A_Fake_Apex_Class';
         fifthPluginConfiguration.SObjectHandlerExecutionOrder__c = null;
-        LoggerPlugin.setMock(fifthPluginConfiguration);
+        LoggerTestUtils.setMock(fifthPluginConfiguration);
         LoggerPlugin__mdt fourthPluginConfiguration = createMockPluginConfiguration('fourthPluginConfiguration');
         fourthPluginConfiguration.SObjectHandlerApexClass__c = 'Yeah_This_Is_A_Fake_Apex_Class';
         fourthPluginConfiguration.SObjectHandlerExecutionOrder__c = null;
-        LoggerPlugin.setMock(fourthPluginConfiguration);
+        LoggerTestUtils.setMock(fourthPluginConfiguration);
         LoggerPlugin__mdt thirdPluginConfiguration = createMockPluginConfiguration('thirdPluginConfiguration');
         thirdPluginConfiguration.SObjectHandlerApexClass__c = 'Yeah_This_Is_A_Fake_Apex_Class';
         thirdPluginConfiguration.SObjectHandlerExecutionOrder__c = 3;
-        LoggerPlugin.setMock(thirdPluginConfiguration);
+        LoggerTestUtils.setMock(thirdPluginConfiguration);
         LoggerPlugin__mdt firstPluginConfiguration = createMockPluginConfiguration('firstPluginConfiguration');
         firstPluginConfiguration.SObjectHandlerApexClass__c = 'Some_Fake_Apex_Class';
         firstPluginConfiguration.SObjectHandlerExecutionOrder__c = 1;
-        LoggerPlugin.setMock(firstPluginConfiguration);
+        LoggerTestUtils.setMock(firstPluginConfiguration);
         List<LoggerPlugin__mdt> expectedSortedPluginConfigurations = new List<LoggerPlugin__mdt>{
             firstPluginConfiguration,
             secondPluginConfiguration,
@@ -67,11 +67,11 @@ private class LoggerPlugin_Tests {
         secondPluginConfiguration.IsEnabled__c = false;
         secondPluginConfiguration.SObjectHandlerApexClass__c = 'Also_A_Fake_Apex_Class';
         secondPluginConfiguration.SObjectHandlerExecutionOrder__c = 2;
-        LoggerPlugin.setMock(disabledPluginConfiguration);
+        LoggerTestUtils.setMock(disabledPluginConfiguration);
         LoggerPlugin__mdt nonMatchingPluginConfiguration = createMockPluginConfiguration('nonMatchingPluginConfiguration');
         nonMatchingPluginConfiguration.SObjectHandlerApexClass__c = null;
         nonMatchingPluginConfiguration.SObjectHandlerExecutionOrder__c = 1;
-        LoggerPlugin.setMock(nonMatchingPluginConfiguration);
+        LoggerTestUtils.setMock(nonMatchingPluginConfiguration);
 
         List<LoggerPlugin__mdt> returnedPluginConfigurations = LoggerPlugin.getFilteredPluginConfigurations(
             new List<Schema.SObjectField>{ Schema.LoggerPlugin__mdt.SObjectHandlerApexClass__c },

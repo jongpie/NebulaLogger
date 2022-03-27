@@ -23,7 +23,7 @@ private class LogEntryTagHandler_Tests {
     }
 
     @IsTest
-    static void it_should_return_the_logEntry_sobjectType() {
+    static void it_should_return_the_logEntryTag_sobjectType() {
         Test.startTest();
         System.assertEquals(Schema.LogEntryTag__c.SObjectType, new LogEntryTagHandler().getSObjectType());
         Test.stopTest();
@@ -32,7 +32,7 @@ private class LogEntryTagHandler_Tests {
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogEntryTagHandlerEnabled', Value__c = 'false');
-        LoggerParameter.setMock(mockParameter);
+        LoggerTestUtils.setMock(mockParameter);
         LogEntry__c logEntry = [SELECT Id FROM LogEntry__c LIMIT 1];
         LoggerTag__c tag = [SELECT Id FROM LoggerTag__c LIMIT 1];
 

@@ -26,7 +26,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_return_logPurgeAction_picklist_options() {
         List<String> fakeLogPurgeActions = new List<String>{ 'A_FAKE_PURGE_ACTION', 'ANOTHER_ONE', 'SOME_OTHER_PURGE_ACTION' };
         for (String fakeLogPurgeAction : fakeLogPurgeActions) {
-            LoggerParameter.setMock(
+            LoggerTestUtils.setMock(
                 new LoggerParameter__mdt(
                     DeveloperName = LoggerSettingsController.CUSTOM_LOG_PURGE_ACTION_PREFIX + fakeLogPurgeAction,
                     Value__c = fakeLogPurgeAction
@@ -70,7 +70,7 @@ private class LoggerSettingsController_Tests {
     static void it_should_append_custom_loggerSaveMethod_picklist_options_when_configured() {
         List<String> fakeSaveMethods = new List<String>{ 'A_FAKE_SAVE_METHOD', 'ANOTHER_ONE', 'SOME_OTHER_SAVE_METHOD' };
         for (String fakeSaveMethod : fakeSaveMethods) {
-            LoggerParameter.setMock(
+            LoggerTestUtils.setMock(
                 new LoggerParameter__mdt(DeveloperName = LoggerSettingsController.CUSTOM_SAVE_METHOD_PREFIX + fakeSaveMethod, Value__c = fakeSaveMethod)
             );
         }

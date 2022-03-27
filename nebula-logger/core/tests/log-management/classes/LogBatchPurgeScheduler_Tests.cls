@@ -12,7 +12,7 @@ private class LogBatchPurgeScheduler_Tests {
     static void it_should_schedule_job() {
         Test.startTest();
 
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
         Id jobId = System.schedule('Test schedule of LogBatchPurgeScheduler', TEST_CRON_EXPRESSION, new LogBatchPurgeScheduler());
 
         Test.stopTest();
