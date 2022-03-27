@@ -5,15 +5,15 @@
 
 /**
  * @group Configuration
- * @description Utilities for Apex tests for commonly used data & settings.
- *              These methods can be used by plugins' tests.
+ * @description Utility class used to help with writing Apex tests Nebula Logger.
+ *              These methods can be used when writing Apex tests for plugins.
+ * @see LoggerSObjectTestDataGenerator
  */
 @SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest
 public class LoggerTestUtils {
-    private static final String FAKE_DATA_STRING = 'someFakeData';
-    private static final Integer FAKE_DATA_NUMBER = 1;
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
+    private static Integer userMockUsernameCount = 0;
 
     // Lazy-load & cache permission sets & profiles
     private static final Map<String, PermissionSet> PERMISSION_SETS_BY_NAME {
@@ -26,52 +26,12 @@ public class LoggerTestUtils {
         private set;
     }
 
-    private static final PermissionSet LOGGER_ADMIN_PERMISSION_SET {
-        get {
-            if (LOGGER_ADMIN_PERMISSION_SET == null) {
-                LOGGER_ADMIN_PERMISSION_SET = PERMISSION_SETS_BY_NAME.get('LoggerAdmin');
-            }
-            return LOGGER_ADMIN_PERMISSION_SET;
-        }
-        private set;
-    }
-
-    private static final PermissionSet LOGGER_LOG_VIEWER_PERMISSION_SET {
-        get {
-            if (LOGGER_LOG_VIEWER_PERMISSION_SET == null) {
-                LOGGER_LOG_VIEWER_PERMISSION_SET = PERMISSION_SETS_BY_NAME.get('LoggerLogViewer');
-            }
-            return LOGGER_LOG_VIEWER_PERMISSION_SET;
-        }
-        private set;
-    }
-
-    private static final PermissionSet LOGGER_END_USER_PERMISSION_SET {
-        get {
-            if (LOGGER_END_USER_PERMISSION_SET == null) {
-                LOGGER_END_USER_PERMISSION_SET = PERMISSION_SETS_BY_NAME.get('LoggerEndUser');
-            }
-            return LOGGER_END_USER_PERMISSION_SET;
-        }
-        private set;
-    }
-
-    private static final PermissionSet LOGGER_LOG_CREATOR_PERMISSION_SET {
-        get {
-            if (LOGGER_LOG_CREATOR_PERMISSION_SET == null) {
-                LOGGER_LOG_CREATOR_PERMISSION_SET = PERMISSION_SETS_BY_NAME.get('LoggerLogCreator');
-            }
-            return LOGGER_LOG_CREATOR_PERMISSION_SET;
-        }
-        private set;
-    }
-
     /**
      * @description Assigns the permission set `LoggerAdmin` to the specified user ID
      * @param  userId The ID of the user that should be assigned the permission set
      */
     public static void assignAdminPermissionSet(Id userId) {
-        assignPermissionSet(userId, LOGGER_ADMIN_PERMISSION_SET);
+        assignPermissionSet(userId, PERMISSION_SETS_BY_NAME.get('LoggerAdmin'));
     }
 
     /**
@@ -79,7 +39,7 @@ public class LoggerTestUtils {
      * @param  userId The ID of the user that should be assigned the permission set
      */
     public static void assignLogViewerPermissionSet(Id userId) {
-        assignPermissionSet(userId, LOGGER_LOG_VIEWER_PERMISSION_SET);
+        assignPermissionSet(userId, PERMISSION_SETS_BY_NAME.get('LoggerLogViewer'));
     }
 
     /**
@@ -87,7 +47,7 @@ public class LoggerTestUtils {
      * @param  userId The ID of the user that should be assigned the permission set
      */
     public static void assignEndUserPermissionSet(Id userId) {
-        assignPermissionSet(userId, LOGGER_END_USER_PERMISSION_SET);
+        assignPermissionSet(userId, PERMISSION_SETS_BY_NAME.get('LoggerEndUser'));
     }
 
     /**
@@ -95,215 +55,7 @@ public class LoggerTestUtils {
      * @param  userId The ID of the user that should be assigned the permission set
      */
     public static void assignLogCreatorPermissionSet(Id userId) {
-        assignPermissionSet(userId, LOGGER_LOG_CREATOR_PERMISSION_SET);
-    }
-
-    /**
-     * @description Creates a `Log__c` record that can be used in tests
-     * @return   An instance of `Log__c` with sample data populated
-     */
-    public static Log__c createLog() {
-        return new Log__c(
-            ApiVersion__c = '52',
-            Locale__c = FAKE_DATA_STRING,
-            LoggedBy__c = UserInfo.getUserId(),
-            LoggedByUsername__c = FAKE_DATA_STRING,
-            LoginApplication__c = FAKE_DATA_STRING,
-            LoginBrowser__c = FAKE_DATA_STRING,
-            LoginHistoryId__c = FAKE_DATA_STRING,
-            LoginPlatform__c = FAKE_DATA_STRING,
-            LoginType__c = FAKE_DATA_STRING,
-            LogoutUrl__c = FAKE_DATA_STRING,
-            NetworkId__c = FAKE_DATA_STRING,
-            NetworkLoginUrl__c = FAKE_DATA_STRING,
-            NetworkLogoutUrl__c = FAKE_DATA_STRING,
-            NetworkSelfRegistrationUrl__c = FAKE_DATA_STRING,
-            NetworkUrlPathPrefix__c = FAKE_DATA_STRING,
-            OrganizationDomainUrl__c = FAKE_DATA_STRING,
-            OrganizationEnvironmentType__c = FAKE_DATA_STRING,
-            OrganizationId__c = FAKE_DATA_STRING,
-            OrganizationInstanceName__c = FAKE_DATA_STRING,
-            OrganizationName__c = FAKE_DATA_STRING,
-            OrganizationNamespacePrefix__c = FAKE_DATA_STRING,
-            OrganizationType__c = FAKE_DATA_STRING,
-            ProfileId__c = FAKE_DATA_STRING,
-            ProfileName__c = FAKE_DATA_STRING,
-            SessionId__c = FAKE_DATA_STRING,
-            SessionSecurityLevel__c = FAKE_DATA_STRING,
-            SessionType__c = FAKE_DATA_STRING,
-            SourceIp__c = FAKE_DATA_STRING,
-            SystemMode__c = FAKE_DATA_STRING,
-            ThemeDisplayed__c = FAKE_DATA_STRING,
-            TimeZoneId__c = FAKE_DATA_STRING,
-            UserLicenseDefinitionKey__c = FAKE_DATA_STRING,
-            UserLicenseName__c = FAKE_DATA_STRING,
-            UserLoggingLevel__c = FAKE_DATA_STRING,
-            UserLoggingLevelOrdinal__c = FAKE_DATA_NUMBER,
-            UserRoleId__c = FAKE_DATA_STRING,
-            UserRoleName__c = FAKE_DATA_STRING,
-            UserType__c = FAKE_DATA_STRING,
-            TransactionId__c = '1234'
-        );
-    }
-
-    /**
-     * @description Creates a `LogEntry__c` record that can be used in tests
-     * @return   An instance of `LogEntry__c` with sample data populated
-     */
-    public static LogEntry__c createLogEntry() {
-        return new LogEntry__c(
-            DatabaseResultCollectionType__c = FAKE_DATA_STRING,
-            DatabaseResultJson__c = FAKE_DATA_STRING,
-            DatabaseResultType__c = FAKE_DATA_STRING,
-            ExceptionMessage__c = FAKE_DATA_STRING,
-            ExceptionStackTrace__c = FAKE_DATA_STRING,
-            ExceptionType__c = FAKE_DATA_STRING,
-            LimitsAggregateQueriesMax__c = FAKE_DATA_NUMBER,
-            LimitsAggregateQueriesUsed__c = FAKE_DATA_NUMBER,
-            LimitsAsyncCallsMax__c = FAKE_DATA_NUMBER,
-            LimitsAsyncCallsUsed__c = FAKE_DATA_NUMBER,
-            LimitsCalloutsUsed__c = FAKE_DATA_NUMBER,
-            LimitsCpuTimeMax__c = FAKE_DATA_NUMBER,
-            LimitsCpuTimeUsed__c = FAKE_DATA_NUMBER,
-            LimitsDmlRowsMax__c = FAKE_DATA_NUMBER,
-            LimitsDmlRowsUsed__c = FAKE_DATA_NUMBER,
-            LimitsDmlStatementsMax__c = FAKE_DATA_NUMBER,
-            LimitsDmlStatementsUsed__c = FAKE_DATA_NUMBER,
-            LimitsEmailInvocationsMax__c = FAKE_DATA_NUMBER,
-            LimitsEmailInvocationsUsed__c = FAKE_DATA_NUMBER,
-            LimitsFutureCallsMax__c = FAKE_DATA_NUMBER,
-            LimitsFutureCallsUsed__c = FAKE_DATA_NUMBER,
-            LimitsHeapSizeMax__c = FAKE_DATA_NUMBER,
-            LimitsHeapSizeUsed__c = FAKE_DATA_NUMBER,
-            LimitsMobilePushApexCallsMax__c = FAKE_DATA_NUMBER,
-            LimitsMobilePushApexCallsUsed__c = FAKE_DATA_NUMBER,
-            LimitsQueueableJobsMax__c = FAKE_DATA_NUMBER,
-            LimitsQueueableJobsUsed__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueriesMax__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueriesUsed__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueryLocatorRowsMax__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueryLocatorRowsUsed__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueryRowsMax__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueryRowsUsed__c = FAKE_DATA_NUMBER,
-            LimitsSoslSearchesMax__c = FAKE_DATA_NUMBER,
-            LimitsSoslSearchesUsed__c = FAKE_DATA_NUMBER,
-            LoggingLevel__c = FAKE_DATA_STRING,
-            LoggingLevelOrdinal__c = FAKE_DATA_NUMBER,
-            Message__c = FAKE_DATA_STRING,
-            OriginLocation__c = FAKE_DATA_STRING,
-            OriginType__c = FAKE_DATA_STRING,
-            RecordCollectionType__c = FAKE_DATA_STRING,
-            RecordId__c = FAKE_DATA_STRING,
-            RecordJson__c = FAKE_DATA_STRING,
-            RecordSObjectClassification__c = FAKE_DATA_STRING,
-            RecordSObjectType__c = FAKE_DATA_STRING,
-            RecordSObjectTypeNamespace__c = FAKE_DATA_STRING,
-            StackTrace__c = FAKE_DATA_STRING,
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = FAKE_DATA_NUMBER,
-            TriggerOperationType__c = FAKE_DATA_STRING,
-            TriggerSObjectType__c = FAKE_DATA_STRING
-        );
-    }
-
-    /**
-     * @description Creates a `LogEntryEvent__e` record that can be used in tests
-     * @param  timestamp The `Datetime` value to use for the `Timestamp__c` field on `LogEntryEvent__e`
-     * @return   An instance of `LogEntryEvent__e` with sample data populated
-     */
-    public static LogEntryEvent__e createLogEntryEvent(Datetime timestamp) {
-        return new LogEntryEvent__e(
-            ApiVersion__c = '52',
-            DatabaseResultCollectionType__c = FAKE_DATA_STRING,
-            DatabaseResultJson__c = FAKE_DATA_STRING,
-            DatabaseResultType__c = FAKE_DATA_STRING,
-            ExceptionMessage__c = FAKE_DATA_STRING,
-            ExceptionStackTrace__c = FAKE_DATA_STRING,
-            ExceptionType__c = FAKE_DATA_STRING,
-            LimitsAggregateQueriesMax__c = FAKE_DATA_NUMBER,
-            LimitsAggregateQueriesUsed__c = FAKE_DATA_NUMBER,
-            LimitsAsyncCallsMax__c = FAKE_DATA_NUMBER,
-            LimitsAsyncCallsUsed__c = FAKE_DATA_NUMBER,
-            LimitsCalloutsUsed__c = FAKE_DATA_NUMBER,
-            LimitsCpuTimeMax__c = FAKE_DATA_NUMBER,
-            LimitsCpuTimeUsed__c = FAKE_DATA_NUMBER,
-            LimitsDmlRowsMax__c = FAKE_DATA_NUMBER,
-            LimitsDmlRowsUsed__c = FAKE_DATA_NUMBER,
-            LimitsDmlStatementsMax__c = FAKE_DATA_NUMBER,
-            LimitsDmlStatementsUsed__c = FAKE_DATA_NUMBER,
-            LimitsEmailInvocationsMax__c = FAKE_DATA_NUMBER,
-            LimitsEmailInvocationsUsed__c = FAKE_DATA_NUMBER,
-            LimitsFutureCallsMax__c = FAKE_DATA_NUMBER,
-            LimitsFutureCallsUsed__c = FAKE_DATA_NUMBER,
-            LimitsHeapSizeMax__c = FAKE_DATA_NUMBER,
-            LimitsHeapSizeUsed__c = FAKE_DATA_NUMBER,
-            LimitsMobilePushApexCallsMax__c = FAKE_DATA_NUMBER,
-            LimitsMobilePushApexCallsUsed__c = FAKE_DATA_NUMBER,
-            LimitsQueueableJobsMax__c = FAKE_DATA_NUMBER,
-            LimitsQueueableJobsUsed__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueriesMax__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueriesUsed__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueryLocatorRowsMax__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueryLocatorRowsUsed__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueryRowsMax__c = FAKE_DATA_NUMBER,
-            LimitsSoqlQueryRowsUsed__c = FAKE_DATA_NUMBER,
-            LimitsSoslSearchesMax__c = FAKE_DATA_NUMBER,
-            LimitsSoslSearchesUsed__c = FAKE_DATA_NUMBER,
-            Locale__c = FAKE_DATA_STRING,
-            LoggedByUsername__c = FAKE_DATA_STRING,
-            LoggingLevel__c = FAKE_DATA_STRING,
-            LoggingLevelOrdinal__c = FAKE_DATA_NUMBER,
-            LoginApplication__c = FAKE_DATA_STRING,
-            LoginBrowser__c = FAKE_DATA_STRING,
-            LoginHistoryId__c = FAKE_DATA_STRING,
-            LoginPlatform__c = FAKE_DATA_STRING,
-            LoginType__c = FAKE_DATA_STRING,
-            LogoutUrl__c = FAKE_DATA_STRING,
-            Message__c = FAKE_DATA_STRING,
-            NetworkId__c = FAKE_DATA_STRING,
-            NetworkLoginUrl__c = FAKE_DATA_STRING,
-            NetworkLogoutUrl__c = FAKE_DATA_STRING,
-            NetworkSelfRegistrationUrl__c = FAKE_DATA_STRING,
-            NetworkUrlPathPrefix__c = FAKE_DATA_STRING,
-            OrganizationDomainUrl__c = FAKE_DATA_STRING,
-            OrganizationEnvironmentType__c = FAKE_DATA_STRING,
-            OrganizationId__c = FAKE_DATA_STRING,
-            OrganizationInstanceName__c = FAKE_DATA_STRING,
-            OrganizationName__c = FAKE_DATA_STRING,
-            OrganizationNamespacePrefix__c = FAKE_DATA_STRING,
-            OrganizationType__c = FAKE_DATA_STRING,
-            OriginLocation__c = FAKE_DATA_STRING,
-            OriginType__c = FAKE_DATA_STRING,
-            ProfileId__c = FAKE_DATA_STRING,
-            ProfileName__c = FAKE_DATA_STRING,
-            RecordCollectionType__c = FAKE_DATA_STRING,
-            RecordId__c = FAKE_DATA_STRING,
-            RecordJson__c = FAKE_DATA_STRING,
-            RecordSObjectClassification__c = FAKE_DATA_STRING,
-            RecordSObjectType__c = FAKE_DATA_STRING,
-            RecordSObjectTypeNamespace__c = FAKE_DATA_STRING,
-            SessionId__c = FAKE_DATA_STRING,
-            SessionSecurityLevel__c = FAKE_DATA_STRING,
-            SessionType__c = FAKE_DATA_STRING,
-            SourceIp__c = FAKE_DATA_STRING,
-            StackTrace__c = FAKE_DATA_STRING,
-            Tags__c = FAKE_DATA_STRING,
-            ThemeDisplayed__c = FAKE_DATA_STRING,
-            Timestamp__c = timestamp,
-            TimestampString__c = String.valueOf(timestamp.getTime()),
-            TimeZoneId__c = FAKE_DATA_STRING,
-            TransactionEntryNumber__c = FAKE_DATA_NUMBER,
-            TransactionId__c = FAKE_DATA_STRING,
-            TriggerOperationType__c = FAKE_DATA_STRING,
-            TriggerSObjectType__c = FAKE_DATA_STRING,
-            UserLicenseDefinitionKey__c = FAKE_DATA_STRING,
-            UserLicenseName__c = FAKE_DATA_STRING,
-            UserLoggingLevel__c = FAKE_DATA_STRING,
-            UserLoggingLevelOrdinal__c = FAKE_DATA_NUMBER,
-            UserRoleId__c = FAKE_DATA_STRING,
-            UserRoleName__c = FAKE_DATA_STRING,
-            UserType__c = FAKE_DATA_STRING
-        );
+        assignPermissionSet(userId, PERMISSION_SETS_BY_NAME.get('LoggerLogCreator'));
     }
 
     /**
@@ -329,6 +81,151 @@ public class LoggerTestUtils {
      */
     public static AggregateResult createMockAggregateResult(Map<String, Object> mockAggregateKeyValues) {
         return (AggregateResult) JSON.deserialize(JSON.serialize(mockAggregateKeyValues), AggregateResult.class);
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+     *              record ID is automatically included.
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @return   The mock instance of `Database.DeleteResult`
+     */
+    public static Database.DeleteResult createMockDatabaseDeleteResult(Boolean isSuccess) {
+        return createMockDatabaseDeleteResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  recordId  The record ID to use within the mock result
+     * @return   The mock instance of `Database.DeleteResult`
+     */
+    public static Database.DeleteResult createMockDatabaseDeleteResult(Boolean isSuccess, Id recordId) {
+        if (isSuccess == true) {
+            return (Database.DeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
+        } else {
+            return (Database.DeleteResult) JSON.deserialize(
+                '{"success":false,"errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
+                Database.DeleteResult.class
+            );
+        }
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.MergeResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+     *              record ID is automatically included.
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @return   The mock instance of `Database.MergeResult`
+     */
+    public static Database.MergeResult createMockDatabaseMergeResult(Boolean isSuccess) {
+        return createMockDatabaseMergeResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.MergeResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  recordId  The record ID to use within the mock result
+     * @return   The mock instance of `Database.MergeResult`
+     */
+    public static Database.MergeResult createMockDatabaseMergeResult(Boolean isSuccess, Id recordId) {
+        if (isSuccess == true) {
+            return (Database.MergeResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.MergeResult.class);
+        } else {
+            return (Database.MergeResult) JSON.deserialize(
+                '{"success":false,"errors":[{"message": "Could not merge...", "statusCode": "MERGE_FAILED"}]}',
+                Database.MergeResult.class
+            );
+        }
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.SaveResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+     *              record ID is automatically included.
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @return   The mock instance of `Database.SaveResult`
+     */
+    public static Database.SaveResult createMockDatabaseSaveResult(Boolean isSuccess) {
+        return createMockDatabaseSaveResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.SaveResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  recordId  The record ID to use within the mock result
+     * @return   The mock instance of `Database.SaveResult`
+     */
+    public static Database.SaveResult createMockDatabaseSaveResult(Boolean isSuccess, Id recordId) {
+        if (isSuccess == true) {
+            return (Database.SaveResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.SaveResult.class);
+        } else {
+            return (Database.SaveResult) JSON.deserialize(
+                '{"success":false,"errors":[{"message": "Could not save...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                Database.SaveResult.class
+            );
+        }
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.UndeleteResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+     *              record ID is automatically included.
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @return   The mock instance of `Database.UndeleteResult`
+     */
+    public static Database.UndeleteResult createMockDatabaseUndeleteResult(Boolean isSuccess) {
+        return createMockDatabaseUndeleteResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.UndeleteResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  recordId  The record ID to use within the mock result
+     * @return   The mock instance of `Database.UndeleteResult`
+     */
+    public static Database.UndeleteResult createMockDatabaseUndeleteResult(Boolean isSuccess, Id recordId) {
+        if (isSuccess == true) {
+            return (Database.UndeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.UndeleteResult.class);
+        } else {
+            return (Database.UndeleteResult) JSON.deserialize(
+                '{"success":false,"errors":[{"message": "Could not undelete...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                Database.UndeleteResult.class
+            );
+        }
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.UpsertResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
+     *              record ID is automatically included.
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @return   The mock instance of `Database.UpsertResult`
+     */
+    public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess) {
+        return createMockDatabaseUpsertResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    }
+
+    /**
+     * @description Creates a mock instance of `Database.UpsertResult` - a mock is used instead of an actual instance
+     *              to help speed up tests, and to support writing unit tests (instead of integration tests)
+     * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  recordId  The record ID to use within the mock result
+     * @return   The mock instance of `Database.UpsertResult`
+     */
+    public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess, Id recordId) {
+        if (isSuccess == true) {
+            return (Database.UpsertResult) JSON.deserialize('{"success": true, "created": true, "id": "' + recordId + '"}', Database.UpsertResult.class);
+        } else {
+            return (Database.UpsertResult) JSON.deserialize(
+                '{"success":false,"errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                Database.UpsertResult.class
+            );
+        }
     }
 
     /**
@@ -373,7 +270,7 @@ public class LoggerTestUtils {
             LocaleSidKey = 'en_US',
             ProfileId = profileId,
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'logger_xyz@test.com.net.org'
+            Username = 'logger_xyz' + (userMockUsernameCount++) + '@test.com.net.org'
         );
     }
 
@@ -408,15 +305,7 @@ public class LoggerTestUtils {
      * @return   The matching `Network` record
      */
     public static SObject getNetwork() {
-        if (Network.getNetworkId() == null) {
-            return null;
-        }
-
-        String networkApiName = 'Network';
-        // Networks (communities) may not be enabled in the org (no Network object), so run everything dynamically
-        Boolean networksEnabled = Schema.getGlobalDescribe().containsKey(networkApiName);
-
-        if (!networksEnabled) {
+        if (Network.getNetworkId() == null || Type.forName('Network') == null) {
             return null;
         }
 
@@ -428,11 +317,20 @@ public class LoggerTestUtils {
      * @description Returns the current user
      * @return   The matching `User` record
      */
-    public static User getCurrentUser() {
+    public static User getUser() {
+        return getUser(UserInfo.getUserId());
+    }
+
+    /**
+     * @description Returns the specified user
+     * @param  userId The ID of the `User` record to query
+     * @return   The matching `User` record
+     */
+    public static User getUser(Id userId) {
         return [
             SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
             FROM User
-            WHERE Id = :UserInfo.getUserId()
+            WHERE Id = :userId
         ];
     }
 

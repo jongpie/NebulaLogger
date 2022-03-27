@@ -24,23 +24,25 @@ private class LogBatchPurger_Tests {
         insert settings;
 
         Date scheduledDeletionDate = System.today().addDays(-7);
-        Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate, TransactionId__c = '1234');
+        Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate);
+        new LoggerSObjectTestDataGenerator(log).populateRequiredFields();
         insert log;
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES; i++) {
             LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.INFO.name());
-
+            new LoggerSObjectTestDataGenerator(logEntry).populateRequiredFields();
             logEntries.add(logEntry);
         }
         insert logEntries;
 
-        LoggerTag__c tag = new LoggerTag__c(Name = 'My important tag');
+        LoggerTag__c tag = (LoggerTag__c) new LoggerSObjectTestDataGenerator(Schema.LoggerTag__c.SObjectType).populateRequiredFields();
         insert tag;
 
         List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
         for (LogEntry__c logEntry : logEntries) {
             LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
+            new LoggerSObjectTestDataGenerator(logEntryTag).populateRequiredFields();
             logEntryTags.add(logEntryTag);
         }
         insert logEntryTags;
@@ -52,19 +54,14 @@ private class LogBatchPurger_Tests {
         settings.IsEnabled__c = true;
         settings.LoggingLevel__c = LoggingLevel.FINEST.name();
         upsert settings;
-
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
-
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
         System.assertEquals(true, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
         System.assertEquals(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
-
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
-
         System.assertEquals(1, logs.size());
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
-
         // Verify assumption that the log in the database has a deletion date in the past
         Log__c log = logs.get(0);
         System.assertNotEquals(null, log.LogRetentionDate__c);
@@ -87,17 +84,13 @@ private class LogBatchPurger_Tests {
         settings.IsEnabled__c = true;
         upsert settings;
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(false)));
-
         System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
         System.assertEquals(false, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
         System.assertEquals(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
-
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
-
         System.assertEquals(1, logs.size());
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
-
         // Verify assumption that the log in the database has a deletion date in the past
         Log__c log = logs.get(0);
         System.assertNotEquals(null, log.LogRetentionDate__c);
@@ -119,10 +112,8 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
-
         System.assertEquals(1, logs.size());
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
-
         // Set the log's deletion date to be in the future
         Log__c log = logs.get(0);
         log.LogRetentionDate__c = System.today().addDays(7);
@@ -146,11 +137,9 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         List<Log__c> logs = [SELECT Id, TotalLogEntries__c, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
-
         System.assertEquals(1, logs.size());
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logs.get(0).TotalLogEntries__c);
         System.assertEquals(NUMBER_OF_LOG_ENTRIES, logEntries.size());
-
         // Set the log's deletion date to be null
         Log__c log = logs.get(0);
         log.LogRetentionDate__c = null;
@@ -216,7 +205,7 @@ private class LogBatchPurger_Tests {
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             DeveloperName = 'Mock_Plugin',
             IsEnabled__c = true,
-            BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
+            BatchPurgerApexClass__c = MockBatchPurgerPlugin.class.getName()
         );
         LoggerTestUtils.setMock(mockPluginConfiguration);
         LogBatchPurger instance = new LogBatchPurger();
@@ -245,7 +234,7 @@ private class LogBatchPurger_Tests {
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             DeveloperName = 'Mock_Plugin',
             IsEnabled__c = true,
-            BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
+            BatchPurgerApexClass__c = MockBatchPurgerPlugin.class.getName()
         );
         LoggerTestUtils.setMock(mockPluginConfiguration);
         LogBatchPurger instance = new LogBatchPurger();
@@ -277,7 +266,7 @@ private class LogBatchPurger_Tests {
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             DeveloperName = 'Mock_Plugin',
             IsEnabled__c = true,
-            BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName()
+            BatchPurgerApexClass__c = MockBatchPurgerPlugin.class.getName()
         );
         LoggerTestUtils.setMock(mockPluginConfiguration);
         LogBatchPurger instance = new LogBatchPurger();
@@ -321,7 +310,7 @@ private class LogBatchPurger_Tests {
         }
     }
 
-    public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
+    public class MockBatchPurgerPlugin implements LoggerPlugin.Batchable {
         public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
             ranPluginStart = true;
             pluginConfiguration = configuration;

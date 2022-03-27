@@ -10,23 +10,23 @@ private class LogEntryTagHandler_Tests {
     static void setupData() {
         LoggerSObjectHandler.shouldExecute(false);
 
-        Log__c log = new Log__c(TransactionId__c = '1234');
+        Log__c log = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
         insert log;
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < 3; i++) {
-            logEntries.add(new LogEntry__c(Log__c = log.Id, Message__c = 'log entry #' + i));
+            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, TransactionEntryNumber__c = i + 1);
+            new LoggerSObjectTestDataGenerator(logEntry).populateRequiredFields();
+            logEntries.add(logEntry);
         }
         insert logEntries;
 
-        insert new LoggerTag__c(Name = 'Some tag');
+        insert new LoggerSObjectTestDataGenerator(Schema.LoggerTag__c.SObjectType).populateRequiredFields();
     }
 
     @IsTest
     static void it_should_return_the_logEntryTag_sobjectType() {
-        Test.startTest();
         System.assertEquals(Schema.LogEntryTag__c.SObjectType, new LogEntryTagHandler().getSObjectType());
-        Test.stopTest();
     }
 
     @IsTest

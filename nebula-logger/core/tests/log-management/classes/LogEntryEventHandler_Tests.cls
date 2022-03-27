@@ -11,23 +11,14 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_return_the_logEntryEvent_sobjectType() {
-        Test.startTest();
         System.assertEquals(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
-        Test.stopTest();
     }
 
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogEntryEventHandlerEnabled', Value__c = 'false');
         LoggerTestUtils.setMock(mockParameter);
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            LoggedById__c = UserInfo.getUserId(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
 
         Test.startTest();
         EventBus.publish(logEntryEvent);
@@ -57,26 +48,17 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(0, countOfLogs);
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
-
         Logger.getUserSettings().IsSavingEnabled__c = true;
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsPlatformEventStorageEnabled__c = false;
         upsert settings;
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            LoggedById__c = UserInfo.getUserId(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         countOfLogs = [SELECT COUNT() FROM Log__c];
         System.assertEquals(0, countOfLogs);
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -84,127 +66,18 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_normalize_simple_event_data_into_log_and_log_entry() {
-        String transactionId = '123-456-789-0';
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            LoggedById__c = UserInfo.getUserId(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId
-        );
+    static void it_should_normalize_event_data_into_log_and_log_entry() {
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
-        validateLogFields(logEntryEvent, log);
-        validateLogEntryFields(logEntryEvent, logEntry);
-    }
-
-    @IsTest
-    static void it_should_normalize_complex_event_data_into_log_and_log_entry() {
-        String transactionId = '123-456-789-0';
-        User currentUser = getCurrentUser();
-        DmlException dmlException = new DmlException();
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            ApiVersion__c = '99.0',
-            EpochTimestamp__c = System.now().getTime(),
-            ExceptionStackTrace__c = dmlException.getStackTraceString(),
-            ExceptionType__c = dmlException.getTypeName(),
-            LimitsAggregateQueriesMax__c = 987,
-            LimitsAggregateQueriesUsed__c = 123,
-            LimitsAsyncCallsMax__c = 987,
-            LimitsAsyncCallsUsed__c = 123,
-            LimitsCalloutsMax__c = 987,
-            LimitsCalloutsUsed__c = 123,
-            LimitsCpuTimeMax__c = 987,
-            LimitsCpuTimeUsed__c = 123,
-            LimitsDmlRowsMax__c = 987,
-            LimitsDmlRowsUsed__c = 123,
-            LimitsDmlStatementsMax__c = 987,
-            LimitsDmlStatementsUsed__c = 123,
-            LimitsEmailInvocationsMax__c = 987,
-            LimitsEmailInvocationsUsed__c = 123,
-            LimitsFutureCallsMax__c = 987,
-            LimitsFutureCallsUsed__c = 123,
-            LimitsHeapSizeMax__c = 987,
-            LimitsHeapSizeUsed__c = 123,
-            LimitsMobilePushApexCallsMax__c = 987,
-            LimitsMobilePushApexCallsUsed__c = 123,
-            LimitsPublishImmediateDmlStatementsMax__c = 987,
-            LimitsPublishImmediateDmlStatementsUsed__c = 123,
-            LimitsQueueableJobsMax__c = 987,
-            LimitsQueueableJobsUsed__c = 123,
-            LimitsSoqlQueriesMax__c = 987,
-            LimitsSoqlQueriesUsed__c = 123,
-            LimitsSoqlQueryLocatorRowsMax__c = 987,
-            LimitsSoqlQueryLocatorRowsUsed__c = 123,
-            LimitsSoqlQueryRowsMax__c = 987,
-            LimitsSoqlQueryRowsUsed__c = 123,
-            LimitsSoslSearchesMax__c = 987,
-            LimitsSoslSearchesUsed__c = 123,
-            Locale__c = 'es-ES',
-            LoggerVersionNumber__c = 'v4.6.10',
-            LoggedById__c = UserInfo.getUserId(),
-            LoggingLevel__c = 'DEBUG',
-            LoggingLevelOrdinal__c = 9,
-            LoginDomain__c = 'https://fake.my.salesforce.com',
-            LoginHistoryId__c = '255.255.255.255',
-            LoginType__c = null,
-            LogoutUrl__c = null,
-            Message__c = 'My message',
-            MessageTruncated__c = false,
-            NetworkId__c = 'Fake-ID',
-            OriginLocation__c = 'right here',
-            OriginType__c = 'Apex',
-            ProfileId__c = currentUser.ProfileId,
-            RecordId__c = currentUser.Id,
-            RecordJson__c = JSON.serializePretty(currentUser),
-            RecordSObjectClassification__c = 'Standard Object',
-            RecordSObjectType__c = 'User',
-            Scenario__c = 'Apex test execution',
-            SessionId__c = null,
-            SessionSecurityLevel__c = null,
-            SessionType__c = null,
-            SourceIp__c = null,
-            StackTrace__c = 'I started here \nand then went there',
-            SystemMode__c = System.Quiddity.SYNCHRONOUS.name(),
-            ThemeDisplayed__c = 'SomeTheme',
-            Timestamp__c = System.now(),
-            TimeZoneId__c = 'fake-id',
-            TimeZoneName__c = 'My time zone name',
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId,
-            TriggerIsExecuting__c = false,
-            TriggerOperationType__c = 'SomeOperation',
-            TriggerSObjectType__c = 'Account',
-            UserLoggingLevel__c = 'DEBUG',
-            UserLoggingLevelOrdinal__c = 9,
-            UserRoleId__c = currentUser.UserRoleId,
-            UserType__c = null
-        );
-
-        Test.startTest();
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
-
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
-        Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
-        LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -213,17 +86,12 @@ private class LogEntryEventHandler_Tests {
     static void it_should_normalize_event_data_for_multiple_transactions_into_multiple_logs() {
         List<String> transactionIds = new List<String>{ '123-456', '789-0' };
         System.assertEquals(2, transactionIds.size());
-
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (Integer i = 0; i < transactionIds.size(); i++) {
-            LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-                EpochTimestamp__c = System.now().getTime(),
-                Message__c = 'my message',
-                Timestamp__c = System.now(),
-                TransactionEntryNumber__c = i,
-                TransactionId__c = transactionIds.get(i)
-            );
-
+            LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType)
+                .populateRequiredFields();
+            logEntryEvent.TransactionEntryNumber__c = i;
+            logEntryEvent.TransactionId__c = transactionIds.get(i);
             logEntryEvents.add(logEntryEvent);
         }
         System.assertEquals(transactionIds.size(), logEntryEvents.size());
@@ -237,12 +105,8 @@ private class LogEntryEventHandler_Tests {
         for (Database.SaveResult saveResult : saveResults) {
             System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
         }
-
         List<Log__c> logs = [SELECT Id, TransactionId__c, (SELECT Id FROM LogEntries__r) FROM Log__c];
-
         System.assertEquals(2, logs.size(), logs);
-
-        // Convert the list of txn IDs to a set so we can use `contains()`
         Set<String> uniqueTransactionIds = new Set<String>(transactionIds);
         for (Log__c log : logs) {
             System.assert(uniqueTransactionIds.contains(log.TransactionId__c), log.TransactionId__c);
@@ -293,31 +157,21 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_create_tag_records_when_enabled() {
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-
         List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            Tags__c = String.join(tags, '\n'),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        logEntryEvent.Tags__c = String.join(tags, '\n');
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
-
         List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
         System.assertEquals(tags.size(), logEntryTags.size());
         Set<String> tagsSet = new Set<String>(tags);
@@ -329,34 +183,23 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_reuse_existing_tag_records() {
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-
         String testTagName = 'Some tag!';
         LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
         insert tag;
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            Tags__c = testTagName,
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        logEntryEvent.Tags__c = testTagName;
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
-
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :testTagName];
         System.assertEquals(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
@@ -367,15 +210,9 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_append_tags_for_contains_rule() {
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            Tags__c = null,
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        logEntryEvent.Message__c = 'my message';
+        logEntryEvent.Tags__c = null;
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
@@ -391,15 +228,12 @@ private class LogEntryEventHandler_Tests {
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
-
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
         System.assertEquals(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
@@ -409,15 +243,8 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_append_tags_for_equals_rule() {
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            Tags__c = null,
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        logEntryEvent.Tags__c = null;
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
@@ -433,15 +260,12 @@ private class LogEntryEventHandler_Tests {
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
-
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
         System.assertEquals(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
@@ -451,17 +275,10 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_append_tags_for_regex_rule() {
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-
         String zipCodeRegEx = '(^[0-9]{4}?[0-9]$|^[0-9]{4}?[0-9]-[0-9]{4}$)';
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = '94541',
-            Timestamp__c = System.now(),
-            Tags__c = null,
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        logEntryEvent.Message__c = '94541';
+        logEntryEvent.Tags__c = null;
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
@@ -477,15 +294,12 @@ private class LogEntryEventHandler_Tests {
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
-
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
         System.assertEquals(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
@@ -495,15 +309,8 @@ private class LogEntryEventHandler_Tests {
     @IsTest
     static void it_should_append_tags_for_startsWith_rule() {
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            Tags__c = null,
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        logEntryEvent.Message__c = 'my message';
 
         Test.startTest();
         String configuredTagName = 'CMDT Tag';
@@ -519,15 +326,12 @@ private class LogEntryEventHandler_Tests {
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
-
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
         System.assertEquals(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
@@ -540,33 +344,21 @@ private class LogEntryEventHandler_Tests {
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestUtils.setMock(mockCallStatusApiParameter);
         System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
-
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = '123-456-789-0'
-        );
-
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
         Database.SaveResult saveResult;
 
         Test.startTest();
-
         saveResult = EventBus.publish(logEntryEvent);
         // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
         // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
         // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
         Test.getEventBus().deliver();
-
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(MOCK_RELEASE_NUMBER, log.ApiReleaseNumber__c);
         System.assertEquals(MOCK_RELEASE_VERSION, log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
@@ -577,42 +369,26 @@ private class LogEntryEventHandler_Tests {
     static void it_should_set_api_release_number_and_api_release_version_from_recent_record() {
         Log__c recentLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'ABC-XYZ');
         insert recentLog;
-
         insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
-
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestUtils.setMock(mockCallStatusApiParameter);
-
-        String transactionId = '123-456-789-0';
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId
-        );
-
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
         Database.SaveResult saveResult;
 
         Test.startTest();
-
         saveResult = EventBus.publish(logEntryEvent);
         // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
         // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
         // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
         Test.getEventBus().deliver();
-
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         System.assertEquals(0, Limits.getCallouts());
-
         Log__c log = getLog();
         System.assertNotEquals(recentLog.Id, log.Id, log.StartTime__c);
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(recentLog.ApiReleaseNumber__c, log.ApiReleaseNumber__c);
         System.assertEquals(recentLog.ApiReleaseVersion__c, log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
@@ -624,26 +400,16 @@ private class LogEntryEventHandler_Tests {
         Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
         LoggerTestUtils.setMock(mockCallStatusApiParameter);
-
-        String transactionId = '123-456-789-0';
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            EpochTimestamp__c = System.now().getTime(),
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId
-        );
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
 
         Test.startTest();
         Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
         Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         System.assertEquals(null, log.ApiReleaseNumber__c);
         System.assertEquals(null, log.ApiReleaseVersion__c);
@@ -656,16 +422,9 @@ private class LogEntryEventHandler_Tests {
         Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestUtils.setMock(mockCallStatusApiParameter);
-
-        String transactionId = '123-456-789-0';
-        LogEntryEvent__e logEntryEvent = new LogEntryEvent__e(
-            Message__c = 'my message',
-            Timestamp__c = System.now(),
-            TransactionEntryNumber__c = 1,
-            TransactionId__c = transactionId
-        );
-
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
         Database.SaveResult saveResult;
+
         try {
             Test.startTest();
 
@@ -679,17 +438,14 @@ private class LogEntryEventHandler_Tests {
             System.assert(false, 'Exception expected, this assert should not run');
         } catch (Exception ex) {
             System.assertEquals(CalloutException.class.getName(), ex.getTypeName());
-
             String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
             System.assert(ex.getMessage().contains(expectedErrorMessage));
         }
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
         System.assertEquals(null, log.ApiReleaseNumber__c);
         System.assertEquals(null, log.ApiReleaseVersion__c);
@@ -718,23 +474,6 @@ private class LogEntryEventHandler_Tests {
             response.setStatusCode(400);
             return response;
         }
-    }
-
-    private static User getCurrentUser() {
-        return [
-            SELECT
-                Id,
-                ProfileId,
-                Profile.Name,
-                Profile.UserLicenseId,
-                Profile.UserLicense.LicenseDefinitionKey,
-                Profile.UserLicense.Name,
-                Username,
-                UserRoleId,
-                UserRole.Name
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
     }
 
     private static Log__c getLog() {

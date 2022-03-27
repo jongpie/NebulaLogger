@@ -9,7 +9,9 @@ private class LogEntryArchiveBuilder_Tests {
     @IsTest
     static void it_should_write_all_fields_over_from_log_entry_event() {
         Datetime timestamp = System.now();
-        LogEntryEvent__e mockEvent = LoggerTestUtils.createLogEntryEvent(timestamp);
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
+        mockEvent.Timestamp__c = timestamp;
+        mockEvent.TimestampString__c = String.valueOf(timestamp.getTime());
 
         LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockEvent).getLogEntryArchive();
 
@@ -20,7 +22,9 @@ private class LogEntryArchiveBuilder_Tests {
     @IsTest
     static void it_should_cache_instance_of_log_entry_archive_for_log_entry_event() {
         Datetime timestamp = System.now();
-        LogEntryEvent__e mockEvent = LoggerTestUtils.createLogEntryEvent(timestamp);
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
+        mockEvent.Timestamp__c = timestamp;
+        mockEvent.TimestampString__c = String.valueOf(timestamp.getTime());
         LogEntryArchiveBuilder archiveBuilder = new LogEntryArchiveBuilder(mockEvent);
         LogEntryArchive__b originalLogEntryArchive = archiveBuilder.getLogEntryArchive();
         originalLogEntryArchive.Message__c = 'Some new value';
@@ -32,8 +36,8 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_write_all_fields_over_from_log_entry() {
-        LogEntry__c logEntry = LoggerTestUtils.createLogEntry();
-        logEntry.Log__r = LoggerTestUtils.createLog();
+        LogEntry__c logEntry = (LogEntry__c) new LoggerSObjectTestDataGenerator(Schema.LogEntry__c.SObjectType).populateRequiredFields();
+        logEntry.Log__r = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
 
         LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(logEntry).getLogEntryArchive();
 
@@ -43,8 +47,8 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_cache_instance_of_log_entry_archive_for_log_entry() {
-        LogEntry__c logEntry = LoggerTestUtils.createLogEntry();
-        logEntry.Log__r = LoggerTestUtils.createLog();
+        LogEntry__c logEntry = (LogEntry__c) new LoggerSObjectTestDataGenerator(Schema.LogEntry__c.SObjectType).populateRequiredFields();
+        logEntry.Log__r = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
         LogEntryArchiveBuilder archiveBuilder = new LogEntryArchiveBuilder(logEntry);
         LogEntryArchive__b originalLogEntryArchive = archiveBuilder.getLogEntryArchive();
         originalLogEntryArchive.Message__c = 'Some new value';

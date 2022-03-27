@@ -938,7 +938,7 @@ global with sharing class LogEntryEventBuilder {
 
     private static SObject queryNetwork() {
         Id networkId = Network.getNetworkId();
-        if (networkId == null || Schema.getGlobalDescribe().containsKey('Network') == false) {
+        if (networkId == null || Type.forName('Network') == null) {
             return null;
         }
 

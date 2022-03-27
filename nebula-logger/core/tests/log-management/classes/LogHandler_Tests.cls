@@ -15,7 +15,6 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_return_the_log_sobjectType() {
-        setupConfigurations();
         System.assertEquals(Schema.Log__c.SObjectType, new LogHandler().getSObjectType());
     }
 

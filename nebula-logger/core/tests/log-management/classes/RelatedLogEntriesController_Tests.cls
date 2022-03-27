@@ -21,16 +21,16 @@ private class RelatedLogEntriesController_Tests {
     static void setupData() {
         LoggerSObjectHandler.shouldExecute(false);
 
-        Log__c log = new Log__c(TransactionId__c = '1234');
+        Log__c log = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
         insert log;
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
             LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'test ' + i);
-
             if (i <= TOTAL_RELATED_LOG_ENTRIES) {
                 logEntry.RecordId__c = UserInfo.getUserId();
             }
+            new LoggerSObjectTestDataGenerator(logEntry).populateRequiredFields();
 
             logEntries.add(logEntry);
         }

@@ -7,6 +7,11 @@
 @IsTest
 private class LoggerTagHandler_Tests {
     @IsTest
+    static void it_should_return_the_loggerTag_sobjectType() {
+        System.assertEquals(Schema.LoggerTag__c.SObjectType, new LoggerTagHandler().getSObjectType());
+    }
+
+    @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLoggerTagHandlerEnabled', Value__c = 'false');
         LoggerTestUtils.setMock(mockParameter);
