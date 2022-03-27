@@ -3,7 +3,12 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
+/**
+ * @group Configuration
+ * @description Utilities for Apex tests for commonly used data & settings.
+ *              These methods can be used by plugins' tests.
+ */
+@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest
 public class LoggerTestUtils {
     private static final String FAKE_DATA_STRING = 'someFakeData';
@@ -447,6 +452,55 @@ public class LoggerTestUtils {
         }
 
         return loggerQueue;
+    }
+
+    /**
+     * @description Loads the mock `LogEntryDataMaskRule__mdt` during test execution
+     * @param  mock The mock instance of `LogEntryDataMaskRule__mdt` to load
+     */
+    public static void setMock(LogEntryDataMaskRule__mdt mock) {
+        LogEntryEventBuilder.setMockDataMaskRule(mock);
+    }
+
+    /**
+     * @description Loads the mock `LogEntryTagRule__mdt` during test execution
+     * @param  mock The mock instance of `LogEntryTagRule__mdt` to load
+     */
+    public static void setMock(LogEntryTagRule__mdt mock) {
+        LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add(mock);
+    }
+
+    /**
+     * @description Loads the mock `LoggerParameter__mdt` during test execution
+     * @param  mock The mock instance of `LoggerParameter__mdt` to load
+     */
+    public static void setMock(LoggerParameter__mdt mock) {
+        LoggerParameter.setMock(mock);
+    }
+
+    /**
+     * @description Loads the mock `LoggerPlugin__mdt` during test execution
+     * @param  mock The mock instance of `LoggerPlugin__mdt` to load
+     */
+    public static void setMock(LoggerPlugin__mdt mock) {
+        LoggerPlugin.setMock(mock);
+    }
+
+    /**
+     * @description Loads the mock `LogScenarioRule__mdt` during test execution
+     * @param  mock The mock instance of `LogScenarioRule__mdt` to load
+     */
+    public static void setMock(LogScenarioRule__mdt mock) {
+        Logger.setMockScenarioRule(mock);
+        LogHandler.setMockScenarioRule(mock);
+    }
+
+    /**
+     * @description Loads the mock `LogStatus__mdt` during test execution
+     * @param  mock The mock instance of `LogStatus__mdt` to load
+     */
+    public static void setMock(LogStatus__mdt mock) {
+        LogHandler.setMockLogStatus(mock);
     }
 
     // Helper methods

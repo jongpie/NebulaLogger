@@ -10,7 +10,6 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
-    private static final List<LoggerPlugin__mdt> MOCK_PLUGIN_CONFIGURATIONS = new List<LoggerPlugin__mdt>();
     @TestVisible
     private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
 
