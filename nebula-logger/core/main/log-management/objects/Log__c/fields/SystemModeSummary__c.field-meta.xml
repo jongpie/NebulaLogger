@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>SystemModeSummary__c</fullName>
+    <businessStatus>Active</businessStatus>
     <externalId>false</externalId>
     <formula>&apos;API.&apos; +  TEXT(ApiVersion__c) + &apos;.&apos; + TEXT(SystemMode__c)</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>System Mode</label>
     <required>false</required>
+    <securityClassification>Confidential</securityClassification>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>

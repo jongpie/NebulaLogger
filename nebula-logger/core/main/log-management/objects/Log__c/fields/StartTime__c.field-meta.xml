@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>StartTime__c</fullName>
+    <businessStatus>Active</businessStatus>
     <externalId>false</externalId>
     <label>Start Time</label>
+    <securityClassification>Confidential</securityClassification>
     <summarizedField>LogEntry__c.Timestamp__c</summarizedField>
     <summaryForeignKey>LogEntry__c.Log__c</summaryForeignKey>
     <summaryOperation>min</summaryOperation>
