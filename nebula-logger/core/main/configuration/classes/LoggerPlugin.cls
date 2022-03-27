@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Plugin Framework
+ * @group Configuration
  * @description The core of the plugin framework, used to create custom Apex & Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger`
  *              based on configurations stored in the custom metadata type `LoggerPlugin__mdt`
  */
