@@ -731,6 +731,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Log__c.LogPurgeAction__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Log__c.LogRetentionDate__c</field>
         <readable>true</readable>
     </fieldPermissions>

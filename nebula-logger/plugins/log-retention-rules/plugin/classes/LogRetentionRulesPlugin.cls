@@ -10,7 +10,7 @@
  *              for setting the retention date of `Log__c` records, using custom metadata types
  *              `LogRetentionRule__mdt` and `LogRetentionRuleCondition__mdt`.
  */
-public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandlerPlugin {
+public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Triggerable {
     private static final Map<String, LogRetentionRule__mdt> RULE_NAME_TO_RULE = new Map<String, LogRetentionRule__mdt>();
     private static final Map<String, List<LogRetentionRuleCondition__mdt>> RULE_NAME_TO_CONDITIONS = new Map<String, List<LogRetentionRuleCondition__mdt>>();
 
@@ -18,9 +18,9 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
      * @description Handles converting Logger's buffer of `LogEntryEvent__e` records into `LogEntryArchive__b` records
      *              for any user with the included custom save method 'BIG_OBJECT'
      * @param  configuration The instance of `LoggerPlugin__mdt` configured for this specific plugin
-     * @param  input The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system
+     * @param  input The instance of `LoggerTriggerableContext`, provided by the logging system
      */
-    public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
+    public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
         if (input.sobjectType != Schema.LogEntry__c.SObjectType) {
             return;
         }
@@ -95,7 +95,7 @@ public without sharing class LogRetentionRulesPlugin extends LoggerSObjectHandle
             queriedRulesByDeveloperName.put(rule.DeveloperName, rule);
             queriedConditionsByRuleDeveloperName.put(rule.DeveloperName, rule.LogRetentionRuleConditions__r);
 
-            if (Test.isRunningTest() == true) {
+            if (System.Test.isRunningTest() == true) {
                 queriedRulesByDeveloperName.clear();
                 queriedConditionsByRuleDeveloperName.clear();
             }

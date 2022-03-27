@@ -41,8 +41,8 @@ const PAGE_LAYOUT_CONFIG = {
             showInReadOnlyMode: true,
             showInEditMode: true,
             columns: [
-                { fieldApiNames: ['DefaultNumberOfDaysToRetainLogs__c', 'DefaultLogScenario__c'], size: 6 },
-                { fieldApiNames: ['DefaultLogShareAccessLevel__c', 'DefaultLogOwner__c'], size: 6 }
+                { fieldApiNames: ['DefaultNumberOfDaysToRetainLogs__c', 'DefaultLogPurgeAction__c'], size: 6 },
+                { fieldApiNames: ['DefaultLogScenario__c', 'DefaultLogShareAccessLevel__c', 'DefaultLogOwner__c'], size: 6 }
             ]
         }
     ]
@@ -59,6 +59,7 @@ const LoggerSettingsPageLayout = class {
         // TODO - long term, this feels like the wrong place for this mapping to live, but it'll live here for now
         const picklistOptions = {
             LoggingLevel__c: apexPicklistOptions.loggingLevelOptions,
+            DefaultLogPurgeAction__c: apexPicklistOptions.purgeActionOptions,
             DefaultSaveMethod__c: apexPicklistOptions.saveMethodOptions,
             DefaultLogShareAccessLevel__c: apexPicklistOptions.shareAccessLevelOptions
         };

@@ -31,24 +31,6 @@ public without sharing class LogEntryTagHandler extends LoggerSObjectHandler {
         return 'IsLogEntryTagHandlerEnabled';
     }
 
-    /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls if plugins are enabled
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginControlField() {
-        return Schema.LoggerPlugin__mdt.IsLogEntryTagEnabled__c;
-    }
-
-    /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginSortField() {
-        return Schema.LoggerPlugin__mdt.LogEntryTagExecutionOrder__c;
-    }
-
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logEntryTags = (List<LogEntryTag__c>) triggerNew;
 

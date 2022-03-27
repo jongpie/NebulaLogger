@@ -18,9 +18,10 @@ private class LogEntryEventBuilder_Tests {
 
     static LogEntryDataMaskRule__mdt getSocialSecurityNumberDataMaskRule() {
         return new LogEntryDataMaskRule__mdt(
-            IsEnabled__c = true,
             ApplyToMessage__c = true,
             ApplyToRecordJson__c = true,
+            DeveloperName = 'SocialSecurityNumber',
+            IsEnabled__c = true,
             SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
             ReplacementRegEx__c = 'XXX-XX-$3'
         );
@@ -141,7 +142,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = true;
         rule.ApplyToRecordJson__c = false;
-        LogEntryEventBuilder.addMockDataMaskRule(rule);
+        LogEntryEventBuilder.setMockDataMaskRule(rule);
 
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
@@ -165,7 +166,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = false;
         rule.ApplyToRecordJson__c = true;
-        LogEntryEventBuilder.addMockDataMaskRule(rule);
+        LogEntryEventBuilder.setMockDataMaskRule(rule);
 
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
@@ -189,7 +190,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = false;
         rule.ApplyToRecordJson__c = true;
-        LogEntryEventBuilder.addMockDataMaskRule(rule);
+        LogEntryEventBuilder.setMockDataMaskRule(rule);
 
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedMessage = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
@@ -213,7 +214,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = false;
         rule.ApplyToRecordJson__c = false;
-        LogEntryEventBuilder.addMockDataMaskRule(rule);
+        LogEntryEventBuilder.setMockDataMaskRule(rule);
 
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         Account account = new Account(Name = message);
@@ -233,7 +234,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryDataMaskRule__mdt rule = getSocialSecurityNumberDataMaskRule();
         rule.ApplyToMessage__c = true;
         rule.ApplyToRecordJson__c = true;
-        LogEntryEventBuilder.addMockDataMaskRule(rule);
+        LogEntryEventBuilder.setMockDataMaskRule(rule);
 
         String message = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         Account account = new Account(Name = message);
@@ -1054,7 +1055,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
-        LoggerParameter.setMockParameter(
+        LoggerParameter.setMock(
             new LoggerParameter__mdt(DeveloperName = 'SystemDebugMessageFormat', Value__c = '{OriginLocation__c}\n{Message__c}: {LoggingLevel__c}')
         );
 

@@ -10,8 +10,8 @@
  */
 @SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public class LoggerParameter {
-    private static Set<String> parametersToLoadDuringTests = new Set<String>();
-    private static Map<String, LoggerParameter__mdt> mockParameterByDeveloperName = new Map<String, LoggerParameter__mdt>();
+    private static final Set<String> PARAMETERS_TO_LOAD_DURING_TESTS = new Set<String>();
+    private static final Map<String, LoggerParameter__mdt> DEVELOPER_NAME_TO_RECORD = loadRecords();
 
     /**
      * @description Indicates if Logger will make an async callout to https://api.status.salesforce.com
@@ -66,7 +66,7 @@ public class LoggerParameter {
                 // During tests, always load this CMDT record
                 // so that tests use the same format when calling System.debug()
                 String systemDebugMessageFormatParameter = 'SystemDebugMessageFormat';
-                parametersToLoadDuringTests.add(systemDebugMessageFormatParameter);
+                PARAMETERS_TO_LOAD_DURING_TESTS.add(systemDebugMessageFormatParameter);
                 SYSTEM_DEBUG_MESSAGE_FORMAT = getString(systemDebugMessageFormatParameter, '{OriginLocation__c}\n{Message__c}');
             }
             return SYSTEM_DEBUG_MESSAGE_FORMAT;
@@ -340,10 +340,45 @@ public class LoggerParameter {
         return parameterValue != null ? parameterValue : defaultValue;
     }
 
-    // Private methods
+    /**
+     * @description matchOnPrefix description
+     * @param  developerNamePrefix A prefix that has been used in the `DeveloperName` for multiple `LoggerParameter__mdt` records
+     * @return                     The list of matching `LoggerParameter__mdt` records
+     */
+    public static List<LoggerParameter__mdt> matchOnPrefix(String developerNamePrefix) {
+        List<LoggerParameter__mdt> matchingParameters = new List<LoggerParameter__mdt>();
+        for (String parameterDeveloperName : DEVELOPER_NAME_TO_RECORD.keySet()) {
+            if (parameterDeveloperName.startsWith(developerNamePrefix) == true) {
+                matchingParameters.add(DEVELOPER_NAME_TO_RECORD.get(parameterDeveloperName));
+            }
+        }
+        return matchingParameters;
+    }
+
+    private static Map<String, LoggerParameter__mdt> loadRecords() {
+        Map<String, LoggerParameter__mdt> parameters = LoggerParameter__mdt.getAll().clone();
+        if (System.Test.isRunningTest() == true) {
+            // Keep a copy of any records that *should* be loaded during tests
+            // Currently, only the record `SystemDebugMessageFormat` has a use case for this functionality,
+            // but others can be easily added if other use cases are found
+            Map<String, LoggerParameter__mdt> parametersToLoadDuringTests = new Map<String, LoggerParameter__mdt>();
+            for (String testContextParameterName : PARAMETERS_TO_LOAD_DURING_TESTS) {
+                if (parameters.containsKey(testContextParameterName) == true) {
+                    parametersToLoadDuringTests.put(testContextParameterName, parameters.get(testContextParameterName));
+                }
+            }
+            parameters.clear();
+            parameters.putAll(parametersToLoadDuringTests);
+        }
+        return parameters;
+    }
+
     @TestVisible
-    private static void setMockParameter(LoggerParameter__mdt parameter) {
-        mockParameterByDeveloperName.put(parameter.DeveloperName, parameter);
+    private static void setMock(LoggerParameter__mdt parameter) {
+        if (String.isBlank(parameter.DeveloperName) == true) {
+            throw new IllegalArgumentException('DeveloperName is required on `LoggerParameter__mdt: \n' + JSON.serializePretty(parameter));
+        }
+        DEVELOPER_NAME_TO_RECORD.put(parameter.DeveloperName, parameter);
     }
 
     private static Object castParameterValue(String parameterDeveloperName, Type dataType) {
@@ -356,16 +391,6 @@ public class LoggerParameter {
     }
 
     private static String loadParameterValue(String parameterDeveloperName) {
-        String parameterValue = LoggerParameter__mdt.getInstance(parameterDeveloperName)?.Value__c;
-
-        Boolean useMockParameter =
-            parametersToLoadDuringTests.contains(parameterDeveloperName) == false ||
-            mockParameterByDeveloperName.containsKey(parameterDeveloperName) == true;
-        if (System.Test.isRunningTest() == true && useMockParameter == true) {
-            // During tests, don't actually use the org's CMDT records - only use mock records
-            parameterValue = (String) mockParameterByDeveloperName.get(parameterDeveloperName)?.get('Value__c');
-        }
-
-        return parameterValue;
+        return DEVELOPER_NAME_TO_RECORD.get(parameterDeveloperName)?.Value__c;
     }
 }

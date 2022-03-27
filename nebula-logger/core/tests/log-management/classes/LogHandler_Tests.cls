@@ -13,42 +13,17 @@ private class LogHandler_Tests {
     private static final String FIRST_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(0).getValue();
     private static final String SECOND_STATUS = Schema.Log__c.Status__c.getDescribe().getPicklistValues().get(1).getValue();
 
-    public class LogPluginTest extends LoggerSObjectHandlerPlugin {
-        public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
-            if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
-                for (Log__c log : (List<Log__c>) input.triggerNew) {
-                    // The specific field changed doesn't really matter - we just want to ensure that whatever
-                    // logic implemented in the instance of LoggerSObjectHandlerPlugin is executed
-                    log.ProfileName__c = 'Some String';
-                }
-            }
-        }
-    }
-
-    @TestSetup
-    static void setupData() {
-        Map<String, LogStatus__mdt> logStatusByName = new Map<String, LogStatus__mdt>();
-        LogStatus__mdt openStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = FIRST_STATUS, IsClosed__c = false, IsResolved__c = false);
-        logStatusByName.put(openStatus.MasterLabel, openStatus);
-
-        LogStatus__mdt closedStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = SECOND_STATUS, IsClosed__c = true, IsResolved__c = true);
-        logStatusByName.put(closedStatus.MasterLabel, closedStatus);
-
-        LogHandler.LOG_STATUS_NAME_TO_STATUS.putAll(logStatusByName);
-    }
-
     @IsTest
     static void it_should_return_the_log_sobjectType() {
-        Test.startTest();
+        setupConfigurations();
         System.assertEquals(Schema.Log__c.SObjectType, new LogHandler().getSObjectType());
-        Test.stopTest();
     }
 
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
+        setupConfigurations();
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogHandlerEnabled', Value__c = 'false');
-        LoggerParameter.setMockParameter(mockParameter);
-
+        LoggerParameter.setMock(mockParameter);
         Log__c log = new Log__c(
             ClosedBy__c = UserInfo.getUserId(),
             ClosedDate__c = System.now(),
@@ -57,6 +32,7 @@ private class LogHandler_Tests {
             Status__c = FIRST_STATUS,
             TransactionId__c = '1234'
         );
+
         insert log;
 
         System.assertEquals(null, LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType), LoggerSObjectHandler.getExecutedHandlers());
@@ -64,6 +40,7 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_clear_closed_status_fields_when_open() {
+        setupConfigurations();
         Log__c log = new Log__c(
             ClosedBy__c = UserInfo.getUserId(),
             ClosedDate__c = System.now(),
@@ -73,9 +50,7 @@ private class LogHandler_Tests {
             TransactionId__c = '1234'
         );
 
-        Test.startTest();
         insert log;
-        Test.stopTest();
 
         log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(null, log.ClosedBy__c);
@@ -86,6 +61,7 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_set_closed_status_fields_when_closed() {
+        setupConfigurations();
         Log__c log = new Log__c(
             ClosedBy__c = null,
             ClosedDate__c = null,
@@ -95,9 +71,7 @@ private class LogHandler_Tests {
             TransactionId__c = '1234'
         );
 
-        Test.startTest();
         insert log;
-        Test.stopTest();
 
         log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(UserInfo.getUserId(), log.ClosedBy__c);
@@ -107,14 +81,15 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_set_owner_when_default_configured_with_user_id() {
+        setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         User expectedLogOwnerUser = LoggerTestUtils.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Id;
         insert currentUserSettings;
-
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+
         insert log;
 
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
@@ -123,14 +98,15 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_set_owner_when_default_configured_with_username() {
+        setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         User expectedLogOwnerUser = LoggerTestUtils.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Username;
         insert currentUserSettings;
-
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+
         insert log;
 
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
@@ -139,13 +115,14 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_set_owner_when_default_configured_with_queue_id() {
+        setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         Group expectedLogOwnerQueue = LoggerTestUtils.insertQueue(Schema.Log__c.SObjectType);
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.Id;
         insert currentUserSettings;
-
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+
         insert log;
 
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
@@ -154,13 +131,14 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_set_owner_when_default_configured_with_queue_developer_name() {
+        setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         Group expectedLogOwnerQueue = LoggerTestUtils.insertQueue(Schema.Log__c.SObjectType);
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.DeveloperName;
         insert currentUserSettings;
-
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+
         insert log;
 
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
@@ -169,12 +147,13 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_use_current_user_as_owner_when_no_default_configured() {
+        setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = null;
         insert currentUserSettings;
-
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
+
         insert log;
 
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
@@ -182,43 +161,54 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_keep_existing_retention_date_when_populated() {
+    static void it_should_keep_existing_retention_details_when_populated() {
+        setupConfigurations();
         Integer defaultDaysToRetainLog = 10;
-
+        String defaultLogPurgeAction = 'Some Action';
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
+        settings.DefaultLogPurgeAction__c = defaultLogPurgeAction;
         upsert settings;
-
-        Test.startTest();
-
         Integer specifiedDaysToRetainLog = 50;
         Date retentionDate = System.today().addDays(specifiedDaysToRetainLog);
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), LogRetentionDate__c = retentionDate, TransactionId__c = '1234');
+        String specifiedLogPurgeAction = 'A Different Action';
+        Log__c log = new Log__c(
+            LoggedBy__c = UserInfo.getUserId(),
+            LogPurgeAction__c = specifiedLogPurgeAction,
+            LogRetentionDate__c = retentionDate,
+            TransactionId__c = '1234'
+        );
+
         insert log;
 
-        Test.stopTest();
-
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertNotEquals(defaultDaysToRetainLog, specifiedDaysToRetainLog);
+        System.assertNotEquals(defaultLogPurgeAction, specifiedLogPurgeAction);
+        System.assertEquals(specifiedLogPurgeAction, log.LogPurgeAction__c);
         System.assertEquals(retentionDate, log.LogRetentionDate__c);
     }
 
     @IsTest
-    static void it_should_set_retention_date_when_configured_via_logger_settings() {
+    static void it_should_set_retention_details_when_configured_via_logger_settings() {
+        setupConfigurations();
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
+        String expectedLogPurgeAction = 'Some Action';
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
+        Logger.getUserSettings().DefaultLogPurgeAction__c = expectedLogPurgeAction;
         upsert Logger.getUserSettings();
-
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+
         insert log;
 
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedLogPurgeAction, log.LogPurgeAction__c);
         System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
     }
 
     @IsTest
-    static void it_should_set_retention_date_when_configured_via_scenario_rules() {
+    static void it_should_set_retention_details_when_configured_via_scenario_rules() {
+        setupConfigurations();
         Integer defaultDaysToRetainLog = 1;
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
@@ -227,8 +217,8 @@ private class LogHandler_Tests {
         String transactionScenarioName = 'some scenario';
         LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, NumberOfDaysToRetainLogs__c = daysToRetainLog);
         LogHandler.setMockScenarioRule(scenarioRule);
-
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Scenario__c = transactionScenarioName, TransactionId__c = '1234');
+
         insert log;
 
         log = [SELECT Id, Scenario__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
@@ -236,32 +226,30 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_have_null_retention_date_when_no_retention_configured() {
+    static void it_should_have_null_retention_details_when_no_retention_configured() {
+        setupConfigurations();
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultNumberOfDaysToRetainLogs__c = null;
+        settings.DefaultLogPurgeAction__c = null;
         upsert settings;
-
-        Test.startTest();
-
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+
         insert log;
 
-        Test.stopTest();
-
-        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(null, log.LogPurgeAction__c);
         System.assertEquals(null, log.LogRetentionDate__c);
     }
 
     @IsTest
     static void it_should_set_priority_to_high_when_there_are_errors() {
+        setupConfigurations();
         Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
         insert log;
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(LOW_PRIORITY, log.Priority__c);
 
-        Test.startTest();
         insert new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR');
-        Test.stopTest();
 
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(HIGH_PRIORITY, log.Priority__c);
@@ -269,14 +257,13 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_set_priority_to_medium_when_there_are_warnings() {
+        setupConfigurations();
         Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
         insert log;
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(LOW_PRIORITY, log.Priority__c);
 
-        Test.startTest();
         insert new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'WARN');
-        Test.stopTest();
 
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(MEDIUM_PRIORITY, log.Priority__c);
@@ -284,17 +271,15 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_grant_read_access_to_user_when_access_level_is_read() {
+        setupConfigurations();
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'Read';
         upsert settings;
-
-        Test.startTest();
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+
         insert log;
-        Test.stopTest();
 
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-
         System.assertEquals(1, logShares.size(), logShares);
         System.assertEquals('Read', logShares.get(0).AccessLevel);
         System.assertEquals(log.Id, logShares.get(0).ParentId);
@@ -304,17 +289,15 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_grant_edit_access_to_user_when_access_level_is_edit() {
+        setupConfigurations();
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'Edit';
         upsert settings;
-
-        Test.startTest();
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+
         insert log;
-        Test.stopTest();
 
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-
         System.assertEquals(1, logShares.size(), logShares);
         System.assertEquals('Edit', logShares.get(0).AccessLevel);
         System.assertEquals(log.Id, logShares.get(0).ParentId);
@@ -324,52 +307,37 @@ private class LogHandler_Tests {
 
     @IsTest
     static void it_should_not_grant_access_to_user_when_access_level_is_null() {
+        setupConfigurations();
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = null;
         upsert settings;
-
-        Test.startTest();
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+
         insert log;
-        Test.stopTest();
 
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-
         System.assertEquals(0, logShares.size(), logShares);
     }
 
     @IsTest
     static void it_should_not_grant_access_to_user_when_access_level_is_an_unknown_string() {
+        setupConfigurations();
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'FAKE LEVEL';
         upsert settings;
-
-        Test.startTest();
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+
         insert log;
-        Test.stopTest();
 
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
-
         System.assertEquals(0, logShares.size(), logShares);
     }
 
-    @IsTest
-    static void it_should_run_apex_plugin_when_configured() {
-        String expectedProfileName = 'Some String';
+    static void setupConfigurations() {
+        LogStatus__mdt openStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = FIRST_STATUS, IsClosed__c = false, IsResolved__c = false);
+        LogHandler.setMockLogStatus(openStatus);
 
-        Test.startTest();
-
-        // Use the mock configurations
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'SObject Handler - Apex', PluginApiName__c = LogPluginTest.class.getName());
-        LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, plugin);
-
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
-        insert log;
-
-        log = [SELECT Id, ProfileName__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(expectedProfileName, log.ProfileName__c);
-
-        Test.stopTest();
+        LogStatus__mdt closedStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = SECOND_STATUS, IsClosed__c = true, IsResolved__c = true);
+        LogHandler.setMockLogStatus(closedStatus);
     }
 }

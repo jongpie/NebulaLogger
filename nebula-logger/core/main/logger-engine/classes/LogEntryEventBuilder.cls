@@ -71,7 +71,7 @@ global with sharing class LogEntryEventBuilder {
         set;
     }
 
-    private static final List<LogEntryDataMaskRule__mdt> CACHED_DATA_MASK_RULES {
+    private static final Map<String, LogEntryDataMaskRule__mdt> CACHED_DATA_MASK_RULES {
         get {
             if (CACHED_DATA_MASK_RULES == null) {
                 CACHED_DATA_MASK_RULES = loadDataMaskRules();
@@ -739,8 +739,8 @@ global with sharing class LogEntryEventBuilder {
 
     // Private static helper methods
     @TestVisible
-    private static void addMockDataMaskRule(LogEntryDataMaskRule__mdt dataMaskRule) {
-        CACHED_DATA_MASK_RULES.add(dataMaskRule);
+    private static void setMockDataMaskRule(LogEntryDataMaskRule__mdt dataMaskRule) {
+        CACHED_DATA_MASK_RULES.put(dataMaskRule.DeveloperName, dataMaskRule);
     }
 
     private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
@@ -748,7 +748,7 @@ global with sharing class LogEntryEventBuilder {
             return dataInput;
         }
 
-        for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES) {
+        for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
             if ((applyToMessage && dataMaskRule.ApplyToMessage__c) == true || (applyToRecordJson && dataMaskRule.ApplyToRecordJson__c) == true) {
                 dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
             }
@@ -766,16 +766,16 @@ global with sharing class LogEntryEventBuilder {
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
-    private static List<LogEntryDataMaskRule__mdt> loadDataMaskRules() {
-        List<LogEntryDataMaskRule__mdt> activeDataMaskRules = new List<LogEntryDataMaskRule__mdt>();
+    private static Map<String, LogEntryDataMaskRule__mdt> loadDataMaskRules() {
+        Map<String, LogEntryDataMaskRule__mdt> activeDataMaskRules = new Map<String, LogEntryDataMaskRule__mdt>();
         for (LogEntryDataMaskRule__mdt dataMaskRule : LogEntryDataMaskRule__mdt.getAll().values()) {
             if (dataMaskRule.IsEnabled__c == true) {
-                activeDataMaskRules.add(dataMaskRule);
+                activeDataMaskRules.put(dataMaskRule.DeveloperName, dataMaskRule);
             }
         }
         if (System.Test.isRunningTest() == true) {
             // Tests shouldn't rely on the actual CMDT rules in the org
-            // Clear the org's loaded records during tests, and mock via addMockDataMaskRule()
+            // Clear the org's loaded records during tests, and mock via setMockDataMaskRule()
             activeDataMaskRules.clear();
         }
         return activeDataMaskRules;

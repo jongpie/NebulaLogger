@@ -4,9 +4,6 @@
     <description
     >The ID of the record associated with a particular log entry. This is used for addRecordDebugEntry &amp; addRecordExceptionEntry methods</description>
     <externalId>false</externalId>
-    <isFilteringDisabled>false</isFilteringDisabled>
-    <isNameField>false</isNameField>
-    <isSortingDisabled>false</isSortingDisabled>
     <label>Related Record ID</label>
     <length>18</length>
     <required>false</required>

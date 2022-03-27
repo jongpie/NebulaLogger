@@ -324,6 +324,16 @@
                 <identifier>RecordLogRetentionDate__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.LogPurgeAction__c</fieldItem>
+                <identifier>RecordLogPurgeAction_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-0d174e01-17f8-4c93-8f5a-8983346600f8</name>
         <type>Facet</type>
     </flexiPageRegions>

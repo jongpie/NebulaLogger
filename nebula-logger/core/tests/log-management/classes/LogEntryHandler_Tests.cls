@@ -6,18 +6,6 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogEntryHandler_Tests {
-    public class LogEntryPluginTest extends LoggerSObjectHandlerPlugin {
-        public override void execute(LoggerPlugin__mdt configuration, LoggerSObjectHandler.SObjectHandlerInput input) {
-            if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
-                for (LogEntry__c logEntry : (List<LogEntry__c>) input.triggerNew) {
-                    // The specific field changed doesn't really matter - we just want to ensure that whatever
-                    // logic implemented in the instance of LoggerSObjectHandlerPlugin is executed
-                    logEntry.Message__c = 'Some String';
-                }
-            }
-        }
-    }
-
     private static String getNamespacePrefix() {
         String className = LogEntryHandler_Tests.class.getName();
         String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
@@ -27,6 +15,7 @@ private class LogEntryHandler_Tests {
 
     @TestSetup
     static void setupData() {
+        LoggerSObjectHandler.shouldExecute(false);
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         Test.setCreatedDate(log.Id, System.now().addDays(-8));
@@ -42,7 +31,7 @@ private class LogEntryHandler_Tests {
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogEntryHandlerEnabled', Value__c = 'false');
-        LoggerParameter.setMockParameter(mockParameter);
+        LoggerParameter.setMock(mockParameter);
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = null);
 
@@ -347,26 +336,5 @@ private class LogEntryHandler_Tests {
         System.assertEquals(exampleTopLevelClassName, logEntry.ApexClassName__c);
         System.assertEquals(exampleInnerClassName, logEntry.ApexInnerClassName__c);
         System.assertEquals(methodName, logEntry.ApexMethodName__c);
-    }
-
-    @IsTest
-    static void it_should_run_apex_plugin_when_configured() {
-        String expectedMessage = 'Some String';
-
-        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-
-        Test.startTest();
-
-        // Use the mock configurations
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(PluginType__c = 'SObject Handler - Apex', PluginApiName__c = LogEntryPluginTest.class.getName());
-        LoggerSObjectHandler.setMockPlugin(Schema.LogEntry__c.SObjectType, plugin);
-
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'qwerty');
-        insert logEntry;
-
-        logEntry = [SELECT Id, Message__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(expectedMessage, logEntry.Message__c);
-
-        Test.stopTest();
     }
 }

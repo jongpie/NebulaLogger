@@ -9,10 +9,8 @@
  */
 @SuppressWarnings('PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class LogHandler extends LoggerSObjectHandler {
-    @TestVisible
-    private static final Map<String, LogStatus__mdt> LOG_STATUS_NAME_TO_STATUS = loadActiveLogStatuses();
-    @TestVisible
-    private static final Map<String, LogScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
+    private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_TO_STATUS = new Map<String, LogStatus__mdt>();
+    private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
 
     @TestVisible
     private List<Log__c> logs;
@@ -37,24 +35,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return 'IsLogHandlerEnabled';
     }
 
-    /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls if plugins are enabled
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginControlField() {
-        return Schema.LoggerPlugin__mdt.IsLogEnabled__c;
-    }
-
-    /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginSortField() {
-        return Schema.LoggerPlugin__mdt.LogExecutionOrder__c;
-    }
-
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logs = (List<Log__c>) triggerNew;
 
@@ -62,7 +42,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
         this.setOwnerId();
         // The log retention date field should support being manually changed, so only auto-set it on insert
-        this.setLogRetentionDate();
+        this.setLogRetentionDetails();
     }
 
     protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -81,9 +61,10 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setClosedStatusFields() {
+        Map<String, LogStatus__mdt> logStatusNameToStatus = loadActiveLogStatuses();
         for (Log__c log : this.logs) {
             // Determine if the status is considered closed (based on `LogStatus__mdt` custom metadata)
-            LogStatus__mdt logStatus = LOG_STATUS_NAME_TO_STATUS.get(log.Status__c);
+            LogStatus__mdt logStatus = logStatusNameToStatus.get(log.Status__c);
             if (logStatus != null) {
                 log.IsClosed__c = logStatus.IsClosed__c;
                 log.IsResolved__c = logStatus.IsResolved__c;
@@ -134,7 +115,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void setLogRetentionDate() {
+    private void setLogRetentionDetails() {
         Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = queryScenarioRules(this.logs);
         for (Log__c log : this.logs) {
             // If the retention date has already been populated, leave it as-is
@@ -147,17 +128,16 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
             // Load the configured scenario rule (if one exists)
             LogScenarioRule__mdt matchingScenarioRule = scenarioToScenarioRule.get(log.Scenario__c);
-            if (System.Test.isRunningTest() == true) {
-                matchingScenarioRule = SCENARIO_TO_MOCK_SCENARIO_RULE.get(log.Scenario__c);
-            }
 
             Integer daysToRetainLog = Integer.valueOf(
                 matchingScenarioRule != null ? matchingScenarioRule.NumberOfDaysToRetainLogs__c : loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c
             );
+            // TODO Add new field to LogScenarioRule__mdt for setting the default log purge action (same concept as matchingScenarioRule.NumberOfDaysToRetainLogs__c above)
 
             // When daysToRetainLog is null, assume that the log should be kept forever,
             // and set the retention date to null so that LogBatchPurger filters out/ignores the record
             log.LogRetentionDate__c = daysToRetainLog == null ? null : System.today().addDays(daysToRetainLog);
+            log.LogPurgeAction__c = loggingUserSettings.DefaultLogPurgeAction__c;
         }
     }
 
@@ -222,6 +202,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
                 logStatusNameToStatus.put(logStatus.MasterLabel, logStatus);
             }
         }
+
+        if (System.Test.isRunningTest() == true) {
+            logStatusNameToStatus.clear();
+            logStatusNameToStatus.putAll(MOCK_LOG_STATUS_TO_STATUS);
+        }
+
         return logStatusNameToStatus;
     }
 
@@ -257,11 +243,22 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         ]) {
             scenarioToScenarioRule.put(scenarioRule.Scenario__c, scenarioRule);
         }
+
+        if (System.Test.isRunningTest() == true) {
+            scenarioToScenarioRule.clear();
+            scenarioToScenarioRule.putAll(MOCK_SCENARIO_TO_SCENARIO_RULE);
+        }
+
         return scenarioToScenarioRule;
     }
 
     @TestVisible
+    private static void setMockLogStatus(LogStatus__mdt logStatus) {
+        MOCK_LOG_STATUS_TO_STATUS.put(logStatus.MasterLabel, logStatus);
+    }
+
+    @TestVisible
     private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        SCENARIO_TO_MOCK_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
+        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 }

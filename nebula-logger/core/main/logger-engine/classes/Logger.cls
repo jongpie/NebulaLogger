@@ -18,8 +18,7 @@ global with sharing class Logger {
     private static final String CURRENT_VERSION_NUMBER = 'v4.7.1';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
-    @TestVisible
-    private static final Map<String, LogScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
+    private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = setTransactionId();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
 
@@ -2491,7 +2490,7 @@ global with sharing class Logger {
         }
 
         if (System.Test.isRunningTest() == true) {
-            matchingScenarioRule = SCENARIO_TO_MOCK_SCENARIO_RULE.get(scenario);
+            matchingScenarioRule = MOCK_SCENARIO_TO_SCENARIO_RULE.get(scenario);
         }
 
         if (matchingScenarioRule != null) {
@@ -2501,7 +2500,7 @@ global with sharing class Logger {
 
     @TestVisible
     private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        SCENARIO_TO_MOCK_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
+        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 
     /**

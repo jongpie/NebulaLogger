@@ -3,9 +3,6 @@
     <fullName>TransactionEntryNumber__c</fullName>
     <description>The sequential number of this log entry within the transaction</description>
     <externalId>false</externalId>
-    <isFilteringDisabled>false</isFilteringDisabled>
-    <isNameField>false</isNameField>
-    <isSortingDisabled>false</isSortingDisabled>
     <label>Transaction Entry Number</label>
     <precision>10</precision>
     <required>true</required>

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 // TODO: need to improve plugin framework to make it easier for plugins to test by making it easier
-//       to mock CMDT records & instances of LoggerSObjectHandlerPlugin
+//       to mock CMDT records & instances of LoggerPlugin.Triggerable
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class SlackLoggerPlugin_Tests {
@@ -45,20 +45,20 @@ private class SlackLoggerPlugin_Tests {
     static void mockConfigurations(LoggingLevel notificationLoggingLevel) {
         // Set the plugin's configuration
         LoggerPlugin__mdt slackPluginConfig = new LoggerPlugin__mdt(
+            DeveloperName = 'SlackPlugin',
             IsEnabled__c = true,
-            PluginApiName__c = SlackLoggerPlugin.class.getName(),
-            PluginType__c = 'SObject Handler - Apex'
+            SObjectHandlerApexClass__c = SlackLoggerPlugin.class.getName()
         );
-        LoggerSObjectHandler.setMockPlugin(Schema.Log__c.SObjectType, slackPluginConfig);
+        LoggerPlugin.setMock(slackPluginConfig);
 
         // Set the plugin's parameters
         LoggerParameter__mdt endpointParameter = new LoggerParameter__mdt(DeveloperName = 'SlackEndpoint', Value__c = 'https://fake.slack.com/');
-        LoggerParameter.setMockParameter(endpointParameter);
+        LoggerParameter.setMock(endpointParameter);
         LoggerParameter__mdt notificationLoggingLevelParameter = new LoggerParameter__mdt(
             DeveloperName = 'SlackNotificationLoggingLevel',
             Value__c = notificationLoggingLevel.name()
         );
-        LoggerParameter.setMockParameter(notificationLoggingLevelParameter);
+        LoggerParameter.setMock(notificationLoggingLevelParameter);
     }
 
     static void verifyLogEntryCountEquals(Integer expectedCount) {

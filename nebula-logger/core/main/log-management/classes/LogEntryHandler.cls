@@ -30,24 +30,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         return 'IsLogEntryHandlerEnabled';
     }
 
-    /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls if plugins are enabled
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginControlField() {
-        return Schema.LoggerPlugin__mdt.IsLogEntryEnabled__c;
-    }
-
-    /**
-     * @description Returns the `SObjectField` on `LoggerPlugin__mdt` that controls the sorting of plugins
-     *          for the handler's `SObjectType`
-     * @return   The instance of `Schema.SObjectField` on `LoggerPlugin__mdt` for the current `SObjectType`
-     */
-    public override Schema.SObjectField getHandlerPluginSortField() {
-        return Schema.LoggerPlugin__mdt.LogEntryExecutionOrder__c;
-    }
-
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logEntries = (List<LogEntry__c>) triggerNew;
 
@@ -121,10 +103,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             } else if (innerApexClassName.startsWith(topLevelApexClassName + '.')) {
                 innerApexClassName = innerApexClassName.substringAfter(topLevelApexClassName + '.');
             }
-
-            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
-            // logEntry.ApexClassCreatedById__c = topLevelApexClass.CreatedById;
-            // logEntry.ApexClassLastModifiedById__c = apexClass.LastModifiedById;
 
             logEntry.ApexClassApiVersion__c = 'v' + topLevelApexClass.ApiVersion;
             logEntry.ApexClassCreatedDate__c = topLevelApexClass.CreatedDate;
@@ -268,6 +246,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             if (Limits.getQueries() == Limits.getLimitQueries()) {
                 return;
             }
+
             List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
 

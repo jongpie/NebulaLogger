@@ -10,6 +10,8 @@ private class LogMassDeleteExtension_Tests_Integration {
 
     @TestSetup
     static void setupData() {
+        LoggerSObjectHandler.shouldExecute(false);
+
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 10; i++) {
             Log__c log = new Log__c(TransactionId__c = 'TXN-' + i);

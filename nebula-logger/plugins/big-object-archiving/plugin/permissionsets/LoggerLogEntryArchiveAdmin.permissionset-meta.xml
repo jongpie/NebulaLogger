@@ -218,7 +218,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LogEntryArchive__b.LoggedByUsername__c</field>
+        <field>LogEntryArchive__b.LoggedBy__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -228,12 +228,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LogEntryArchive__b.LoggerVersionNumber__c</field>
+        <field>LogEntryArchive__b.LoggedByUsername__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LogEntryArchive__b.LoggingLevelOrdinal__c</field>
+        <field>LogEntryArchive__b.LoggerVersionNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -517,4 +517,8 @@
         <object>LogEntryArchive__b</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
+     <tabSettings>
+        <tab>LogEntryArchives</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>

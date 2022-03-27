@@ -25,7 +25,7 @@ private class LoggerEmailUtils_Tests {
 
     @IsTest
     static void it_should_not_send_email_notification_for_saveResult_errors_when_no_recipients_configured() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'true'));
         System.assertEquals(true, LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
         LoggerEmailUtils.CACHED_APEX_ERROR_RECIPIENTS.clear();
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
@@ -40,7 +40,7 @@ private class LoggerEmailUtils_Tests {
 
     @IsTest
     static void it_should_not_send_email_notification_for_saveResult_errors_when_disabled() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
         System.assertEquals(false, LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
         LoggerEmailUtils.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
@@ -72,7 +72,7 @@ private class LoggerEmailUtils_Tests {
 
     @IsTest
     static void it_should_not_send_email_notification_for_upsertResult_errors_when_no_recipients_configured() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'true'));
         System.assertEquals(true, LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
         LoggerEmailUtils.CACHED_APEX_ERROR_RECIPIENTS.clear();
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
@@ -87,7 +87,7 @@ private class LoggerEmailUtils_Tests {
 
     @IsTest
     static void it_should_not_send_email_notification_for_upsertResult_errors_when_disabled() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
         System.assertEquals(false, LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
         LoggerEmailUtils.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');

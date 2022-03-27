@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LogsToPurgeSoon</fullName>
+    <columns>NAME</columns>
+    <columns>LoggedByUsernameLink__c</columns>
+    <columns>TransactionId__c</columns>
+    <columns>OWNER.ALIAS</columns>
+    <columns>Priority__c</columns>
+    <columns>Status__c</columns>
+    <columns>Scenario__c</columns>
+    <columns>StartTime__c</columns>
+    <columns>LogPurgeAction__c</columns>
+    <columns>LogRetentionDate__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LogRetentionDate__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <filters>
+        <field>LogRetentionDate__c</field>
+        <operation>lessOrEqual</operation>
+        <value>NEXT_N_DAYS:10</value>
+    </filters>
+    <label>Logs To Purge Soon</label>
+</ListView>

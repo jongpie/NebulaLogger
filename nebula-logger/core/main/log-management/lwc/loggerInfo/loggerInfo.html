@@ -51,23 +51,6 @@
                             </template>
                         </div>
                         <p class="slds-p-horizontal_small">{plugin.Description__c}</p>
-                        <div class="slds-p-around_small">
-                            <template if:true={plugin.IsLogEntryEventEnabled__c}>
-                                <span class="slds-badge">LogEntryEvent__e</span>
-                            </template>
-                            <template if:true={plugin.IsLogEnabled__c}>
-                                <span class="slds-badge">Log__c</span>
-                            </template>
-                            <template if:true={plugin.IsLogEntryEnabled__c}>
-                                <span class="slds-badge">LogEntry__c</span>
-                            </template>
-                            <template if:true={plugin.IsLogEntryTagEnabled__c}>
-                                <span class="slds-badge">LogEntryTag__c</span>
-                            </template>
-                            <template if:true={plugin.IsLoggerTagEnabled__c}>
-                                <span class="slds-badge">LoggerTag__c</span>
-                            </template>
-                        </div>
                     </lightning-card>
                 </span>
             </template>

@@ -6,16 +6,18 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
 @IsTest
 private class LoggerSObjectHandler_Tests {
+    private static final String FAKE_PROFILE_NAME = 'Some String';
     private static final String HANDLER_CONTROL_PARAMETER_NAME = 'IsMockLogHandlerEnabled';
 
     @TestSetup
     static void setupData() {
+        LoggerSObjectHandler.shouldExecute(false);
         insert new Log__c(TransactionId__c = '1234');
     }
 
     @IsTest
     static void it_should_not_run_when_disabled_via_logger_parameter() {
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = HANDLER_CONTROL_PARAMETER_NAME, Value__c = 'false'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = HANDLER_CONTROL_PARAMETER_NAME, Value__c = 'false'));
         MockLogHandler handler = new MockLogHandler();
         handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
@@ -154,46 +156,56 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_gracefully_skip_non_existent_apex_plugin() {
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
+            DeveloperName = 'Mock_Plugin',
+            IsEnabled__c = true,
+            SObjectHandlerApexClass__c = 'Some_Fake_Apex_Class'
+        );
+        LoggerPlugin.setMock(plugin);
         MockLogHandler handler = new MockLogHandler();
         handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
         handler.triggerNewMap = null;
         handler.triggerOldMap = null;
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
-            IsEnabled__c = true,
-            IsLogEnabled__c = true,
-            PluginApiName__c = 'Some_Fake_Apex_Class',
-            PluginType__c = 'SObject Handler - Apex'
-        );
-        handler.addMockPlugin(plugin);
 
         handler.execute();
 
         System.assertEquals(1, handler.executionCount);
-        System.assertEquals(1, handler.getPluginConfigurations().size());
-        System.assertEquals(0, handler.getExecutedApexPlugins().size());
+        System.assertEquals(1, handler.getPluginConfigurations().size(), handler.getPluginConfigurations());
+        System.assertEquals(0, handler.getExecutedApexPlugins().size(), handler.getExecutedApexPlugins());
     }
 
     @IsTest
     static void it_should_gracefully_skip_non_existent_flow_plugin() {
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(DeveloperName = 'Mock_Plugin', IsEnabled__c = true, SObjectHandlerFlowName__c = 'Some_Fake_Flow');
+        LoggerPlugin.setMock(plugin);
         MockLogHandler handler = new MockLogHandler();
         handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
         handler.triggerNewMap = null;
         handler.triggerOldMap = null;
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
-            IsEnabled__c = true,
-            IsLogEnabled__c = true,
-            PluginApiName__c = 'Some_Fake_Flow',
-            PluginType__c = 'SObject Handler - Flow'
-        );
-        handler.addMockPlugin(plugin);
 
         handler.execute();
 
         System.assertEquals(1, handler.executionCount);
-        System.assertEquals(1, handler.getPluginConfigurations().size());
-        System.assertEquals(0, handler.getExecutedApexPlugins().size());
+        System.assertEquals(1, handler.getPluginConfigurations().size(), handler.getPluginConfigurations());
+        System.assertEquals(0, handler.getExecutedApexPlugins().size(), handler.getExecutedApexPlugins());
+    }
+
+    @IsTest
+    static void it_should_execute_apex_plugin() {
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
+            DeveloperName = 'ExampleApexPlugin',
+            IsEnabled__c = true,
+            SObjectHandlerApexClass__c = MockLogHandlerPlugin.class.getName()
+        );
+        LoggerPlugin.setMock(plugin);
+
+        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '6789');
+        insert log;
+
+        log = [SELECT Id, ProfileName__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(FAKE_PROFILE_NAME, log.ProfileName__c);
     }
 
     public class MockLogHandler extends LoggerSObjectHandler {
@@ -209,14 +221,6 @@ private class LoggerSObjectHandler_Tests {
 
         public override String getHandlerControlParameterName() {
             return HANDLER_CONTROL_PARAMETER_NAME;
-        }
-
-        public override Schema.SObjectField getHandlerPluginControlField() {
-            return Schema.LoggerPlugin__mdt.IsLogEnabled__c;
-        }
-
-        public override Schema.SObjectField getHandlerPluginSortField() {
-            return Schema.LoggerPlugin__mdt.LogExecutionOrder__c;
         }
 
         protected override void executeBeforeInsert(List<SObject> triggerNew) {
@@ -267,6 +271,18 @@ private class LoggerSObjectHandler_Tests {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.AFTER_UNDELETE;
             this.executedTriggerNewMap = triggerNewMap;
+        }
+    }
+
+    public class MockLogHandlerPlugin implements LoggerPlugin.Triggerable {
+        public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
+            if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
+                for (Log__c log : (List<Log__c>) input.triggerNew) {
+                    // The specific field changed doesn't really matter - we just want to ensure that whatever
+                    // logic implemented in the instance of LoggerPlugin.Triggerable is executed
+                    log.ProfileName__c = FAKE_PROFILE_NAME;
+                }
+            }
         }
     }
 }
