@@ -47,42 +47,6 @@
                 <identifier>console_history</identifier>
             </componentInstance>
         </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentInstanceProperties>
-                    <name>eager</name>
-                    <type>decorator</type>
-                    <value>false</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>height</name>
-                    <type>decorator</type>
-                    <value>480</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>icon</name>
-                    <type>decorator</type>
-                    <value>summarydetail</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>label</name>
-                    <type>decorator</type>
-                    <value>System Info</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>scrollable</name>
-                    <type>decorator</type>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>width</name>
-                    <type>decorator</type>
-                    <value>600</value>
-                </componentInstanceProperties>
-                <componentName>loggerInfo</componentName>
-                <identifier>loggerInfo</identifier>
-            </componentInstance>
-        </itemInstances>
         <name>utilityItems</name>
         <type>Region</type>
     </flexiPageRegions>

@@ -190,10 +190,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerInfoController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>LoggerParameter</apexClass>
         <enabled>true</enabled>
     </classAccesses>

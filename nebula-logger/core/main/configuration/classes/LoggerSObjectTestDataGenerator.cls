@@ -20,7 +20,9 @@ public without sharing class LoggerSObjectTestDataGenerator {
     private final SObject record;
 
     /**
-     * @description Creates a new generator instance for the specified `SObjectType`
+     * @description Creates a new generator instance for the specified `SObjectType`, including creating a
+     *              new `SObject` record. The new `SObject` record is created with any default field values that
+     *              have been configured on the `SObjectType`.
      * @param  sobjectType The `SObjectType` to use for generating a new test `SObject` record
      */
     public LoggerSObjectTestDataGenerator(Schema.SObjectType sobjectType) {
@@ -43,7 +45,7 @@ public without sharing class LoggerSObjectTestDataGenerator {
      * @return   The `SObject` record, with all editable fields populated
      */
     public SObject populateAllFields() {
-        this.setNullFieldsOnRecord(SOBJECT_TYPE_TO_ALL_FIELDS.get(this.sobjectType));
+        this.setUnpopulatedFieldsOnRecord(SOBJECT_TYPE_TO_ALL_FIELDS.get(this.sobjectType));
         return this.record;
     }
 
@@ -52,7 +54,7 @@ public without sharing class LoggerSObjectTestDataGenerator {
      * @return   The `SObject` record, with all editable required fields populated
      */
     public SObject populateRequiredFields() {
-        this.setNullFieldsOnRecord(SOBJECT_TYPE_TO_REQUIRED_FIELDS.get(this.sobjectType));
+        this.setUnpopulatedFieldsOnRecord(SOBJECT_TYPE_TO_REQUIRED_FIELDS.get(this.sobjectType));
         return this.record;
     }
 
@@ -77,7 +79,7 @@ public without sharing class LoggerSObjectTestDataGenerator {
     }
 
     // Helper methods
-    private void setNullFieldsOnRecord(List<Schema.SObjectField> fields) {
+    private void setUnpopulatedFieldsOnRecord(List<Schema.SObjectField> fields) {
         Map<String, Object> populatedFields = this.record.getPopulatedFieldsAsMap();
         for (Schema.SObjectField field : fields) {
             Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
