@@ -38,12 +38,6 @@ Provides the ability to generate string messages on demand, using String.format(
 
 The core class for logging
 
-## Miscellaneous
-
-### [FailureCalloutMock](/Miscellaneous/FailureCalloutMock)
-
-Inner class for handling mock HTTP callouts that should end in errors / exceptions.
-
 ## Log Management
 
 ### [LogBatchPurgeScheduler](log-management/LogBatchPurgeScheduler)
@@ -78,9 +72,13 @@ Manages setting fields on `Log__c` before insert &amp; before update
 
 Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
 
-### [LoggerInfoController](log-management/LoggerInfoController)
+### [LoggerBatchableContext](log-management/LoggerBatchableContext)
 
-Controller class for lwc `loggerInfo`, used to display system information about Nebula Logger
+DTO class used by the logging system to for batch contextual details
+
+### [LoggerEmailUtils](log-management/LoggerEmailUtils)
+
+Builds and sends email notifications when internal exceptions occur within the logging system
 
 ### [LoggerSObjectHandler](log-management/LoggerSObjectHandler)
 
@@ -98,6 +96,10 @@ Controller class for lwc `loggerSettings`, used to manage records in `LoggerSett
 
 Handles trigger events for the `LoggerTag__c` object
 
+### [LoggerTriggerableContext](log-management/LoggerTriggerableContext)
+
+DTO class used by the logging system to for trigger contextual details
+
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 
 Controller class for the lightning web component `related-log-entries`
@@ -105,6 +107,14 @@ Controller class for the lightning web component `related-log-entries`
 ## Plugins
 
 ### [LogEntryArchiveBuilder](plugins/LogEntryArchiveBuilder)
+
+Builder class to create an instance of `LogEntryArchive__b`, used by the BigObject plugin
+
+### [LogEntryArchiveController](plugins/LogEntryArchiveController)
+
+Controller class used by the LWC `logEntryArchives` to display `LogEntryArchive__b` data
+
+### [LogEntryArchivePlugin](plugins/LogEntryArchivePlugin)
 
 Optional plugin that provides a BigObject, `LogEntryArchive__b`, as an alternative option to the platform event `LogEntryEvent__e`
 
@@ -118,16 +128,18 @@ Optional plugin that integrates with Slack to send alerts for important logs
 
 ## Configuration
 
-### [LoggerEmailUtils](configuration/LoggerEmailUtils)
-
-Builds and sends email notifications when internal exceptions occur within the logging system
-
 ### [LoggerParameter](configuration/LoggerParameter)
 
 Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
 
-## Plugin Framework
+### [LoggerPlugin](configuration/LoggerPlugin)
 
-### [LoggerSObjectHandlerPlugin](plugin-framework/LoggerSObjectHandlerPlugin)
+The core of the plugin framework, used to create custom Apex &amp; Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger` based on configurations stored in the custom metadata type `LoggerPlugin_t`
 
-Abstract class used to create custom Apex &amp; Flow plugins
+### [LoggerSObjectTestDataGenerator](configuration/LoggerSObjectTestDataGenerator)
+
+Class used to create or update an `SObject` record with static fake data. This is useful in situations where you need to have fields populated, but the specific values used are not relevant to a particular test. This class can be used when Apex writing tests for plugins.
+
+### [LoggerTestUtils](configuration/LoggerTestUtils)
+
+Utility class used to help with writing Apex tests Nebula Logger. These methods can be used when writing Apex tests for plugins.

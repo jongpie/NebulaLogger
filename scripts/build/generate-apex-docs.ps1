@@ -1,10 +1,5 @@
 # This script is used to generate the markdown files used by Github pages for Apex docs
-rm -f ./docs/apex/*/*.md
-rm -rf ./docs/apex/configuration/
-rm -rf ./docs/apex/logger-engine/
-rm -rf ./docs/apex/log-management/
-rm -rf ./docs/apex/plugin-framework/
-rm -rf ./docs/apex/plugins/
+find ./docs/apex/ -maxdepth 2 -type f -name "*.md" -delete
 
 npx apexdocs-generate --configPath ./config/docs/apexdocs.json --scope global public --sourceDir ./nebula-logger/core/main/ ./nebula-logger/plugins/ --targetDir ./docs/apex --targetGenerator jekyll
 

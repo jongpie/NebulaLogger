@@ -458,4 +458,24 @@ List&lt;String&gt;
 
 A list that&apos;s retrieved using the parameter if it&apos;s not null, otherwise the default list is returned.
 
+#### `matchOnPrefix(String developerNamePrefix)` → `List<LoggerParameter_t>`
+
+matchOnPrefix description
+
+##### Parameters
+
+| Param                 | Description                                                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| `developerNamePrefix` | A prefix that has been used in the `DeveloperName` for multiple `LoggerParameter_t` records |
+
+##### Return
+
+**Type**
+
+List&lt;LoggerParameter_t&gt;
+
+**Description**
+
+The list of matching `LoggerParameter_t` records
+
 ---

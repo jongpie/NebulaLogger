@@ -8,15 +8,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class SlackLoggerPlugin_Tests {
-    /**
-     * @description Inner class for handling mock HTTP callouts.
-     */
     private class SuccessCalloutMock implements HttpCalloutMock {
-        /**
-         * @description Returns the mock HTTP response.
-         * @param request The HTTP request to "receive"
-         * @return The resulting HTTP response
-         */
         public HttpResponse respond(HttpRequest request) {
             HttpResponse response = new HttpResponse();
             response.setBody(request.getBody());
@@ -25,15 +17,7 @@ private class SlackLoggerPlugin_Tests {
         }
     }
 
-    /**
-     * @description Inner class for handling mock HTTP callouts that should end in errors / exceptions.
-     */
-    public class FailureCalloutMock implements HttpCalloutMock {
-        /**
-         * @description Returns the mock HTTP response.
-         * @param request The HTTP request to "receive"
-         * @return The resulting HTTP response
-         */
+    private class FailureCalloutMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest request) {
             HttpResponse response = new HttpResponse();
             response.setBody(request.getBody());

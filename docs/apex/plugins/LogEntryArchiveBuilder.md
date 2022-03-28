@@ -4,21 +4,54 @@ layout: default
 
 ## LogEntryArchiveBuilder class
 
-Optional plugin that provides a BigObject, `LogEntryArchive__b`, as an alternative option to the platform event `LogEntryEvent__e`
+Builder class to create an instance of `LogEntryArchive__b`, used by the BigObject plugin
+
+### Related
+
+[LogEntryArchivePlugin](../Plugins/LogEntryArchivePlugin)
+
+[LogEntryEventBuilder](LogEntryEventBuilder)
+
+---
+
+### Constructors
+
+#### `LogEntryArchiveBuilder(LogEntryEvent__e logEntryEvent)`
+
+Used by `LogEntryArchivePlugin` to instantiate a new instance of `LogEntryArchiveBuilder`
+
+##### Parameters
+
+| Param           | Description                                                                           |
+| --------------- | ------------------------------------------------------------------------------------- |
+| `logEntryEvent` | The `LogEntryEvent__e` record that will be converted to a `LogEntryArchive__b` record |
+
+#### `LogEntryArchiveBuilder(LogEntry__c logEntry)`
+
+Used by `LogEntryArchivePlugin` to instantiate a new instance of `LogEntryArchiveBuilder`
+
+##### Parameters
+
+| Param      | Description                                                                      |
+| ---------- | -------------------------------------------------------------------------------- |
+| `logEntry` | The `LogEntry__c` record that will be converted to a `LogEntryArchive__b` record |
 
 ---
 
 ### Methods
 
-#### `execute(LoggerPlugin_t configuration, LoggerSObjectHandler.SObjectHandlerInput input)` → `void`
+#### `getLogEntryArchive()` → `LogEntryArchive__b`
 
-Handles converting Logger&apos;s buffer of `LogEntryEvent__e` records into `LogEntryArchive__b` records for any user with the included custom save method &apos;BIG_OBJECT&apos;
+Returns the `LogEntryArchive__b` record for this instance of LogEntryEventBuilder
 
-##### Parameters
+##### Return
 
-| Param           | Description                                                                                      |
-| --------------- | ------------------------------------------------------------------------------------------------ |
-| `configuration` | The instance of `LoggerPlugin_t` configured for this specific plugin                             |
-| `input`         | The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system |
+**Type**
+
+LogEntryArchive\_\_b
+
+**Description**
+
+The `LogEntryArchive__b` record
 
 ---

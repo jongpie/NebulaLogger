@@ -34,34 +34,6 @@ String
 
 The `DeveloperName` value of the `LoggerParameter_t` that controls if the handler is enabled
 
-#### `getHandlerPluginControlField()` → `Schema.SObjectField`
-
-Returns the `SObjectField` on `LoggerPlugin_t` that controls if plugins are enabled for the handler&apos;s `SObjectType`
-
-##### Return
-
-**Type**
-
-Schema.SObjectField
-
-**Description**
-
-The instance of `Schema.SObjectField` on `LoggerPlugin_t` for the current `SObjectType`
-
-#### `getHandlerPluginSortField()` → `Schema.SObjectField`
-
-Returns the `SObjectField` on `LoggerPlugin_t` that controls the sorting of plugins for the handler&apos;s `SObjectType`
-
-##### Return
-
-**Type**
-
-Schema.SObjectField
-
-**Description**
-
-The instance of `Schema.SObjectField` on `LoggerPlugin_t` for the current `SObjectType`
-
 #### `getSObjectType()` → `Schema.SObjectType`
 
 Returns the SObject Type that the handler is responsible for processing
@@ -75,47 +47,5 @@ Schema.SObjectType
 **Description**
 
 The instance of `SObjectType`
-
----
-
-### Inner Classes
-
-#### LoggerSObjectHandler.SObjectHandlerInput class
-
-Class used by the logging system to for trigger context details
-
----
-
-##### Properties
-
-###### `sobjectType` → `Schema.SObjectType`
-
-###### `sobjectTypeName` → `String`
-
-###### `triggerNew` → `List<SObject>`
-
-###### `triggerNewMap` → `Map<Id, SObject>`
-
-###### `triggerOldMap` → `Map<Id, SObject>`
-
-###### `triggerOperationType` → `TriggerOperation`
-
-###### `triggerOperationTypeName` → `String`
-
-###### `triggerRecords` → `List<SObjectHandlerRecordInput>`
-
----
-
-#### LoggerSObjectHandler.SObjectHandlerRecordInput class
-
-Class used by the logging system to provide trigger record details
-
----
-
-##### Properties
-
-###### `triggerRecordNew` → `SObject`
-
-###### `triggerRecordOld` → `SObject`
 
 ---

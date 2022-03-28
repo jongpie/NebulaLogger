@@ -5,7 +5,7 @@
 
 /**
  * @group Configuration
- * @description Factory class used to create or update an `SObject` record with static fake data.
+ * @description Class used to create or update an `SObject` record with static fake data.
  *              This is useful in situations where you need to have fields populated, but the specific
  *              values used are not relevant to a particular test.
  *              This class can be used when Apex writing tests for plugins.
@@ -78,7 +78,6 @@ public without sharing class LoggerSObjectTestDataGenerator {
         }
     }
 
-    // Helper methods
     private void setUnpopulatedFieldsOnRecord(List<Schema.SObjectField> fields) {
         Map<String, Object> populatedFields = this.record.getPopulatedFieldsAsMap();
         for (Schema.SObjectField field : fields) {

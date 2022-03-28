@@ -31,7 +31,7 @@ Required by the Database.Batchable interface, this method executes the logic for
 | `batchableContext` | - The context of the current batch job. |
 | `logRecords`       | - The log records to purge.             |
 
-#### `execute(Database.BatchableContext batchableContext, List<SObject> loggerRecords)` → `void`
+#### `execute(Database.BatchableContext batchableContext, List<SObject> scopeRecords)` → `void`
 
 Required by the Database.Batchable interface, this method executes the logic for purging log records.
 
@@ -40,7 +40,7 @@ Required by the Database.Batchable interface, this method executes the logic for
 | Param              | Description                             |
 | ------------------ | --------------------------------------- |
 | `batchableContext` | - The context of the current batch job. |
-| `loggerRecords`    | - The log records to purge.             |
+| `scopeRecords`     | - The log records to purge.             |
 
 #### `finish(Database.BatchableContext batchableContext)` → `void`
 

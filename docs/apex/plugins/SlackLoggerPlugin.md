@@ -58,16 +58,16 @@ Optional plugin that integrates with Slack to send alerts for important logs
 
 ### Methods
 
-#### `execute(LoggerPlugin_t configuration, LoggerSObjectHandler.SObjectHandlerInput input)` → `void`
+#### `execute(LoggerPlugin_t configuration, LoggerTriggerableContext input)` → `void`
 
 Handles the integration with Slack. This method is automatically called by Nebula Logger&apos;s plugin framework.
 
 ##### Parameters
 
-| Param           | Description                                                                                      |
-| --------------- | ------------------------------------------------------------------------------------------------ |
-| `configuration` | The instance of `LoggerPlugin_t` configured for this specific plugin                             |
-| `input`         | The instance of `LoggerSObjectHandlerPlugin.SObjectHandlerInput`, provided by the logging system |
+| Param           | Description                                                                |
+| --------------- | -------------------------------------------------------------------------- |
+| `configuration` | The instance of `LoggerPlugin_t` configured for this specific plugin       |
+| `input`         | The instance of `LoggerTriggerableContext`, provided by the logging system |
 
 #### `execute(System.QueueableContext queueableContext)` → `void`
 
