@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Configuration
+ * @group Log Management
  * @description Builds and sends email notifications when internal exceptions occur within the logging system
  */
 @SuppressWarnings('PMD.PropertyNamingConventions')
