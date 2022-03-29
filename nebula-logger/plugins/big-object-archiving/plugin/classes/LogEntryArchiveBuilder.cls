@@ -37,8 +37,10 @@ public without sharing class LogEntryArchiveBuilder {
     public LogEntryArchive__b getLogEntryArchive() {
         if (this.logEntryArchive == null && this.logEntryEvent != null) {
             this.convertLogEntryEventToLogEntryArchive();
+            this.truncateFieldValues();
         } else if (this.logEntryArchive == null && this.logEntry != null) {
             this.convertLogEntryToLogEntryArchive();
+            this.truncateFieldValues();
         }
 
         return this.logEntryArchive;
@@ -257,5 +259,16 @@ public without sharing class LogEntryArchiveBuilder {
             UserRoleName__c = this.logEntry.Log__r.UserRoleName__c,
             UserType__c = this.logEntry.Log__r.UserType__c
         );
+    }
+
+    private void truncateFieldValues() {
+        // TODO
+        for (String fieldName : this.logEntryArchive.getPopulatedFieldsAsMap().keySet()) {
+            Schema.SObjectField field = Schema.LogEntryArchive__b.SObjectType.getDescribe().fields.getMap().get(fieldName);
+            if (field.getDescribe().getSoapType() == Schema.SoapType.STRING) {
+                String fieldValue = (String) this.logEntryArchive.get(field);
+                this.logEntryArchive.put(field, fieldValue?.left(field.getDescribe().getLength()));
+            }
+        }
     }
 }

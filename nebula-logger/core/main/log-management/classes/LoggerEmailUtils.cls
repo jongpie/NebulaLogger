@@ -127,10 +127,10 @@ public without sharing class LoggerEmailUtils {
             List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
             List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
             SENT_EMAILS.add(message);
-            if (emailResults[0].success == true) {
+            if (emailResults.get(0).success == true) {
                 System.debug(LoggingLevel.INFO, 'Logger - The email was sent successfully');
             } else {
-                System.debug(LoggingLevel.INFO, 'Logger - The email failed to send: ' + emailResults[0].errors[0].message);
+                System.debug(LoggingLevel.INFO, 'Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
             }
         }
     }

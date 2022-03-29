@@ -703,6 +703,7 @@ private class LogEntryEventBuilder_Tests {
         List<String> tags = new List<String>{ 'some-tag', 'another One', 'here\'s one more!' };
         builder.addTags(tags);
 
+        tags.sort();
         String expectedTagsString = String.escapeSingleQuotes(String.join(tags, '\n'));
         System.assertEquals(expectedTagsString, builder.getLogEntryEvent().Tags__c);
     }

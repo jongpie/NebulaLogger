@@ -122,7 +122,7 @@ public without sharing class LoggerSObjectTestDataGenerator {
                 return this.getStringValue(fieldDescribe);
             }
             when Currency {
-                return 19.85;
+                return (19.85).setScale(fieldDescribe.getScale());
             }
             when Date {
                 return System.today();
@@ -143,16 +143,16 @@ public without sharing class LoggerSObjectTestDataGenerator {
                 return 1;
             }
             when MultiPicklist {
-                return fieldDescribe.getPicklistValues()[0].getValue();
+                return fieldDescribe.getPicklistValues().get(0).getValue();
             }
             when Percent {
-                return 0.42;
+                return (0.42).setScale(fieldDescribe.getScale());
             }
             when Phone {
                 return '+34 999 11 22 33';
             }
             when Picklist {
-                return fieldDescribe.getPicklistValues()[0].getValue();
+                return fieldDescribe.getPicklistValues().get(0).getValue();
             }
             when String {
                 return this.getStringValue(fieldDescribe);
@@ -174,9 +174,9 @@ public without sharing class LoggerSObjectTestDataGenerator {
     }
 
     private String getStringValue(Schema.DescribeFieldResult fieldDescribe) {
-        String strValue = 'Test string for ' + fieldDescribe.getType();
+        String stringValue = 'Test string for ' + fieldDescribe.getType();
         Integer maxLength = fieldDescribe.getLength();
 
-        return strValue.length() <= maxLength ? strValue : strValue.left(maxLength);
+        return stringValue.left(maxLength);
     }
 }

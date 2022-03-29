@@ -10,6 +10,7 @@ private class LogEntryArchiveBuilder_Tests {
     static void it_should_write_all_fields_over_from_log_entry_event() {
         Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
+        mockEvent.LoggingLevel__c = LoggingLevel.INFO.name();
         mockEvent.Timestamp__c = timestamp;
         mockEvent.TimestampString__c = String.valueOf(timestamp.getTime());
 
@@ -23,8 +24,6 @@ private class LogEntryArchiveBuilder_Tests {
     static void it_should_cache_instance_of_log_entry_archive_for_log_entry_event() {
         Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
-        mockEvent.Timestamp__c = timestamp;
-        mockEvent.TimestampString__c = String.valueOf(timestamp.getTime());
         LogEntryArchiveBuilder archiveBuilder = new LogEntryArchiveBuilder(mockEvent);
         LogEntryArchive__b originalLogEntryArchive = archiveBuilder.getLogEntryArchive();
         originalLogEntryArchive.Message__c = 'Some new value';
@@ -35,27 +34,50 @@ private class LogEntryArchiveBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_write_all_fields_over_from_log_entry() {
-        LogEntry__c logEntry = (LogEntry__c) new LoggerSObjectTestDataGenerator(Schema.LogEntry__c.SObjectType).populateRequiredFields();
-        logEntry.Log__r = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
+    static void it_should_truncate_log_entry_archive_field_values_when_too_long() {
+        Datetime timestamp = System.now();
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
+        mockEvent.Message__c = 'Z'.repeat(Schema.LogEntryArchive__b.Message__c.getDescribe().getLength() + 1);
+        LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockEvent).getLogEntryArchive();
 
-        LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(logEntry).getLogEntryArchive();
+        System.assertNotEquals(mockEvent.Message__c, logEntryArchive.Message__c);
+        System.assertEquals(mockEvent.Message__c.left(Schema.LogEntryArchive__b.Message__c.getDescribe().getLength()), logEntryArchive.Message__c);
+    }
+
+    @IsTest
+    static void it_should_write_all_fields_over_from_log_entry() {
+        LogEntry__c mockLogEntry = (LogEntry__c) new LoggerSObjectTestDataGenerator(Schema.LogEntry__c.SObjectType).populateRequiredFields();
+        mockLogEntry.Log__r = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
+        mockLogEntry.LoggingLevel__c = LoggingLevel.INFO.name();
+
+        LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockLogEntry).getLogEntryArchive();
 
         System.assertNotEquals(null, logEntryArchive);
-        assertAllFieldsMatch(logEntry, logEntryArchive);
+        assertAllFieldsMatch(mockLogEntry, logEntryArchive);
     }
 
     @IsTest
     static void it_should_cache_instance_of_log_entry_archive_for_log_entry() {
-        LogEntry__c logEntry = (LogEntry__c) new LoggerSObjectTestDataGenerator(Schema.LogEntry__c.SObjectType).populateRequiredFields();
-        logEntry.Log__r = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
-        LogEntryArchiveBuilder archiveBuilder = new LogEntryArchiveBuilder(logEntry);
+        LogEntry__c mockLogEntry = (LogEntry__c) new LoggerSObjectTestDataGenerator(Schema.LogEntry__c.SObjectType).populateRequiredFields();
+        mockLogEntry.Log__r = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
+        LogEntryArchiveBuilder archiveBuilder = new LogEntryArchiveBuilder(mockLogEntry);
         LogEntryArchive__b originalLogEntryArchive = archiveBuilder.getLogEntryArchive();
         originalLogEntryArchive.Message__c = 'Some new value';
 
         LogEntryArchive__b secondLogEntryArchive = archiveBuilder.getLogEntryArchive();
 
         System.assertEquals(originalLogEntryArchive, secondLogEntryArchive);
+        System.assertEquals(originalLogEntryArchive.Message__c, secondLogEntryArchive.Message__c);
+    }
+
+    @IsTest
+    static void it_should_truncate_log_entry_field_values_when_too_long() {
+        LogEntry__c mockLogEntry = (LogEntry__c) new LoggerSObjectTestDataGenerator(Schema.LogEntry__c.SObjectType).populateRequiredFields();
+        mockLogEntry.Message__c = 'Z'.repeat(Schema.LogEntryArchive__b.Message__c.getDescribe().getLength() + 1);
+        LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockLogEntry).getLogEntryArchive();
+
+        System.assertNotEquals(mockLogEntry.Message__c, logEntryArchive.Message__c);
+        System.assertEquals(mockLogEntry.Message__c.left(Schema.LogEntryArchive__b.Message__c.getDescribe().getLength()), logEntryArchive.Message__c);
     }
 
     @SuppressWarnings('PMD.NcssMethodCount')
