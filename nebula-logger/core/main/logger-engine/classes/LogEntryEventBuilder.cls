@@ -669,7 +669,9 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(new List<String>(this.tags), '\n'));
+        List<String> sortedTags = new List<String>(this.tags);
+        sortedTags.sort();
+        this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(sortedTags, '\n'));
     }
 
     private void setTransactionDetails() {

@@ -204,22 +204,31 @@ public class LoggerTestUtils {
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
      * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isCreated Indicates if the generated mock should have `isCreated` == true
      * @return   The mock instance of `Database.UpsertResult`
      */
-    public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess) {
-        return createMockDatabaseUpsertResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated) {
+        return createMockDatabaseUpsertResult(isSuccess, isCreated, createMockId(Schema.Account.SObjectType));
     }
 
     /**
      * @description Creates a mock instance of `Database.UpsertResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests)
      * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
+     * @param  isCreated Indicates if the generated mock should have `isCreated` == true
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.UpsertResult`
      */
-    public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess, Id recordId) {
+    public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
         if (isSuccess == true) {
-            return (Database.UpsertResult) JSON.deserialize('{"success": true, "created": true, "id": "' + recordId + '"}', Database.UpsertResult.class);
+            return (Database.UpsertResult) JSON.deserialize(
+                '{"success": true, "created": ' +
+                isCreated +
+                ', "id": "' +
+                recordId +
+                '"}',
+                Database.UpsertResult.class
+            );
         } else {
             return (Database.UpsertResult) JSON.deserialize(
                 '{"success":false,"errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',

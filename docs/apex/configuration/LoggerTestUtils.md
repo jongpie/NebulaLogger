@@ -252,7 +252,7 @@ Database.UndeleteResult
 
 The mock instance of `Database.UndeleteResult`
 
-#### `createMockDatabaseUpsertResult(Boolean isSuccess)` → `Database.UpsertResult`
+#### `createMockDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated)` → `Database.UpsertResult`
 
 Creates a mock instance of `Database.UpsertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
 
@@ -261,6 +261,7 @@ Creates a mock instance of `Database.UpsertResult` - a mock is used instead of a
 | Param       | Description                                                     |
 | ----------- | --------------------------------------------------------------- |
 | `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| `isCreated` | Indicates if the generated mock should have `isCreated` == true |
 
 ##### Return
 
@@ -272,7 +273,7 @@ Database.UpsertResult
 
 The mock instance of `Database.UpsertResult`
 
-#### `createMockDatabaseUpsertResult(Boolean isSuccess, Id recordId)` → `Database.UpsertResult`
+#### `createMockDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId)` → `Database.UpsertResult`
 
 Creates a mock instance of `Database.UpsertResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests)
 
@@ -281,6 +282,7 @@ Creates a mock instance of `Database.UpsertResult` - a mock is used instead of a
 | Param       | Description                                                     |
 | ----------- | --------------------------------------------------------------- |
 | `isSuccess` | Indicates if the generated mock should have `isSuccess` == true |
+| `isCreated` | Indicates if the generated mock should have `isCreated` == true |
 | `recordId`  | The record ID to use within the mock result                     |
 
 ##### Return
