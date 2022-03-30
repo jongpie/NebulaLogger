@@ -113,8 +113,13 @@ private class LogEntryArchivePlugin_Tests {
         Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
-        LoggerTriggerableContext pluginInput = new LoggerTriggerableContext();
-        pluginInput.triggerNew = new List<LogEntryEvent__e>{ mockEvent };
+        LoggerTriggerableContext pluginInput = new LoggerTriggerableContext(
+            Schema.LogEntryEvent__e.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<LogEntryEvent__e>{ mockEvent },
+            null,
+            null
+        );
         Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
 
         new LogEntryArchivePlugin().execute(pluginConfiguration, pluginInput);

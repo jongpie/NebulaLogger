@@ -35,9 +35,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
      */
     public LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents) {
         this();
-        this.input.triggerNew = logEntryEvents;
-        this.input.triggerOperationType = triggerOperationType;
-        this.input.triggerOperationTypeName = triggerOperationType.name();
+        super.input = new LoggerTriggerableContext(this.getSObjectType(), triggerOperationType, logEntryEvents, null, null);
     }
 
     /**

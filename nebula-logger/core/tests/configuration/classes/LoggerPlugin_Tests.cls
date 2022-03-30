@@ -65,29 +65,29 @@ private class LoggerPlugin_Tests {
     }
 
     @IsTest
-    static void it_should_return_batch_purger_apex_plugin_instance_for_valid_class() {
-        LoggerPlugin.Batchable batchPurgerApexPlugin = LoggerPlugin.newBatchableInstance(ExampleBatchPurgerPlugin.class.getName());
-        System.assertNotEquals(null, batchPurgerApexPlugin, ExampleBatchPurgerPlugin.class.getName());
-        System.assertEquals(true, batchPurgerApexPlugin instanceof ExampleBatchPurgerPlugin);
+    static void it_should_return_batchable_apex_plugin_instance_for_valid_class() {
+        LoggerPlugin.Batchable batchableApexPlugin = LoggerPlugin.newBatchableInstance(ExampleBatchPurgerPlugin.class.getName());
+        System.assertNotEquals(null, batchableApexPlugin, ExampleBatchPurgerPlugin.class.getName());
+        System.assertEquals(true, batchableApexPlugin instanceof ExampleBatchPurgerPlugin);
     }
 
     @IsTest
-    static void it_should_return_null_batch_purger_apex_plugin_instance_for_invalid_class() {
-        LoggerPlugin.Batchable batchPurgerApexPlugin = LoggerPlugin.newBatchableInstance('Some fake class, this definitely doesn\'t exist');
-        System.assertEquals(null, batchPurgerApexPlugin);
+    static void it_should_return_null_batchable_apex_plugin_instance_for_invalid_class() {
+        LoggerPlugin.Batchable batchableApexPlugin = LoggerPlugin.newBatchableInstance('Some fake class, this definitely doesn\'t exist');
+        System.assertEquals(null, batchableApexPlugin);
     }
 
     @IsTest
-    static void it_should_return_sobject_handler_apex_plugin_instance_for_valid_class() {
-        LoggerPlugin.Triggerable sobjectHandlerApexPlugin = LoggerPlugin.newTriggerableInstance(ExampleTriggerablePlugin.class.getName());
-        System.assertNotEquals(null, sobjectHandlerApexPlugin, ExampleTriggerablePlugin.class.getName());
-        System.assertEquals(true, sobjectHandlerApexPlugin instanceof ExampleTriggerablePlugin);
+    static void it_should_return_triggerable_apex_plugin_instance_for_valid_class() {
+        LoggerPlugin.Triggerable triggerableApexPlugin = LoggerPlugin.newTriggerableInstance(ExampleTriggerablePlugin.class.getName());
+        System.assertNotEquals(null, triggerableApexPlugin, ExampleTriggerablePlugin.class.getName());
+        System.assertEquals(true, triggerableApexPlugin instanceof ExampleTriggerablePlugin);
     }
 
     @IsTest
-    static void it_should_return_null_sobject_handler_apex_plugin_instance_for_invalid_class() {
-        LoggerPlugin.Triggerable sobjectHandlerApexPlugin = LoggerPlugin.newTriggerableInstance('Some fake class, this definitely doesn\'t exist');
-        System.assertEquals(null, sobjectHandlerApexPlugin);
+    static void it_should_return_null_triggerable_apex_plugin_instance_for_invalid_class() {
+        LoggerPlugin.Triggerable triggerableApexPlugin = LoggerPlugin.newTriggerableInstance('Some fake class, this definitely doesn\'t exist');
+        System.assertEquals(null, triggerableApexPlugin);
     }
 
     private static LoggerPlugin__mdt createMockPluginConfiguration(String developerName) {

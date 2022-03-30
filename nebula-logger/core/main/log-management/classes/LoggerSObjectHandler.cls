@@ -17,7 +17,7 @@ public without sharing abstract class LoggerSObjectHandler {
     protected LoggerTriggerableContext input {
         get {
             if (input == null) {
-                input = this.createLoggerTriggerableContext();
+                input = new LoggerTriggerableContext(this.getSObjectType(), this.triggerOperationType, this.triggerNew, this.triggerNewMap, this.triggerOldMap);
             }
             return input;
         }
@@ -136,42 +136,6 @@ public without sharing abstract class LoggerSObjectHandler {
     protected virtual void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
     }
 
-    private LoggerTriggerableContext createLoggerTriggerableContext() {
-        LoggerTriggerableContext input = new LoggerTriggerableContext();
-
-        // Trigger variables for Apex Developers
-        input.sobjectType = this.getSObjectType();
-        input.triggerOperationType = this.triggerOperationType;
-        input.triggerNew = this.triggerNew;
-        input.triggerNewMap = this.triggerNewMap;
-        input.triggerOldMap = this.triggerOldMap;
-
-        // Additional invocable variables for Flow Builders (and Apex Developers too, if they want to use them)
-        input.sobjectTypeName = this.getSObjectType().getDescribe().getName();
-        input.triggerOperationTypeName = Trigger.operationType?.name();
-        input.triggerRecords = new List<LoggerTriggerableContext.RecordInput>();
-        if (input.triggerNew != null) {
-            for (SObject record : input.triggerNew) {
-                LoggerTriggerableContext.RecordInput recordInput = new LoggerTriggerableContext.RecordInput();
-                recordInput.triggerRecordNew = record;
-                if (input.triggerOldMap != null && record.Id != null) {
-                    recordInput.triggerRecordOld = input.triggerOldMap.get(record.Id);
-                }
-
-                input.triggerRecords.add(recordInput);
-            }
-        } else if (input.triggerOldMap != null) {
-            for (SObject record : input.triggerOldMap.values()) {
-                LoggerTriggerableContext.RecordInput recordInput = new LoggerTriggerableContext.RecordInput();
-                recordInput.triggerRecordOld = record;
-
-                input.triggerRecords.add(recordInput);
-            }
-        }
-
-        return input;
-    }
-
     private void executePlugins() {
         if (this.pluginConfigurations == null || this.pluginConfigurations.isEmpty() == true) {
             return;
@@ -213,9 +177,11 @@ public without sharing abstract class LoggerSObjectHandler {
 
             List<SObject> updatedTriggerNew = (List<SObject>) flowPlugin.getVariableValue('updatedTriggerNew');
             if (updatedTriggerNew != null && updatedTriggerNew.size() == this.input.triggerNew.size()) {
-                this.input.triggerNew = updatedTriggerNew;
+                this.input.triggerNew.clear();
+                this.input.triggerNew.addAll(updatedTriggerNew);
                 if (this.input.triggerNewMap != null) {
-                    this.input.triggerNewMap = new Map<Id, SObject>(updatedTriggerNew);
+                    this.input.triggerNewMap.clear();
+                    this.input.triggerNewMap.putAll(new Map<Id, SObject>(updatedTriggerNew));
                 }
             }
             if (System.Test.isRunningTest() == true && flowPlugin != null) {
