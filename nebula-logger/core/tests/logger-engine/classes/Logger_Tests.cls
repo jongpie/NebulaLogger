@@ -6,108 +6,6 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class Logger_Tests {
-    // Helper classes
-    private class SuccessCalloutMock implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest request) {
-            HttpResponse response = new HttpResponse();
-            response.setBody(request.getBody());
-            response.setStatusCode(200);
-            return response;
-        }
-    }
-
-    private class FailureCalloutMock implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest request) {
-            HttpResponse response = new HttpResponse();
-            response.setBody(request.getBody());
-            response.setStatusCode(400);
-            return response;
-        }
-    }
-
-    // Helper methods
-    static void setUserLoggingLevel(LoggingLevel loggingLevel) {
-        Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
-    }
-
-    static String getMessage() {
-        return 'Hello, world';
-    }
-
-    static LogMessage getLogMessage() {
-        return new LogMessage('The current user is {0}', getRecord());
-    }
-
-    static SObject getRecord() {
-        return new User(
-            Id = UserInfo.getUserId(),
-            ProfileId = UserInfo.getProfileId(),
-            Username = UserInfo.getUserName(),
-            UserRoleId = UserInfo.getUserRoleId()
-        );
-    }
-
-    static Exception getException() {
-        return new DmlException('Example DML Exception');
-    }
-
-    static List<Database.DeleteResult> getDeleteResultList() {
-        List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
-        for (Integer i = 0; i < 3; i++) {
-            deleteResults.add(LoggerTestUtils.createMockDatabaseDeleteResult(true));
-        }
-        return deleteResults;
-    }
-
-    // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
-    // static Database.MergeResult getMergeResult(Boolean isSuccess) { }
-
-    static List<Database.SaveResult> getSaveResultList() {
-        List<Database.SaveResult> saveResults = new List<Database.SaveResult>();
-        for (Integer i = 0; i < 3; i++) {
-            saveResults.add(LoggerTestUtils.createMockDatabaseSaveResult(true));
-        }
-        return saveResults;
-    }
-
-    static List<Database.UpsertResult> getUpsertResultList() {
-        List<Database.UpsertResult> upsertresults = new List<Database.UpsertResult>();
-        for (Integer i = 0; i < 3; i++) {
-            upsertresults.add(LoggerTestUtils.createMockDatabaseUpsertResult(true, true));
-        }
-        return upsertresults;
-    }
-
-    static List<Database.UndeleteResult> getUndeleteResultList() {
-        List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
-        for (Integer i = 0; i < 3; i++) {
-            undeleteResults.add(LoggerTestUtils.createMockDatabaseUndeleteResult(true));
-        }
-        return undeleteResults;
-    }
-
-    static String getOriginLocation() {
-        String originLocation;
-        for (String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
-            if (currentStackTraceLine.contains('Logger_Tests.getOriginLocation')) {
-                continue;
-            }
-            if (currentStackTraceLine.contains('.LogEntryEventBuilder.')) {
-                continue;
-            }
-            if (currentStackTraceLine.contains('.Logger.')) {
-                continue;
-            }
-            originLocation = currentStackTraceLine.substringBefore(':');
-            if (originLocation.startsWith('Class.')) {
-                originLocation = originLocation.substringAfter('Class.');
-            }
-            break;
-        }
-
-        return originLocation;
-    }
-
     @TestSetup
     static void setup() {
         LoggerSettings__c settings = LoggerSettings__c.getInstance();
@@ -825,7 +723,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_defaulted() {
-        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -854,7 +752,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_specified_via_settings() {
-        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -879,7 +777,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_specified_via_setSaveMethod() {
-        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -907,7 +805,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_throw_exception_when_save_via_rest_api_fails() {
-        Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
+        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(400));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -6257,4 +6155,87 @@ private class Logger_Tests {
         System.assertEquals(log.Id, returnedLog.Id);
     }
     // End tests for utility methods
+
+    // Helper methods
+    static void setUserLoggingLevel(LoggingLevel loggingLevel) {
+        Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
+    }
+
+    static String getMessage() {
+        return 'Hello, world';
+    }
+
+    static LogMessage getLogMessage() {
+        return new LogMessage('The current user is {0}', getRecord());
+    }
+
+    static SObject getRecord() {
+        return new User(
+            Id = UserInfo.getUserId(),
+            ProfileId = UserInfo.getProfileId(),
+            Username = UserInfo.getUserName(),
+            UserRoleId = UserInfo.getUserRoleId()
+        );
+    }
+
+    static Exception getException() {
+        return new DmlException('Example DML Exception');
+    }
+
+    static List<Database.DeleteResult> getDeleteResultList() {
+        List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
+        for (Integer i = 0; i < 3; i++) {
+            deleteResults.add(LoggerTestUtils.createMockDatabaseDeleteResult(true));
+        }
+        return deleteResults;
+    }
+
+    // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
+    // static Database.MergeResult getMergeResult(Boolean isSuccess) { }
+
+    static List<Database.SaveResult> getSaveResultList() {
+        List<Database.SaveResult> saveResults = new List<Database.SaveResult>();
+        for (Integer i = 0; i < 3; i++) {
+            saveResults.add(LoggerTestUtils.createMockDatabaseSaveResult(true));
+        }
+        return saveResults;
+    }
+
+    static List<Database.UpsertResult> getUpsertResultList() {
+        List<Database.UpsertResult> upsertresults = new List<Database.UpsertResult>();
+        for (Integer i = 0; i < 3; i++) {
+            upsertresults.add(LoggerTestUtils.createMockDatabaseUpsertResult(true, true));
+        }
+        return upsertresults;
+    }
+
+    static List<Database.UndeleteResult> getUndeleteResultList() {
+        List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
+        for (Integer i = 0; i < 3; i++) {
+            undeleteResults.add(LoggerTestUtils.createMockDatabaseUndeleteResult(true));
+        }
+        return undeleteResults;
+    }
+
+    static String getOriginLocation() {
+        String originLocation;
+        for (String currentStackTraceLine : new DmlException().getStackTraceString().split('\n')) {
+            if (currentStackTraceLine.contains('Logger_Tests.getOriginLocation')) {
+                continue;
+            }
+            if (currentStackTraceLine.contains('.LogEntryEventBuilder.')) {
+                continue;
+            }
+            if (currentStackTraceLine.contains('.Logger.')) {
+                continue;
+            }
+            originLocation = currentStackTraceLine.substringBefore(':');
+            if (originLocation.startsWith('Class.')) {
+                originLocation = originLocation.substringAfter('Class.');
+            }
+            break;
+        }
+
+        return originLocation;
+    }
 }

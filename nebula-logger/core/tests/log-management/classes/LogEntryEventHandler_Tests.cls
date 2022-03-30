@@ -340,7 +340,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
-        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(200).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestUtils.setMock(mockCallStatusApiParameter);
         System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
@@ -397,7 +397,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
-        Test.setMock(HttpCalloutMock.class, new SuccessCalloutMock());
+        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
         LoggerTestUtils.setMock(mockCallStatusApiParameter);
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
@@ -419,7 +419,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
-        Test.setMock(HttpCalloutMock.class, new FailureCalloutMock());
+        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestUtils.setMock(mockCallStatusApiParameter);
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
@@ -453,27 +453,11 @@ private class LogEntryEventHandler_Tests {
         validateLogEntryFields(logEntryEvent, logEntry);
     }
 
-    private class SuccessCalloutMock implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest request) {
-            LogEntryEventHandler.StatusApiResponse apiResponse = new LogEntryEventHandler.StatusApiResponse();
-            apiResponse.releaseNumber = MOCK_RELEASE_NUMBER;
-            apiResponse.releaseVersion = MOCK_RELEASE_VERSION;
-
-            HttpResponse response = new HttpResponse();
-            response.setBody(JSON.serialize(apiResponse));
-            response.setHeader('Content-Type', 'application/json');
-            response.setStatusCode(200);
-
-            return response;
-        }
-    }
-
-    private class FailureCalloutMock implements HttpCalloutMock {
-        public HttpResponse respond(HttpRequest request) {
-            HttpResponse response = new HttpResponse();
-            response.setStatusCode(400);
-            return response;
-        }
+    private static String createStatusApiResponseJson() {
+        LogEntryEventHandler.StatusApiResponse apiResponse = new LogEntryEventHandler.StatusApiResponse();
+        apiResponse.releaseNumber = MOCK_RELEASE_NUMBER;
+        apiResponse.releaseVersion = MOCK_RELEASE_VERSION;
+        return JSON.serialize(apiResponse);
     }
 
     private static Log__c getLog() {

@@ -87,9 +87,9 @@ public class LoggerTestUtils {
      * @description Creates an instance of the class `MockBatchableContext` that implements the interface `Database.BatchableContext`.
      *              This can be used when testing batch jobs.
      * @param  jobId A string value to use as the batchable job ID - this can be a true ID, or just a string
-     * @return       The instance of MockBatchableContext
+     * @return       The instance of `MockBatchableContext`
      */
-    public static Database.BatchableContext createMockBatchableContext(String jobId) {
+    public static MockBatchableContext createMockBatchableContext(String jobId) {
         return new MockBatchableContext(jobId);
     }
 
@@ -249,6 +249,15 @@ public class LoggerTestUtils {
                 Database.UpsertResult.class
             );
         }
+    }
+
+    /**
+     * @description Generates an instance of the class `MockHttpCallout` that implements the interface `HttpCalloutMock`.
+     *              This can be used when testing batch jobs.
+     * @return       The instance of `MockHttpCallout`
+     */
+    public static MockHttpCallout createMockHttpCallout() {
+        return new MockHttpCallout();
     }
 
     /**
@@ -458,6 +467,37 @@ public class LoggerTestUtils {
 
         public String getJobId() {
             return jobId;
+        }
+    }
+
+    public class MockHttpCallout implements HttpCalloutMock {
+        public HttpRequest request { get; private set; }
+        public HttpResponse response { get; private set; }
+        public String responseBody { get; private set; }
+        public Integer statusCode { get; private set; }
+
+        private MockHttpCallout() {
+        }
+
+        public MockHttpCallout setResponseBody(String responseBody) {
+            this.responseBody = responseBody;
+            return this;
+        }
+
+        public MockHttpCallout setStatusCode(Integer statusCode) {
+            this.statusCode = statusCode;
+            return this;
+        }
+
+        public HttpResponse respond(HttpRequest request) {
+            this.request = request;
+
+            this.response = new HttpResponse();
+            if (String.isNotBlank(this.responseBody) == true) {
+                response.setBody(this.responseBody);
+            }
+            response.setStatusCode(this.statusCode);
+            return response;
         }
     }
 }
