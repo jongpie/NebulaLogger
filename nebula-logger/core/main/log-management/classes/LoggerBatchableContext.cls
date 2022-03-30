@@ -10,9 +10,9 @@
  * @see LoggerPlugin
  */
 public without sharing class LoggerBatchableContext {
+    @AuraEnabled
     public Database.BatchableContext batchableContext;
     public Schema.SObjectType sobjectType;
-
     @AuraEnabled
     public String sobjectTypeName;
 

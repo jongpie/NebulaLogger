@@ -84,6 +84,16 @@ public class LoggerTestUtils {
     }
 
     /**
+     * @description Creates an instance of the class `MockBatchableContext` that implements the interface `Database.BatchableContext`.
+     *              This can be used when testing batch jobs.
+     * @param  jobId A string value to use as the batchable job ID - this can be a true ID, or just a string
+     * @return       The instance of MockBatchableContext
+     */
+    public static Database.BatchableContext createMockBatchableContext(String jobId) {
+        return new MockBatchableContext(jobId);
+    }
+
+    /**
      * @description Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance
      *              to help speed up tests, and to support writing unit tests (instead of integration tests). A fake
      *              record ID is automatically included.
@@ -423,5 +433,27 @@ public class LoggerTestUtils {
             results.put(permissionSet.Name, permissionSet);
         }
         return results;
+    }
+
+    public class MockBatchableContext implements Database.BatchableContext {
+        private String childJobId;
+        private String jobId;
+
+        private MockBatchableContext(String jobId) {
+            this(jobId, null);
+        }
+
+        private MockBatchableContext(String jobId, Id childJobId) {
+            this.jobId = jobId;
+            this.childJobId = childJobId;
+        }
+
+        public String getChildJobId() {
+            return childJobId;
+        }
+
+        public String getJobId() {
+            return jobId;
+        }
     }
 }

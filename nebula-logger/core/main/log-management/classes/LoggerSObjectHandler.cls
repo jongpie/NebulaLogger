@@ -189,26 +189,25 @@ public without sharing abstract class LoggerSObjectHandler {
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
-        LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
-        apexPlugin?.execute(configuration, this.input);
+        try {
+            LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
+            apexPlugin?.execute(configuration, this.input);
 
-        if (System.Test.isRunningTest() == true && apexPlugin != null) {
-            this.executedApexPlugins.add(apexPlugin);
+            if (System.Test.isRunningTest() == true && apexPlugin != null) {
+                this.executedApexPlugins.add(apexPlugin);
+            }
+        } catch (TypeException ex) {
+            System.debug(LoggingLevel.WARN, 'Unknown Apex class ' + configuration.SObjectHandlerApexClass__c + ', skipping plugin execution');
         }
     }
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeFlowPlugin(LoggerPlugin__mdt configuration) {
-        Map<String, Object> flowInputs = new Map<String, Object>();
-        flowInputs.put('pluginConfiguration', configuration);
-        flowInputs.put('pluginInput', this.input);
-
-        // TODO Legacy approach, remove in a future release
-        flowInputs.put('triggerOperationType', this.input.triggerOperationType?.name());
-        flowInputs.put('triggerNew', this.input.triggerNew);
-        flowInputs.put('triggerOld', this.input.triggerOldMap?.values());
-
         try {
+            Map<String, Object> flowInputs = new Map<String, Object>();
+            flowInputs.put('pluginConfiguration', configuration);
+            flowInputs.put('pluginInput', this.input);
+
             Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.SObjectHandlerFlowName__c, flowInputs);
             flowPlugin.start();
 
@@ -223,7 +222,7 @@ public without sharing abstract class LoggerSObjectHandler {
                 this.executedFlowPlugins.add(flowPlugin);
             }
         } catch (TypeException ex) {
-            System.debug(LoggingLevel.INFO, 'Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution');
+            System.debug(LoggingLevel.WARN, 'Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution');
         }
     }
 
