@@ -13,6 +13,7 @@ public without sharing abstract class LoggerSObjectHandler {
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
 
     // Instance variables for top-level class
+    @TestVisible
     protected LoggerTriggerableContext input {
         get {
             if (input == null) {
@@ -33,6 +34,7 @@ public without sharing abstract class LoggerSObjectHandler {
     private Map<Id, SObject> triggerOldMap;
     private List<LoggerPlugin__mdt> pluginConfigurations = new List<LoggerPlugin__mdt>();
     private List<LoggerPlugin.Triggerable> executedApexPlugins = new List<LoggerPlugin.Triggerable>();
+    private List<Flow.Interview> executedFlowPlugins = new List<Flow.Interview>();
 
     /**
      * @description Default constructor
@@ -217,6 +219,9 @@ public without sharing abstract class LoggerSObjectHandler {
                     this.input.triggerNewMap = new Map<Id, SObject>(updatedTriggerNew);
                 }
             }
+            if (System.Test.isRunningTest() == true && flowPlugin != null) {
+                this.executedFlowPlugins.add(flowPlugin);
+            }
         } catch (TypeException ex) {
             System.debug(LoggingLevel.INFO, 'Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution');
         }
@@ -231,6 +236,11 @@ public without sharing abstract class LoggerSObjectHandler {
     @TestVisible
     private List<LoggerPlugin.Triggerable> getExecutedApexPlugins() {
         return this.executedApexPlugins;
+    }
+
+    @TestVisible
+    private List<Flow.Interview> getExecutedFlowPlugins() {
+        return this.executedFlowPlugins;
     }
 
     // Static test helper methods, used for integration tests

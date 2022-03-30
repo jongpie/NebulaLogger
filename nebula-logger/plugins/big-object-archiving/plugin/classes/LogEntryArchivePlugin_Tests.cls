@@ -8,6 +8,7 @@
 private class LogEntryArchivePlugin_Tests {
     @IsTest
     static void it_archives_log_entry_records_in_log_batch_purger_when_purge_action_is_archive() {
+        LoggerSObjectHandler.shouldExecute(false);
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
@@ -19,7 +20,7 @@ private class LogEntryArchivePlugin_Tests {
         );
         insert log;
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
-        for (Integer i = 0; i < 10; i++) {
+        for (Integer i = 0; i < 3; i++) {
             logEntries.add(new LogEntry__c(Log__c = log.Id, Message__c = 'Some message for ' + i, TransactionEntryNumber__c = i));
         }
         insert logEntries;
@@ -27,9 +28,7 @@ private class LogEntryArchivePlugin_Tests {
 
         Database.executeBatch(batchPurger);
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
         Test.stopTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(logEntries.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
         List<Log__c> existingLogs = [SELECT Id FROM Log__c];
         System.assertEquals(0, existingLogs.size());
@@ -37,6 +36,7 @@ private class LogEntryArchivePlugin_Tests {
 
     @IsTest
     static void it_skips_log_entry_records_in_log_batch_purger_when_purge_action_is_not_archive() {
+        LoggerSObjectHandler.shouldExecute(false);
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
@@ -58,9 +58,7 @@ private class LogEntryArchivePlugin_Tests {
 
         Database.executeBatch(batchPurger);
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
         Test.stopTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(
             logEntries.size() / 2,
             LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(),
@@ -72,6 +70,7 @@ private class LogEntryArchivePlugin_Tests {
 
     @IsTest
     static void it_includes_tags_for_log_entry_in_log_batch_purger_when_tags_exist() {
+        LoggerSObjectHandler.shouldExecute(false);
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
@@ -83,7 +82,7 @@ private class LogEntryArchivePlugin_Tests {
         );
         insert log;
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
-        for (Integer i = 0; i < 10; i++) {
+        for (Integer i = 0; i < 3; i++) {
             logEntries.add(new LogEntry__c(Log__c = log.Id, Message__c = 'Some message for ' + i, TransactionEntryNumber__c = i));
         }
         insert logEntries;
@@ -112,7 +111,7 @@ private class LogEntryArchivePlugin_Tests {
     @IsTest
     static void it_should_not_create_archive_in_logger_when_save_method_is_not_big_object() {
         Datetime timestamp = System.now();
-        LogEntryEvent__e mockEvent = LoggerTestUtils.createLogEntryEvent(timestamp);
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
         LoggerTriggerableContext pluginInput = new LoggerTriggerableContext();
         pluginInput.triggerNew = new List<LogEntryEvent__e>{ mockEvent };

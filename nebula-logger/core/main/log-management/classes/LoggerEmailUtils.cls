@@ -37,15 +37,7 @@ public without sharing class LoggerEmailUtils {
     }
 
     @TestVisible
-    private static final List<Messaging.SingleEmailMessage> SENT_EMAILS {
-        get {
-            if (SENT_EMAILS == null) {
-                SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
-            }
-            return SENT_EMAILS;
-        }
-        set;
-    }
+    private static final List<Messaging.SingleEmailMessage> SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
 
     /**
      * @description Sends an error email notification to the org's list of Apex Exception Email recipients,

@@ -194,18 +194,26 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_execute_apex_plugin() {
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(
+        LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             DeveloperName = 'ExampleApexPlugin',
             IsEnabled__c = true,
             SObjectHandlerApexClass__c = MockLogHandlerPlugin.class.getName()
         );
-        LoggerTestUtils.setMock(plugin);
+        LoggerTestUtils.setMock(mockPluginConfiguration);
+        MockLogHandler mockHandler = new MockLogHandler();
+        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
+        mockHandler.triggerNewMap = null;
+        mockHandler.triggerOldMap = null;
 
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '6789');
-        insert log;
+        mockHandler.execute();
 
-        log = [SELECT Id, ProfileName__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(FAKE_PROFILE_NAME, log.ProfileName__c);
+        System.assertEquals(1, mockHandler.executionCount);
+        System.assertEquals(1, mockHandler.getPluginConfigurations().size(), mockHandler.getPluginConfigurations());
+        System.assertEquals(1, mockHandler.getExecutedApexPlugins().size(), mockHandler.getExecutedApexPlugins());
+        MockLogHandlerPlugin executedApexPlugin = (MockLogHandlerPlugin) mockHandler.getExecutedApexPlugins().get(0);
+        System.assertEquals(mockPluginConfiguration, executedApexPlugin.configuration);
+        System.assertEquals(mockHandler.input, executedApexPlugin.input);
     }
 
     public class MockLogHandler extends LoggerSObjectHandler {
@@ -275,14 +283,11 @@ private class LoggerSObjectHandler_Tests {
     }
 
     public class MockLogHandlerPlugin implements LoggerPlugin.Triggerable {
+        public LoggerPlugin__mdt configuration;
+        public LoggerTriggerableContext input;
         public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
-            if (input.triggerOperationType == TriggerOperation.BEFORE_INSERT) {
-                for (Log__c log : (List<Log__c>) input.triggerNew) {
-                    // The specific field changed doesn't really matter - we just want to ensure that whatever
-                    // logic implemented in the instance of LoggerPlugin.Triggerable is executed
-                    log.ProfileName__c = FAKE_PROFILE_NAME;
-                }
-            }
+            this.configuration = configuration;
+            this.input = input;
         }
     }
 }
