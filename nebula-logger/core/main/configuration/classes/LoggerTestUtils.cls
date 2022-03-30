@@ -232,7 +232,9 @@ public class LoggerTestUtils {
     public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
         if (isSuccess == true) {
             return (Database.UpsertResult) JSON.deserialize(
-                '{"success": true, "created": ' +
+                '{"success": ' +
+                isSuccess +
+                ', "created": ' +
                 isCreated +
                 ', "id": "' +
                 recordId +
@@ -241,7 +243,9 @@ public class LoggerTestUtils {
             );
         } else {
             return (Database.UpsertResult) JSON.deserialize(
-                '{"success":false,"errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
+                '{"success":false, "created":' +
+                isCreated +
+                ', "errors":[{"message": "Could not upsert...", "statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}]}',
                 Database.UpsertResult.class
             );
         }
