@@ -1,8 +1,10 @@
 # Slack plugin for Nebula Logger
 
+> :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger
+
 Adds a Slack integration for the unlocked package edition of Nebula Logger v4.6.9 or newer. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
 
-[![Install Unlocked Package](./images/btn-install-unlocked-package-plugin.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l2WQAQ)
+[![Install Unlocked Package](../.images/btn-install-unlocked-package-plugin.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l2WQAQ)
 
 ![Slack plugin: notification](./images/slack-plugin-notification.png)
 
@@ -10,13 +12,13 @@ Adds a Slack integration for the unlocked package edition of Nebula Logger v4.6.
 
 ## What's Included
 
-This plugin includes some add-on metadata for Logger to support the Slack integration
+This plugin includes some add-on metadata for Nebula Logger to support the Slack integration
 
 1. Apex class `SlackLoggerPlugin` and corresponding tests in `SlackLoggerPlugin_Tests`
 2. Plugin configuration details stored in Logger's CMDT objects `LoggerPlugin__mdt` and `LoggerParameter__mdt`
 3. Custom fields `Log__c.SendSlackNotification__c` and `Log__c.SlackNotificationDate__c`
 4. Field-level security (FLS) via a new permission set `LoggerSlackPluginAdmin` to provide access to the custom Slack fields
-5. Custom list views for the `Log__c` and `LoggerParameter__mdt` objects
+5. Two custom list views for the `Log__c` object to see any `Log__c` records that have, or should be, sent to Slack
 6. Remote site setting for Slack's API
 
 ---

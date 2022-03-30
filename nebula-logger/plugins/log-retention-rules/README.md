@@ -11,7 +11,7 @@ Adds the ability to create & deploy advanced, configurable rules for setting the
 
 ## What's Included
 
-This plugin includes some add-on metadata for Logger to support the Slack integration
+This plugin includes some add-on metadata for Nebula Logger to support the Slack integration
 
 1. Plugin configuration details stored in Logger's CMDT objects `LoggerPlugin__mdt.LogRetentionRules`
 2. New custom metadata types
