@@ -5,7 +5,7 @@
 
 /**
  * @group Log Management
- * @description DTO class used by the logging system to for batch contextual details
+ * @description Class used by the logging system for batch contextual details
  * @see LogBatchPurger
  * @see LoggerPlugin
  */

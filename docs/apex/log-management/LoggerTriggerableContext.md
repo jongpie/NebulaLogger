@@ -4,13 +4,19 @@ layout: default
 
 ## LoggerTriggerableContext class
 
-DTO class used by the logging system to for trigger contextual details
+Class used by the logging system for trigger contextual details
 
 ### Related
 
 [LoggerSObjectHandler](LoggerSObjectHandler)
 
 [LoggerPlugin](LoggerPlugin)
+
+---
+
+### Constructors
+
+#### `LoggerTriggerableContext(Schema.SObjectType sobjectType,TriggerOperation triggerOperationType,List<SObject> triggerNew,Map<Id, SObject> triggerNewMap,Map<Id, SObject> triggerOldMap)`
 
 ---
 

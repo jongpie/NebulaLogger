@@ -4,7 +4,7 @@ layout: default
 
 ## LoggerBatchableContext class
 
-DTO class used by the logging system to for batch contextual details
+Class used by the logging system for batch contextual details
 
 ### Related
 

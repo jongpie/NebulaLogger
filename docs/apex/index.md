@@ -74,7 +74,7 @@ Manages mass deleting `Log__c` records that have been selected by a user on a `L
 
 ### [LoggerBatchableContext](log-management/LoggerBatchableContext)
 
-DTO class used by the logging system to for batch contextual details
+Class used by the logging system for batch contextual details
 
 ### [LoggerEmailUtils](log-management/LoggerEmailUtils)
 
@@ -98,7 +98,7 @@ Handles trigger events for the `LoggerTag__c` object
 
 ### [LoggerTriggerableContext](log-management/LoggerTriggerableContext)
 
-DTO class used by the logging system to for trigger contextual details
+Class used by the logging system for trigger contextual details
 
 ### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
 

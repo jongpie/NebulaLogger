@@ -88,6 +88,26 @@ AggregateResult
 
 The mock instance of `AggregateResult`
 
+#### `createMockBatchableContext(String jobId)` → `MockBatchableContext`
+
+Creates an instance of the class `MockBatchableContext` that implements the interface `Database.BatchableContext`. This can be used when testing batch jobs.
+
+##### Parameters
+
+| Param   | Description                                                                             |
+| ------- | --------------------------------------------------------------------------------------- |
+| `jobId` | A string value to use as the batchable job ID - this can be a true ID, or just a string |
+
+##### Return
+
+**Type**
+
+MockBatchableContext
+
+**Description**
+
+The instance of `MockBatchableContext`
+
 #### `createMockDatabaseDeleteResult(Boolean isSuccess)` → `Database.DeleteResult`
 
 Creates a mock instance of `Database.DeleteResult` - a mock is used instead of an actual instance to help speed up tests, and to support writing unit tests (instead of integration tests). A fake record ID is automatically included.
@@ -294,6 +314,20 @@ Database.UpsertResult
 **Description**
 
 The mock instance of `Database.UpsertResult`
+
+#### `createMockHttpCallout()` → `MockHttpCallout`
+
+Generates an instance of the class `MockHttpCallout` that implements the interface `HttpCalloutMock`. This can be used when testing batch jobs.
+
+##### Return
+
+**Type**
+
+MockHttpCallout
+
+**Description**
+
+The instance of `MockHttpCallout`
 
 #### `createMockId(Schema.SObjectType sobjectType)` → `String`
 
@@ -504,5 +538,45 @@ Loads the mock `LogStatus_t` during test execution
 | Param  | Description                                |
 | ------ | ------------------------------------------ |
 | `mock` | The mock instance of `LogStatus_t` to load |
+
+---
+
+### Inner Classes
+
+#### LoggerTestUtils.MockBatchableContext class
+
+---
+
+##### Methods
+
+###### `getChildJobId()` → `String`
+
+###### `getJobId()` → `String`
+
+---
+
+#### LoggerTestUtils.MockHttpCallout class
+
+---
+
+##### Properties
+
+###### `request` → `HttpRequest`
+
+###### `response` → `HttpResponse`
+
+###### `responseBody` → `String`
+
+###### `statusCode` → `Integer`
+
+---
+
+##### Methods
+
+###### `respond(HttpRequest request)` → `HttpResponse`
+
+###### `setResponseBody(String responseBody)` → `MockHttpCallout`
+
+###### `setStatusCode(Integer statusCode)` → `MockHttpCallout`
 
 ---

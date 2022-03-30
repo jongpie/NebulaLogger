@@ -5,7 +5,7 @@
 
 /**
  * @group Log Management
- * @description Class used by the logging system to for trigger contextual details
+ * @description Class used by the logging system for trigger contextual details
  * @see LoggerSObjectHandler
  * @see LoggerPlugin
  */

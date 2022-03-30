@@ -41,15 +41,15 @@ List&lt;LoggerPlugin_t&gt;
 
 The list of matching `LoggerPlugin_t` records
 
-#### `newBatchableInstance(LoggerPlugin_t pluginConfiguration)` → `Batchable`
+#### `newBatchableInstance(String apexClassTypeName)` → `Batchable`
 
 Creates an instance of the class `LoggerPlugin.Batchable` based on the provided `LoggerPlugin_t` configuration
 
 ##### Parameters
 
-| Param                 | Description                                                                                           |
-| --------------------- | ----------------------------------------------------------------------------------------------------- |
-| `pluginConfiguration` | The instance of `LoggerPlugin_t` to use to dynamically create an instance of `LoggerPlugin.Batchable` |
+| Param               | Description                                                         |
+| ------------------- | ------------------------------------------------------------------- |
+| `apexClassTypeName` | The name of the Apex class that implements `LoggerPlugin.Batchable` |
 
 ##### Return
 
@@ -61,15 +61,15 @@ Batchable
 
 The dynamically created instance of `LoggerPlugin.Batchable`,
 
-#### `newTriggerableInstance(LoggerPlugin_t pluginConfiguration)` → `Triggerable`
+#### `newTriggerableInstance(String apexClassTypeName)` → `Triggerable`
 
 Creates an instance of the class `LoggerPlugin.Triggerable` based on the provided `LoggerPlugin_t` configuration
 
 ##### Parameters
 
-| Param                 | Description                                                                                             |
-| --------------------- | ------------------------------------------------------------------------------------------------------- |
-| `pluginConfiguration` | The instance of `LoggerPlugin_t` to use to dynamically create an instance of `LoggerPlugin.Triggerable` |
+| Param               | Description                                                           |
+| ------------------- | --------------------------------------------------------------------- |
+| `apexClassTypeName` | The name of the Apex class that implements `LoggerPlugin.Triggerable` |
 
 ##### Return
 
