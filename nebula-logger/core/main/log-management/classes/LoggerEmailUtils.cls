@@ -10,6 +10,9 @@
 @SuppressWarnings('PMD.PropertyNamingConventions')
 public without sharing class LoggerEmailUtils {
     @TestVisible
+    private static final List<Messaging.SingleEmailMessage> SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
+
+    @TestVisible
     private static final List<String> CACHED_APEX_ERROR_RECIPIENTS {
         get {
             if (CACHED_APEX_ERROR_RECIPIENTS == null) {
@@ -35,9 +38,6 @@ public without sharing class LoggerEmailUtils {
         }
         set;
     }
-
-    @TestVisible
-    private static final List<Messaging.SingleEmailMessage> SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
 
     /**
      * @description Sends an error email notification to the org's list of Apex Exception Email recipients,

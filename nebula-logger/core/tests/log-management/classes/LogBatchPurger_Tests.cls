@@ -220,21 +220,25 @@ private class LogBatchPurger_Tests {
         batchJobInstance.start(mockBatchableContext);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(3, batchJobInstance.getExecutedApexPlugins().size(), batchJobInstance.getExecutedApexPlugins());
+        System.assertEquals(
+            3,
+            batchJobInstance.getExecutedApexPlugins().size(),
+            'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
+        );
         System.assertEquals(
             1,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'One Apex plugin should have run in the batch job\'s start method'
         );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'No Apex plugins should have run in the batch job\'s execute method'
         );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'No Apex plugins should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexStartPlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).get(0);
         System.assertEquals(true, apexStartPlugin instanceof MockBatchPurgerPlugin, apexStartPlugin);
@@ -269,21 +273,25 @@ private class LogBatchPurger_Tests {
         batchJobInstance.execute(mockBatchableContext, logsToDelete);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(3, batchJobInstance.getExecutedApexPlugins().size(), batchJobInstance.getExecutedApexPlugins());
+        System.assertEquals(
+            3,
+            batchJobInstance.getExecutedApexPlugins().size(),
+            'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
+        );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'No Apex plugins should have run in the batch job\'s start method'
         );
         System.assertEquals(
             1,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'One Apex plugin should have run in the batch job\'s execute method'
         );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'No Apex plugins should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexExecutePlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).get(0);
         System.assertEquals(true, apexExecutePlugin instanceof MockBatchPurgerPlugin, apexExecutePlugin);
@@ -317,21 +325,25 @@ private class LogBatchPurger_Tests {
         batchJobInstance.finish(mockBatchableContext);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(3, batchJobInstance.getExecutedApexPlugins().size(), batchJobInstance.getExecutedApexPlugins());
+        System.assertEquals(
+            3,
+            batchJobInstance.getExecutedApexPlugins().size(),
+            'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
+        );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'No Apex plugins should have run in the batch job\'s start method'
         );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'No Apex plugins should have run in the batch job\'s execute method'
         );
         System.assertEquals(
             1,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-            batchJobInstance.getExecutedApexPlugins()
+            'One Apex plugin should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexFinishPlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).get(0);
         System.assertEquals(true, apexFinishPlugin instanceof MockBatchPurgerPlugin, apexFinishPlugin);

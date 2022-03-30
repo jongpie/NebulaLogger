@@ -6,31 +6,44 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
 @IsTest
 private class LogEntryArchivePlugin_Tests {
-    @IsTest
-    static void it_archives_log_entry_records_in_log_batch_purger_when_purge_action_is_archive() {
+    @TestSetup
+    static void setupData() {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
-        LogBatchPurger batchPurger = new LogBatchPurger();
-        Log__c log = new Log__c(
+
+        Log__c logToArchive = new Log__c(
             LogPurgeAction__c = LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION,
             LogRetentionDate__c = System.today().addDays(-1),
             TransactionId__c = '1234'
         );
-        insert log;
+        Log__c logToDelete = new Log__c(LogPurgeAction__c = 'Delete', LogRetentionDate__c = System.today().addDays(-1), TransactionId__c = '5678');
+        insert new List<Log__c>{ logToArchive, logToDelete };
+
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
-        for (Integer i = 0; i < 3; i++) {
-            logEntries.add(new LogEntry__c(Log__c = log.Id, Message__c = 'Some message for ' + i, TransactionEntryNumber__c = i));
+        for (Integer i = 0; i < 10; i++) {
+            logEntries.add(new LogEntry__c(Log__c = logToArchive.Id, Message__c = 'Some message to archive for ' + i, TransactionEntryNumber__c = i));
+            logEntries.add(new LogEntry__c(Log__c = logToDelete.Id, Message__c = 'Some message to skip for ' + i, TransactionEntryNumber__c = i));
         }
         insert logEntries;
+    }
+
+    @IsTest
+    static void it_archives_log_entry_records_in_log_batch_purger_when_purge_action_is_archive() {
+        // LoggerSObjectHandler.shouldExecute(false);
+        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        createPluginConfiguration();
+        LogBatchPurger batchPurger = new LogBatchPurger();
+        Log__c log = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
         Test.startTest();
 
         Database.executeBatch(batchPurger);
 
         Test.stopTest();
-        System.assertEquals(logEntries.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
-        List<Log__c> existingLogs = [SELECT Id FROM Log__c];
+        System.assertEquals(log.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
+        List<Log__c> existingLogs = [SELECT Id FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
         System.assertEquals(0, existingLogs.size());
     }
 
@@ -41,31 +54,34 @@ private class LogEntryArchivePlugin_Tests {
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
-        Log__c logToArchive = new Log__c(
-            LogPurgeAction__c = LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION,
-            LogRetentionDate__c = System.today().addDays(-1),
-            TransactionId__c = '1234'
+        Log__c logToArchive = [
+            SELECT Id, (SELECT Id FROM LogEntries__r)
+            FROM Log__c
+            WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION
+        ];
+        System.assertNotEquals(
+            true,
+            logToArchive.LogEntries__r.isEmpty(),
+            'Test has started under the wrong condiations - log record should have some related log entries'
         );
-        Log__c logToSkip = new Log__c(LogPurgeAction__c = 'Delete', LogRetentionDate__c = System.today().addDays(-1), TransactionId__c = '5678');
-        insert new List<Log__c>{ logToArchive, logToSkip };
-        List<LogEntry__c> logEntries = new List<LogEntry__c>();
-        for (Integer i = 0; i < 10; i++) {
-            logEntries.add(new LogEntry__c(Log__c = logToArchive.Id, Message__c = 'Some message to archive for ' + i, TransactionEntryNumber__c = i));
-            logEntries.add(new LogEntry__c(Log__c = logToSkip.Id, Message__c = 'Some message to skip for ' + i, TransactionEntryNumber__c = i));
-        }
-        insert logEntries;
+        Log__c logToSkip = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = 'Delete'];
+        System.assertNotEquals(
+            true,
+            logToSkip.LogEntries__r.isEmpty(),
+            'Test has started under the wrong condiations - log record should have some related log entries'
+        );
         Test.startTest();
 
         Database.executeBatch(batchPurger);
 
         Test.stopTest();
         System.assertEquals(
-            logEntries.size() / 2,
+            logToArchive.LogEntries__r.size(),
             LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(),
-            'Only half of the log entries should have been archived'
+            'Only the log entries for logToArchive should have been archived'
         );
         List<Log__c> existingLogs = [SELECT Id FROM Log__c];
-        System.assertEquals(0, existingLogs.size());
+        System.assertEquals(0, existingLogs.size(), 'All logs should havve been deleted');
     }
 
     @IsTest
@@ -75,21 +91,15 @@ private class LogEntryArchivePlugin_Tests {
         LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
-        Log__c log = new Log__c(
-            LogPurgeAction__c = LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION,
-            LogRetentionDate__c = System.today().addDays(-1),
-            TransactionId__c = '1234'
-        );
-        insert log;
-        List<LogEntry__c> logEntries = new List<LogEntry__c>();
-        for (Integer i = 0; i < 3; i++) {
-            logEntries.add(new LogEntry__c(Log__c = log.Id, Message__c = 'Some message for ' + i, TransactionEntryNumber__c = i));
-        }
-        insert logEntries;
+        Log__c logToArchive = [
+            SELECT Id, (SELECT Id FROM LogEntries__r)
+            FROM Log__c
+            WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION
+        ];
         LoggerTag__c tag = new LoggerTag__c(Name = 'Some tag');
         insert tag;
         List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
-        for (LogEntry__c logEntry : logEntries) {
+        for (LogEntry__c logEntry : logToArchive.LogEntries__r) {
             logEntryTags.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id));
         }
         insert logEntryTags;
@@ -100,7 +110,7 @@ private class LogEntryArchivePlugin_Tests {
         System.assertEquals(0, Limits.getPublishImmediateDml());
         Test.stopTest();
         System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(logEntries.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
+        System.assertEquals(logToArchive.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
         for (LogEntryArchive__b logEntryArchive : LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE) {
             System.assertEquals(tag.Name, logEntryArchive.Tags__c);
         }
@@ -110,7 +120,6 @@ private class LogEntryArchivePlugin_Tests {
 
     @IsTest
     static void it_should_not_create_archive_in_logger_when_save_method_is_not_big_object() {
-        Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
         LoggerTriggerableContext pluginInput = new LoggerTriggerableContext(

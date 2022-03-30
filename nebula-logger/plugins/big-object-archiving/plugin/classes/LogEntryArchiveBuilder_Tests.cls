@@ -22,7 +22,6 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_cache_instance_of_log_entry_archive_for_log_entry_event() {
-        Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
         LogEntryArchiveBuilder archiveBuilder = new LogEntryArchiveBuilder(mockEvent);
         LogEntryArchive__b originalLogEntryArchive = archiveBuilder.getLogEntryArchive();
@@ -35,7 +34,6 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_truncate_log_entry_archive_field_values_when_too_long() {
-        Datetime timestamp = System.now();
         LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
         mockEvent.Message__c = 'Z'.repeat(Schema.LogEntryArchive__b.Message__c.getDescribe().getLength() + 1);
         LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockEvent).getLogEntryArchive();

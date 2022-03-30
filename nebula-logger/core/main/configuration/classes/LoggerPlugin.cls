@@ -62,7 +62,7 @@ public without sharing class LoggerPlugin {
 
     /**
      * @description Creates an instance of the class `LoggerPlugin.Batchable` based on the provided `LoggerPlugin__mdt` configuration
-     * @param  pluginConfiguration The instance of `LoggerPlugin__mdt` to use to dynamically create an instance of `LoggerPlugin.Batchable`
+     * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Batchable`
      * @return                     The dynamically created instance of `LoggerPlugin.Batchable`,
      *                             or null if an instance could not be created based on the provided configuration
      */
@@ -72,7 +72,7 @@ public without sharing class LoggerPlugin {
 
     /**
      * @description Creates an instance of the class `LoggerPlugin.Triggerable` based on the provided `LoggerPlugin__mdt` configuration
-     * @param  pluginConfiguration The instance of `LoggerPlugin__mdt` to use to dynamically create an instance of `LoggerPlugin.Triggerable`
+     * @param  apexClassTypeName The name of the Apex class that implements `LoggerPlugin.Triggerable`
      * @return                     The dynamically created instance of `LoggerPlugin.Triggerable`,
      *                             or null if an instance could not be created based on the provided configuration
      */

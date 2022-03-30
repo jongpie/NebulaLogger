@@ -448,6 +448,7 @@ public class LoggerTestUtils {
         return results;
     }
 
+    @SuppressWarnings('PMD.ApexDoc')
     public class MockBatchableContext implements Database.BatchableContext {
         private String childJobId;
         private String jobId;
@@ -470,6 +471,7 @@ public class LoggerTestUtils {
         }
     }
 
+    @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
     public class MockHttpCallout implements HttpCalloutMock {
         public HttpRequest request { get; private set; }
         public HttpResponse response { get; private set; }

@@ -94,7 +94,7 @@ private class LoggerPlugin_Tests {
         return new LoggerPlugin__mdt(DeveloperName = developerName, IsEnabled__c = true);
     }
 
-    @SuppressWarnings('PMD.ApexDoc')
+    @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
     public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
         public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
         }
@@ -104,7 +104,7 @@ private class LoggerPlugin_Tests {
         }
     }
 
-    @SuppressWarnings('PMD.ApexDoc')
+    @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
     public class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
         public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
             switch on input.triggerOperationType {

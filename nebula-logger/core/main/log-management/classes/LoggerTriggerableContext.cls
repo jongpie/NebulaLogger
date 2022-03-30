@@ -9,6 +9,7 @@
  * @see LoggerSObjectHandler
  * @see LoggerPlugin
  */
+@SuppressWarnings('PMD.ApexDoc, PMD.ExcessiveParameterList')
 public without sharing class LoggerTriggerableContext {
     public Schema.SObjectType sobjectType { get; private set; }
     public TriggerOperation triggerOperationType { get; private set; }

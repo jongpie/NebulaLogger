@@ -8,7 +8,7 @@
  * @description Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c <= :System.today()`
  * @see LogBatchPurgeScheduler
  */
-@SuppressWarnings('PMD.AvoidGlobalModifier')
+@SuppressWarnings('PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList')
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
     @TestVisible
     private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';

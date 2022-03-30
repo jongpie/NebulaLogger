@@ -14,13 +14,6 @@ private class LogBatchPurger_Tests_Flow {
 
     private static final Integer NUMBER_OF_LOG_ENTRIES_TO_CREATE = 10;
 
-    // private static Boolean ranPluginStart = false;
-    // private static Boolean ranPluginExecute = false;
-    // private static Boolean ranPluginFinish = false;
-    // private static LoggerPlugin__mdt pluginConfiguration;
-    // private static LoggerBatchableContext batchInput;
-    // private static List<SObject> pluginRecords;
-
     @TestSetup
     static void setupData() {
         LoggerSObjectHandler.shouldExecute(false);
@@ -70,24 +63,39 @@ private class LogBatchPurger_Tests_Flow {
         batchJobInstance.start(mockBatchableContext);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(3, batchJobInstance.getExecutedFlowPlugins().size(), batchJobInstance.getExecutedFlowPlugins());
+        System.assertEquals(
+            3,
+            batchJobInstance.getExecutedFlowPlugins().size(),
+            'The map of executed Flow plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
+        );
         System.assertEquals(
             1,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'One Flow plugin should have run in the batch job\'s start method'
         );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'No Flow plugins should have run in the batch job\'s execute method'
         );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'No Flow plugins should have run in the batch job\'s finish method'
         );
         Flow.Interview flowStartPlugin = batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.START).get(0);
-        System.assertEquals(MOCK_FLOW_OUTPUT_VARIABLE_VALUE, flowStartPlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME), flowStartPlugin);
+        LoggerPlugin__mdt returnedPluginConfiguration = (LoggerPlugin__mdt) flowStartPlugin.getVariableValue('pluginConfiguration');
+        System.assertEquals(mockPluginConfiguration, returnedPluginConfiguration, 'LoggerPlugin__mdt records should match');
+        LoggerBatchableContext returnedPluginInput = (LoggerBatchableContext) flowStartPlugin.getVariableValue('pluginInput');
+        System.assertEquals(JSON.serialize(expectedInput), JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
+        System.assertEquals(
+            MOCK_FLOW_OUTPUT_VARIABLE_VALUE,
+            flowStartPlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME),
+            'Flow should have returned the variable ' +
+            MOCK_FLOW_OUTPUT_VARIABLE_NAME +
+            ' with the value + ' +
+            MOCK_FLOW_OUTPUT_VARIABLE_VALUE
+        );
     }
 
     @IsTest
@@ -107,24 +115,39 @@ private class LogBatchPurger_Tests_Flow {
         batchJobInstance.execute(mockBatchableContext, logsToDelete);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(3, batchJobInstance.getExecutedFlowPlugins().size(), batchJobInstance.getExecutedFlowPlugins());
+        System.assertEquals(
+            3,
+            batchJobInstance.getExecutedFlowPlugins().size(),
+            'The map of executed Flow plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
+        );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'No Flow plugins should have run in the batch job\'s start method'
         );
         System.assertEquals(
             1,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'One Flow plugin should have run in the batch job\'s execute method'
         );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'No Flow plugins should have run in the batch job\'s finish method'
         );
         Flow.Interview flowExecutePlugin = batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).get(0);
-        System.assertEquals(MOCK_FLOW_OUTPUT_VARIABLE_VALUE, flowExecutePlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME), flowExecutePlugin);
+        LoggerPlugin__mdt returnedPluginConfiguration = (LoggerPlugin__mdt) flowExecutePlugin.getVariableValue('pluginConfiguration');
+        System.assertEquals(mockPluginConfiguration, returnedPluginConfiguration, 'LoggerPlugin__mdt records should match');
+        LoggerBatchableContext returnedPluginInput = (LoggerBatchableContext) flowExecutePlugin.getVariableValue('pluginInput');
+        System.assertEquals(JSON.serialize(expectedInput), JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
+        System.assertEquals(
+            MOCK_FLOW_OUTPUT_VARIABLE_VALUE,
+            flowExecutePlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME),
+            'Flow should have returned the variable ' +
+            MOCK_FLOW_OUTPUT_VARIABLE_NAME +
+            ' with the value + ' +
+            MOCK_FLOW_OUTPUT_VARIABLE_VALUE
+        );
     }
 
     @IsTest
@@ -138,29 +161,44 @@ private class LogBatchPurger_Tests_Flow {
         LoggerTestUtils.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
-        System.assertNotEquals(0, logsToDelete.size());
+        System.assertNotEquals(0, logsToDelete.size(), 'There should be some records to delete');
         Database.BatchableContext mockBatchableContext = LoggerTestUtils.createMockBatchableContext('some_fake_job_id');
 
         batchJobInstance.finish(mockBatchableContext);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(3, batchJobInstance.getExecutedFlowPlugins().size(), batchJobInstance.getExecutedFlowPlugins());
+        System.assertEquals(
+            3,
+            batchJobInstance.getExecutedFlowPlugins().size(),
+            'The map of executed Flow plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
+        );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'No Flow plugins should have run in the batch job\'s start method'
         );
         System.assertEquals(
             0,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'No Flow plugins should have run in the batch job\'s execute method'
         );
         System.assertEquals(
             1,
             batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
-            batchJobInstance.getExecutedFlowPlugins()
+            'One Flow plugin should have run in the batch job\'s finish method'
         );
         Flow.Interview flowFinishPlugin = batchJobInstance.getExecutedFlowPlugins().get(LogBatchPurger.BatchableMethod.FINISH).get(0);
-        System.assertEquals(MOCK_FLOW_OUTPUT_VARIABLE_VALUE, flowFinishPlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME), flowFinishPlugin);
+        LoggerPlugin__mdt returnedPluginConfiguration = (LoggerPlugin__mdt) flowFinishPlugin.getVariableValue('pluginConfiguration');
+        System.assertEquals(mockPluginConfiguration, returnedPluginConfiguration, 'LoggerPlugin__mdt records should match');
+        LoggerBatchableContext returnedPluginInput = (LoggerBatchableContext) flowFinishPlugin.getVariableValue('pluginInput');
+        System.assertEquals(JSON.serialize(expectedInput), JSON.serialize(returnedPluginInput), 'Plugin inputs should match');
+        System.assertEquals(
+            MOCK_FLOW_OUTPUT_VARIABLE_VALUE,
+            flowFinishPlugin.getVariableValue(MOCK_FLOW_OUTPUT_VARIABLE_NAME),
+            'Flow should have returned the variable ' +
+            MOCK_FLOW_OUTPUT_VARIABLE_NAME +
+            ' with the value + ' +
+            MOCK_FLOW_OUTPUT_VARIABLE_VALUE
+        );
     }
 }
