@@ -3,6 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+@SuppressWarnings('PMD.MethodNamingConventions')
 @IsTest
 private class LoggerTriggerableContext_Tests {
     // Based on the trigger variables provided by the platform, currently only the TriggerOperations
@@ -10,7 +11,7 @@ private class LoggerTriggerableContext_Tests {
     // will have the same parameters as one of these three scenarios
 
     @IsTest
-    static void it_creates_instance_when_before_insert_operation() {
+    static void it_constructs_instance_when_before_insert_operation() {
         Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_INSERT;
         List<Log__c> newLogs = new List<Log__c>();
@@ -34,7 +35,7 @@ private class LoggerTriggerableContext_Tests {
     }
 
     @IsTest
-    static void it_creates_instance_when_before_update_operation() {
+    static void it_constructs_instance_when_before_update_operation() {
         Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_UPDATE;
         List<Log__c> updatedLogs = new List<Log__c>();
@@ -63,7 +64,7 @@ private class LoggerTriggerableContext_Tests {
     }
 
     @IsTest
-    static void it_creates_instance_when_before_delete_operation() {
+    static void it_constructs_instance_when_before_delete_operation() {
         Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_DELETE;
         Map<Id, Log__c> deletedLogsMap = new Map<Id, Log__c>();
