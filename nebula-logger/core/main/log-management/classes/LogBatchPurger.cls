@@ -54,9 +54,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         Schema.SObjectType initialSObjectType = this.getInitialSObjectType();
         LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, initialSObjectType);
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
-            if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
-                LoggerPlugin.newBatchableInstance(pluginConfiguration)?.start(pluginConfiguration, input);
-            }
+            LoggerPlugin.newBatchableInstance(pluginConfiguration.BatchPurgerApexClass__c)?.start(pluginConfiguration, input);
             // TODO add support for running Flow plugins
         }
         this.currentSObjectType = input.sobjectType;
@@ -92,9 +90,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             this.totalProcessedRecords += scopeRecords.size();
             LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
             for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
-                if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
-                    LoggerPlugin.newBatchableInstance(pluginConfiguration)?.execute(pluginConfiguration, input, scopeRecords);
-                }
+                LoggerPlugin.newBatchableInstance(pluginConfiguration.BatchPurgerApexClass__c)?.execute(pluginConfiguration, input, scopeRecords);
                 // TODO add support for running Flow plugins
             }
 
@@ -117,9 +113,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     global void finish(Database.BatchableContext batchableContext) {
         LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
         for (LoggerPlugin__mdt pluginConfiguration : this.pluginConfigurations) {
-            if (String.isNotBlank(pluginConfiguration.BatchPurgerApexClass__c)) {
-                LoggerPlugin.newBatchableInstance(pluginConfiguration)?.finish(pluginConfiguration, input);
-            }
+            LoggerPlugin.newBatchableInstance(pluginConfiguration.BatchPurgerApexClass__c)?.finish(pluginConfiguration, input);
             // TODO add support for running Flow plugins
         }
 

@@ -176,23 +176,6 @@ private class LoggerSObjectHandler_Tests {
     }
 
     @IsTest
-    static void it_should_gracefully_skip_non_existent_flow_plugin() {
-        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(DeveloperName = 'Mock_Plugin', IsEnabled__c = true, SObjectHandlerFlowName__c = 'Some_Fake_Flow');
-        LoggerTestUtils.setMock(plugin);
-        MockLogHandler handler = new MockLogHandler();
-        handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
-        handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
-        handler.triggerNewMap = null;
-        handler.triggerOldMap = null;
-
-        handler.execute();
-
-        System.assertEquals(1, handler.executionCount);
-        System.assertEquals(1, handler.getPluginConfigurations().size(), handler.getPluginConfigurations());
-        System.assertEquals(0, handler.getExecutedApexPlugins().size(), handler.getExecutedApexPlugins());
-    }
-
-    @IsTest
     static void it_should_execute_apex_plugin() {
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
             DeveloperName = 'ExampleApexPlugin',
@@ -214,6 +197,23 @@ private class LoggerSObjectHandler_Tests {
         MockLogHandlerPlugin executedApexPlugin = (MockLogHandlerPlugin) mockHandler.getExecutedApexPlugins().get(0);
         System.assertEquals(mockPluginConfiguration, executedApexPlugin.configuration);
         System.assertEquals(mockHandler.input, executedApexPlugin.input);
+    }
+
+    @IsTest
+    static void it_should_gracefully_skip_non_existent_flow_plugin() {
+        LoggerPlugin__mdt plugin = new LoggerPlugin__mdt(DeveloperName = 'Mock_Plugin', IsEnabled__c = true, SObjectHandlerFlowName__c = 'Some_Fake_Flow');
+        LoggerTestUtils.setMock(plugin);
+        MockLogHandler handler = new MockLogHandler();
+        handler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        handler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
+        handler.triggerNewMap = null;
+        handler.triggerOldMap = null;
+
+        handler.execute();
+
+        System.assertEquals(1, handler.executionCount);
+        System.assertEquals(1, handler.getPluginConfigurations().size(), handler.getPluginConfigurations());
+        System.assertEquals(0, handler.getExecutedApexPlugins().size(), handler.getExecutedApexPlugins());
     }
 
     public class MockLogHandler extends LoggerSObjectHandler {

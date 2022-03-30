@@ -189,7 +189,7 @@ public without sharing abstract class LoggerSObjectHandler {
 
     @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
-        LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration);
+        LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
         apexPlugin?.execute(configuration, this.input);
 
         if (System.Test.isRunningTest() == true && apexPlugin != null) {

@@ -66,8 +66,8 @@ public without sharing class LoggerPlugin {
      * @return                     The dynamically created instance of `LoggerPlugin.Batchable`,
      *                             or null if an instance could not be created based on the provided configuration
      */
-    public static Batchable newBatchableInstance(LoggerPlugin__mdt pluginConfiguration) {
-        return (Batchable) Type.forName(pluginConfiguration?.BatchPurgerApexClass__c)?.newInstance();
+    public static Batchable newBatchableInstance(String apexClassTypeName) {
+        return (Batchable) Type.forName(apexClassTypeName)?.newInstance();
     }
 
     /**
@@ -76,8 +76,8 @@ public without sharing class LoggerPlugin {
      * @return                     The dynamically created instance of `LoggerPlugin.Triggerable`,
      *                             or null if an instance could not be created based on the provided configuration
      */
-    public static Triggerable newTriggerableInstance(LoggerPlugin__mdt pluginConfiguration) {
-        return (Triggerable) Type.forName(pluginConfiguration?.SObjectHandlerApexClass__c)?.newInstance();
+    public static Triggerable newTriggerableInstance(String apexClassTypeName) {
+        return (Triggerable) Type.forName(apexClassTypeName)?.newInstance();
     }
 
     private static Map<String, LoggerPlugin__mdt> loadRecords() {

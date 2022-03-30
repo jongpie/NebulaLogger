@@ -8,28 +8,6 @@
 private class LoggerPlugin_Tests {
     private static final String PLUGIN_LOG_STATUS = 'On Hold';
 
-    @SuppressWarnings('PMD.EmptyStatementBlock')
-    public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
-        public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
-        }
-        public void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scope) {
-        }
-        public void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
-        }
-    }
-
-    public class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
-        public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
-            switch on input.triggerOperationType {
-                when BEFORE_INSERT {
-                    for (Log__c log : (List<Log__c>) input.triggerNew) {
-                        log.Status__c = PLUGIN_LOG_STATUS;
-                    }
-                }
-            }
-        }
-    }
-
     @IsTest
     static void it_should_returned_filtered_plugin_configurations_in_sorted_order() {
         // The mock LoggerPlugin__mdt records are purposeful being added to LoggerTestUtils.setMock()
@@ -88,39 +66,54 @@ private class LoggerPlugin_Tests {
 
     @IsTest
     static void it_should_return_batch_purger_apex_plugin_instance_for_valid_class() {
-        LoggerPlugin__mdt mockPluginConfiguration = createMockPluginConfiguration('mockPluginConfiguration');
-        mockPluginConfiguration.BatchPurgerApexClass__c = ExampleBatchPurgerPlugin.class.getName();
-        LoggerPlugin.Batchable batchPurgerApexPlugin = LoggerPlugin.newBatchableInstance(mockPluginConfiguration);
-        System.assertNotEquals(null, batchPurgerApexPlugin);
+        LoggerPlugin.Batchable batchPurgerApexPlugin = LoggerPlugin.newBatchableInstance(ExampleBatchPurgerPlugin.class.getName());
+        System.assertNotEquals(null, batchPurgerApexPlugin, ExampleBatchPurgerPlugin.class.getName());
         System.assertEquals(true, batchPurgerApexPlugin instanceof ExampleBatchPurgerPlugin);
     }
 
     @IsTest
     static void it_should_return_null_batch_purger_apex_plugin_instance_for_invalid_class() {
-        LoggerPlugin__mdt mockPluginConfiguration = createMockPluginConfiguration('mockPluginConfiguration');
-        mockPluginConfiguration.BatchPurgerApexClass__c = 'Some fake class, this definitely doesn\'t exist';
-        LoggerPlugin.Batchable batchPurgerApexPlugin = LoggerPlugin.newBatchableInstance(mockPluginConfiguration);
+        LoggerPlugin.Batchable batchPurgerApexPlugin = LoggerPlugin.newBatchableInstance('Some fake class, this definitely doesn\'t exist');
         System.assertEquals(null, batchPurgerApexPlugin);
     }
 
     @IsTest
     static void it_should_return_sobject_handler_apex_plugin_instance_for_valid_class() {
-        LoggerPlugin__mdt mockPluginConfiguration = createMockPluginConfiguration('mockPluginConfiguration');
-        mockPluginConfiguration.SObjectHandlerApexClass__c = ExampleTriggerablePlugin.class.getName();
-        LoggerPlugin.Triggerable sobjectHandlerApexPlugin = LoggerPlugin.newTriggerableInstance(mockPluginConfiguration);
-        System.assertNotEquals(null, sobjectHandlerApexPlugin);
+        LoggerPlugin.Triggerable sobjectHandlerApexPlugin = LoggerPlugin.newTriggerableInstance(ExampleTriggerablePlugin.class.getName());
+        System.assertNotEquals(null, sobjectHandlerApexPlugin, ExampleTriggerablePlugin.class.getName());
         System.assertEquals(true, sobjectHandlerApexPlugin instanceof ExampleTriggerablePlugin);
     }
 
     @IsTest
     static void it_should_return_null_sobject_handler_apex_plugin_instance_for_invalid_class() {
-        LoggerPlugin__mdt mockPluginConfiguration = createMockPluginConfiguration('mockPluginConfiguration');
-        mockPluginConfiguration.SObjectHandlerApexClass__c = 'Some fake class, this definitely doesn\'t exist';
-        LoggerPlugin.Triggerable sobjectHandlerApexPlugin = LoggerPlugin.newTriggerableInstance(mockPluginConfiguration);
+        LoggerPlugin.Triggerable sobjectHandlerApexPlugin = LoggerPlugin.newTriggerableInstance('Some fake class, this definitely doesn\'t exist');
         System.assertEquals(null, sobjectHandlerApexPlugin);
     }
 
     private static LoggerPlugin__mdt createMockPluginConfiguration(String developerName) {
         return new LoggerPlugin__mdt(DeveloperName = developerName, IsEnabled__c = true);
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
+        public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
+        }
+        public void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scope) {
+        }
+        public void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
+        }
+    }
+
+    @SuppressWarnings('PMD.ApexDoc')
+    public class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
+        public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
+            switch on input.triggerOperationType {
+                when BEFORE_INSERT {
+                    for (Log__c log : (List<Log__c>) input.triggerNew) {
+                        log.Status__c = PLUGIN_LOG_STATUS;
+                    }
+                }
+            }
+        }
     }
 }
