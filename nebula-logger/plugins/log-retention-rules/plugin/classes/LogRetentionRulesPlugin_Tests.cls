@@ -11,7 +11,61 @@
 @IsTest
 private class LogRetentionRulesPlugin_Tests {
     @IsTest
-    static void it_should_set_retention_date_for_rule_with_one_condition() {
+    static void it_should_set_retention_date_for_rule_with_one_condition_when_datetime_less_than() {
+        enablePlugin();
+        Date originalLogRetentionDate = System.today().addDays(Integer.valueOf(Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c));
+        Integer numberOfDaysToRetainLogs = 90;
+        Date expectedLogRetentionDate = System.today().addDays(numberOfDaysToRetainLogs);
+        Datetime now = System.now();
+        LogRetentionRule__mdt rule = createMockRule('rule_with_multiple_AND_conditions', 'AND', numberOfDaysToRetainLogs);
+        rule.NumberOfDaysToRetainLogs__c = numberOfDaysToRetainLogs;
+        LogRetentionRulesPlugin.setMockRetentionRule(rule);
+        List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
+            createMockRuleCondition('Log__r.CreatedDate', 'LESS_THAN', 'Value', now)
+        };
+        LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
+
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        Test.setCreatedDate(log.Id, now.addDays(-1));
+        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(originalLogRetentionDate, log.LogRetentionDate__c);
+
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
+        insert logEntry;
+        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedLogRetentionDate, log.LogRetentionDate__c);
+    }
+
+    @IsTest
+    static void it_should_set_retention_date_for_rule_with_one_condition_when_datetime_less_than_or_equal_to() {
+        enablePlugin();
+        Date originalLogRetentionDate = System.today().addDays(Integer.valueOf(Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c));
+        Integer numberOfDaysToRetainLogs = 90;
+        Date expectedLogRetentionDate = System.today().addDays(numberOfDaysToRetainLogs);
+        Datetime now = System.now();
+        LogRetentionRule__mdt rule = createMockRule('rule_with_multiple_AND_conditions', 'AND', numberOfDaysToRetainLogs);
+        rule.NumberOfDaysToRetainLogs__c = numberOfDaysToRetainLogs;
+        LogRetentionRulesPlugin.setMockRetentionRule(rule);
+        List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
+            createMockRuleCondition('Log__r.CreatedDate', 'LESS_THAN_OR_EQUAL_TO', 'Value', now)
+        };
+        LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
+
+        Log__c log = new Log__c(TransactionId__c = '1234');
+        insert log;
+        Test.setCreatedDate(log.Id, now);
+        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(originalLogRetentionDate, log.LogRetentionDate__c);
+
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
+        insert logEntry;
+        log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(expectedLogRetentionDate, log.LogRetentionDate__c);
+    }
+
+    @IsTest
+    static void it_should_set_retention_date_for_rule_with_one_string_equality_condition() {
         enablePlugin();
         Date originalLogRetentionDate = System.today().addDays(Integer.valueOf(Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c));
         Integer numberOfDaysToRetainLogs = 90;
