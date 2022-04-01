@@ -1,3 +1,16 @@
+//-----------------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                           //
+// The core functionality of this plugin's code originated in https://github.com/jongpie/ApexValidationRules //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.               //
+//-----------------------------------------------------------------------------------------------------------//
+
+/**
+ * @group Plugins
+ * @description Evaluates an `SObject` record to see if it matches the condition(s) defined in `LogRetentionRule__mdt` and its related
+ *              list of related `LogRetentionRuleCondition__mdt` records. The result is then used in `LogRententionRulesPlugin` to override
+ *              the value of `Log__c.LogRetentionDate__c` for any records that match the filters.
+ * @see LogRententionRulesPlugin
+ */
 public without sharing class LogRetentionFilter {
     private final SObject record;
     private final LogRetentionRule__mdt rule;

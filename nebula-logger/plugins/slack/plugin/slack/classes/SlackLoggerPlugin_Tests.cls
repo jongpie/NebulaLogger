@@ -36,7 +36,7 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
 
         Test.startTest();
-        LoggerTestUtils.MockHttpCallout calloutMock = LoggerTestUtils.createMockHttpCallout().setStatusCode(200);
+        LoggerTestMockCreator.MockHttpCallout calloutMock = LoggerTestMockCreator.createMockHttpCallout().setStatusCode(200);
         Test.setMock(HttpCalloutMock.class, calloutMock);
 
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
@@ -89,7 +89,7 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
 
         Test.startTest();
-        LoggerTestUtils.MockHttpCallout calloutMock = LoggerTestUtils.createMockHttpCallout().setStatusCode(200);
+        LoggerTestMockCreator.MockHttpCallout calloutMock = LoggerTestMockCreator.createMockHttpCallout().setStatusCode(200);
         Test.setMock(HttpCalloutMock.class, calloutMock);
 
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
@@ -120,16 +120,16 @@ private class SlackLoggerPlugin_Tests {
             IsEnabled__c = true,
             SObjectHandlerApexClass__c = SlackLoggerPlugin.class.getName()
         );
-        LoggerTestUtils.setMock(slackPluginConfig);
+        LoggerTestConfigurator.setMock(slackPluginConfig);
 
         // Set the plugin's parameters
         LoggerParameter__mdt endpointParameter = new LoggerParameter__mdt(DeveloperName = 'SlackEndpoint', Value__c = 'https://fake.slack.com/');
-        LoggerTestUtils.setMock(endpointParameter);
+        LoggerTestConfigurator.setMock(endpointParameter);
         LoggerParameter__mdt notificationLoggingLevelParameter = new LoggerParameter__mdt(
             DeveloperName = 'SlackNotificationLoggingLevel',
             Value__c = notificationLoggingLevel.name()
         );
-        LoggerTestUtils.setMock(notificationLoggingLevelParameter);
+        LoggerTestConfigurator.setMock(notificationLoggingLevelParameter);
     }
 
     static void verifyLogEntryCountEquals(Integer expectedCount) {

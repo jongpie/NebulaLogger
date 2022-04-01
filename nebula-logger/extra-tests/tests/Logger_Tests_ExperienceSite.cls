@@ -36,7 +36,7 @@ private class Logger_Tests_ExperienceSite {
         }
 
         User guestUser = guestUsers.get(0);
-        LoggerTestUtils.assignLogCreatorPermissionSet(guestUser.Id);
+        LoggerTestConfigurator.assignLogCreatorPermissionSet(guestUser.Id);
     }
 
     @IsTest

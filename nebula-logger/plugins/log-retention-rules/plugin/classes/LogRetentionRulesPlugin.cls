@@ -9,6 +9,7 @@
  * @description Optional plugin that adds the ability to create & deploy advanced, configurable rules
  *              for setting the retention date of `Log__c` records, using custom metadata types
  *              `LogRetentionRule__mdt` and `LogRetentionRuleCondition__mdt`.
+ * @see LogRetentionFilter
  */
 public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Triggerable {
     private static final Map<String, LogRetentionRule__mdt> RULE_NAME_TO_RULE = new Map<String, LogRetentionRule__mdt>();

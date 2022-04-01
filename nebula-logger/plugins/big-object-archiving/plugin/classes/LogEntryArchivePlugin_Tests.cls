@@ -9,8 +9,8 @@ private class LogEntryArchivePlugin_Tests {
     @TestSetup
     static void setupData() {
         LoggerSObjectHandler.shouldExecute(false);
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
 
         Log__c logToArchive = new Log__c(
@@ -32,8 +32,8 @@ private class LogEntryArchivePlugin_Tests {
     @IsTest
     static void it_archives_log_entry_records_in_log_batch_purger_when_purge_action_is_archive() {
         // LoggerSObjectHandler.shouldExecute(false);
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c log = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
@@ -50,8 +50,8 @@ private class LogEntryArchivePlugin_Tests {
     @IsTest
     static void it_skips_log_entry_records_in_log_batch_purger_when_purge_action_is_not_archive() {
         LoggerSObjectHandler.shouldExecute(false);
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c logToArchive = [
@@ -87,8 +87,8 @@ private class LogEntryArchivePlugin_Tests {
     @IsTest
     static void it_includes_tags_for_log_entry_in_log_batch_purger_when_tags_exist() {
         LoggerSObjectHandler.shouldExecute(false);
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c logToArchive = [
@@ -120,7 +120,9 @@ private class LogEntryArchivePlugin_Tests {
 
     @IsTest
     static void it_should_not_create_archive_in_logger_when_save_method_is_not_big_object() {
-        LogEntryEvent__e mockEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerTestMockCreator.createDataGenerator(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
         LoggerTriggerableContext pluginInput = new LoggerTriggerableContext(
             Schema.LogEntryEvent__e.SObjectType,
@@ -162,7 +164,7 @@ private class LogEntryArchivePlugin_Tests {
             IsEnabled__c = true,
             SObjectHandlerApexClass__c = LogEntryArchivePlugin.class.getName()
         );
-        LoggerTestUtils.setMock(configuration);
+        LoggerTestConfigurator.setMock(configuration);
         return configuration;
     }
 }

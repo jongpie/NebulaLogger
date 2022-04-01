@@ -24,24 +24,24 @@ private class LogBatchPurger_Tests_Flow {
 
         Date scheduledDeletionDate = System.today().addDays(-7);
         Log__c log = new Log__c(LogRetentionDate__c = scheduledDeletionDate);
-        new LoggerSObjectTestDataGenerator(log).populateRequiredFields();
+        LoggerTestMockCreator.createDataGenerator(log).populateRequiredFields().getRecord();
         insert log;
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES_TO_CREATE; i++) {
             LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.INFO.name());
-            new LoggerSObjectTestDataGenerator(logEntry).populateRequiredFields();
+            LoggerTestMockCreator.createDataGenerator(logEntry).populateRequiredFields().getRecord();
             logEntries.add(logEntry);
         }
         insert logEntries;
 
-        LoggerTag__c tag = (LoggerTag__c) new LoggerSObjectTestDataGenerator(Schema.LoggerTag__c.SObjectType).populateRequiredFields();
+        LoggerTag__c tag = (LoggerTag__c) LoggerTestMockCreator.createDataGenerator(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
         insert tag;
 
         List<LogEntryTag__c> logEntryTags = new List<LogEntryTag__c>();
         for (LogEntry__c logEntry : logEntries) {
             LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
-            new LoggerSObjectTestDataGenerator(logEntryTag).populateRequiredFields();
+            LoggerTestMockCreator.createDataGenerator(logEntryTag).populateRequiredFields().getRecord();
             logEntryTags.add(logEntryTag);
         }
         insert logEntryTags;
@@ -55,10 +55,10 @@ private class LogBatchPurger_Tests_Flow {
             IsEnabled__c = true,
             BatchPurgerFlowName__c = MOCK_FLOW_NAME
         );
-        LoggerTestUtils.setMock(mockPluginConfiguration);
+        LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         batchJobInstance.currentSObjectType = Schema.LogEntry__c.SObjectType;
-        Database.BatchableContext mockBatchableContext = LoggerTestUtils.createMockBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = LoggerTestMockCreator.createMockBatchableContext('some_fake_job_id');
 
         batchJobInstance.start(mockBatchableContext);
 
@@ -106,11 +106,11 @@ private class LogBatchPurger_Tests_Flow {
             IsEnabled__c = true,
             BatchPurgerFlowName__c = MOCK_FLOW_NAME
         );
-        LoggerTestUtils.setMock(mockPluginConfiguration);
+        LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
         System.assertNotEquals(0, logsToDelete.size());
-        Database.BatchableContext mockBatchableContext = LoggerTestUtils.createMockBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = LoggerTestMockCreator.createMockBatchableContext('some_fake_job_id');
 
         batchJobInstance.execute(mockBatchableContext, logsToDelete);
 
@@ -158,11 +158,11 @@ private class LogBatchPurger_Tests_Flow {
             IsEnabled__c = true,
             BatchPurgerFlowName__c = MOCK_FLOW_NAME
         );
-        LoggerTestUtils.setMock(mockPluginConfiguration);
+        LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
         System.assertNotEquals(0, logsToDelete.size(), 'There should be some records to delete');
-        Database.BatchableContext mockBatchableContext = LoggerTestUtils.createMockBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = LoggerTestMockCreator.createMockBatchableContext('some_fake_job_id');
 
         batchJobInstance.finish(mockBatchableContext);
 

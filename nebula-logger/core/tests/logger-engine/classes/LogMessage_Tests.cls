@@ -6,7 +6,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest
 private class LogMessage_Tests {
-    public class CustomLogMessage extends LogMessage {
+    private class CustomLogMessage extends LogMessage {
         private String inputString;
         public CustomLogMessage(String inputString) {
             this.inputString = inputString;

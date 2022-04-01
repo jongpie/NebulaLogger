@@ -68,6 +68,7 @@
         "sfdx:plugins:link:prettier": "npx sfdx plugins:link ./node_modules/@jayree/sfdx-plugin-prettier",
         "sfdx:plugins:link:scanner": "npx sfdx plugins:link ./node_modules/@salesforce/sfdx-scanner",
         "source:deploy": "sfdx force:source:deploy --sourcepath ./nebula-logger/ --wait 30",
+        "source:deploy:core": "sfdx force:source:deploy --sourcepath ./nebula-logger/core --wait 30",
         "source:push": "sfdx force:source:push --forceoverwrite",
         "source:push:test": "npm run source:push && npm run test:apex",
         "test": "npm run test:lwc && npm run test:apex",

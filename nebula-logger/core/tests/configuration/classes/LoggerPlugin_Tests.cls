@@ -10,30 +10,30 @@ private class LoggerPlugin_Tests {
 
     @IsTest
     static void it_should_returned_filtered_plugin_configurations_in_sorted_order() {
-        // The mock LoggerPlugin__mdt records are purposeful being added to LoggerTestUtils.setMock()
+        // The mock LoggerPlugin__mdt records are purposeful being added to LoggerPlugin.setMock()
         // in an order that's different from the order when sorting on SObjectHandlerExecutionOrder__c.
         // This helps ensure that the returned results are truly being sorted, instead of just being returned
-        // in the same order that they're added via LoggerTestUtils.setMock()
+        // in the same order that they're added via LoggerPlugin.setMock()
         LoggerPlugin__mdt secondPluginConfiguration = createMockPluginConfiguration('secondPluginConfiguration');
         secondPluginConfiguration.SObjectHandlerApexClass__c = 'Also_A_Fake_Apex_Class';
         secondPluginConfiguration.SObjectHandlerExecutionOrder__c = 2;
-        LoggerTestUtils.setMock(secondPluginConfiguration);
+        LoggerPlugin.setMock(secondPluginConfiguration);
         LoggerPlugin__mdt fifthPluginConfiguration = createMockPluginConfiguration('zzzzz_sort_me_last_alphabetically_fifthPluginConfiguration');
         fifthPluginConfiguration.SObjectHandlerApexClass__c = 'Yeah_This_Is_A_Fake_Apex_Class';
         fifthPluginConfiguration.SObjectHandlerExecutionOrder__c = null;
-        LoggerTestUtils.setMock(fifthPluginConfiguration);
+        LoggerPlugin.setMock(fifthPluginConfiguration);
         LoggerPlugin__mdt fourthPluginConfiguration = createMockPluginConfiguration('fourthPluginConfiguration');
         fourthPluginConfiguration.SObjectHandlerApexClass__c = 'Yeah_This_Is_A_Fake_Apex_Class';
         fourthPluginConfiguration.SObjectHandlerExecutionOrder__c = null;
-        LoggerTestUtils.setMock(fourthPluginConfiguration);
+        LoggerPlugin.setMock(fourthPluginConfiguration);
         LoggerPlugin__mdt thirdPluginConfiguration = createMockPluginConfiguration('thirdPluginConfiguration');
         thirdPluginConfiguration.SObjectHandlerApexClass__c = 'Yeah_This_Is_A_Fake_Apex_Class';
         thirdPluginConfiguration.SObjectHandlerExecutionOrder__c = 3;
-        LoggerTestUtils.setMock(thirdPluginConfiguration);
+        LoggerPlugin.setMock(thirdPluginConfiguration);
         LoggerPlugin__mdt firstPluginConfiguration = createMockPluginConfiguration('firstPluginConfiguration');
         firstPluginConfiguration.SObjectHandlerApexClass__c = 'Some_Fake_Apex_Class';
         firstPluginConfiguration.SObjectHandlerExecutionOrder__c = 1;
-        LoggerTestUtils.setMock(firstPluginConfiguration);
+        LoggerPlugin.setMock(firstPluginConfiguration);
         List<LoggerPlugin__mdt> expectedSortedPluginConfigurations = new List<LoggerPlugin__mdt>{
             firstPluginConfiguration,
             secondPluginConfiguration,
@@ -45,11 +45,11 @@ private class LoggerPlugin_Tests {
         secondPluginConfiguration.IsEnabled__c = false;
         secondPluginConfiguration.SObjectHandlerApexClass__c = 'Also_A_Fake_Apex_Class';
         secondPluginConfiguration.SObjectHandlerExecutionOrder__c = 2;
-        LoggerTestUtils.setMock(disabledPluginConfiguration);
+        LoggerPlugin.setMock(disabledPluginConfiguration);
         LoggerPlugin__mdt nonMatchingPluginConfiguration = createMockPluginConfiguration('nonMatchingPluginConfiguration');
         nonMatchingPluginConfiguration.SObjectHandlerApexClass__c = null;
         nonMatchingPluginConfiguration.SObjectHandlerExecutionOrder__c = 1;
-        LoggerTestUtils.setMock(nonMatchingPluginConfiguration);
+        LoggerPlugin.setMock(nonMatchingPluginConfiguration);
 
         List<LoggerPlugin__mdt> returnedPluginConfigurations = LoggerPlugin.getFilteredPluginConfigurations(
             new List<Schema.SObjectField>{ Schema.LoggerPlugin__mdt.SObjectHandlerApexClass__c },
@@ -95,7 +95,7 @@ private class LoggerPlugin_Tests {
     }
 
     @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-    public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
+    private class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
         public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
         }
         public void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scope) {
@@ -105,7 +105,7 @@ private class LoggerPlugin_Tests {
     }
 
     @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-    public class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
+    private class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
         public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
             switch on input.triggerOperationType {
                 when BEFORE_INSERT {

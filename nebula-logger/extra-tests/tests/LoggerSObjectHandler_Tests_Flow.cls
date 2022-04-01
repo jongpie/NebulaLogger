@@ -18,7 +18,7 @@ private class LoggerSObjectHandler_Tests_Flow {
             IsEnabled__c = true,
             SObjectHandlerFlowName__c = MOCK_FLOW_NAME
         );
-        LoggerTestUtils.setMock(mockPluginConfiguration);
+        LoggerTestConfigurator.setMock(mockPluginConfiguration);
         MockLogHandler mockHandler = new MockLogHandler();
         mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
         mockHandler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
@@ -35,13 +35,9 @@ private class LoggerSObjectHandler_Tests_Flow {
         System.assertEquals(MOCK_FLOW_OUTPUT_VARIABLE_VALUE, executedFlowPlugin.getVariableValue('someExampleVariable'));
     }
 
-    public class MockLogHandler extends LoggerSObjectHandler {
+    private class MockLogHandler extends LoggerSObjectHandler {
         public override SObjectType getSObjectType() {
             return Schema.Log__c.SObjectType;
-        }
-
-        public override String getHandlerControlParameterName() {
-            return 'IsMockLogHandlerEnabled';
         }
     }
 }
