@@ -31,7 +31,7 @@ private class LogEntryArchivePlugin_Tests {
 
     @IsTest
     static void it_archives_log_entry_records_in_log_batch_purger_when_purge_action_is_archive() {
-        // LoggerSObjectHandler.shouldExecute(false);
+        LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObject', Value__c = 'BIG_OBJECT'));
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
         createPluginConfiguration();
@@ -120,7 +120,9 @@ private class LogEntryArchivePlugin_Tests {
 
     @IsTest
     static void it_should_not_create_archive_in_logger_when_save_method_is_not_big_object() {
-        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerTestMockCreator.createDataGenerator(Schema.LogEntryEvent__e.SObjectType)
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateRequiredFields()
             .getRecord();
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();
@@ -131,7 +133,6 @@ private class LogEntryArchivePlugin_Tests {
             null,
             null
         );
-        Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
 
         new LogEntryArchivePlugin().execute(pluginConfiguration, pluginInput);
 
@@ -141,8 +142,9 @@ private class LogEntryArchivePlugin_Tests {
     @IsTest
     static void it_should_create_archive_in_logger_when_save_method_is_big_object() {
         Test.startTest();
-        createPluginConfiguration();
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         Logger.getUserSettings().DefaultSaveMethod__c = LogEntryArchivePlugin.BIG_OBJECT_LOGGER_SAVE_METHOD;
+        createPluginConfiguration();
         Logger.info('Testing big object creation').getLogEntryEvent();
 
         Logger.saveLog();

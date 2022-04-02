@@ -23,9 +23,13 @@ global with sharing class Logger {
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
 
     private static Integer currentTransactionEntryNumber = 1;
+    @TestVisible
+    private static String lastSaveMethodNameUsed;
     private static String parentLogTransactionId;
-    private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
+    @TestVisible
+    private static Integer saveLogCallCount = 0;
     private static Boolean suspendSaving = false;
+    private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
     private static LoggerSettings__c userSettings;
 
     private static String transactionSaveMethodName {
@@ -290,6 +294,10 @@ global with sharing class Logger {
      */
     global static Integer getBufferSize() {
         return LOG_ENTRIES_BUFFER.size();
+    }
+
+    public static List<LogEntryEventBuilder> getBuffer() {
+        return LOG_ENTRIES_BUFFER;
     }
 
     /**
@@ -2547,6 +2555,8 @@ global with sharing class Logger {
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     public static void saveLog(String saveMethodName) {
+        saveLogCallCount++;
+        lastSaveMethodNameUsed = saveMethodName;
         if (LOG_ENTRIES_BUFFER.isEmpty() || getUserSettings().IsSavingEnabled__c == false) {
             return;
         }
@@ -2591,11 +2601,11 @@ global with sharing class Logger {
 
         switch on saveMethodName {
             when 'EVENT_BUS' {
-                List<Database.SaveResult> saveResults = EventBus.publish(logEntryEvents);
+                List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents);
                 LoggerEmailUtils.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
             when 'QUEUEABLE' {
-                System.enqueueJob(new QueueableSaver(logEntryEvents));
+                LoggerDataStore.getJobQueue().enqueueJob(new QueueableSaver(logEntryEvents));
             }
             when 'REST' {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
@@ -2818,6 +2828,11 @@ global with sharing class Logger {
             }
         }
         savingLogMessage += ', save method is ' + saveMethodName;
+        savingLogMessage +=
+            '. Logger.saveLog() has been called ' +
+            saveLogCallCount +
+            (saveLogCallCount == 1 ? ' time' : ' times') +
+            ' in the current transaction.';
 
         return savingLogMessage;
     }
@@ -2839,7 +2854,7 @@ global with sharing class Logger {
          * @param queueableContext The context of the current queue.
          */
         global void execute(System.QueueableContext queueableContext) {
-            EventBus.publish(this.logEntryEvents);
+            LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
         }
     }
 

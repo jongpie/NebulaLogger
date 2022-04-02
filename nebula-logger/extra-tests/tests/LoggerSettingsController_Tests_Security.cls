@@ -17,7 +17,7 @@ private class LoggerSettingsController_Tests_Security {
 
     @IsTest
     static void it_should_permit_user_to_modify_logger_settings_when_custom_permission_is_assigned() {
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
         PermissionSet permissionSet = new PermissionSet(Name = 'CustomPermissionEnabled', Label = 'Custom Permisison Enabled');
         insert permissionSet;
@@ -37,7 +37,7 @@ private class LoggerSettingsController_Tests_Security {
 
     @IsTest
     static void it_should_permit_user_to_modify_logger_settings_when_loggerAdmin_permission_set_is_assigned() {
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
         LoggerTestConfigurator.assignAdminPermissionSet(standardUser.Id);
 
@@ -49,7 +49,7 @@ private class LoggerSettingsController_Tests_Security {
 
     @IsTest
     static void it_should_not_permit_user_to_modify_logger_settings_when_loggerLogViewer_permission_set_is_assigned() {
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
         LoggerTestConfigurator.assignLogViewerPermissionSet(standardUser.Id);
 
@@ -61,7 +61,7 @@ private class LoggerSettingsController_Tests_Security {
 
     @IsTest
     static void it_should_not_permit_user_to_modify_logger_settings_when_loggerEndUser_permission_set_is_assigned() {
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
         LoggerTestConfigurator.assignEndUserPermissionSet(standardUser.Id);
 
@@ -73,7 +73,7 @@ private class LoggerSettingsController_Tests_Security {
 
     @IsTest
     static void it_should_not_permit_user_to_modify_logger_settings_when_loggerLogCreator_permission_set_is_assigned() {
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
         insert standardUser;
         LoggerTestConfigurator.assignLogCreatorPermissionSet(standardUser.Id);
 
@@ -85,7 +85,7 @@ private class LoggerSettingsController_Tests_Security {
 
     @IsTest
     static void it_should_not_permit_user_to_modify_logger_settings_when_custom_permission_is_not_assigned() {
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
             System.assertEquals(false, LoggerSettingsController.canUserModifyLoggerSettings());
         }

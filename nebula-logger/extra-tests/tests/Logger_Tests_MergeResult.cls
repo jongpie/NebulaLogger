@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-// TODO move these test methods back into Logger_Tests, now that mocking is possible via LoggerTestMockCreator.createMockDatabaseMergeResult()
+// TODO move these test methods back into Logger_Tests, now that mocking is possible via LoggerMockCreator.createMockDatabaseMergeResult()
 //      (and then delete this class)
 /**
  * @group Extra Tests
@@ -23,7 +23,7 @@ private class Logger_Tests_MergeResult {
     }
 
     static List<Database.MergeResult> getMergeResultList() {
-        return new List<Database.MergeResult>{ LoggerTestMockCreator.createMockDatabaseMergeResult(true) };
+        return new List<Database.MergeResult>{ LoggerMockCreator.createMockDatabaseMergeResult(true) };
     }
 
     @IsTest
@@ -32,7 +32,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -101,7 +101,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -175,7 +175,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -244,7 +244,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -318,7 +318,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -387,7 +387,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -461,7 +461,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -530,7 +530,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -604,7 +604,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -673,7 +673,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -747,7 +747,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -816,7 +816,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -890,7 +890,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 
@@ -959,7 +959,7 @@ private class Logger_Tests_MergeResult {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.assertEquals(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
-        Database.MergeResult mergeResult = LoggerTestMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
 
         Test.startTest();
 

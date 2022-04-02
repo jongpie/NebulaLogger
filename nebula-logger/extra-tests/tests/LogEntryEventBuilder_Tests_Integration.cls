@@ -10,8 +10,8 @@ private class LogEntryEventBuilder_Tests_Integration {
 
     @IsTest
     static void stripInaccessibleFieldsForRecordWhenEnabled() {
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
-        AccountBrand mockAccountBrand = (AccountBrand) LoggerTestMockCreator.createDataGenerator(Schema.AccountBrand.SObjectType)
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        AccountBrand mockAccountBrand = (AccountBrand) LoggerMockCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
             .populateMockId()
             .populateRequiredFields()
             .getRecord();
@@ -41,11 +41,11 @@ private class LogEntryEventBuilder_Tests_Integration {
 
     @IsTest
     static void stripInaccessibleFieldsForRecordsWhenEnabled() {
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
         List<AccountBrand> mockAccountBrands = new List<AccountBrand>();
         List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
         for (Integer i = 0; i < 5; i++) {
-            AccountBrand mockAccountBrand = (AccountBrand) LoggerTestMockCreator.createDataGenerator(Schema.AccountBrand.SObjectType)
+            AccountBrand mockAccountBrand = (AccountBrand) LoggerMockCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
                 .populateMockId()
                 .populateRequiredFields()
                 .getRecord();

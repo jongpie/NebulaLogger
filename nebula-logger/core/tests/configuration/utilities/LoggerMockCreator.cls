@@ -12,7 +12,7 @@
  */
 @SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest
-public class LoggerTestMockCreator {
+public class LoggerMockCreator {
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_ALL_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_REQUIRED_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
@@ -240,12 +240,12 @@ public class LoggerTestMockCreator {
         return recordIdKeyPrefix + '0'.repeat(recordIdCenterLength) + recordIdSuffix;
     }
 
-    public static SObjectTestDataGenerator createDataGenerator(Schema.SObjectType sobjectType) {
-        return LoggerTestMockCreator.createDataGenerator(sobjectType);
+    public static SObjectTestDataBuilder createDataBuilder(Schema.SObjectType sobjectType) {
+        return new SObjectTestDataBuilder(sobjectType);
     }
 
-    public static SObjectTestDataGenerator createDataGenerator(SObject record) {
-        return LoggerTestMockCreator.createDataGenerator(record);
+    public static SObjectTestDataBuilder createDataBuilder(SObject record) {
+        return new SObjectTestDataBuilder(record);
     }
 
     /**
@@ -414,32 +414,32 @@ public class LoggerTestMockCreator {
      *              values used are not relevant to a particular test.
      *              This class can be used when Apex writing tests for plugins.
      */
-    public without sharing class SObjectTestDataGenerator {
+    public without sharing class SObjectTestDataBuilder {
         private final Schema.SObjectType sobjectType;
         private final SObject record;
 
         /**
-         * @description Creates a new generator instance for the specified `SObjectType`, including creating a
+         * @description Creates a new builder instance for the specified `SObjectType`, including creating a
          *              new `SObject` record. The new `SObject` record is created with any default field values that
          *              have been configured on the `SObjectType`.
          * @param  sobjectType The `SObjectType` to use for generating a new test `SObject` record
          */
-        private SObjectTestDataGenerator(Schema.SObjectType sobjectType) {
+        private SObjectTestDataBuilder(Schema.SObjectType sobjectType) {
             this(sobjectType.newSObject(null, true));
         }
 
         /**
-         * @description Creates a new generator instance for the specified `SObject` record
+         * @description Creates a new builder instance for the specified `SObject` record
          * @param  record The existing test `SObject` record to populate with sample data
          */
-        private SObjectTestDataGenerator(SObject record) {
+        private SObjectTestDataBuilder(SObject record) {
             this.record = record;
             this.sobjectType = record.getSObjectType();
 
             this.loadFields();
         }
 
-        public SObjectTestDataGenerator populateMockId() {
+        public SObjectTestDataBuilder populateMockId() {
             this.record.Id = createMockId(this.sobjectType);
             return this;
         }
@@ -448,7 +448,7 @@ public class LoggerTestMockCreator {
          * @description Sets a value on all editable fields, unless the `SObject` record already had a value specified for a field (including `null`)
          * @return   The `SObject` record, with all editable fields populated
          */
-        public SObjectTestDataGenerator populateAllFields() {
+        public SObjectTestDataBuilder populateAllFields() {
             this.setUnpopulatedFieldsOnRecord(SOBJECT_TYPE_TO_ALL_FIELDS.get(this.sobjectType));
             return this;
         }
@@ -457,8 +457,14 @@ public class LoggerTestMockCreator {
          * @description Sets a value on all editable required fields, unless the `SObject` record already had a value specified for a field (including `null`)
          * @return   The `SObject` record, with all editable required fields populated
          */
-        public SObjectTestDataGenerator populateRequiredFields() {
+        public SObjectTestDataBuilder populateRequiredFields() {
             this.setUnpopulatedFieldsOnRecord(SOBJECT_TYPE_TO_REQUIRED_FIELDS.get(this.sobjectType));
+            return this;
+        }
+
+        public SObjectTestDataBuilder validateRequiredFieldsArePopulated() {
+            // TODO
+
             return this;
         }
 

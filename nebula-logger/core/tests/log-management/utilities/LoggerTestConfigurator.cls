@@ -8,7 +8,7 @@
  * @description Utility class used to help with setting up Nebula Logger's configurations within a test context.
  *              These methods are specific to metadata implemented within Nebula Logger.
  *              These methods can be used when writing Apex tests for plugins.
- * @see LoggerTestMockCreator
+ * @see LoggerMockCreator
  */
 @IsTest
 public without sharing class LoggerTestConfigurator {
@@ -57,6 +57,12 @@ public without sharing class LoggerTestConfigurator {
 
     public static LoggerSObjectHandler__mdt getSObjectHandlerConfiguration(Schema.SObjectType sobjectType) {
         return LoggerSObjectHandler.getHandlerConfiguration(sobjectType);
+    }
+
+    public static void initiliazeTestDefaults() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerDataStore.setMock(LoggerMockDataStore.getDatabase());
+        setupMockSObjectHandlerConfigurations();
     }
 
     /**
@@ -116,8 +122,12 @@ public without sharing class LoggerTestConfigurator {
         LogHandler.setMockLogStatus(mock);
     }
 
+    public static void setupMockSObjectHandlerConfigurations() {
+        setupMockSObjectHandlerConfigurations(true);
+    }
+
     public static void setupMockSObjectHandlerConfigurations(Boolean isEnabled) {
-        Map<Schema.SObjectType, Type> sobjectTypeToDefaultHandlerApexClass = new Map<Schema.SObjectType, Type>{
+        Map<Schema.SObjectType, System.Type> sobjectTypeToDefaultHandlerApexClass = new Map<Schema.SObjectType, System.Type>{
             Schema.Log__c.SObjectType => LogHandler.class,
             Schema.LogEntry__c.SObjectType => LogEntryHandler.class,
             Schema.LogEntryEvent__e.SObjectType => LogEntryEventHandler.class,
@@ -148,5 +158,14 @@ public without sharing class LoggerTestConfigurator {
             results.put(permissionSet.Name, permissionSet);
         }
         return results;
+    }
+
+    public class MockBatchablePlugin implements LoggerPlugin.Batchable {
+        public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
+        }
+        public void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scope) {
+        }
+        public void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
+        }
     }
 }

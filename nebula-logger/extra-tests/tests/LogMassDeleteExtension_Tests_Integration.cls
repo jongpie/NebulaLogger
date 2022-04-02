@@ -40,7 +40,7 @@ private class LogMassDeleteExtension_Tests_Integration {
         PageReference pageReference = Page.LogMassDelete;
         Test.setCurrentPage(pageReference);
 
-        User standardUser = LoggerTestMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
             System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
 

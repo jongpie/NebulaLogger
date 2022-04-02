@@ -13,16 +13,15 @@ private class LogEntryHandler_Tests_Integration {
             Schema.EmailMessage.Subject.getDescribe().isNameField(),
             'This test assumes that EmailMessage does not use Subject as the object\'s display-name field'
         );
-        Case cas = (Case) LoggerTestMockCreator.createDataGenerator(Schema.Case.SObjectType).populateRequiredFields().getRecord();
+        Case cas = (Case) LoggerMockCreator.createDataBuilder(Schema.Case.SObjectType).populateRequiredFields().getRecord();
         insert cas;
-        EmailMessage emailMessage = (EmailMessage) LoggerTestMockCreator.createDataGenerator(Schema.EmailMessage.SObjectType)
+        EmailMessage emailMessage = (EmailMessage) LoggerMockCreator.createDataBuilder(new EmailMessage(Subject = 'Some subject', ParentId = cas.Id))
             .populateRequiredFields()
             .getRecord();
-        emailMessage.Subject = 'Some subject';
-        emailMessage.ParentId = cas.Id;
         insert emailMessage;
-        Log__c log = (Log__c) LoggerTestMockCreator.createDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        Log__c log = (Log__c) LoggerMockCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = emailMessage.Id);
 
         insert logEntry;

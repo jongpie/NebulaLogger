@@ -11,11 +11,9 @@ private class LogRetentionFilter_Tests {
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
         };
-        LogEntry__c matchingLogEntry = (LogEntry__c) LoggerTestMockCreator.createDataGenerator(Schema.LogEntry__c.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntry__c matchingLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
         matchingLogEntry.LoggingLevelOrdinal__c = exampleLoggingLevelOrdinal;
-        LogEntry__c nonMatchingLogEntry = (LogEntry__c) LoggerTestMockCreator.createDataGenerator(Schema.LogEntry__c.SObjectType)
+        LogEntry__c nonMatchingLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType)
             .populateRequiredFields()
             .getRecord();
         nonMatchingLogEntry.LoggingLevelOrdinal__c = exampleLoggingLevelOrdinal - 9;
@@ -38,11 +36,9 @@ private class LogRetentionFilter_Tests {
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'GREATER_THAN', 'Value', exampleLoggingLevelOrdinal)
         };
-        LogEntry__c matchingLogEntry = (LogEntry__c) LoggerTestMockCreator.createDataGenerator(Schema.LogEntry__c.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntry__c matchingLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
         matchingLogEntry.LoggingLevelOrdinal__c = exampleLoggingLevelOrdinal + 9;
-        LogEntry__c nonMatchingLogEntry = (LogEntry__c) LoggerTestMockCreator.createDataGenerator(Schema.LogEntry__c.SObjectType)
+        LogEntry__c nonMatchingLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType)
             .populateRequiredFields()
             .getRecord();
         nonMatchingLogEntry.LoggingLevelOrdinal__c = exampleLoggingLevelOrdinal - 1;
@@ -65,11 +61,9 @@ private class LogRetentionFilter_Tests {
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'LESS_THAN', 'Value', exampleLoggingLevelOrdinal)
         };
-        LogEntry__c matchingLogEntry = (LogEntry__c) LoggerTestMockCreator.createDataGenerator(Schema.LogEntry__c.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntry__c matchingLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
         matchingLogEntry.LoggingLevelOrdinal__c = exampleLoggingLevelOrdinal - 1;
-        LogEntry__c nonMatchingLogEntry = (LogEntry__c) LoggerTestMockCreator.createDataGenerator(Schema.LogEntry__c.SObjectType)
+        LogEntry__c nonMatchingLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType)
             .populateRequiredFields()
             .getRecord();
         nonMatchingLogEntry.LoggingLevelOrdinal__c = exampleLoggingLevelOrdinal + 9;

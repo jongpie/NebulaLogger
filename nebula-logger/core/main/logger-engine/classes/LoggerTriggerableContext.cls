@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Log Management
+ * @group Logger Engine
  * @description Class used by the logging system for trigger contextual details
  * @see LoggerSObjectHandler
  * @see LoggerPlugin
@@ -25,6 +25,10 @@ public without sharing class LoggerTriggerableContext {
 
     @AuraEnabled
     public List<RecordInput> triggerRecords { get; private set; }
+
+    public LoggerTriggerableContext(Schema.SObjectType sobjectType, TriggerOperation triggerOperationType, List<SObject> triggerNew) {
+        this(sobjectType, triggerOperationType, triggerNew, null, null);
+    }
 
     public LoggerTriggerableContext(
         Schema.SObjectType sobjectType,

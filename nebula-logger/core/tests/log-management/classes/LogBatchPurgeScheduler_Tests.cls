@@ -10,12 +10,7 @@ private class LogBatchPurgeScheduler_Tests {
 
     @IsTest
     static void it_should_schedule_job() {
-        Test.startTest();
-
-        LoggerTestUtils.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
         Id jobId = System.schedule('Test schedule of LogBatchPurgeScheduler', TEST_CRON_EXPRESSION, new LogBatchPurgeScheduler());
-
-        Test.stopTest();
 
         CronTrigger cronTrigger = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE Id = :jobId];
         System.assertEquals(TEST_CRON_EXPRESSION, cronTrigger.CronExpression);

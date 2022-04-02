@@ -21,7 +21,7 @@ private class RelatedLogEntriesController_Tests {
     static void setupData() {
         LoggerSObjectHandler.shouldExecute(false);
 
-        Log__c log = (Log__c) new LoggerSObjectTestDataGenerator(Schema.Log__c.SObjectType).populateRequiredFields();
+        Log__c log = (Log__c) LoggerMockCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
@@ -30,7 +30,7 @@ private class RelatedLogEntriesController_Tests {
             if (i <= TOTAL_RELATED_LOG_ENTRIES) {
                 logEntry.RecordId__c = UserInfo.getUserId();
             }
-            new LoggerSObjectTestDataGenerator(logEntry).populateRequiredFields();
+            LoggerMockCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
             logEntries.add(logEntry);
         }

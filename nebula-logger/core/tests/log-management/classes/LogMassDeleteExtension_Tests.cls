@@ -13,7 +13,7 @@ private class LogMassDeleteExtension_Tests {
         List<Log__c> logs = new List<Log__c>();
         for (Integer i = 0; i < 10; i++) {
             Log__c log = new Log__c(TransactionId__c = 'TXN-' + i);
-            new LoggerSObjectTestDataGenerator(log).populateRequiredFields();
+            LoggerMockCreator.createDataBuilder(log).populateRequiredFields().getRecord();
             logs.add(log);
         }
         insert logs;

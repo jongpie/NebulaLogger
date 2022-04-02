@@ -7,5 +7,8 @@
     <testClassName>FlowRecordLogEntry_Tests</testClassName>
     <testClassName>LogEntryEventBuilder_Tests</testClassName>
     <testClassName>Logger_Tests</testClassName>
+    <testClassName>LoggerDataStore_Tests</testClassName>
+    <testClassName>LoggerSObjectHandler_Tests</testClassName>
+    <testClassName>LoggerTriggerableContext_Tests</testClassName>
     <testClassName>LogMessage_Tests</testClassName>
 </ApexTestSuite>
