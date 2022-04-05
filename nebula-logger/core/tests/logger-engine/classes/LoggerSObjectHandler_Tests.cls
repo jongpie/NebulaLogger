@@ -3,16 +3,15 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/**
+ * @description Test class for LoggerSObjectHandler, the trigger-handler framework used by Nebula Logger.
+ *              To demonstrate that the framework is standalone/would work with any SObject, these test methods
+ *              all use mock implementations of the handler, using the User SObject
+ */
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
 @IsTest
 private class LoggerSObjectHandler_Tests {
     private static final String FAKE_PROFILE_NAME = 'Some String';
-
-    @TestSetup
-    static void setupData() {
-        LoggerSObjectHandler.shouldExecute(false);
-        insert new Log__c(TransactionId__c = '1234');
-    }
 
     @IsTest
     static void it_should_return_configured_sobject_handler() {
@@ -50,10 +49,13 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_not_run_when_disabled_via_logger_parameter() {
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.handlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = false);
         mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
-        mockHandler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
+        mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
 
@@ -64,9 +66,12 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_run_before_insert_method() {
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
-        mockHandler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
+        mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
 
@@ -81,8 +86,10 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_run_before_update_method() {
-        List<SObject> records = [SELECT Id, TransactionId__c FROM Log__c];
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.BEFORE_UPDATE;
         mockHandler.triggerNew = null;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
@@ -99,8 +106,10 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_run_before_delete_method() {
-        List<SObject> records = [SELECT Id, TransactionId__c FROM Log__c];
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.BEFORE_DELETE;
         mockHandler.triggerNew = null;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
@@ -119,8 +128,10 @@ private class LoggerSObjectHandler_Tests {
     static void it_should_run_after_insert_methods() {
         // To handle AFTER_INSERT on LogEntryEvent__e, LoggerSObjectHandler has 2 methods - one with
         // a list of SObject records (triggerNew), and another with a map of SObject records (triggerNewMap)
-        List<Log__c> records = [SELECT Id, TransactionId__c FROM Log__c];
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.AFTER_INSERT;
         mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
@@ -137,8 +148,10 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_run_after_update_method() {
-        List<SObject> records = [SELECT Id, TransactionId__c FROM Log__c];
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.AFTER_UPDATE;
         mockHandler.triggerNew = null;
         mockHandler.triggerNewMap = new Map<Id, SObject>(records);
@@ -155,10 +168,13 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_run_after_delete_method() {
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.AFTER_DELETE;
         mockHandler.triggerNew = null;
-        mockHandler.triggerNewMap = new Map<Id, SObject>([SELECT Id, TransactionId__c FROM Log__c]);
+        mockHandler.triggerNewMap = new Map<Id, SObject>(records);
         mockHandler.triggerOldMap = null;
 
         mockHandler.execute();
@@ -172,10 +188,13 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_run_after_undelete_method() {
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.AFTER_UNDELETE;
         mockHandler.triggerNew = null;
-        mockHandler.triggerNewMap = new Map<Id, SObject>([SELECT Id, TransactionId__c FROM Log__c]);
+        mockHandler.triggerNewMap = new Map<Id, SObject>(records);
         mockHandler.triggerOldMap = null;
 
         mockHandler.execute();
@@ -189,9 +208,12 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_gracefully_skip_non_existent_apex_plugin() {
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
-        mockHandler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
+        mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
         LoggerPlugin__mdt pluginConfiguration = new LoggerPlugin__mdt(
@@ -210,9 +232,12 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_execute_apex_plugin() {
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
-        mockHandler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
+        mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
@@ -234,9 +259,12 @@ private class LoggerSObjectHandler_Tests {
 
     @IsTest
     static void it_should_gracefully_skip_non_existent_flow_plugin() {
-        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
         mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
-        mockHandler.triggerNew = new List<Log__c>{ new Log__c(TransactionId__c = '1234') };
+        mockHandler.triggerNew = records;
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
         LoggerPlugin__mdt pluginConfiguration = new LoggerPlugin__mdt(
@@ -255,7 +283,7 @@ private class LoggerSObjectHandler_Tests {
 
     public class MockDefaultImplementationSObjectHandler extends LoggerSObjectHandler {
         public override SObjectType getSObjectType() {
-            return Schema.Log__c.SObjectType;
+            return Schema.User.SObjectType;
         }
     }
 
@@ -269,7 +297,7 @@ private class LoggerSObjectHandler_Tests {
         private Schema.SObjectType sobjectType;
 
         public MockSObjectHandler() {
-            this.sobjectType = Schema.Log__c.SObjectType;
+            this.sobjectType = Schema.User.SObjectType;
         }
 
         public MockSObjectHandler(Schema.SObjectType sobjectType) {

@@ -3,6 +3,11 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/**
+ * @description Test class for LoggerTriggerableContext, part of the trigger-handler framework used by Nebula Logger.
+ *              To demonstrate that the framework is standalone/would work with any SObject, these test methods
+ *              all use mock records for the User SObject
+ */
 @SuppressWarnings('PMD.MethodNamingConventions')
 @IsTest
 private class LoggerTriggerableContext_Tests {
@@ -12,64 +17,66 @@ private class LoggerTriggerableContext_Tests {
 
     @IsTest
     static void it_constructs_instance_when_before_insert_operation() {
-        Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
+        Schema.SObjectType sobjectType = Schema.User.SObjectType;
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_INSERT;
-        List<Log__c> newLogs = new List<Log__c>();
+        List<User> newUsers = new List<User>();
         for (Integer i = 0; i < 3; i++) {
-            newLogs.add((Log__c) LoggerMockDataCreator.createDataBuilder(sobjectType).populateRequiredFields().getRecord());
+            newUsers.add((User) LoggerMockDataCreator.createUser());
         }
 
-        LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, newLogs, null, null);
+        LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, newUsers, null, null);
 
         System.assertEquals(sobjectType, context.sobjectType);
         System.assertEquals(sobjectType.getDescribe().getName(), context.sobjectTypeName);
         System.assertEquals(triggerOperationType, context.triggerOperationType);
-        System.assertEquals(newLogs, context.triggerNew);
+        System.assertEquals(newUsers, context.triggerNew);
         System.assertEquals(null, context.triggerNewMap);
         System.assertEquals(null, context.triggerOldMap);
-        System.assertEquals(newLogs.size(), context.triggerRecords.size());
-        for (Integer i = 0; i < newLogs.size(); i++) {
-            System.assertEquals(newLogs.get(i), context.triggerRecords.get(i).triggerRecordNew);
+        System.assertEquals(newUsers.size(), context.triggerRecords.size());
+        for (Integer i = 0; i < newUsers.size(); i++) {
+            System.assertEquals(newUsers.get(i), context.triggerRecords.get(i).triggerRecordNew);
             System.assertEquals(null, context.triggerRecords.get(i).triggerRecordOld);
         }
     }
 
     @IsTest
     static void it_constructs_instance_when_before_update_operation() {
-        Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
+        Schema.SObjectType sobjectType = Schema.User.SObjectType;
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_UPDATE;
-        List<Log__c> updatedLogs = new List<Log__c>();
+        List<User> updatedUsers = new List<User>();
         for (Integer i = 0; i < 3; i++) {
-            Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(sobjectType).populateMockId().populateRequiredFields().getRecord();
-            updatedLogs.add(log);
+            User user = (User) LoggerMockDataCreator.createUser();
+            user.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+            updatedUsers.add(user);
         }
-        Map<Id, Log__c> newLogsMap = new Map<Id, Log__c>(updatedLogs.clone());
-        Map<Id, Log__c> oldLogsMap = new Map<Id, Log__c>(updatedLogs.clone());
+        Map<Id, User> newUsersMap = new Map<Id, User>(updatedUsers.clone());
+        Map<Id, User> oldUsersMap = new Map<Id, User>(updatedUsers.clone());
 
-        LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, updatedLogs, newLogsMap, oldLogsMap);
+        LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, updatedUsers, newUsersMap, oldUsersMap);
 
         System.assertEquals(sobjectType, context.sobjectType);
         System.assertEquals(sobjectType.getDescribe().getName(), context.sobjectTypeName);
         System.assertEquals(triggerOperationType, context.triggerOperationType);
-        System.assertEquals(updatedLogs, context.triggerNew);
-        System.assertEquals(newLogsMap, context.triggerNewMap);
-        System.assertEquals(oldLogsMap, context.triggerOldMap);
-        System.assertEquals(updatedLogs.size(), context.triggerRecords.size());
-        for (Integer i = 0; i < updatedLogs.size(); i++) {
-            Log__c log = updatedLogs.get(i);
-            System.assertEquals(log, context.triggerRecords.get(i).triggerRecordNew);
-            System.assertEquals(oldLogsMap.get(log.Id), context.triggerRecords.get(i).triggerRecordOld);
+        System.assertEquals(updatedUsers, context.triggerNew);
+        System.assertEquals(newUsersMap, context.triggerNewMap);
+        System.assertEquals(oldUsersMap, context.triggerOldMap);
+        System.assertEquals(updatedUsers.size(), context.triggerRecords.size());
+        for (Integer i = 0; i < updatedUsers.size(); i++) {
+            User user = updatedUsers.get(i);
+            System.assertEquals(user, context.triggerRecords.get(i).triggerRecordNew);
+            System.assertEquals(oldUsersMap.get(user.Id), context.triggerRecords.get(i).triggerRecordOld);
         }
     }
 
     @IsTest
     static void it_constructs_instance_when_before_delete_operation() {
-        Schema.SObjectType sobjectType = Schema.Log__c.SObjectType;
+        Schema.SObjectType sobjectType = Schema.User.SObjectType;
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_DELETE;
-        Map<Id, Log__c> deletedLogsMap = new Map<Id, Log__c>();
+        Map<Id, User> deletedLogsMap = new Map<Id, User>();
         for (Integer i = 0; i < 3; i++) {
-            Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(sobjectType).populateMockId().populateRequiredFields().getRecord();
-            deletedLogsMap.put(log.Id, log);
+            User user = (User) LoggerMockDataCreator.createDataBuilder(sobjectType).populateMockId().populateRequiredFields().getRecord();
+            user.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+            deletedLogsMap.put(user.Id, user);
         }
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, null, null, deletedLogsMap);
@@ -82,7 +89,7 @@ private class LoggerTriggerableContext_Tests {
         System.assertEquals(deletedLogsMap, context.triggerOldMap);
         System.assertEquals(deletedLogsMap.size(), context.triggerRecords.size());
         for (Integer i = 0; i < deletedLogsMap.size(); i++) {
-            Log__c deletedLog = deletedLogsMap.values().get(i);
+            User deletedLog = deletedLogsMap.values().get(i);
             System.assertEquals(null, context.triggerRecords.get(i).triggerRecordNew);
             System.assertEquals(deletedLog, context.triggerRecords.get(i).triggerRecordOld);
         }
