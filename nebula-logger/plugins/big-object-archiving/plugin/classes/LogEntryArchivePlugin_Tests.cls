@@ -122,7 +122,7 @@ private class LogEntryArchivePlugin_Tests {
     static void it_should_not_create_archive_in_logger_when_save_method_is_not_big_object() {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
-        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateRequiredFields()
             .getRecord();
         LoggerPlugin__mdt pluginConfiguration = createPluginConfiguration();

@@ -7,6 +7,14 @@
     <label>LogEntryEventHandler config</label>
     <protected>false</protected>
     <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>SObjectHandlerApexClass__c</field>
+        <value xsi:type="xsd:string">LogEntryEventHandler</value>
+    </values>
+    <values>
         <field>SObjectType__c</field>
         <value xsi:type="xsd:string">LogEntryEvent__e</value>
     </values>

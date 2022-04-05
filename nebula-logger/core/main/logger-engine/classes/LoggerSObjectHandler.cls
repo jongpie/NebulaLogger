@@ -4,13 +4,14 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Log Management
+ * @group Logger Engine
  * @description Abstract class used by trigger handlers for shared logic
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock, PMD.FieldDeclarationsShouldBeAtStart')
 public without sharing abstract class LoggerSObjectHandler {
     private static Boolean isEnabled = true;
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
+    private static final Map<Schema.SObjectType, LoggerSObjectHandler__mdt> SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS = queryHandlerConfigurations();
 
     // Instance variables for top-level class
     @TestVisible
@@ -32,9 +33,21 @@ public without sharing abstract class LoggerSObjectHandler {
     private Map<Id, SObject> triggerNewMap;
     @TestVisible
     private Map<Id, SObject> triggerOldMap;
+    @TestVisible
+    private LoggerSObjectHandler__mdt handlerConfiguration;
     private List<LoggerPlugin__mdt> pluginConfigurations = new List<LoggerPlugin__mdt>();
     private List<LoggerPlugin.Triggerable> executedApexPlugins = new List<LoggerPlugin.Triggerable>();
     private List<Flow.Interview> executedFlowPlugins = new List<Flow.Interview>();
+
+    public static LoggerSObjectHandler getHandler(Schema.SObjectType sobjectType) {
+        return getHandler(sobjectType, null);
+    }
+
+    public static LoggerSObjectHandler getHandler(Schema.SObjectType sobjectType, LoggerSObjectHandler defaultImplementation) {
+        String handlerApexClassName = getHandlerConfiguration(sobjectType)?.SObjectHandlerApexClass__c;
+        // TODO need to handle namespace prefix for Apex classes
+        return handlerApexClassName == null ? defaultImplementation : (LoggerSObjectHandler) Type.forName(handlerApexClassName)?.newInstance();
+    }
 
     /**
      * @description Default constructor
@@ -44,6 +57,7 @@ public without sharing abstract class LoggerSObjectHandler {
         this.triggerNew = Trigger.new;
         this.triggerNewMap = Trigger.newMap;
         this.triggerOldMap = Trigger.oldMap;
+        this.handlerConfiguration = SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS.get(this.getSObjectType());
         this.pluginConfigurations = LoggerPlugin.getFilteredPluginConfigurations(
             new List<Schema.SObjectField>{ Schema.LoggerPlugin__mdt.SObjectHandlerApexClass__c, Schema.LoggerPlugin__mdt.SObjectHandlerFlowName__c },
             Schema.LoggerPlugin__mdt.SObjectHandlerExecutionOrder__c
@@ -56,19 +70,20 @@ public without sharing abstract class LoggerSObjectHandler {
      */
     public abstract Schema.SObjectType getSObjectType();
 
-    /**
-     * @description Returns the string value of the `LoggerParameter__mdt` record that controls if the handler is enabled.
-     *          The `LoggerSObjectHandler` class uses this method to retrieve the corresponding `LoggerParameter__mdt` to
-     *          determine if the class should execute.
-     * @return   The `DeveloperName` value of the `LoggerParameter__mdt` that controls if the handler is enabled
-     */
-    public abstract String getHandlerControlParameterName();
+    public LoggerSObjectHandler overrideTriggerableContext(LoggerTriggerableContext input) {
+        this.input = input;
+        return this;
+    }
 
     /**
      * @description Runs the handler class's logic, as well as any configured plugins
      */
     public void execute() {
-        Boolean shouldExecute = isEnabled && LoggerParameter.getBoolean(this.getHandlerControlParameterName(), true);
+        if (System.Test.isRunningTest() == true && SOBJECT_TYPE_TO_EXECUTED_HANDLERS.containsKey(this.getSObjectType()) == false) {
+            SOBJECT_TYPE_TO_EXECUTED_HANDLERS.put(this.getSObjectType(), new List<LoggerSObjectHandler>());
+        }
+
+        Boolean shouldExecute = isEnabled && (this.handlerConfiguration == null || this.handlerConfiguration.IsEnabled__c == true);
         if (shouldExecute == false) {
             return;
         }
@@ -104,9 +119,6 @@ public without sharing abstract class LoggerSObjectHandler {
         this.executePlugins();
 
         if (System.Test.isRunningTest() == true) {
-            if (SOBJECT_TYPE_TO_EXECUTED_HANDLERS.containsKey(this.getSObjectType()) == false) {
-                SOBJECT_TYPE_TO_EXECUTED_HANDLERS.put(this.getSObjectType(), new List<LoggerSObjectHandler>());
-            }
             SOBJECT_TYPE_TO_EXECUTED_HANDLERS.get(this.getSObjectType()).add(this);
         }
     }
@@ -212,6 +224,37 @@ public without sharing abstract class LoggerSObjectHandler {
     @TestVisible
     private static Map<Schema.SObjectType, List<LoggerSObjectHandler>> getExecutedHandlers() {
         return SOBJECT_TYPE_TO_EXECUTED_HANDLERS;
+    }
+
+    private static Map<Schema.SObjectType, LoggerSObjectHandler__mdt> queryHandlerConfigurations() {
+        Map<Schema.SObjectType, LoggerSObjectHandler__mdt> sobjectTypeToHandlerConfiguration = new Map<Schema.SObjectType, LoggerSObjectHandler__mdt>();
+        for (LoggerSObjectHandler__mdt handlerConfiguration : [
+            SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName
+            FROM LoggerSObjectHandler__mdt
+            WHERE IsEnabled__c = TRUE
+        ]) {
+            handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectType__r.QualifiedApiName;
+            Schema.SObjectType sobjectType = ((SObject) Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
+            sobjectTypeToHandlerConfiguration.put(sobjectType, handlerConfiguration);
+        }
+
+        if (System.Test.isRunningTest() == true) {
+            sobjectTypeToHandlerConfiguration.clear();
+        }
+
+        return sobjectTypeToHandlerConfiguration;
+    }
+
+    @TestVisible
+    private static LoggerSObjectHandler__mdt getHandlerConfiguration(Schema.SObjectType sobjectType) {
+        return SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS.get(sobjectType);
+    }
+
+    @TestVisible
+    private static void setMock(LoggerSObjectHandler__mdt handlerConfiguration) {
+        //TODO cleanup code duplication
+        Schema.SObjectType sobjectType = ((SObject) Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
+        SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS.put(sobjectType, handlerConfiguration);
     }
 
     @TestVisible

@@ -43,7 +43,7 @@ private class LogBatchPurger_Tests_Integration {
     static void it_should_throw_exception_when_user_does_not_have_delete_access() {
         Integer originalCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
 
-        User standardUser = LoggerMockCreator.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
             System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
 

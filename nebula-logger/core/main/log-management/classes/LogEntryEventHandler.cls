@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.AvoidDebugStatements, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
+@SuppressWarnings('PMD.AvoidDebugStatements, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
@@ -29,16 +29,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     /**
-     * @description Additional constructor specific to `LogEntryEvent__e`, used in `Logger` to simulate a `BEFORE_INSERT` context
-     * @param  triggerOperationType The instance of `TriggerOperation` that the handler class should use - this overrides the `TriggerOperation` provided by `LoggerSObjectHandler`
-     * @param  logEntryEvents       The list of `LogEntryEvent__e` records in Logger's buffer
-     */
-    public LogEntryEventHandler(TriggerOperation triggerOperationType, List<LogEntryEvent__e> logEntryEvents) {
-        this();
-        super.input = new LoggerTriggerableContext(this.getSObjectType(), triggerOperationType, logEntryEvents, null, null);
-    }
-
-    /**
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
      */
@@ -46,29 +36,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return Schema.LogEntryEvent__e.SObjectType;
     }
 
-    /**
-     * @description Returns the string value of the `LoggerParameter__mdt` record that controls if the handler is enabled.
-     *          The `LoggerSObjectHandler` class uses this method to retrieve the corresponding `LoggerParameter__mdt` to
-     *          determine if the class should execute.
-     * @return   The `DeveloperName` value of the `LoggerParameter__mdt` that controls if the handler is enabled
-     */
-    public override String getHandlerControlParameterName() {
-        return 'IsLogEntryEventHandlerEnabled';
-    }
-
-    /**
-     * @description method so it can be called from Logger - this is unique to LogEntryEventHandler
-     * @param triggerNew list of new LogEntryEvent events
-     */
-    public override void executeBeforeInsert(List<SObject> triggerNew) {
-        this.logEntryEvents = (List<LogEntryEvent__e>) triggerNew;
-    }
-
-    /**
-     * @description Public method so it can be called from Logger - this is unique to LogEntryEventHandler
-     * @param triggerNew list of new LogEntryEvent events
-     */
-    public override void executeAfterInsert(List<SObject> triggerNew) {
+    protected override void executeAfterInsert(List<SObject> triggerNew) {
         this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
         this.upsertLogs();
@@ -169,10 +137,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
 
-        List<Database.UpsertResult> upsertResults = Database.upsert(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, false);
+        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
+            .upsertRecords(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, false);
         LoggerEmailUtils.sendErrorEmail(Schema.Log__c.SObjectType, upsertResults);
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
+        // TODO this probably should be moved to LogHandler instead of here
         if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
@@ -260,7 +230,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
         }
 
-        List<Database.SaveResult> saveResults = Database.insert(this.logEntries, DML_OPTIONS);
+        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(this.logEntries, DML_OPTIONS);
         LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
     }
 
@@ -322,7 +292,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
         }
 
-        List<Database.SaveResult> saveResults = Database.insert(new List<SObject>(tagAssignments), DML_OPTIONS);
+        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(new List<SObject>(tagAssignments), DML_OPTIONS);
         LoggerEmailUtils.sendErrorEmail(tagAssignmentSObjectType, saveResults);
     }
 
@@ -351,7 +321,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         if (!missingTagsToCreate.isEmpty()) {
-            List<Database.SaveResult> saveResults = Database.insert(missingTagsToCreate, DML_OPTIONS);
+            List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(missingTagsToCreate, DML_OPTIONS);
             LoggerEmailUtils.sendErrorEmail(tagSObjectType, saveResults);
             for (SObject tag : missingTagsToCreate) {
                 missingTagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
@@ -493,7 +463,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             logsToUpdate.add(log);
         }
         System.debug(LoggingLevel.DEBUG, 'Logger - logs to update: ' + logsToUpdate);
-        update logsToUpdate;
+        LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
     }
 
     // Private class for handling the response from api.status.salesforce.com

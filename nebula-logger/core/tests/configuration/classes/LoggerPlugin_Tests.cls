@@ -99,7 +99,7 @@ private class LoggerPlugin_Tests {
     }
 
     @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-    private class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
+    public class ExampleBatchPurgerPlugin implements LoggerPlugin.Batchable {
         public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
         }
         public void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scope) {
@@ -109,7 +109,7 @@ private class LoggerPlugin_Tests {
     }
 
     @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
-    private class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
+    public class ExampleTriggerablePlugin implements LoggerPlugin.Triggerable {
         public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
             switch on input.triggerOperationType {
                 when BEFORE_INSERT {

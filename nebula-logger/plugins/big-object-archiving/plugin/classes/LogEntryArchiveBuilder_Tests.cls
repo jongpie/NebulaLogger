@@ -9,7 +9,7 @@ private class LogEntryArchiveBuilder_Tests {
     @IsTest
     static void it_should_write_all_fields_over_from_log_entry_event() {
         Datetime timestamp = System.now();
-        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateAllFields()
             .getRecord();
         mockEvent.LoggingLevel__c = LoggingLevel.INFO.name();
@@ -24,7 +24,7 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_cache_instance_of_log_entry_archive_for_log_entry_event() {
-        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateAllFields()
             .getRecord();
         LogEntryArchiveBuilder archiveBuilder = new LogEntryArchiveBuilder(mockEvent);
@@ -38,7 +38,7 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_truncate_log_entry_archive_field_values_when_too_long() {
-        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+        LogEntryEvent__e mockEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateAllFields()
             .getRecord();
         mockEvent.Message__c = 'Z'.repeat(Schema.LogEntryArchive__b.Message__c.getDescribe().getLength() + 1);
@@ -50,8 +50,8 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_write_all_fields_over_from_log_entry() {
-        LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
-        mockLogEntry.Log__r = (Log__c) LoggerMockCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
+        mockLogEntry.Log__r = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         mockLogEntry.LoggingLevel__c = LoggingLevel.INFO.name();
 
         LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockLogEntry).getLogEntryArchive();
@@ -62,8 +62,8 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_cache_instance_of_log_entry_archive_for_log_entry() {
-        LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
-        mockLogEntry.Log__r = (Log__c) LoggerMockCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
+        mockLogEntry.Log__r = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         LogEntryArchiveBuilder archiveBuilder = new LogEntryArchiveBuilder(mockLogEntry);
         LogEntryArchive__b originalLogEntryArchive = archiveBuilder.getLogEntryArchive();
         originalLogEntryArchive.Message__c = 'Some new value';
@@ -76,7 +76,7 @@ private class LogEntryArchiveBuilder_Tests {
 
     @IsTest
     static void it_should_truncate_log_entry_field_values_when_too_long() {
-        LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
+        LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateRequiredFields().getRecord();
         mockLogEntry.Message__c = 'Z'.repeat(Schema.LogEntryArchive__b.Message__c.getDescribe().getLength() + 1);
         LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockLogEntry).getLogEntryArchive();
 

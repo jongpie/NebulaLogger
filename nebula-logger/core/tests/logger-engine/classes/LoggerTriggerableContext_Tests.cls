@@ -16,7 +16,7 @@ private class LoggerTriggerableContext_Tests {
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_INSERT;
         List<Log__c> newLogs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
-            newLogs.add((Log__c) LoggerMockCreator.createDataBuilder(sobjectType).populateRequiredFields().getRecord());
+            newLogs.add((Log__c) LoggerMockDataCreator.createDataBuilder(sobjectType).populateRequiredFields().getRecord());
         }
 
         LoggerTriggerableContext context = new LoggerTriggerableContext(sobjectType, triggerOperationType, newLogs, null, null);
@@ -40,7 +40,7 @@ private class LoggerTriggerableContext_Tests {
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_UPDATE;
         List<Log__c> updatedLogs = new List<Log__c>();
         for (Integer i = 0; i < 3; i++) {
-            Log__c log = (Log__c) LoggerMockCreator.createDataBuilder(sobjectType).populateMockId().populateRequiredFields().getRecord();
+            Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(sobjectType).populateMockId().populateRequiredFields().getRecord();
             updatedLogs.add(log);
         }
         Map<Id, Log__c> newLogsMap = new Map<Id, Log__c>(updatedLogs.clone());
@@ -68,7 +68,7 @@ private class LoggerTriggerableContext_Tests {
         TriggerOperation triggerOperationType = TriggerOperation.BEFORE_DELETE;
         Map<Id, Log__c> deletedLogsMap = new Map<Id, Log__c>();
         for (Integer i = 0; i < 3; i++) {
-            Log__c log = (Log__c) LoggerMockCreator.createDataBuilder(sobjectType).populateMockId().populateRequiredFields().getRecord();
+            Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(sobjectType).populateMockId().populateRequiredFields().getRecord();
             deletedLogsMap.put(log.Id, log);
         }
 

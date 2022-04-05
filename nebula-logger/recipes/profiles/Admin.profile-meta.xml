@@ -242,7 +242,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerMockCreator</apexClass>
+        <apexClass>LoggerMockDataCreator</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

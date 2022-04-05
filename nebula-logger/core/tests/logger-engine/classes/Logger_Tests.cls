@@ -465,7 +465,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
-        User testStandardUser = LoggerMockCreator.createUser();
+        User testStandardUser = LoggerMockDataCreator.createUser();
 
         // Make sure that the test user has a different time zone from the automated process user
         if (automatedProcessUser.TimeZoneSidKey == testStandardUser.TimeZoneSidKey) {
@@ -723,7 +723,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_defaulted() {
-        Test.setMock(HttpCalloutMock.class, LoggerMockCreator.createMockHttpCallout().setStatusCode(200));
+        Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -752,7 +752,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_specified_via_settings() {
-        Test.setMock(HttpCalloutMock.class, LoggerMockCreator.createMockHttpCallout().setStatusCode(200));
+        Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -777,7 +777,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_specified_via_setSaveMethod() {
-        Test.setMock(HttpCalloutMock.class, LoggerMockCreator.createMockHttpCallout().setStatusCode(200));
+        Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -805,7 +805,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_throw_exception_when_save_via_rest_api_fails() {
-        Test.setMock(HttpCalloutMock.class, LoggerMockCreator.createMockHttpCallout().setStatusCode(400));
+        Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
@@ -834,89 +834,156 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_synchronous_dml_when_defaulted() {
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Logger.getUserSettings().DefaultSaveMethod__c = 'SYNCHRONOUS_DML';
-
+        LoggerSObjectHandler.setMock(
+            new LoggerSObjectHandler__mdt(
+                DeveloperName = 'Mock_Log_Entry_Event_Config',
+                IsEnabled__c = true,
+                SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
+                SObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName()
+            )
+        );
+        Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.SYNCHRONOUS_DML.name();
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
+        System.assertEquals(LoggingLevel.DEBUG, Logger.getUserLoggingLevel());
         System.assertEquals(Logger.SaveMethod.SYNCHRONOUS_DML, Logger.getSaveMethod());
-
-        Logger.debug('test log entry');
-        Logger.debug('another test log entry');
-
-        System.assertEquals(0, Limits.getCallouts());
-
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+        logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         Test.startTest();
-
-        Logger.saveLog();
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(0, Limits.getQueueableJobs());
         System.assertEquals(0, Limits.getCallouts());
-        System.assertNotEquals(0, Limits.getDmlStatements());
+        System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
-        // Requery & assert before Test.stopTest() since this is supposed to save synchronously
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(2, countOfLogEntries);
+        Logger.saveLog();
 
+        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        MockSObjectHandler mockLogEntryEventBeforeInsertHandler = (MockSObjectHandler) LoggerSObjectHandler.getExecutedHandlers()
+            .get(Schema.LogEntryEvent__e.SObjectType)
+            .get(0);
+        // System.assertEquals(1, mockLogEntryEventBeforeInsertHandler.executionCount);
+        System.assertEquals(TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
+        System.assertEquals(logEntryEvents.size(), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.size());
+        System.assertEquals(logEntryEvents.get(0), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(0));
+        System.assertEquals(logEntryEvents.get(1), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(1));
+        MockSObjectHandler mockLogEntryEventAfterInsertHandler = (MockSObjectHandler) LoggerSObjectHandler.getExecutedHandlers()
+            .get(Schema.LogEntryEvent__e.SObjectType)
+            .get(1);
+        // System.assertEquals(1, mockLogEntryEventAfterInsertHandler.executionCount);
+        System.assertEquals(TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
+        System.assertEquals(logEntryEvents.size(), mockLogEntryEventAfterInsertHandler.executedTriggerNew.size());
+        System.assertEquals(logEntryEvents.get(0), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(0));
+        System.assertEquals(logEntryEvents.get(1), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(1));
         Test.stopTest();
     }
 
     @IsTest
     static void it_should_save_via_synchronous_dml_when_specified_via_settings() {
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Logger.debug('test log entry');
-        Logger.debug('another test log entry');
-
-        System.assertEquals(0, Limits.getCallouts());
-
+        LoggerSObjectHandler.setMock(
+            new LoggerSObjectHandler__mdt(
+                DeveloperName = 'Mock_Log_Entry_Event_Config',
+                IsEnabled__c = true,
+                SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
+                SObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName()
+            )
+        );
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+        logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         Test.startTest();
-
-        Logger.saveLog(Logger.SaveMethod.SYNCHRONOUS_DML);
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(0, Limits.getQueueableJobs());
         System.assertEquals(0, Limits.getCallouts());
-        System.assertNotEquals(0, Limits.getDmlStatements());
+        System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
-        // Requery & assert before Test.stopTest() since this is supposed to save synchronously
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(2, countOfLogEntries);
+        Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.SYNCHRONOUS_DML.name();
+        System.assertEquals(Logger.SaveMethod.SYNCHRONOUS_DML, Logger.getSaveMethod());
+        Logger.saveLog();
 
+        System.assertEquals(0, Logger.getBufferSize());
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        MockSObjectHandler mockLogEntryEventBeforeInsertHandler = (MockSObjectHandler) LoggerSObjectHandler.getExecutedHandlers()
+            .get(Schema.LogEntryEvent__e.SObjectType)
+            .get(0);
+        // System.assertEquals(1, mockLogEntryEventBeforeInsertHandler.executionCount);
+        System.assertEquals(TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
+        System.assertEquals(logEntryEvents.size(), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.size());
+        System.assertEquals(logEntryEvents.get(0), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(0));
+        System.assertEquals(logEntryEvents.get(1), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(1));
+        MockSObjectHandler mockLogEntryEventAfterInsertHandler = (MockSObjectHandler) LoggerSObjectHandler.getExecutedHandlers()
+            .get(Schema.LogEntryEvent__e.SObjectType)
+            .get(1);
+        // System.assertEquals(1, mockLogEntryEventAfterInsertHandler.executionCount);
+        System.assertEquals(TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
+        System.assertEquals(logEntryEvents.size(), mockLogEntryEventAfterInsertHandler.executedTriggerNew.size());
+        System.assertEquals(logEntryEvents.get(0), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(0));
+        System.assertEquals(logEntryEvents.get(1), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(1));
         Test.stopTest();
     }
 
     @IsTest
     static void it_should_save_via_synchronous_dml_when_specified_via_setSaveMethod() {
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Logger.debug('test log entry');
-        Logger.debug('another test log entry');
-
-        System.assertEquals(0, Limits.getCallouts());
-
+        LoggerSObjectHandler.setMock(
+            new LoggerSObjectHandler__mdt(
+                DeveloperName = 'Mock_Log_Entry_Event_Config',
+                IsEnabled__c = true,
+                SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
+                SObjectType__c = Schema.LogEntryEvent__e.SObjectType.getDescribe().getName()
+            )
+        );
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
+        logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
+        logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         Test.startTest();
+        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
         Logger.SaveMethod expectedSaveMethod = Logger.SaveMethod.SYNCHRONOUS_DML;
         Logger.setSaveMethod(expectedSaveMethod);
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
+
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(0, Limits.getQueueableJobs());
         System.assertEquals(0, Limits.getCallouts());
-        System.assertNotEquals(0, Limits.getDmlStatements());
-
-        // Requery & assert before Test.stopTest() since this is supposed to save synchronously
-        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(2, countOfLogEntries);
-
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        MockSObjectHandler mockLogEntryEventBeforeInsertHandler = (MockSObjectHandler) LoggerSObjectHandler.getExecutedHandlers()
+            .get(Schema.LogEntryEvent__e.SObjectType)
+            .get(0);
+        // System.assertEquals(1, mockLogEntryEventBeforeInsertHandler.executionCount);
+        System.assertEquals(TriggerOperation.BEFORE_INSERT, mockLogEntryEventBeforeInsertHandler.executedTriggerOperationType);
+        System.assertEquals(logEntryEvents.size(), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.size());
+        System.assertEquals(logEntryEvents.get(0), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(0));
+        System.assertEquals(logEntryEvents.get(1), mockLogEntryEventBeforeInsertHandler.executedTriggerNew.get(1));
+        MockSObjectHandler mockLogEntryEventAfterInsertHandler = (MockSObjectHandler) LoggerSObjectHandler.getExecutedHandlers()
+            .get(Schema.LogEntryEvent__e.SObjectType)
+            .get(1);
+        // System.assertEquals(1, mockLogEntryEventAfterInsertHandler.executionCount);
+        System.assertEquals(TriggerOperation.AFTER_INSERT, mockLogEntryEventAfterInsertHandler.executedTriggerOperationType);
+        System.assertEquals(logEntryEvents.size(), mockLogEntryEventAfterInsertHandler.executedTriggerNew.size());
+        System.assertEquals(logEntryEvents.get(0), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(0));
+        System.assertEquals(logEntryEvents.get(1), mockLogEntryEventAfterInsertHandler.executedTriggerNew.get(1));
         Test.stopTest();
     }
 
@@ -1041,7 +1108,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -1065,7 +1132,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(false);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(false);
 
         Test.startTest();
 
@@ -1113,7 +1180,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -1137,7 +1204,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(false);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(false);
 
         Test.startTest();
 
@@ -1185,7 +1252,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -1209,7 +1276,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -1257,7 +1324,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -1281,7 +1348,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(false, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true);
 
         Test.startTest();
 
@@ -1305,7 +1372,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -1329,7 +1396,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(false, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
 
         Test.startTest();
 
@@ -1557,7 +1624,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -1581,7 +1648,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(false);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(false);
 
         Test.startTest();
 
@@ -1605,7 +1672,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -1629,7 +1696,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(false);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(false);
 
         Test.startTest();
 
@@ -1653,7 +1720,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -1677,7 +1744,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -1701,7 +1768,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -1725,7 +1792,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(false, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true);
 
         Test.startTest();
 
@@ -1749,7 +1816,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -1773,7 +1840,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(false, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
 
         Test.startTest();
 
@@ -2072,7 +2139,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -2096,7 +2163,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(false);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(false);
 
         Test.startTest();
 
@@ -2120,7 +2187,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -2144,7 +2211,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(false);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(false);
 
         Test.startTest();
 
@@ -2168,7 +2235,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -2192,7 +2259,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -2216,7 +2283,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -2240,7 +2307,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(false, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true);
 
         Test.startTest();
 
@@ -2264,7 +2331,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -2288,7 +2355,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(false, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
 
         Test.startTest();
 
@@ -2492,7 +2559,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -2516,7 +2583,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(false);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(false);
 
         Test.startTest();
 
@@ -2540,7 +2607,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -2564,7 +2631,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(false);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(false);
 
         Test.startTest();
 
@@ -2588,7 +2655,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -2612,7 +2679,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -2636,7 +2703,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -2660,7 +2727,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(false, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true);
 
         Test.startTest();
 
@@ -2684,7 +2751,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -2708,7 +2775,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(false, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, false);
 
         Test.startTest();
 
@@ -2912,7 +2979,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -2936,7 +3003,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -2960,7 +3027,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -2984,7 +3051,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -3008,7 +3075,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -3219,7 +3286,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -3243,7 +3310,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -3267,7 +3334,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -3291,7 +3358,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -3315,7 +3382,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -3526,7 +3593,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -3550,7 +3617,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -3574,7 +3641,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -3598,7 +3665,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -3622,7 +3689,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -3833,7 +3900,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -3857,7 +3924,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -3881,7 +3948,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -3905,7 +3972,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -3929,7 +3996,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -4140,7 +4207,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -4164,7 +4231,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -4188,7 +4255,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -4212,7 +4279,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -4236,7 +4303,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -4447,7 +4514,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -4471,7 +4538,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -4495,7 +4562,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -4519,7 +4586,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -4543,7 +4610,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -4754,7 +4821,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -4778,7 +4845,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -4802,7 +4869,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -4826,7 +4893,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -4850,7 +4917,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -5061,7 +5128,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -5085,7 +5152,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -5109,7 +5176,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -5133,7 +5200,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -5157,7 +5224,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -5368,7 +5435,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -5392,7 +5459,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -5416,7 +5483,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -5440,7 +5507,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -5464,7 +5531,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -5675,7 +5742,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
 
         Test.startTest();
 
@@ -5699,7 +5766,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
 
         Test.startTest();
 
@@ -5723,7 +5790,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
 
         Test.startTest();
 
@@ -5747,7 +5814,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
 
         Test.startTest();
 
@@ -5771,7 +5838,7 @@ private class Logger_Tests {
         setUserLoggingLevel(loggingLevel);
         System.assertEquals(0, Logger.getBufferSize());
 
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
 
         Test.startTest();
 
@@ -6185,7 +6252,7 @@ private class Logger_Tests {
     static List<Database.DeleteResult> getDeleteResultList() {
         List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
         for (Integer i = 0; i < 3; i++) {
-            deleteResults.add(LoggerMockCreator.createMockDatabaseDeleteResult(true));
+            deleteResults.add(LoggerMockDataCreator.createDatabaseDeleteResult(true));
         }
         return deleteResults;
     }
@@ -6196,7 +6263,7 @@ private class Logger_Tests {
     static List<Database.SaveResult> getSaveResultList() {
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>();
         for (Integer i = 0; i < 3; i++) {
-            saveResults.add(LoggerMockCreator.createMockDatabaseSaveResult(true));
+            saveResults.add(LoggerMockDataCreator.createDatabaseSaveResult(true));
         }
         return saveResults;
     }
@@ -6204,7 +6271,7 @@ private class Logger_Tests {
     static List<Database.UpsertResult> getUpsertResultList() {
         List<Database.UpsertResult> upsertresults = new List<Database.UpsertResult>();
         for (Integer i = 0; i < 3; i++) {
-            upsertresults.add(LoggerMockCreator.createMockDatabaseUpsertResult(true, true));
+            upsertresults.add(LoggerMockDataCreator.createDatabaseUpsertResult(true, true));
         }
         return upsertresults;
     }
@@ -6212,7 +6279,7 @@ private class Logger_Tests {
     static List<Database.UndeleteResult> getUndeleteResultList() {
         List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
         for (Integer i = 0; i < 3; i++) {
-            undeleteResults.add(LoggerMockCreator.createMockDatabaseUndeleteResult(true));
+            undeleteResults.add(LoggerMockDataCreator.createDatabaseUndeleteResult(true));
         }
         return undeleteResults;
     }
@@ -6237,5 +6304,78 @@ private class Logger_Tests {
         }
 
         return originLocation;
+    }
+
+    public class MockSObjectHandler extends LoggerSObjectHandler {
+        public Integer executionCount = 0;
+        public TriggerOperation executedTriggerOperationType;
+        public List<SObject> executedTriggerNew;
+        public Map<Id, SObject> executedTriggerNewMap;
+        public Map<Id, SObject> executedTriggerOldMap;
+
+        private Schema.SObjectType sobjectType;
+
+        public MockSObjectHandler() {
+            this.sobjectType = Schema.LogEntryEvent__e.SObjectType;
+        }
+
+        public override SObjectType getSObjectType() {
+            return this.sobjectType;
+        }
+
+        public MockSObjectHandler setSObjectType(Schema.SObjectType sobjectType) {
+            this.sobjectType = sobjectType;
+            return this;
+        }
+
+        protected override void executeBeforeInsert(List<SObject> triggerNew) {
+            this.executionCount++;
+            this.executedTriggerOperationType = TriggerOperation.BEFORE_INSERT;
+            this.executedTriggerNew = triggerNew;
+        }
+
+        protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
+            this.executionCount++;
+            this.executedTriggerOperationType = TriggerOperation.BEFORE_UPDATE;
+            this.executedTriggerNewMap = triggerNewMap;
+            this.executedTriggerOldMap = triggerOldMap;
+        }
+
+        protected override void executeBeforeDelete(Map<Id, SObject> triggerNewMap) {
+            this.executionCount++;
+            this.executedTriggerOperationType = TriggerOperation.BEFORE_DELETE;
+            this.executedTriggerNewMap = triggerNewMap;
+        }
+
+        protected override void executeAfterInsert(List<SObject> triggerNew) {
+            this.executionCount++;
+            this.executedTriggerOperationType = TriggerOperation.AFTER_INSERT;
+            this.executedTriggerNew = triggerNew;
+        }
+
+        protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
+            this.executionCount++;
+            this.executedTriggerOperationType = TriggerOperation.AFTER_INSERT;
+            this.executedTriggerNewMap = triggerNewMap;
+        }
+
+        protected override void executeAfterUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
+            this.executionCount++;
+            this.executedTriggerOperationType = TriggerOperation.AFTER_UPDATE;
+            this.executedTriggerNewMap = triggerNewMap;
+            this.executedTriggerOldMap = triggerOldMap;
+        }
+
+        protected override void executeAfterDelete(Map<Id, SObject> triggerNewMap) {
+            this.executionCount++;
+            this.executedTriggerOperationType = TriggerOperation.AFTER_DELETE;
+            this.executedTriggerNewMap = triggerNewMap;
+        }
+
+        protected override void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
+            this.executionCount++;
+            this.executedTriggerOperationType = TriggerOperation.AFTER_UNDELETE;
+            this.executedTriggerNewMap = triggerNewMap;
+        }
     }
 }

@@ -15,6 +15,40 @@ private class LoggerSObjectHandler_Tests {
     }
 
     @IsTest
+    static void it_should_return_configured_sobject_handler() {
+        Schema.SObjectType sobjectType = new MockSObjectHandler().getSObjectType();
+        LoggerSObjectHandler.setMock(
+            new LoggerSObjectHandler__mdt(
+                IsEnabled__c = true,
+                SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
+                SObjectType__c = sobjectType.getDescribe().getName()
+            )
+        );
+
+        LoggerSObjectHandler configuredInstance = LoggerSObjectHandler.getHandler(sobjectType);
+
+        System.assertEquals(
+            true,
+            configuredInstance instanceof MockSObjectHandler,
+            'The returned handler should be an instance of the configured class, MockSObjectHandler'
+        );
+    }
+
+    @IsTest
+    static void it_should_return_default_sobject_handler_implementation_when_no_configuration_provided() {
+        Schema.SObjectType sobjectType = new MockDefaultImplementationSObjectHandler().getSObjectType();
+        LoggerSObjectHandler defaultImplementation = new MockDefaultImplementationSObjectHandler();
+
+        LoggerSObjectHandler configuredInstance = LoggerSObjectHandler.getHandler(sobjectType, defaultImplementation);
+
+        System.assertEquals(
+            true,
+            configuredInstance instanceof MockDefaultImplementationSObjectHandler,
+            'The returned handler should be an instance of the default implementation class, MockDefaultImplementationSObjectHandler'
+        );
+    }
+
+    @IsTest
     static void it_should_not_run_when_disabled_via_logger_parameter() {
         MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.Log__c.SObjectType);
         mockHandler.handlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = false);
@@ -219,6 +253,12 @@ private class LoggerSObjectHandler_Tests {
         System.assertEquals(0, mockHandler.getExecutedApexPlugins().size(), mockHandler.getExecutedApexPlugins());
     }
 
+    public class MockDefaultImplementationSObjectHandler extends LoggerSObjectHandler {
+        public override SObjectType getSObjectType() {
+            return Schema.Log__c.SObjectType;
+        }
+    }
+
     public class MockSObjectHandler extends LoggerSObjectHandler {
         public Integer executionCount = 0;
         public TriggerOperation executedTriggerOperationType;
@@ -227,6 +267,10 @@ private class LoggerSObjectHandler_Tests {
         public Map<Id, SObject> executedTriggerOldMap;
 
         private Schema.SObjectType sobjectType;
+
+        public MockSObjectHandler() {
+            this.sobjectType = Schema.Log__c.SObjectType;
+        }
 
         public MockSObjectHandler(Schema.SObjectType sobjectType) {
             this.sobjectType = sobjectType;
@@ -240,6 +284,7 @@ private class LoggerSObjectHandler_Tests {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.BEFORE_INSERT;
             this.executedTriggerNew = triggerNew;
+            super.executeBeforeInsert(triggerNew);
         }
 
         protected override void executeBeforeUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -247,24 +292,28 @@ private class LoggerSObjectHandler_Tests {
             this.executedTriggerOperationType = TriggerOperation.BEFORE_UPDATE;
             this.executedTriggerNewMap = triggerNewMap;
             this.executedTriggerOldMap = triggerOldMap;
+            super.executeBeforeUpdate(triggerNewMap, triggerOldMap);
         }
 
         protected override void executeBeforeDelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.BEFORE_DELETE;
             this.executedTriggerNewMap = triggerNewMap;
+            super.executeBeforeDelete(triggerNewMap);
         }
 
         protected override void executeAfterInsert(List<SObject> triggerNew) {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.AFTER_INSERT;
             this.executedTriggerNew = triggerNew;
+            super.executeAfterInsert(triggerNew);
         }
 
         protected override void executeAfterInsert(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.AFTER_INSERT;
             this.executedTriggerNewMap = triggerNewMap;
+            super.executeAfterInsert(triggerNewMap);
         }
 
         protected override void executeAfterUpdate(Map<Id, SObject> triggerNewMap, Map<Id, SObject> triggerOldMap) {
@@ -272,18 +321,21 @@ private class LoggerSObjectHandler_Tests {
             this.executedTriggerOperationType = TriggerOperation.AFTER_UPDATE;
             this.executedTriggerNewMap = triggerNewMap;
             this.executedTriggerOldMap = triggerOldMap;
+            super.executeAfterUpdate(triggerNewMap, triggerOldMap);
         }
 
         protected override void executeAfterDelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.AFTER_DELETE;
             this.executedTriggerNewMap = triggerNewMap;
+            super.executeAfterDelete(triggerNewMap);
         }
 
         protected override void executeAfterUndelete(Map<Id, SObject> triggerNewMap) {
             this.executionCount++;
             this.executedTriggerOperationType = TriggerOperation.AFTER_UNDELETE;
             this.executedTriggerNewMap = triggerNewMap;
+            super.executeAfterUndelete(triggerNewMap);
         }
     }
 

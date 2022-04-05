@@ -297,7 +297,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_database_result_fields_for_deleteResult() {
-        Database.DeleteResult deleteResult = LoggerMockCreator.createMockDatabaseDeleteResult(true);
+        Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
         System.assertNotEquals(null, deleteResult);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -310,7 +310,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_database_result_fields_for_mergeResult() {
-        Database.MergeResult mergeResult = LoggerMockCreator.createMockDatabaseMergeResult(true);
+        Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
         System.assertNotEquals(null, mergeResult);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -323,7 +323,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_database_result_fields_for_saveResult() {
-        Database.SaveResult saveResult = LoggerMockCreator.createMockDatabaseSaveResult(true);
+        Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
         System.assertNotEquals(null, saveResult);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -336,7 +336,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_database_result_fields_for_undeleteResult() {
-        Database.UndeleteResult undeleteResult = LoggerMockCreator.createMockDatabaseUndeleteResult(true);
+        Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
         System.assertNotEquals(null, undeleteResult);
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -349,7 +349,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_database_result_fields_for_upsertResult_when_insert() {
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, true);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true);
         System.assertNotEquals(null, upsertResult);
         System.assertEquals(true, upsertResult.isCreated());
 
@@ -363,7 +363,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_database_result_fields_for_upsertResult_when_update() {
-        Database.UpsertResult upsertResult = LoggerMockCreator.createMockDatabaseUpsertResult(true, false);
+        Database.UpsertResult upsertResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, false);
         System.assertNotEquals(null, upsertResult);
         System.assertEquals(false, upsertResult.isCreated());
 
@@ -379,7 +379,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_database_result_fields_for_list_of_deleteResult() {
         List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>();
         for (Integer i = 0; i < 5; i++) {
-            deleteResults.add(LoggerMockCreator.createMockDatabaseDeleteResult(false));
+            deleteResults.add(LoggerMockDataCreator.createDatabaseDeleteResult(false));
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -394,7 +394,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_database_result_fields_for_list_of_mergeResult() {
         List<Database.MergeResult> mergeResults = new List<Database.MergeResult>();
         for (Integer i = 0; i < 5; i++) {
-            mergeResults.add(LoggerMockCreator.createMockDatabaseMergeResult(false));
+            mergeResults.add(LoggerMockDataCreator.createDatabaseMergeResult(false));
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -409,7 +409,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_database_result_fields_for_list_of_saveResult() {
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>();
         for (Integer i = 0; i < 5; i++) {
-            saveResults.add(LoggerMockCreator.createMockDatabaseSaveResult(false));
+            saveResults.add(LoggerMockDataCreator.createDatabaseSaveResult(false));
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -424,7 +424,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_database_result_fields_for_list_of_undeleteResult() {
         List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>();
         for (Integer i = 0; i < 5; i++) {
-            undeleteResults.add(LoggerMockCreator.createMockDatabaseUndeleteResult(false));
+            undeleteResults.add(LoggerMockDataCreator.createDatabaseUndeleteResult(false));
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -439,7 +439,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_set_database_result_fields_for_list_of_upsertResult() {
         List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>();
         for (Integer i = 0; i < 5; i++) {
-            upsertResults.add(LoggerMockCreator.createMockDatabaseUpsertResult(false, false));
+            upsertResults.add(LoggerMockDataCreator.createDatabaseUpsertResult(false, false));
         }
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
@@ -479,7 +479,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Id mockLogId = LoggerMockCreator.createMockId(Schema.Log__c.SObjectType);
+        Id mockLogId = LoggerMockDataCreator.createId(Schema.Log__c.SObjectType);
         builder.setRecordId(mockLogId);
 
         System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
@@ -558,7 +558,7 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Log__c log = (Log__c) LoggerMockCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         builder.setRecordId(log);
 
         System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
@@ -588,8 +588,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_result() {
-        User standardUser = LoggerMockCreator.createUser();
-        AggregateResult mockAggregateResult = LoggerMockCreator.createMockAggregateResult();
+        User standardUser = LoggerMockDataCreator.createUser();
+        AggregateResult mockAggregateResult = LoggerMockDataCreator.createAggregateResult();
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
@@ -602,8 +602,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_results() {
-        User standardUser = LoggerMockCreator.createUser();
-        List<AggregateResult> mockAggregateResults = new List<AggregateResult>{ LoggerMockCreator.createMockAggregateResult() };
+        User standardUser = LoggerMockDataCreator.createUser();
+        List<AggregateResult> mockAggregateResults = new List<AggregateResult>{ LoggerMockDataCreator.createAggregateResult() };
 
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
@@ -783,9 +783,9 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_set_detailed_fields() {
         // Get expected data
-        Organization organization = LoggerMockCreator.getOrganization();
-        String organizationEnvironmentType = LoggerMockCreator.getOrganizationEnvironmentType();
-        User user = LoggerMockCreator.getUser();
+        Organization organization = LoggerMockDataCreator.getOrganization();
+        String organizationEnvironmentType = LoggerMockDataCreator.getOrganizationEnvironmentType();
+        User user = LoggerMockDataCreator.getUser();
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
 

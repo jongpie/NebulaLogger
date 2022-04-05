@@ -16,49 +16,79 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogEntryEventHandlerEnabled', Value__c = 'false');
-        LoggerTestUtils.setMock(mockParameter);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntryEvent__e.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
 
-        Test.startTest();
-        EventBus.publish(logEntryEvent);
-        Test.stopTest();
+        LoggerDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(
-            null,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType),
-            LoggerSObjectHandler.getExecutedHandlers()
+            0,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should not have executed'
         );
     }
 
     @IsTest
     static void it_should_gracefully_skip_execution_when_logEntryEvents_list_is_empty() {
-        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
-        System.assert(logEntryEvents.isEmpty());
-
-        Test.startTest();
-        new LogEntryEventHandler().executeBeforeInsert(logEntryEvents);
-        new LogEntryEventHandler().executeAfterInsert(logEntryEvents);
-        Test.stopTest();
-    }
-
-    @IsTest
-    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_is_disabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         Integer countOfLogs = [SELECT COUNT() FROM Log__c];
         System.assertEquals(0, countOfLogs);
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
-        Logger.getUserSettings().IsSavingEnabled__c = true;
+
+        List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(new List<LogEntryEvent__e>());
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.assertEquals(true, saveResults.isEmpty());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+    }
+
+    @IsTest
+    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_is_disabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
         LoggerSettings__c settings = Logger.getUserSettings();
+        settings.IsEnabled__c = true;
+        settings.IsSavingEnabled__c = true;
         settings.IsPlatformEventStorageEnabled__c = false;
         upsert settings;
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateAllFields();
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateAllFields()
+            .getRecord();
+        logEntryEvent.LoggedById__c = UserInfo.getUserId();
+        logEntryEvent.ProfileId__c = UserInfo.getProfileId();
 
-        Test.startTest();
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         countOfLogs = [SELECT COUNT() FROM Log__c];
         System.assertEquals(0, countOfLogs);
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -67,13 +97,23 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_normalize_event_data_into_log_and_log_entry() {
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
 
-        Test.startTest();
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -84,27 +124,35 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_normalize_event_data_for_multiple_transactions_into_multiple_logs() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         List<String> transactionIds = new List<String>{ '123-456', '789-0' };
         System.assertEquals(2, transactionIds.size());
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (Integer i = 0; i < transactionIds.size(); i++) {
-            LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType)
-                .populateRequiredFields();
+            LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+                .populateRequiredFields()
+                .getRecord();
             logEntryEvent.TransactionEntryNumber__c = i;
             logEntryEvent.TransactionId__c = transactionIds.get(i);
             logEntryEvents.add(logEntryEvent);
         }
         System.assertEquals(transactionIds.size(), logEntryEvents.size());
 
-        Test.startTest();
-        List<Database.SaveResult> saveResults = EventBus.publish(logEntryEvents);
-        Test.getEventBus().deliver();
-        System.assertEquals(transactionIds.size(), saveResults.size());
-        Test.stopTest();
+        List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
+        System.assertEquals(transactionIds.size(), saveResults.size());
         for (Database.SaveResult saveResult : saveResults) {
             System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
         }
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         List<Log__c> logs = [SELECT Id, TransactionId__c, (SELECT Id FROM LogEntries__r) FROM Log__c];
         System.assertEquals(2, logs.size(), logs);
         Set<String> uniqueTransactionIds = new Set<String>(transactionIds);
@@ -156,16 +204,26 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_create_tag_records_when_enabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
         List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
         logEntryEvent.Tags__c = String.join(tags, '\n');
 
-        Test.startTest();
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -182,18 +240,28 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_reuse_existing_tag_records() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
         String testTagName = 'Some tag!';
         LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
         insert tag;
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
         logEntryEvent.Tags__c = testTagName;
 
-        Test.startTest();
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -209,14 +277,18 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_append_tags_for_contains_rule() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
         logEntryEvent.Message__c = 'my message';
         logEntryEvent.Tags__c = null;
-
-        Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LoggerTestUtils.setMock(
+        LoggerTestConfigurator.setMock(
             new LogEntryTagRule__mdt(
                 SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
                 ComparisonType__c = 'CONTAINS',
@@ -224,10 +296,16 @@ private class LogEntryEventHandler_Tests {
                 Tags__c = configuredTagName
             )
         );
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -242,13 +320,17 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_append_tags_for_equals_rule() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
         logEntryEvent.Tags__c = null;
-
-        Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LoggerTestUtils.setMock(
+        LoggerTestConfigurator.setMock(
             new LogEntryTagRule__mdt(
                 SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
                 ComparisonType__c = 'EQUALS',
@@ -256,10 +338,16 @@ private class LogEntryEventHandler_Tests {
                 Tags__c = configuredTagName
             )
         );
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -274,15 +362,19 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_append_tags_for_regex_rule() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
         String zipCodeRegEx = '(^[0-9]{4}?[0-9]$|^[0-9]{4}?[0-9]-[0-9]{4}$)';
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
         logEntryEvent.Message__c = '94541';
         logEntryEvent.Tags__c = null;
-
-        Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LoggerTestUtils.setMock(
+        LoggerTestConfigurator.setMock(
             new LogEntryTagRule__mdt(
                 SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
                 ComparisonType__c = 'MATCHES_REGEX',
@@ -290,10 +382,16 @@ private class LogEntryEventHandler_Tests {
                 Tags__c = configuredTagName
             )
         );
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -308,13 +406,17 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_append_tags_for_startsWith_rule() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
         logEntryEvent.Message__c = 'my message';
-
-        Test.startTest();
         String configuredTagName = 'CMDT Tag';
-        LoggerTestUtils.setMock(
+        LoggerTestConfigurator.setMock(
             new LogEntryTagRule__mdt(
                 SObjectField__c = Schema.LogEntry__c.Message__c.getDescribe().getName(),
                 ComparisonType__c = 'STARTS_WITH',
@@ -322,10 +424,16 @@ private class LogEntryEventHandler_Tests {
                 Tags__c = configuredTagName
             )
         );
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -340,22 +448,31 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_set_api_release_number_and_api_release_version_from_callout_when_enabled() {
-        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(200).setResponseBody(createStatusApiResponseJson()));
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
-        LoggerTestUtils.setMock(mockCallStatusApiParameter);
+        LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
-        Database.SaveResult saveResult;
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
 
-        Test.startTest();
-        saveResult = EventBus.publish(logEntryEvent);
-        // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
-        // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
-        // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
-        Test.getEventBus().deliver();
-        Test.stopTest();
+        // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
+        // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
+        System.Test.startTest();
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+        System.Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -367,23 +484,32 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_set_api_release_number_and_api_release_version_from_recent_record() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         Log__c recentLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'ABC-XYZ');
         insert recentLog;
         insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
-        LoggerTestUtils.setMock(mockCallStatusApiParameter);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
-        Database.SaveResult saveResult;
+        LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
 
-        Test.startTest();
-        saveResult = EventBus.publish(logEntryEvent);
-        // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
-        // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
-        // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
-        Test.getEventBus().deliver();
-        Test.stopTest();
+        // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
+        // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
+        System.Test.startTest();
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+        System.Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         System.assertEquals(0, Limits.getCallouts());
         Log__c log = getLog();
         System.assertNotEquals(recentLog.Id, log.Id, log.StartTime__c);
@@ -397,16 +523,31 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
-        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
-        LoggerTestUtils.setMock(mockCallStatusApiParameter);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
 
-        Test.startTest();
-        Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-        Test.stopTest();
+        // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
+        // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
+        System.Test.startTest();
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+        System.Test.stopTest();
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        System.assertEquals(0, Limits.getCallouts());
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
@@ -419,22 +560,25 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_skip_setting_api_release_number_and_api_release_version_when_callout_fails() {
-        Test.setMock(HttpCalloutMock.class, LoggerTestUtils.createMockHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
-        LoggerTestUtils.setMock(mockCallStatusApiParameter);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) new LoggerSObjectTestDataGenerator(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields();
+        LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
         Database.SaveResult saveResult;
 
         try {
-            Test.startTest();
-
-            saveResult = EventBus.publish(logEntryEvent);
-            // Normally, you don't have to call Test.getEventBus().deliver() if you're also using Test.stopTest()
-            // But, in this case, there are 3 transactions happening (original test, async platform event, and async future method)
-            // So, call Test.getEventBus().deliver() and Test.stopTest() to make sure all transactions are completed before running asserts
-            Test.getEventBus().deliver();
-
-            Test.stopTest();
+            // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
+            // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
+            System.Test.startTest();
+            saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+            LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+            System.Test.stopTest();
             System.assert(false, 'Exception expected, this assert should not run');
         } catch (Exception ex) {
             System.assertEquals(CalloutException.class.getName(), ex.getTypeName());
@@ -443,6 +587,11 @@ private class LogEntryEventHandler_Tests {
         }
 
         System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);

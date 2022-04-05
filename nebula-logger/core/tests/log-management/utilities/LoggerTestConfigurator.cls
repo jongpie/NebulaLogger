@@ -8,7 +8,8 @@
  * @description Utility class used to help with setting up Nebula Logger's configurations within a test context.
  *              These methods are specific to metadata implemented within Nebula Logger.
  *              These methods can be used when writing Apex tests for plugins.
- * @see LoggerMockCreator
+ * @see LoggerMockDataCreator
+ * @see LoggerMockDataStore
  */
 @IsTest
 public without sharing class LoggerTestConfigurator {
@@ -62,6 +63,7 @@ public without sharing class LoggerTestConfigurator {
     public static void initiliazeTestDefaults() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getDatabase());
+        LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
         setupMockSObjectHandlerConfigurations();
     }
 

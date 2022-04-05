@@ -10,6 +10,7 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList')
 global with sharing class LogBatchPurger implements Database.Batchable<SObject>, Database.Stateful {
+    private static final Date LOG_RETENTION_END_DATE = System.today();
     @TestVisible
     private static final String NO_DELETE_ACCESS_EXCEPTION_MESSAGE = 'User does not have access to delete logs';
 
@@ -175,12 +176,12 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         return [
             SELECT COUNT()
             FROM LogEntryTag__c
-            WHERE LogEntry__r.Log__r.LogRetentionDate__c <= :System.today() AND LogEntry__r.Log__r.LogRetentionDate__c != NULL
+            WHERE LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE AND LogEntry__r.Log__r.LogRetentionDate__c != NULL
         ];
     }
 
     private Integer getLogEntryCount() {
-        return [SELECT COUNT() FROM LogEntry__c WHERE Log__r.LogRetentionDate__c <= :System.today() AND Log__r.LogRetentionDate__c != NULL];
+        return [SELECT COUNT() FROM LogEntry__c WHERE Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE AND Log__r.LogRetentionDate__c != NULL];
     }
 
     /**
@@ -200,7 +201,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                     [
                         SELECT Id
                         FROM LogEntryTag__c
-                        WHERE LogEntry__r.Log__r.LogRetentionDate__c <= :System.today() AND LogEntry__r.Log__r.LogRetentionDate__c != NULL
+                        WHERE LogEntry__r.Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE AND LogEntry__r.Log__r.LogRetentionDate__c != NULL
                         ORDER BY LogEntry__r.Log__r.LogRetentionDate__c, LogEntry__r.Log__c
                     ]
                 );
@@ -210,7 +211,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                     [
                         SELECT Id
                         FROM LogEntry__c
-                        WHERE Log__r.LogRetentionDate__c <= :System.today() AND Log__r.LogRetentionDate__c != NULL
+                        WHERE Log__r.LogRetentionDate__c <= :LOG_RETENTION_END_DATE AND Log__r.LogRetentionDate__c != NULL
                         ORDER BY Log__r.LogRetentionDate__c, Log__c
                     ]
                 );
@@ -220,7 +221,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                     [
                         SELECT Id
                         FROM Log__c
-                        WHERE (LogRetentionDate__c <= :System.today() AND LogRetentionDate__c != NULL) OR TotalLogEntries__c = 0
+                        WHERE (LogRetentionDate__c <= :LOG_RETENTION_END_DATE AND LogRetentionDate__c != NULL) OR TotalLogEntries__c = 0
                         ORDER BY LogRetentionDate__c
                     ]
                 );

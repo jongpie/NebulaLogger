@@ -21,8 +21,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
         setupConfigurations();
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'IsLogHandlerEnabled', Value__c = 'false');
-        LoggerTestUtils.setMock(mockParameter);
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations(false);
         Log__c log = new Log__c(
             ClosedBy__c = UserInfo.getUserId(),
             ClosedDate__c = System.now(),
@@ -32,9 +31,9 @@ private class LogHandler_Tests {
             TransactionId__c = '1234'
         );
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
-        System.assertEquals(null, LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType), LoggerSObjectHandler.getExecutedHandlers());
+        System.assertEquals(0, LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(), 'Handler class should not have executed');
     }
 
     @IsTest
@@ -49,8 +48,13 @@ private class LogHandler_Tests {
             TransactionId__c = '1234'
         );
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(null, log.ClosedBy__c);
         System.assertEquals(null, log.ClosedDate__c);
@@ -70,8 +74,13 @@ private class LogHandler_Tests {
             TransactionId__c = '1234'
         );
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(UserInfo.getUserId(), log.ClosedBy__c);
         System.assertEquals(System.today(), log.ClosedDate__c.date());
@@ -82,15 +91,20 @@ private class LogHandler_Tests {
     static void it_should_set_owner_when_default_configured_with_user_id() {
         setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        User expectedLogOwnerUser = LoggerTestUtils.createUser();
+        User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Id;
         insert currentUserSettings;
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedLogOwnerUser.Id, log.OwnerId, log);
     }
@@ -99,15 +113,20 @@ private class LogHandler_Tests {
     static void it_should_set_owner_when_default_configured_with_username() {
         setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        User expectedLogOwnerUser = LoggerTestUtils.createUser();
+        User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerUser.Username;
         insert currentUserSettings;
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedLogOwnerUser.Id, log.OwnerId, log);
     }
@@ -116,14 +135,19 @@ private class LogHandler_Tests {
     static void it_should_set_owner_when_default_configured_with_queue_id() {
         setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        Group expectedLogOwnerQueue = LoggerTestUtils.insertQueue(Schema.Log__c.SObjectType);
+        Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.Id;
         insert currentUserSettings;
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedLogOwnerQueue.Id, log.OwnerId, log);
     }
@@ -132,14 +156,19 @@ private class LogHandler_Tests {
     static void it_should_set_owner_when_default_configured_with_queue_developer_name() {
         setupConfigurations();
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        Group expectedLogOwnerQueue = LoggerTestUtils.insertQueue(Schema.Log__c.SObjectType);
+        Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.DeveloperName;
         insert currentUserSettings;
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedLogOwnerQueue.Id, log.OwnerId, log);
     }
@@ -153,8 +182,13 @@ private class LogHandler_Tests {
         insert currentUserSettings;
         Log__c log = new Log__c(LoggedBy__c = currentUser.Id, OwnerId = currentUser.Id, TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(UserInfo.getUserId(), log.OwnerId, log);
     }
@@ -178,8 +212,13 @@ private class LogHandler_Tests {
             TransactionId__c = '1234'
         );
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertNotEquals(defaultDaysToRetainLog, specifiedDaysToRetainLog);
         System.assertNotEquals(defaultLogPurgeAction, specifiedLogPurgeAction);
@@ -196,10 +235,15 @@ private class LogHandler_Tests {
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
         Logger.getUserSettings().DefaultLogPurgeAction__c = expectedLogPurgeAction;
         upsert Logger.getUserSettings();
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(LoggedBy__c = UserInfo.getUserId())).populateRequiredFields().getRecord();
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedLogPurgeAction, log.LogPurgeAction__c);
         System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
@@ -214,12 +258,17 @@ private class LogHandler_Tests {
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
         upsert Logger.getUserSettings();
         String transactionScenarioName = 'some scenario';
-        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, NumberOfDaysToRetainLogs__c = daysToRetainLog);
-        LoggerTestUtils.setMock(scenarioRule);
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), Scenario__c = transactionScenarioName, TransactionId__c = '1234');
+        LoggerTestConfigurator.setMock(new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, NumberOfDaysToRetainLogs__c = daysToRetainLog));
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        log.Scenario__c = transactionScenarioName;
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         log = [SELECT Id, Scenario__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(expectedRetentionDate, log.LogRetentionDate__c);
     }
@@ -228,42 +277,68 @@ private class LogHandler_Tests {
     static void it_should_have_null_retention_details_when_no_retention_configured() {
         setupConfigurations();
         LoggerSettings__c settings = Logger.getUserSettings();
+        insert settings;
         settings.DefaultNumberOfDaysToRetainLogs__c = null;
         settings.DefaultLogPurgeAction__c = null;
         upsert settings;
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        settings = [SELECT Id, DefaultLogPurgeAction__c FROM LoggerSettings__c WHERE Id = :settings.Id];
+        System.assertEquals(null, settings.DefaultLogPurgeAction__c);
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        log.LoggedBy__c = UserInfo.getUserId();
+        log.ProfileId__c = UserInfo.getProfileId();
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        String defaultLogPurgeActionPicklistValue = getDefaultPicklistValue(Schema.Log__c.LogPurgeAction__c);
         log = [SELECT Id, LogPurgeAction__c, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(null, log.LogPurgeAction__c);
+        System.assertEquals(defaultLogPurgeActionPicklistValue, log.LogPurgeAction__c);
         System.assertEquals(null, log.LogRetentionDate__c);
     }
 
     @IsTest
-    static void it_should_set_priority_to_high_when_there_are_errors() {
+    static void it_should_set_priority_to_high_when_there_is_an_error_log_entry() {
         setupConfigurations();
-        Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
-        insert log;
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        log.Priority__c = LOW_PRIORITY;
+        LoggerDataStore.getDatabase().insertRecord(log);
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(LOW_PRIORITY, log.Priority__c);
 
-        insert new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'ERROR');
+        insert LoggerMockDataCreator.createDataBuilder(new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name()))
+            .populateRequiredFields()
+            .getRecord();
 
+        System.assertEquals(
+            4,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' +
+            ' and two more times for BEFORE_UPDATE/AFTER_UPDATE (triggered indirectly by the insert of a related LogEntry__c record)'
+        );
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(HIGH_PRIORITY, log.Priority__c);
     }
 
     @IsTest
-    static void it_should_set_priority_to_medium_when_there_are_warnings() {
+    static void it_should_set_priority_to_medium_when_there_is_a_warn_log_entry() {
         setupConfigurations();
         Log__c log = new Log__c(Priority__c = LOW_PRIORITY, TransactionId__c = '1234');
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(LOW_PRIORITY, log.Priority__c);
 
         insert new LogEntry__c(Log__c = log.Id, LoggingLevel__c = 'WARN');
 
+        System.assertEquals(
+            4,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' +
+            ' and two more times for BEFORE_UPDATE/AFTER_UPDATE (triggered indirectly by the insert of a related LogEntry__c record)'
+        );
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(MEDIUM_PRIORITY, log.Priority__c);
     }
@@ -276,8 +351,13 @@ private class LogHandler_Tests {
         upsert settings;
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
         System.assertEquals(1, logShares.size(), logShares);
         System.assertEquals('Read', logShares.get(0).AccessLevel);
@@ -294,8 +374,13 @@ private class LogHandler_Tests {
         upsert settings;
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
         System.assertEquals(1, logShares.size(), logShares);
         System.assertEquals('Edit', logShares.get(0).AccessLevel);
@@ -312,8 +397,13 @@ private class LogHandler_Tests {
         upsert settings;
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
         System.assertEquals(0, logShares.size(), logShares);
     }
@@ -326,17 +416,32 @@ private class LogHandler_Tests {
         upsert settings;
         Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
 
-        insert log;
+        LoggerDataStore.getDatabase().insertRecord(log);
 
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.Log__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         List<Log__Share> logShares = [SELECT AccessLevel, ParentId, RowCause, UserOrGroupId FROM Log__Share WHERE ParentId = :log.Id AND AccessLevel != 'All'];
         System.assertEquals(0, logShares.size(), logShares);
     }
 
-    static void setupConfigurations() {
+    private static String getDefaultPicklistValue(Schema.SObjectField field) {
+        List<Schema.PicklistEntry> picklistEntries = field.getDescribe().getPicklistValues();
+        for (Schema.PicklistEntry picklistEntry : picklistEntries) {
+            if (picklistEntry.isDefaultValue()) {
+                return picklistEntry.getValue();
+            }
+        }
+        return null;
+    }
+
+    private static void setupConfigurations() {
         LogStatus__mdt openStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = FIRST_STATUS, IsClosed__c = false, IsResolved__c = false);
-        LoggerTestUtils.setMock(openStatus);
+        LoggerTestConfigurator.setMock(openStatus);
 
         LogStatus__mdt closedStatus = new LogStatus__mdt(IsActive__c = true, MasterLabel = SECOND_STATUS, IsClosed__c = true, IsResolved__c = true);
-        LoggerTestUtils.setMock(closedStatus);
+        LoggerTestConfigurator.setMock(closedStatus);
     }
 }

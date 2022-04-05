@@ -8,7 +8,7 @@
 private class LoggerBatchableContext_Tests {
     @IsTest
     static void it_constructs_instance_when_both_parameters_provided() {
-        Database.BatchableContext mockBatchableContext = LoggerMockCreator.createMockBatchableContext('some_fake_job_id');
+        Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
         Schema.SObjectType sobjectType = Schema.LogEntryEvent__e.SObjectType;
 
         LoggerBatchableContext context = new LoggerBatchableContext(mockBatchableContext, sobjectType);

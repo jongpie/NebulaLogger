@@ -8,11 +8,12 @@
  * @description Utility class used to help with generating mock data when writing Apex tests for Nebula Logger.
  *              These methods are generic, and should work in any Salesforce org.
  *              These methods can be used when writing Apex tests for plugins.
+ * @see LoggerMockDataStore
  * @see LoggerTestConfigurator
  */
 @SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest
-public class LoggerMockCreator {
+public class LoggerMockDataCreator {
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_ALL_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_REQUIRED_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
@@ -24,14 +25,14 @@ public class LoggerMockCreator {
      *              This method uses a workaround to generate a mock.
      * @return   The mock instance of `AggregateResult`
      */
-    public static AggregateResult createMockAggregateResult() {
+    public static AggregateResult createAggregateResult() {
         Map<String, Object> defaultMockAggregateKeyValues = new Map<String, Object>{
             'fieldAvg' => 62.5,
             'fieldMax' => 100,
             'fieldMin' => 25,
             'fieldCount' => 4
         };
-        return createMockAggregateResult(defaultMockAggregateKeyValues);
+        return createAggregateResult(defaultMockAggregateKeyValues);
     }
 
     /**
@@ -40,7 +41,7 @@ public class LoggerMockCreator {
      * @param  mockAggregateKeyValues A map of aliases & aggregate values to use when creating the mock `AggregateResult`
      * @return   The mock instance of `AggregateResult`
      */
-    public static AggregateResult createMockAggregateResult(Map<String, Object> mockAggregateKeyValues) {
+    public static AggregateResult createAggregateResult(Map<String, Object> mockAggregateKeyValues) {
         return (AggregateResult) JSON.deserialize(JSON.serialize(mockAggregateKeyValues), AggregateResult.class);
     }
 
@@ -50,7 +51,7 @@ public class LoggerMockCreator {
      * @param  jobId A string value to use as the batchable job ID - this can be a true ID, or just a string
      * @return       The instance of `MockBatchableContext`
      */
-    public static MockBatchableContext createMockBatchableContext(String jobId) {
+    public static MockBatchableContext createBatchableContext(String jobId) {
         return new MockBatchableContext(jobId);
     }
 
@@ -61,8 +62,8 @@ public class LoggerMockCreator {
      * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
      * @return   The mock instance of `Database.DeleteResult`
      */
-    public static Database.DeleteResult createMockDatabaseDeleteResult(Boolean isSuccess) {
-        return createMockDatabaseDeleteResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    public static Database.DeleteResult createDatabaseDeleteResult(Boolean isSuccess) {
+        return createDatabaseDeleteResult(isSuccess, createId(Schema.Account.SObjectType));
     }
 
     /**
@@ -72,7 +73,7 @@ public class LoggerMockCreator {
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.DeleteResult`
      */
-    public static Database.DeleteResult createMockDatabaseDeleteResult(Boolean isSuccess, Id recordId) {
+    public static Database.DeleteResult createDatabaseDeleteResult(Boolean isSuccess, Id recordId) {
         if (isSuccess == true) {
             return (Database.DeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
         } else {
@@ -90,8 +91,8 @@ public class LoggerMockCreator {
      * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
      * @return   The mock instance of `Database.MergeResult`
      */
-    public static Database.MergeResult createMockDatabaseMergeResult(Boolean isSuccess) {
-        return createMockDatabaseMergeResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    public static Database.MergeResult createDatabaseMergeResult(Boolean isSuccess) {
+        return createDatabaseMergeResult(isSuccess, createId(Schema.Account.SObjectType));
     }
 
     /**
@@ -101,7 +102,7 @@ public class LoggerMockCreator {
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.MergeResult`
      */
-    public static Database.MergeResult createMockDatabaseMergeResult(Boolean isSuccess, Id recordId) {
+    public static Database.MergeResult createDatabaseMergeResult(Boolean isSuccess, Id recordId) {
         if (isSuccess == true) {
             return (Database.MergeResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.MergeResult.class);
         } else {
@@ -119,8 +120,8 @@ public class LoggerMockCreator {
      * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
      * @return   The mock instance of `Database.SaveResult`
      */
-    public static Database.SaveResult createMockDatabaseSaveResult(Boolean isSuccess) {
-        return createMockDatabaseSaveResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    public static Database.SaveResult createDatabaseSaveResult(Boolean isSuccess) {
+        return createDatabaseSaveResult(isSuccess, createId(Schema.Account.SObjectType));
     }
 
     /**
@@ -130,7 +131,7 @@ public class LoggerMockCreator {
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.SaveResult`
      */
-    public static Database.SaveResult createMockDatabaseSaveResult(Boolean isSuccess, Id recordId) {
+    public static Database.SaveResult createDatabaseSaveResult(Boolean isSuccess, Id recordId) {
         if (isSuccess == true) {
             return (Database.SaveResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.SaveResult.class);
         } else {
@@ -148,8 +149,8 @@ public class LoggerMockCreator {
      * @param  isSuccess Indicates if the generated mock should have `isSuccess` == true
      * @return   The mock instance of `Database.UndeleteResult`
      */
-    public static Database.UndeleteResult createMockDatabaseUndeleteResult(Boolean isSuccess) {
-        return createMockDatabaseUndeleteResult(isSuccess, createMockId(Schema.Account.SObjectType));
+    public static Database.UndeleteResult createDatabaseUndeleteResult(Boolean isSuccess) {
+        return createDatabaseUndeleteResult(isSuccess, createId(Schema.Account.SObjectType));
     }
 
     /**
@@ -159,7 +160,7 @@ public class LoggerMockCreator {
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.UndeleteResult`
      */
-    public static Database.UndeleteResult createMockDatabaseUndeleteResult(Boolean isSuccess, Id recordId) {
+    public static Database.UndeleteResult createDatabaseUndeleteResult(Boolean isSuccess, Id recordId) {
         if (isSuccess == true) {
             return (Database.UndeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.UndeleteResult.class);
         } else {
@@ -178,8 +179,8 @@ public class LoggerMockCreator {
      * @param  isCreated Indicates if the generated mock should have `isCreated` == true
      * @return   The mock instance of `Database.UpsertResult`
      */
-    public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated) {
-        return createMockDatabaseUpsertResult(isSuccess, isCreated, createMockId(Schema.Account.SObjectType));
+    public static Database.UpsertResult createDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated) {
+        return createDatabaseUpsertResult(isSuccess, isCreated, createId(Schema.Account.SObjectType));
     }
 
     /**
@@ -190,7 +191,7 @@ public class LoggerMockCreator {
      * @param  recordId  The record ID to use within the mock result
      * @return   The mock instance of `Database.UpsertResult`
      */
-    public static Database.UpsertResult createMockDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
+    public static Database.UpsertResult createDatabaseUpsertResult(Boolean isSuccess, Boolean isCreated, Id recordId) {
         if (isSuccess == true) {
             return (Database.UpsertResult) JSON.deserialize(
                 '{"success": ' +
@@ -217,7 +218,7 @@ public class LoggerMockCreator {
      *              This can be used when testing batch jobs.
      * @return       The instance of `MockHttpCallout`
      */
-    public static MockHttpCallout createMockHttpCallout() {
+    public static MockHttpCallout createHttpCallout() {
         return new MockHttpCallout();
     }
 
@@ -226,7 +227,7 @@ public class LoggerMockCreator {
      * @param  sobjectType The SObject Type for the generated mock record ID
      * @return   The mock record ID for the specified SObject Type
      */
-    public static String createMockId(Schema.SObjectType sobjectType) {
+    public static String createId(Schema.SObjectType sobjectType) {
         Integer recordIdNumber = 1;
         if (SOBJECT_TYPE_TO_MOCK_ID_COUNT.containsKey(sobjectType)) {
             recordIdNumber = SOBJECT_TYPE_TO_MOCK_ID_COUNT.get(sobjectType);
@@ -263,15 +264,15 @@ public class LoggerMockCreator {
      */
     public static User createUser(Id profileId) {
         return new User(
-            Alias = 'log_xyz',
-            Email = 'logger_xyz@test.com.net.org',
+            Alias = 'user_xyz',
+            Email = 'user_xyz@test.com.net.org',
             EmailEncodingKey = 'ISO-8859-1',
             LanguageLocaleKey = 'en_US',
-            LastName = 'Logger test user',
+            LastName = 'Test Userson',
             LocaleSidKey = 'en_US',
             ProfileId = profileId,
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'logger_xyz' + (userMockUsernameCount++) + '@test.com.net.org'
+            Username = 'user_xyz' + (userMockUsernameCount++) + '@test.com.net.org'
         );
     }
 
@@ -340,17 +341,17 @@ public class LoggerMockCreator {
      * @param  sobjectType The SObjectType that the queue should be able to own (stored in `QueueSObject`)
      * @return   The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
      */
-    public static Group insertQueue(Schema.SObjectType sobjectType) {
-        Group loggerQueue = new Group(DeveloperName = 'Some_Log_Queue', Name = 'Some Log Queue', Type = 'Queue');
-        insert loggerQueue;
+    public static Group insertQueue(String queueDeveloperName, Schema.SObjectType sobjectType) {
+        Group queue = new Group(DeveloperName = queueDeveloperName, Name = queueDeveloperName, Type = 'Queue');
+        insert queue;
 
         // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            QueueSObject loggerQueueSObject = new QueueSObject(QueueId = loggerQueue.Id, SObjectType = sobjectType.getDescribe().getName());
-            insert loggerQueueSObject;
+            QueueSObject queueSObject = new QueueSObject(QueueId = queue.Id, SObjectType = sobjectType.getDescribe().getName());
+            insert queueSObject;
         }
 
-        return loggerQueue;
+        return queue;
     }
 
     @SuppressWarnings('PMD.ApexDoc')
@@ -358,11 +359,11 @@ public class LoggerMockCreator {
         private String childJobId;
         private String jobId;
 
-        private MockBatchableContext(String jobId) {
+        public MockBatchableContext(String jobId) {
             this(jobId, null);
         }
 
-        private MockBatchableContext(String jobId, Id childJobId) {
+        public MockBatchableContext(String jobId, Id childJobId) {
             this.jobId = jobId;
             this.childJobId = childJobId;
         }
@@ -383,7 +384,7 @@ public class LoggerMockCreator {
         public String responseBody { get; private set; }
         public Integer statusCode { get; private set; }
 
-        private MockHttpCallout() {
+        public MockHttpCallout() {
         }
 
         public MockHttpCallout setResponseBody(String responseBody) {
@@ -440,7 +441,7 @@ public class LoggerMockCreator {
         }
 
         public SObjectTestDataBuilder populateMockId() {
-            this.record.Id = createMockId(this.sobjectType);
+            this.record.Id = createId(this.sobjectType);
             return this;
         }
 

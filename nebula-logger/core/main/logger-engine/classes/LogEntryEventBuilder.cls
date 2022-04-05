@@ -9,7 +9,7 @@
  * @see Logger
  */
 @SuppressWarnings(
-    'PMD.NcssTypeCount, PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.PropertyNamingConventions, PMD.CognitiveComplexity, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity'
+    'PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();

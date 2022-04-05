@@ -12,6 +12,7 @@
     <testClassName>LogEntryFieldSetPicklist_Tests</testClassName>
     <testClassName>LogEntryHandler_Tests</testClassName>
     <testClassName>LogEntryTagHandler_Tests</testClassName>
+    <testClassName>Logger_Tests</testClassName>
     <testClassName>LoggerBatchableContext_Tests</testClassName>
     <testClassName>LoggerDataStore_Tests</testClassName>
     <testClassName>LoggerEmailUtils_Tests</testClassName>
@@ -22,7 +23,6 @@
     <testClassName>LoggerSObjectMetadata_Tests</testClassName>
     <testClassName>LoggerTagHandler_Tests</testClassName>
     <testClassName>LoggerTriggerableContext_Tests</testClassName>
-    <testClassName>Logger_Tests</testClassName>
     <testClassName>LogHandler_Tests</testClassName>
     <testClassName>LogMassDeleteExtension_Tests</testClassName>
     <testClassName>LogMessage_Tests</testClassName>

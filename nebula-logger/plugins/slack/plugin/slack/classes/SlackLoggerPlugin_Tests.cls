@@ -30,7 +30,7 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(false, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to true.');
         System.assertEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
         Test.startTest();
-        LoggerMockCreator.MockHttpCallout calloutMock = LoggerMockCreator.createMockHttpCallout().setStatusCode(200);
+        LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         Test.setMock(HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         mockConfigurations(logEntryLoggingLevel);
@@ -75,7 +75,7 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(false, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to true.');
         System.assertEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
         Test.startTest();
-        LoggerMockCreator.MockHttpCallout calloutMock = LoggerMockCreator.createMockHttpCallout().setStatusCode(200);
+        LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         Test.setMock(HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         LoggingLevel slackLoggingLevel = LoggingLevel.ERROR;

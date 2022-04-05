@@ -12,7 +12,7 @@ private class LoggerEmailUtils_Tests {
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
-        List<Database.SaveResult> saveResultsWithErrors = Database.insert(new List<LogEntry__c>{ new LogEntry__c() }, false);
+        List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
         System.assertEquals(1, Limits.getEmailInvocations(), 'Email should have been sent');
@@ -31,7 +31,7 @@ private class LoggerEmailUtils_Tests {
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
-        List<Database.SaveResult> saveResultsWithErrors = Database.insert(new List<LogEntry__c>{ new LogEntry__c() }, false);
+        List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
@@ -46,7 +46,7 @@ private class LoggerEmailUtils_Tests {
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
-        List<Database.SaveResult> saveResultsWithErrors = Database.insert(new List<LogEntry__c>{ new LogEntry__c() }, false);
+        List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');

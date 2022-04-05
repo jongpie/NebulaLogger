@@ -33,14 +33,14 @@ public without sharing class LoggerMockDataStore {
                 validateBeforeSave(record, true);
             }
 
-            LoggerTriggerableContext beforeInsertInput = new LoggerTriggerableContext(records.getSObjectType(), TriggerOperation.BEFORE_INSERT, records);
-            LoggerSObjectHandler beforeInsertHandler = LoggerSObjectHandler.getHandler(records.getSObjectType());
+            Schema.SObjectType sobjectType = records.get(0).getSObjectType();
+
+            LoggerTriggerableContext beforeInsertInput = new LoggerTriggerableContext(sobjectType, TriggerOperation.BEFORE_INSERT, records);
+            LoggerSObjectHandler beforeInsertHandler = LoggerSObjectHandler.getHandler(sobjectType);
             beforeInsertHandler?.overrideTriggerableContext(beforeInsertInput).execute();
-            for (SObject record : records) {
-                record.Id = LoggerMockCreator.createMockId(record.getSObjectType());
-            }
-            LoggerTriggerableContext afterInsertInput = new LoggerTriggerableContext(records.getSObjectType(), TriggerOperation.AFTER_INSERT, records);
-            LoggerSObjectHandler afterInsertHandler = LoggerSObjectHandler.getHandler(records.getSObjectType());
+
+            LoggerTriggerableContext afterInsertInput = new LoggerTriggerableContext(sobjectType, TriggerOperation.AFTER_INSERT, records);
+            LoggerSObjectHandler afterInsertHandler = LoggerSObjectHandler.getHandler(sobjectType);
             afterInsertHandler?.overrideTriggerableContext(afterInsertInput).execute();
 
             return mockSaveResults;
@@ -63,6 +63,10 @@ public without sharing class LoggerMockDataStore {
             return this.publishedPlatformEvents;
         }
 
+        public override Database.SaveResult publishRecord(SObject platformEvent) {
+            return this.publishRecords(new List<SObject>{ platformEvent }).get(0);
+        }
+
         public override List<Database.SaveResult> publishRecords(List<SObject> platformEvents) {
             this.publishCount++;
             this.publishedPlatformEvents.addAll(platformEvents);
@@ -72,6 +76,32 @@ public without sharing class LoggerMockDataStore {
                 mockSaveResults.add(validateBeforeSave(platformEvent, false));
             }
             return mockSaveResults;
+        }
+
+        public void deliver() {
+            if (this.publishedPlatformEvents.isEmpty() == true) {
+                return;
+            }
+
+            Schema.SObjectType sobjectType = this.publishedPlatformEvents.get(0).getSObjectType();
+            this.deliver(sobjectType);
+        }
+
+        public void deliver(Schema.SObjectType sobjectType) {
+            if (sobjectType == null) {
+                return;
+            }
+
+            this.deliver(LoggerSObjectHandler.getHandler(sobjectType));
+        }
+
+        public void deliver(LoggerSObjectHandler sobjectHandlerInstance) {
+            LoggerTriggerableContext platformEventsTriggerContext = new LoggerTriggerableContext(
+                sobjectHandlerInstance.getSObjectType(),
+                TriggerOperation.AFTER_INSERT,
+                this.publishedPlatformEvents
+            );
+            sobjectHandlerInstance?.overrideTriggerableContext(platformEventsTriggerContext).execute();
         }
     }
 
@@ -89,7 +119,7 @@ public without sharing class LoggerMockDataStore {
         public override Id enqueueJob(Queueable queueableJob) {
             this.enqueuedJobs.add(queueableJob);
 
-            return LoggerMockCreator.createMockId(Schema.AsyncApexJob.SObjectType);
+            return LoggerMockDataCreator.createId(Schema.AsyncApexJob.SObjectType);
         }
 
         public void executeJobs() {
@@ -107,8 +137,8 @@ public without sharing class LoggerMockDataStore {
         Schema.SObjectType sobjectType = record.getSObjectType();
         Boolean recordIsValid = true;
         if (recordIsValid == true && populateMockId == true) {
-            record.Id = LoggerMockCreator.createMockId(record.getSObjectType());
+            record.Id = LoggerMockDataCreator.createId(record.getSObjectType());
         }
-        return LoggerMockCreator.createMockDatabaseSaveResult(recordIsValid, record.Id);
+        return LoggerMockDataCreator.createDatabaseSaveResult(recordIsValid, record.Id);
     }
 }
