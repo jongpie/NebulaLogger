@@ -24,7 +24,7 @@ public with sharing class LogEntryArchiveController {
 
         // Timestamp__c DESC, LoggingLevelOrdinal__c DESC, TransactionId__c ASC, TransactionEntryNumber__c ASC
         List<LogEntryArchive__b> logEntryArchives = [
-            SELECT LoggedByUsername__c, LoggingLevel__c, Message__c
+            SELECT LoggedByUsername__c, LoggingLevel__c, LoggingLevelOrdinal__c, Message__c, Timestamp__c, TransactionEntryNumber__c, TransactionId__c
             FROM LogEntryArchive__b
             WITH SECURITY_ENFORCED
             ORDER BY Timestamp__c DESC, LoggingLevelOrdinal__c DESC, TransactionId__c ASC, TransactionEntryNumber__c ASC

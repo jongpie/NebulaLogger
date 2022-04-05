@@ -1,13 +1,29 @@
 <template>
     <lightning-card title={title} class="slds-p-around_medium">
         <div slot="actions">
-            <lightning-button-group>
-                <lightning-button label="TODO" icon-name="utility:delete"></lightning-button>
-            </lightning-button-group>
+            <lightning-button
+                class="slds-m-horizontal_xx-small"
+                data-id="refresh-btn"
+                icon-name="action:refresh"
+                label="Refresh"
+                onclick={loadLogEntryArchives}
+                title="Refresh Records"
+            ></lightning-button>
         </div>
         <div>
-            <!-- TODO datatable :-( -->
-            <lightning-datatable show-row-number-column> </lightning-datatable>
+            <!-- TODO also consider using tree grid component (instead of datatable)
+                This could potentially be used to group related LogEntryArchive__b records with the same TransactionId__c
+                https://developer.salesforce.com/docs/component-library/bundle/lightning-tree-grid/example
+            -->
+            <lightning-datatable
+                columns={columns}
+                data={logEntryArchives}
+                hide-checkbox-column
+                key-field="syntheticId"
+                onrowaction={handleRowAction}
+                show-row-number-column
+            >
+            </lightning-datatable>
         </div>
     </lightning-card>
 </template>
