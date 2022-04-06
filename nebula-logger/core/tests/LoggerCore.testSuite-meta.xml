@@ -15,7 +15,7 @@
     <testClassName>Logger_Tests</testClassName>
     <testClassName>LoggerBatchableContext_Tests</testClassName>
     <testClassName>LoggerDataStore_Tests</testClassName>
-    <testClassName>LoggerEmailUtils_Tests</testClassName>
+    <testClassName>LoggerEmailSender_Tests</testClassName>
     <testClassName>LoggerParameter_Tests</testClassName>
     <testClassName>LoggerPlugin_Tests</testClassName>
     <testClassName>LoggerSettingsController_Tests</testClassName>

@@ -2607,7 +2607,7 @@ global with sharing class Logger {
         switch on saveMethodName {
             when 'EVENT_BUS' {
                 List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents);
-                LoggerEmailUtils.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
+                LoggerEmailSender.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
             when 'QUEUEABLE' {
                 LoggerDataStore.getJobQueue().enqueueJob(new QueueableSaver(logEntryEvents));

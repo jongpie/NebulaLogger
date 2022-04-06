@@ -139,7 +139,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
             .upsertRecords(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, false);
-        LoggerEmailUtils.sendErrorEmail(Schema.Log__c.SObjectType, upsertResults);
+        LoggerEmailSender.sendErrorEmail(Schema.Log__c.SObjectType, upsertResults);
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         // TODO this probably should be moved to LogHandler instead of here
@@ -231,7 +231,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(this.logEntries, DML_OPTIONS);
-        LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
     }
 
     private void appendRuleBasedTags() {
@@ -293,7 +293,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(new List<SObject>(tagAssignments), DML_OPTIONS);
-        LoggerEmailUtils.sendErrorEmail(tagAssignmentSObjectType, saveResults);
+        LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, saveResults);
     }
 
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
@@ -322,7 +322,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         if (!missingTagsToCreate.isEmpty()) {
             List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(missingTagsToCreate, DML_OPTIONS);
-            LoggerEmailUtils.sendErrorEmail(tagSObjectType, saveResults);
+            LoggerEmailSender.sendErrorEmail(tagSObjectType, saveResults);
             for (SObject tag : missingTagsToCreate) {
                 missingTagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
             }

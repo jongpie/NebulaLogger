@@ -8,7 +8,7 @@
  * @description Builds and sends email notifications when internal exceptions occur within the logging system
  */
 @SuppressWarnings('PMD.PropertyNamingConventions')
-public without sharing class LoggerEmailUtils {
+public without sharing class LoggerEmailSender {
     @TestVisible
     private static final List<Messaging.SingleEmailMessage> SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
 
