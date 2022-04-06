@@ -6,7 +6,7 @@
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>Transaction Entry Number</label>
+    <label>Entry #</label>
     <precision>10</precision>
     <required>true</required>
     <scale>0</scale>
