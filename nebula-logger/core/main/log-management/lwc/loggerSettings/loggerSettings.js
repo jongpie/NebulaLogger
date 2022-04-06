@@ -10,7 +10,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // LoggerSettings__c metadata
 import { generatePageLayout } from './loggerSettingsPageLayout';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
-import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
+import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
@@ -50,7 +50,7 @@ export default class LoggerSettings extends LightningElement {
     connectedCallback() {
         document.title = this.title;
         this.showLoadingSpinner = true;
-        Promise.all([getOrganization(), getLoggerSettingsSchema(), getPicklistOptions(), canUserModifyLoggerSettings()])
+        Promise.all([getOrganization(), getSchemaForName({ sobjectApiName: 'LoggerSettings__c' }), getPicklistOptions(), canUserModifyLoggerSettings()])
             .then(([organizationRecordResult, loggerSettingsSchemaResult, apexPicklistOptionsResult, canUserModifyLoggerSettingsResult]) => {
                 this.organization = organizationRecordResult;
                 this._loggerSettingsSchema = loggerSettingsSchemaResult;

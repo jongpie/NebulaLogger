@@ -5,7 +5,7 @@
 
 import { LightningElement } from 'lwc';
 import { subscribe, unsubscribe } from 'lightning/empApi';
-import getLogEntryEventSchema from '@salesforce/apex/LoggerSObjectMetadata.getLogEntryEventSchema';
+import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
 
 export default class LogEntryEventStream extends LightningElement {
     unfilteredEvents = [];
@@ -29,7 +29,7 @@ export default class LogEntryEventStream extends LightningElement {
     async connectedCallback() {
         document.title = 'Log Entry Event Stream';
 
-        getLogEntryEventSchema().then(result => {
+        getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }).then(result => {
             this._logEntryEventSchema = result;
             this._channel = '/event/' + this._logEntryEventSchema.apiName;
 

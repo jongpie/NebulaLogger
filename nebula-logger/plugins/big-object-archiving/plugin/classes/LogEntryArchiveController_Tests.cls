@@ -6,30 +6,52 @@
 @SuppressWarnings('PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
 @IsTest
 private class LogEntryArchiveController_Tests {
-    private static final String FAKE_TRANSACTION_ID = '1234';
-
     @IsTest
-    static void it_returns_a_list_of_log_entry_archives() {
-        List<LogEntryArchive__b> expectedLogEntryArchives = createLogEntryArchive(5);
+    static void it_returns_all_log_entry_archives_when_logging_level_and_message_search_term_are_null() {
+        List<LogEntryArchive__b> expectedLogEntryArchives = createLogEntryArchive(5, LoggingLevel.DEBUG);
         LogEntryArchiveController.MOCK_RECORDS.addAll(expectedLogEntryArchives);
 
-        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives();
+        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(null, null);
 
         System.assertNotEquals(0, returnedLogEntryArchives.size(), 'Records should have been returned');
-        System.assertEquals(
-            JSON.serialize(expectedLogEntryArchives),
-            JSON.serialize(returnedLogEntryArchives),
-            'Returned records should match the expected records'
-        );
+        System.assertEquals(expectedLogEntryArchives.size(), returnedLogEntryArchives.size(), 'Returned records should match the expected records');
     }
 
-    private static List<LogEntryArchive__b> createLogEntryArchive(Integer numberOfRecordsToCreate) {
+    @IsTest
+    static void it_returns_filtered_log_entry_archives_whenlogging_level_filter_is_specified() {
+        List<LogEntryArchive__b> expectedLogEntryArchives = createLogEntryArchive(5, LoggingLevel.DEBUG);
+        LoggingLevel minimumLoggingLevel = LoggingLevel.INFO;
+        expectedLogEntryArchives.get(0).LoggingLevel__c = LoggingLevel.WARN.name();
+        expectedLogEntryArchives.get(0).LoggingLevelOrdinal__c = LoggingLevel.WARN.ordinal();
+        LogEntryArchiveController.MOCK_RECORDS.addAll(expectedLogEntryArchives);
+
+        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(minimumLoggingLevel.ordinal(), null);
+
+        System.assertEquals(1, returnedLogEntryArchives.size(), 'Only one matching record should have been returned');
+        System.assertEquals(true, returnedLogEntryArchives.get(0).LoggingLevelOrdinal__c > minimumLoggingLevel.ordinal());
+    }
+
+    @IsTest
+    static void it_returns_filtered_log_entry_archives_when_message_search_term_is_specified() {
+        List<LogEntryArchive__b> expectedLogEntryArchives = createLogEntryArchive(5, LoggingLevel.DEBUG);
+        String messageSearchTerm = 'some substring';
+        expectedLogEntryArchives.get(0).Message__c = 'some extra text and ' + messageSearchTerm + ' and then also some more text, blah blah blah';
+        LogEntryArchiveController.MOCK_RECORDS.addAll(expectedLogEntryArchives);
+
+        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(null, messageSearchTerm);
+
+        System.assertEquals(1, returnedLogEntryArchives.size(), 'Only one matching record should have been returned');
+        System.assertEquals(true, returnedLogEntryArchives.get(0).Message__c.contains(messageSearchTerm));
+    }
+
+    private static List<LogEntryArchive__b> createLogEntryArchive(Integer numberOfRecordsToCreate, LoggingLevel logLevel) {
         List<LogEntryArchive__b> records = new List<LogEntryArchive__b>();
         for (Integer i = 0; i < numberOfRecordsToCreate; i++) {
             records.add(
                 new LogEntryArchive__b(
+                    LoggingLevel__c = logLevel.name(),
+                    LoggingLevelOrdinal__c = logLevel.ordinal(),
                     Timestamp__c = System.now().addMinutes(-i),
-                    LoggingLevelOrdinal__c = null,
                     TransactionId__c = null,
                     TransactionEntryNumber__c = i + 1
                 )

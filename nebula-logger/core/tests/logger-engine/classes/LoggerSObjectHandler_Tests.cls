@@ -6,7 +6,7 @@
 /**
  * @description Test class for LoggerSObjectHandler, the trigger-handler framework used by Nebula Logger.
  *              To demonstrate that the framework is standalone/would work with any SObject, these test methods
- *              all use mock implementations of the handler, using the User SObject
+ *              all use mock implementations of the handler, using the `User` SObject
  */
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
 @IsTest
