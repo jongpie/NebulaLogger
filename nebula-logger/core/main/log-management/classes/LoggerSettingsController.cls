@@ -91,7 +91,7 @@ public without sharing class LoggerSettingsController {
     public static void saveRecord(LoggerSettings__c settingsRecord) {
         try {
             if (canUserModifyLoggerSettings() == true) {
-                upsert settingsRecord;
+                LoggerDataStore.getDatabase().upsertRecord(settingsRecord, Schema.LoggerSettings__c.Id);
             }
         } catch (Exception ex) {
             throw createAuraHandledException(ex);
@@ -106,7 +106,7 @@ public without sharing class LoggerSettingsController {
     public static void deleteRecord(LoggerSettings__c settingsRecord) {
         try {
             if (canUserModifyLoggerSettings() == true) {
-                delete settingsRecord;
+                LoggerDataStore.getDatabase().deleteRecord(settingsRecord);
             }
         } catch (Exception ex) {
             throw createAuraHandledException(ex);

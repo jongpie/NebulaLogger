@@ -109,7 +109,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
             this.executePlugins(BatchableMethod.EXECUTE, input, scopeRecords);
 
-            this.hardDelete(scopeRecords);
+            LoggerDataStore.getDatabase().hardDeleteRecords(scopeRecords);
             Logger.saveLog();
         } catch (Exception apexException) {
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
@@ -147,16 +147,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 Logger.info(new LogMessage('Logger - Starting a new instance of LogBatchPurger job, job ID is: {0}', nextBatchJobId));
             }
             Logger.saveLog();
-        }
-    }
-
-    private void hardDelete(List<SObject> records) {
-        // normally this would be an anti-pattern since most DML operations
-        // are a no-op with an empty list - but emptyRecycleBin throws
-        // for empty lists!
-        if (records.isEmpty() == false) {
-            delete records;
-            Database.emptyRecycleBin(records);
         }
     }
 

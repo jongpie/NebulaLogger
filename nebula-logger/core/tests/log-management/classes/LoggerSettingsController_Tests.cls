@@ -225,7 +225,7 @@ private class LoggerSettingsController_Tests {
         LoggerSettings__c invalidRecord = null;
         String expectedExceptionMessage;
         try {
-            delete invalidRecord;
+            LoggerDataStore.getDatabase().deleteRecord(invalidRecord);
         } catch (Exception ex) {
             expectedExceptionMessage = ex.getMessage();
         }

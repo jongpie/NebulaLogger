@@ -120,7 +120,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
             Schema.LogEntry__c.SObjectType.getDescribe().getName(),
             logPurgeActionParentFieldName
         };
-        String query = String.format(queryTemplate, queryInputs);
+        String query = String.escapeSingleQuotes(String.format(queryTemplate, queryInputs));
         return (List<LogEntry__c>) Database.query(query);
     }
 
