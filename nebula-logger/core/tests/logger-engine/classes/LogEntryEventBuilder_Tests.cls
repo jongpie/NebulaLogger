@@ -755,6 +755,23 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_deduplicate_sequential_lines_when_setting_stack_trace() {
+        String anonymousApexOriginLocation = 'AnonymousBlock';
+        String deduplicatedStackTraceString = 'AnonymousBlock: line 9, column 1';
+        String duplicatedStackTraceString = deduplicatedStackTraceString + '\n' + deduplicatedStackTraceString + '\n' + deduplicatedStackTraceString;
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.FINE, true);
+        builder.getLogEntryEvent().OriginLocation__c = null;
+        builder.getLogEntryEvent().StackTrace__c = null;
+        builder.parseStackTrace(duplicatedStackTraceString);
+
+        System.assertNotEquals(null, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertEquals(anonymousApexOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertNotEquals(null, builder.getLogEntryEvent().StackTrace__c);
+        System.assertEquals(deduplicatedStackTraceString, builder.getLogEntryEvent().StackTrace__c);
+    }
+
+    @IsTest
     static void it_should_not_set_stack_trace_and_origin_location_for_invalid_stack_trace_string() {
         final String invalidStackTrace = '()';
 

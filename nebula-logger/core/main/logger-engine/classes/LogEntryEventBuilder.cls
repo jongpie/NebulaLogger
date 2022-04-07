@@ -9,7 +9,7 @@
  * @see Logger
  */
 @SuppressWarnings(
-    'PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
@@ -541,9 +541,14 @@ global with sharing class LogEntryEventBuilder {
         }
 
         List<String> stackTraceLines = new List<String>();
+        String previousStackTraceLine;
         for (String currentStackTraceLine : stackTraceString.split('\n')) {
-            // Don't include the logging system's classes in the stack trace
+            // Duplicate lines are sometimes introduced, so skip the current line if it's the same as the previous line
+            if (currentStackTraceLine == previousStackTraceLine) {
+                continue;
+            }
 
+            // Don't include the logging system's classes in the stack trace
             Boolean ignoreLine = false;
             for (String ignoredClass : IGNORED_CLASSES) {
                 if (currentStackTraceLine.contains('.' + ignoredClass + '.')) {
@@ -557,6 +562,7 @@ global with sharing class LogEntryEventBuilder {
             }
 
             if (ignoreLine == false) {
+                previousStackTraceLine = currentStackTraceLine;
                 stackTraceLines.add(currentStackTraceLine);
             }
         }
