@@ -1,10 +1,14 @@
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest
 private class LogRetentionFilter_Tests {
     @IsTest
     static void it_should_match_one_condition_on_number_equal_to() {
-        Date originalLogRetentionDate = System.today().addDays(Integer.valueOf(Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c));
         Integer numberOfDaysToRetainLogs = 90;
-        Date expectedLogRetentionDate = System.today().addDays(numberOfDaysToRetainLogs);
         Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_equal_to', null, numberOfDaysToRetainLogs);
         rule.NumberOfDaysToRetainLogs__c = numberOfDaysToRetainLogs;
@@ -23,15 +27,13 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter);
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter);
+        System.assertEquals(true, expectedMatchResult.matchesFilter());
+        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
     static void it_should_match_one_condition_on_number_greater_than() {
-        Date originalLogRetentionDate = System.today().addDays(Integer.valueOf(Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c));
         Integer numberOfDaysToRetainLogs = 90;
-        Date expectedLogRetentionDate = System.today().addDays(numberOfDaysToRetainLogs);
         Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_greater_than', null, numberOfDaysToRetainLogs);
         rule.NumberOfDaysToRetainLogs__c = numberOfDaysToRetainLogs;
@@ -50,15 +52,13 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter);
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter);
+        System.assertEquals(true, expectedMatchResult.matchesFilter());
+        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest
     static void it_should_match_one_condition_on_number_less_than() {
-        Date originalLogRetentionDate = System.today().addDays(Integer.valueOf(Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c));
         Integer numberOfDaysToRetainLogs = 90;
-        Date expectedLogRetentionDate = System.today().addDays(numberOfDaysToRetainLogs);
         Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_less_than', null, numberOfDaysToRetainLogs);
         rule.NumberOfDaysToRetainLogs__c = numberOfDaysToRetainLogs;
@@ -77,8 +77,8 @@ private class LogRetentionFilter_Tests {
         LogRetentionFilter.FilterResult expectedMatchResult = new LogRetentionFilter(matchingLogEntry, rule, conditions).getFilterResult();
         LogRetentionFilter.FilterResult expectedNonMatchResult = new LogRetentionFilter(nonMatchingLogEntry, rule, conditions).getFilterResult();
 
-        System.assertEquals(true, expectedMatchResult.matchesFilter);
-        System.assertEquals(false, expectedNonMatchResult.matchesFilter);
+        System.assertEquals(true, expectedMatchResult.matchesFilter());
+        System.assertEquals(false, expectedNonMatchResult.matchesFilter());
     }
 
     @IsTest

@@ -14,58 +14,100 @@
 public without sharing class LogRetentionFilter {
     private final SObject record;
     private final LogRetentionRule__mdt rule;
-    private final List<LogRetentionRuleCondition__mdt> filterConditions;
+    private final List<LogRetentionRuleCondition__mdt> ruleFilterConditions;
 
-    public LogRetentionFilter(SObject record, LogRetentionRule__mdt rule, List<LogRetentionRuleCondition__mdt> filterConditions) {
+    /**
+     * @description Creates a new instance of `LogRetentionFilter`, used to determine if an `SObject` record
+     *              meets the criteria of the provided rule & filter conditions
+     * @param  record           The `SObject` record to compare
+     * @param  rule             The filter rule to apply to the `SObject` record, stored as an instance of `LogRetentionRule__mdt`
+     * @param  ruleFilterConditions The list of `LogRetentionRuleCondition__mdt` for the rule that should be applied to the `SObject` record
+     */
+    public LogRetentionFilter(SObject record, LogRetentionRule__mdt rule, List<LogRetentionRuleCondition__mdt> ruleFilterConditions) {
         this.record = record;
         this.rule = rule;
-        this.filterConditions = filterConditions;
+        this.ruleFilterConditions = ruleFilterConditions;
     }
 
+    /**
+     * @description Returns an instance of `FilterResult` that provides information regarding
+     *              if the `SObject` record matches the provided rule & filter conditions
+     * @return   The new instance of `FilterResult`
+     */
     public FilterResult getFilterResult() {
-        return new FilterResult(this.record, this.rule, this.filterConditions);
+        return new FilterResult(this.record, this.rule, this.ruleFilterConditions);
     }
 
+    /**
+     * @description Inner class used to handle determining if the provided `SObject` record meets
+     *              the criteria for the provided `LogRetentionRule__mdt` rule and associated `List<LogRetentionRuleCondition__mdt>` ruleFilterConditions
+     */
     public class FilterResult {
-        public SObject record { get; private set; }
-        public List<String> conditions { get; private set; }
-        public String conditionsLogic { get; private set; }
-        public String conditionsLogicType { get; private set; }
-        public LogRetentionRule__mdt rule { get; private set; }
-        public Boolean matchesFilter { get; private set; }
+        private List<String> conditions;
+        private String conditionsLogic;
+        private String conditionsLogicType;
+        private Boolean matchesFilter;
+        private SObject record;
+        private LogRetentionRule__mdt rule;
+        private List<LogRetentionRuleCondition__mdt> ruleFilterConditions;
 
-        private List<LogRetentionRuleCondition__mdt> filterConditions;
-
-        private FilterResult(SObject record, LogRetentionRule__mdt rule, List<LogRetentionRuleCondition__mdt> filterConditions) {
+        private FilterResult(SObject record, LogRetentionRule__mdt rule, List<LogRetentionRuleCondition__mdt> ruleFilterConditions) {
             this.record = record;
             this.rule = rule;
-            this.filterConditions = filterConditions;
+            this.ruleFilterConditions = ruleFilterConditions;
             this.conditions = new List<String>();
-            this.conditionsLogic = this.getFilterConditionsLogic();
+            this.conditionsLogic = this.getRuleFilterConditionsLogic();
             this.conditionsLogicType = rule.ConditionLogicType__c;
 
             this.process();
         }
 
+        /**
+         * @description Returns the `LogRetentionRule__mdt` rule that was used to create the instance of `FilterResult`
+         * @return   The instance of `LogRetentionRule__mdt`
+         */
+        public LogRetentionRule__mdt getRule() {
+            return this.rule;
+        }
+
+        /**
+         * @description Returns the `SObject` record that was used to create the instance of `FilterResult`
+         * @return   The instance of `SObject`
+         */
+        public SObject getRecord() {
+            return this.record;
+        }
+
+        /**
+         * @description Indicates if the provided `SObject` record matches all of the criteria defined in
+         *              the `LogRetentionRule__mdt` rule and associated `List<LogRetentionRuleCondition__mdt>` ruleFilterConditions
+         * @return   The `Boolean` value that indicates if the `SObject` record matches the provided rule & conditions (`true`)
+         *           or if the record does not match the rule & conditions (`false`)
+         */
+        public Boolean matchesFilter() {
+            return this.matchesFilter;
+        }
+
         private void process() {
             List<String> booleanValues = new List<String>();
-            for (LogRetentionRuleCondition__mdt filterCondition : this.filterConditions) {
+            for (LogRetentionRuleCondition__mdt filterCondition : this.ruleFilterConditions) {
                 FilterConditionResult filterConditionResult = new FilterConditionResult(this.record, filterCondition);
                 this.conditions.add(filterConditionResult.getCondition());
                 booleanValues.add(String.valueOf(filterConditionResult.matchesFilter));
             }
 
-            String parsedConditionsLogic = String.format(this.getFilterConditionsLogic(), booleanValues);
+            String parsedConditionsLogic = String.format(this.getRuleFilterConditionsLogic(), booleanValues);
 
             this.matchesFilter = new BooleanExpression().evaluate(parsedConditionsLogic);
         }
 
-        private String getFilterConditionsLogic() {
+        @SuppressWarnings('PMD.CyclomaticComplexity')
+        private String getRuleFilterConditionsLogic() {
             String conditionsLogic = String.isBlank(this.rule.CustomConditionLogic__c) ? '' : this.rule.CustomConditionLogic__c;
 
             if (this.rule.ConditionLogicType__c != 'Custom') {
                 List<String> standardLogicPieces = new List<String>();
-                for (Integer i = 0; i < this.filterConditions.size(); i++) {
+                for (Integer i = 0; i < this.ruleFilterConditions.size(); i++) {
                     standardLogicPieces.add(String.valueOf(i + 1));
                 }
                 conditionsLogic = '(' + String.join(standardLogicPieces, ' ' + this.rule.ConditionLogicType__c + ' ') + ')';

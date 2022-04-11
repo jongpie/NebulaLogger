@@ -39,10 +39,21 @@ public without sharing abstract class LoggerSObjectHandler {
     private List<LoggerPlugin.Triggerable> executedApexPlugins = new List<LoggerPlugin.Triggerable>();
     private List<Flow.Interview> executedFlowPlugins = new List<Flow.Interview>();
 
+    /**
+     * @description Returns an instance of `LoggerSObjectHandler` that has been built & configured for the specified `SObjectType`
+     * @param  sobjectType The instance `SObjectType` to check for a configured instance of `LoggerSObjectHandler`
+     * @return             The Apex class that extends `LoggerSObjectHandler` and has been configured for the specified `SObjectType`
+     */
     public static LoggerSObjectHandler getHandler(Schema.SObjectType sobjectType) {
         return getHandler(sobjectType, null);
     }
 
+    /**
+     * @description Returns an instance of `LoggerSObjectHandler` that has been built & configured for the specified `SObjectType`
+     * @param  sobjectType           The instance `SObjectType` to check for a configured instance of `LoggerSObjectHandler`
+     * @param  defaultImplementation A default implementation of `LoggerSObjectHandler` that should be used, if a configuration cannot be found `LoggerSObjectHandler__mdt`
+     * @return                       The Apex class that extends `LoggerSObjectHandler` and has been configured for the specified `SObjectType`
+     */
     public static LoggerSObjectHandler getHandler(Schema.SObjectType sobjectType, LoggerSObjectHandler defaultImplementation) {
         String handlerApexClassName = getHandlerConfiguration(sobjectType)?.SObjectHandlerApexClass__c;
         // TODO need to handle namespace prefix for Apex classes
@@ -70,6 +81,12 @@ public without sharing abstract class LoggerSObjectHandler {
      */
     public abstract Schema.SObjectType getSObjectType();
 
+    /**
+     * @description  Provides the ability to override the instance `LoggerTriggerableContext` that is normally
+     *               provided internally by `LoggerSObjectHandler`
+     * @param  input The instance of `LoggerTriggerableContext` to use within the trigger handler class
+     * @return       The same instance of `LoggerSObjectHandler`, useful for chaining methods
+     */
     public LoggerSObjectHandler overrideTriggerableContext(LoggerTriggerableContext input) {
         this.input = input;
         return this;

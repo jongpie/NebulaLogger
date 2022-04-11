@@ -296,10 +296,6 @@ global with sharing class Logger {
         return LOG_ENTRIES_BUFFER.size();
     }
 
-    public static List<LogEntryEventBuilder> getBuffer() {
-        return LOG_ENTRIES_BUFFER;
-    }
-
     /**
      * @description Discards any entries that have been generated but not yet saved
      */

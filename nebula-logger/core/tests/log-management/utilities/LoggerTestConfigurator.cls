@@ -13,16 +13,7 @@
  */
 @IsTest
 public without sharing class LoggerTestConfigurator {
-    // Lazy-load & cache permission sets & profiles
-    private static final Map<String, PermissionSet> PERMISSION_SETS_BY_NAME {
-        get {
-            if (PERMISSION_SETS_BY_NAME == null) {
-                PERMISSION_SETS_BY_NAME = queryPermissionSets();
-            }
-            return PERMISSION_SETS_BY_NAME;
-        }
-        private set;
-    }
+    private static final Map<String, PermissionSet> PERMISSION_SETS_BY_NAME = queryPermissionSets();
 
     /**
      * @description Assigns the permission set `LoggerAdmin` to the specified user ID
@@ -56,15 +47,13 @@ public without sharing class LoggerTestConfigurator {
         assignPermissionSet(userId, PERMISSION_SETS_BY_NAME.get('LoggerLogCreator'));
     }
 
+    /**
+     * @description Returns an instance of `LoggerSObjectHandler__mdt` that has been built & configured for the specified `SObjectType`
+     * @param  sobjectType The instance `SObjectType` to check for a configured instance of `LoggerSObjectHandler`
+     * @return             The ``LoggerSObjectHandler__mdt` record that has been configured for the specified `SObjectType` (if any)
+     */
     public static LoggerSObjectHandler__mdt getSObjectHandlerConfiguration(Schema.SObjectType sobjectType) {
         return LoggerSObjectHandler.getHandlerConfiguration(sobjectType);
-    }
-
-    public static void initiliazeTestDefaults() {
-        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        LoggerDataStore.setMock(LoggerMockDataStore.getDatabase());
-        LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
-        setupMockSObjectHandlerConfigurations();
     }
 
     /**
@@ -124,10 +113,19 @@ public without sharing class LoggerTestConfigurator {
         LogHandler.setMockLogStatus(mock);
     }
 
+    /**
+     * @description Creates mock instances of `LoggerSObjectHandler__mdt` for each `SObjectType` used by Nebula Logger,
+     *              with each `LoggerSObjectHandler__mdt` automatically set to `IsEnabled__c == true`
+     */
     public static void setupMockSObjectHandlerConfigurations() {
         setupMockSObjectHandlerConfigurations(true);
     }
 
+    /**
+     * @description Creates mock instances of `LoggerSObjectHandler__mdt` for each `SObjectType` used by Nebula Logger,
+     *              with each `LoggerSObjectHandler__mdt` enabled/disabled based on the provided boolean
+     * @param  isEnabled The Boolean value to control if all mock `LoggerSObjectHandler__mdt` records should be enabled (`true`) or disabled (`false`)
+     */
     public static void setupMockSObjectHandlerConfigurations(Boolean isEnabled) {
         Map<Schema.SObjectType, System.Type> sobjectTypeToDefaultHandlerApexClass = new Map<Schema.SObjectType, System.Type>{
             Schema.Log__c.SObjectType => LogHandler.class,
@@ -160,14 +158,5 @@ public without sharing class LoggerTestConfigurator {
             results.put(permissionSet.Name, permissionSet);
         }
         return results;
-    }
-
-    public class MockBatchablePlugin implements LoggerPlugin.Batchable {
-        public void start(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
-        }
-        public void execute(LoggerPlugin__mdt configuration, LoggerBatchableContext input, List<SObject> scope) {
-        }
-        public void finish(LoggerPlugin__mdt configuration, LoggerBatchableContext input) {
-        }
     }
 }

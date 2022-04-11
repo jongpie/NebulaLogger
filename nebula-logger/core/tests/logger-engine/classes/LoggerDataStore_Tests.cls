@@ -6,7 +6,7 @@
 // TODO switch to using standard object(s) available in all orgs (instead of Log__c) so this can be split off as a separate repo
 // Possible objects to use: User, Group (Queue) and QueueSObject (none support undelete though), and not sure if it's possible
 // to test platform events/EventBus using only standard objects
-@SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest
 private class LoggerDataStore_Tests {
     // Database DML tests
@@ -600,8 +600,9 @@ private class LoggerDataStore_Tests {
     }
 
     private class MockQueueable implements Queueable {
+        public Integer callCount = 0;
         public void execute(System.QueueableContext queueableContext) {
-            System.debug('Executing mock queueable class');
+            this.callCount++;
         }
     }
 }

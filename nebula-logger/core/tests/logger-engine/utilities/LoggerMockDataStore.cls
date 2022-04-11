@@ -6,6 +6,10 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
 @IsTest
 public without sharing class LoggerMockDataStore {
+    private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_ALL_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
+    private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_REQUIRED_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
+    private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_STRING_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
+
     private static final MockDatabase MOCK_DATABASE_INSTANCE = new MockDatabase();
     private static final MockEventBus MOCK_EVENT_BUS_INSTANCE = new MockEventBus();
     private static final MockJobQueue MOCK_JOB_QUEUE_INSTANCE = new MockJobQueue();
@@ -140,11 +144,68 @@ public without sharing class LoggerMockDataStore {
         // 1. All required fields are populated
         // 2. All string fields are <= max field length
         // 3. Any restricted picklists have a valid value set
-        Schema.SObjectType sobjectType = record.getSObjectType();
         Boolean recordIsValid = true;
+        loadFields(record.getSObjectType());
+        validateRequiredFieldsArePopulated(record);
+        validateStringFieldsAreNotTooLong(record);
+
         if (recordIsValid == true && populateMockId == true) {
             record.Id = LoggerMockDataCreator.createId(record.getSObjectType());
         }
         return LoggerMockDataCreator.createDatabaseSaveResult(recordIsValid, record.Id);
+    }
+
+    private static void validateRequiredFieldsArePopulated(SObject record) {
+        Schema.SObjectType sobjectType = record.getSObjectType();
+        for (Schema.SObjectField requiredField : SOBJECT_TYPE_TO_REQUIRED_FIELDS.get(sobjectType)) {
+            if (requiredField.getDescribe().getSoapType() == Schema.SoapType.BOOLEAN) {
+                continue;
+            }
+
+            Boolean recordHasField = record.getPopulatedFieldsAsMap().containsKey(requiredField.getDescribe().getName());
+            Boolean recordHasFieldValue = record.get(requiredField) != null;
+            if (recordHasField == false || recordHasFieldValue == false) {
+                SObjectException ex = new SObjectException();
+                ex.setMessage('The field ' + requiredField + ' is required on record: ' + JSON.serializePretty(record));
+                throw ex;
+            }
+        }
+    }
+
+    private static void validateStringFieldsAreNotTooLong(SObject record) {
+        Schema.SObjectType sobjectType = record.getSObjectType();
+        for (Schema.SObjectField stringField : SOBJECT_TYPE_TO_STRING_FIELDS.get(sobjectType)) {
+            Boolean isFieldValueTooLong = ((String) record.get(stringField))?.length() > stringField.getDescribe().getLength();
+            if (isFieldValueTooLong == true) {
+                SObjectException ex = new SObjectException();
+                ex.setMessage('The field value for ' + stringField + ' is too long: ' + record.get(stringField));
+                throw ex;
+            }
+        }
+    }
+
+    private static void loadFields(Schema.SObjectType sobjectType) {
+        if (SOBJECT_TYPE_TO_ALL_FIELDS.containsKey(sobjectType) == true && SOBJECT_TYPE_TO_REQUIRED_FIELDS.containsKey(sobjectType) == true) {
+            return;
+        }
+
+        SOBJECT_TYPE_TO_ALL_FIELDS.put(sobjectType, new List<Schema.SObjectField>());
+        SOBJECT_TYPE_TO_REQUIRED_FIELDS.put(sobjectType, new List<Schema.SObjectField>());
+        SOBJECT_TYPE_TO_STRING_FIELDS.put(sobjectType, new List<Schema.SObjectField>());
+        for (Schema.SObjectField field : sobjectType.getDescribe().fields.getMap().values()) {
+            if (field.getDescribe().isCreateable() == false) {
+                continue;
+            }
+
+            SOBJECT_TYPE_TO_ALL_FIELDS.get(sobjectType).add(field);
+            if (field.getDescribe().getSoapType() == Schema.SoapType.STRING) {
+                SOBJECT_TYPE_TO_STRING_FIELDS.get(sobjectType).add(field);
+            }
+
+            if (field.getDescribe().isNillable() == false) {
+                // If a field is not nillable & it is createable, then it's required
+                SOBJECT_TYPE_TO_REQUIRED_FIELDS.get(sobjectType).add(field);
+            }
+        }
     }
 }

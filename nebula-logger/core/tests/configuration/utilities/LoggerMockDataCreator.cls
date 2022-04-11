@@ -241,10 +241,22 @@ public class LoggerMockDataCreator {
         return recordIdKeyPrefix + '0'.repeat(recordIdCenterLength) + recordIdSuffix;
     }
 
+    /**
+     * @description Creates a new builder instance for the specified `SObjectType`, including creating a
+     *              new `SObject` record. The new `SObject` record is created with any default field values that
+     *              have been configured on the `SObjectType`.
+     * @param  sobjectType The `SObjectType` to use for generating a new test `SObject` record
+     * @return             A new instance of `SObjectTestDataBuilder` for the specified `SObjectType`
+     */
     public static SObjectTestDataBuilder createDataBuilder(Schema.SObjectType sobjectType) {
         return new SObjectTestDataBuilder(sobjectType);
     }
 
+    /**
+     * @description Creates a new builder instance for the specified `SObject` record
+     * @param  record The existing test `SObject` record to populate with sample data
+     * @return        A new instance of `SObjectTestDataBuilder` for the specified `SObject`
+     */
     public static SObjectTestDataBuilder createDataBuilder(SObject record) {
         return new SObjectTestDataBuilder(record);
     }
@@ -338,8 +350,9 @@ public class LoggerMockDataCreator {
 
     /**
      * @description Creates and inserts a `Group` record for testing queues, using the specified SObject Type
-     * @param  sobjectType The SObjectType that the queue should be able to own (stored in `QueueSObject`)
-     * @return   The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
+     * @param  queueDeveloperName The developer name to use for the new queue (stored in `Group.DeveloperName`)
+     * @param  sobjectType        The `SObjectType` that the queue should be able to own (stored in `QueueSObject.SObjectType`)
+     * @return                    The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
      */
     public static Group insertQueue(String queueDeveloperName, Schema.SObjectType sobjectType) {
         Group queue = new Group(DeveloperName = queueDeveloperName, Name = queueDeveloperName, Type = 'Queue');
@@ -440,6 +453,10 @@ public class LoggerMockDataCreator {
             this.loadFields();
         }
 
+        /**
+         * @description Generates a mock record ID for the builder's `SObject` record
+         * @return      The same instance of `SObjectTestDataBuilder`, useful for chaining methods
+         */
         public SObjectTestDataBuilder populateMockId() {
             this.record.Id = createId(this.sobjectType);
             return this;
@@ -463,12 +480,12 @@ public class LoggerMockDataCreator {
             return this;
         }
 
-        public SObjectTestDataBuilder validateRequiredFieldsArePopulated() {
-            // TODO
-
-            return this;
-        }
-
+        /**
+         * @description Returns the builder's `SObject` record with fields populated based on
+         *              which builder methods have been called
+         * @return   The builder's `SObject` record that was either provided by the calling code, or generated
+         *           by the builder (depending on which constructor was used for `SObjectTestDataBuilder`)
+         */
         public SObject getRecord() {
             return this.record;
         }

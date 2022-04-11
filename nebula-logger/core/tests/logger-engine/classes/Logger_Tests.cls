@@ -439,7 +439,6 @@ private class Logger_Tests {
 
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(logEntriesToCreate, countOfLogEntries);
-        System.assertEquals(1, Limits.getDmlStatements());
     }
 
     @IsTest
