@@ -68,26 +68,6 @@
         <layoutColumns />
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedLists>
-        <fields>MasterLabel</fields>
-        <fields>DeveloperName</fields>
-        <fields>IsEnabled__c</fields>
-        <fields>CollectionType__c</fields>
-        <fields>DataType__c</fields>
-        <fields>Value__c</fields>
-        <relatedList>LoggerSObjectHandlerParameter__mdt.SObjectHandler__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>MasterLabel</fields>
-        <fields>DeveloperName</fields>
-        <fields>IsEnabled__c</fields>
-        <fields>PluginType__c</fields>
-        <fields>PluginApiName__c</fields>
-        <fields>ExecutionOrder__c</fields>
-        <relatedList>LoggerSObjectHandlerPlugin__mdt.SObjectHandler__c</relatedList>
-        <sortField>ExecutionOrder__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>

@@ -2,22 +2,53 @@
     <lightning-card icon-name="custom:custom13" title={title} class="slds-p-around_medium">
         <div slot="actions">
             <lightning-layout>
-                <lightning-layout-item padding="around-small">
+                <lightning-layout-item padding="horizontal-small">
+                    <lightning-input
+                        data-id="startDate"
+                        label="Start Date"
+                        onchange={handleDateChange}
+                        required="true"
+                        type="date"
+                        value={startDate}
+                    ></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="horizontal-small">
+                    <lightning-input
+                        data-id="endDate"
+                        label="End Date"
+                        onchange={handleDateChange}
+                        required="true"
+                        type="date"
+                        value={endDate}
+                    ></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item padding="horizontal-small">
                     <lightning-combobox
                         data-id="loggingLevelFilter"
                         label="Minimum Logging Level"
                         onchange={handleLoggingLevelFilterChange}
                         options={loggingLevelOptions}
                         placeholder="Select Logging Level"
-                        variant="label-hidden"
+                        required="true"
+                        value={minimumLoggingLevelOrdinal}
                     ></lightning-combobox>
                 </lightning-layout-item>
-                <lightning-layout-item padding="around-small">
-                    <lightning-input label="Search" onchange={handleSearch} placeholder="Search" type="search" variant="label-hidden"></lightning-input>
+                <lightning-layout-item padding="horizontal-small">
+                    <lightning-input label="Message Search" onchange={handleSearch} placeholder="Search" type="search"></lightning-input>
                 </lightning-layout-item>
-                <lightning-layout-item padding="around-small">
+                <lightning-layout-item padding="horizontal-small">
+                    <lightning-combobox
+                        data-id="loggingLevelFilter"
+                        label="Maximum Number of Rows"
+                        onchange={handleRowLimitFilterChange}
+                        options={rowLimitOptions}
+                        required="true"
+                        value={rowLimit}
+                    ></lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item padding="horizontal-small top-large" class="slds-p-top_large">
                     <lightning-button
-                        class="slds-m-horizontal_xx-small"
+                        class="slds-m-horizontal_xx-small slds-m-top_large"
                         data-id="refresh-btn"
                         icon-name="action:refresh"
                         label="Refresh"
@@ -27,7 +58,7 @@
                 </lightning-layout-item>
             </lightning-layout>
         </div>
-        <div>
+        <div style="min-height: 200px">
             <lightning-datatable
                 columns={columns}
                 data={logEntryArchives}
@@ -37,6 +68,9 @@
                 show-row-number-column
             >
             </lightning-datatable>
+            <div if:true={isLoading} class="slds-spinner_inline spinner-padding">
+                <lightning-spinner variant="brand" alternative-text="Loading" size="medium"> </lightning-spinner>
+            </div>
         </div>
     </lightning-card>
 </template>

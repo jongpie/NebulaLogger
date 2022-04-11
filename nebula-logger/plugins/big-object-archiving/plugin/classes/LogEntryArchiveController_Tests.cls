@@ -7,11 +7,35 @@
 @IsTest
 private class LogEntryArchiveController_Tests {
     @IsTest
+    static void it_returns_subset_of_log_entry_archives_when_row_limit_met() {
+        List<LogEntryArchive__b> expectedLogEntryArchives = createLogEntryArchive(5, LoggingLevel.DEBUG);
+        LogEntryArchiveController.MOCK_RECORDS.addAll(expectedLogEntryArchives);
+        Integer rowLimit = expectedLogEntryArchives.size() - 2;
+
+        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(
+            System.today().addDays(-1),
+            System.today(),
+            rowLimit,
+            null,
+            null
+        );
+
+        System.assertNotEquals(0, returnedLogEntryArchives.size(), 'Records should have been returned');
+        System.assertEquals(rowLimit, returnedLogEntryArchives.size(), 'Returned records should match the specified row limit');
+    }
+
+    @IsTest
     static void it_returns_all_log_entry_archives_when_logging_level_and_message_search_term_are_null() {
         List<LogEntryArchive__b> expectedLogEntryArchives = createLogEntryArchive(5, LoggingLevel.DEBUG);
         LogEntryArchiveController.MOCK_RECORDS.addAll(expectedLogEntryArchives);
 
-        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(null, null);
+        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(
+            System.today().addDays(-1),
+            System.today(),
+            100,
+            null,
+            null
+        );
 
         System.assertNotEquals(0, returnedLogEntryArchives.size(), 'Records should have been returned');
         System.assertEquals(expectedLogEntryArchives.size(), returnedLogEntryArchives.size(), 'Returned records should match the expected records');
@@ -25,7 +49,13 @@ private class LogEntryArchiveController_Tests {
         expectedLogEntryArchives.get(0).LoggingLevelOrdinal__c = LoggingLevel.WARN.ordinal();
         LogEntryArchiveController.MOCK_RECORDS.addAll(expectedLogEntryArchives);
 
-        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(minimumLoggingLevel.ordinal(), null);
+        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(
+            System.today().addDays(-1),
+            System.today(),
+            100,
+            minimumLoggingLevel.ordinal(),
+            null
+        );
 
         System.assertEquals(1, returnedLogEntryArchives.size(), 'Only one matching record should have been returned');
         System.assertEquals(true, returnedLogEntryArchives.get(0).LoggingLevelOrdinal__c > minimumLoggingLevel.ordinal());
@@ -38,7 +68,13 @@ private class LogEntryArchiveController_Tests {
         expectedLogEntryArchives.get(0).Message__c = 'some extra text and ' + messageSearchTerm + ' and then also some more text, blah blah blah';
         LogEntryArchiveController.MOCK_RECORDS.addAll(expectedLogEntryArchives);
 
-        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(null, messageSearchTerm);
+        List<LogEntryArchive__b> returnedLogEntryArchives = LogEntryArchiveController.getLogEntryArchives(
+            System.today().addDays(-1),
+            System.today(),
+            100,
+            null,
+            messageSearchTerm
+        );
 
         System.assertEquals(1, returnedLogEntryArchives.size(), 'Only one matching record should have been returned');
         System.assertEquals(true, returnedLogEntryArchives.get(0).Message__c.contains(messageSearchTerm));

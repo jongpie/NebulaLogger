@@ -6,6 +6,10 @@
 >
     <label>LogEntryTagHandler config</label>
     <protected>false</protected>
+     <values>
+        <field>SObjectHandlerApexClass__c</field>
+        <value xsi:type="xsd:string">LogEntryTagHandler</value>
+    </values>
     <values>
         <field>SObjectType__c</field>
         <value xsi:type="xsd:string">LogEntryTag__c</value>

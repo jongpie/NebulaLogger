@@ -1,21 +1,26 @@
 import { LightningElement } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import LOG_ENTRY_ARCHIVE_OBJECT from '@salesforce/schema/LogEntryArchive__b';
 import getLogEntryArchives from '@salesforce/apex/LogEntryArchiveController.getLogEntryArchives';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
 
 export default class LogEntryArchives extends LightningElement {
+    isLoading = false;
     logEntryArchives = [];
-    _messageSearchTerm;
-    _minimumLoggingLevelOrdinal;
+    startDate = new Date(new Date().getTime() + -60 * 24 * 60 * 60 * 1000).toISOString();
+    endDate = new Date().toISOString();
+    minimumLoggingLevelOrdinal;
+    rowLimit;
     _schema = {};
+    _messageSearchTerm;
 
     async connectedCallback() {
+        this.minimumLoggingLevelOrdinal = this.loggingLevelOptions[this.loggingLevelOptions.length - 1].value;
+        this.rowLimit = this.rowLimitOptions[0].value;
         await getSchemaForName({ sobjectApiName: 'LogEntryArchive__b' }).then(data => {
-            console.log('schema data', data);
             this._schema = data;
             document.title = this._schema.labelPlural;
         });
-        console.log('ze LOG_ENTRY_ARCHIVE_OBJECT', LOG_ENTRY_ARCHIVE_OBJECT);
         this._loadColumns();
         await this._loadLogEntryArchives();
     }
@@ -27,7 +32,6 @@ export default class LogEntryArchives extends LightningElement {
 
     get loggingLevelOptions() {
         return [
-            { label: '--Select Logging Level--', value: '' },
             { label: 'ERROR', value: '8' },
             { label: 'WARN', value: '7' },
             { label: 'INFO', value: '6' },
@@ -38,12 +42,30 @@ export default class LogEntryArchives extends LightningElement {
         ];
     }
 
+    get rowLimitOptions() {
+        return [
+            { label: '50 Records', value: '50' },
+            { label: '100 Records', value: '100' },
+            { label: '200 Records', value: '200' },
+            { label: '500 Records', value: '500' }
+        ];
+    }
+
+    handleDateChange(event) {
+        const updatedProperty = event.target.dataset.id;
+        this[updatedProperty] = !event.detail.value ? '' : new Date(event.detail.value).toISOString();
+        this._loadLogEntryArchives();
+    }
+
     handleLoggingLevelFilterChange(event) {
-        console.log('log level filter change, event', event);
-        console.log('log level filter change, event.target.value', event.target.value);
-        const selectedLoggingLevelOrdinal = Number(event.target.value);
-        console.log('log level filter change, selectedLoggingLevelOrdinal', selectedLoggingLevelOrdinal);
-        this._minimumLoggingLevelOrdinal = selectedLoggingLevelOrdinal;
+        const selectedLoggingLevelOrdinal = event.target.value;
+        this.minimumLoggingLevelOrdinal = selectedLoggingLevelOrdinal;
+        this._loadLogEntryArchives();
+    }
+
+    handleRowLimitFilterChange(event) {
+        const selectedRowLimit = event.target.value;
+        this.rowLimit = selectedRowLimit;
         this._loadLogEntryArchives();
     }
 
@@ -71,17 +93,37 @@ export default class LogEntryArchives extends LightningElement {
     }
 
     async _loadLogEntryArchives() {
-        console.log('this._messageSearchTerm', this._messageSearchTerm);
-        console.log('this._minimumLoggingLevelOrdinal', this._minimumLoggingLevelOrdinal);
-        getLogEntryArchives({ messageSearchTerm: this._messageSearchTerm, minimumLoggingLevelOrdinal: this._minimumLoggingLevelOrdinal }).then(results => {
-            this.logEntryArchives = JSON.parse(JSON.stringify(results));
-
-            this.logEntryArchives.forEach(archive => {
-                archive.compositeId = archive.TransactionId__c + archive.TransactionEntryNumber__c;
-            });
-            /* eslint-disable-next-line no-console */
-            console.info('Loaded LogEntryArchive__b records', this.logEntryArchives);
+        let hasInvalidInputs = false;
+        this.template.querySelectorAll('lightning-input, lightning-comboxbox').forEach(input => {
+            if (input.reportValidity() === false) {
+                hasInvalidInputs = true;
+            }
         });
+
+        if (hasInvalidInputs === true) {
+            return;
+        }
+
+        this.isLoading = true;
+        this.logEntryArchives = [];
+        getLogEntryArchives({
+            startDate: this.startDate,
+            endDate: this.endDate,
+            rowLimit: Number(this.rowLimit),
+            messageSearchTerm: this._messageSearchTerm,
+            minimumLoggingLevelOrdinal: Number(this.minimumLoggingLevelOrdinal)
+        })
+            .then(results => {
+                this.logEntryArchives = JSON.parse(JSON.stringify(results));
+
+                this.logEntryArchives.forEach(archive => {
+                    archive.compositeId = archive.TransactionId__c + archive.TransactionEntryNumber__c;
+                });
+                /* eslint-disable-next-line no-console */
+                console.info('Loaded LogEntryArchive__b records', this.logEntryArchives);
+                this.isLoading = false;
+            })
+            .catch(this._handleError);
     }
 
     _loadColumns() {
@@ -104,7 +146,18 @@ export default class LogEntryArchives extends LightningElement {
                 label: field.label,
                 type: field.type.toLowerCase()
             };
-            if (column.type === 'string') {
+            if (column.type === 'datetime') {
+                column.type = 'date';
+                // FIXME and make dynamic based on user prefences for datetimes
+                column.typeAttributes = {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                };
+            } else if (column.type === 'string') {
                 column.type = 'text';
             }
             this.columns.push(column);
@@ -120,4 +173,18 @@ export default class LogEntryArchives extends LightningElement {
             }
         });
     }
+
+    _handleError = error => {
+        const errorMessage = error.body ? error.body.message : error.message;
+        /* eslint-disable-next-line no-console */
+        console.error(errorMessage, error);
+        this.dispatchEvent(
+            new ShowToastEvent({
+                mode: 'sticky',
+                title: errorMessage,
+                variant: 'error'
+            })
+        );
+        this.isLoading = false;
+    };
 }

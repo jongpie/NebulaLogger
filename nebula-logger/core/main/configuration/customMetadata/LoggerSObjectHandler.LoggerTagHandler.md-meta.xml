@@ -10,6 +10,10 @@
         <field>IsEnabled__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
+     <values>
+        <field>SObjectHandlerApexClass__c</field>
+        <value xsi:type="xsd:string">LoggerTagHandler</value>
+    </values>
     <values>
         <field>SObjectType__c</field>
         <value xsi:type="xsd:string">LoggerTag__c</value>

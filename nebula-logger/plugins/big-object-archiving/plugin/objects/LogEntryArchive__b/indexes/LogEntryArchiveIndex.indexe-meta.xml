@@ -6,10 +6,6 @@
         <sortDirection>DESC</sortDirection>
     </fields>
     <fields>
-        <name>LoggingLevelOrdinal__c</name>
-        <sortDirection>DESC</sortDirection>
-    </fields>
-    <fields>
         <name>TransactionId__c</name>
         <sortDirection>ASC</sortDirection>
     </fields>

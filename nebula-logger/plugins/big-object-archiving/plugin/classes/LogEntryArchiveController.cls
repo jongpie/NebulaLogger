@@ -7,7 +7,7 @@
  * @group Plugins
  * @description Controller class used by the LWC `logEntryArchives` to display `LogEntryArchive__b` data
  * @see LogEntryArchivePlugin
- * @see LogEntryEventBuilder
+ * @see LogEntryArchiveBuilder
  */
 public with sharing class LogEntryArchiveController {
     @TestVisible
@@ -15,10 +15,22 @@ public with sharing class LogEntryArchiveController {
 
     /**
      * @description Returns a list of `LogEntryArchive__b` records, based on the current user's record access + an optional search term for `Message__c`
-     * @return   The list of matching `LogEntryArchive__b` records
+     * @param  startDate                  The initial date to check for matching `LogEntryArchive__b` records, used to filter on `LogEntryArchive__b.Timestamp__c`
+     * @param  endDate                    The last date to check for matching `LogEntryArchive__b` records, used to filter on `LogEntryArchive__b.Timestamp__c`
+     * @param  rowLimit                   The max number of rows to return
+     * @param  minimumLoggingLevelOrdinal Optional filter for a minimal logging level ordinal, applied to the field `LoggingLevelOrdinal__c`
+     * @param  messageSearchTerm          Optional filter for text contained within the field `Message__c`
+     * @return                            The list of matching `LogEntryArchive__b` records
      */
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     @AuraEnabled
-    public static List<LogEntryArchive__b> getLogEntryArchives(Integer minimumLoggingLevelOrdinal, String messageSearchTerm) {
+    public static List<LogEntryArchive__b> getLogEntryArchives(
+        Date startDate,
+        Date endDate,
+        Integer rowLimit,
+        Integer minimumLoggingLevelOrdinal,
+        String messageSearchTerm
+    ) {
         // TODO Features that'd be great to able to support:
         //      1. Specify LIMIT in query via method parameter (passed from LWC via some input element). Any additional filtering (#2 below) would then be handled post-querying due to limitations with SOQL + big objects
         //      2. Support additional filtering of queried records on these fields (with a scaleable design to support easily adding/removing filters in future releases - mini QueryPredicate concept?)
@@ -34,8 +46,7 @@ public with sharing class LogEntryArchiveController {
         //          and have the LWC filter to only show archive records with the matching recordId value in `LogEntryArchive__b.RecordId__c`
         //      6. Long-term, an option in the LWC `logEntryArchives` datatable to "restore" a set of `LogEntryArchive__b` records into `Log__c`, `LogEntry__c` and `LogEntryTag__c`
         //      7. See if there's any reasonable way to group related `LogEntryArchive__b` records in LWC `logEntryArchives`, based on `LogEntryArchive__b.TransactionId__c`
-        System.debug('minimumLoggingLevelOrdinal==' + minimumLoggingLevelOrdinal);
-        System.debug('messageSearchTerm==' + messageSearchTerm);
+
         List<LogEntryArchive__b> logEntryArchives = [
             SELECT
                 LoggedByUsername__c,
@@ -44,29 +55,47 @@ public with sharing class LogEntryArchiveController {
                 Message__c,
                 OriginLocation__c,
                 OriginType__c,
+                Tags__c,
                 Timestamp__c,
                 TransactionEntryNumber__c,
                 TransactionId__c
             FROM LogEntryArchive__b
+            WHERE Timestamp__c >= :startDate AND Timestamp__c <= :endDate.addDays(1)
             WITH SECURITY_ENFORCED
-            ORDER BY Timestamp__c DESC, LoggingLevelOrdinal__c DESC, TransactionId__c ASC, TransactionEntryNumber__c ASC
-            LIMIT 200
+            ORDER BY Timestamp__c DESC, TransactionId__c ASC, TransactionEntryNumber__c ASC
+            // Since additional filtering is applied below (outside of the query), so query as many rows
+            // as possible to maximize the possible matches from post-query filtering
+            LIMIT :Limits.getLimitQueryRows()
         ];
 
+        // In a test context, creating Big Object data will actually, truly create the data - it's not isolated
+        // when running in a test context. That makes testing trickier, so mock records are injected here.
         if (System.Test.isRunningTest() == true) {
             logEntryArchives.clear();
             logEntryArchives.addAll(MOCK_RECORDS);
         }
 
-        // Big Objects have very, very limited support for SOQL filtering, so filtering is applied after querying
+        // Big Objects have very, very limited support for SOQL filtering, so additional filtering is applied after querying
         List<LogEntryArchive__b> matchingLogEntryArchives = new List<LogEntryArchive__b>();
         for (LogEntryArchive__b logEntryArchive : logEntryArchives) {
-            Boolean matchesLoggingLevelOrdinal = minimumLoggingLevelOrdinal == null || logEntryArchive.LoggingLevelOrdinal__c >= minimumLoggingLevelOrdinal;
-            Boolean matchesSearchTerm = String.isBlank(messageSearchTerm) == true || logEntryArchive.Message__c?.contains(messageSearchTerm) == true;
-            if (matchesLoggingLevelOrdinal == true && matchesSearchTerm == true) {
+            if (matchesFilterCriteria(logEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm)) {
                 matchingLogEntryArchives.add(logEntryArchive);
             }
+
+            if (matchingLogEntryArchives.size() == rowLimit) {
+                break;
+            }
         }
+
         return matchingLogEntryArchives;
+    }
+
+    private static Boolean matchesFilterCriteria(LogEntryArchive__b logEntryArchive, Integer minimumLoggingLevelOrdinal, String messageSearchTerm) {
+        Boolean matchesLoggingLevelOrdinal = minimumLoggingLevelOrdinal == null || logEntryArchive.LoggingLevelOrdinal__c >= minimumLoggingLevelOrdinal;
+        Boolean matchesSearchTerm = String.isBlank(messageSearchTerm) == true || logEntryArchive.Message__c?.containsIgnoreCase(messageSearchTerm) == true;
+        if (matchesLoggingLevelOrdinal == true && matchesSearchTerm == true) {
+            return true;
+        }
+        return false;
     }
 }
