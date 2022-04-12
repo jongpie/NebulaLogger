@@ -8,5 +8,6 @@
     <inlineHelpText
     >Controls if LogEntryEvent__e platform events are transformed &amp; stored in the custom objects Log__c and LogEntry__c (when IsSavingEnabled__c == true).</inlineHelpText>
     <label>Store Platform Events</label>
+    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>
