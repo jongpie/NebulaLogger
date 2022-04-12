@@ -210,15 +210,16 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.DeleteResult deleteResult) {
-        if (this.shouldSave == false || deleteResult == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(deleteResult));
         this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
 
-        return this.setRecordId(deleteResult.getId());
+        return this.setRecordId(deleteResult?.getId());
     }
 
     /**
@@ -227,15 +228,16 @@ global with sharing class LogEntryEventBuilder {
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.MergeResult mergeResult) {
-        if (this.shouldSave == false || mergeResult == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(mergeResult));
         this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
 
-        return this.setRecordId(mergeResult.getId());
+        return this.setRecordId(mergeResult?.getId());
     }
 
     /**
@@ -244,15 +246,16 @@ global with sharing class LogEntryEventBuilder {
      * @return            The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.SaveResult saveResult) {
-        if (this.shouldSave == false || saveResult == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(saveResult));
         this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
 
-        return this.setRecordId(saveResult.getId());
+        return this.setRecordId(saveResult?.getId());
     }
 
     /**
@@ -261,18 +264,19 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UpsertResult upsertResult) {
-        if (this.shouldSave == false || upsertResult == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
         // Upsert has 2 subtypes (surprise!) - insert and update - so, UpsertResult has an extra method to take into account
         String subtype = upsertResult.isCreated() ? 'Insert' : 'Update';
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(upsertResult));
         this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName() + '.' + subtype;
 
-        return this.setRecordId(upsertResult.getId());
+        return this.setRecordId(upsertResult?.getId());
     }
 
     /**
@@ -281,15 +285,16 @@ global with sharing class LogEntryEventBuilder {
      * @return                The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(Database.UndeleteResult undeleteResult) {
-        if (this.shouldSave == false || undeleteResult == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = 1;
         this.logEntryEvent.DatabaseResultCollectionType__c = 'Single';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(undeleteResult));
         this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
 
-        return this.setRecordId(undeleteResult.getId());
+        return this.setRecordId(undeleteResult?.getId());
     }
 
     /**
@@ -298,10 +303,11 @@ global with sharing class LogEntryEventBuilder {
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.DeleteResult> deleteResults) {
-        if (this.shouldSave == false || deleteResults == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = deleteResults?.size();
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(deleteResults));
         this.logEntryEvent.DatabaseResultType__c = Database.DeleteResult.class.getName();
@@ -315,10 +321,11 @@ global with sharing class LogEntryEventBuilder {
      * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.MergeResult> mergeResults) {
-        if (this.shouldSave == false || mergeResults == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = mergeResults?.size();
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(mergeResults));
         this.logEntryEvent.DatabaseResultType__c = Database.MergeResult.class.getName();
@@ -332,10 +339,11 @@ global with sharing class LogEntryEventBuilder {
      * @return             The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.SaveResult> saveResults) {
-        if (this.shouldSave == false || saveResults == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = saveResults?.size();
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(saveResults));
         this.logEntryEvent.DatabaseResultType__c = Database.SaveResult.class.getName();
@@ -349,10 +357,11 @@ global with sharing class LogEntryEventBuilder {
      * @return               The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.UpsertResult> upsertResults) {
-        if (this.shouldSave == false || upsertResults == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = upsertResults?.size();
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(upsertResults));
         this.logEntryEvent.DatabaseResultType__c = Database.UpsertResult.class.getName();
@@ -366,10 +375,11 @@ global with sharing class LogEntryEventBuilder {
      * @return                 The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder setDatabaseResult(List<Database.UndeleteResult> undeleteResults) {
-        if (this.shouldSave == false || undeleteResults == null) {
+        if (this.shouldSave == false) {
             return this;
         }
 
+        this.logEntryEvent.DatabaseResultCollectionSize__c = undeleteResults?.size();
         this.logEntryEvent.DatabaseResultCollectionType__c = 'List';
         this.logEntryEvent.DatabaseResultJson__c = truncateFieldValue(Schema.LogEntryEvent__e.DatabaseResultJson__c, JSON.serializePretty(undeleteResults));
         this.logEntryEvent.DatabaseResultType__c = Database.UndeleteResult.class.getName();
@@ -405,6 +415,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.RecordCollectionSize__c = 1;
         this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = recordId;
         this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
@@ -422,6 +433,7 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.RecordCollectionSize__c = 1;
         this.logEntryEvent.RecordCollectionType__c = 'Single';
 
         String recordJson = getJson(record);
@@ -454,16 +466,10 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
+        this.logEntryEvent.RecordCollectionSize__c = records?.size();
         this.logEntryEvent.RecordCollectionType__c = 'List';
 
-        // First, try to use the list's SObject Type - if the list is null or an instance of List<SObject>, it won't have an SObject Type
-        // If using the list doesn't work, and there are 1+ records in the list, then try to use the first record's SObject Type - if it's null, it won't have an SObject Type
-        // If the first object doesn't work, then just log as is a generic SObject - no need to waste additional CPU time on it
         Schema.SObjectType sobjectType = records?.getSObjectType();
-        if (sobjectType == null && records != null && records.size() >= 1) {
-            sobjectType = records.get(0)?.getSObjectType();
-        }
-
         String recordJson = getJson(records);
         if (sobjectType == null) {
             this.logEntryEvent.RecordJson__c = recordJson;

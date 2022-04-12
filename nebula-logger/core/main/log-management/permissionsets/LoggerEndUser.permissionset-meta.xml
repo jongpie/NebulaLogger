@@ -56,6 +56,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.DatabaseResultCollectionSize__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.DatabaseResultCollectionType__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -466,6 +471,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.RecordCollectionSize__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.RecordCollectionType__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -481,12 +491,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordJson__c</field>
+        <field>LogEntry__c.RecordJsonMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.RecordJsonMasked__c</field>
+        <field>LogEntry__c.RecordJson__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

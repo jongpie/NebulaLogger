@@ -157,6 +157,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             LogEntry__c logEntry = new LogEntry__c(
                 ComponentType__c = logEntryEvent.ComponentType__c,
+                DatabaseResultCollectionSize__c = logEntryEvent.DatabaseResultCollectionSize__c,
                 DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
                 DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
                 DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
@@ -206,6 +207,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 Name = null, // Salesforce will auto-set the record ID as the name when null
                 OriginLocation__c = logEntryEvent.OriginLocation__c,
                 OriginType__c = logEntryEvent.OriginType__c,
+                RecordCollectionSize__c = logEntryEvent.RecordCollectionSize__c,
                 RecordCollectionType__c = logEntryEvent.RecordCollectionType__c,
                 RecordId__c = logEntryEvent.RecordId__c,
                 RecordJson__c = logEntryEvent.RecordJson__c,

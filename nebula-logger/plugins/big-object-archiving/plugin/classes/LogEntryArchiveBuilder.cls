@@ -50,6 +50,7 @@ public without sharing class LogEntryArchiveBuilder {
         this.logEntryArchive = new LogEntryArchive__b(
             ApiVersion__c = this.logEntryEvent.ApiVersion__c,
             ComponentType__c = this.logEntryEvent.ComponentType__c,
+            DataCollectionSize__c = this.logEntryEvent.DataCollectionSize__c,
             DatabaseResultCollectionType__c = this.logEntryEvent.DatabaseResultCollectionType__c,
             DatabaseResultJson__c = this.logEntryEvent.DatabaseResultJson__c,
             DatabaseResultType__c = this.logEntryEvent.DatabaseResultType__c,
@@ -119,6 +120,7 @@ public without sharing class LogEntryArchiveBuilder {
             ParentLogTransactionId__c = this.logEntryEvent.ParentLogTransactionId__c,
             ProfileId__c = this.logEntryEvent.ProfileId__c,
             ProfileName__c = this.logEntryEvent.ProfileName__c,
+            RecordCollectionSize__c = this.logEntryEvent.RecordCollectionSize__c,
             RecordCollectionType__c = this.logEntryEvent.RecordCollectionType__c,
             RecordId__c = this.logEntryEvent.RecordId__c,
             RecordJson__c = this.logEntryEvent.RecordJson__c,
@@ -159,7 +161,29 @@ public without sharing class LogEntryArchiveBuilder {
         tagNames.sort();
 
         this.logEntryArchive = new LogEntryArchive__b(
+            ApiReleaseNumber__c = this.logEntry.Log__r.ApiReleaseNumber__c,
+            ApiReleaseVersion__c = this.logEntry.Log__r.ApiReleaseVersion__c,
             ApiVersion__c = this.logEntry.Log__r.ApiVersion__c,
+            // ClosedBy__c = this.logEntry.Log__r.ClosedBy__c, // TODO Store ID? Username?
+            ClosedDate__c = this.logEntry.Log__r.ClosedDate__c,
+            Comments__c = this.logEntry.Log__r.Comments__c,
+            // IsClosed__c = this.logEntry.Log__r.IsClosed__c, // TODO Boolean fields not supported for Big Objects (?!)
+            // IsResolved__c = this.logEntry.Log__r.IsResolved__c, // TODO Boolean fields not supported for Big Objects (?!)
+            Issue__c = this.logEntry.Log__r.Issue__c,
+            // LogPurgeAction__c = this.logEntry.Log__r.LogPurgeAction__c, // TODO Not sure it makes sense to have these fields in archive? Maybe?
+            // LogRetentionDate__c = this.logEntry.Log__r.LogRetentionDate__c, // TODO Not sure it makes sense to have these fields in archive? Maybe?
+            // MessageMasked__c = this.logEntry.Log__r.MessageMasked__c, // TODO Boolean fields not supported for Big Objects (?!)
+            // MessageTruncated__c = this.logEntry.Log__r.MessageTruncated__c, // TODO Boolean fields not supported for Big Objects (?!)
+            OrganizationInstanceReleaseCycle__c = this.logEntry.Log__r.OrganizationInstanceReleaseCycle__c, // TODO deprecated field
+            ParentLog__c = this.logEntry.Log__r.ParentLog__c, // TODO Store Parent Log's Transaction ID? Salesforce ID would be meaningless
+            Priority__c = this.logEntry.Log__r.Priority__c,
+            RecordCollectionSize__c = this.logEntry.RecordCollectionSize__c,
+            DataCollectionSize__c = this.logEntry.DataCollectionSize__c,
+            // RecordJsonMasked__c = this.logEntry.RecordJsonMasked__c, // TODO Boolean fields not supported for Big Objects (?!)
+            Status__c = this.logEntry.Log__r.Status__c,
+            // TriggerIsExecuting__c = this.logEntry.TriggerIsExecuting__c, // TODO Boolean fields not supported for Big Objects (?!)
+            // TODO LogName__c = this.logEntry.Log__r.Name,
+            // TODO LogEntryName__c = this.logEntry.Name,
             ComponentType__c = this.logEntry.ComponentType__c,
             DatabaseResultCollectionType__c = this.logEntry.DatabaseResultCollectionType__c,
             DatabaseResultJson__c = this.logEntry.DatabaseResultJson__c,

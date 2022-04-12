@@ -19,9 +19,7 @@ private class LogEntryEventHandler_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntryEvent__e.SObjectType).IsEnabled__c = false;
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
         LoggerDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -101,9 +99,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -132,9 +128,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(2, transactionIds.size());
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (Integer i = 0; i < transactionIds.size(); i++) {
-            LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-                .populateRequiredFields()
-                .getRecord();
+            LogEntryEvent__e logEntryEvent = createLogEntryEvent();
             logEntryEvent.TransactionEntryNumber__c = i;
             logEntryEvent.TransactionId__c = transactionIds.get(i);
             logEntryEvents.add(logEntryEvent);
@@ -210,9 +204,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
         List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Tags__c = String.join(tags, '\n');
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -248,9 +240,7 @@ private class LogEntryEventHandler_Tests {
         String testTagName = 'Some tag!';
         LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
         insert tag;
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Tags__c = testTagName;
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -282,9 +272,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = 'my message';
         logEntryEvent.Tags__c = null;
         String configuredTagName = 'CMDT Tag';
@@ -325,9 +313,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Tags__c = null;
         String configuredTagName = 'CMDT Tag';
         LoggerTestConfigurator.setMock(
@@ -368,9 +354,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
         String zipCodeRegEx = '(^[0-9]{4}?[0-9]$|^[0-9]{4}?[0-9]-[0-9]{4}$)';
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = '94541';
         logEntryEvent.Tags__c = null;
         String configuredTagName = 'CMDT Tag';
@@ -411,10 +395,9 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = 'my message';
+        logEntryEvent.Tags__c = null;
         String configuredTagName = 'CMDT Tag';
         LoggerTestConfigurator.setMock(
             new LogEntryTagRule__mdt(
@@ -456,9 +439,7 @@ private class LogEntryEventHandler_Tests {
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
         // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
         // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
@@ -493,9 +474,7 @@ private class LogEntryEventHandler_Tests {
         insert new LogEntry__c(Log__c = recentLog.Id, Timestamp__c = System.now().addHours(-1));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
         // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
         // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
@@ -530,9 +509,7 @@ private class LogEntryEventHandler_Tests {
         Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
         // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
         // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
@@ -567,9 +544,7 @@ private class LogEntryEventHandler_Tests {
         Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         Database.SaveResult saveResult;
 
         try {
@@ -600,6 +575,25 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(null, log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
+    }
+
+    private static LogEntryEvent__e createLogEntryEvent() {
+        // The data builder class handles populating field values, but for some fields,
+        // certain values are expected (e.g., LoggedById__c should have a valid user ID),
+        // so this method handles any additional manipulation to the field values
+        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
+            .populateAllFields()
+            .getRecord();
+        logEntryEvent.LoggedById__c = UserInfo.getUserId();
+        logEntryEvent.LoggingLevel__c = LoggingLevel.INFO.name();
+        logEntryEvent.LoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
+        logEntryEvent.UserLoggingLevel__c = LoggingLevel.INFO.name();
+        logEntryEvent.UserLoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
+        logEntryEvent.ProfileId__c = UserInfo.getProfileId();
+        logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
+        logEntryEvent.ParentLogTransactionId__c = null;
+
+        return logEntryEvent;
     }
 
     private static String createStatusApiResponseJson() {
@@ -657,6 +651,11 @@ private class LogEntryEventHandler_Tests {
                 UserType__c,
                 (
                     SELECT
+                        ComponentType__c,
+                        DatabaseResultCollectionSize__c,
+                        DatabaseResultCollectionType__c,
+                        DatabaseResultJson__c,
+                        DatabaseResultType__c,
                         EpochTimestamp__c,
                         ExceptionStackTrace__c,
                         ExceptionType__c,
@@ -701,8 +700,11 @@ private class LogEntryEventHandler_Tests {
                         Name,
                         OriginType__c,
                         OriginLocation__c,
+                        RecordCollectionSize__c,
+                        RecordCollectionType__c,
                         RecordId__c,
                         RecordJson__c,
+                        RecordJsonMasked__c,
                         RecordSObjectClassification__c,
                         RecordSObjectType__c,
                         RecordSObjectTypeNamespace__c,
@@ -779,6 +781,11 @@ private class LogEntryEventHandler_Tests {
     }
 
     private static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
+        System.assertEquals(logEntryEvent.ComponentType__c, logEntry.ComponentType__c);
+        System.assertEquals(logEntryEvent.DatabaseResultCollectionSize__c, logEntry.DatabaseResultCollectionSize__c);
+        System.assertEquals(logEntryEvent.DatabaseResultCollectionType__c, logEntry.DatabaseResultCollectionType__c);
+        System.assertEquals(logEntryEvent.DatabaseResultJson__c, logEntry.DatabaseResultJson__c);
+        System.assertEquals(logEntryEvent.DatabaseResultType__c, logEntry.DatabaseResultType__c);
         System.assertEquals(logEntryEvent.EpochTimestamp__c, logEntry.EpochTimestamp__c);
         System.assertEquals(logEntryEvent.ExceptionStackTrace__c, logEntry.ExceptionStackTrace__c);
         System.assertEquals(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c);
@@ -821,11 +828,20 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntry.Id, logEntry.Name);
         System.assertEquals(logEntryEvent.OriginType__c, logEntry.OriginType__c);
         System.assertEquals(logEntryEvent.OriginLocation__c, logEntry.OriginLocation__c);
+        System.assertEquals(logEntryEvent.RecordCollectionSize__c, logEntry.RecordCollectionSize__c);
+        System.assertEquals(logEntryEvent.RecordCollectionType__c, logEntry.RecordCollectionType__c);
+        System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c);
+        System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c);
+        System.assertEquals(logEntryEvent.RecordJsonMasked__c, logEntry.RecordJsonMasked__c);
+        System.assertEquals(logEntryEvent.RecordSObjectClassification__c, logEntry.RecordSObjectClassification__c);
+        System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c);
+        System.assertEquals(logEntryEvent.RecordSObjectTypeNamespace__c, logEntry.RecordSObjectTypeNamespace__c);
         System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c);
         System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c);
         System.assertEquals(logEntryEvent.RecordSObjectClassification__c, logEntry.RecordSObjectClassification__c);
         System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c);
         System.assertEquals(logEntryEvent.RecordSObjectTypeNamespace__c, logEntry.RecordSObjectTypeNamespace__c);
+
         System.assertEquals(logEntryEvent.StackTrace__c, logEntry.StackTrace__c);
         System.assertEquals(logEntryEvent.Timestamp__c, logEntry.Timestamp__c);
         System.assertEquals(logEntryEvent.TransactionEntryNumber__c, logEntry.TransactionEntryNumber__c);

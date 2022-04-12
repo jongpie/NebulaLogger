@@ -299,6 +299,16 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.DatabaseResultCollectionSize__c</fieldItem>
+                <identifier>RecordDatabaseResultCollectionSize_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.DatabaseResultJson__c</fieldItem>
                 <identifier>RecordDatabaseResultJson__cField</identifier>
             </fieldInstance>
@@ -339,6 +349,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.RecordSObjectType__c</fieldItem>
                 <identifier>RecordRecordSObjectType__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RecordCollectionSize__c</fieldItem>
+                <identifier>RecordRecordCollectionSize_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

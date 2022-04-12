@@ -12,6 +12,8 @@ currentUser.AboutMe = 'I hope you dont leak my social, which is 400-11-9999, btw
 Logger.error('Here is my fake Visa credit card 4000-1111-2222-0004, please don\'t steal it').addTag('data masking rule').addTag('credit card masking');
 Logger.warn('Here is my fake Mastercard credit card 5000-1111-2222-0005, please don\'t steal it').addTag('data masking rule').addTag('credit card masking');
 Logger.info('In case you want to steal my identity, my fake social is 400-11-9999, thanks', currentUser).addTag('data masking rule').addTag('an informational tag');
+Logger.debug('Here are some accounts', [SELECT Id, Name, Description FROM Account LIMIT 5]);
+Logger.debug('Here are some save results', Database.update([SELECT Id, Name, Description FROM Account LIMIT 5]));
 Logger.saveLog();
 Logger.debug('Example DEBUG entry', currentUser);
 Logger.fine('Example FINE entry');

@@ -166,6 +166,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.DatabaseResultCollectionSize__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.DatabaseResultCollectionType__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -582,6 +587,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.Origin__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.RecordCollectionSize__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

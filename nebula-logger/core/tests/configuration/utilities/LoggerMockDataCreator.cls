@@ -545,7 +545,7 @@ public class LoggerMockDataCreator {
             /*
             Schema.DisplayType.Address, Schema.DisplayType.AnyType, Schema.DisplayType.Base64,
             Schema.DisplayType.DataCategoryGroupReference, Schema.DisplayType.Id, Schema.DisplayType.Reference
-        */
+            */
             switch on fieldDescribe.getType() {
                 when Boolean {
                     return false;
@@ -573,6 +573,9 @@ public class LoggerMockDataCreator {
                 }
                 when Integer {
                     return 1;
+                }
+                when Long {
+                    return 1234567890L;
                 }
                 when MultiPicklist {
                     return fieldDescribe.getPicklistValues().get(0).getValue();
@@ -609,7 +612,7 @@ public class LoggerMockDataCreator {
             String stringValue = 'Test string for ' + fieldDescribe.getType();
             Integer maxLength = fieldDescribe.getLength();
 
-            return stringValue.left(maxLength);
+            return stringValue.left(maxLength).trim();
         }
     }
 }

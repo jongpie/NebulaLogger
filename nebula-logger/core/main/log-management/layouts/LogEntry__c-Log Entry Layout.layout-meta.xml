@@ -236,6 +236,10 @@
                 <field>DatabaseResultType__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Edit</behavior>
+                <field>DatabaseResultCollectionSize__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>DatabaseResultJson__c</field>
             </layoutItems>
@@ -255,6 +259,10 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>RecordSObjectType__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RecordCollectionSize__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -397,7 +405,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h1h000002oBf9</masterLabel>
+        <masterLabel>00h1F000007LiWa</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

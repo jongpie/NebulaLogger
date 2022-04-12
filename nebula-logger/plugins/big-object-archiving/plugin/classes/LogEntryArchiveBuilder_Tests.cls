@@ -88,6 +88,7 @@ private class LogEntryArchiveBuilder_Tests {
     private static void assertAllFieldsMatch(Datetime timestamp, LogEntryEvent__e mockEvent, LogEntryArchive__b logEntryArchive) {
         System.assertEquals(mockEvent.ApiVersion__c, logEntryArchive.ApiVersion__c);
         System.assertEquals(mockEvent.ComponentType__c, logEntryArchive.ComponentType__c);
+        System.assertEquals(mockEvent.DatabaseResultCollectionSize__c, logEntryArchive.DatabaseResultCollectionSize__c);
         System.assertEquals(mockEvent.DatabaseResultCollectionType__c, logEntryArchive.DatabaseResultCollectionType__c);
         System.assertEquals(mockEvent.DatabaseResultJson__c, logEntryArchive.DatabaseResultJson__c);
         System.assertEquals(mockEvent.DatabaseResultType__c, logEntryArchive.DatabaseResultType__c);
@@ -157,6 +158,7 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(mockEvent.ParentLogTransactionId__c, logEntryArchive.ParentLogTransactionId__c);
         System.assertEquals(mockEvent.ProfileId__c, logEntryArchive.ProfileId__c);
         System.assertEquals(mockEvent.ProfileName__c, logEntryArchive.ProfileName__c);
+        System.assertEquals(mockEvent.RecordCollectionSize__c, logEntryArchive.RecordCollectionSize__c);
         System.assertEquals(mockEvent.RecordCollectionType__c, logEntryArchive.RecordCollectionType__c);
         System.assertEquals(mockEvent.RecordId__c, logEntryArchive.RecordId__c);
         System.assertEquals(mockEvent.RecordJson__c, logEntryArchive.RecordJson__c);

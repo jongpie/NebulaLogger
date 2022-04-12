@@ -13,6 +13,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LogEntryArchive__b.DatabaseResultCollectionSize__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LogEntryArchive__b.DatabaseResultCollectionType__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -364,6 +369,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LogEntryArchive__b.ProfileName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.RecordCollectionSize__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
