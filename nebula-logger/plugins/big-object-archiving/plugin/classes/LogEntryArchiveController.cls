@@ -22,7 +22,7 @@ public with sharing class LogEntryArchiveController {
      * @param  messageSearchTerm          Optional filter for text contained within the field `Message__c`
      * @return                            The list of matching `LogEntryArchive__b` records
      */
-    @SuppressWarnings('PMD.ExcessiveParameterList')
+    @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList')
     @AuraEnabled
     public static List<LogEntryArchive__b> getLogEntryArchives(
         Date startDate,

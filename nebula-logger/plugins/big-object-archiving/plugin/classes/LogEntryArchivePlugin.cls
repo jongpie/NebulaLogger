@@ -154,6 +154,9 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         LOG_ENTRY_ARCHIVES_TO_SAVE.clear();
     }
 
+    /**
+     * @description Inner class for publishing log entries via the Queueable interface.
+     */
     private class QueueableSaver implements Queueable {
         private List<LogEntryArchive__b> logEntryArchives = new List<LogEntryArchive__b>();
 
@@ -161,6 +164,10 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
             this.logEntryArchives = logEntryArchives;
         }
 
+        /**
+         * @description Asynchronoulsy inserts the list of `LogEntryArchive_b` records
+         * @param queueableContext The context of the current queue, provided by the platform
+         */
         public void execute(System.QueueableContext queueableContext) {
             Database.insertImmediate(this.logEntryArchives);
         }

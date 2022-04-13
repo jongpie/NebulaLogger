@@ -2855,9 +2855,8 @@ global with sharing class Logger {
         }
 
         /**
-         * @description Required by the Queueable interface, this method contains the logic executed when
-         * the current instance of the queue runs.
-         * @param queueableContext The context of the current queue.
+         * @description Asynchronoulsy publishes the list of `LogEntryEvent__e` records
+         * @param queueableContext The context of the current queue, provided by the platform
          */
         global void execute(System.QueueableContext queueableContext) {
             LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);

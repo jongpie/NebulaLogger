@@ -1,3 +1,4 @@
+@SuppressWarnings('PMD.ApexDoc')
 public with sharing class ExampleBigObjectDataGenerator implements System.Queueable {
     private Integer targetRecordCountToCreate;
 
@@ -12,7 +13,6 @@ public with sharing class ExampleBigObjectDataGenerator implements System.Queuea
             this.targetRecordCountToCreate--;
         }
         Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_IMMEDIATE';
-        // Logger.saveLog('BIG_OBJECT_IMMEDIATE');
         Logger.saveLog();
 
         if (this.targetRecordCountToCreate > 0) {

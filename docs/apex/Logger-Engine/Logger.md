@@ -5046,12 +5046,12 @@ Inner class for publishing log entries via the Queueable interface.
 
 ###### `execute(System.QueueableContext queueableContext)` → `void`
 
-Required by the Queueable interface, this method contains the logic executed when the current instance of the queue runs.
+Asynchronoulsy publishes the list of `LogEntryEvent__e` records
 
 ####### Parameters
 
-| Param              | Description                       |
-| ------------------ | --------------------------------- |
-| `queueableContext` | The context of the current queue. |
+| Param              | Description                                                |
+| ------------------ | ---------------------------------------------------------- |
+| `queueableContext` | The context of the current queue, provided by the platform |
 
 ---
