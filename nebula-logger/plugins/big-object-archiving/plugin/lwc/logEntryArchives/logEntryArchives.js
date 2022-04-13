@@ -1,3 +1,8 @@
+/*************************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ ************************************************************************************************/
+
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getLogEntryArchives from '@salesforce/apex/LogEntryArchiveController.getLogEntryArchives';
@@ -43,9 +48,7 @@ export default class LogEntryArchives extends LightningElement {
     get rowLimitOptions() {
         return [
             { label: '50 Records', value: '50' },
-            { label: '100 Records', value: '100' },
-            { label: '200 Records', value: '200' },
-            { label: '500 Records', value: '500' }
+            { label: '100 Records', value: '100' }
         ];
     }
 
@@ -74,7 +77,6 @@ export default class LogEntryArchives extends LightningElement {
 
     handleRefresh() {
         const searchTerm = this.template.querySelector('lightning-input').value;
-        console.info('refreshing, with searchTerm', searchTerm);
         this._loadLogEntryArchives(searchTerm);
     }
 
@@ -156,6 +158,8 @@ export default class LogEntryArchives extends LightningElement {
                 };
             } else if (column.type === 'string') {
                 column.type = 'text';
+            } else if (column.type === 'textarea') {
+                column.wrapText = true;
             }
             this.columns.push(column);
         }

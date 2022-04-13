@@ -11,11 +11,16 @@
  */
 public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batchable, LoggerPlugin.Triggerable {
     @TestVisible
-    private static final String BIG_OBJECT_LOGGER_SAVE_METHOD = LoggerParameter.getString('CustomSaveMethodBigObject', null);
+    private static final String BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD = LoggerParameter.getString('CustomSaveMethodBigObjectImmediate', null);
+    @TestVisible
+    private static final String BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD = LoggerParameter.getString('CustomSaveMethodBigObjectQueueable', null);
     @TestVisible
     private static final String BIG_OBJECT_LOG_PURGE_ACTION = LoggerParameter.getString('CustomLogPurgeActionArchive', null);
     @TestVisible
     private static final List<LogEntryArchive__b> LOG_ENTRY_ARCHIVES_TO_SAVE = new List<LogEntryArchive__b>();
+
+    @TestVisible
+    private static String lastSaveMethodUsed;
 
     /**
      * @description Default constructor
@@ -54,7 +59,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         for (LogEntry__c logEntry : logEntries) {
             LOG_ENTRY_ARCHIVES_TO_SAVE.add(new LogEntryArchiveBuilder(logEntry).getLogEntryArchive());
         }
-        this.saveLogEntryArchives();
+        this.saveLogEntryArchives(BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD);
     }
 
     /**
@@ -75,10 +80,13 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
      * @param  input The instance of `LoggerTriggerableContext`, provided by the logging system
      */
     public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
+        if (input.sobjectType != Schema.LogEntryEvent__e.SObjectType || input.triggerOperationType != TriggerOperation.BEFORE_INSERT) {
+            return;
+        }
+
         if (
-            input.sobjectType != Schema.LogEntryEvent__e.SObjectType ||
-            input.triggerOperationType != TriggerOperation.BEFORE_INSERT ||
-            Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_LOGGER_SAVE_METHOD
+            Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD &&
+            Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD
         ) {
             return;
         }
@@ -87,7 +95,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
             LOG_ENTRY_ARCHIVES_TO_SAVE.add(new LogEntryArchiveBuilder(logEntryEvent).getLogEntryArchive());
         }
-        this.saveLogEntryArchives();
+        this.saveLogEntryArchives(Logger.getUserSettings().DefaultSaveMethod__c);
         Logger.flushBuffer();
     }
 
@@ -132,10 +140,29 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         return (List<LogEntry__c>) Database.query(query);
     }
 
-    private void saveLogEntryArchives() {
-        if (System.Test.isRunningTest() == false) {
+    private void saveLogEntryArchives(String saveMethodName) {
+        if (System.Test.isRunningTest() == true) {
+            lastSaveMethodUsed = saveMethodName;
+            return;
+        }
+
+        if (saveMethodName == BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD) {
             Database.insertImmediate(LOG_ENTRY_ARCHIVES_TO_SAVE);
-            LOG_ENTRY_ARCHIVES_TO_SAVE.clear();
+        } else if (saveMethodName == BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD) {
+            System.enqueueJob(new QueueableSaver(LOG_ENTRY_ARCHIVES_TO_SAVE));
+        }
+        LOG_ENTRY_ARCHIVES_TO_SAVE.clear();
+    }
+
+    private class QueueableSaver implements Queueable {
+        private List<LogEntryArchive__b> logEntryArchives = new List<LogEntryArchive__b>();
+
+        private QueueableSaver(List<LogEntryArchive__b> logEntryArchives) {
+            this.logEntryArchives = logEntryArchives;
+        }
+
+        public void execute(System.QueueableContext queueableContext) {
+            Database.insertImmediate(this.logEntryArchives);
         }
     }
 }

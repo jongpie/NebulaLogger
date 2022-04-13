@@ -1,3 +1,7 @@
+// Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_IMMEDIATE';
+// Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_QUEUEABLE';
+// Logger.getUserSettings().IsAnonymousModeEnabled__c = true;
+
 Logger.setScenario('an example transaction scenario name');
 Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
 Logger.getUserSettings().IsDataMaskingEnabled__c = true;

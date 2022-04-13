@@ -11,7 +11,7 @@
     </fields>
     <fields>
         <name>TransactionEntryNumber__c</name>
-        <sortDirection>ASC</sortDirection>
+        <sortDirection>DESC</sortDirection>
     </fields>
     <label>Log Entry Archive Index</label>
 </Index>

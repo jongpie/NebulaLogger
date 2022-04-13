@@ -3,7 +3,37 @@
     <description>Provides admin access to the BigObject LogEntryEventArchive__b, included with the BigObject plugin for Nebula Logger</description>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LogEntryArchive__b.ApiReleaseNumber__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.ApiReleaseVersion__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LogEntryArchive__b.ApiVersion__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.ClosedById__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.ClosedByUsername__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.ClosedDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.Comments__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -49,6 +79,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LogEntryArchive__b.ExceptionType__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.IsClosed__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.IsResolved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.Issue__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -223,6 +268,26 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LogEntryArchive__b.LogEntryName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.LogName__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.LogPurgeAction__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.LogRetentionDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LogEntryArchive__b.LoggedById__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -269,6 +334,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LogEntryArchive__b.LogoutUrl__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.MessageMasked__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.MessageTruncated__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -328,6 +403,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LogEntryArchive__b.OrganizationInstanceReleaseCycle__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LogEntryArchive__b.OrganizationName__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -358,6 +438,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LogEntryArchive__b.Priority__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LogEntryArchive__b.ProfileId__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -379,6 +464,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LogEntryArchive__b.RecordId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.RecordJsonMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -433,6 +523,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>LogEntryArchive__b.Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>LogEntryArchive__b.SystemMode__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -459,6 +554,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>LogEntryArchive__b.TimestampString__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntryArchive__b.TriggerIsExecuting__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -522,7 +622,7 @@
         <object>LogEntryArchive__b</object>
         <viewAllRecords>false</viewAllRecords>
     </objectPermissions>
-     <tabSettings>
+    <tabSettings>
         <tab>LogEntryArchives</tab>
         <visibility>Visible</visibility>
     </tabSettings>

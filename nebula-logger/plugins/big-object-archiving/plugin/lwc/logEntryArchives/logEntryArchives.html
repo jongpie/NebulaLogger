@@ -1,3 +1,8 @@
+<!--**********************************************************************************************
+ * This file is part of the Nebula Logger project, released under the MIT License.               *
+ * See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.   *
+ **********************************************************************************************-->
+
 <template>
     <lightning-card icon-name="custom:custom13" title={title} class="slds-p-around_medium">
         <div slot="actions">
@@ -66,6 +71,7 @@
                 key-field="compositeId"
                 onrowaction={handleRowAction}
                 show-row-number-column
+                wrap-text-max-lines="10"
             >
             </lightning-datatable>
             <div if:true={isLoading} class="slds-spinner_inline spinner-padding">

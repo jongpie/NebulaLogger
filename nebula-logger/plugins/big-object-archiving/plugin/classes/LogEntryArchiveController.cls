@@ -31,43 +31,51 @@ public with sharing class LogEntryArchiveController {
         Integer minimumLoggingLevelOrdinal,
         String messageSearchTerm
     ) {
-        List<LogEntryArchive__b> logEntryArchives = [
-            SELECT
-                LoggedByUsername__c,
-                LoggingLevel__c,
-                LoggingLevelOrdinal__c,
-                Message__c,
-                OriginLocation__c,
-                OriginType__c,
-                Tags__c,
-                Timestamp__c,
-                TransactionEntryNumber__c,
-                TransactionId__c
-            FROM LogEntryArchive__b
-            WHERE Timestamp__c >= :startDate AND Timestamp__c <= :endDate.addDays(1)
-            WITH SECURITY_ENFORCED
-            ORDER BY Timestamp__c DESC, TransactionId__c ASC, TransactionEntryNumber__c DESC
-            // Since additional filtering is applied below (outside of the query), so this query gets as many rows
-            // as possible to maximize the possible matches from post-query filtering
-            LIMIT :Limits.getLimitQueryRows()
-        ];
+        // Big Objects have very, very limited support for SOQL filtering, so additional filtering is applied after querying
+        List<LogEntryArchive__b> matchingLogEntryArchives = new List<LogEntryArchive__b>();
+        for (
+            LogEntryArchive__b logEntryArchive : [
+                SELECT
+                    LoggedByUsername__c,
+                    LoggingLevel__c,
+                    LoggingLevelOrdinal__c,
+                    Message__c,
+                    OriginLocation__c,
+                    OriginType__c,
+                    Tags__c,
+                    Timestamp__c,
+                    TransactionEntryNumber__c,
+                    TransactionId__c
+                FROM LogEntryArchive__b
+                WHERE Timestamp__c >= :startDate AND Timestamp__c <= :endDate.addDays(1)
+                WITH SECURITY_ENFORCED
+                ORDER BY Timestamp__c DESC, TransactionId__c ASC, TransactionEntryNumber__c DESC
+                // Since additional filtering is applied below (outside of the query), so this query gets as many rows
+                // as possible to maximize the possible matches from post-query filtering
+                LIMIT :Limits.getLimitQueryRows()
+            ]
+        ) {
+            if (matchesFilterCriteria(logEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm) || System.Test.isRunningTest() == true) {
+                matchingLogEntryArchives.add(logEntryArchive);
+            }
+
+            if (matchingLogEntryArchives.size() == rowLimit || System.Test.isRunningTest() == true) {
+                break;
+            }
+        }
 
         // In a test context, creating Big Object data will actually, truly create the data - it's not isolated
         // from the org's data. That makes testing trickier, so mock records are injected here.
         if (System.Test.isRunningTest() == true) {
-            logEntryArchives.clear();
-            logEntryArchives.addAll(MOCK_RECORDS);
-        }
+            matchingLogEntryArchives.clear();
+            for (LogEntryArchive__b mockLogEntryArchive : MOCK_RECORDS) {
+                if (matchesFilterCriteria(mockLogEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm)) {
+                    matchingLogEntryArchives.add(mockLogEntryArchive);
+                }
 
-        // Big Objects have very, very limited support for SOQL filtering, so additional filtering is applied after querying
-        List<LogEntryArchive__b> matchingLogEntryArchives = new List<LogEntryArchive__b>();
-        for (LogEntryArchive__b logEntryArchive : logEntryArchives) {
-            if (matchesFilterCriteria(logEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm)) {
-                matchingLogEntryArchives.add(logEntryArchive);
-            }
-
-            if (matchingLogEntryArchives.size() == rowLimit) {
-                break;
+                if (matchingLogEntryArchives.size() == rowLimit) {
+                    break;
+                }
             }
         }
 

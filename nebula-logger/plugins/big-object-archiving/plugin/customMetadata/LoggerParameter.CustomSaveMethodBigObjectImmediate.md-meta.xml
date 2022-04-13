@@ -4,14 +4,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Custom Save Method: Big Object</label>
+    <label>Save Method: Big Object - Immediate</label>
     <protected>true</protected>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">Adds a new save method BIG_OBJECT to the list of save methods displayed in the LWC loggerSettings</value>
+        <value xsi:type="xsd:string">Adds a new save method BIG_OBJECT_IMMEDIATE to the list of save methods displayed in the LWC loggerSettings</value>
     </values>
     <values>
         <field>Value__c</field>
-        <value xsi:type="xsd:string">BIG_OBJECT</value>
+        <value xsi:type="xsd:string">BIG_OBJECT_IMMEDIATE</value>
     </values>
 </CustomMetadata>
