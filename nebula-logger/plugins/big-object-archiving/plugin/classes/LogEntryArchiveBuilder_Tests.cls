@@ -128,9 +128,12 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(mockEvent.LimitsSoslSearchesMax__c, logEntryArchive.LimitsSoslSearchesMax__c);
         System.assertEquals(mockEvent.LimitsSoslSearchesUsed__c, logEntryArchive.LimitsSoslSearchesUsed__c);
         System.assertEquals(mockEvent.Locale__c, logEntryArchive.Locale__c);
-        System.assertEquals(String.isNotBlank(mockEvent.LoggedById__c) ? mockEvent.LoggedById__c : 'Anonymous', logEntryArchive.LoggedBy__c);
+        // System.assertEquals(String.isNotBlank(mockEvent.LoggedById__c) ? mockEvent.LoggedById__c : 'Anonymous', logEntryArchive.LoggedBy__c);
         System.assertEquals(mockEvent.LoggedById__c, logEntryArchive.LoggedById__c);
-        System.assertEquals(mockEvent.LoggedByUsername__c, logEntryArchive.LoggedByUsername__c);
+        System.assertEquals(
+            String.isNotBlank(mockEvent.LoggedByUsername__c) ? mockEvent.LoggedByUsername__c : 'Anonymous',
+            logEntryArchive.LoggedByUsername__c
+        );
         System.assertEquals(mockEvent.LoggerVersionNumber__c, logEntryArchive.LoggerVersionNumber__c);
         System.assertEquals(mockEvent.LoggingLevel__c, logEntryArchive.LoggingLevel__c);
         System.assertEquals(mockEvent.LoggingLevelOrdinal__c, logEntryArchive.LoggingLevelOrdinal__c);
@@ -199,8 +202,15 @@ private class LogEntryArchiveBuilder_Tests {
         tagNames.sort();
         String tags = String.join(tagNames, '\n');
 
+        System.assertEquals(logEntry.Log__r.ApiReleaseNumber__c, logEntryArchive.ApiReleaseNumber__c);
+        System.assertEquals(logEntry.Log__r.ApiReleaseVersion__c, logEntryArchive.ApiReleaseVersion__c);
         System.assertEquals(logEntry.Log__r.ApiVersion__c, logEntryArchive.ApiVersion__c);
+        System.assertEquals(logEntry.Log__r.ClosedBy__c, logEntryArchive.ClosedById__c);
+        System.assertEquals(logEntry.Log__r.ClosedBy__r?.Username, logEntryArchive.ClosedByUsername__c);
+        System.assertEquals(logEntry.Log__r.ClosedDate__c, logEntryArchive.ClosedDate__c);
+        System.assertEquals(logEntry.Log__r.Comments__c, logEntryArchive.Comments__c);
         System.assertEquals(logEntry.ComponentType__c, logEntryArchive.ComponentType__c);
+        System.assertEquals(logEntry.DatabaseResultCollectionSize__c, logEntryArchive.DatabaseResultCollectionSize__c);
         System.assertEquals(logEntry.DatabaseResultCollectionType__c, logEntryArchive.DatabaseResultCollectionType__c);
         System.assertEquals(logEntry.DatabaseResultJson__c, logEntryArchive.DatabaseResultJson__c);
         System.assertEquals(logEntry.DatabaseResultType__c, logEntryArchive.DatabaseResultType__c);
@@ -208,6 +218,9 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.ExceptionMessage__c, logEntryArchive.ExceptionMessage__c);
         System.assertEquals(logEntry.ExceptionStackTrace__c, logEntryArchive.ExceptionStackTrace__c);
         System.assertEquals(logEntry.ExceptionType__c, logEntryArchive.ExceptionType__c);
+        System.assertEquals(String.valueOf(logEntry.Log__r.IsClosed__c), logEntryArchive.IsClosed__c);
+        System.assertEquals(String.valueOf(logEntry.Log__r.IsResolved__c), logEntryArchive.IsResolved__c);
+        System.assertEquals(logEntry.Log__r.Issue__c, logEntryArchive.Issue__c);
         System.assertEquals(logEntry.LimitsAggregateQueriesMax__c, logEntryArchive.LimitsAggregateQueriesMax__c);
         System.assertEquals(logEntry.LimitsAggregateQueriesUsed__c, logEntryArchive.LimitsAggregateQueriesUsed__c);
         System.assertEquals(logEntry.LimitsAsyncCallsMax__c, logEntryArchive.LimitsAsyncCallsMax__c);
@@ -240,7 +253,6 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.LimitsSoslSearchesMax__c, logEntryArchive.LimitsSoslSearchesMax__c);
         System.assertEquals(logEntry.LimitsSoslSearchesUsed__c, logEntryArchive.LimitsSoslSearchesUsed__c);
         System.assertEquals(logEntry.Log__r.Locale__c, logEntryArchive.Locale__c);
-        System.assertEquals(logEntry.Log__r.LoggedBy__c, logEntryArchive.LoggedBy__c);
         System.assertEquals(logEntry.Log__r.LoggedBy__c, logEntryArchive.LoggedById__c);
         System.assertEquals(logEntry.Log__r.LoggedByUsername__c, logEntryArchive.LoggedByUsername__c);
         System.assertEquals(logEntry.Log__r.LoggerVersionNumber__c, logEntryArchive.LoggerVersionNumber__c);
@@ -252,7 +264,11 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.Log__r.LoginPlatform__c, logEntryArchive.LoginPlatform__c);
         System.assertEquals(logEntry.Log__r.LoginType__c, logEntryArchive.LoginType__c);
         System.assertEquals(logEntry.Log__r.LogoutUrl__c, logEntryArchive.LogoutUrl__c);
+        System.assertEquals(logEntry.Log__r.LogPurgeAction__c, logEntryArchive.LogPurgeAction__c);
+        System.assertEquals(logEntry.Log__r.LogRetentionDate__c, logEntryArchive.LogRetentionDate__c);
         System.assertEquals(logEntry.Message__c, logEntryArchive.Message__c);
+        System.assertEquals(String.valueOf(logEntry.MessageMasked__c), logEntryArchive.MessageMasked__c);
+        System.assertEquals(String.valueOf(logEntry.MessageTruncated__c), logEntryArchive.MessageTruncated__c);
         System.assertEquals(logEntry.Log__r.NetworkId__c, logEntryArchive.NetworkId__c);
         System.assertEquals(logEntry.Log__r.NetworkLoginUrl__c, logEntryArchive.NetworkLoginUrl__c);
         System.assertEquals(logEntry.Log__r.NetworkLogoutUrl__c, logEntryArchive.NetworkLogoutUrl__c);
@@ -267,12 +283,15 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.Log__r.OrganizationType__c, logEntryArchive.OrganizationType__c);
         System.assertEquals(logEntry.OriginLocation__c, logEntryArchive.OriginLocation__c);
         System.assertEquals(logEntry.OriginType__c, logEntryArchive.OriginType__c);
-        System.assertEquals(logEntry.Log__r.ParentLog__r.TransactionId__c, logEntryArchive.ParentLogTransactionId__c);
+        System.assertEquals(logEntry.Log__r.ParentLog__r?.TransactionId__c, logEntryArchive.ParentLogTransactionId__c);
+        System.assertEquals(logEntry.Log__r.Priority__c, logEntryArchive.Priority__c);
         System.assertEquals(logEntry.Log__r.ProfileId__c, logEntryArchive.ProfileId__c);
         System.assertEquals(logEntry.Log__r.ProfileName__c, logEntryArchive.ProfileName__c);
+        System.assertEquals(logEntry.RecordCollectionSize__c, logEntryArchive.RecordCollectionSize__c);
         System.assertEquals(logEntry.RecordCollectionType__c, logEntryArchive.RecordCollectionType__c);
         System.assertEquals(logEntry.RecordId__c, logEntryArchive.RecordId__c);
         System.assertEquals(logEntry.RecordJson__c, logEntryArchive.RecordJson__c);
+        System.assertEquals(String.valueOf(logEntry.RecordJsonMasked__c), logEntryArchive.RecordJsonMasked__c);
         System.assertEquals(logEntry.RecordSObjectClassification__c, logEntryArchive.RecordSObjectClassification__c);
         System.assertEquals(logEntry.RecordSObjectType__c, logEntryArchive.RecordSObjectType__c);
         System.assertEquals(logEntry.RecordSObjectTypeNamespace__c, logEntryArchive.RecordSObjectTypeNamespace__c);
@@ -281,6 +300,7 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.Log__r.SessionType__c, logEntryArchive.SessionType__c);
         System.assertEquals(logEntry.Log__r.SourceIp__c, logEntryArchive.SourceIp__c);
         System.assertEquals(logEntry.StackTrace__c, logEntryArchive.StackTrace__c);
+        System.assertEquals(logEntry.Log__r.Status__c, logEntryArchive.Status__c);
         System.assertEquals(logEntry.Log__r.SystemMode__c, logEntryArchive.SystemMode__c);
         System.assertEquals(tags, logEntryArchive.Tags__c);
         System.assertEquals(logEntry.Log__r.ThemeDisplayed__c, logEntryArchive.ThemeDisplayed__c);
@@ -289,6 +309,7 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.Log__r.TimeZoneId__c, logEntryArchive.TimeZoneId__c);
         System.assertEquals(logEntry.TransactionEntryNumber__c, logEntryArchive.TransactionEntryNumber__c);
         System.assertEquals(logEntry.Log__r.TransactionId__c, logEntryArchive.TransactionId__c);
+        System.assertEquals(String.valueOf(logEntry.TriggerIsExecuting__c), logEntryArchive.TriggerIsExecuting__c);
         System.assertEquals(logEntry.TriggerOperationType__c, logEntryArchive.TriggerOperationType__c);
         System.assertEquals(logEntry.TriggerSObjectType__c, logEntryArchive.TriggerSObjectType__c);
         System.assertEquals(logEntry.Log__r.UserLicenseDefinitionKey__c, logEntryArchive.UserLicenseDefinitionKey__c);

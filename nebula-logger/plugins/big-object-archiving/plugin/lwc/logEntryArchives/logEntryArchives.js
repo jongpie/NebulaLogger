@@ -1,6 +1,5 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import LOG_ENTRY_ARCHIVE_OBJECT from '@salesforce/schema/LogEntryArchive__b';
 import getLogEntryArchives from '@salesforce/apex/LogEntryArchiveController.getLogEntryArchives';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
 
@@ -26,8 +25,7 @@ export default class LogEntryArchives extends LightningElement {
     }
 
     get title() {
-        const calculatedTitle = this.logEntryArchives.length + ' ' + this._schema.labelPlural;
-        return calculatedTitle;
+        return this.logEntryArchives.length + ' ' + this._schema.labelPlural;
     }
 
     get loggingLevelOptions() {
@@ -80,17 +78,18 @@ export default class LogEntryArchives extends LightningElement {
         this._loadLogEntryArchives(searchTerm);
     }
 
-    handleRowAction(event) {
-        const actionName = event.detail.action.name;
-        const row = event.detail.row;
-        /* eslint-disable-next-line default-case */
-        switch (actionName) {
-            case 'view':
-                alert('TODO!');
-                // this._viewCurrentRecord(row);
-                break;
-        }
-    }
+    // TODO Future release, add 'View' action with ability to view more fields for a `LogEntryArchive__b` record (similar to loggerSettings LWC)
+    // handleRowAction(event) {
+    //     const actionName = event.detail.action.name;
+    //     const row = event.detail.row;
+    //     /* eslint-disable-next-line default-case */
+    //     switch (actionName) {
+    //         case 'view':
+    //             alert('TODO!');
+    //             // this._viewCurrentRecord(row);
+    //             break;
+    //     }
+    // }
 
     async _loadLogEntryArchives() {
         let hasInvalidInputs = false;
@@ -119,8 +118,6 @@ export default class LogEntryArchives extends LightningElement {
                 this.logEntryArchives.forEach(archive => {
                     archive.compositeId = archive.TransactionId__c + archive.TransactionEntryNumber__c;
                 });
-                /* eslint-disable-next-line no-console */
-                console.info('Loaded LogEntryArchive__b records', this.logEntryArchives);
                 this.isLoading = false;
             })
             .catch(this._handleError);
@@ -163,15 +160,16 @@ export default class LogEntryArchives extends LightningElement {
             this.columns.push(column);
         }
 
+        // TODO Finish in a future release
         // Append the row-level actions
-        let tableRowActions = [{ label: 'View', name: 'view' }];
-        this.columns.push({
-            type: 'action',
-            typeAttributes: {
-                rowActions: tableRowActions,
-                menuAlignment: 'auto'
-            }
-        });
+        // let tableRowActions = [{ label: 'View', name: 'view' }];
+        // this.columns.push({
+        //     type: 'action',
+        //     typeAttributes: {
+        //         menuAlignment: 'auto'
+        //         rowActions: tableRowActions,
+        //     }
+        // });
     }
 
     _handleError = error => {

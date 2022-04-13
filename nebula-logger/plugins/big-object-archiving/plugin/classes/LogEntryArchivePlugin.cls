@@ -97,6 +97,14 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         for (String fieldName : Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet()) {
             logFieldsToQuery.add(logLookupRelationshipName + '.' + fieldName);
         }
+        String closedByUsernameField =
+            logLookupRelationshipName +
+            '.' +
+            Schema.Log__c.ClosedBy__c.getDescribe().getName().removeEnd('__c') +
+            '__r' +
+            '.' +
+            Schema.User.Username.getDescribe().getName();
+        logFieldsToQuery.add(closedByUsernameField);
         String parentLogTransactionIdField =
             logLookupRelationshipName +
             '.' +

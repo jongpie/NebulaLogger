@@ -505,11 +505,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntryArchive__b.LoggedBy__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntryArchive__b.LoggerVersionNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>

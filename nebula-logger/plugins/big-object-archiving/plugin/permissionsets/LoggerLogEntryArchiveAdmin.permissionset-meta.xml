@@ -223,11 +223,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>LogEntryArchive__b.LoggedBy__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>LogEntryArchive__b.LoggedById__c</field>
         <readable>true</readable>
     </fieldPermissions>
