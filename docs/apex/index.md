@@ -6,140 +6,128 @@ layout: default
 
 ## Logger Engine
 
-### [ComponentLogger](logger-engine/ComponentLogger)
+### [ComponentLogger](Logger-Engine/ComponentLogger)
 
 Controller class used by the lightning web component `logger`
 
-### [FlowCollectionLogEntry](logger-engine/FlowCollectionLogEntry)
+### [FlowCollectionLogEntry](Logger-Engine/FlowCollectionLogEntry)
 
 Handles adding new log entries in Flow for a particular `SObject` record collection
 
-### [FlowLogEntry](logger-engine/FlowLogEntry)
+### [FlowLogEntry](Logger-Engine/FlowLogEntry)
 
 Handles adding new log entries in Flow
 
-### [FlowLogger](logger-engine/FlowLogger)
+### [FlowLogger](Logger-Engine/FlowLogger)
 
 Handles some common logic used by `FlowLogEntry`, `FlowRecordLogEntry` and `FlowCollectionLogEntry`
 
-### [FlowRecordLogEntry](logger-engine/FlowRecordLogEntry)
+### [FlowRecordLogEntry](Logger-Engine/FlowRecordLogEntry)
 
 Handles adding new log entries in Flow for a particular `SObject` record
 
-### [LogEntryEventBuilder](logger-engine/LogEntryEventBuilder)
+### [LogEntryEventBuilder](Logger-Engine/LogEntryEventBuilder)
 
 Builder class that generates each `LogEntryEvent__e` record
 
-### [LogMessage](logger-engine/LogMessage)
+### [LogMessage](Logger-Engine/LogMessage)
 
 Provides the ability to generate string messages on demand, using String.format()
 
-### [Logger](logger-engine/Logger)
+### [Logger](Logger-Engine/Logger)
 
 The core class for logging
 
-## Log Management
+### [LoggerDataStore](Logger-Engine/LoggerDataStore)
 
-### [LogBatchPurgeScheduler](log-management/LogBatchPurgeScheduler)
+Class used to manage any data-related operations, including database DML statements, publishing platform events via the event bus, and enqueueing queueable jobs
 
-Schedulable class used to schedule the batch job `LogBatchPurger`
-
-### [LogBatchPurger](log-management/LogBatchPurger)
-
-Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c &lt;= :System.today()`
-
-### [LogEntryEventHandler](log-management/LogEntryEventHandler)
-
-Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
-
-### [LogEntryFieldSetPicklist](log-management/LogEntryFieldSetPicklist)
-
-Dynamically returns `LogEntry__c` field sets in App Builder when configuring the component RelatedLogEntries
-
-### [LogEntryHandler](log-management/LogEntryHandler)
-
-Manages setting fields on `LogEntry__c` before insert &amp; before update
-
-### [LogEntryTagHandler](log-management/LogEntryTagHandler)
-
-Handles trigger events for the `LogEntryTag__c` object
-
-### [LogHandler](log-management/LogHandler)
-
-Manages setting fields on `Log__c` before insert &amp; before update
-
-### [LogMassDeleteExtension](log-management/LogMassDeleteExtension)
-
-Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
-
-### [LoggerBatchableContext](log-management/LoggerBatchableContext)
-
-Class used by the logging system for batch contextual details
-
-### [LoggerEmailUtils](log-management/LoggerEmailUtils)
-
-Builds and sends email notifications when internal exceptions occur within the logging system
-
-### [LoggerSObjectHandler](log-management/LoggerSObjectHandler)
+### [LoggerSObjectHandler](Logger-Engine/LoggerSObjectHandler)
 
 Abstract class used by trigger handlers for shared logic
 
-### [LoggerSObjectMetadata](log-management/LoggerSObjectMetadata)
-
-Provides details to LWCs about Logger&apos;s `SObjects`, using `@AuraEnabled` properties
-
-### [LoggerSettingsController](log-management/LoggerSettingsController)
-
-Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
-
-### [LoggerTagHandler](log-management/LoggerTagHandler)
-
-Handles trigger events for the `LoggerTag__c` object
-
-### [LoggerTriggerableContext](log-management/LoggerTriggerableContext)
+### [LoggerTriggerableContext](Logger-Engine/LoggerTriggerableContext)
 
 Class used by the logging system for trigger contextual details
 
-### [RelatedLogEntriesController](log-management/RelatedLogEntriesController)
+## Log Management
+
+### [LogBatchPurgeScheduler](Log-Management/LogBatchPurgeScheduler)
+
+Schedulable class used to schedule the batch job `LogBatchPurger`
+
+### [LogBatchPurger](Log-Management/LogBatchPurger)
+
+Batch class used to delete old logs, based on `Log__c.LogRetentionDate__c &lt;= :System.today()`
+
+### [LogEntryEventHandler](Log-Management/LogEntryEventHandler)
+
+Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
+
+### [LogEntryFieldSetPicklist](Log-Management/LogEntryFieldSetPicklist)
+
+Dynamically returns `LogEntry__c` field sets in App Builder when configuring the component RelatedLogEntries
+
+### [LogEntryHandler](Log-Management/LogEntryHandler)
+
+Manages setting fields on `LogEntry__c` before insert &amp; before update
+
+### [LogEntryTagHandler](Log-Management/LogEntryTagHandler)
+
+Handles trigger events for the `LogEntryTag__c` object
+
+### [LogHandler](Log-Management/LogHandler)
+
+Manages setting fields on `Log__c` before insert &amp; before update
+
+### [LogMassDeleteExtension](Log-Management/LogMassDeleteExtension)
+
+Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
+
+### [LoggerBatchableContext](Log-Management/LoggerBatchableContext)
+
+Class used by the logging system for batch contextual details
+
+### [LoggerEmailSender](Log-Management/LoggerEmailSender)
+
+Builds and sends email notifications when internal exceptions occur within the logging system
+
+### [LoggerSObjectMetadata](Log-Management/LoggerSObjectMetadata)
+
+Provides details to LWCs about Logger&apos;s `SObjects`, using `@AuraEnabled` properties
+
+### [LoggerSettingsController](Log-Management/LoggerSettingsController)
+
+Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
+
+### [LoggerTagHandler](Log-Management/LoggerTagHandler)
+
+Handles trigger events for the `LoggerTag__c` object
+
+### [RelatedLogEntriesController](Log-Management/RelatedLogEntriesController)
 
 Controller class for the lightning web component `related-log-entries`
 
-## Plugins
+## Test Utilities
 
-### [LogEntryArchiveBuilder](plugins/LogEntryArchiveBuilder)
+### [LoggerMockDataCreator](/Test-Utilities/LoggerMockDataCreator)
 
-Builder class to create an instance of `LogEntryArchive__b`, used by the BigObject plugin
+Utility class used to help with generating mock data when writing Apex tests for Nebula Logger. These methods are generic, and should work in any Salesforce org. These methods can be used when writing Apex tests for plugins.
 
-### [LogEntryArchiveController](plugins/LogEntryArchiveController)
+### [LoggerMockDataStore](/Test-Utilities/LoggerMockDataStore)
 
-Controller class used by the LWC `logEntryArchives` to display `LogEntryArchive__b` data
+Utility class used to mock any data-related operations for the database, event bus, and queueable jobs. These methods are generic, and should work in any Salesforce org. These methods can be used when writing Apex tests for plugins.
 
-### [LogEntryArchivePlugin](plugins/LogEntryArchivePlugin)
+### [LoggerTestConfigurator](/Test-Utilities/LoggerTestConfigurator)
 
-Optional plugin that provides a BigObject, `LogEntryArchive__b`, as an alternative option to the platform event `LogEntryEvent__e`
-
-### [LogRetentionRulesPlugin](plugins/LogRetentionRulesPlugin)
-
-Optional plugin that adds the ability to create &amp; deploy advanced, configurable rules for setting the retention date of `Log__c` records, using custom metadata types `LogRetentionRule_t` and `LogRetentionRuleCondition_t`.
-
-### [SlackLoggerPlugin](plugins/SlackLoggerPlugin)
-
-Optional plugin that integrates with Slack to send alerts for important logs
+Utility class used to help with setting up Nebula Logger&apos;s configurations within a test context. These methods are specific to metadata implemented within Nebula Logger. These methods can be used when writing Apex tests for plugins.
 
 ## Configuration
 
-### [LoggerParameter](configuration/LoggerParameter)
+### [LoggerParameter](Configuration/LoggerParameter)
 
 Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
 
-### [LoggerPlugin](configuration/LoggerPlugin)
+### [LoggerPlugin](Configuration/LoggerPlugin)
 
 The core of the plugin framework, used to create custom Apex &amp; Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger` based on configurations stored in the custom metadata type `LoggerPlugin_t`
-
-### [LoggerSObjectTestDataGenerator](configuration/LoggerSObjectTestDataGenerator)
-
-Class used to create or update an `SObject` record with static fake data. This is useful in situations where you need to have fields populated, but the specific values used are not relevant to a particular test. This class can be used when Apex writing tests for plugins.
-
-### [LoggerTestUtils](configuration/LoggerTestUtils)
-
-Utility class used to help with writing Apex tests Nebula Logger. These methods can be used when writing Apex tests for plugins.

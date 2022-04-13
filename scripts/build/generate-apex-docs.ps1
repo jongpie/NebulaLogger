@@ -7,11 +7,11 @@ npx apexdocs-generate --configPath ./config/docs/apexdocs.json --scope global pu
 $indexPageFile = "docs/apex/index.md"
 Write-Output "Processing file: $indexPageFile"
 (Get-Content -path $indexPageFile -Raw) -replace "# Classes","# Nebula Logger for Apex" | Set-Content -Path $indexPageFile -NoNewline
-# (Get-Content -path $indexPageFile -Raw) -replace ".md","" | Set-Content -Path $indexPageFile -NoNewline
-# (Get-Content -path $indexPageFile -Raw) -replace "/Configuration/","configuration/" | Set-Content -Path $indexPageFile -NoNewline
-# (Get-Content -path $indexPageFile -Raw) -replace "/Logger-Engine/","logger-engine/" | Set-Content -Path $indexPageFile -NoNewline
-# (Get-Content -path $indexPageFile -Raw) -replace "/Log-Management/","log-management/" | Set-Content -Path $indexPageFile -NoNewline
-# (Get-Content -path $indexPageFile -Raw) -replace "/Plugins/","plugins/" | Set-Content -Path $indexPageFile -NoNewline
+(Get-Content -path $indexPageFile -Raw) -replace ".md","" | Set-Content -Path $indexPageFile -NoNewline
+(Get-Content -path $indexPageFile -Raw) -replace "/Configuration/","Configuration/" | Set-Content -Path $indexPageFile -NoNewline
+(Get-Content -path $indexPageFile -Raw) -replace "/Logger-Engine/","Logger-Engine/" | Set-Content -Path $indexPageFile -NoNewline
+(Get-Content -path $indexPageFile -Raw) -replace "/Log-Management/","Log-Management/" | Set-Content -Path $indexPageFile -NoNewline
+(Get-Content -path $indexPageFile -Raw) -replace "/Plugins/","Plugins/" | Set-Content -Path $indexPageFile -NoNewline
 
 $docsSubdirectories = "docs/apex/*/*.*"
 foreach($file in Get-ChildItem $docsSubdirectories) {

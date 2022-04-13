@@ -3,6 +3,15 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/**
+ * @group Test Utilities
+ * @description Utility class used to mock any data-related operations for the database, event bus, and queueable jobs.
+ *              These methods are generic, and should work in any Salesforce org.
+ *              These methods can be used when writing Apex tests for plugins.
+ * @see LoggerDataStore
+ * @see LoggerMockDataCreator
+ * @see LoggerTestConfigurator
+ */
 @SuppressWarnings('PMD.ApexDoc, PMD.EmptyStatementBlock')
 @IsTest
 public without sharing class LoggerMockDataStore {

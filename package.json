@@ -89,7 +89,7 @@
     "devDependencies": {
         "@babel/core": "latest",
         "@babel/eslint-parser": "latest",
-        "@cparra/apexdocs": "latest",
+        "@cparra/apexdocs": "1.13.7",
         "@jayree/sfdx-plugin-prettier": "latest",
         "@jongpie/sfdx-bummer-plugin": "latest",
         "@ljharb/eslint-config": "latest",
@@ -108,7 +108,7 @@
         "lint-staged": "latest",
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
-        "pwsh": "latest",
+        "pwsh": "^0.3.0",
         "sfdx-cli": "latest"
     }
 }
