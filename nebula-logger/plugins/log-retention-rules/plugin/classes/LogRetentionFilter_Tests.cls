@@ -81,11 +81,6 @@ private class LogRetentionFilter_Tests {
         System.assertEquals(false, expectedNonMatchResult.matchesFilter());
     }
 
-    @IsTest
-    static void it_should_have_tests() {
-        System.assert(false, 'TODO');
-    }
-
     static LogRetentionRule__mdt createMockRule(String developerName, String conditionLogicType, Integer numberOfDaysToRetainLogs) {
         return new LogRetentionRule__mdt(
             ConditionLogicType__c = conditionLogicType,

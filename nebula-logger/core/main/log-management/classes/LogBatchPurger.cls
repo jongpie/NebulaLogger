@@ -23,6 +23,8 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
     // Instance variables for top-level class
     @TestVisible
+    private Integer chainedBatchSize = 200;
+    @TestVisible
     private SObjectType currentSObjectType;
     @TestVisible
     private List<LoggerPlugin__mdt> pluginConfigurations;
@@ -131,7 +133,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
         Id nextBatchJobId;
         if (this.currentSObjectType != Schema.Log__c.SObjectType) {
-            nextBatchJobId = Database.executeBatch(new LogBatchPurger());
+            nextBatchJobId = Database.executeBatch(new LogBatchPurger(), this.chainedBatchSize);
         }
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
@@ -148,6 +150,18 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
             }
             Logger.saveLog();
         }
+    }
+
+    /**
+     * @description The `LogBatchPurger` job is designed to run several instances - typically, it runs on `LogEntryTag__c`,
+     *              then `LogEntry__c`, and finally `Log__c`. This method provides a way to control the batch size used for
+     *              the chained instances of `LogBachPurger`
+     * @param  chainedBatchSize The batch size to use for any subsequent chained instances of `LogBatchPurger`
+     * @return                  The same instance of `LogBatchPurger`, useful for chaining methods
+     */
+    public LogBatchPurger setChainedBatchSize(Integer chainedBatchSize) {
+        this.chainedBatchSize = chainedBatchSize;
+        return this;
     }
 
     private Schema.SObjectType getInitialSObjectType() {

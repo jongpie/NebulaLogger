@@ -52,6 +52,26 @@ Required by the Database.Batchable interface. This method runs after all batch j
 | ------------------ | ------------------------------- |
 | `batchableContext` | - The context of the batch jobs |
 
+#### `setChainedBatchSize(Integer chainedBatchSize)` → `LogBatchPurger`
+
+The `LogBatchPurger` job is designed to run several instances - typically, it runs on `LogEntryTag__c`, then `LogEntry__c`, and finally `Log__c`. This method provides a way to control the batch size used for the chained instances of `LogBachPurger`
+
+##### Parameters
+
+| Param              | Description                                                                    |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `chainedBatchSize` | The batch size to use for any subsequent chained instances of `LogBatchPurger` |
+
+##### Return
+
+**Type**
+
+LogBatchPurger
+
+**Description**
+
+The same instance of `LogBatchPurger`, useful for chaining methods
+
 #### `start(Database.BatchableContext batchableContext)` → `Database.QueryLocator`
 
 Required by the Database.Batchable interface. Collects the records / objects passed in to the batch instance and returns a Databae.QueryLocator reference representing the current iteration.

@@ -592,6 +592,9 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.ProfileId__c = UserInfo.getProfileId();
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
         logEntryEvent.ParentLogTransactionId__c = null;
+        logEntryEvent.RecordId__c = UserInfo.getUserId();
+        logEntryEvent.RecordCollectionSize__c = 1;
+        logEntryEvent.RecordCollectionType__c = 'Single';
 
         return logEntryEvent;
     }

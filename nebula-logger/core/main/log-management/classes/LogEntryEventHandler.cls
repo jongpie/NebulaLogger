@@ -138,7 +138,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
-            .upsertRecords(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, false);
+            .upsertRecords(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, System.Test.isRunningTest());
         LoggerEmailSender.sendErrorEmail(Schema.Log__c.SObjectType, upsertResults);
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
@@ -337,7 +337,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static Database.DmlOptions createDmlOptions() {
         Database.DmlOptions dmlOptions = new Database.DmlOptions();
         dmlOptions.AllowFieldTruncation = true;
-        dmlOptions.OptAllOrNone = false;
+        dmlOptions.OptAllOrNone = System.Test.isRunningTest();
         return dmlOptions;
     }
 

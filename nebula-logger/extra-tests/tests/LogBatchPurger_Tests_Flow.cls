@@ -51,9 +51,10 @@ private class LogBatchPurger_Tests_Flow {
     static void it_should_run_flow_plugin_in_start_method() {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
+            BatchPurgerExecutionOrder__c = 1,
+            BatchPurgerFlowName__c = MOCK_FLOW_NAME,
             DeveloperName = 'Mock_Plugin',
-            IsEnabled__c = true,
-            BatchPurgerFlowName__c = MOCK_FLOW_NAME
+            IsEnabled__c = true
         );
         LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
@@ -102,9 +103,10 @@ private class LogBatchPurger_Tests_Flow {
     static void it_should_run_flow_plugin_in_execute_method() {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
+            BatchPurgerExecutionOrder__c = 1,
+            BatchPurgerFlowName__c = MOCK_FLOW_NAME,
             DeveloperName = 'Mock_Plugin',
-            IsEnabled__c = true,
-            BatchPurgerFlowName__c = MOCK_FLOW_NAME
+            IsEnabled__c = true
         );
         LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
@@ -154,9 +156,10 @@ private class LogBatchPurger_Tests_Flow {
     static void it_should_run_flow_plugin_in_finish_method() {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerPlugin__mdt mockPluginConfiguration = new LoggerPlugin__mdt(
+            BatchPurgerExecutionOrder__c = 1,
+            BatchPurgerFlowName__c = MOCK_FLOW_NAME,
             DeveloperName = 'Mock_Plugin',
-            IsEnabled__c = true,
-            BatchPurgerFlowName__c = MOCK_FLOW_NAME
+            IsEnabled__c = true
         );
         LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
