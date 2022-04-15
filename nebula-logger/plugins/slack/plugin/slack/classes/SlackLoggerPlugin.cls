@@ -183,6 +183,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         return request;
     }
 
+    @SuppressWarnings('PMD.NcssMethodCount')
     private LogDto convertLog(Log__c log) {
         LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
         String messageText = 'Last Log Entry Message' + '\n`' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '`';

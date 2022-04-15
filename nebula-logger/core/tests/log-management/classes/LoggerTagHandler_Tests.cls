@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(isParallel=true)
 private class LoggerTagHandler_Tests {
     @IsTest
     static void it_should_return_the_loggerTag_sobjectType() {

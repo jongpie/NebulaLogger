@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(isParallel=false)
 private class LogMassDeleteExtension_Tests_Integration {
     private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
@@ -33,21 +33,17 @@ private class LogMassDeleteExtension_Tests_Integration {
                 logsToKeep.add(logs.get(i));
             }
         }
-
         ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
         controller.setSelected(logsToDelete);
-
         PageReference pageReference = Page.LogMassDelete;
         Test.setCurrentPage(pageReference);
-
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
             System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
 
-            String deleteAccessError = 'You do not have access to delete logs records';
-
             new LogMassDeleteExtension(controller);
 
+            String deleteAccessError = 'You do not have access to delete logs records';
             System.assertEquals(true, ApexPages.hasMessages(ApexPages.SEVERITY.ERROR));
             System.assertEquals(deleteAccessError, ApexPages.getMessages().get(0).getSummary());
         }

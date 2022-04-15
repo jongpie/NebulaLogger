@@ -6,7 +6,7 @@
 
 // TODO revise suppressed PMD rules/clean up code
 @SuppressWarnings('PMD.ApexDoc, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
-@IsTest
+@IsTest(isParallel=true)
 private class LogRetentionRulesPlugin_Tests {
     @IsTest
     static void it_should_set_retention_date_for_rule_with_one_condition_when_datetime_less_than() {

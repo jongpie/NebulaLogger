@@ -10,7 +10,7 @@
  *              all use the `User` SObject
  */
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexUnitTestClassShouldHaveAsserts, PMD.MethodNamingConventions')
-@IsTest
+@IsTest(isParallel=true)
 private class LoggerSObjectMetadata_Tests {
     @IsTest
     static void it_should_return_schema_for_specified_sobject_api_name() {

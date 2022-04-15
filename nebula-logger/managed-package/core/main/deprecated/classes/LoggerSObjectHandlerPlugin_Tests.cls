@@ -1,4 +1,4 @@
 @SuppressWarnings('PMD.ApexDoc')
-@IsTest
+@IsTest(isParallel=true)
 private class LoggerSObjectHandlerPlugin_Tests {
 }

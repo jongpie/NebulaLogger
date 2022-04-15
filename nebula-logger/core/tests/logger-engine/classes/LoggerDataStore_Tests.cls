@@ -7,7 +7,7 @@
 // Possible objects to use: User, Group (Queue) and QueueSObject (none support undelete though), and not sure if it's possible
 // to test platform events/EventBus using only standard objects
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
-@IsTest
+@IsTest(isParallel=true)
 private class LoggerDataStore_Tests {
     // Database DML tests
     @IsTest

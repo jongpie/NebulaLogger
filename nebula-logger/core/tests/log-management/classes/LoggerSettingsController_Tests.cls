@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
-@IsTest
+@IsTest(isParallel=false)
 private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_return_loggingLevel_picklist_options() {

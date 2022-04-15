@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(isParallel=true)
 private class LogEntryHandler_Tests_Flow {
     private static final String EXAMPLE_FLOW_API_NAME = 'LogEntryHandler_Tests_Flow';
 

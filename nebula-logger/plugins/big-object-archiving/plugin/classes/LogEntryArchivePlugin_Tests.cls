@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
-@IsTest
+@IsTest(isParallel=true)
 private class LogEntryArchivePlugin_Tests {
     @TestSetup
     static void setupData() {

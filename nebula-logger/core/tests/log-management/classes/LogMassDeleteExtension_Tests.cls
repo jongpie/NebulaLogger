@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(isParallel=false)
 private class LogMassDeleteExtension_Tests {
     @TestSetup
     static void setupData() {
@@ -22,12 +22,10 @@ private class LogMassDeleteExtension_Tests {
     @IsTest
     static void it_should_return_deletable_logs() {
         List<Log__c> logs = [SELECT Id, Name FROM Log__c];
-
         List<String> logIds = new List<String>();
         for (Log__c selectedLog : logs) {
             logIds.add(selectedLog.Id);
         }
-
         List<Log__c> expectedDeletableLogs = new List<Log__c>();
         for (UserRecordAccess recordAccess : [
             SELECT RecordId
@@ -36,19 +34,13 @@ private class LogMassDeleteExtension_Tests {
         ]) {
             expectedDeletableLogs.add(new Log__c(Id = recordAccess.RecordId));
         }
-
         ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
         controller.setSelected(logs);
-
         PageReference pageReference = Page.LogMassDelete;
         Test.setCurrentPage(pageReference);
 
-        Test.startTest();
-
         LogMassDeleteExtension extension = new LogMassDeleteExtension(controller);
         List<Log__c> returnedDeletableLogs = extension.getDeletableLogs();
-
-        Test.stopTest();
 
         System.assertEquals(expectedDeletableLogs.size(), returnedDeletableLogs.size());
     }
@@ -66,21 +58,14 @@ private class LogMassDeleteExtension_Tests {
                 logsToKeep.add(logs.get(i));
             }
         }
-
         ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
         controller.setSelected(logsToDelete);
-
         PageReference pageReference = Page.LogMassDelete;
         Test.setCurrentPage(pageReference);
-
-        Test.startTest();
 
         LogMassDeleteExtension extension = new LogMassDeleteExtension(controller);
         extension.deleteSelectedLogs();
 
-        Test.stopTest();
-
-        // Verify that only the selected logs were deleted
         logsToDelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToDelete ALL ROWS];
         for (Log__c log : logsToDelete) {
             System.assertEquals(true, log.IsDeleted, log);

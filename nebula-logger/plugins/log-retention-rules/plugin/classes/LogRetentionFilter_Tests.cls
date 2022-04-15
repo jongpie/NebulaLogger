@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
-@IsTest
+@IsTest(isParallel=true)
 private class LogRetentionFilter_Tests {
     @IsTest
     static void it_should_match_one_condition_on_number_equal_to() {

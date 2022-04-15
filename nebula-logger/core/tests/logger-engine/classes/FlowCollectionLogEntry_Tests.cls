@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(isParallel=true)
 private class FlowCollectionLogEntry_Tests {
     static FlowCollectionLogEntry createFlowCollectionLogEntry() {
         FlowCollectionLogEntry flowCollectionEntry = new FlowCollectionLogEntry();

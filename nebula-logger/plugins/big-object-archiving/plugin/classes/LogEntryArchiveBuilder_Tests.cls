@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
-@IsTest
+@IsTest(isParallel=true)
 private class LogEntryArchiveBuilder_Tests {
     @IsTest
     static void it_should_write_all_fields_over_from_log_entry_event() {

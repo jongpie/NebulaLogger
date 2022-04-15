@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(isParallel=true)
 private class RelatedLogEntriesController_Tests {
     private static final Integer TOTAL_LOG_ENTRIES = 10;
     private static final Integer TOTAL_RELATED_LOG_ENTRIES = 7;
