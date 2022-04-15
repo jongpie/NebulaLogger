@@ -137,6 +137,35 @@ private class LogEntryArchivePlugin_Tests {
     }
 
     @IsTest
+    static void it_should_create_archive_in_logger_when_platform_event_storage_location_is_big_object() {
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        createParameterConfigurations();
+        createPluginConfiguration();
+        Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name();
+        Logger.getUserSettings().DefaultPlatformEventStorageLocation__c = LogEntryArchivePlugin.BIG_OBJECT_STORAGE_LOCATION;
+        upsert Logger.getUserSettings();
+        System.Test.startTest();
+        String transactionId = Logger.getTransactionId();
+        Logger.info('Testing big object creation');
+        System.assertEquals(1, Logger.getBufferSize(), 'Should have one record in Logger\'s platform event buffer');
+
+        Logger.saveLog();
+        System.Test.getEventBus().deliver();
+
+        System.assertEquals(0, Logger.getBufferSize(), 'Should have been cleared from Logger\'s platform event buffer');
+        System.assertEquals(
+            'BIG_OBJECT_QUEUEABLE',
+            LogEntryArchivePlugin.lastSaveMethodUsed,
+            'Last save method used should have been set to BIG_OBJECT_EVENT_BUS'
+        );
+        System.Test.stopTest();
+        System.assertEquals(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
+        System.assertNotEquals(null, transactionId, 'Should have a value for transaction ID');
+        System.assertEquals(transactionId, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.get(0).TransactionId__c, 'Transaction ID should match');
+        System.assertEquals(0, [SELECT COUNT() FROM Log__c WHERE TransactionId__c = :transactionId], 'No custom object data should have been created');
+    }
+
+    @IsTest
     static void it_should_create_archive_in_logger_when_save_method_is_big_object_immediate() {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         createParameterConfigurations();
@@ -150,7 +179,7 @@ private class LogEntryArchivePlugin_Tests {
         System.assertEquals(
             0,
             Limits.getPublishImmediateDml(),
-            'Should not have actually used the event bus in tests because big objects actually get inserted, yikes'
+            'Should not have actually used any DML statements in tests because big objects actually get inserted, yikes'
         );
         System.assertEquals(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
         System.assertEquals(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
@@ -175,7 +204,7 @@ private class LogEntryArchivePlugin_Tests {
         System.assertEquals(
             0,
             Limits.getPublishImmediateDml(),
-            'Should not have actually used the event bus in tests because big objects actually get inserted, yikes'
+            'Should not have actually used any DML statements in tests because big objects actually get inserted, yikes'
         );
         System.assertEquals(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
         System.assertEquals(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
@@ -189,6 +218,7 @@ private class LogEntryArchivePlugin_Tests {
     private static void createParameterConfigurations() {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObjectImmediate', Value__c = 'BIG_OBJECT_IMMEDIATE'));
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomSaveMethodBigObjectQueueable', Value__c = 'BIG_OBJECT_QUEUEABLE'));
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomStorageLocationBigObject', Value__c = 'BIG_OBJECT_EVENT_BUS'));
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'CustomLogPurgeActionArchive', Value__c = 'Archive'));
     }
 

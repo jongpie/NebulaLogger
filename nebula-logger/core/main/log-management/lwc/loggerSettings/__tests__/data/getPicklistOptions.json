@@ -9,6 +9,14 @@
         { "value": "FINER", "label": "FINER" },
         { "value": "FINEST", "label": "FINEST" }
     ],
+    "platformEventStorageLocationOptions": [
+        { "value": "", "label": "--None--" },
+        { "value": "CUSTOM_OBJECTS", "label": "CUSTOM_OBJECTS" }
+    ],
+    "purgeActionOptions": [
+        { "value": "", "label": "--None--" },
+        { "value": "Delete", "label": "Delete" }
+    ],
     "saveMethodOptions": [
         { "value": "", "label": "--None--" },
         { "value": "EVENT_BUS", "label": "EVENT_BUS" },

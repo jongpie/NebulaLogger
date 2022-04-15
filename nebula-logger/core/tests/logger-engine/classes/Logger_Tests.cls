@@ -126,7 +126,7 @@ private class Logger_Tests {
         }
         Logger.saveLog();
         System.assertEquals(transactionScenarioName, Logger.getScenario());
-        Test.getEventBus().deliver();
+        System.Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
         System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
@@ -143,7 +143,7 @@ private class Logger_Tests {
         }
         Logger.saveLog();
         System.assertEquals(transactionScenarioName, Logger.getScenario());
-        Test.getEventBus().deliver();
+        System.Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
         System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
@@ -164,7 +164,7 @@ private class Logger_Tests {
         }
         Logger.saveLog();
         System.assertEquals(transactionScenarioName, Logger.getScenario());
-        Test.getEventBus().deliver();
+        System.Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
         System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
@@ -187,7 +187,7 @@ private class Logger_Tests {
         Logger.setScenario(lastTransactionScenarioName);
         Logger.saveLog();
         System.assertEquals(lastTransactionScenarioName, Logger.getScenario());
-        Test.getEventBus().deliver();
+        System.Test.getEventBus().deliver();
 
         Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
         System.assertEquals(lastTransactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
@@ -433,7 +433,7 @@ private class Logger_Tests {
 
         Logger.saveLog();
 
-        Test.getEventBus().deliver();
+        System.Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -471,7 +471,7 @@ private class Logger_Tests {
             System.assertEquals(1, Logger.getBufferSize());
             Logger.saveLog();
 
-            Test.getEventBus().deliver();
+            System.Test.getEventBus().deliver();
         }
 
         LogEntry__c logEntry = [SELECT Id, Timestamp__c FROM LogEntry__c];
@@ -661,7 +661,7 @@ private class Logger_Tests {
         System.assertEquals(0, Limits.getCallouts());
         System.assertEquals(0, Limits.getDmlStatements());
 
-        Test.getEventBus().deliver();
+        System.Test.getEventBus().deliver();
 
         Test.stopTest();
 
@@ -692,7 +692,7 @@ private class Logger_Tests {
         System.assertEquals(0, Limits.getCallouts());
         System.assertEquals(0, Limits.getDmlStatements());
 
-        Test.getEventBus().deliver();
+        System.Test.getEventBus().deliver();
 
         Test.stopTest();
 

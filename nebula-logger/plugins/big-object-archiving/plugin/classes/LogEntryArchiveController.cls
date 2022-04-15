@@ -55,12 +55,12 @@ public with sharing class LogEntryArchiveController {
                 LIMIT :Limits.getLimitQueryRows()
             ]
         ) {
-            if (matchesFilterCriteria(logEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm) || System.Test.isRunningTest() == true) {
-                matchingLogEntryArchives.add(logEntryArchive);
-            }
-
             if (matchingLogEntryArchives.size() == rowLimit || System.Test.isRunningTest() == true) {
                 break;
+            }
+
+            if (matchesFilterCriteria(logEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm) || System.Test.isRunningTest() == true) {
+                matchingLogEntryArchives.add(logEntryArchive);
             }
         }
 
@@ -84,7 +84,13 @@ public with sharing class LogEntryArchiveController {
 
     private static Boolean matchesFilterCriteria(LogEntryArchive__b logEntryArchive, Integer minimumLoggingLevelOrdinal, String messageSearchTerm) {
         Boolean matchesLoggingLevelOrdinal = minimumLoggingLevelOrdinal == null || logEntryArchive.LoggingLevelOrdinal__c >= minimumLoggingLevelOrdinal;
-        Boolean matchesSearchTerm = String.isBlank(messageSearchTerm) == true || logEntryArchive.Message__c?.containsIgnoreCase(messageSearchTerm) == true;
+
+        messageSearchTerm = messageSearchTerm == null ? '' : messageSearchTerm;
+        String messageValue = logEntryArchive.Message__c == null ? '' : logEntryArchive.Message__c;
+        Boolean matchesSearchTerm =
+            String.isBlank(messageSearchTerm) == true ||
+            messageValue.containsIgnoreCase(messageSearchTerm) == true ||
+            Pattern.matches(messageSearchTerm, messageValue) == true;
 
         return matchesLoggingLevelOrdinal && matchesSearchTerm;
     }

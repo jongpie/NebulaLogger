@@ -13,7 +13,7 @@ const PAGE_LAYOUT_CONFIG = {
             showInEditMode: true,
             columns: [
                 {
-                    fieldApiNames: ['IsSavingEnabled__c', 'DefaultSaveMethod__c', 'IsPlatformEventStorageEnabled__c'],
+                    fieldApiNames: ['IsSavingEnabled__c', 'DefaultSaveMethod__c', 'DefaultPlatformEventStorageLocation__c'],
                     size: 6
                 },
                 {
@@ -60,6 +60,7 @@ const LoggerSettingsPageLayout = class {
         const picklistOptions = {
             LoggingLevel__c: apexPicklistOptions.loggingLevelOptions,
             DefaultLogPurgeAction__c: apexPicklistOptions.purgeActionOptions,
+            DefaultPlatformEventStorageLocation__c: apexPicklistOptions.platformEventStorageLocationOptions,
             DefaultSaveMethod__c: apexPicklistOptions.saveMethodOptions,
             DefaultLogShareAccessLevel__c: apexPicklistOptions.shareAccessLevelOptions
         };

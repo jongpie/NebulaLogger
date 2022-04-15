@@ -7,7 +7,7 @@
     <inlineHelpText>The Apex class that extends the abstract LoggerSObjectHandler for the specified SObject Type</inlineHelpText>
     <label>Trigger Handler Apex Class</label>
     <length>255</length>
-    <required>true</required>
+    <required>false</required>
     <type>Text</type>
     <unique>true</unique>
 </CustomField>

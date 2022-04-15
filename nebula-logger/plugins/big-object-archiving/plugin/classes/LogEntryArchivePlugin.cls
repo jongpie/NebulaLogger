@@ -17,6 +17,8 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     @TestVisible
     private static final String BIG_OBJECT_LOG_PURGE_ACTION = LoggerParameter.getString('CustomLogPurgeActionArchive', null);
     @TestVisible
+    private static final String BIG_OBJECT_STORAGE_LOCATION = LoggerParameter.getString('CustomStorageLocationBigObject', null);
+    @TestVisible
     private static final List<LogEntryArchive__b> LOG_ENTRY_ARCHIVES_TO_SAVE = new List<LogEntryArchive__b>();
 
     @TestVisible
@@ -80,22 +82,38 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
      * @param  input The instance of `LoggerTriggerableContext`, provided by the logging system
      */
     public void execute(LoggerPlugin__mdt configuration, LoggerTriggerableContext input) {
-        if (input.sobjectType != Schema.LogEntryEvent__e.SObjectType || input.triggerOperationType != TriggerOperation.BEFORE_INSERT) {
+        if (input.sobjectType != Schema.LogEntryEvent__e.SObjectType) {
             return;
         }
+        Set<String> bigObjectSaveMethods = new Set<String>{ BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD, BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD };
 
         if (
-            Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD &&
-            Logger.getUserSettings().DefaultSaveMethod__c != BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD
+            input.triggerOperationType == TriggerOperation.BEFORE_INSERT &&
+            bigObjectSaveMethods.contains(Logger.getUserSettings().DefaultSaveMethod__c) == false
         ) {
             return;
         }
 
-        List<LogEntryEvent__e> logEntryEvents = (List<LogEntryEvent__e>) input.triggerNew;
+        List<LogEntryEvent__e> logEntryEvents = this.filterLogEntryEventsToSave(input);
         for (LogEntryEvent__e logEntryEvent : logEntryEvents) {
             LOG_ENTRY_ARCHIVES_TO_SAVE.add(new LogEntryArchiveBuilder(logEntryEvent).getLogEntryArchive());
         }
-        this.saveLogEntryArchives(Logger.getUserSettings().DefaultSaveMethod__c);
+
+        if (LOG_ENTRY_ARCHIVES_TO_SAVE.isEmpty() == true) {
+            return;
+        }
+
+        String saveMethodName;
+        switch on input.triggerOperationType {
+            when BEFORE_INSERT {
+                saveMethodName = Logger.getUserSettings().DefaultSaveMethod__c;
+            }
+            when AFTER_INSERT {
+                saveMethodName = BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD;
+            }
+        }
+        this.saveLogEntryArchives(saveMethodName);
+
         Logger.flushBuffer();
     }
 
@@ -140,6 +158,34 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         return (List<LogEntry__c>) Database.query(query);
     }
 
+    private List<LogEntryEvent__e> filterLogEntryEventsToSave(LoggerTriggerableContext input) {
+        // In a BEFORE_INSERT context, if one of the 2 Big Object save methods is used, then
+        // all of the LogEntryEvent__e records should be saved in LogEntryArchive__b
+        if (
+            input.triggerOperationType == TriggerOperation.BEFORE_INSERT &&
+            new Set<String>{ BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD, BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD }
+                .contains(Logger.getUserSettings().DefaultSaveMethod__c)
+        ) {
+            return (List<LogEntryEvent__e>) input.triggerNew;
+        }
+
+        if (input.triggerOperationType != TriggerOperation.AFTER_INSERT) {
+            return new List<LogEntryEvent__e>();
+        }
+
+        // In an AFTER_INSERT context, only save LogEntryEvent__e records if the LoggedyId__c user
+        // as 'BIG_OBJECT' set as their storage location for platform events (DefaultPlatformEventStorageLocation__c)
+        List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
+        for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) input.triggerNew) {
+            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
+            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
+            if (loggingUserSettings.DefaultPlatformEventStorageLocation__c == BIG_OBJECT_STORAGE_LOCATION) {
+                logEntryEventsToSave.add(logEntryEvent);
+            }
+        }
+        return logEntryEventsToSave;
+    }
+
     private void saveLogEntryArchives(String saveMethodName) {
         if (System.Test.isRunningTest() == true) {
             lastSaveMethodUsed = saveMethodName;
@@ -148,7 +194,7 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
 
         if (saveMethodName == BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD) {
             Database.insertImmediate(LOG_ENTRY_ARCHIVES_TO_SAVE);
-        } else if (saveMethodName == BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD) {
+        } else if (saveMethodName == BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD || saveMethodName == BIG_OBJECT_STORAGE_LOCATION) {
             System.enqueueJob(new QueueableSaver(LOG_ENTRY_ARCHIVES_TO_SAVE));
         }
         LOG_ENTRY_ARCHIVES_TO_SAVE.clear();

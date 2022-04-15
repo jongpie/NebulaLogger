@@ -76,6 +76,13 @@
             "localApiName": "DefaultNumberOfDaysToRetainLogs__c",
             "type": "Double"
         },
+        "DefaultPlatformEventStorageLocation__c": {
+            "apiName": "DefaultPlatformEventStorageLocation__c",
+            "inlineHelpText": "Defaults to CUSTOM_OBJECTS. This controls the default location where LogEntryEvent__e records are stored - when null, LogEntryEvent__e records will not be stored.",
+            "label": "Platform Event Storage Location",
+            "localApiName": "DefaultPlatformEventStorageLocation__c",
+            "type": "string"
+        },
         "DefaultSaveMethod__c": {
             "apiName": "DefaultSaveMethod__c",
             "inlineHelpText": "Defaults to EVENT_BUS. This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.",
@@ -116,13 +123,6 @@
             "inlineHelpText": "When enabled, Logger will automatically call the browser's console.log() function when logging via lightning components. To help with performance, this option should be disabled in production unless you are actively troubleshooting an issue.",
             "label": "Enable JavaScript console.log()",
             "localApiName": "IsJavaScriptConsoleLoggingEnabled__c",
-            "type": "Boolean"
-        },
-        "IsPlatformEventStorageEnabled__c": {
-            "apiName": "IsPlatformEventStorageEnabled__c",
-            "inlineHelpText": "Controls if LogEntryEvent__e platform events are transformed & stored in the custom objects Log__c and LogEntry__c (when IsSavingEnabled__c == true).",
-            "label": "Store Platform Events",
-            "localApiName": "IsPlatformEventStorageEnabled__c",
             "type": "Boolean"
         },
         "IsRecordFieldStrippingEnabled__c": {

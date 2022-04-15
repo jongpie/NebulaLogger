@@ -9,6 +9,8 @@
  */
 @SuppressWarnings('PMD.ApexCrudViolation, PMD.AvoidDebugStatements, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
+    @TestVisible
+    private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
     @TestVisible
@@ -39,10 +41,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     protected override void executeAfterInsert(List<SObject> triggerNew) {
         this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
-        this.upsertLogs();
-        this.insertLogEntries();
-        this.appendRuleBasedTags();
-        this.insertLogEntryTags();
+        if (this.logEntryEvents.isEmpty() == false) {
+            this.upsertLogs();
+            this.insertLogEntries();
+            this.appendRuleBasedTags();
+            this.insertLogEntryTags();
+        }
     }
 
     private List<LogEntryEvent__e> filterLogEntryEventsToSave(List<LogEntryEvent__e> newLogEntryEvents) {
@@ -50,7 +54,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
             User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
-            if (loggingUserSettings.IsPlatformEventStorageEnabled__c == true) {
+            if (loggingUserSettings.DefaultPlatformEventStorageLocation__c == DEFAULT_STORAGE_LOCATION_NAME) {
                 logEntryEventsToSave.add(logEntryEvent);
             }
         }

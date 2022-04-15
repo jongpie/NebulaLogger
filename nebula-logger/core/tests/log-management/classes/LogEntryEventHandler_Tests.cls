@@ -70,13 +70,9 @@ private class LogEntryEventHandler_Tests {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
         settings.IsSavingEnabled__c = true;
-        settings.IsPlatformEventStorageEnabled__c = false;
+        settings.DefaultPlatformEventStorageLocation__c = null;
         upsert settings;
-        LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
-            .populateAllFields()
-            .getRecord();
-        logEntryEvent.LoggedById__c = UserInfo.getUserId();
-        logEntryEvent.ProfileId__c = UserInfo.getProfileId();
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());

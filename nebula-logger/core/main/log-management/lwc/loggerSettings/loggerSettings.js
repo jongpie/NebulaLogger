@@ -118,22 +118,6 @@ export default class LoggerSettings extends LightningElement {
                 ? event.target.checked
                 : event.target.value;
         this._currentRecord[fieldApiName] = fieldValue;
-        if (fieldValue && fieldApiName === this._loggerSettingsSchema.fields.IsSavingEnabled__c.localApiName) {
-            const storageEnabledCheckbox = this.template.querySelector(
-                `[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.localApiName}"]`
-            );
-            if (storageEnabledCheckbox) {
-                storageEnabledCheckbox.checked = true;
-            }
-            this.handleFieldChange({
-                target: {
-                    type: 'checkbox',
-                    checked: true,
-                    dataset: { id: this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.localApiName }
-                }
-            });
-        }
-
         this._setIsNewOrganizationRecord();
         this._setShowSetupOwnerLookup();
     }
@@ -335,7 +319,7 @@ export default class LoggerSettings extends LightningElement {
             'LoggingLevel__c',
             'IsSavingEnabled__c',
             'DefaultSaveMethod__c',
-            'IsPlatformEventStorageEnabled__c',
+            'DefaultPlatformEventStorageLocation__c',
             'DefaultNumberOfDaysToRetainLogs__c',
             'DefaultLogOwner__c'
         ];

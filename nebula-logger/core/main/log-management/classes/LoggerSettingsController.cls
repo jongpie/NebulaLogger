@@ -12,7 +12,11 @@ public without sharing class LoggerSettingsController {
     @TestVisible
     private static final String CUSTOM_SAVE_METHOD_PREFIX = 'CustomSaveMethod';
     @TestVisible
+    private static final String CUSTOM_OBJECTS_STORAGE_LOCATION = 'CUSTOM_OBJECTS';
+    @TestVisible
     private static final String CUSTOM_LOG_PURGE_ACTION_PREFIX = 'CustomLogPurgeAction';
+    @TestVisible
+    private static final String CUSTOM_STORAGE_LOCATION_PREFIX = 'CustomStorageLocation';
     @TestVisible
     private static final String DELETE_LOG_PURGE_ACTION = 'Delete';
 
@@ -36,6 +40,7 @@ public without sharing class LoggerSettingsController {
     public static LoggerSettingsPicklistOptions getPicklistOptions() {
         LoggerSettingsPicklistOptions loggerSettingsPicklistOptions = new LoggerSettingsPicklistOptions();
         loggerSettingsPicklistOptions.loggingLevelOptions = getLoggingLevelOptions();
+        loggerSettingsPicklistOptions.platformEventStorageLocationOptions = getPlatformEventStorageLocationOptions();
         loggerSettingsPicklistOptions.purgeActionOptions = getPurgeActionOptions();
         loggerSettingsPicklistOptions.saveMethodOptions = getSaveMethodOptions();
         loggerSettingsPicklistOptions.setupOwnerTypeOptions = getSetupOwnerTypeOptions();
@@ -195,6 +200,24 @@ public without sharing class LoggerSettingsController {
         return picklistOptions;
     }
 
+    private static List<PicklistOption> getPlatformEventStorageLocationOptions() {
+        List<String> storageLocationNames = new List<String>{ CUSTOM_OBJECTS_STORAGE_LOCATION };
+        for (LoggerParameter__mdt matchingAdditionalParameter : LoggerParameter.matchOnPrefix(CUSTOM_STORAGE_LOCATION_PREFIX)) {
+            storageLocationNames.add(matchingAdditionalParameter.Value__c);
+        }
+        storageLocationNames.sort();
+
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
+        for (String storageLocationName : storageLocationNames) {
+            PicklistOption picklistOption = new PicklistOption();
+            picklistOption.label = storageLocationName;
+            picklistOption.value = storageLocationName;
+
+            picklistOptions.add(picklistOption);
+        }
+        return picklistOptions;
+    }
+
     private static List<PicklistOption> getPurgeActionOptions() {
         List<String> logPurgeActionNames = new List<String>{ DELETE_LOG_PURGE_ACTION };
         for (LoggerParameter__mdt matchingAdditionalParameter : LoggerParameter.matchOnPrefix(CUSTOM_LOG_PURGE_ACTION_PREFIX)) {
@@ -317,6 +340,8 @@ public without sharing class LoggerSettingsController {
     public class LoggerSettingsPicklistOptions {
         @AuraEnabled
         public List<PicklistOption> loggingLevelOptions;
+        @AuraEnabled
+        public List<PicklistOption> platformEventStorageLocationOptions;
         @AuraEnabled
         public List<PicklistOption> purgeActionOptions;
         @AuraEnabled

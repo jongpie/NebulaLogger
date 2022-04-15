@@ -92,7 +92,7 @@ private class Logger_Tests_ExperienceSite {
             Logger.debug(message);
             Logger.saveLog();
 
-            Test.getEventBus().deliver();
+            System.Test.getEventBus().deliver();
         }
 
         LogEntry__c logEntry = [SELECT Id, Log__r.LoggedBy__c, Log__r.OwnerId, Log__r.UserLicenseDefinitionKey__c, Message__c FROM LogEntry__c];

@@ -1,5 +1,6 @@
-Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_IMMEDIATE';
-Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_QUEUEABLE';
+// Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_EVENT_BUS';
+// Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_IMMEDIATE';
+// Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_QUEUEABLE';
 //Logger.getUserSettings().IsAnonymousModeEnabled__c = true;
 
 for (Integer i = 0; i < 200; i++) {
