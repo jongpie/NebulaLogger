@@ -156,7 +156,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
                 TotalWARNLogEntries__c,
                 TransactionId__c,
                 (
-                    SELECT Id, LoggingLevel__c, Message__c
+                    SELECT Id, LoggingLevel__c, Message__c, ExceptionStackTrace__c, StackTrace__c
                     FROM LogEntries__r
                     WHERE LoggingLevelOrdinal__c >= :NOTIFICATION_LOGGING_LEVEL.ordinal()
                     ORDER BY Timestamp__c DESC
@@ -196,7 +196,19 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         notification.title = log.Name;
         notification.title_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.Id;
 
-        // TODO add stack trace of lastLogEntry, with isShort = false
+        if (String.isNotBlank(lastLogEntry.ExceptionStackTrace__c) == true) {
+            FieldDto exceptionStackTraceField = new FieldDto();
+            exceptionStackTraceField.isShort = false;
+            exceptionStackTraceField.title = Schema.LogEntry__c.ExceptionStackTrace__c.getDescribe().getLabel();
+            exceptionStackTraceField.value = '`' + lastLogEntry.ExceptionStackTrace__c + '`';
+            notification.fields.add(exceptionStackTraceField);
+        }
+
+        FieldDto stackTraceField = new FieldDto();
+        stackTraceField.isShort = false;
+        stackTraceField.title = Schema.LogEntry__c.StackTrace__c.getDescribe().getLabel();
+        stackTraceField.value = '`' + lastLogEntry.StackTrace__c + '`';
+        notification.fields.add(stackTraceField);
 
         // TODO: switch to dynamically creating Slack DTO fields based on a new `Log__c` field set parameter
         FieldDto startTimeField = new FieldDto();
