@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LogEntryArchiveBuilder_Tests {
     @IsTest
     static void it_should_write_all_fields_over_from_log_entry_event() {
@@ -87,6 +87,10 @@ private class LogEntryArchiveBuilder_Tests {
     @SuppressWarnings('PMD.NcssMethodCount')
     private static void assertAllFieldsMatch(Datetime timestamp, LogEntryEvent__e mockEvent, LogEntryArchive__b logEntryArchive) {
         System.assertEquals(mockEvent.ApiVersion__c, logEntryArchive.ApiVersion__c);
+        System.assertEquals(UserInfo.getUserId(), logEntryArchive.ArchivedById__c);
+        System.assertNotEquals(null, logEntryArchive.ArchivedDate__c);
+        System.assertEquals(System.today(), logEntryArchive.ArchivedDate__c.date());
+        System.assertEquals(UserInfo.getUsername(), logEntryArchive.ArchivedByUsername__c);
         System.assertEquals(mockEvent.ComponentType__c, logEntryArchive.ComponentType__c);
         System.assertEquals(mockEvent.DatabaseResultCollectionSize__c, logEntryArchive.DatabaseResultCollectionSize__c);
         System.assertEquals(mockEvent.DatabaseResultCollectionType__c, logEntryArchive.DatabaseResultCollectionType__c);
@@ -205,6 +209,10 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.Log__r.ApiReleaseNumber__c, logEntryArchive.ApiReleaseNumber__c);
         System.assertEquals(logEntry.Log__r.ApiReleaseVersion__c, logEntryArchive.ApiReleaseVersion__c);
         System.assertEquals(logEntry.Log__r.ApiVersion__c, logEntryArchive.ApiVersion__c);
+        System.assertEquals(UserInfo.getUserId(), logEntryArchive.ArchivedById__c);
+        System.assertNotEquals(null, logEntryArchive.ArchivedDate__c);
+        System.assertEquals(System.today(), logEntryArchive.ArchivedDate__c.date());
+        System.assertEquals(UserInfo.getUsername(), logEntryArchive.ArchivedByUsername__c);
         System.assertEquals(logEntry.Log__r.ClosedBy__c, logEntryArchive.ClosedById__c);
         System.assertEquals(logEntry.Log__r.ClosedBy__r?.Username, logEntryArchive.ClosedByUsername__c);
         System.assertEquals(logEntry.Log__r.ClosedDate__c, logEntryArchive.ClosedDate__c);
