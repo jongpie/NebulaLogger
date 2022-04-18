@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.MethodNamingConventions, PMD.PropertyNamingConventions')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LogEntryArchiveController_Tests {
     @IsTest
     static void it_returns_subset_of_log_entry_archives_when_row_limit_met() {

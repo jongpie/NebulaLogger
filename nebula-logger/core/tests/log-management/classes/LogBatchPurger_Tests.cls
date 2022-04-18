@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LogBatchPurger_Tests {
     private static final Integer NUMBER_OF_LOG_ENTRIES_TO_CREATE = 3;
 

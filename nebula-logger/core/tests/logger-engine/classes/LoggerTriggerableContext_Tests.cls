@@ -9,7 +9,7 @@
  *              all use mock records for the User SObject
  */
 @SuppressWarnings('PMD.MethodNamingConventions')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LoggerTriggerableContext_Tests {
     // Based on the trigger variables provided by the platform, currently only the TriggerOperations
     // BEFORE_INSERT, BEFORE_UPDATE and BEFORE_DELETE need to be tested - other operations & permutations

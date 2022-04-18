@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.MethodNamingConventions')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LoggerBatchableContext_Tests {
     @IsTest
     static void it_constructs_instance_when_both_parameters_provided() {

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
-@IsTest(isParallel=false)
+@IsTest(IsParallel=false)
 private class Logger_Tests {
     @IsTest
     static void it_should_use_in_memory_default_settings_when_not_configured() {

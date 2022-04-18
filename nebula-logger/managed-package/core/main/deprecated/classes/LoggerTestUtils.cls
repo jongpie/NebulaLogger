@@ -1,4 +1,4 @@
 @SuppressWarnings('PMD.ApexDoc')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LoggerTestUtils {
 }

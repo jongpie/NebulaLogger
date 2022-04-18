@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LogEntryFieldSetPicklist_Tests {
     @IsTest
     static void it_should_return_null_for_default_value() {

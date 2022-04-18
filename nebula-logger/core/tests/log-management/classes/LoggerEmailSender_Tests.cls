@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.MethodNamingConventions')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LoggerEmailSender_Tests {
     @IsTest
     static void it_should_send_email_notification_for_saveResult_errors_when_enabled() {

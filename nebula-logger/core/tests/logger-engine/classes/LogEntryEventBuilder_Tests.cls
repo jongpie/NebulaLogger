@@ -6,7 +6,7 @@
 @SuppressWarnings(
     'PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount'
 )
-@IsTest(isParallel=false)
+@IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests {
     static String getMessage() {
         return 'Hello, world';

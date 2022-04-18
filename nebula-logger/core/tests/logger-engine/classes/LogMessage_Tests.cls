@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LogMessage_Tests {
     private static final String CUSTOM_MESSAGE_PREFIX = 'Just confirming that CustomLogMessage class is used';
     private class CustomLogMessage extends LogMessage {

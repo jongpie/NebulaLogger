@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LoggerSObjectHandler_Tests_Flow {
     // This Flow simply returns a string variable called 'someExampleVariable'
     // that's used in tests below to verify if the Flow was dynamically executed

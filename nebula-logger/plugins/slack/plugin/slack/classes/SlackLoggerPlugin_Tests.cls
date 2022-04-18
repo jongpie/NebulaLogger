@@ -6,7 +6,7 @@
 // TODO: need to improve plugin framework to make it easier for plugins to test by making it easier
 //       to mock CMDT records & instances of LoggerPlugin.Triggerable
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class SlackLoggerPlugin_Tests {
     @IsTest
     static void it_should_push_log_when_logging_level_is_met() {

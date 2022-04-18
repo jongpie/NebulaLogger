@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LogEntryEventHandler_Tests {
     private static final String MOCK_RELEASE_NUMBER = '230.12.2';
     private static final String MOCK_RELEASE_VERSION = 'Spring \'21 Patch 12.2';

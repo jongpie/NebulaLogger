@@ -10,7 +10,7 @@
  *              ...from within the normal tests, and each org might have additional required fields, VR, etc on the std objects
  */
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
-@IsTest(isParallel=false)
+@IsTest(IsParallel=false)
 private class LoggerSettingsController_Tests_Security {
     private static final String CAN_MODIFY_LOGGER_SETTINGS_PERMISSION_NAME = 'CanModifyLoggerSettings';
     private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];

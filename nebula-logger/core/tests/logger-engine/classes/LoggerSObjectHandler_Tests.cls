@@ -9,7 +9,7 @@
  *              all use mock implementations of the handler, using the `User` SObject
  */
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.MethodNamingConventions')
-@IsTest(isParallel=true)
+@IsTest(IsParallel=true)
 private class LoggerSObjectHandler_Tests {
     private static final String FAKE_PROFILE_NAME = 'Some String';
 

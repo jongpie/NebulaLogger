@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest(isParallel=false)
+@IsTest(IsParallel=false)
 private class LogBatchPurgeScheduler_Tests {
     private static final String TEST_CRON_EXPRESSION = '0 0 23 * * ?';
 
