@@ -189,15 +189,17 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
     private void saveLogEntryArchives(String saveMethodName) {
         if (System.Test.isRunningTest() == true) {
             lastSaveMethodUsed = saveMethodName;
-            return;
         }
 
-        if (saveMethodName == BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD) {
-            Database.insertImmediate(LOG_ENTRY_ARCHIVES_TO_SAVE);
+        if (saveMethodName == BIG_OBJECT_IMMEDIATE_LOGGER_SAVE_METHOD && System.Test.isRunningTest() == false) {
+            System.Database.insertImmediate(LOG_ENTRY_ARCHIVES_TO_SAVE);
         } else if (saveMethodName == BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD || saveMethodName == BIG_OBJECT_STORAGE_LOCATION) {
             System.enqueueJob(new QueueableSaver(LOG_ENTRY_ARCHIVES_TO_SAVE));
         }
-        LOG_ENTRY_ARCHIVES_TO_SAVE.clear();
+
+        if (System.Test.isRunningTest() == false) {
+            LOG_ENTRY_ARCHIVES_TO_SAVE.clear();
+        }
     }
 
     /**
@@ -215,7 +217,9 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
          * @param queueableContext The context of the current queue, provided by the platform
          */
         public void execute(System.QueueableContext queueableContext) {
-            Database.insertImmediate(this.logEntryArchives);
+            if (System.Test.isRunningTest() == false) {
+                System.Database.insertImmediate(this.logEntryArchives);
+            }
         }
     }
 }

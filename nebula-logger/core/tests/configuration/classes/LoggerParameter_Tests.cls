@@ -11,12 +11,105 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_throw_exception_when_mock_record_developer_name_is_null() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = null);
+        Exception thrownIllegalArgumentException;
+
+        try {
+            LoggerParameter.setMock(mockParameter);
+        } catch (IllegalArgumentException ex) {
+            thrownIllegalArgumentException = ex;
+        }
+
+        System.assertNotEquals(null, thrownIllegalArgumentException);
+    }
+
+    @IsTest
+    static void it_should_load_mock_record() {
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MockParameter', Value__c = 'Hello, world!');
+        LoggerParameter.setMock(mockParameter);
+
+        String returnedValue = LoggerParameter.getString(mockParameter.DeveloperName, null);
+
+        System.assertNotEquals(null, returnedValue);
+        System.assertEquals(mockParameter.Value__c, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_call_status_api() {
+        Boolean mockValue = true;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.CALL_STATUS_API;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_enable_system_messages() {
+        Boolean mockValue = true;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_send_error_email_notifications() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_system_debug_message_format() {
+        // The constant LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT is unique - its value should always be
+        // loaded from LoggerParameter__mdt, even in a test context so that orgs can control the output of debug
+        // messages within their own test classes. All other constants use mock configurations
+        String configuredValue = LoggerParameter__mdt.getInstance('SystemDebugMessageFormat').Value__c;
+
+        String returnedValue = LoggerParameter.SYSTEM_DEBUG_MESSAGE_FORMAT;
+
+        System.assertEquals(configuredValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_tagging_is_enabled() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.TAGGING_IS_ENABLED;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_tag_using_topics() {
+        Boolean mockValue = true;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.TAG_USING_TOPICS;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_boolean_parameter() {
         Boolean parameterValue = true;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyBoolean', Value__c = JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.getBoolean(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -27,7 +120,22 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<Boolean> returnedValue = LoggerParameter.getBooleanList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+    }
+
+    @IsTest
+    static void it_should_return_default_value_when_configured_boolean_list_parameter_is_null() {
+        List<Boolean> parameterValue = null;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyBooleanList', Value__c = JSON.serialize(parameterValue));
+        LoggerParameter.setMock(mockParameter);
+        List<Boolean> defaultParameterValue = new List<Boolean>{ true, false };
+
+        List<Boolean> returnedValue = LoggerParameter.getBooleanList(mockParameter.DeveloperName, defaultParameterValue);
+
+        System.assertEquals(null, parameterValue);
+        System.assertNotEquals(parameterValue, returnedValue, 'Returned value should not match configured null parameter value');
+        System.assertEquals(defaultParameterValue, returnedValue, 'Returned value does not match expected default parameter value');
     }
 
     @IsTest
@@ -37,6 +145,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Date returnedValue = LoggerParameter.getDate(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -47,6 +156,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<Date> returnedValue = LoggerParameter.getDateList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -57,6 +167,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Datetime returnedValue = LoggerParameter.getDatetime(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -67,6 +178,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<Datetime> returnedValue = LoggerParameter.getDatetimeList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -77,6 +189,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Decimal returnedValue = LoggerParameter.getDecimal(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -87,6 +200,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<Decimal> returnedValue = LoggerParameter.getDecimalList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -97,6 +211,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Double returnedValue = LoggerParameter.getDouble(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -107,6 +222,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<Double> returnedValue = LoggerParameter.getDoubleList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -117,6 +233,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Id returnedValue = LoggerParameter.getId(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -127,6 +244,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<Id> returnedValue = LoggerParameter.getIdList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -137,6 +255,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Integer returnedValue = LoggerParameter.getInteger(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -147,6 +266,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<Integer> returnedValue = LoggerParameter.getIntegerList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -157,6 +277,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         Long returnedValue = LoggerParameter.getLong(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -167,6 +288,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<Long> returnedValue = LoggerParameter.getLongList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -177,6 +299,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         SObject returnedValue = LoggerParameter.getSObject(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -187,6 +310,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<SObject> returnedValue = LoggerParameter.getSObjectList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -197,6 +321,7 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         String returnedValue = LoggerParameter.getString(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
     }
 
@@ -207,6 +332,30 @@ private class LoggerParameter_Tests {
         LoggerParameter.setMock(mockParameter);
 
         List<String> returnedValue = LoggerParameter.getStringList(mockParameter.DeveloperName, null);
+
         System.assertEquals(parameterValue, returnedValue, 'Returned value does not match expected parameter value');
+    }
+
+    @IsTest
+    static void it_should_match_on_developer_name_prefix() {
+        String developerNamePrefix = 'SomePrefix';
+        LoggerParameter__mdt firstMatchingMockParameter = new LoggerParameter__mdt(DeveloperName = developerNamePrefix + 'SomeExample', Value__c = 'hello');
+        LoggerParameter.setMock(firstMatchingMockParameter);
+        LoggerParameter__mdt secondMatchingMockParameter = new LoggerParameter__mdt(DeveloperName = developerNamePrefix + 'AnotherExample', Value__c = 'world');
+        LoggerParameter.setMock(secondMatchingMockParameter);
+        LoggerParameter__mdt nonMatchingMockParameter = new LoggerParameter__mdt(DeveloperName = 'ThisShouldNotMatch', Value__c = '!');
+        LoggerParameter.setMock(nonMatchingMockParameter);
+
+        List<LoggerParameter__mdt> matchingParameters = LoggerParameter.matchOnPrefix(developerNamePrefix);
+
+        System.assertEquals(2, matchingParameters.size());
+        for (LoggerParameter__mdt matchingParameter : matchingParameters) {
+            System.assertEquals(
+                true,
+                matchingParameter.DeveloperName == firstMatchingMockParameter.DeveloperName ||
+                matchingParameter.DeveloperName == secondMatchingMockParameter.DeveloperName,
+                'Returned parameter should be one of the two matching mock parameters'
+            );
+        }
     }
 }

@@ -57,10 +57,6 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
      */
     @SuppressWarnings('PMD.AvoidDebugStatements')
     public void execute(System.QueueableContext queueableContext) {
-        if (String.isBlank(ENDPOINT) == true) {
-            return;
-        }
-
         // Since this runs in an async context, requery the logs just in case any field values have changed
         this.requeryLogs();
 
@@ -275,21 +271,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         orgApiVersion.value = '`' + log.ApiVersion__c + '`';
         notification.fields.add(orgApiVersion);
 
-        // TODO Switch to LogEntryTag__c
-        List<String> topicNames = new List<String>();
-        // TODO - dynamically get either LogEntryTag__c or TopicAssignment (based on handler parameter)
-        for (TopicAssignment topicAssignment : log.TopicAssignments) {
-            topicNames.add(topicAssignment.Topic.Name);
-        }
-        topicNames.sort();
-
-        if (topicNames.isEmpty() == false) {
-            FieldDto topicsField = new FieldDto();
-            topicsField.isShort = false;
-            topicsField.title = 'Topics';
-            topicsField.value = '`' + String.join(topicNames, '`, `') + '`';
-            notification.fields.add(topicsField);
-        }
+        // TODO Possible include to LogEntryTag__c (tag names)
 
         return notification;
     }

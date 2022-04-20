@@ -133,7 +133,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
         Id nextBatchJobId;
         if (this.currentSObjectType != Schema.Log__c.SObjectType) {
-            nextBatchJobId = Database.executeBatch(new LogBatchPurger(), this.chainedBatchSize);
+            nextBatchJobId = Database.executeBatch(this, this.chainedBatchSize);
         }
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {

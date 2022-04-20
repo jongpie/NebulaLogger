@@ -10,8 +10,10 @@
  */
 @SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount, PMD.PropertyNamingConventions')
 public class LoggerParameter {
-    private static final Set<String> PARAMETERS_TO_LOAD_DURING_TESTS = new Set<String>();
-    private static final Map<String, LoggerParameter__mdt> DEVELOPER_NAME_TO_RECORD = loadRecords();
+    // During tests, always load this CMDT record
+    // so that tests use the same format when calling System.debug()
+    private static final Set<String> PARAMETERS_TO_LOAD_DURING_TESTS = new Set<String>{ 'SystemDebugMessageFormat' };
+    private static final String SYSTEM_DEBUG_MESSAGE_FORMAT_PARAMETER = 'SystemDebugMessageFormat';
 
     /**
      * @description Indicates if Logger will make an async callout to https://api.status.salesforce.com
@@ -63,11 +65,7 @@ public class LoggerParameter {
     public static final String SYSTEM_DEBUG_MESSAGE_FORMAT {
         get {
             if (SYSTEM_DEBUG_MESSAGE_FORMAT == null) {
-                // During tests, always load this CMDT record
-                // so that tests use the same format when calling System.debug()
-                String systemDebugMessageFormatParameter = 'SystemDebugMessageFormat';
-                PARAMETERS_TO_LOAD_DURING_TESTS.add(systemDebugMessageFormatParameter);
-                SYSTEM_DEBUG_MESSAGE_FORMAT = getString(systemDebugMessageFormatParameter, '{OriginLocation__c}\n{Message__c}');
+                SYSTEM_DEBUG_MESSAGE_FORMAT = getString(SYSTEM_DEBUG_MESSAGE_FORMAT_PARAMETER, '{OriginLocation__c}\n{Message__c}');
             }
             return SYSTEM_DEBUG_MESSAGE_FORMAT;
         }
@@ -97,6 +95,16 @@ public class LoggerParameter {
                 TAG_USING_TOPICS = getBoolean('UseTopicsForTags', false);
             }
             return TAG_USING_TOPICS;
+        }
+        private set;
+    }
+
+    private static final Map<String, LoggerParameter__mdt> DEVELOPER_NAME_TO_RECORD {
+        get {
+            if (DEVELOPER_NAME_TO_RECORD == null) {
+                DEVELOPER_NAME_TO_RECORD = loadRecords();
+            }
+            return DEVELOPER_NAME_TO_RECORD;
         }
         private set;
     }

@@ -48,6 +48,23 @@ private class LoggerSObjectHandler_Tests {
     }
 
     @IsTest
+    static void it_should_override_triggerable_context() {
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
+        LoggerTriggerableContext originalContext = mockHandler.input;
+        LoggerTriggerableContext customContext = new LoggerTriggerableContext(
+            Schema.User.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            new List<User>{ new User(Id = UserInfo.getUserId(), Email = UserInfo.getUserEmail()) }
+        );
+        System.assertNotEquals(originalContext, customContext);
+
+        mockHandler.overrideTriggerableContext(customContext);
+
+        System.assertNotEquals(originalContext, mockHandler.input);
+        System.assertEquals(customContext, mockHandler.input);
+    }
+
+    @IsTest
     static void it_should_not_run_when_disabled_via_logger_parameter() {
         User mockUser = (User) LoggerMockDataCreator.createUser();
         mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
@@ -59,6 +76,24 @@ private class LoggerSObjectHandler_Tests {
         mockHandler.triggerNewMap = null;
         mockHandler.triggerOldMap = null;
 
+        mockHandler.execute();
+
+        System.assertEquals(0, mockHandler.executionCount, mockHandler);
+    }
+
+    @IsTest
+    static void it_should_not_run_when_disabled_via_private_method() {
+        User mockUser = (User) LoggerMockDataCreator.createUser();
+        mockUser.Id = LoggerMockDataCreator.createId(Schema.User.SObjectType);
+        List<SObject> records = new List<User>{ mockUser };
+        MockSObjectHandler mockHandler = new MockSObjectHandler(Schema.User.SObjectType);
+        mockHandler.handlerConfiguration = new LoggerSObjectHandler__mdt(IsEnabled__c = true);
+        mockHandler.triggerOperationType = TriggerOperation.BEFORE_INSERT;
+        mockHandler.triggerNew = records;
+        mockHandler.triggerNewMap = null;
+        mockHandler.triggerOldMap = null;
+
+        LoggerSObjectHandler.shouldExecute(false);
         mockHandler.execute();
 
         System.assertEquals(0, mockHandler.executionCount, mockHandler);

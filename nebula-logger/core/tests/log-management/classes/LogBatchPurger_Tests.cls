@@ -49,6 +49,41 @@ private class LogBatchPurger_Tests {
     }
 
     @IsTest
+    static void it_should_throw_an_exception_when_data_cannot_be_purged() {
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
+        LogBatchPurger batchJobInstance = new LogBatchPurger();
+        batchJobInstance.currentSObjectType = Schema.Log__c.SObjectType;
+        List<Log__c> nullLogsList = null;
+        Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
+        Exception thrownNullPointerException;
+
+        try {
+            batchJobInstance.execute(mockBatchableContext, nullLogsList);
+        } catch (NullPointerException ex) {
+            thrownNullPointerException = ex;
+        }
+
+        System.assertNotEquals(null, thrownNullPointerException);
+    }
+
+    @IsTest
+    static void it_should_default_chained_job_batch_size_to_200() {
+        LogBatchPurger batchJobInstance = new LogBatchPurger();
+
+        System.assertEquals(200, batchJobInstance.chainedBatchSize);
+    }
+
+    @IsTest
+    static void it_should_set_chained_job_batch_size() {
+        LogBatchPurger batchJobInstance = new LogBatchPurger();
+        Integer specifiedBatchSize = 123;
+
+        batchJobInstance.setChainedBatchSize(specifiedBatchSize);
+
+        System.assertEquals(specifiedBatchSize, batchJobInstance.chainedBatchSize);
+    }
+
+    @IsTest
     static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_enabled() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;

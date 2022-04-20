@@ -181,11 +181,11 @@ public without sharing class LogRetentionFilter {
             Object comparisonValue = this.getComparisonValue();
 
             switch on field.getDescribe().getSoapType() {
-                when DOUBLE, INTEGER {
-                    return this.compareDecimal((Decimal) recordFieldValue, this.getAsDecimal(comparisonValue));
-                }
                 when DATETIME {
                     return this.compareDatetime((Datetime) recordFieldValue, this.getAsDatetime(comparisonValue));
+                }
+                when DOUBLE, INTEGER {
+                    return this.compareDecimal((Decimal) recordFieldValue, this.getAsDecimal(comparisonValue));
                 }
                 when STRING, ID {
                     return this.compareString((String) recordFieldValue, String.valueOf(comparisonValue));

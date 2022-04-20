@@ -31,37 +31,31 @@ public with sharing class LogEntryArchiveController {
         Integer minimumLoggingLevelOrdinal,
         String messageSearchTerm
     ) {
-        // Big Objects have very, very limited support for SOQL filtering, so additional filtering is applied after querying
         List<LogEntryArchive__b> matchingLogEntryArchives = new List<LogEntryArchive__b>();
-        for (
-            LogEntryArchive__b logEntryArchive : [
-                SELECT
-                    LoggedByUsername__c,
-                    LoggingLevel__c,
-                    LoggingLevelOrdinal__c,
-                    Message__c,
-                    OriginLocation__c,
-                    OriginType__c,
-                    Tags__c,
-                    Timestamp__c,
-                    TransactionEntryNumber__c,
-                    TransactionId__c
-                FROM LogEntryArchive__b
-                WHERE Timestamp__c >= :startDate AND Timestamp__c <= :endDate.addDays(1)
-                WITH SECURITY_ENFORCED
-                ORDER BY Timestamp__c DESC, TransactionId__c ASC, TransactionEntryNumber__c DESC
-                // Since additional filtering is applied below (outside of the query), so this query gets as many rows
-                // as possible to maximize the possible matches from post-query filtering
-                LIMIT :Limits.getLimitQueryRows()
-            ]
-        ) {
-            if (matchingLogEntryArchives.size() == rowLimit || System.Test.isRunningTest() == true) {
-                break;
-            }
 
-            if (matchesFilterCriteria(logEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm) || System.Test.isRunningTest() == true) {
-                matchingLogEntryArchives.add(logEntryArchive);
-            }
+        // Big Objects have very, very limited support for SOQL filtering, so additional filtering is applied after querying
+        // Since additional filtering is applied below (outside of the query), so this query gets as many rows
+        // as possible to maximize the possible matches from post-query filtering
+        Integer queryLimit = System.Test.isRunningTest() == true ? 1 : Limits.getLimitQueryRows();
+        for (LogEntryArchive__b logEntryArchive : [
+            SELECT
+                LoggedByUsername__c,
+                LoggingLevel__c,
+                LoggingLevelOrdinal__c,
+                Message__c,
+                OriginLocation__c,
+                OriginType__c,
+                Tags__c,
+                Timestamp__c,
+                TransactionEntryNumber__c,
+                TransactionId__c
+            FROM LogEntryArchive__b
+            WHERE Timestamp__c >= :startDate AND Timestamp__c <= :endDate.addDays(1)
+            WITH SECURITY_ENFORCED
+            ORDER BY Timestamp__c DESC, TransactionId__c ASC, TransactionEntryNumber__c DESC
+            LIMIT :queryLimit
+        ]) {
+            addMatches(matchingLogEntryArchives, logEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm, rowLimit);
         }
 
         // In a test context, creating Big Object data will actually, truly create the data - it's not isolated
@@ -69,17 +63,27 @@ public with sharing class LogEntryArchiveController {
         if (System.Test.isRunningTest() == true) {
             matchingLogEntryArchives.clear();
             for (LogEntryArchive__b mockLogEntryArchive : MOCK_RECORDS) {
-                if (matchesFilterCriteria(mockLogEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm)) {
-                    matchingLogEntryArchives.add(mockLogEntryArchive);
-                }
-
-                if (matchingLogEntryArchives.size() == rowLimit) {
-                    break;
-                }
+                addMatches(matchingLogEntryArchives, mockLogEntryArchive, minimumLoggingLevelOrdinal, messageSearchTerm, rowLimit);
             }
         }
 
         return matchingLogEntryArchives;
+    }
+
+    private static void addMatches(
+        List<LogEntryArchive__b> matchingLogEntryArchives,
+        LogEntryArchive__b potentialMatchingArchive,
+        Integer minimumLoggingLevelOrdinal,
+        String messageSearchTerm,
+        Integer rowLimit
+    ) {
+        if (matchingLogEntryArchives.size() == rowLimit) {
+            return;
+        }
+
+        if (matchesFilterCriteria(potentialMatchingArchive, minimumLoggingLevelOrdinal, messageSearchTerm) == true) {
+            matchingLogEntryArchives.add(potentialMatchingArchive);
+        }
     }
 
     private static Boolean matchesFilterCriteria(LogEntryArchive__b logEntryArchive, Integer minimumLoggingLevelOrdinal, String messageSearchTerm) {

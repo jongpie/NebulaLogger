@@ -10,6 +10,8 @@
 @SuppressWarnings('PMD.PropertyNamingConventions')
 public without sharing class LoggerEmailSender {
     @TestVisible
+    private static final List<ApexEmailNotification> MOCK_NOTIFICATIONS = new List<ApexEmailNotification>();
+    @TestVisible
     private static final List<Messaging.SingleEmailMessage> SENT_EMAILS = new List<Messaging.SingleEmailMessage>();
 
     @TestVisible
@@ -27,8 +29,8 @@ public without sharing class LoggerEmailSender {
         get {
             if (IS_EMAIL_DELIVERABILITY_ENABLED == null) {
                 try {
-                    Messaging.reserveSingleEmailCapacity(1);
-                    Messaging.reserveMassEmailCapacity(1);
+                    System.Messaging.reserveSingleEmailCapacity(1);
+                    System.Messaging.reserveMassEmailCapacity(1);
                     IS_EMAIL_DELIVERABILITY_ENABLED = true;
                 } catch (System.NoAccessException e) {
                     IS_EMAIL_DELIVERABILITY_ENABLED = false;
@@ -149,10 +151,17 @@ public without sharing class LoggerEmailSender {
     @SuppressWarnings('PMD.ApexCRUDViolation')
     private static List<String> queryApexErrrorRecipients() {
         List<String> apexErrrorRecipients = new List<String>();
-        for (ApexEmailNotification notification : [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE]) {
+        List<ApexEmailNotification> notifications = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
+
+        if (System.Test.isRunningTest() == true) {
+            notifications.clear();
+            notifications.addAll(MOCK_NOTIFICATIONS);
+        }
+
+        for (ApexEmailNotification notification : notifications) {
             if (notification.UserId != null) {
                 apexErrrorRecipients.add(notification.UserId);
-            } else {
+            } else if (String.isNotBlank(notification.Email) == true) {
                 apexErrrorRecipients.addAll(notification.Email.split(';'));
             }
         }

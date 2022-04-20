@@ -7,6 +7,31 @@
 @IsTest(IsParallel=true)
 private class LoggerEmailSender_Tests {
     @IsTest
+    static void it_should_filter_apex_error_recipients() {
+        List<ApexEmailNotification> mockNotifications = new List<ApexEmailNotification>();
+        ApexEmailNotification emailListNotification = new ApexEmailNotification(Email = 'hello@test.com;fake.person@not.real.com.biz', UserId = null);
+        ApexEmailNotification userNotification = new ApexEmailNotification(Email = null, UserId = UserInfo.getUserId());
+        ApexEmailNotification invalidNotification = new ApexEmailNotification(Email = null, UserId = null);
+        LoggerEmailSender.MOCK_NOTIFICATIONS.addAll(new List<ApexEmailNotification>{ emailListNotification, userNotification, invalidNotification });
+
+        List<String> returnedRecipients = LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS;
+
+        System.assertEquals(3, returnedRecipients.size(), 'Should have returned 3 recipients: 1 for the user ID, and 2 for the email addresses');
+        for (String recipient : returnedRecipients) {
+            Boolean matchesUserNotification = String.valueOf(userNotification.UserId) == recipient;
+            Boolean matchesEmailListNotification = new Set<String>(emailListNotification.Email.split(';')).contains(recipient.trim());
+            System.assertEquals(
+                true,
+                matchesUserNotification || matchesEmailListNotification,
+                'Returned recipient ' +
+                recipient +
+                ' should match either the user notification or the email list notification\n' +
+                JSON.serializePretty(LoggerEmailSender.MOCK_NOTIFICATIONS)
+            );
+        }
+    }
+
+    @IsTest
     static void it_should_send_email_notification_for_saveResult_errors_when_enabled() {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');

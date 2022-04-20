@@ -198,9 +198,12 @@ private class LogEntryArchivePlugin_Tests {
         Logger.getUserSettings().DefaultSaveMethod__c = LogEntryArchivePlugin.BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD;
         createPluginConfiguration();
         Logger.info('Testing big object creation').getLogEntryEvent();
+        Test.startTest();
+        System.assertEquals(0, Limits.getAsyncCalls(), 'Should not have executed any queueable jobs');
 
         Logger.saveLog();
 
+        System.assertEquals(1, Limits.getAsyncCalls(), 'Should have executed queueable saver job');
         System.assertEquals(
             0,
             Limits.getPublishImmediateDml(),
@@ -213,6 +216,7 @@ private class LogEntryArchivePlugin_Tests {
             LogEntryArchivePlugin.lastSaveMethodUsed,
             'Last save method used should have been set to BIG_OBJECT_QUEUEABLE'
         );
+        Test.stopTest();
     }
 
     private static void createParameterConfigurations() {

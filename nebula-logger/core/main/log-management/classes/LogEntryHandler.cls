@@ -339,11 +339,4 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.put(sobjectType, displayFieldApiName);
         return displayFieldApiName;
     }
-
-    private static String getNamespacePrefix() {
-        String className = LogEntryHandler.class.getName();
-        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
-
-        return namespacePrefix;
-    }
 }
