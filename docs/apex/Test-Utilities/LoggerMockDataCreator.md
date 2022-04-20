@@ -482,6 +482,49 @@ Group
 
 The inserted `Group` record - it is automatically inserted into the database, as well as 1 child `QueueSObject` record.
 
+#### `setReadOnlyField(SObject record, Schema.SObjectField field, Object value)` → `SObject`
+
+Sets a value for read-only fields that typically cannot be directly set on some SObjects
+
+##### Parameters
+
+| Param    | Description                                                 |
+| -------- | ----------------------------------------------------------- |
+| `record` | The `SObject` record to update                              |
+| `field`  | The `Schema.SObjectField` for the field to update           |
+| `value`  | The field value to populate on the provied `SObject` record |
+
+##### Return
+
+**Type**
+
+SObject
+
+**Description**
+
+A new copy of the original `SObject` record that has the specified read-only field populated
+
+#### `setReadOnlyField(SObject record, Map<Schema.SObjectField, Object> changesToFields)` → `SObject`
+
+Sets values for read-only fields that typically cannot be directly set on some SObjects
+
+##### Parameters
+
+| Param             | Description                                                                                              |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| `record`          | record description                                                                                       |
+| `changesToFields` | An instance of `Map&lt;Schema.SObjectField, Object&gt; containing the read-only fields and corresponding |
+
+##### Return
+
+**Type**
+
+SObject
+
+**Description**
+
+A new copy of the original `SObject` record that has the specified read-only fields populated
+
 ---
 
 ### Inner Classes

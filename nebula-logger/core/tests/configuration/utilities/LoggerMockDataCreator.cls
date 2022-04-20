@@ -367,6 +367,39 @@ public class LoggerMockDataCreator {
         return queue;
     }
 
+    /**
+     * @description Sets a value for read-only fields that typically cannot be directly set on some SObjects
+     * @param  record The `SObject` record to update
+     * @param  field  The `Schema.SObjectField` for the field to update
+     * @param  value  The field value to populate on the provied `SObject` record
+     * @return        A new copy of the original `SObject` record that has the specified read-only field populated
+     */
+    public static SObject setReadOnlyField(SObject record, Schema.SObjectField field, Object value) {
+        return setReadOnlyField(record, new Map<Schema.SObjectField, Object>{ field => value });
+    }
+
+    /**
+     * @description Sets values for read-only fields that typically cannot be directly set on some SObjects
+     * @param  record          record description
+     * @param  changesToFields An instance of `Map<Schema.SObjectField, Object> containing the read-only fields and corresponding
+     *                         field values to populate on the provied `SObject` record
+     * @return                 A new copy of the original `SObject` record that has the specified read-only fields populated
+     */
+    public static SObject setReadOnlyField(SObject record, Map<Schema.SObjectField, Object> changesToFields) {
+        String serializedRecord = JSON.serialize(record);
+        Map<String, Object> deserializedRecordMap = (Map<String, Object>) JSON.deserializeUntyped(serializedRecord);
+
+        // Loop through the deserialized record map and put the field & value
+        // Since it's a map, if the field already exists on the SObject, it's updated (or added if it wasn't there already)
+        for (Schema.SObjectField sobjectField : changesToFields.keySet()) {
+            String fieldName = sobjectField.getDescribe().getName();
+            deserializedRecordMap.put(fieldName, changesToFields.get(sobjectField));
+        }
+
+        serializedRecord = JSON.serialize(deserializedRecordMap);
+        return (SObject) JSON.deserialize(serializedRecord, SObject.class);
+    }
+
     @SuppressWarnings('PMD.ApexDoc')
     public class MockBatchableContext implements Database.BatchableContext {
         private String childJobId;

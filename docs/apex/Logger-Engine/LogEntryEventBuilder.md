@@ -335,6 +335,46 @@ LogEntryEventBuilder
 
 The same instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `setHttpRequestDetails(HttpRequest request)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s HTTP Request fields
+
+##### Parameters
+
+| Param     | Description                          |
+| --------- | ------------------------------------ |
+| `request` | The instance of `HttpRequest` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
+#### `setHttpResponseDetails(HttpResponse response)` → `LogEntryEventBuilder`
+
+Sets the log entry event&apos;s HTTP Response fields
+
+##### Parameters
+
+| Param      | Description                           |
+| ---------- | ------------------------------------- |
+| `response` | The instance of `HttpResponse` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The same instance of `LogEntryEventBuilder`, useful for chaining methods
+
 #### `setMessage(LogMessage logMessage)` → `LogEntryEventBuilder`
 
 Sets the log entry event&apos;s message field

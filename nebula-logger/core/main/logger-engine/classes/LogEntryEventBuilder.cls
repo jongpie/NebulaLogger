@@ -9,7 +9,7 @@
  * @see Logger
  */
 @SuppressWarnings(
-    'PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
@@ -486,6 +486,40 @@ global with sharing class LogEntryEventBuilder {
             this.logEntryEvent.RecordSObjectTypeNamespace__c = getSObjectTypeNamespace(sobjectType);
         }
 
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's HTTP Request fields
+     * @param  request The instance of `HttpRequest` to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setHttpRequestDetails(HttpRequest request) {
+        if (this.shouldSave == false || request == null) {
+            return this;
+        }
+
+        this.logEntryEvent.HttpRequestBody__c = request.getBody();
+        this.logEntryEvent.HttpRequestCompressed__c = request.getCompressed();
+        this.logEntryEvent.HttpRequestEndpoint__c = request.getEndpoint();
+        this.logEntryEvent.HttpRequestMethod__c = request.getMethod();
+        return this;
+    }
+
+    /**
+     * @description Sets the log entry event's HTTP Response fields
+     * @param  response The instance of `HttpResponse` to log
+     * @return              The same instance of `LogEntryEventBuilder`, useful for chaining methods
+     */
+    global LogEntryEventBuilder setHttpResponseDetails(HttpResponse response) {
+        if (this.shouldSave == false || response == null) {
+            return this;
+        }
+
+        this.logEntryEvent.HttpResponseBody__c = response.getBody();
+        this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), '\n');
+        this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
+        this.logEntryEvent.HttpResponseStatusCode__c = response.getStatusCode();
         return this;
     }
 

@@ -8,7 +8,6 @@
 private class LoggerEmailSender_Tests {
     @IsTest
     static void it_should_filter_apex_error_recipients() {
-        List<ApexEmailNotification> mockNotifications = new List<ApexEmailNotification>();
         ApexEmailNotification emailListNotification = new ApexEmailNotification(Email = 'hello@test.com;fake.person@not.real.com.biz', UserId = null);
         ApexEmailNotification userNotification = new ApexEmailNotification(Email = null, UserId = UserInfo.getUserId());
         ApexEmailNotification invalidNotification = new ApexEmailNotification(Email = null, UserId = null);

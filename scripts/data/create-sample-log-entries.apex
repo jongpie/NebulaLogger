@@ -2,7 +2,7 @@ Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.EVENT_BUS.name
 // Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_IMMEDIATE';
 // Logger.getUserSettings().DefaultSaveMethod__c = 'BIG_OBJECT_QUEUEABLE';
 // Logger.getUserSettings().IsAnonymousModeEnabled__c = true;
-Logger.getUserSettings().DefaultPlatformEventStorageLocation__c = 'BIG_OBJECT';
+// Logger.getUserSettings().DefaultPlatformEventStorageLocation__c = 'BIG_OBJECT';
 // Logger.getUserSettings().DefaultPlatformEventStorageLocation__c = 'CUSTOM_OBJECTS';
 upsert Logger.getUserSettings();
 
@@ -27,6 +27,21 @@ Logger.debug('Example DEBUG entry', currentUser);
 Logger.fine('Example FINE entry');
 Logger.finer('Example FINER entry');
 Logger.finest('Example FINEST entry');
+
+HttpRequest request = new HttpRequest();
+request.setBody('Hello, world!');
+request.setEndpoint('https://fake.salesforce.com');
+request.setMethod('GET');
+Logger.info('logging an HTTP request').setHttpRequestDetails(request);
+
+
+HttpResponse response = new HttpResponse();
+response.setBody('Hello, world!');
+response.setHeader('someKey', 'some string value');
+response.setHeader('anotherKey', 'an amazing example value, wow');
+response.setStatus('STATUS_GOOD_JOB_YOU_DID_IT');
+response.setStatusCode(201);
+Logger.info('logging an HTTP response').setHttpResponseDetails(response);
 
 Logger.saveLog();
 

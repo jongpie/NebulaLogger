@@ -70,6 +70,7 @@ public with sharing class LogEntryArchiveController {
         return matchingLogEntryArchives;
     }
 
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     private static void addMatches(
         List<LogEntryArchive__b> matchingLogEntryArchives,
         LogEntryArchive__b potentialMatchingArchive,

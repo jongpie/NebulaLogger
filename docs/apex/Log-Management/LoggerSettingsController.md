@@ -135,6 +135,8 @@ Inner class for returning all custom `List&lt;PicklistOption&gt;` in a single Ap
 
 ###### `loggingLevelOptions` → `List<PicklistOption>`
 
+###### `platformEventStorageLocationOptions` → `List<PicklistOption>`
+
 ###### `purgeActionOptions` → `List<PicklistOption>`
 
 ###### `saveMethodOptions` → `List<PicklistOption>`

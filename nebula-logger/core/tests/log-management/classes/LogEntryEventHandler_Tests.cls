@@ -658,6 +658,14 @@ private class LogEntryEventHandler_Tests {
                         EpochTimestamp__c,
                         ExceptionStackTrace__c,
                         ExceptionType__c,
+                        HttpRequestBody__c,
+                        HttpRequestCompressed__c,
+                        HttpRequestEndpoint__c,
+                        HttpRequestMethod__c,
+                        HttpResponseBody__c,
+                        HttpResponseHeaderKeys__c,
+                        HttpResponseStatus__c,
+                        HttpResponseStatusCode__c,
                         LimitsAggregateQueriesMax__c,
                         LimitsAggregateQueriesUsed__c,
                         LimitsAsyncCallsMax__c,
@@ -734,118 +742,253 @@ private class LogEntryEventHandler_Tests {
 
         Id logOwnerId = logEntryEvent.LoggedById__c == null ? UserInfo.getUserId() : logEntryEvent.LoggedById__c;
 
-        System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c);
-        System.assertEquals(logEntryEvent.Locale__c, log.Locale__c);
-        System.assertEquals(logEntryEvent.LoggedById__c, log.LoggedBy__c);
-        System.assertEquals(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c);
-        System.assertEquals(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c);
-        System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c);
-        System.assertEquals(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c);
-        System.assertEquals(logEntryEvent.LoginType__c, log.LoginType__c);
-        System.assertEquals(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c);
-        System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c);
-        System.assertEquals(logOwnerId, log.OwnerId);
-        System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c);
-        System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c);
-        System.assertEquals(logEntryEvent.Scenario__c, log.Scenario__c);
-        System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
-        System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c);
-        System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c);
-        System.assertEquals(logEntryEvent.SessionType__c, log.SessionType__c);
-        System.assertEquals(logEntryEvent.SourceIp__c, log.SourceIp__c);
-        System.assertEquals(logEntryEvent.SystemMode__c, log.SystemMode__c);
-        System.assertEquals(logEntryEvent.ThemeDisplayed__c, log.ThemeDisplayed__c);
-        System.assertEquals(logEntryEvent.TimeZoneId__c, log.TimeZoneId__c);
-        System.assertEquals(logEntryEvent.TimeZoneName__c, log.TimeZoneName__c);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
-        System.assertEquals(logEntryEvent.UserLoggingLevel__c, log.UserLoggingLevel__c);
-        System.assertEquals(logEntryEvent.UserLoggingLevelOrdinal__c, log.UserLoggingLevelOrdinal__c);
-        // System.assertEquals(currentUser.UserRoleId, log.UserRoleId__c);
-        // System.assertEquals(currentUser.UserRoleId == null ? null : currentUser.UserRole.Name, log.UserRoleName__c);
-        System.assertEquals(logEntryEvent.UserType__c, log.UserType__c);
+        System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c, 'log.ApiVersion__c was not properly set');
+        System.assertEquals(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
+        System.assertEquals(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
+        System.assertEquals(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
+        System.assertEquals(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c, 'log.LoggerVersionNumber__c was not properly set');
+        System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c, 'log.LoginDomain__c was not properly set');
+        System.assertEquals(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c, 'log.LoginHistoryId__c was not properly set');
+        System.assertEquals(logEntryEvent.LoginType__c, log.LoginType__c, 'log.LoginType__c was not properly set');
+        System.assertEquals(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c, 'log.LogoutUrl__c was not properly set');
+        System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c, 'log.NetworkId__c was not properly set');
+        System.assertEquals(logOwnerId, log.OwnerId, 'log.OwnerId was not properly set');
+        System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
+        System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
+        System.assertEquals(logEntryEvent.Scenario__c, log.Scenario__c, 'log.Scenario__c was not properly set');
+        System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
+        System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
+        System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');
+        System.assertEquals(logEntryEvent.SessionType__c, log.SessionType__c, 'log.SessionType__c was not properly set');
+        System.assertEquals(logEntryEvent.SourceIp__c, log.SourceIp__c, 'log.SourceIp__c was not properly set');
+        System.assertEquals(logEntryEvent.SystemMode__c, log.SystemMode__c, 'log.SystemMode__c was not properly set');
+        System.assertEquals(logEntryEvent.ThemeDisplayed__c, log.ThemeDisplayed__c, 'log.ThemeDisplayed__c was not properly set');
+        System.assertEquals(logEntryEvent.TimeZoneId__c, log.TimeZoneId__c, 'log.TimeZoneId__c was not properly set');
+        System.assertEquals(logEntryEvent.TimeZoneName__c, log.TimeZoneName__c, 'log.TimeZoneName__c was not properly set');
+        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c, 'log.TransactionId__c was not properly set');
+        System.assertEquals(logEntryEvent.UserLoggingLevel__c, log.UserLoggingLevel__c, 'log.UserLoggingLevel__c was not properly set');
+        System.assertEquals(logEntryEvent.UserLoggingLevelOrdinal__c, log.UserLoggingLevelOrdinal__c, 'log.UserLoggingLevelOrdinal__c was not properly set');
+        // System.assertEquals(currentUser.UserRoleId, log.UserRoleId__c, 'log.UserRoleId__c was not properly set');
+        // System.assertEquals(currentUser.UserRoleId == null ? null : currentUser.UserRole.Name, log.UserRoleName__c, 'log.UserRoleName__c was not properly set');
+        System.assertEquals(logEntryEvent.UserType__c, log.UserType__c, 'log.UserType__c was not properly set');
 
         // Org fields
-        System.assertEquals(logEntryEvent.OrganizationDomainUrl__c, log.OrganizationDomainUrl__c);
-        System.assertEquals(logEntryEvent.OrganizationEnvironmentType__c, log.OrganizationEnvironmentType__c);
-        System.assertEquals(logEntryEvent.OrganizationId__c, log.OrganizationId__c);
-        System.assertEquals(logEntryEvent.OrganizationInstanceName__c, log.OrganizationInstanceName__c);
-        System.assertEquals(logEntryEvent.OrganizationName__c, log.OrganizationName__c);
-        System.assertEquals(logEntryEvent.OrganizationNamespacePrefix__c, log.OrganizationNamespacePrefix__c);
-        System.assertEquals(logEntryEvent.OrganizationType__c, log.OrganizationType__c);
+        System.assertEquals(logEntryEvent.OrganizationDomainUrl__c, log.OrganizationDomainUrl__c, 'log.OrganizationDomainUrl__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.OrganizationEnvironmentType__c,
+            log.OrganizationEnvironmentType__c,
+            'log.OrganizationEnvironmentType__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.OrganizationId__c, log.OrganizationId__c, 'log.OrganizationId__c was not properly set');
+        System.assertEquals(logEntryEvent.OrganizationInstanceName__c, log.OrganizationInstanceName__c, 'log.OrganizationInstanceName__c was not properly set');
+        System.assertEquals(logEntryEvent.OrganizationName__c, log.OrganizationName__c, 'log.OrganizationName__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.OrganizationNamespacePrefix__c,
+            log.OrganizationNamespacePrefix__c,
+            'log.OrganizationNamespacePrefix__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.OrganizationType__c, log.OrganizationType__c, 'log.OrganizationType__c was not properly set');
 
         // Profile fields
-        System.assertEquals(logEntryEvent.UserLicenseDefinitionKey__c, log.UserLicenseDefinitionKey__c);
-        System.assertEquals(logEntryEvent.UserLicenseId__c, log.UserLicenseId__c);
-        System.assertEquals(logEntryEvent.UserLicenseName__c, log.UserLicenseName__c);
+        System.assertEquals(logEntryEvent.UserLicenseDefinitionKey__c, log.UserLicenseDefinitionKey__c, 'log.UserLicenseDefinitionKey__c was not properly set');
+        System.assertEquals(logEntryEvent.UserLicenseId__c, log.UserLicenseId__c, 'log.UserLicenseId__c was not properly set');
+        System.assertEquals(logEntryEvent.UserLicenseName__c, log.UserLicenseName__c, 'log.UserLicenseName__c was not properly set');
     }
 
     private static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
-        System.assertEquals(logEntryEvent.ComponentType__c, logEntry.ComponentType__c);
-        System.assertEquals(logEntryEvent.DatabaseResultCollectionSize__c, logEntry.DatabaseResultCollectionSize__c);
-        System.assertEquals(logEntryEvent.DatabaseResultCollectionType__c, logEntry.DatabaseResultCollectionType__c);
-        System.assertEquals(logEntryEvent.DatabaseResultJson__c, logEntry.DatabaseResultJson__c);
-        System.assertEquals(logEntryEvent.DatabaseResultType__c, logEntry.DatabaseResultType__c);
-        System.assertEquals(logEntryEvent.EpochTimestamp__c, logEntry.EpochTimestamp__c);
-        System.assertEquals(logEntryEvent.ExceptionStackTrace__c, logEntry.ExceptionStackTrace__c);
-        System.assertEquals(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c);
-        System.assertEquals(logEntryEvent.LimitsAggregateQueriesMax__c, logEntry.LimitsAggregateQueriesMax__c);
-        System.assertEquals(logEntryEvent.LimitsAggregateQueriesUsed__c, logEntry.LimitsAggregateQueriesUsed__c);
-        System.assertEquals(logEntryEvent.LimitsAsyncCallsMax__c, logEntry.LimitsAsyncCallsMax__c);
-        System.assertEquals(logEntryEvent.LimitsAsyncCallsUsed__c, logEntry.LimitsAsyncCallsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsCalloutsMax__c, logEntry.LimitsCalloutsMax__c);
-        System.assertEquals(logEntryEvent.LimitsCalloutsUsed__c, logEntry.LimitsCalloutsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsCpuTimeMax__c, logEntry.LimitsCpuTimeMax__c);
-        System.assertEquals(logEntryEvent.LimitsCpuTimeUsed__c, logEntry.LimitsCpuTimeUsed__c);
-        System.assertEquals(logEntryEvent.LimitsDmlRowsMax__c, logEntry.LimitsDmlRowsMax__c);
-        System.assertEquals(logEntryEvent.LimitsDmlRowsUsed__c, logEntry.LimitsDmlRowsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsDmlStatementsMax__c, logEntry.LimitsDmlStatementsMax__c);
-        System.assertEquals(logEntryEvent.LimitsDmlStatementsUsed__c, logEntry.LimitsDmlStatementsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsEmailInvocationsMax__c, logEntry.LimitsEmailInvocationsMax__c);
-        System.assertEquals(logEntryEvent.LimitsEmailInvocationsUsed__c, logEntry.LimitsEmailInvocationsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsFutureCallsMax__c, logEntry.LimitsFutureCallsMax__c);
-        System.assertEquals(logEntryEvent.LimitsFutureCallsUsed__c, logEntry.LimitsFutureCallsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsHeapSizeMax__c, logEntry.LimitsHeapSizeMax__c);
-        System.assertEquals(logEntryEvent.LimitsHeapSizeUsed__c, logEntry.LimitsHeapSizeUsed__c);
-        System.assertEquals(logEntryEvent.LimitsMobilePushApexCallsMax__c, logEntry.LimitsMobilePushApexCallsMax__c);
-        System.assertEquals(logEntryEvent.LimitsMobilePushApexCallsUsed__c, logEntry.LimitsMobilePushApexCallsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c, logEntry.LimitsPublishImmediateDmlStatementsMax__c);
-        System.assertEquals(logEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c, logEntry.LimitsPublishImmediateDmlStatementsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsQueueableJobsMax__c, logEntry.LimitsQueueableJobsMax__c);
-        System.assertEquals(logEntryEvent.LimitsQueueableJobsUsed__c, logEntry.LimitsQueueableJobsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsSoqlQueriesMax__c, logEntry.LimitsSoqlQueriesMax__c);
-        System.assertEquals(logEntryEvent.LimitsSoqlQueriesUsed__c, logEntry.LimitsSoqlQueriesUsed__c);
-        System.assertEquals(logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c, logEntry.LimitsSoqlQueryLocatorRowsMax__c);
-        System.assertEquals(logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c, logEntry.LimitsSoqlQueryLocatorRowsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsSoqlQueryRowsMax__c, logEntry.LimitsSoqlQueryRowsMax__c);
-        System.assertEquals(logEntryEvent.LimitsSoqlQueryRowsUsed__c, logEntry.LimitsSoqlQueryRowsUsed__c);
-        System.assertEquals(logEntryEvent.LimitsSoslSearchesUsed__c, logEntry.LimitsSoslSearchesUsed__c);
-        System.assertEquals(logEntryEvent.LimitsSoslSearchesMax__c, logEntry.LimitsSoslSearchesMax__c);
-        System.assertEquals(logEntryEvent.LoggingLevel__c, logEntry.LoggingLevel__c);
-        System.assertEquals(logEntryEvent.LoggingLevelOrdinal__c, logEntry.LoggingLevelOrdinal__c);
-        System.assertEquals(logEntryEvent.Message__c, logEntry.Message__c);
-        System.assertEquals(logEntryEvent.MessageTruncated__c, logEntry.MessageTruncated__c);
-        System.assertEquals(logEntry.Id, logEntry.Name);
-        System.assertEquals(logEntryEvent.OriginType__c, logEntry.OriginType__c);
-        System.assertEquals(logEntryEvent.OriginLocation__c, logEntry.OriginLocation__c);
-        System.assertEquals(logEntryEvent.RecordCollectionSize__c, logEntry.RecordCollectionSize__c);
-        System.assertEquals(logEntryEvent.RecordCollectionType__c, logEntry.RecordCollectionType__c);
-        System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c);
-        System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c);
-        System.assertEquals(logEntryEvent.RecordJsonMasked__c, logEntry.RecordJsonMasked__c);
-        System.assertEquals(logEntryEvent.RecordSObjectClassification__c, logEntry.RecordSObjectClassification__c);
-        System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c);
-        System.assertEquals(logEntryEvent.RecordSObjectTypeNamespace__c, logEntry.RecordSObjectTypeNamespace__c);
-        System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c);
-        System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c);
-        System.assertEquals(logEntryEvent.RecordSObjectClassification__c, logEntry.RecordSObjectClassification__c);
-        System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c);
-        System.assertEquals(logEntryEvent.RecordSObjectTypeNamespace__c, logEntry.RecordSObjectTypeNamespace__c);
-
-        System.assertEquals(logEntryEvent.StackTrace__c, logEntry.StackTrace__c);
-        System.assertEquals(logEntryEvent.Timestamp__c, logEntry.Timestamp__c);
-        System.assertEquals(logEntryEvent.TransactionEntryNumber__c, logEntry.TransactionEntryNumber__c);
-        System.assertEquals(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c);
-        System.assertEquals(logEntryEvent.TriggerOperationType__c, logEntry.TriggerOperationType__c);
-        System.assertEquals(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c);
+        System.assertEquals(logEntryEvent.ComponentType__c, logEntry.ComponentType__c, 'logEntry.ComponentType__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.DatabaseResultCollectionSize__c,
+            logEntry.DatabaseResultCollectionSize__c,
+            'logEntry.DatabaseResultCollectionSize__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.DatabaseResultCollectionType__c,
+            logEntry.DatabaseResultCollectionType__c,
+            'logEntry.DatabaseResultCollectionType__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.DatabaseResultJson__c, logEntry.DatabaseResultJson__c, 'logEntry.DatabaseResultJson__c was not properly set');
+        System.assertEquals(logEntryEvent.DatabaseResultType__c, logEntry.DatabaseResultType__c, 'logEntry.DatabaseResultType__c was not properly set');
+        System.assertEquals(logEntryEvent.EpochTimestamp__c, logEntry.EpochTimestamp__c, 'logEntry.EpochTimestamp__c was not properly set');
+        System.assertEquals(logEntryEvent.ExceptionStackTrace__c, logEntry.ExceptionStackTrace__c, 'logEntry.ExceptionStackTrace__c was not properly set');
+        System.assertEquals(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c, 'logEntry.ExceptionType__c was not properly set');
+        System.assertEquals(logEntryEvent.HttpRequestBody__c, logEntry.HttpRequestBody__c, 'logEntry.HttpRequestBody__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.HttpRequestCompressed__c,
+            logEntry.HttpRequestCompressed__c,
+            'logEntry.HttpRequestCompressed__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.HttpRequestEndpoint__c, logEntry.HttpRequestEndpoint__c, 'logEntry.HttpRequestEndpoint__c was not properly set');
+        System.assertEquals(logEntryEvent.HttpRequestMethod__c, logEntry.HttpRequestMethod__c, 'logEntry.HttpRequestMethod__c was not properly set');
+        System.assertEquals(logEntryEvent.HttpResponseBody__c, logEntry.HttpResponseBody__c, 'logEntry.HttpResponseBody__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.HttpResponseHeaderKeys__c,
+            logEntry.HttpResponseHeaderKeys__c,
+            'logEntry.HttpResponseHeaderKeys__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.HttpResponseStatus__c, logEntry.HttpResponseStatus__c, 'logEntry.HttpResponseStatus__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.HttpResponseStatusCode__c,
+            logEntry.HttpResponseStatusCode__c,
+            'logEntry.HttpResponseStatusCode__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsAggregateQueriesMax__c,
+            logEntry.LimitsAggregateQueriesMax__c,
+            'logEntry.LimitsAggregateQueriesMax__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsAggregateQueriesUsed__c,
+            logEntry.LimitsAggregateQueriesUsed__c,
+            'logEntry.LimitsAggregateQueriesUsed__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.LimitsAsyncCallsMax__c, logEntry.LimitsAsyncCallsMax__c, 'logEntry.LimitsAsyncCallsMax__c was not properly set');
+        System.assertEquals(logEntryEvent.LimitsAsyncCallsUsed__c, logEntry.LimitsAsyncCallsUsed__c, 'logEntry.LimitsAsyncCallsUsed__c was not properly set');
+        System.assertEquals(logEntryEvent.LimitsCalloutsMax__c, logEntry.LimitsCalloutsMax__c, 'logEntry.LimitsCalloutsMax__c was not properly set');
+        System.assertEquals(logEntryEvent.LimitsCalloutsUsed__c, logEntry.LimitsCalloutsUsed__c, 'logEntry.LimitsCalloutsUsed__c was not properly set');
+        System.assertEquals(logEntryEvent.LimitsCpuTimeMax__c, logEntry.LimitsCpuTimeMax__c, 'logEntry.LimitsCpuTimeMax__c was not properly set');
+        System.assertEquals(logEntryEvent.LimitsCpuTimeUsed__c, logEntry.LimitsCpuTimeUsed__c, 'logEntry.LimitsCpuTimeUsed__c was not properly set');
+        System.assertEquals(logEntryEvent.LimitsDmlRowsMax__c, logEntry.LimitsDmlRowsMax__c, 'logEntry.LimitsDmlRowsMax__c was not properly set');
+        System.assertEquals(logEntryEvent.LimitsDmlRowsUsed__c, logEntry.LimitsDmlRowsUsed__c, 'logEntry.LimitsDmlRowsUsed__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.LimitsDmlStatementsMax__c,
+            logEntry.LimitsDmlStatementsMax__c,
+            'logEntry.LimitsDmlStatementsMax__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsDmlStatementsUsed__c,
+            logEntry.LimitsDmlStatementsUsed__c,
+            'logEntry.LimitsDmlStatementsUsed__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsEmailInvocationsMax__c,
+            logEntry.LimitsEmailInvocationsMax__c,
+            'logEntry.LimitsEmailInvocationsMax__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsEmailInvocationsUsed__c,
+            logEntry.LimitsEmailInvocationsUsed__c,
+            'logEntry.LimitsEmailInvocationsUsed__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.LimitsFutureCallsMax__c, logEntry.LimitsFutureCallsMax__c, 'logEntry.LimitsFutureCallsMax__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.LimitsFutureCallsUsed__c,
+            logEntry.LimitsFutureCallsUsed__c,
+            'logEntry.LimitsFutureCallsUsed__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.LimitsHeapSizeMax__c, logEntry.LimitsHeapSizeMax__c, 'logEntry.LimitsHeapSizeMax__c was not properly set');
+        System.assertEquals(logEntryEvent.LimitsHeapSizeUsed__c, logEntry.LimitsHeapSizeUsed__c, 'logEntry.LimitsHeapSizeUsed__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.LimitsMobilePushApexCallsMax__c,
+            logEntry.LimitsMobilePushApexCallsMax__c,
+            'logEntry.LimitsMobilePushApexCallsMax__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsMobilePushApexCallsUsed__c,
+            logEntry.LimitsMobilePushApexCallsUsed__c,
+            'logEntry.LimitsMobilePushApexCallsUsed__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c,
+            logEntry.LimitsPublishImmediateDmlStatementsMax__c,
+            'logEntry.LimitsPublishImmediateDmlStatementsMax__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c,
+            logEntry.LimitsPublishImmediateDmlStatementsUsed__c,
+            'logEntry.LimitsPublishImmediateDmlStatementsUsed__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsQueueableJobsMax__c,
+            logEntry.LimitsQueueableJobsMax__c,
+            'logEntry.LimitsQueueableJobsMax__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsQueueableJobsUsed__c,
+            logEntry.LimitsQueueableJobsUsed__c,
+            'logEntry.LimitsQueueableJobsUsed__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.LimitsSoqlQueriesMax__c, logEntry.LimitsSoqlQueriesMax__c, 'logEntry.LimitsSoqlQueriesMax__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.LimitsSoqlQueriesUsed__c,
+            logEntry.LimitsSoqlQueriesUsed__c,
+            'logEntry.LimitsSoqlQueriesUsed__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c,
+            logEntry.LimitsSoqlQueryLocatorRowsMax__c,
+            'logEntry.LimitsSoqlQueryLocatorRowsMax__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c,
+            logEntry.LimitsSoqlQueryLocatorRowsUsed__c,
+            'logEntry.LimitsSoqlQueryLocatorRowsUsed__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsSoqlQueryRowsMax__c,
+            logEntry.LimitsSoqlQueryRowsMax__c,
+            'logEntry.LimitsSoqlQueryRowsMax__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsSoqlQueryRowsUsed__c,
+            logEntry.LimitsSoqlQueryRowsUsed__c,
+            'logEntry.LimitsSoqlQueryRowsUsed__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsSoslSearchesUsed__c,
+            logEntry.LimitsSoslSearchesUsed__c,
+            'logEntry.LimitsSoslSearchesUsed__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.LimitsSoslSearchesMax__c,
+            logEntry.LimitsSoslSearchesMax__c,
+            'logEntry.LimitsSoslSearchesMax__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.LoggingLevel__c, logEntry.LoggingLevel__c, 'logEntry.LoggingLevel__c was not properly set');
+        System.assertEquals(logEntryEvent.LoggingLevelOrdinal__c, logEntry.LoggingLevelOrdinal__c, 'logEntry.LoggingLevelOrdinal__c was not properly set');
+        System.assertEquals(logEntryEvent.Message__c, logEntry.Message__c, 'logEntry.Message__c was not properly set');
+        System.assertEquals(logEntryEvent.MessageTruncated__c, logEntry.MessageTruncated__c, 'logEntry.MessageTruncated__c was not properly set');
+        System.assertEquals(logEntry.Id, logEntry.Name, 'logEntry.Name was not properly set');
+        System.assertEquals(logEntryEvent.OriginType__c, logEntry.OriginType__c, 'logEntry.OriginType__c was not properly set');
+        System.assertEquals(logEntryEvent.OriginLocation__c, logEntry.OriginLocation__c, 'logEntry.OriginLocation__c was not properly set');
+        System.assertEquals(logEntryEvent.RecordCollectionSize__c, logEntry.RecordCollectionSize__c, 'logEntry.RecordCollectionSize__c was not properly set');
+        System.assertEquals(logEntryEvent.RecordCollectionType__c, logEntry.RecordCollectionType__c, 'logEntry.RecordCollectionType__c was not properly set');
+        System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
+        System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
+        System.assertEquals(logEntryEvent.RecordJsonMasked__c, logEntry.RecordJsonMasked__c, 'logEntry.RecordJsonMasked__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.RecordSObjectClassification__c,
+            logEntry.RecordSObjectClassification__c,
+            'logEntry.RecordSObjectClassification__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c, 'logEntry.RecordSObjectType__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.RecordSObjectTypeNamespace__c,
+            logEntry.RecordSObjectTypeNamespace__c,
+            'logEntry.RecordSObjectTypeNamespace__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
+        System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.RecordSObjectClassification__c,
+            logEntry.RecordSObjectClassification__c,
+            'logEntry.RecordSObjectClassification__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c, 'logEntry.RecordSObjectType__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.RecordSObjectTypeNamespace__c,
+            logEntry.RecordSObjectTypeNamespace__c,
+            'logEntry.RecordSObjectTypeNamespace__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.StackTrace__c, logEntry.StackTrace__c, 'logEntry.StackTrace__c was not properly set');
+        System.assertEquals(logEntryEvent.Timestamp__c, logEntry.Timestamp__c, 'logEntry.Timestamp__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.TransactionEntryNumber__c,
+            logEntry.TransactionEntryNumber__c,
+            'logEntry.TransactionEntryNumber__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c, 'logEntry.TriggerIsExecuting__c was not properly set');
+        System.assertEquals(logEntryEvent.TriggerOperationType__c, logEntry.TriggerOperationType__c, 'logEntry.TriggerOperationType__c was not properly set');
+        System.assertEquals(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c, 'logEntry.TriggerSObjectType__c was not properly set');
     }
 }

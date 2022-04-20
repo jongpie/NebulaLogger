@@ -8,25 +8,6 @@
 )
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests {
-    static String getMessage() {
-        return 'Hello, world';
-    }
-
-    static LogMessage getLogMessage() {
-        return new LogMessage('The current date is {0}', System.today());
-    }
-
-    static LogEntryDataMaskRule__mdt getSocialSecurityNumberDataMaskRule() {
-        return new LogEntryDataMaskRule__mdt(
-            ApplyToMessage__c = true,
-            ApplyToRecordJson__c = true,
-            DeveloperName = 'SocialSecurityNumber',
-            IsEnabled__c = true,
-            SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
-            ReplacementRegEx__c = 'XXX-XX-$3'
-        );
-    }
-
     @IsTest
     static void it_should_short_circuit_when_disabled() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.DEBUG, false);
@@ -715,6 +696,80 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_skip_setting_http_request_fields_when_request_is_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestBody__c);
+        System.assertEquals(false, builder.getLogEntryEvent().HttpRequestCompressed__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestEndpoint__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestMethod__c);
+        HttpRequest request = null;
+
+        builder.setHttpRequestDetails(request);
+
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestBody__c);
+        System.assertEquals(false, builder.getLogEntryEvent().HttpRequestCompressed__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestEndpoint__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestMethod__c);
+    }
+
+    @IsTest
+    static void it_should_set_http_request_fields_when_request_is_populated() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestBody__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestEndpoint__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestMethod__c);
+        HttpRequest request = new HttpRequest();
+        request.setBody('Hello, world!');
+        request.setCompressed(true);
+        request.setEndpoint('https://fake.salesforce.com');
+        request.setMethod('GET');
+
+        builder.setHttpRequestDetails(request);
+
+        System.assertEquals(request.getBody(), builder.getLogEntryEvent().HttpRequestBody__c);
+        System.assertEquals(request.getCompressed(), builder.getLogEntryEvent().HttpRequestCompressed__c);
+        System.assertEquals(request.getEndpoint(), builder.getLogEntryEvent().HttpRequestEndpoint__c);
+        System.assertEquals(request.getMethod(), builder.getLogEntryEvent().HttpRequestMethod__c);
+    }
+
+    @IsTest
+    static void it_should_skip_setting_http_response_fields_when_response_is_null() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestBody__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestEndpoint__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestMethod__c);
+        HttpResponse response = null;
+
+        builder.setHttpResponseDetails(response);
+
+        System.assertEquals(null, builder.getLogEntryEvent().HttpResponseBody__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpResponseHeaderKeys__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpResponseStatus__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpResponseStatusCode__c);
+    }
+
+    @IsTest
+    static void it_should_set_http_response_fields_when_populated() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestBody__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestEndpoint__c);
+        System.assertEquals(null, builder.getLogEntryEvent().HttpRequestMethod__c);
+        HttpResponse response = new HttpResponse();
+        response.setBody('Hello, world!');
+        response.setHeader('someKey', 'some string value');
+        response.setHeader('anotherKey', 'an amazing example value, wow');
+        response.setStatus('STATUS_GOOD_JOB_YOU_DID_IT');
+        response.setStatusCode(201);
+
+        builder.setHttpResponseDetails(response);
+
+        System.assertEquals(response.getBody(), builder.getLogEntryEvent().HttpResponseBody__c);
+        System.assertEquals(String.join(response.getHeaderKeys(), '\n'), builder.getLogEntryEvent().HttpResponseHeaderKeys__c);
+        System.assertEquals(response.getStatus(), builder.getLogEntryEvent().HttpResponseStatus__c);
+        System.assertEquals(response.getStatusCode(), builder.getLogEntryEvent().HttpResponseStatusCode__c);
+    }
+
+    @IsTest
     static void it_should_set_tags_string_for_list_of_tags() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(LoggingLevel.INFO, true);
         System.assertEquals(null, builder.getLogEntryEvent().Tags__c);
@@ -861,6 +916,25 @@ private class LogEntryEventBuilder_Tests {
             ': ' +
             LoggingLevel.DEBUG.name(),
             builder.debugMessage
+        );
+    }
+
+    static String getMessage() {
+        return 'Hello, world';
+    }
+
+    static LogMessage getLogMessage() {
+        return new LogMessage('The current date is {0}', System.today());
+    }
+
+    static LogEntryDataMaskRule__mdt getSocialSecurityNumberDataMaskRule() {
+        return new LogEntryDataMaskRule__mdt(
+            ApplyToMessage__c = true,
+            ApplyToRecordJson__c = true,
+            DeveloperName = 'SocialSecurityNumber',
+            IsEnabled__c = true,
+            SensitiveDataRegEx__c = '(\\d{3})[- ]*(\\d{2})[- ]*(\\d{4})',
+            ReplacementRegEx__c = 'XXX-XX-$3'
         );
     }
 
