@@ -5,13 +5,13 @@
 
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getLogEntryArchives from '@salesforce/apex/LogEntryArchiveController.getLogEntryArchives';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
+import getLogEntryArchives from '@salesforce/apex/LogEntryArchiveController.getLogEntryArchives';
 
 export default class LogEntryArchives extends LightningElement {
     isLoading = false;
     logEntryArchives = [];
-    startDate = new Date(new Date().getTime() + -60 * 24 * 60 * 60 * 1000).toISOString();
+    startDate = new Date(new Date().getTime() + -60 * 24 * 60 * 60 * 1000).toISOString(); // 60 days ago
     endDate = new Date().toISOString();
     minimumLoggingLevelOrdinal;
     rowLimit;
@@ -177,11 +177,14 @@ export default class LogEntryArchives extends LightningElement {
     }
 
     _handleError = error => {
-        const errorMessage = error.body ? error.body.message : error.message;
+        const errorMessage = error.body ? error.body.message : 'error.message';
+        const errorStackTrace = error.body ? error.body.stackTrace : '';
+        const errorExceptionType = error.body ? error.body.exceptionType + ' in ' : '';
         /* eslint-disable-next-line no-console */
-        console.error(errorMessage, error);
+        console.error({ error });
         this.dispatchEvent(
             new ShowToastEvent({
+                message: errorExceptionType + errorStackTrace,
                 mode: 'sticky',
                 title: errorMessage,
                 variant: 'error'

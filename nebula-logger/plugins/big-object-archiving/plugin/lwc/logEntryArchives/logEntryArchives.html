@@ -39,11 +39,17 @@
                     ></lightning-combobox>
                 </lightning-layout-item>
                 <lightning-layout-item padding="horizontal-small">
-                    <lightning-input label="Message Search" onchange={handleSearch} placeholder="Search" type="search"></lightning-input>
+                    <lightning-input
+                        data-id="messageSearch"
+                        label="Message Search"
+                        onchange={handleSearch}
+                        placeholder="Search"
+                        type="search"
+                    ></lightning-input>
                 </lightning-layout-item>
                 <lightning-layout-item padding="horizontal-small">
                     <lightning-combobox
-                        data-id="loggingLevelFilter"
+                        data-id="rowLimitFilter"
                         label="Maximum Number of Rows"
                         onchange={handleRowLimitFilterChange}
                         options={rowLimitOptions}

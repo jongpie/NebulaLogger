@@ -29,6 +29,7 @@ describe('Related Log Entries lwc tests', () => {
         while (document.body.firstChild) {
             document.body.removeChild(document.body.firstChild);
         }
+        jest.clearAllMocks();
     });
 
     it('sets query result', async () => {

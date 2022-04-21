@@ -8,22 +8,22 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "versionNumber": "4.7.1.NEXT",
-            "versionName": "Plugin Framework & Trigger Handler Enhancements",
-            "versionDescription": "TODO - WIP",
+            "versionName": "Plugin Framework Overhaul",
+            "versionDescription": "New approach implemented for plugins, providing more control within LoggerSObjectHandler, and the ability to create plugins for LogBatchPurger",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },
         {
-            "package": "Nebula Logger - Plugin - BigObject Archiving",
+            "package": "Nebula Logger - Plugin - Big Object Archiving",
             "path": "./nebula-logger/plugins/big-object-archiving/plugin",
             "dependencies": [
                 {
-                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
+                    "package": "Nebula Logger - Core@4.7.1-NEXT-plugin-framework"
                 }
             ],
-            "versionName": "TODO",
-            "versionNumber": "0.0.0.NEXT",
-            "versionDescription": "TODO",
+            "versionName": "Beta Release",
+            "versionNumber": "0.9.0.NEXT",
+            "versionDescription": "Initial beta version of new plugin",
             "default": false
         },
         {
@@ -31,12 +31,12 @@
             "path": "./nebula-logger/plugins/log-retention-rules/plugin",
             "dependencies": [
                 {
-                    "package": "Nebula Logger - Core@4.6.15-0-small-bugfixes-and-test-improvements"
+                    "package": "Nebula Logger - Core@4.7.1-NEXT-plugin-framework"
                 }
             ],
-            "versionName": "TODO",
-            "versionNumber": "0.0.0.NEXT",
-            "versionDescription": "TODO",
+            "versionName": "Beta Release",
+            "versionNumber": "0.9.0.NEXT",
+            "versionDescription": "Initial beta version of new plugin",
             "default": false
         },
         {
@@ -107,7 +107,7 @@
         "Nebula Logger - Core@4.7.1-5": "04t5Y0000015lXwQAI",
         "Nebula Logger - Core@4.7.1-6": "04t5Y0000015lY1QAI",
         "Nebula Logger - Core@4.7.1-7": "04t5Y0000015lY6QAI",
-        "Nebula Logger - Core@4.7.1-NEXT-plugin-framework-&-trigger-handler-enhancements": "04t5Y0000015ldCQAQ",
+        "Nebula Logger - Core@4.7.1-NEXT-plugin-framework": "04t5Y0000015ldCQAQ",
         "Nebula Logger - Plugin - BigObject Archiving": "0Ho5Y000000blMSSAY",
         "Nebula Logger - Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",
         "Nebula Logger - Plugin - Logger Admin Dashboard": "0Ho5Y000000blNkSAI",
