@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Feature B</label>
+    <label>Sample Rule 1 - Error Logs</label>
     <protected>false</protected>
     <values>
         <field>ConditionLogicType__c</field>
@@ -15,11 +15,15 @@
         <value xsi:nil="true" />
     </values>
     <values>
+        <field>ExecutionOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>IsEnabled__c</field>
         <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>NumberOfDaysToRetainLogs__c</field>
-        <value xsi:type="xsd:double">5.0</value>
+        <value xsi:type="xsd:double">60.0</value>
     </values>
 </CustomMetadata>

@@ -4,15 +4,19 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Feature C</label>
+    <label>Sample Rule 1 - Scenarios with Errors</label>
     <protected>false</protected>
     <values>
         <field>ConditionLogicType__c</field>
-        <value xsi:type="xsd:string">AND</value>
+        <value xsi:type="xsd:string">Custom</value>
     </values>
     <values>
         <field>CustomConditionLogic__c</field>
-        <value xsi:nil="true" />
+        <value xsi:type="xsd:string">1 AND (2 OR 3)</value>
+    </values>
+    <values>
+        <field>ExecutionOrder__c</field>
+        <value xsi:type="xsd:double">1.0</value>
     </values>
     <values>
         <field>IsEnabled__c</field>
@@ -20,6 +24,6 @@
     </values>
     <values>
         <field>NumberOfDaysToRetainLogs__c</field>
-        <value xsi:type="xsd:double">3.0</value>
+        <value xsi:type="xsd:double">90.0</value>
     </values>
 </CustomMetadata>

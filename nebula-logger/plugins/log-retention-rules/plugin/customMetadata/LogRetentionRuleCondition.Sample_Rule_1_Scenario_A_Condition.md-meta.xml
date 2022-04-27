@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Feature A condition</label>
+    <label>Sample Rule 1 - Scenario A Condition</label>
     <protected>false</protected>
     <values>
         <field>FieldPath__c</field>
@@ -12,7 +12,7 @@
     </values>
     <values>
         <field>LogRetentionRule__c</field>
-        <value xsi:type="xsd:string">Feature_A</value>
+        <value xsi:type="xsd:string">Sample_Rule_1_Scenarios_With_Errors</value>
     </values>
     <values>
         <field>Operator__c</field>
@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>SortOrder__c</field>
-        <value xsi:nil="true" />
+        <value xsi:type="xsd:double">2.0</value>
     </values>
     <values>
         <field>ValueType__c</field>

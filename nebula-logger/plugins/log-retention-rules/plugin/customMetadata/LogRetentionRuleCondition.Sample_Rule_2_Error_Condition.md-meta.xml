@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Feature_B_with_errors - condition 2</label>
+    <label>Sample Rule 2 - Error Condition</label>
     <protected>false</protected>
     <values>
         <field>FieldPath__c</field>
@@ -12,11 +12,11 @@
     </values>
     <values>
         <field>LogRetentionRule__c</field>
-        <value xsi:type="xsd:string">Feature_B_with_errors</value>
+        <value xsi:type="xsd:string">Sample_Rule_2_Additional_Error_Logs</value>
     </values>
     <values>
         <field>Operator__c</field>
-        <value xsi:type="xsd:string">GREATER_THAN_OR_EQUAL_TO</value>
+        <value xsi:type="xsd:string">GREATER_THAN</value>
     </values>
     <values>
         <field>SortOrder__c</field>

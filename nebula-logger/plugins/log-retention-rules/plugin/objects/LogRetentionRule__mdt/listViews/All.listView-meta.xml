@@ -4,8 +4,10 @@
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>IsEnabled__c</columns>
-    <columns>ExecutionOrder__c</columns>
+    <columns>ConditionLogicType__c</columns>
+    <columns>CustomConditionLogic__c</columns>
     <columns>NumberOfDaysToRetainLogs__c</columns>
+    <columns>ExecutionOrder__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

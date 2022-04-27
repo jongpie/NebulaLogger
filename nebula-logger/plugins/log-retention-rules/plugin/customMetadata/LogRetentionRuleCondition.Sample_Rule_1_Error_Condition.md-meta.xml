@@ -4,27 +4,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Feature C condition</label>
+    <label>Sample Rule 1 - Error Condition</label>
     <protected>false</protected>
     <values>
         <field>FieldPath__c</field>
-        <value xsi:type="xsd:string">Log__r.Scenario__c</value>
+        <value xsi:type="xsd:string">Log__r.TotalERRORLogEntries__c</value>
     </values>
     <values>
         <field>LogRetentionRule__c</field>
-        <value xsi:type="xsd:string">Feature_C</value>
-    </values>
-    <values>
-        <field>FieldPath__c</field>
-        <value xsi:type="xsd:string">Log__c</value>
+        <value xsi:type="xsd:string">Sample_Rule_1_Scenarios_With_Errors</value>
     </values>
     <values>
         <field>Operator__c</field>
-        <value xsi:type="xsd:string">EQUAL_TO</value>
+        <value xsi:type="xsd:string">GREATER_THAN_OR_EQUAL_TO</value>
     </values>
     <values>
         <field>SortOrder__c</field>
-        <value xsi:nil="true" />
+        <value xsi:type="xsd:double">1.0</value>
     </values>
     <values>
         <field>ValueType__c</field>
@@ -32,6 +28,6 @@
     </values>
     <values>
         <field>Value__c</field>
-        <value xsi:type="xsd:string">Feature C</value>
+        <value xsi:type="xsd:string">1</value>
     </values>
 </CustomMetadata>
