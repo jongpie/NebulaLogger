@@ -301,6 +301,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.HttpRequestBodyMasked__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.HttpRequestEndpoint__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -312,6 +317,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.HttpResponseBody__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntry__c.HttpResponseBodyMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

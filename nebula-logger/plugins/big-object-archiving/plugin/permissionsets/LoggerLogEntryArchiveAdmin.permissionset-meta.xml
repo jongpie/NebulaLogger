@@ -88,6 +88,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntryArchive__b.HttpRequestBodyMasked__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntryArchive__b.HttpRequestEndpoint__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -99,6 +104,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>LogEntryArchive__b.HttpResponseBody__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>LogEntryArchive__b.HttpResponseBodyMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

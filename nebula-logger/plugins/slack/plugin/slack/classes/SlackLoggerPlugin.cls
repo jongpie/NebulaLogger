@@ -81,15 +81,20 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
                 // 'Short' is a reserved word in Apex, but used in Slack's API, so the conversion happens in JSON
                 String notificationJson = JSON.serialize(notification).replace('"isShort"', '"short"');
                 request.setBody(notificationJson);
+                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                    Logger.finest('Sending log entries to Slack endpoint').setHttpRequestDetails(request);
+                }
 
                 HttpResponse response = new Http().send(request);
-                System.debug(NOTIFICATION_LOGGING_LEVEL, 'response.getStatusCode()==' + response.getStatusCode());
-                System.debug(NOTIFICATION_LOGGING_LEVEL, 'response.getStatus()==' + response.getStatus());
+                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                    Logger.finest('Sent log entries to Slack endpoint').setHttpResponseDetails(response);
+                }
 
                 log.SlackNotificationDate__c = System.now();
                 sentLogs.add(log);
             }
         }
+        Logger.saveLog();
         update sentLogs;
 
         // If any logs couldn't be sent due to governor limits, start a new instance of the job

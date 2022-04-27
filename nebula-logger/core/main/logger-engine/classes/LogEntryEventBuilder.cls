@@ -167,7 +167,7 @@ global with sharing class LogEntryEventBuilder {
     global LogEntryEventBuilder setMessage(String message) {
         // To help with debugging unit tests, always run System.debug statement in a test context
         if ((this.shouldSave == true || System.Test.isRunningTest() == true) && this.logEntryEvent != null) {
-            String cleanedMessage = applyDataMaskRules(message, true, false);
+            String cleanedMessage = applyDataMaskRules(message);
             Boolean messageMasked = cleanedMessage != message;
             String truncatedMessage = truncateFieldValue(Schema.LogEntryEvent__e.Message__c, cleanedMessage);
             Boolean messageTruncated =
@@ -442,7 +442,7 @@ global with sharing class LogEntryEventBuilder {
             this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
             this.logEntryEvent.RecordSObjectType__c = 'Unknown';
         } else {
-            String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+            String cleanedRecordJson = applyDataMaskRules(recordJson);
             Boolean recordJsonMasked = cleanedRecordJson != recordJson;
 
             this.logEntryEvent.RecordId__c = record.Id;
@@ -476,7 +476,7 @@ global with sharing class LogEntryEventBuilder {
             this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
             this.logEntryEvent.RecordSObjectType__c = 'Unknown';
         } else {
-            String cleanedRecordJson = applyDataMaskRules(recordJson, false, true);
+            String cleanedRecordJson = applyDataMaskRules(recordJson);
             Boolean recordJsonMasked = cleanedRecordJson != recordJson;
 
             this.logEntryEvent.RecordJson__c = cleanedRecordJson;
@@ -499,7 +499,11 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.HttpRequestBody__c = request.getBody();
+        String cleanedRequestBody = applyDataMaskRules(request.getBody());
+        Boolean requestBodyMasked = cleanedRequestBody != request.getBody();
+
+        this.logEntryEvent.HttpRequestBody__c = cleanedRequestBody;
+        this.logEntryEvent.HttpRequestBodyMasked__c = requestBodyMasked;
         this.logEntryEvent.HttpRequestCompressed__c = request.getCompressed();
         this.logEntryEvent.HttpRequestEndpoint__c = request.getEndpoint();
         this.logEntryEvent.HttpRequestMethod__c = request.getMethod();
@@ -516,7 +520,11 @@ global with sharing class LogEntryEventBuilder {
             return this;
         }
 
-        this.logEntryEvent.HttpResponseBody__c = response.getBody();
+        String cleanedResponseBody = applyDataMaskRules(response.getBody());
+        Boolean responseBodyMasked = cleanedResponseBody != response.getBody();
+
+        this.logEntryEvent.HttpResponseBody__c = cleanedResponseBody;
+        this.logEntryEvent.HttpResponseBodyMasked__c = responseBodyMasked;
         this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), '\n');
         this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
         this.logEntryEvent.HttpResponseStatusCode__c = response.getStatusCode();
@@ -791,13 +799,13 @@ global with sharing class LogEntryEventBuilder {
         CACHED_DATA_MASK_RULES.put(dataMaskRule.DeveloperName, dataMaskRule);
     }
 
-    private static String applyDataMaskRules(String dataInput, Boolean applyToMessage, Boolean applyToRecordJson) {
+    private static String applyDataMaskRules(String dataInput) {
         if (Logger.getUserSettings().IsDataMaskingEnabled__c == false || String.isBlank(dataInput) == true) {
             return dataInput;
         }
 
         for (LogEntryDataMaskRule__mdt dataMaskRule : CACHED_DATA_MASK_RULES.values()) {
-            if ((applyToMessage && dataMaskRule.ApplyToMessage__c) == true || (applyToRecordJson && dataMaskRule.ApplyToRecordJson__c) == true) {
+            if (dataMaskRule.IsEnabled__c == true) {
                 dataInput = dataInput.replaceAll(dataMaskRule.SensitiveDataRegEx__c, dataMaskRule.ReplacementRegEx__c);
             }
         }

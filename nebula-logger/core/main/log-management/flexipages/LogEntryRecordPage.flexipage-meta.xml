@@ -500,6 +500,16 @@
                 <identifier>RecordHttpRequestBody_cField1</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HttpRequestBodyMasked__c</fieldItem>
+                <identifier>RecordHttpRequestBodyMasked_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-4cea44fd-c4f1-41ed-bada-eace6229f158</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -556,6 +566,16 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.HttpResponseBody__c</fieldItem>
                 <identifier>RecordHttpResponseBody_cField1</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.HttpResponseBodyMasked__c</fieldItem>
+                <identifier>RecordHttpResponseBodyMasked_cField1</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-1f2467a3-2a30-4aad-ace3-80afc0a517d2</name>

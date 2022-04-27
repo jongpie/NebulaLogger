@@ -26,11 +26,8 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
     private Integer chainedBatchSize = 200;
     @TestVisible
     private SObjectType currentSObjectType;
-    @TestVisible
     private List<LoggerPlugin__mdt> pluginConfigurations;
-    @TestVisible
     private Map<BatchableMethod, List<LoggerPlugin.Batchable>> methodToExecutedApexPlugins = new Map<BatchableMethod, List<LoggerPlugin.Batchable>>();
-    @TestVisible
     private Map<BatchableMethod, List<Flow.Interview>> methodToExecutedFlowPlugins = new Map<BatchableMethod, List<Flow.Interview>>();
 
     private String originalTransactionId;
@@ -106,6 +103,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @param scopeRecords - The log records to purge.
      */
     global void execute(Database.BatchableContext batchableContext, List<SObject> scopeRecords) {
+        Logger.setParentLogTransactionId(this.originalTransactionId);
         try {
             this.totalProcessedRecords += scopeRecords.size();
             LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
@@ -128,6 +126,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
      * @param batchableContext - The context of the batch jobs
      */
     global void finish(Database.BatchableContext batchableContext) {
+        Logger.setParentLogTransactionId(this.originalTransactionId);
         LoggerBatchableContext input = new LoggerBatchableContext(batchableContext, this.currentSObjectType);
         this.executePlugins(BatchableMethod.FINISH, input, null);
 
@@ -137,7 +136,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            Logger.setParentLogTransactionId(this.originalTransactionId);
             Logger.info(
                 new LogMessage(
                     'Logger - Finished LogBatchPurger job for {0}, {1} total log records processed',
@@ -270,7 +268,9 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 this.methodToExecutedApexPlugins.get(method).add(apexPlugin);
             }
         } catch (TypeException ex) {
-            System.debug(LoggingLevel.WARN, 'Unknown Apex class ' + pluginConfiguration.BatchPurgerApexClass__c + ', skipping plugin execution');
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                Logger.warn('Unknown Apex class ' + pluginConfiguration.BatchPurgerApexClass__c + ', skipping plugin execution', pluginConfiguration, ex);
+            }
         }
     }
 
@@ -299,6 +299,8 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
     }
 
+    // TODO Before v4.8.0, consider changing visibility from `@TestVisbile private` to `public`. This would
+    // provide a way for downstream code (within core and plugins) to retrieve info about the executed plugins
     @TestVisible
     private Map<BatchableMethod, List<LoggerPlugin.Batchable>> getExecutedApexPlugins() {
         return this.methodToExecutedApexPlugins;

@@ -12,8 +12,8 @@
 public class LoggerParameter {
     // During tests, always load this CMDT record
     // so that tests use the same format when calling System.debug()
-    private static final Set<String> PARAMETERS_TO_LOAD_DURING_TESTS = new Set<String>{ 'SystemDebugMessageFormat' };
     private static final String SYSTEM_DEBUG_MESSAGE_FORMAT_PARAMETER = 'SystemDebugMessageFormat';
+    private static final Set<String> PARAMETERS_TO_LOAD_DURING_TESTS = new Set<String>{ SYSTEM_DEBUG_MESSAGE_FORMAT_PARAMETER };
 
     /**
      * @description Indicates if Logger will make an async callout to https://api.status.salesforce.com

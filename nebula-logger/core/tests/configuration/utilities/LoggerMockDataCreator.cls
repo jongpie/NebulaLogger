@@ -216,10 +216,37 @@ public class LoggerMockDataCreator {
     /**
      * @description Generates an instance of the class `MockHttpCallout` that implements the interface `HttpCalloutMock`.
      *              This can be used when testing batch jobs.
-     * @return       The instance of `MockHttpCallout`
+     * @return      The instance of `MockHttpCallout`
      */
     public static MockHttpCallout createHttpCallout() {
         return new MockHttpCallout();
+    }
+
+    /**
+     * @description Generates an instance of `HttpRequest`. This can be used when testing logging capabilities for instances of `HttpRequest`.
+     * @return      The instance of `HttpRequest`
+     */
+    public static HttpRequest createHttpRequest() {
+        HttpRequest request = new HttpRequest();
+        request.setBody('Hello, world!');
+        request.setCompressed(true);
+        request.setEndpoint('https://fake.salesforce.com');
+        request.setMethod('GET');
+        return request;
+    }
+
+    /**
+     * @description Generates an instance of `HttpResponse`. This can be used when testing logging capabilities for instances of `HttpResponse`.
+     * @return      The instance of `HttpResponse`
+     */
+    public static HttpResponse createHttpResponse() {
+        HttpResponse response = new HttpResponse();
+        response.setBody('Hello, world!');
+        response.setHeader('someKey', 'some string value');
+        response.setHeader('anotherKey', 'an amazing example value, wow');
+        response.setStatus('STATUS_GOOD_JOB_YOU_DID_IT');
+        response.setStatusCode(201);
+        return response;
     }
 
     /**

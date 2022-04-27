@@ -2512,11 +2512,7 @@ global with sharing class Logger {
      * @return   The enum value of Logger.SaveMethod to use for any calls to saveLog() in the current transaction
      */
     global static SaveMethod getSaveMethod() {
-        try {
-            return SaveMethod.valueOf(transactionSaveMethodName);
-        } catch (NoSuchElementException ex) {
-            return null;
-        }
+        return getSaveMethod(transactionSaveMethodName);
     }
 
     /**
@@ -2600,15 +2596,15 @@ global with sharing class Logger {
             return;
         }
 
-        switch on saveMethodName {
-            when 'EVENT_BUS' {
+        switch on getSaveMethod(saveMethodName) {
+            when EVENT_BUS {
                 List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents);
                 LoggerEmailSender.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
-            when 'QUEUEABLE' {
+            when QUEUEABLE {
                 LoggerDataStore.getJobQueue().enqueueJob(new QueueableSaver(logEntryEvents));
             }
-            when 'REST' {
+            when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
                 // To avoid that, use the EventBus instead (even though REST was specified)
                 if (String.isBlank(UserInfo.getSessionId())) {
@@ -2617,7 +2613,7 @@ global with sharing class Logger {
                     new RestApiSaver().insertRecords(logEntryEvents);
                 }
             }
-            when 'SYNCHRONOUS_DML' {
+            when SYNCHRONOUS_DML {
                 LoggerTriggerableContext logEntryEventsAfterContext = new LoggerTriggerableContext(
                     Schema.LogEntryEvent__e.SObjectType,
                     TriggerOperation.AFTER_INSERT,
@@ -2638,42 +2634,18 @@ global with sharing class Logger {
      * @return                  The matching instance of LoggingLevel (or a default value if a match is not found)
      */
     global static LoggingLevel getLoggingLevel(String loggingLevelName) {
-        if (loggingLevelName != null) {
-            loggingLevelName = loggingLevelName.trim().toUpperCase();
-        }
-
-        switch on loggingLevelName {
-            when 'NONE' {
-                return LoggingLevel.NONE;
+        try {
+            return System.LoggingLevel.valueOf(loggingLevelName?.trim().toUpperCase());
+        } catch (NoSuchElementException ex) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                LogMessage logMessage = new LogMessage(
+                    'Logger - Unknown logging level {0} specified, using {1}',
+                    loggingLevelName,
+                    DEFAULT_LOGGING_LEVEL.name()
+                );
+                finest(logMessage);
             }
-            when 'ERROR' {
-                return LoggingLevel.ERROR;
-            }
-            when 'WARN' {
-                return LoggingLevel.WARN;
-            }
-            when 'INFO' {
-                return LoggingLevel.INFO;
-            }
-            when 'DEBUG' {
-                return LoggingLevel.DEBUG;
-            }
-            when 'FINE' {
-                return LoggingLevel.FINE;
-            }
-            when 'FINER' {
-                return LoggingLevel.FINER;
-            }
-            when 'FINEST' {
-                return LoggingLevel.FINEST;
-            }
-            when else {
-                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                    String message = 'Logger - Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
-                    finest(message);
-                }
-                return DEFAULT_LOGGING_LEVEL;
-            }
+            return DEFAULT_LOGGING_LEVEL;
         }
     }
 
@@ -2773,26 +2745,12 @@ global with sharing class Logger {
         }
     }
 
-    private static SaveMethod getDefaultSaveMethod() {
-        SaveMethod defaultSaveMethod;
-
-        String saveMethodName = getUserSettings().DefaultSaveMethod__c?.toUpperCase();
-        switch on saveMethodName {
-            when 'QUEUEABLE' {
-                defaultSaveMethod = SaveMethod.QUEUEABLE;
-            }
-            when 'REST' {
-                defaultSaveMethod = SaveMethod.REST;
-            }
-            when 'SYNCHRONOUS_DML' {
-                defaultSaveMethod = SaveMethod.SYNCHRONOUS_DML;
-            }
-            when else {
-                defaultSaveMethod = SaveMethod.EVENT_BUS;
-            }
+    private static SaveMethod getSaveMethod(String saveMethodName) {
+        try {
+            return SaveMethod.valueOf(saveMethodName);
+        } catch (NoSuchElementException ex) {
+            return null;
         }
-
-        return defaultSaveMethod;
     }
 
     private static String getSuspendSavingLogSystemMessage() {

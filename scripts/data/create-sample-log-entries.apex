@@ -29,14 +29,14 @@ Logger.finer('Example FINER entry');
 Logger.finest('Example FINEST entry');
 
 HttpRequest request = new HttpRequest();
-request.setBody('Hello, world!');
+request.setBody('Hello, world! Here is my credit card number 5000-1111-2222-0005');
 request.setEndpoint('https://fake.salesforce.com');
 request.setMethod('GET');
 Logger.info('logging an HTTP request').setHttpRequestDetails(request);
 
 
 HttpResponse response = new HttpResponse();
-response.setBody('Hello, world!');
+response.setBody('Hello, world! Here is my credit card number 5000-1111-2222-0005');
 response.setHeader('someKey', 'some string value');
 response.setHeader('anotherKey', 'an amazing example value, wow');
 response.setStatus('STATUS_GOOD_JOB_YOU_DID_IT');

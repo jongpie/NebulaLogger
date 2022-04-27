@@ -35,7 +35,7 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
+        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
@@ -54,7 +54,7 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.clear();
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
+        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
@@ -69,7 +69,7 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
+        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
@@ -82,7 +82,7 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
+        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
 
@@ -101,7 +101,7 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.clear();
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
+        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
 
@@ -116,7 +116,7 @@ private class LoggerEmailSender_Tests {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
         System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
-        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (interntionally) fail
+        // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
 

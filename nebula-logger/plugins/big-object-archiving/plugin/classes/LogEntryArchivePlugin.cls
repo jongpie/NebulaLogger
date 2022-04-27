@@ -123,21 +123,13 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         for (String fieldName : Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet()) {
             logFieldsToQuery.add(logLookupRelationshipName + '.' + fieldName);
         }
-        String closedByUsernameField =
-            logLookupRelationshipName +
-            '.' +
-            Schema.Log__c.ClosedBy__c.getDescribe().getName().removeEnd('__c') +
-            '__r' +
-            '.' +
-            Schema.User.Username.getDescribe().getName();
+        String closedByUsernameField = getParentFieldPath(
+            new List<Schema.SObjectField>{ Schema.LogEntry__c.Log__c, Schema.Log__c.ClosedBy__c, Schema.User.Username }
+        );
         logFieldsToQuery.add(closedByUsernameField);
-        String parentLogTransactionIdField =
-            logLookupRelationshipName +
-            '.' +
-            Schema.Log__c.ParentLog__c.getDescribe().getName().removeEnd('__c') +
-            '__r' +
-            '.' +
-            Schema.Log__c.TransactionId__c.getDescribe().getName();
+        String parentLogTransactionIdField = getParentFieldPath(
+            new List<Schema.SObjectField>{ Schema.LogEntry__c.Log__c, Schema.Log__c.ParentLog__c, Schema.Log__c.TransactionId__c }
+        );
         logFieldsToQuery.add(parentLogTransactionIdField);
         List<String> logEntryFieldsToQuery = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
         logEntryFieldsToQuery.addAll(logFieldsToQuery);
@@ -156,6 +148,20 @@ public without sharing class LogEntryArchivePlugin implements LoggerPlugin.Batch
         };
         String query = String.escapeSingleQuotes(String.format(queryTemplate, queryInputs));
         return (List<LogEntry__c>) Database.query(query);
+    }
+
+    private String getParentFieldPath(List<Schema.SObjectField> parentFieldChainPieces) {
+        String parentFieldPath = '';
+        Integer lastIndex = parentFieldChainPieces.size() - 1;
+        for (Integer i = 0; i < parentFieldChainPieces.size(); i++) {
+            Schema.SObjectField field = parentFieldChainPieces.get(i);
+            if (i != lastIndex) {
+                parentFieldPath += field.getDescribe().getName().removeEnd('__c') + '__r.';
+            } else {
+                parentFieldPath += field.getDescribe().getName();
+            }
+        }
+        return parentFieldPath;
     }
 
     private List<LogEntryEvent__e> filterLogEntryEventsToSave(LoggerTriggerableContext input) {

@@ -659,10 +659,12 @@ private class LogEntryEventHandler_Tests {
                         ExceptionStackTrace__c,
                         ExceptionType__c,
                         HttpRequestBody__c,
+                        HttpRequestBodyMasked__c,
                         HttpRequestCompressed__c,
                         HttpRequestEndpoint__c,
                         HttpRequestMethod__c,
                         HttpResponseBody__c,
+                        HttpResponseBodyMasked__c,
                         HttpResponseHeaderKeys__c,
                         HttpResponseStatus__c,
                         HttpResponseStatusCode__c,
@@ -814,6 +816,11 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c, 'logEntry.ExceptionType__c was not properly set');
         System.assertEquals(logEntryEvent.HttpRequestBody__c, logEntry.HttpRequestBody__c, 'logEntry.HttpRequestBody__c was not properly set');
         System.assertEquals(
+            logEntryEvent.HttpRequestBodyMasked__c,
+            logEntry.HttpRequestBodyMasked__c,
+            'logEntry.HttpRequestBodyMasked__c was not properly set'
+        );
+        System.assertEquals(
             logEntryEvent.HttpRequestCompressed__c,
             logEntry.HttpRequestCompressed__c,
             'logEntry.HttpRequestCompressed__c was not properly set'
@@ -821,6 +828,11 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.HttpRequestEndpoint__c, logEntry.HttpRequestEndpoint__c, 'logEntry.HttpRequestEndpoint__c was not properly set');
         System.assertEquals(logEntryEvent.HttpRequestMethod__c, logEntry.HttpRequestMethod__c, 'logEntry.HttpRequestMethod__c was not properly set');
         System.assertEquals(logEntryEvent.HttpResponseBody__c, logEntry.HttpResponseBody__c, 'logEntry.HttpResponseBody__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.HttpResponseBodyMasked__c,
+            logEntry.HttpResponseBodyMasked__c,
+            'logEntry.HttpResponseBodyMasked__c was not properly set'
+        );
         System.assertEquals(
             logEntryEvent.HttpResponseHeaderKeys__c,
             logEntry.HttpResponseHeaderKeys__c,

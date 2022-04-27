@@ -63,10 +63,12 @@ public without sharing class LogEntryArchiveBuilder {
             ExceptionStackTrace__c = this.logEntryEvent.ExceptionStackTrace__c,
             ExceptionType__c = this.logEntryEvent.ExceptionType__c,
             HttpRequestBody__c = this.logEntryEvent.HttpRequestBody__c,
+            HttpRequestBodyMasked__c = String.valueOf(this.logEntryEvent.HttpRequestBodyMasked__c),
             HttpRequestCompressed__c = String.valueOf(this.logEntryEvent.HttpRequestCompressed__c),
             HttpRequestEndpoint__c = this.logEntryEvent.HttpRequestEndpoint__c,
             HttpRequestMethod__c = this.logEntryEvent.HttpRequestMethod__c,
             HttpResponseBody__c = this.logEntryEvent.HttpResponseBody__c,
+            HttpResponseBodyMasked__c = String.valueOf(this.logEntryEvent.HttpResponseBody__c),
             HttpResponseHeaderKeys__c = this.logEntryEvent.HttpResponseHeaderKeys__c,
             HttpResponseStatus__c = this.logEntryEvent.HttpResponseStatus__c,
             HttpResponseStatusCode__c = this.logEntryEvent.HttpResponseStatusCode__c,
@@ -194,10 +196,12 @@ public without sharing class LogEntryArchiveBuilder {
             ExceptionStackTrace__c = this.logEntry.ExceptionStackTrace__c,
             ExceptionType__c = this.logEntry.ExceptionType__c,
             HttpRequestBody__c = this.logEntry.HttpRequestBody__c,
+            HttpRequestBodyMasked__c = String.valueOf(this.logEntry.HttpRequestBodyMasked__c),
             HttpRequestCompressed__c = String.valueOf(this.logEntry.HttpRequestCompressed__c),
             HttpRequestEndpoint__c = this.logEntry.HttpRequestEndpoint__c,
             HttpRequestMethod__c = this.logEntry.HttpRequestMethod__c,
             HttpResponseBody__c = this.logEntry.HttpResponseBody__c,
+            HttpResponseBodyMasked__c = String.valueOf(this.logEntry.HttpResponseBodyMasked__c),
             HttpResponseHeaderKeys__c = this.logEntry.HttpResponseHeaderKeys__c,
             HttpResponseStatus__c = this.logEntry.HttpResponseStatus__c,
             HttpResponseStatusCode__c = this.logEntry.HttpResponseStatusCode__c,
@@ -310,7 +314,6 @@ public without sharing class LogEntryArchiveBuilder {
     }
 
     private void truncateFieldValues() {
-        // TODO
         for (String fieldName : this.logEntryArchive.getPopulatedFieldsAsMap().keySet()) {
             Schema.SObjectField field = Schema.LogEntryArchive__b.SObjectType.getDescribe().fields.getMap().get(fieldName);
             if (field.getDescribe().getSoapType() == Schema.SoapType.STRING) {

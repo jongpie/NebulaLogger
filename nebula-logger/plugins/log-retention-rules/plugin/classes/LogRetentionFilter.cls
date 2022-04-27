@@ -171,6 +171,7 @@ public without sharing class LogRetentionFilter {
         }
 
         public Boolean matchesFilter() {
+            // TODO In a future release, it'd be great to switch to using a new private enum for ValueType__c values
             if (this.filterCondition.ValueType__c == 'RegEx') {
                 return this.matchesRegEx();
             }
@@ -252,6 +253,8 @@ public without sharing class LogRetentionFilter {
         //          Object yesterday = System.today().addDays(-1);
         //          System.assert(today > yesterday); // This line cannot execute since it's comparing Object
         private Boolean compareDatetime(Datetime recordFieldValue, Datetime comparisonValue) {
+            // TODO In a future release, it'd be great to switch (ha!) these hardcoded strings to instead use
+            // a (new) private enum
             switch on this.filterCondition.Operator__c {
                 when 'EQUAL_TO' {
                     return recordFieldValue == comparisonValue;
@@ -278,6 +281,8 @@ public without sharing class LogRetentionFilter {
         }
 
         private Boolean compareDecimal(Decimal recordFieldValue, Decimal comparisonValue) {
+            // TODO In a future release, it'd be great to switch (ha!) these hardcoded strings to instead use
+            // a (new) private enum
             switch on this.filterCondition.Operator__c {
                 when 'EQUAL_TO' {
                     return recordFieldValue == comparisonValue;
@@ -304,6 +309,8 @@ public without sharing class LogRetentionFilter {
         }
 
         private Boolean compareString(String recordFieldValue, String comparisonValue) {
+            // TODO In a future release, it'd be great to switch (ha!) these hardcoded strings to instead use
+            // a (new) private enum
             switch on this.filterCondition.Operator__c {
                 when 'EQUAL_TO' {
                     return recordFieldValue == comparisonValue;
@@ -405,8 +412,6 @@ public without sharing class LogRetentionFilter {
 
             for (Schema.SObjectField field : this.fieldChain) {
                 Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-                // TODO delete? String relationshipName = fieldDescribe.getRelationshipName();
-
                 if (fieldDescribe.getSoapType() != Schema.SoapType.Id) {
                     return parentRecord.get(fieldDescribe.getName());
                 } else {

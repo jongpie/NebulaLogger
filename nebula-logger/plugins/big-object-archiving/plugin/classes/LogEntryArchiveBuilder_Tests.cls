@@ -498,12 +498,22 @@ private class LogEntryArchiveBuilder_Tests {
         System.assertEquals(logEntry.ExceptionType__c, logEntryArchive.ExceptionType__c, 'logEntryArchive.ExceptionType__c was not properly set');
         System.assertEquals(logEntry.HttpRequestBody__c, logEntryArchive.HttpRequestBody__c, 'logEntryArchive.HttpRequestBody__c was not properly set');
         System.assertEquals(
+            String.valueOf(logEntry.HttpRequestBodyMasked__c),
+            logEntryArchive.HttpRequestBodyMasked__c,
+            'logEntryArchive.HttpRequestBodyMasked__c was not properly set'
+        );
+        System.assertEquals(
             logEntry.HttpRequestEndpoint__c,
             logEntryArchive.HttpRequestEndpoint__c,
             'logEntryArchive.HttpRequestEndpoint__c was not properly set'
         );
         System.assertEquals(logEntry.HttpRequestMethod__c, logEntryArchive.HttpRequestMethod__c, 'logEntryArchive.HttpRequestMethod__c was not properly set');
         System.assertEquals(logEntry.HttpResponseBody__c, logEntryArchive.HttpResponseBody__c, 'logEntryArchive.HttpResponseBody__c was not properly set');
+        System.assertEquals(
+            String.valueOf(logEntry.HttpResponseBodyMasked__c),
+            logEntryArchive.HttpResponseBodyMasked__c,
+            'logEntryArchive.HttpResponseBodyMasked__c was not properly set'
+        );
         System.assertEquals(
             logEntry.HttpResponseHeaderKeys__c,
             logEntryArchive.HttpResponseHeaderKeys__c,

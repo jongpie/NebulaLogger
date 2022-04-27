@@ -36,7 +36,6 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
         }
     }
 
-    // TODO Keep in this class
     private List<LogEntry__c> requeryLogEntries(List<LogEntry__c> logEntries) {
         // Requery the LogEntry__c records so the parent Log__c fields can be included/used in rules
         List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
@@ -58,7 +57,6 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
         return (List<LogEntry__c>) Database.query(logEntryQuery);
     }
 
-    // TODO Keep in this class
     private void setLogRetentionDate(List<LogEntry__c> logEntries) {
         Map<Id, Log__c> logIdToLog = new Map<Id, Log__c>();
         List<LogRetentionFilter.FilterResult> filterResults = this.runFilters(logEntries);
@@ -79,7 +77,6 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
         update logIdToLog.values();
     }
 
-    // TODO Keep in this class
     @SuppressWarnings('PMD.ApexCRUDViolation')
     private void loadConfiguredFilters() {
         Map<String, LogRetentionRule__mdt> queriedRulesByDeveloperName = new Map<String, LogRetentionRule__mdt>();
@@ -107,7 +104,6 @@ public without sharing class LogRetentionRulesPlugin implements LoggerPlugin.Tri
         }
     }
 
-    // TODO Keep in this class
     private List<LogRetentionFilter.FilterResult> runFilters(List<SObject> records) {
         List<LogRetentionFilter.FilterResult> results = new List<LogRetentionFilter.FilterResult>();
         for (SObject record : records) {

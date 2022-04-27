@@ -32,7 +32,7 @@ This class is the JavaScript-equivalent of the Apex class `LogEntryBuilder`
 
 Sets the log entry event's message field
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
@@ -45,7 +45,7 @@ Sets the log entry event's message field
 
 Sets the log entry event's record fields
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param    | Type                | Description                                       |
@@ -58,7 +58,7 @@ Sets the log entry event's record fields
 
 Sets the log entry event's record fields
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param  | Type                | Description                                                                                           |
@@ -71,7 +71,7 @@ Sets the log entry event's record fields
 
 Sets the log entry event's exception fields
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param | Type               | Description                                         |
@@ -84,7 +84,7 @@ Sets the log entry event's exception fields
 
 Appends the tag to the existing list of tags
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param | Type                | Description                                          |
@@ -97,7 +97,7 @@ Appends the tag to the existing list of tags
 
 Appends the tag to the existing list of tags
 
-**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)  
+**Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
 
 | Param | Type                              | Description                                              |

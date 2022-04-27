@@ -190,7 +190,9 @@ public without sharing abstract class LoggerSObjectHandler {
                 this.executedApexPlugins.add(apexPlugin);
             }
         } catch (TypeException ex) {
-            System.debug(LoggingLevel.WARN, 'Unknown Apex class ' + configuration.SObjectHandlerApexClass__c + ', skipping plugin execution');
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                Logger.warn('Unknown Apex class ' + configuration.SObjectHandlerApexClass__c + ', skipping plugin execution', configuration, ex);
+            }
         }
     }
 
@@ -217,7 +219,9 @@ public without sharing abstract class LoggerSObjectHandler {
                 this.executedFlowPlugins.add(flowPlugin);
             }
         } catch (TypeException ex) {
-            System.debug(LoggingLevel.WARN, 'Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution');
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                Logger.warn('Unknown Flow ' + configuration.SObjectHandlerFlowName__c + ', skipping plugin execution', configuration, ex);
+            }
         }
     }
 
