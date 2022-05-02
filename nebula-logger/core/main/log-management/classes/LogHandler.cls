@@ -31,6 +31,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.setClosedStatusFields();
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
         this.setOwnerId();
+        this.setParentLog();
         // The log retention date field should support being manually changed, so only auto-set it on insert
         this.setLogRetentionDetails();
     }
@@ -101,6 +102,30 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             String loggingUserDefaultLogOwner = getLoggingUserSettings(log).DefaultLogOwner__c;
             if (ownerIdByOwnerName.containsKey(loggingUserDefaultLogOwner)) {
                 log.OwnerId = ownerIdByOwnerName.get(loggingUserDefaultLogOwner);
+            }
+        }
+    }
+
+    private void setParentLog() {
+        Set<String> parentLogTransactionIds = new Set<String>();
+        for (Log__c log : this.logs) {
+            if (String.isNotBlank(log.ParentLogTransactionId__c) == true) {
+                parentLogTransactionIds.add(log.ParentLogTransactionId__c);
+            }
+        }
+
+        if (parentLogTransactionIds.isEmpty() == true) {
+            return;
+        }
+
+        Map<String, Id> parentLogTransactionIdToRecordId = new Map<String, Id>();
+        for (Log__c parentLog : [SELECT Id, TransactionId__c FROM Log__c WHERE TransactionId__c IN :parentLogTransactionIds]) {
+            parentLogTransactionIdToRecordId.put(parentLog.TransactionId__c, parentLog.Id);
+        }
+
+        for (Log__c log : this.logs) {
+            if (String.isNotBlank(log.ParentLogTransactionId__c) == true) {
+                log.ParentLog__c = parentLogTransactionIdToRecordId.get(log.ParentLogTransactionId__c);
             }
         }
     }

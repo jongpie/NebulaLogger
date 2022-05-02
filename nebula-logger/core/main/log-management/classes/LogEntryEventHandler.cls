@@ -73,70 +73,64 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
-            Log__c log = new Log__c();
-
-            // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
+            Id logOwnerId = logEntryEvent.CreatedById;
             String guestUserLicenseName = 'Guest User License';
-            Id logOwnerId;
             if (logEntryEvent.UserLicenseName__c == guestUserLicenseName || String.isBlank(logEntryEvent.CreatedById)) {
+                // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
                 logOwnerId = UserInfo.getUserId();
-            } else {
-                logOwnerId = logEntryEvent.CreatedById;
             }
 
-            if (recentLogWithApiReleaseDetails != null) {
-                log.ApiReleaseNumber__c = recentLogWithApiReleaseDetails.ApiReleaseNumber__c;
-                log.ApiReleaseVersion__c = recentLogWithApiReleaseDetails.ApiReleaseVersion__c;
-            }
-
-            log.ApiVersion__c = logEntryEvent.ApiVersion__c;
-            log.Locale__c = logEntryEvent.Locale__c;
-            log.LoggedBy__c = logEntryEvent.LoggedById__c;
-            log.LoggedByUsername__c = logEntryEvent.LoggedByUsername__c;
-            log.LoggerVersionNumber__c = logEntryEvent.LoggerVersionNumber__c;
-            log.LoginApplication__c = logEntryEvent.LoginApplication__c;
-            log.LoginBrowser__c = logEntryEvent.LoginBrowser__c;
-            log.LoginDomain__c = logEntryEvent.LoginDomain__c;
-            log.LoginHistoryId__c = logEntryEvent.LoginHistoryId__c;
-            log.LoginPlatform__c = logEntryEvent.LoginPlatform__c;
-            log.LoginType__c = logEntryEvent.LoginType__c;
-            log.LogoutUrl__c = logEntryEvent.LogoutUrl__c;
-            log.NetworkId__c = logEntryEvent.NetworkId__c;
-            log.NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c;
-            log.NetworkLogoutUrl__c = logEntryEvent.NetworkLogoutUrl__c;
-            log.NetworkName__c = logEntryEvent.NetworkName__c;
-            log.NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c;
-            log.NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c;
-            log.OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c;
-            log.OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c;
-            log.OrganizationId__c = logEntryEvent.OrganizationId__c;
-            log.OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c;
-            log.OrganizationName__c = logEntryEvent.OrganizationName__c;
-            log.OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c;
-            log.OrganizationType__c = logEntryEvent.OrganizationType__c;
-            log.OwnerId = logOwnerId;
-            log.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
-            log.ProfileId__c = logEntryEvent.ProfileId__c;
-            log.ProfileName__c = logEntryEvent.ProfileName__c;
-            log.Scenario__c = logEntryEvent.Scenario__c;
-            log.SessionId__c = logEntryEvent.SessionId__c;
-            log.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
-            log.SessionType__c = logEntryEvent.SessionType__c;
-            log.SourceIp__c = logEntryEvent.SourceIp__c;
-            log.SystemMode__c = logEntryEvent.SystemMode__c;
-            log.ThemeDisplayed__c = logEntryEvent.ThemeDisplayed__c;
-            log.TimeZoneId__c = logEntryEvent.TimeZoneId__c;
-            log.TimeZoneName__c = logEntryEvent.TimeZoneName__c;
-            log.TransactionId__c = logEntryEvent.TransactionId__c;
-            log.UserLicenseDefinitionKey__c = logEntryEvent.UserLicenseDefinitionKey__c;
-            log.UserLicenseId__c = logEntryEvent.UserLicenseId__c;
-            log.UserLicenseName__c = logEntryEvent.UserLicenseName__c;
-            log.UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c;
-            log.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
-            log.UserRoleId__c = logEntryEvent.UserRoleId__c;
-            log.UserRoleName__c = logEntryEvent.UserRoleName__c;
-            log.UserType__c = logEntryEvent.UserType__c;
+            Log__c log = new Log__c(
+                ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
+                ApiReleaseVersion__c = recentLogWithApiReleaseDetails?.ApiReleaseVersion__c,
+                ApiVersion__c = logEntryEvent.ApiVersion__c,
+                Locale__c = logEntryEvent.Locale__c,
+                LoggedBy__c = logEntryEvent.LoggedById__c,
+                LoggedByUsername__c = logEntryEvent.LoggedByUsername__c,
+                LoggerVersionNumber__c = logEntryEvent.LoggerVersionNumber__c,
+                LoginApplication__c = logEntryEvent.LoginApplication__c,
+                LoginBrowser__c = logEntryEvent.LoginBrowser__c,
+                LoginDomain__c = logEntryEvent.LoginDomain__c,
+                LoginHistoryId__c = logEntryEvent.LoginHistoryId__c,
+                LoginPlatform__c = logEntryEvent.LoginPlatform__c,
+                LoginType__c = logEntryEvent.LoginType__c,
+                LogoutUrl__c = logEntryEvent.LogoutUrl__c,
+                NetworkId__c = logEntryEvent.NetworkId__c,
+                NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c,
+                NetworkLogoutUrl__c = logEntryEvent.NetworkLogoutUrl__c,
+                NetworkName__c = logEntryEvent.NetworkName__c,
+                NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c,
+                NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c,
+                OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c,
+                OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c,
+                OrganizationId__c = logEntryEvent.OrganizationId__c,
+                OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c,
+                OrganizationName__c = logEntryEvent.OrganizationName__c,
+                OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c,
+                OrganizationType__c = logEntryEvent.OrganizationType__c,
+                OwnerId = logOwnerId,
+                ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
+                ProfileId__c = logEntryEvent.ProfileId__c,
+                ProfileName__c = logEntryEvent.ProfileName__c,
+                Scenario__c = logEntryEvent.Scenario__c,
+                SessionId__c = logEntryEvent.SessionId__c,
+                SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c,
+                SessionType__c = logEntryEvent.SessionType__c,
+                SourceIp__c = logEntryEvent.SourceIp__c,
+                SystemMode__c = logEntryEvent.SystemMode__c,
+                ThemeDisplayed__c = logEntryEvent.ThemeDisplayed__c,
+                TimeZoneId__c = logEntryEvent.TimeZoneId__c,
+                TimeZoneName__c = logEntryEvent.TimeZoneName__c,
+                TransactionId__c = logEntryEvent.TransactionId__c,
+                UserLicenseDefinitionKey__c = logEntryEvent.UserLicenseDefinitionKey__c,
+                UserLicenseId__c = logEntryEvent.UserLicenseId__c,
+                UserLicenseName__c = logEntryEvent.UserLicenseName__c,
+                UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c,
+                UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c,
+                UserRoleId__c = logEntryEvent.UserRoleId__c,
+                UserRoleName__c = logEntryEvent.UserRoleName__c,
+                UserType__c = logEntryEvent.UserType__c
+            );
 
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
@@ -171,12 +165,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,
                 HttpRequestBody__c = logEntryEvent.HttpRequestBody__c,
-                HttpRequestBodyMasked__c = logEntryEvent.HttpRequestBodyMasked__c,
                 HttpRequestCompressed__c = logEntryEvent.HttpRequestCompressed__c,
                 HttpRequestEndpoint__c = logEntryEvent.HttpRequestEndpoint__c,
                 HttpRequestMethod__c = logEntryEvent.HttpRequestMethod__c,
                 HttpResponseBody__c = logEntryEvent.HttpResponseBody__c,
-                HttpResponseBodyMasked__c = logEntryEvent.HttpResponseBodyMasked__c,
                 HttpResponseHeaderKeys__c = logEntryEvent.HttpResponseHeaderKeys__c,
                 HttpResponseStatus__c = logEntryEvent.HttpResponseStatus__c,
                 HttpResponseStatusCode__c = logEntryEvent.HttpResponseStatusCode__c,
@@ -440,9 +432,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     @future(callout=true)
     private static void setStatusApiDetails() {
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            Logger.debug('Logger - Calling Status API for org details');
-        }
+        System.debug(LoggingLevel.DEBUG, 'Logger - Calling Status API for org details');
 
         Organization organization = [SELECT InstanceName FROM Organization];
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
@@ -465,9 +455,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            Logger.debug('Logger - Status API response: ' + statusApiResponse);
-        }
+        System.debug(LoggingLevel.DEBUG, 'Logger - Status API response: ' + statusApiResponse);
 
         List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : [
@@ -482,13 +470,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             logsToUpdate.add(log);
         }
-
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            Logger.debug('Logger - logs to update: ' + logsToUpdate);
-        }
-
+        System.debug(LoggingLevel.DEBUG, 'Logger - logs to update: ' + logsToUpdate);
         LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
-        Logger.saveLog();
     }
 
     // Private class for handling the response from api.status.salesforce.com

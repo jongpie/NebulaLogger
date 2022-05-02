@@ -587,7 +587,6 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.UserLoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
         logEntryEvent.ProfileId__c = UserInfo.getProfileId();
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
-        logEntryEvent.ParentLogTransactionId__c = null;
         logEntryEvent.RecordId__c = UserInfo.getUserId();
         logEntryEvent.RecordCollectionSize__c = 1;
         logEntryEvent.RecordCollectionType__c = 'Single';
@@ -626,7 +625,7 @@ private class LogEntryEventHandler_Tests {
                 OrganizationNamespacePrefix__c,
                 OrganizationType__c,
                 OwnerId,
-                ParentLog__c,
+                ParentLogTransactionId__c,
                 ProfileId__c,
                 ProfileName__c,
                 Scenario__c,
@@ -755,6 +754,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c, 'log.LogoutUrl__c was not properly set');
         System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c, 'log.NetworkId__c was not properly set');
         System.assertEquals(logOwnerId, log.OwnerId, 'log.OwnerId was not properly set');
+        System.assertEquals(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
         System.assertEquals(logEntryEvent.Scenario__c, log.Scenario__c, 'log.Scenario__c was not properly set');

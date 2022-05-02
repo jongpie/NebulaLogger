@@ -7,9 +7,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.7.1.NEXT",
-            "versionName": "Plugin Framework Overhaul",
-            "versionDescription": "New approach implemented for plugins, providing more control within LoggerSObjectHandler, and the ability to create plugins for LogBatchPurger",
+            "versionNumber": "4.7.2.NEXT",
+            "versionName": "Parent Log Transaction ID Bugfix",
+            "versionDescription": "Fixes an issue that would prevent logs from saving if the specified parent log transaction ID could not be found",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },

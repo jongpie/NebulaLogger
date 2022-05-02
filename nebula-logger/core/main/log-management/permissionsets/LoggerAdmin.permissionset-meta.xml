@@ -321,11 +321,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpResponseBodyMasked__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LogEntry__c.HttpResponseHeaderKeys__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -927,6 +922,16 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.ParentLog__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ParentLogLink__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ParentLogTransactionId__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

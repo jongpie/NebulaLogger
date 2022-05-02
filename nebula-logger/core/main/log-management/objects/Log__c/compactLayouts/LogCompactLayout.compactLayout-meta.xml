@@ -8,6 +8,5 @@
     <fields>Priority__c</fields>
     <fields>Status__c</fields>
     <fields>LogEntriesSummary__c</fields>
-    <fields>ParentLog__c</fields>
     <label>Log Compact Layout</label>
 </CompactLayout>

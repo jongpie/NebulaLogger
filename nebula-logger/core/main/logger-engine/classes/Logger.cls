@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.7.1';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.7.2';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
@@ -53,7 +53,7 @@ global with sharing class Logger {
     }
 
     static {
-        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
+        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + CURRENT_VERSION_NUMBER);
         System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
     }
 

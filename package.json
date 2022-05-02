@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.7.1",
+    "version": "4.7.2",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
@@ -58,7 +58,7 @@
         "permset:assign:admin": "sfdx force:user:permset:assign --permsetname LoggerAdmin",
         "permset:assign:big-object-admin": "sfdx force:user:permset:assign --permsetname LoggerLogEntryArchiveAdmin",
         "permset:assign:slack-admin": "sfdx force:user:permset:assign --permsetname LoggerSlackPluginAdmin",
-        "plugin:version:create:big-object-archiving": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Big Object Archiving\" --codecoverage --installationkeybypass --wait 30",
+        "plugin:version:create:big-object": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - BigObject Archiving\" --codecoverage --installationkeybypass --wait 30",
         "plugin:version:create:log-retention-rules": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Log Retention Rules\" --codecoverage --installationkeybypass --wait 30",
         "plugin:version:create:logger-admin-dashboard": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Logger Admin Dashboard\" --codecoverage --installationkeybypass --wait 30",
         "plugin:version:create:slack": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Slack\" --codecoverage --installationkeybypass --wait 30",

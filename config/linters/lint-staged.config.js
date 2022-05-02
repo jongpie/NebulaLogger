@@ -7,6 +7,7 @@ module.exports = {
         return [`eslint --config ./config/linters/.eslintrc.json ${filenames.join(' ')} --fix`, `npm run test:lwc`];
     },
     '*.{cls,trigger}': () => {
-        return [`npm run lint:verify:apex`, `npm run docs:fix && git add ./docs/ && git commit --amend --no-edit`];
+        return [`npm run lint:verify:apex`];
+        // return [`npm run lint:verify:apex`, `npm run docs:fix && git add ./docs/ && git commit --amend --no-edit`];
     }
 };

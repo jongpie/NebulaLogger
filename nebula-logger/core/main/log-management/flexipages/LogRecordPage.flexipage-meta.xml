@@ -178,8 +178,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.ParentLog__c</fieldItem>
-                <identifier>RecordParentLog__cField</identifier>
+                <fieldItem>Record.ParentLogLink__c</fieldItem>
+                <identifier>RecordParentLogLink__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-af147cb3-e6b1-4ef7-a00b-d4746d5a1c90</name>
