@@ -331,6 +331,34 @@ MockHttpCallout
 
 The instance of `MockHttpCallout`
 
+#### `createHttpRequest()` → `HttpRequest`
+
+Generates an instance of `HttpRequest`. This can be used when testing logging capabilities for instances of `HttpRequest`.
+
+##### Return
+
+**Type**
+
+HttpRequest
+
+**Description**
+
+The instance of `HttpRequest`
+
+#### `createHttpResponse()` → `HttpResponse`
+
+Generates an instance of `HttpResponse`. This can be used when testing logging capabilities for instances of `HttpResponse`.
+
+##### Return
+
+**Type**
+
+HttpResponse
+
+**Description**
+
+The instance of `HttpResponse`
+
 #### `createId(Schema.SObjectType sobjectType)` → `String`
 
 Generates a mock record ID for the provided SObject Type
