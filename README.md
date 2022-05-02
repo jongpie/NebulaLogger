@@ -7,8 +7,8 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Unlocked Package - v4.7.1
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lfrQAA)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lfrQAA)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgBQAQ)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgBQAQ)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ## Managed Package - v4.7.0
@@ -702,9 +702,9 @@ The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula
 -   Extend permission sets to include field-level security for your custom fields
 -   Leverage the new `LoggerParameter__mdt` CMDT object to store configuration for your plugin
 
-Check out the [Slack plugin](./nebula-logger-plugins/Slack/) for more details on how to install & customize the plugin
+Check out the [Slack plugin](./nebula-logger-plugins/slack/) for more details on how to install & customize the plugin
 
-![Slack plugin: notification](./nebula-logger-plugins/Slack/images/slack-plugin-notification.png)
+![Slack plugin: notification](./nebula-logger/plugins/slack/.images/slack-plugin-notification.png)
 
 ---
 

@@ -1,7 +1,8 @@
 # Big Object Archiving plugin for Nebula Logger
 
-> :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger
+> :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger's unlocked package
 
+[![Install Unlocked Package](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgLQAQ)
 Adds a Big Object - `LogEntryArchive__b` - to Nebula Logger for archiving of logging data.
 
 The `LogEntryArchive__b` object can be used to:
@@ -10,9 +11,7 @@ The `LogEntryArchive__b` object can be used to:
 -   **To later archive `Log__c` and `LogEntry__c` data**. If you want to leverage the benefits of having logging data in `Log__c` and `LogEntry__c`, but need to delete some records due to storage limits, the plugin also provides the ability to archive `Log__c` and `LogEntry__c` data into the big object `LogEntryArchive__b`. This is accomplished by setting a "Log Purge Action" to "Archive" on any `Log__c` records that you want to archive into the `LogEntryArchive__b` big object.
     -   When the `LogBatchPurger` job runs, any `Log__c` (and related `LogEntry__c` records) with a "Log Purge Action" of "Archive" and a "Log Retention Date" <= TODAY will first be copied into the big object `LogEntryArchive__b`, before being deleted in `Log__c` and `LogEntry__c`.
 
-[![Install Unlocked Package](../.images/btn-install-unlocked-package-plugin.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=TODO)
-
-\*\*TODO: Screenshot of LWC/tab `logEntryArchives`
+![Big Object Archiving plugin: Log Entry Archives tab](./images/log-entry-archives-tab.png)
 
 ---
 

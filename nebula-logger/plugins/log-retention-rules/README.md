@@ -1,11 +1,10 @@
 # Log Retention Rules plugin for Nebula Logger
 
-> :information_source: Requires Nebula Logger v4.6.12 or newer
+> :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger's unlocked package
+
+[![Install Unlocked Package Plugin](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgGQAQ)
 
 Adds the ability to create & deploy advanced, configurable rules for setting the retention date of `Log__c` records, using custom metadata types `LogRetentionRule__mdt` and `LogRetentionRuleCondition__mdt`.
-
-[![Install Unlocked Package Plugin](./images/btn-install-unlocked-package-plugin.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=zzzzzzzz)
-[![Install Unlocked Package Plugin](./images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=zzzzzzzz)
 
 ---
 
@@ -23,7 +22,7 @@ This plugin includes some add-on metadata for Nebula Logger to support the Slack
 
 ## Installation Steps
 
-After installing the unlocked package Nebula Logger v4.6.12 (or newer), you can then install the Log Retention Rules plugin unlocked package in a sandbox.
+After installing the Nebula Logger's unlocked package, you can then install the Log Retention Rules plugin unlocked package in a sandbox.
 
 This plugin is currently in beta and cannot be installed in production - however, if you want to use it in your production org, you can deploy the metadata to your org using your preferred deployment tool (changes sets, sfdx, the metadata API, etc.).
 

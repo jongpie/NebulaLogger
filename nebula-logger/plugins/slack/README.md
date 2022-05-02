@@ -1,10 +1,10 @@
 # Slack plugin for Nebula Logger
 
-> :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger
+> :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger's unlocked package
 
-Adds a Slack integration for the unlocked package edition of Nebula Logger v4.6.9 or newer. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
+[![Install Unlocked Package](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgQQAQ)
 
-[![Install Unlocked Package](../.images/btn-install-unlocked-package-plugin.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015l2WQAQ)
+Adds a Slack integration for the unlocked package edition of Nebula Logger. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
 
 ![Slack plugin: notification](./images/slack-plugin-notification.png)
 
