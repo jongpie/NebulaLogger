@@ -39,12 +39,16 @@ private class LoggerEmailSender_Tests {
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
-        System.assertEquals(1, Limits.getEmailInvocations(), 'Email should have been sent');
         System.assertEquals(
             true,
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(saveResultsWithErrors.get(0).errors.get(0).getMessage()),
             'Email message should contain SaveResult error message'
         );
+        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_ENABLED == true) {
+            System.assertEquals(1, Limits.getEmailInvocations(), 'Email should have been sent');
+        } else {
+            System.assertEquals(0, Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
+        }
     }
 
     @IsTest
@@ -58,8 +62,8 @@ private class LoggerEmailSender_Tests {
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
         System.assertEquals(true, LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
+        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
     }
 
     @IsTest
@@ -73,8 +77,8 @@ private class LoggerEmailSender_Tests {
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
         System.assertEquals(true, LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
+        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
     }
 
     @IsTest
@@ -86,12 +90,16 @@ private class LoggerEmailSender_Tests {
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
 
-        System.assertEquals(1, Limits.getEmailInvocations(), 'Email should have been sent');
         System.assertEquals(
             true,
             LoggerEmailSender.SENT_EMAILS.get(0).getHtmlBody().contains(upsertResultsWithErrors.get(0).errors.get(0).getMessage()),
             'Email message should contain UpsertResult error message'
         );
+        if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_ENABLED == true) {
+            System.assertEquals(1, Limits.getEmailInvocations(), 'Email should have been sent');
+        } else {
+            System.assertEquals(0, Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
+        }
     }
 
     @IsTest
@@ -105,8 +113,8 @@ private class LoggerEmailSender_Tests {
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
 
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
         System.assertEquals(true, LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
+        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
     }
 
     @IsTest

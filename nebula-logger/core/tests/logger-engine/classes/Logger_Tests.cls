@@ -7,6 +7,25 @@
 @IsTest(IsParallel=false)
 private class Logger_Tests {
     @IsTest
+    static void it_should_return_version_number() {
+        String expectedVersionNumber = Logger.CURRENT_VERSION_NUMBER;
+
+        String returnedVersionNumber = Logger.getVersionNumber();
+
+        System.assertEquals(expectedVersionNumber, returnedVersionNumber);
+    }
+
+    @IsTest
+    static void it_should_return_namespace_prefix() {
+        String className = Logger_Tests.class.getName();
+        String expectedNamespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        String returnedNamespacePrefix = Logger.getNamespacePrefix();
+
+        System.assertEquals(expectedNamespacePrefix, returnedNamespacePrefix);
+    }
+
+    @IsTest
     static void it_should_use_in_memory_default_settings_when_not_configured() {
         LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
         expectedSettings.SetupOwnerId = UserInfo.getUserId();

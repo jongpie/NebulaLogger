@@ -25,6 +25,7 @@ public without sharing class LoggerEmailSender {
         set;
     }
 
+    @TestVisible
     private static Boolean IS_EMAIL_DELIVERABILITY_ENABLED {
         get {
             if (IS_EMAIL_DELIVERABILITY_ENABLED == null) {
@@ -80,7 +81,9 @@ public without sharing class LoggerEmailSender {
         }
 
         if (CACHED_APEX_ERROR_RECIPIENTS.isEmpty() == true) {
-            System.debug(LoggingLevel.INFO, 'Logger - no Apex email recipients configured, skipping sending email');
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                Logger.info('Logger - no Apex email recipients configured, skipping sending email');
+            }
             return;
         }
 
@@ -121,10 +124,13 @@ public without sharing class LoggerEmailSender {
             List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
             List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
             SENT_EMAILS.add(message);
-            if (emailResults.get(0).success == true) {
-                System.debug(LoggingLevel.INFO, 'Logger - The email was sent successfully');
+
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == false) {
+                return;
+            } else if (emailResults.get(0).success == true) {
+                Logger.info('Logger - The email was sent successfully');
             } else {
-                System.debug(LoggingLevel.INFO, 'Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
+                Logger.info('Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
             }
         }
     }

@@ -172,14 +172,15 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         ];
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private HttpRequest createSlackHttpRequest() {
-        System.debug(NOTIFICATION_LOGGING_LEVEL, 'ENDPOINT==' + ENDPOINT);
-
         HttpRequest request = new HttpRequest();
         request.setEndpoint(ENDPOINT);
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
+
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            Logger.finest('Created Slack HTTP Request').setHttpRequestDetails(request);
+        }
 
         return request;
     }

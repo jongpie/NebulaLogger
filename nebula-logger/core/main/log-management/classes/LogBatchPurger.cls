@@ -77,8 +77,8 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             Logger.info('Logger - Starting LogBatchPurger job for SObject type: ' + this.currentSObjectType);
-            Logger.saveLog();
         }
+        Logger.saveLog();
 
         return this.getQueryLocator(this.currentSObjectType);
     }
@@ -295,7 +295,9 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
                 this.methodToExecutedFlowPlugins.get(method).add(flowPlugin);
             }
         } catch (TypeException ex) {
-            System.debug(LoggingLevel.INFO, 'Unknown Flow ' + pluginConfiguration.BatchPurgerFlowName__c + ', skipping plugin execution');
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                Logger.warn('Unknown Flow ' + pluginConfiguration.BatchPurgerFlowName__c + ', skipping plugin execution', pluginConfiguration, ex);
+            }
         }
     }
 
