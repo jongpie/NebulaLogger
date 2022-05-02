@@ -10,7 +10,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 // LoggerSettings__c metadata
 import { generatePageLayout } from './loggerSettingsPageLayout';
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
-import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
+import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
@@ -50,7 +50,7 @@ export default class LoggerSettings extends LightningElement {
     connectedCallback() {
         document.title = this.title;
         this.showLoadingSpinner = true;
-        Promise.all([getOrganization(), getLoggerSettingsSchema(), getPicklistOptions(), canUserModifyLoggerSettings()])
+        Promise.all([getOrganization(), getSchemaForName({ sobjectApiName: 'LoggerSettings__c' }), getPicklistOptions(), canUserModifyLoggerSettings()])
             .then(([organizationRecordResult, loggerSettingsSchemaResult, apexPicklistOptionsResult, canUserModifyLoggerSettingsResult]) => {
                 this.organization = organizationRecordResult;
                 this._loggerSettingsSchema = loggerSettingsSchemaResult;
@@ -118,22 +118,6 @@ export default class LoggerSettings extends LightningElement {
                 ? event.target.checked
                 : event.target.value;
         this._currentRecord[fieldApiName] = fieldValue;
-        if (fieldValue && fieldApiName === this._loggerSettingsSchema.fields.IsSavingEnabled__c.localApiName) {
-            const storageEnabledCheckbox = this.template.querySelector(
-                `[data-id="${this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.localApiName}"]`
-            );
-            if (storageEnabledCheckbox) {
-                storageEnabledCheckbox.checked = true;
-            }
-            this.handleFieldChange({
-                target: {
-                    type: 'checkbox',
-                    checked: true,
-                    dataset: { id: this._loggerSettingsSchema.fields.IsPlatformEventStorageEnabled__c.localApiName }
-                }
-            });
-        }
-
         this._setIsNewOrganizationRecord();
         this._setShowSetupOwnerLookup();
     }
@@ -335,7 +319,7 @@ export default class LoggerSettings extends LightningElement {
             'LoggingLevel__c',
             'IsSavingEnabled__c',
             'DefaultSaveMethod__c',
-            'IsPlatformEventStorageEnabled__c',
+            'DefaultPlatformEventStorageLocation__c',
             'DefaultNumberOfDaysToRetainLogs__c',
             'DefaultLogOwner__c'
         ];

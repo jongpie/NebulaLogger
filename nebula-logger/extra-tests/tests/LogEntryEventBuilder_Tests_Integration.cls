@@ -4,20 +4,17 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests_Integration {
     private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
     @IsTest
     static void stripInaccessibleFieldsForRecordWhenEnabled() {
-        User standardUser = LoggerTestUtils.createUser(STANDARD_USER_PROFILE.Id);
-        AccountBrand mockAccountBrand = new AccountBrand(
-            Id = LoggerTestUtils.createMockId(Schema.AccountBrand.SObjectType),
-            CompanyName = 'Some Company, Inc.',
-            Email = 'some.one@some.company.com',
-            Name = 'Something',
-            Phone = '510-555-1234'
-        );
+        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
+        AccountBrand mockAccountBrand = (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
+            .populateMockId()
+            .populateRequiredFields()
+            .getRecord();
         // The 'standard user' profile doesn't have access to AccountBrand,
         // so stripAccessible will remove everything except the ID field
         AccountBrand strippedAccountBrand = new AccountBrand(Id = mockAccountBrand.Id);
@@ -44,17 +41,14 @@ private class LogEntryEventBuilder_Tests_Integration {
 
     @IsTest
     static void stripInaccessibleFieldsForRecordsWhenEnabled() {
-        User standardUser = LoggerTestUtils.createUser(STANDARD_USER_PROFILE.Id);
+        User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         List<AccountBrand> mockAccountBrands = new List<AccountBrand>();
         List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
         for (Integer i = 0; i < 5; i++) {
-            AccountBrand mockAccountBrand = new AccountBrand(
-                Id = LoggerTestUtils.createMockId(Schema.AccountBrand.SObjectType),
-                CompanyName = 'Some Company, Inc.',
-                Email = 'some.one.number_' + i + '@some.company.com',
-                Name = 'Something',
-                Phone = '510-555-1234'
-            );
+            AccountBrand mockAccountBrand = (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
+                .populateMockId()
+                .populateRequiredFields()
+                .getRecord();
             mockAccountBrands.add(mockAccountBrand);
 
             // The 'standard user' profile doesn't have access to AccountBrand,

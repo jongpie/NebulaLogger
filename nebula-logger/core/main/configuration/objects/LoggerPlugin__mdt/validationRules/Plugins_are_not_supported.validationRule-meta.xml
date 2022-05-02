@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Plugins_are_not_supported</fullName>
+    <active>false</active>
+    <description>Deprecated: this validation rule is no longer used</description>
+    <errorConditionFormula>false</errorConditionFormula>
+    <errorDisplayField>IsEnabled__c</errorDisplayField>
+    <errorMessage>Plugins are not supported for this SObject Handler</errorMessage>
+</ValidationRule>

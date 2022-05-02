@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Sample Rule 2 - Error Condition</label>
+    <protected>false</protected>
+    <values>
+        <field>FieldPath__c</field>
+        <value xsi:type="xsd:string">Log__r.TotalERRORLogEntries__c</value>
+    </values>
+    <values>
+        <field>LogRetentionRule__c</field>
+        <value xsi:type="xsd:string">Sample_Rule_2_Additional_Error_Logs</value>
+    </values>
+    <values>
+        <field>Operator__c</field>
+        <value xsi:type="xsd:string">GREATER_THAN</value>
+    </values>
+    <values>
+        <field>SortOrder__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>ValueType__c</field>
+        <value xsi:type="xsd:string">Value</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">1</value>
+    </values>
+</CustomMetadata>

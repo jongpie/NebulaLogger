@@ -4,18 +4,15 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(IsParallel=false)
 private class LogBatchPurgeScheduler_Tests {
     private static final String TEST_CRON_EXPRESSION = '0 0 23 * * ?';
 
     @IsTest
     static void it_should_schedule_job() {
-        Test.startTest();
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
 
-        LoggerParameter.setMockParameter(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
         Id jobId = System.schedule('Test schedule of LogBatchPurgeScheduler', TEST_CRON_EXPRESSION, new LogBatchPurgeScheduler());
-
-        Test.stopTest();
 
         CronTrigger cronTrigger = [SELECT Id, CronExpression, TimesTriggered, NextFireTime FROM CronTrigger WHERE Id = :jobId];
         System.assertEquals(TEST_CRON_EXPRESSION, cronTrigger.CronExpression);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LogEntry__c</fullName>
+    <businessStatus>Active</businessStatus>
     <externalId>false</externalId>
     <label>Log Entry</label>
     <referenceTo>LogEntry__c</referenceTo>
@@ -8,6 +9,7 @@
     <relationshipName>LogEntryTags</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
+    <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>true</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

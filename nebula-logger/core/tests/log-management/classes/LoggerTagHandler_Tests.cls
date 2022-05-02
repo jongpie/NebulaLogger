@@ -4,29 +4,83 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(IsParallel=true)
 private class LoggerTagHandler_Tests {
     @IsTest
-    static void it_should_set_unique_id_when_enabled() {
-        LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
-        insert tag;
+    static void it_should_return_the_loggerTag_sobjectType() {
+        System.assertEquals(Schema.LoggerTag__c.SObjectType, new LoggerTagHandler().getSObjectType());
+    }
 
+    @IsTest
+    static void it_should_not_run_when_disabled_via_configuration() {
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerTag__c.SObjectType).IsEnabled__c = false;
+        LoggerTag__c tag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
+
+        LoggerDataStore.getDatabase().insertRecord(tag);
+
+        System.assertEquals(
+            0,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
+            'Handler class should not have executed'
+        );
+    }
+
+    @IsTest
+    static void it_should_set_unique_id_on_insert() {
+        LoggerTag__c tag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
+        tag.Name = 'Some tag name';
+        LoggerDataStore.getDatabase().insertRecord(tag);
+
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id];
+        System.assertEquals(tag.Name, tag.UniqueId__c);
+    }
+
+    @IsTest
+    static void it_should_set_unique_id_on_update() {
+        LoggerTag__c tag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
+        tag.Name = 'Some tag name';
+        LoggerDataStore.getDatabase().insertRecord(tag);
+
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
         tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id];
         System.assertEquals(tag.Name, tag.UniqueId__c);
     }
 
     @IsTest
     static void it_should_not_insert_duplicate_tag() {
-        LoggerTag__c tag = new LoggerTag__c(Name = 'some tag');
-        insert tag;
+        LoggerTag__c tag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerTag__c.SObjectType).populateRequiredFields().getRecord();
+        tag.Name = 'Some tag name';
+        LoggerDataStore.getDatabase().insertRecord(tag);
+        LoggerTag__c duplicateTag = (LoggerTag__c) LoggerMockDataCreator.createDataBuilder(new LoggerTag__c(Name = tag.Name))
+            .populateRequiredFields()
+            .getRecord();
+        Exception thrownException;
 
-        LoggerTag__c duplicateTag = new LoggerTag__c(Name = tag.Name);
         try {
             insert duplicateTag;
             System.assert(false, 'Exception expected on previous line');
         } catch (Exception ex) {
-            String expectedDuplicateError = 'DUPLICATE_VALUE';
-            System.assert(ex.getMessage().contains(expectedDuplicateError), ex.getMessage());
+            thrownException = ex;
         }
+
+        System.assertEquals(
+            3,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
+            'Handler class should have executed three times - once for BEFORE_INSERT and once for AFTER_INSERT for the first record,' +
+            ' and once for BEFORE_INSERT on the errored duplicate'
+        );
+        System.assertNotEquals(null, thrownException, 'An exception should have been thrown');
+        String expectedDuplicateError = 'DUPLICATE_VALUE';
+        System.assert(thrownException.getMessage().contains(expectedDuplicateError), thrownException.getMessage());
     }
 }

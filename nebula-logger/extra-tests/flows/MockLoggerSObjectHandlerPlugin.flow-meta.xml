@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>54.0</apiVersion>
+    <assignments>
+        <name>Assign_example_value_0</name>
+        <label>Assign example value</label>
+        <locationX>176</locationX>
+        <locationY>158</locationY>
+        <assignmentItems>
+            <assignToReference>someExampleVariable</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Hello, world</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>Example Flow used to test plugin functionality within Nebula Logger&apos;s trigger handle framework class, LoggerSObjectHandler</description>
+    <interviewLabel>Mock Logger SObject Handler Plugin {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Mock Logger SObject Handler Plugin</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Assign_example_value_0</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>pluginConfiguration</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <objectType>LoggerPlugin__mdt</objectType>
+    </variables>
+    <variables>
+        <name>pluginInput</name>
+        <apexClass>LoggerTriggerableContext</apexClass>
+        <dataType>Apex</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>someExampleVariable</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+</Flow>

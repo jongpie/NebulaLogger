@@ -4,8 +4,6 @@
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>IsEnabled__c</columns>
-    <columns>ApplyToMessage__c</columns>
-    <columns>ApplyToRecordJson__c</columns>
     <columns>SensitiveDataRegEx__c</columns>
     <columns>ReplacementRegEx__c</columns>
     <filterScope>Everything</filterScope>

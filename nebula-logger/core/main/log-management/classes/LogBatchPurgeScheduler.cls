@@ -39,6 +39,6 @@ global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
             Logger.saveLog();
         }
 
-        Database.executebatch(new LogBatchPurger(), this.batchSize);
+        Database.executebatch(new LogBatchPurger().setChainedBatchSize(this.batchSize), this.batchSize);
     }
 }

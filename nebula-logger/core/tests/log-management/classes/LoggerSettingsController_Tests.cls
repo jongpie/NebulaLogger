@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
-@IsTest
+@IsTest(IsParallel=false)
 private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_return_loggingLevel_picklist_options() {
@@ -23,6 +23,34 @@ private class LoggerSettingsController_Tests {
     }
 
     @IsTest
+    static void it_should_return_logPurgeAction_picklist_options() {
+        List<String> fakeLogPurgeActions = new List<String>{ 'A_FAKE_PURGE_ACTION', 'ANOTHER_ONE', 'SOME_OTHER_PURGE_ACTION' };
+        for (String fakeLogPurgeAction : fakeLogPurgeActions) {
+            LoggerTestConfigurator.setMock(
+                new LoggerParameter__mdt(
+                    DeveloperName = LoggerSettingsController.CUSTOM_LOG_PURGE_ACTION_PREFIX + fakeLogPurgeAction,
+                    Value__c = fakeLogPurgeAction
+                )
+            );
+        }
+
+        List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().purgeActionOptions;
+
+        Set<String> expectedLogPurgeActions = new Set<String>{ LoggerSettingsController.DELETE_LOG_PURGE_ACTION };
+        expectedLogPurgeActions.addAll(fakeLogPurgeActions);
+        Integer expectedLogPurgeActionsSize = expectedLogPurgeActions.size() + 1; // '--NONE--' is automatically included
+        System.assertEquals(expectedLogPurgeActionsSize, picklistOptions.size());
+        for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
+            if (String.isBlank(picklistOption.value) == true) {
+                System.assertEquals('--None--', picklistOption.label);
+            } else {
+                System.assertEquals(picklistOption.value, picklistOption.label);
+                System.assertEquals(true, expectedLogPurgeActions.contains(picklistOption.value));
+            }
+        }
+    }
+
+    @IsTest
     static void it_should_return_loggerSaveMethod_picklist_options() {
         Integer expectedLoggerSaveMethodSize = Logger.SaveMethod.values().size() + 1; // '--NONE--' is automatically included
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().saveMethodOptions;
@@ -33,7 +61,63 @@ private class LoggerSettingsController_Tests {
             } else {
                 System.assertEquals(picklistOption.value, picklistOption.label);
                 Logger.SaveMethod matchingLoggerSaveMethod = Logger.SaveMethod.valueOf(picklistOption.value);
-                System.assertEquals(matchingLoggerSaveMethod.name(), picklistOption.label);
+                System.assertEquals(matchingLoggerSaveMethod.name(), picklistOption.value);
+            }
+        }
+    }
+
+    @IsTest
+    static void it_should_append_custom_platformEventStorageLocation_picklist_options_when_configured() {
+        List<String> fakeStorageLocations = new List<String>{ 'NOT_A_REAL_STORAGE_LOCATION', 'OR_MAYBE_IT_IS_A_REAL_ONE', 'BUT_MAYBE_JUST_A_TEST', 'PROBABLY' };
+        for (String fakeStorageLocation : fakeStorageLocations) {
+            LoggerTestConfigurator.setMock(
+                new LoggerParameter__mdt(
+                    DeveloperName = LoggerSettingsController.CUSTOM_STORAGE_LOCATION_PREFIX + fakeStorageLocation,
+                    Value__c = fakeStorageLocation
+                )
+            );
+        }
+
+        List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().platformEventStorageLocationOptions;
+
+        Set<String> expectedSaveMethods = new Set<String>{ LoggerSettingsController.CUSTOM_OBJECTS_STORAGE_LOCATION };
+        expectedSaveMethods.addAll(fakeStorageLocations);
+        Integer expectedPlatformEventStorageLocationSize = expectedSaveMethods.size() + 1; // '--NONE--' is automatically included
+        System.assertEquals(expectedPlatformEventStorageLocationSize, picklistOptions.size(), picklistOptions);
+        for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
+            if (String.isBlank(picklistOption.value) == true) {
+                System.assertEquals('--None--', picklistOption.label);
+            } else {
+                System.assertEquals(picklistOption.value, picklistOption.label, 'picklistOption==' + picklistOption);
+                System.assertEquals(true, expectedSaveMethods.contains(picklistOption.value), 'picklistOption==' + picklistOption);
+            }
+        }
+    }
+
+    @IsTest
+    static void it_should_append_custom_loggerSaveMethod_picklist_options_when_configured() {
+        List<String> fakeSaveMethods = new List<String>{ 'A_FAKE_SAVE_METHOD', 'ANOTHER_ONE', 'SOME_OTHER_SAVE_METHOD' };
+        for (String fakeSaveMethod : fakeSaveMethods) {
+            LoggerTestConfigurator.setMock(
+                new LoggerParameter__mdt(DeveloperName = LoggerSettingsController.CUSTOM_SAVE_METHOD_PREFIX + fakeSaveMethod, Value__c = fakeSaveMethod)
+            );
+        }
+
+        List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().saveMethodOptions;
+
+        Set<String> expectedSaveMethods = new Set<String>();
+        expectedSaveMethods.addAll(fakeSaveMethods);
+        for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
+            expectedSaveMethods.add(saveMethod.name());
+        }
+        Integer expectedLoggerSaveMethodSize = expectedSaveMethods.size() + 1; // '--NONE--' is automatically included
+        System.assertEquals(expectedLoggerSaveMethodSize, picklistOptions.size(), picklistOptions);
+        for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
+            if (String.isBlank(picklistOption.value) == true) {
+                System.assertEquals('--None--', picklistOption.label);
+            } else {
+                System.assertEquals(picklistOption.value, picklistOption.label, 'picklistOption==' + picklistOption);
+                System.assertEquals(true, expectedSaveMethods.contains(picklistOption.value), 'picklistOption==' + picklistOption);
             }
         }
     }
@@ -169,7 +253,7 @@ private class LoggerSettingsController_Tests {
         LoggerSettings__c invalidRecord = null;
         String expectedExceptionMessage;
         try {
-            delete invalidRecord;
+            LoggerDataStore.getDatabase().deleteRecord(invalidRecord);
         } catch (Exception ex) {
             expectedExceptionMessage = ex.getMessage();
         }
@@ -266,6 +350,7 @@ private class LoggerSettingsController_Tests {
                     CreatedDate,
                     DefaultLogShareAccessLevel__c,
                     DefaultNumberOfDaysToRetainLogs__c,
+                    DefaultPlatformEventStorageLocation__c,
                     DefaultSaveMethod__c,
                     Id,
                     IsAnonymousModeEnabled__c,
@@ -273,7 +358,6 @@ private class LoggerSettingsController_Tests {
                     IsDataMaskingEnabled__c,
                     IsEnabled__c,
                     IsJavaScriptConsoleLoggingEnabled__c,
-                    IsPlatformEventStorageEnabled__c,
                     IsRecordFieldStrippingEnabled__c,
                     IsSavingEnabled__c,
                     LastModifiedBy.Username,

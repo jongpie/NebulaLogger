@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Sample Rule 2 - Additional Error Logs</label>
+    <protected>false</protected>
+    <values>
+        <field>ConditionLogicType__c</field>
+        <value xsi:type="xsd:string">AND</value>
+    </values>
+    <values>
+        <field>CustomConditionLogic__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
+        <field>ExecutionOrder__c</field>
+        <value xsi:type="xsd:double">2.0</value>
+    </values>
+    <values>
+        <field>IsEnabled__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>NumberOfDaysToRetainLogs__c</field>
+        <value xsi:type="xsd:double">60.0</value>
+    </values>
+</CustomMetadata>

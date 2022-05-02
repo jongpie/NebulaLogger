@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TotalLogEntries__c</fullName>
+    <businessStatus>Active</businessStatus>
     <externalId>false</externalId>
     <formula>TotalERRORLogEntries__c
 + TotalWARNLogEntries__c
@@ -14,6 +15,7 @@
     <precision>18</precision>
     <required>false</required>
     <scale>0</scale>
+    <securityClassification>Confidential</securityClassification>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Number</type>

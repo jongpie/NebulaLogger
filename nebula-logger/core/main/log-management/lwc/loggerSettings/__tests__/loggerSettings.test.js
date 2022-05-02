@@ -4,7 +4,7 @@ import LoggerSettings from 'c/loggerSettings';
 
 // LoggerSettings__c metadata
 import canUserModifyLoggerSettings from '@salesforce/apex/LoggerSettingsController.canUserModifyLoggerSettings';
-import getLoggerSettingsSchema from '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema';
+import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
 import getPicklistOptions from '@salesforce/apex/LoggerSettingsController.getPicklistOptions';
 import getOrganization from '@salesforce/apex/LoggerSettingsController.getOrganization';
 import searchForSetupOwner from '@salesforce/apex/LoggerSettingsController.searchForSetupOwner';
@@ -16,7 +16,7 @@ import saveRecord from '@salesforce/apex/LoggerSettingsController.saveRecord';
 import deleteRecord from '@salesforce/apex/LoggerSettingsController.deleteRecord';
 
 // Mock metadata
-const mockLoggerSettingsSchema = require('./data/getLoggerSettingsSchema.json');
+const mockLoggerSettingsSchema = require('./data/getSchemaForName.json');
 const mockOrganization = require('./data/getOrganization.json');
 const mockPicklistOptions = require('./data/getPicklistOptions.json');
 
@@ -106,7 +106,7 @@ jest.mock(
 );
 
 jest.mock(
-    '@salesforce/apex/LoggerSObjectMetadata.getLoggerSettingsSchema',
+    '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName',
     () => {
         return {
             default: jest.fn()
@@ -118,7 +118,7 @@ jest.mock(
 async function initializeElement(enableModifyAccess) {
     // Assign mock values for resolved Apex promises
     canUserModifyLoggerSettings.mockResolvedValue(enableModifyAccess);
-    getLoggerSettingsSchema.mockResolvedValue(mockLoggerSettingsSchema);
+    getSchemaForName.mockResolvedValue(mockLoggerSettingsSchema);
     getPicklistOptions.mockResolvedValue(mockPicklistOptions);
     getRecords.mockResolvedValue(mockRecords);
 
@@ -165,7 +165,7 @@ describe('Logger Settings lwc tests', () => {
 
         // Verify the expected Apex/framework calls
         expect(canUserModifyLoggerSettings).toHaveBeenCalledTimes(1);
-        expect(getLoggerSettingsSchema).toHaveBeenCalledTimes(1);
+        expect(getSchemaForName).toHaveBeenCalledTimes(1);
         expect(getPicklistOptions).toHaveBeenCalledTimes(1);
         expect(getRecords).toHaveBeenCalledTimes(1);
         expect(createRecord).toHaveBeenCalledTimes(0);

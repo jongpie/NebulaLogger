@@ -9,6 +9,17 @@
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerSettingsController {
+    @TestVisible
+    private static final String CUSTOM_SAVE_METHOD_PREFIX = 'CustomSaveMethod';
+    @TestVisible
+    private static final String CUSTOM_OBJECTS_STORAGE_LOCATION = 'CUSTOM_OBJECTS';
+    @TestVisible
+    private static final String CUSTOM_LOG_PURGE_ACTION_PREFIX = 'CustomLogPurgeAction';
+    @TestVisible
+    private static final String CUSTOM_STORAGE_LOCATION_PREFIX = 'CustomStorageLocation';
+    @TestVisible
+    private static final String DELETE_LOG_PURGE_ACTION = 'Delete';
+
     // Data methods
     /**
      * @description Indicates if the current user has access to modify `LoggerSettings__c` records,
@@ -29,6 +40,8 @@ public without sharing class LoggerSettingsController {
     public static LoggerSettingsPicklistOptions getPicklistOptions() {
         LoggerSettingsPicklistOptions loggerSettingsPicklistOptions = new LoggerSettingsPicklistOptions();
         loggerSettingsPicklistOptions.loggingLevelOptions = getLoggingLevelOptions();
+        loggerSettingsPicklistOptions.platformEventStorageLocationOptions = getPlatformEventStorageLocationOptions();
+        loggerSettingsPicklistOptions.purgeActionOptions = getPurgeActionOptions();
         loggerSettingsPicklistOptions.saveMethodOptions = getSaveMethodOptions();
         loggerSettingsPicklistOptions.setupOwnerTypeOptions = getSetupOwnerTypeOptions();
         loggerSettingsPicklistOptions.shareAccessLevelOptions = getShareAccessLevelOptions();
@@ -83,7 +96,7 @@ public without sharing class LoggerSettingsController {
     public static void saveRecord(LoggerSettings__c settingsRecord) {
         try {
             if (canUserModifyLoggerSettings() == true) {
-                upsert settingsRecord;
+                LoggerDataStore.getDatabase().upsertRecord(settingsRecord, Schema.LoggerSettings__c.Id);
             }
         } catch (Exception ex) {
             throw createAuraHandledException(ex);
@@ -98,7 +111,7 @@ public without sharing class LoggerSettingsController {
     public static void deleteRecord(LoggerSettings__c settingsRecord) {
         try {
             if (canUserModifyLoggerSettings() == true) {
-                delete settingsRecord;
+                LoggerDataStore.getDatabase().deleteRecord(settingsRecord);
             }
         } catch (Exception ex) {
             throw createAuraHandledException(ex);
@@ -187,12 +200,57 @@ public without sharing class LoggerSettingsController {
         return picklistOptions;
     }
 
-    private static List<PicklistOption> getSaveMethodOptions() {
+    private static List<PicklistOption> getPlatformEventStorageLocationOptions() {
+        List<String> storageLocationNames = new List<String>{ CUSTOM_OBJECTS_STORAGE_LOCATION };
+        for (LoggerParameter__mdt matchingAdditionalParameter : LoggerParameter.matchOnPrefix(CUSTOM_STORAGE_LOCATION_PREFIX)) {
+            storageLocationNames.add(matchingAdditionalParameter.Value__c);
+        }
+        storageLocationNames.sort();
+
         List<PicklistOption> picklistOptions = initializePicklistOptions();
-        for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
+        for (String storageLocationName : storageLocationNames) {
             PicklistOption picklistOption = new PicklistOption();
-            picklistOption.label = saveMethod.name();
-            picklistOption.value = saveMethod.name();
+            picklistOption.label = storageLocationName;
+            picklistOption.value = storageLocationName;
+
+            picklistOptions.add(picklistOption);
+        }
+        return picklistOptions;
+    }
+
+    private static List<PicklistOption> getPurgeActionOptions() {
+        List<String> logPurgeActionNames = new List<String>{ DELETE_LOG_PURGE_ACTION };
+        for (LoggerParameter__mdt matchingAdditionalParameter : LoggerParameter.matchOnPrefix(CUSTOM_LOG_PURGE_ACTION_PREFIX)) {
+            logPurgeActionNames.add(matchingAdditionalParameter.Value__c);
+        }
+        logPurgeActionNames.sort();
+
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
+        for (String logPurgeActionName : logPurgeActionNames) {
+            PicklistOption picklistOption = new PicklistOption();
+            picklistOption.label = logPurgeActionName;
+            picklistOption.value = logPurgeActionName;
+
+            picklistOptions.add(picklistOption);
+        }
+        return picklistOptions;
+    }
+
+    private static List<PicklistOption> getSaveMethodOptions() {
+        List<String> saveMethodNames = new List<String>();
+        for (Logger.SaveMethod saveMethod : Logger.SaveMethod.values()) {
+            saveMethodNames.add(saveMethod.name());
+        }
+        for (LoggerParameter__mdt matchingAdditionalParameter : LoggerParameter.matchOnPrefix(CUSTOM_SAVE_METHOD_PREFIX)) {
+            saveMethodNames.add(matchingAdditionalParameter.Value__c);
+        }
+        saveMethodNames.sort();
+
+        List<PicklistOption> picklistOptions = initializePicklistOptions();
+        for (String saveMethodName : saveMethodNames) {
+            PicklistOption picklistOption = new PicklistOption();
+            picklistOption.label = saveMethodName;
+            picklistOption.value = saveMethodName;
 
             picklistOptions.add(picklistOption);
         }
@@ -282,6 +340,10 @@ public without sharing class LoggerSettingsController {
     public class LoggerSettingsPicklistOptions {
         @AuraEnabled
         public List<PicklistOption> loggingLevelOptions;
+        @AuraEnabled
+        public List<PicklistOption> platformEventStorageLocationOptions;
+        @AuraEnabled
+        public List<PicklistOption> purgeActionOptions;
         @AuraEnabled
         public List<PicklistOption> saveMethodOptions;
         @AuraEnabled

@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.7.0",
+    "version": "4.7.1",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
@@ -22,7 +22,8 @@
         "flow",
         "lightning components",
         "lwc",
-        "aura"
+        "aura",
+        "big objects"
     ],
     "engines": {
         "node": ">= 12.18.0",
@@ -37,7 +38,7 @@
         "docs:fix:lwc": "pwsh ./scripts/build/generate-lwc-docs.ps1 && git add ./docs/lightning-components",
         "docs:verify": "pwsh ./scripts/build/verify-docs-up-to-date.ps1",
         "experience:create": "sfdx force:community:create --name \"Logger Test Site\" --templatename \"Customer Service\" --urlpathprefix logger --description \"Logger Test Site\"",
-        "experience:deploy": "sfdx force:source:deploy --sourcepath ./nebula-logger/experience-cloud --wait 30",
+        "experience:deploy": "sfdx force:source:deploy --sourcepath ./config/experience-cloud --wait 30",
         "husky:pre-commit": "lint-staged --config ./config/linters/lint-staged.config.js",
         "lint:fix:lwc": "eslint --config ./config/linters/.eslintrc.json **/lwc/** --fix && eslint --config ./config/linters/.eslintrc.json **/aura/** --fix",
         "lint:verify": "npm run lint:verify:apex && npm run lint:verify:lwc",
@@ -53,7 +54,11 @@
         "package:version:create:unlocked": "sfdx force:package:version:create --json --package \"Nebula Logger - Core\" --skipancestorcheck --codecoverage --installationkeybypass --wait 30",
         "package:version:number:fix": "pwsh ./scripts/build/sync-package-version-number.ps1",
         "package:version:number:verify": "pwsh ./scripts/build/validate-current-package-version-number.ps1",
+        "permset:assign": "npm run permset:assign:admin && npm run permset:assign:big-object-admin && npm run permset:assign:slack-admin",
         "permset:assign:admin": "sfdx force:user:permset:assign --permsetname LoggerAdmin",
+        "permset:assign:big-object-admin": "sfdx force:user:permset:assign --permsetname LoggerLogEntryArchiveAdmin",
+        "permset:assign:slack-admin": "sfdx force:user:permset:assign --permsetname LoggerSlackPluginAdmin",
+        "plugin:version:create:big-object-archiving": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Big Object Archiving\" --codecoverage --installationkeybypass --wait 30",
         "plugin:version:create:log-retention-rules": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Log Retention Rules\" --codecoverage --installationkeybypass --wait 30",
         "plugin:version:create:logger-admin-dashboard": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Logger Admin Dashboard\" --codecoverage --installationkeybypass --wait 30",
         "plugin:version:create:slack": "sfdx force:package:version:create --json --package \"Nebula Logger - Core Plugin - Slack\" --codecoverage --installationkeybypass --wait 30",
@@ -63,11 +68,14 @@
         "sfdx:plugins:link:bummer": "npx sfdx plugins:link ./node_modules/@jongpie/sfdx-bummer-plugin",
         "sfdx:plugins:link:prettier": "npx sfdx plugins:link ./node_modules/@jayree/sfdx-plugin-prettier",
         "sfdx:plugins:link:scanner": "npx sfdx plugins:link ./node_modules/@salesforce/sfdx-scanner",
+        "source:deploy": "sfdx force:source:deploy --sourcepath ./nebula-logger/ --wait 30",
+        "source:deploy:core": "sfdx force:source:deploy --sourcepath ./nebula-logger/core --wait 30",
         "source:push": "sfdx force:source:push --forceoverwrite",
         "source:push:test": "npm run source:push && npm run test:apex",
         "test": "npm run test:lwc && npm run test:apex",
         "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./test-coverage/apex",
-        "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerConfiguration,LoggerEngine,LoggerLogManagement,LoggerPluginFramework --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
+        "test:apex:without-coverage": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --outputdir ./test-coverage/apex",
+        "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerConfiguration,LoggerEngine,LoggerLogManagement --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
         "test:lwc": "sfdx-lwc-jest --coverage --skipApiVersionCheck --verbose"
     },
     "dependencies": {
@@ -81,7 +89,7 @@
     "devDependencies": {
         "@babel/core": "latest",
         "@babel/eslint-parser": "latest",
-        "@cparra/apexdocs": "latest",
+        "@cparra/apexdocs": "1.13.7",
         "@jayree/sfdx-plugin-prettier": "latest",
         "@jongpie/sfdx-bummer-plugin": "latest",
         "@ljharb/eslint-config": "latest",
@@ -100,7 +108,7 @@
         "lint-staged": "latest",
         "prettier": "latest",
         "prettier-plugin-apex": "latest",
-        "pwsh": "latest",
+        "pwsh": "^0.3.0",
         "sfdx-cli": "latest"
     }
 }

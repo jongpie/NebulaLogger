@@ -7,8 +7,10 @@
  * @group Log Management
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.AvoidDebugStatements, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.AvoidDebugStatements, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
+    @TestVisible
+    private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
     @TestVisible
@@ -22,6 +24,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private Set<String> tagNames = new Set<String>();
 
     /**
+     * @description Default constructor, used by the trigger `LogEntryEvent.trigger`
+     */
+    public LogEntryEventHandler() {
+        super();
+    }
+
+    /**
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
      */
@@ -29,25 +38,15 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return Schema.LogEntryEvent__e.SObjectType;
     }
 
-    /**
-     * @description method so it can be called from Logger - this is unique to LogEntryEventHandler
-     * @param triggerNew list of new LogEntryEvent events
-     */
-    public override void executeBeforeInsert(List<SObject> triggerNew) {
-        this.logEntryEvents = (List<LogEntryEvent__e>) triggerNew;
-    }
-
-    /**
-     * @description Public method so it can be called from Logger - this is unique to LogEntryEventHandler
-     * @param triggerNew list of new LogEntryEvent events
-     */
-    public override void executeAfterInsert(List<SObject> triggerNew) {
+    protected override void executeAfterInsert(List<SObject> triggerNew) {
         this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
-        this.upsertLogs();
-        this.insertLogEntries();
-        this.appendRuleBasedTags();
-        this.insertLogEntryTags();
+        if (this.logEntryEvents.isEmpty() == false) {
+            this.upsertLogs();
+            this.insertLogEntries();
+            this.appendRuleBasedTags();
+            this.insertLogEntryTags();
+        }
     }
 
     private List<LogEntryEvent__e> filterLogEntryEventsToSave(List<LogEntryEvent__e> newLogEntryEvents) {
@@ -55,7 +54,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
             User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
             LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
-            if (loggingUserSettings.IsPlatformEventStorageEnabled__c == true) {
+            if (loggingUserSettings.DefaultPlatformEventStorageLocation__c == DEFAULT_STORAGE_LOCATION_NAME) {
                 logEntryEventsToSave.add(logEntryEvent);
             }
         }
@@ -142,10 +141,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
 
-        List<Database.UpsertResult> upsertResults = Database.upsert(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, false);
-        LoggerEmailUtils.sendErrorEmail(Schema.Log__c.SObjectType, upsertResults);
+        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
+            .upsertRecords(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, System.Test.isRunningTest());
+        LoggerEmailSender.sendErrorEmail(Schema.Log__c.SObjectType, upsertResults);
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
+        // TODO this probably should be moved to LogHandler instead of here
         if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
             setStatusApiDetails();
         }
@@ -160,6 +161,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             LogEntry__c logEntry = new LogEntry__c(
                 ComponentType__c = logEntryEvent.ComponentType__c,
+                DatabaseResultCollectionSize__c = logEntryEvent.DatabaseResultCollectionSize__c,
                 DatabaseResultCollectionType__c = logEntryEvent.DatabaseResultCollectionType__c,
                 DatabaseResultJson__c = logEntryEvent.DatabaseResultJson__c,
                 DatabaseResultType__c = logEntryEvent.DatabaseResultType__c,
@@ -168,6 +170,16 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ExceptionMessage__c = logEntryEvent.ExceptionMessage__c,
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,
+                HttpRequestBody__c = logEntryEvent.HttpRequestBody__c,
+                HttpRequestBodyMasked__c = logEntryEvent.HttpRequestBodyMasked__c,
+                HttpRequestCompressed__c = logEntryEvent.HttpRequestCompressed__c,
+                HttpRequestEndpoint__c = logEntryEvent.HttpRequestEndpoint__c,
+                HttpRequestMethod__c = logEntryEvent.HttpRequestMethod__c,
+                HttpResponseBody__c = logEntryEvent.HttpResponseBody__c,
+                HttpResponseBodyMasked__c = logEntryEvent.HttpResponseBodyMasked__c,
+                HttpResponseHeaderKeys__c = logEntryEvent.HttpResponseHeaderKeys__c,
+                HttpResponseStatus__c = logEntryEvent.HttpResponseStatus__c,
+                HttpResponseStatusCode__c = logEntryEvent.HttpResponseStatusCode__c,
                 LimitsAggregateQueriesMax__c = logEntryEvent.LimitsAggregateQueriesMax__c,
                 LimitsAggregateQueriesUsed__c = logEntryEvent.LimitsAggregateQueriesUsed__c,
                 LimitsAsyncCallsMax__c = logEntryEvent.LimitsAsyncCallsMax__c,
@@ -209,6 +221,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 Name = null, // Salesforce will auto-set the record ID as the name when null
                 OriginLocation__c = logEntryEvent.OriginLocation__c,
                 OriginType__c = logEntryEvent.OriginType__c,
+                RecordCollectionSize__c = logEntryEvent.RecordCollectionSize__c,
                 RecordCollectionType__c = logEntryEvent.RecordCollectionType__c,
                 RecordId__c = logEntryEvent.RecordId__c,
                 RecordJson__c = logEntryEvent.RecordJson__c,
@@ -233,8 +246,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
         }
 
-        List<Database.SaveResult> saveResults = Database.insert(this.logEntries, DML_OPTIONS);
-        LoggerEmailUtils.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
+        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(this.logEntries, DML_OPTIONS);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
     }
 
     private void appendRuleBasedTags() {
@@ -295,8 +308,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
         }
 
-        List<Database.SaveResult> saveResults = Database.insert(new List<SObject>(tagAssignments), DML_OPTIONS);
-        LoggerEmailUtils.sendErrorEmail(tagAssignmentSObjectType, saveResults);
+        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(new List<SObject>(tagAssignments), DML_OPTIONS);
+        LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, saveResults);
     }
 
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
@@ -324,8 +337,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         if (!missingTagsToCreate.isEmpty()) {
-            List<Database.SaveResult> saveResults = Database.insert(missingTagsToCreate, DML_OPTIONS);
-            LoggerEmailUtils.sendErrorEmail(tagSObjectType, saveResults);
+            List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(missingTagsToCreate, DML_OPTIONS);
+            LoggerEmailSender.sendErrorEmail(tagSObjectType, saveResults);
             for (SObject tag : missingTagsToCreate) {
                 missingTagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
             }
@@ -338,7 +351,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static Database.DmlOptions createDmlOptions() {
         Database.DmlOptions dmlOptions = new Database.DmlOptions();
         dmlOptions.AllowFieldTruncation = true;
-        dmlOptions.OptAllOrNone = false;
+        dmlOptions.OptAllOrNone = System.Test.isRunningTest();
         return dmlOptions;
     }
 
@@ -427,7 +440,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     @future(callout=true)
     private static void setStatusApiDetails() {
-        System.debug(LoggingLevel.DEBUG, 'Logger - Calling Status API for org details');
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            Logger.debug('Logger - Calling Status API for org details');
+        }
 
         Organization organization = [SELECT InstanceName FROM Organization];
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
@@ -450,7 +465,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        System.debug(LoggingLevel.DEBUG, 'Logger - Status API response: ' + statusApiResponse);
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            Logger.debug('Logger - Status API response: ' + statusApiResponse);
+        }
 
         List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : [
@@ -465,8 +482,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             logsToUpdate.add(log);
         }
-        System.debug(LoggingLevel.DEBUG, 'Logger - logs to update: ' + logsToUpdate);
-        update logsToUpdate;
+
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            Logger.debug('Logger - logs to update: ' + logsToUpdate);
+        }
+
+        LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
+        Logger.saveLog();
     }
 
     // Private class for handling the response from api.status.salesforce.com

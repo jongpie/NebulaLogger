@@ -10,7 +10,7 @@
         <field>Description__c</field>
         <value
             xsi:type="xsd:string"
-        >When set to &apos;true&apos; (default), if an internal error occurs within Logger, an email notification will be sent to the org's list of Apex Exception Email recipients, configured under Setup --> Email --> Apex Exception Email.
+        >When set to &apos;true&apos; (default), if an internal error occurs within Logger, an email notification will be sent to the org&apos;s list of Apex Exception Email recipients, configured under Setup --&gt; Email --&gt; Apex Exception Email.
 
 When set to &apos;false&apos;, no emails will be sent by Logger.</value>
     </values>

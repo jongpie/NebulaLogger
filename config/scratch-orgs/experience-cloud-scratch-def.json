@@ -15,6 +15,9 @@
         "experienceBundleSettings": {
             "enableExperienceBundleMetadata": true
         },
+        "pathAssistantSettings": {
+            "pathAssistantEnabled": true
+        },
         "userManagementSettings": {
             "enableEnhancedPermsetMgmt": true,
             "enableEnhancedProfileMgmt": true,

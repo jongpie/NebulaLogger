@@ -47,8 +47,8 @@
 
 Returns information about the current user's settings, stored in `LoggerSettings__c`
 
-**Kind**: global function  
-**Returns**: <code>ComponentLogger.ComponentLoggerSettings</code> - The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`  
+**Kind**: global function
+**Returns**: <code>ComponentLogger.ComponentLoggerSettings</code> - The current user's instance of the Apex class `ComponentLogger.ComponentLoggerSettings`
 <a name="setScenario"></a>
 
 ## setScenario(scenario)
@@ -68,7 +68,7 @@ and `Log__c.Scenario__c`, and can be used to filter & group logs
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
-**Kind**: global function  
+**Kind**: global function
 **Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
@@ -81,7 +81,7 @@ Creates a new log entry with logging level == `LoggingLevel.ERROR`
 
 Creates a new log entry with logging level == `LoggingLevel.WARN`
 
-**Kind**: global function  
+**Kind**: global function
 **Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
@@ -94,7 +94,7 @@ Creates a new log entry with logging level == `LoggingLevel.WARN`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
 
-**Kind**: global function  
+**Kind**: global function
 **Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
@@ -107,7 +107,7 @@ Creates a new log entry with logging level == `LoggingLevel.INFO`
 
 Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
-**Kind**: global function  
+**Kind**: global function
 **Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
@@ -120,7 +120,7 @@ Creates a new log entry with logging level == `LoggingLevel.DEBUG`
 
 Creates a new log entry with logging level == `LoggingLevel.FINE`
 
-**Kind**: global function  
+**Kind**: global function
 **Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
@@ -133,7 +133,7 @@ Creates a new log entry with logging level == `LoggingLevel.FINE`
 
 Creates a new log entry with logging level == `LoggingLevel.FINER`
 
-**Kind**: global function  
+**Kind**: global function
 **Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
@@ -146,7 +146,7 @@ Creates a new log entry with logging level == `LoggingLevel.FINER`
 
 Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
-**Kind**: global function  
+**Kind**: global function
 **Returns**: <code>LogEntryBuilder</code> - The new entry's instance of `LogEntryEventBuilder`, useful for chaining methods
 
 | Param   | Type                | Description                                        |
@@ -159,15 +159,15 @@ Creates a new log entry with logging level == `LoggingLevel.FINEST`
 
 Returns the number of entries that have been generated but not yet saved
 
-**Kind**: global function  
-**Returns**: <code>Integer</code> - The buffer's current size  
+**Kind**: global function
+**Returns**: <code>Integer</code> - The buffer's current size
 <a name="flushBuffer"></a>
 
 ## flushBuffer()
 
 Discards any entries that have been generated but not yet saved
 
-**Kind**: global function  
+**Kind**: global function
 <a name="saveLog"></a>
 
 ## saveLog(saveMethod)

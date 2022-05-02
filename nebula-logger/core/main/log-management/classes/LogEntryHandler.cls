@@ -9,6 +9,8 @@
  */
 @SuppressWarnings('PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
 public without sharing class LogEntryHandler extends LoggerSObjectHandler {
+    private static final Map<Schema.SObjectType, String> SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME = new Map<Schema.SObjectType, String>();
+
     @TestVisible
     private List<LogEntry__c> logEntries;
 
@@ -93,10 +95,6 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             } else if (innerApexClassName.startsWith(topLevelApexClassName + '.')) {
                 innerApexClassName = innerApexClassName.substringAfter(topLevelApexClassName + '.');
             }
-
-            // TODO confirm if there any issues with automated users (e.g., PackagePushJob uses a not-quite-a-user)
-            // logEntry.ApexClassCreatedById__c = topLevelApexClass.CreatedById;
-            // logEntry.ApexClassLastModifiedById__c = apexClass.LastModifiedById;
 
             logEntry.ApexClassApiVersion__c = 'v' + topLevelApexClass.ApiVersion;
             logEntry.ApexClassCreatedDate__c = topLevelApexClass.CreatedDate;
@@ -238,8 +236,9 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         for (Schema.SObjectType sobjectType : sobjectTypeToRecords.keySet()) {
             // Stop if we've used up all the queries
             if (Limits.getQueries() == Limits.getLimitQueries()) {
-                return;
+                break;
             }
+
             List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
 
@@ -277,9 +276,15 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     }
 
     private String getDisplayFieldApiName(Schema.SObjectType sobjectType) {
+        if (SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.containsKey(sobjectType) == true) {
+            return SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.get(sobjectType);
+        }
+
         // Use username instead of name for user
         if (sobjectType == Schema.User.SObjectType) {
-            return Schema.User.Username.getDescribe().getName();
+            String userFieldName = Schema.User.Username.getDescribe().getName();
+            SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.put(Schema.User.SObjectType, userFieldName);
+            return userFieldName;
         }
 
         // There are several commonly used names for the display field name - typically, Name
@@ -305,6 +310,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         };
 
         String displayFieldApiName;
+        List<String> fallbackFieldApiNames = new List<String>();
         for (String fieldName : educatedGuesses) {
             Schema.SObjectField field = sobjectType.getDescribe().fields.getMap().get(fieldName);
 
@@ -314,19 +320,23 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
             Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
 
-            if (fieldDescribe.isNameField()) {
+            if (fieldDescribe.isNameField() == true) {
                 displayFieldApiName = fieldDescribe.getName();
                 break;
+            } else {
+                fallbackFieldApiNames.add(fieldDescribe.getName());
             }
         }
 
+        // Some objects don't have a proper 'display field', but they do have a reasonable alternative field to use instead.
+        // For example, EmailMessage doesn't have a true display field, but it has a 'Subject' field. If one (and only one)
+        // of the educated guess-fields exists on the object - and the object does not have a display field - then use the
+        // educated guess-field as the fallback for the display field.
+        if (String.isBlank(displayFieldApiName) == true && fallbackFieldApiNames.size() == 1) {
+            displayFieldApiName = fallbackFieldApiNames.get(0);
+        }
+
+        SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.put(sobjectType, displayFieldApiName);
         return displayFieldApiName;
-    }
-
-    private static String getNamespacePrefix() {
-        String className = LogEntryHandler.class.getName();
-        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
-
-        return namespacePrefix;
     }
 }

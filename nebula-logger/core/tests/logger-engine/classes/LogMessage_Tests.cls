@@ -4,12 +4,13 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(IsParallel=true)
 private class LogMessage_Tests {
-    public class CustomLogMessage extends LogMessage {
+    private static final String CUSTOM_MESSAGE_PREFIX = 'Just confirming that CustomLogMessage class is used';
+    private class CustomLogMessage extends LogMessage {
         private String inputString;
         public CustomLogMessage(String inputString) {
-            this.inputString = inputString;
+            this.inputString = CUSTOM_MESSAGE_PREFIX + inputString;
         }
         public override String getMessage() {
             return inputString;
@@ -18,14 +19,10 @@ private class LogMessage_Tests {
 
     @IsTest
     static void it_should_support_extending_LogMessage_class() {
-        String expectedMessage = 'The current time is: ' + System.now();
+        String originalMessage = CUSTOM_MESSAGE_PREFIX + 'The current time is: ' + System.now();
+        String expectedMessage = CUSTOM_MESSAGE_PREFIX + originalMessage;
 
-        Test.startTest();
-
-        CustomLogMessage customLogMessage = new CustomLogMessage(expectedMessage);
-        String returnedMessage = customLogMessage.getMessage();
-
-        Test.stopTest();
+        String returnedMessage = new CustomLogMessage(originalMessage).getMessage();
 
         System.assertEquals(expectedMessage, returnedMessage);
     }
@@ -36,9 +33,7 @@ private class LogMessage_Tests {
         List<Object> arguments = new List<Object>{ System.now() };
         String expectedMessage = String.format(unformattedMessage, arguments);
 
-        Test.startTest();
         String returnedMessage = new LogMessage(unformattedMessage, arguments).getMessage();
-        Test.stopTest();
 
         System.assertEquals(expectedMessage, returnedMessage);
     }
@@ -49,9 +44,7 @@ private class LogMessage_Tests {
         Datetime argument1 = System.now();
         String expectedMessage = String.format(unformattedMessage, new List<Object>{ argument1 });
 
-        Test.startTest();
         String returnedMessage = new LogMessage(unformattedMessage, argument1).getMessage();
-        Test.stopTest();
 
         System.assertEquals(expectedMessage, returnedMessage);
     }
@@ -63,9 +56,7 @@ private class LogMessage_Tests {
         Date argument2 = System.today();
         String expectedMessage = String.format(unformattedMessage, new List<Object>{ argument1, argument2 });
 
-        Test.startTest();
         String returnedMessage = new LogMessage(unformattedMessage, argument1, argument2).getMessage();
-        Test.stopTest();
 
         System.assertEquals(expectedMessage, returnedMessage);
     }
@@ -78,9 +69,7 @@ private class LogMessage_Tests {
         User argument3 = new User(Id = UserInfo.getUserId());
         String expectedMessage = String.format(unformattedMessage, new List<Object>{ argument1, argument2, argument3 });
 
-        Test.startTest();
         String returnedMessage = new LogMessage(unformattedMessage, argument1, argument2, argument3).getMessage();
-        Test.stopTest();
 
         System.assertEquals(expectedMessage, returnedMessage);
     }

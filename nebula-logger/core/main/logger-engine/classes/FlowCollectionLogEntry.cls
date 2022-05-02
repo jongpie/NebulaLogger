@@ -88,13 +88,16 @@ global inherited sharing class FlowCollectionLogEntry {
     @InvocableMethod(
         category='Logging'
         label='Add Log Entry for an SObject Record Collection'
-        description='Creates a log entry for a flow or process builder and stores the record as JSON'
+        description='Creates a log entry for a flow or process builder and stores the record list as JSON'
     )
     global static List<String> addFlowCollectionEntries(List<FlowCollectionLogEntry> flowCollectionLogEntries) {
         List<FlowLogger.LogEntry> shadowLogEntries = new List<FlowLogger.LogEntry>();
         for (FlowCollectionLogEntry flowCollectionLogEntry : flowCollectionLogEntries) {
             FlowLogger.LogEntry shadowLogEntry = (FlowLogger.LogEntry) JSON.deserialize(JSON.serialize(flowCollectionLogEntry), FlowLogger.LogEntry.class);
-            shadowLogEntry.addToLoggerBuffer()?.setRecord(flowCollectionLogEntry.records);
+            LogEntryEventBuilder builder = shadowLogEntry.addToLoggerBuffer()?.setRecord(flowCollectionLogEntry.records);
+            if (builder.shouldSave() == true && flowCollectionLogEntry.records?.size() > 0) {
+                builder.getLogEntryEvent().RecordSObjectType__c = flowCollectionLogEntry.records.get(0).getSObjectType().getDescribe().getName();
+            }
 
             shadowLogEntries.add(shadowLogEntry);
         }

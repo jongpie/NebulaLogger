@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>NetworkName__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>PII</complianceGroup>
     <description>The name of the user&apos;s Community site (based on NetworkId).</description>
     <externalId>false</externalId>
     <inlineHelpText>The name of the user&apos;s Community site (based on NetworkId).</inlineHelpText>
     <label>Site Name</label>
     <length>255</length>
     <required>false</required>
+    <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

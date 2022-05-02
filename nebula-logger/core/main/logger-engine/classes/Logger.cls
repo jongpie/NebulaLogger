@@ -15,27 +15,29 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.7.0';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.7.1';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
-    @TestVisible
-    private static final Map<String, LogScenarioRule__mdt> SCENARIO_TO_MOCK_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
+    private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = setTransactionId();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
 
     private static Integer currentTransactionEntryNumber = 1;
+    @TestVisible
+    private static String lastSaveMethodNameUsed;
     private static String parentLogTransactionId;
-    private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
+    @TestVisible
+    private static Integer saveLogCallCount = 0;
     private static Boolean suspendSaving = false;
+    private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
     private static LoggerSettings__c userSettings;
 
-    @TestVisible
-    private static SaveMethod transactionSaveMethod {
+    private static String transactionSaveMethodName {
         get {
-            if (transactionSaveMethod == null) {
-                transactionSaveMethod = getDefaultSaveMethod();
+            if (transactionSaveMethodName == null) {
+                transactionSaveMethodName = getUserSettings().DefaultSaveMethod__c;
             }
-            return transactionSaveMethod;
+            return transactionSaveMethodName;
         }
         set;
     }
@@ -51,7 +53,7 @@ global with sharing class Logger {
     }
 
     static {
-        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + CURRENT_VERSION_NUMBER);
+        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
         System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
     }
 
@@ -63,6 +65,25 @@ global with sharing class Logger {
         QUEUEABLE,
         REST,
         SYNCHRONOUS_DML
+    }
+
+    // System info methods
+
+    /**
+     * @description Returns the current version number of Nebula Logger
+     * @return The current version number, in the format `v0.0.0`
+     */
+    public static String getVersionNumber() {
+        return CURRENT_VERSION_NUMBER;
+    }
+
+    /**
+     * @description Returns the current namespace of Nebula Logger
+     * @return   The current namespace prefix, or an empty string when no namespace is being used
+     */
+    public static String getNamespacePrefix() {
+        String className = Logger.class.getName();
+        return className.contains('.') ? className.substringBefore('.') : '';
     }
 
     // Settings management methods
@@ -2474,7 +2495,7 @@ global with sharing class Logger {
         }
 
         if (System.Test.isRunningTest() == true) {
-            matchingScenarioRule = SCENARIO_TO_MOCK_SCENARIO_RULE.get(scenario);
+            matchingScenarioRule = MOCK_SCENARIO_TO_SCENARIO_RULE.get(scenario);
         }
 
         if (matchingScenarioRule != null) {
@@ -2484,7 +2505,7 @@ global with sharing class Logger {
 
     @TestVisible
     private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        SCENARIO_TO_MOCK_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
+        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 
     /**
@@ -2492,7 +2513,7 @@ global with sharing class Logger {
      * @return   The enum value of Logger.SaveMethod to use for any calls to saveLog() in the current transaction
      */
     global static SaveMethod getSaveMethod() {
-        return transactionSaveMethod;
+        return getSaveMethod(transactionSaveMethodName);
     }
 
     /**
@@ -2500,7 +2521,7 @@ global with sharing class Logger {
      * @param  saveMethod The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
     global static void setSaveMethod(SaveMethod saveMethod) {
-        transactionSaveMethod = saveMethod;
+        transactionSaveMethodName = saveMethod.name();
     }
 
     /**
@@ -2508,7 +2529,7 @@ global with sharing class Logger {
      */
     @InvocableMethod(category='Logging' label='Save Log' description='Saves any log entries that have been generated')
     global static void saveLog() {
-        saveLog(transactionSaveMethod);
+        saveLog(transactionSaveMethodName);
     }
 
     /**
@@ -2516,8 +2537,19 @@ global with sharing class Logger {
      *   All subsequent calls to saveLog() will use the transaction save method.
      * @param  saveMethod The enum value of Logger.SaveMethod to use for this specific save action.
      */
-    @SuppressWarnings('PMD.NcssMethodCount')
     global static void saveLog(SaveMethod saveMethod) {
+        saveLog(saveMethod.name());
+    }
+
+    /**
+     * @description Saves any entries in Logger's buffer, using the specified save method for only this call.
+     *   All subsequent calls to saveLog() will use the transaction save method.
+     * @param  saveMethodName The String value of the save method to use for this specific save action.
+     */
+    @SuppressWarnings('PMD.NcssMethodCount')
+    public static void saveLog(String saveMethodName) {
+        saveLogCallCount++;
+        lastSaveMethodNameUsed = saveMethodName;
         if (LOG_ENTRIES_BUFFER.isEmpty() || getUserSettings().IsSavingEnabled__c == false) {
             return;
         }
@@ -2531,7 +2563,7 @@ global with sharing class Logger {
         }
 
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            finest(getSavingLogSystemMessage(saveMethod));
+            finest(getSavingLogSystemMessage(saveMethodName));
         }
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
@@ -2553,20 +2585,25 @@ global with sharing class Logger {
         // This gives us a chance to run the handler class & handler plugins before insert,
         // allowing the plugins to make further changes to the `LogEntryEvent__e` records
         // So, execute the handler, which internally then executes any plugins
-        new LogEntryEventHandler().executeBeforeInsert(logEntryEvents);
+        LoggerTriggerableContext logEntryEventsBeforeContext = new LoggerTriggerableContext(
+            Schema.LogEntryEvent__e.SObjectType,
+            TriggerOperation.BEFORE_INSERT,
+            logEntryEvents
+        );
+        LoggerSObjectHandler.getHandler(Schema.LogEntryEvent__e.SObjectType)?.overrideTriggerableContext(logEntryEventsBeforeContext).execute();
 
         // Now that the plugins have run, double check to make sure that saving should still happen
         if (getBufferSize() == 0) {
             return;
         }
 
-        switch on saveMethod {
+        switch on getSaveMethod(saveMethodName) {
             when EVENT_BUS {
-                List<Database.SaveResult> saveResults = EventBus.publish(logEntryEvents);
-                LoggerEmailUtils.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
+                List<Database.SaveResult> saveResults = LoggerDataStore.getEventBus().publishRecords(logEntryEvents);
+                LoggerEmailSender.sendErrorEmail(Schema.LogEntryEvent__e.SObjectType, saveResults);
             }
             when QUEUEABLE {
-                System.enqueueJob(new QueueableSaver(logEntryEvents));
+                LoggerDataStore.getJobQueue().enqueueJob(new QueueableSaver(logEntryEvents));
             }
             when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
@@ -2578,7 +2615,12 @@ global with sharing class Logger {
                 }
             }
             when SYNCHRONOUS_DML {
-                new LogEntryEventHandler().executeAfterInsert(logEntryEvents);
+                LoggerTriggerableContext logEntryEventsAfterContext = new LoggerTriggerableContext(
+                    Schema.LogEntryEvent__e.SObjectType,
+                    TriggerOperation.AFTER_INSERT,
+                    logEntryEvents
+                );
+                LoggerSObjectHandler.getHandler(Schema.LogEntryEvent__e.SObjectType)?.overrideTriggerableContext(logEntryEventsAfterContext).execute();
             }
         }
 
@@ -2593,42 +2635,18 @@ global with sharing class Logger {
      * @return                  The matching instance of LoggingLevel (or a default value if a match is not found)
      */
     global static LoggingLevel getLoggingLevel(String loggingLevelName) {
-        if (loggingLevelName != null) {
-            loggingLevelName = loggingLevelName.trim().toUpperCase();
-        }
-
-        switch on loggingLevelName {
-            when 'NONE' {
-                return LoggingLevel.NONE;
+        try {
+            return System.LoggingLevel.valueOf(loggingLevelName?.trim().toUpperCase());
+        } catch (NoSuchElementException ex) {
+            if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+                LogMessage logMessage = new LogMessage(
+                    'Logger - Unknown logging level {0} specified, using {1}',
+                    loggingLevelName,
+                    DEFAULT_LOGGING_LEVEL.name()
+                );
+                finest(logMessage);
             }
-            when 'ERROR' {
-                return LoggingLevel.ERROR;
-            }
-            when 'WARN' {
-                return LoggingLevel.WARN;
-            }
-            when 'INFO' {
-                return LoggingLevel.INFO;
-            }
-            when 'DEBUG' {
-                return LoggingLevel.DEBUG;
-            }
-            when 'FINE' {
-                return LoggingLevel.FINE;
-            }
-            when 'FINER' {
-                return LoggingLevel.FINER;
-            }
-            when 'FINEST' {
-                return LoggingLevel.FINEST;
-            }
-            when else {
-                if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-                    String message = 'Logger - Unknown logging level ' + loggingLevelName + 'specified, using ' + DEFAULT_LOGGING_LEVEL.name();
-                    finest(message);
-                }
-                return DEFAULT_LOGGING_LEVEL;
-            }
+            return DEFAULT_LOGGING_LEVEL;
         }
     }
 
@@ -2728,33 +2746,19 @@ global with sharing class Logger {
         }
     }
 
-    private static SaveMethod getDefaultSaveMethod() {
-        SaveMethod defaultSaveMethod;
-
-        String saveMethodName = getUserSettings().DefaultSaveMethod__c?.toUpperCase();
-        switch on saveMethodName {
-            when 'QUEUEABLE' {
-                defaultSaveMethod = SaveMethod.QUEUEABLE;
-            }
-            when 'REST' {
-                defaultSaveMethod = SaveMethod.REST;
-            }
-            when 'SYNCHRONOUS_DML' {
-                defaultSaveMethod = SaveMethod.SYNCHRONOUS_DML;
-            }
-            when else {
-                defaultSaveMethod = SaveMethod.EVENT_BUS;
-            }
+    private static SaveMethod getSaveMethod(String saveMethodName) {
+        try {
+            return SaveMethod.valueOf(saveMethodName);
+        } catch (NoSuchElementException ex) {
+            return null;
         }
-
-        return defaultSaveMethod;
     }
 
     private static String getSuspendSavingLogSystemMessage() {
         return 'Logger - Logging suspended, ignoring call to saveLog()';
     }
 
-    private static String getSavingLogSystemMessage(SaveMethod saveMethod) {
+    private static String getSavingLogSystemMessage(String saveMethodName) {
         String savingLogMessage = 'Logger - Saving ' + LOG_ENTRIES_BUFFER.size() + ' log entries via ';
         switch on getCurrentQuiddity() {
             when ANONYMOUS {
@@ -2788,7 +2792,12 @@ global with sharing class Logger {
                 savingLogMessage += getCurrentQuiddity()?.name();
             }
         }
-        savingLogMessage += ', save method is ' + saveMethod.name();
+        savingLogMessage += ', save method is ' + saveMethodName;
+        savingLogMessage +=
+            '. Logger.saveLog() has been called ' +
+            saveLogCallCount +
+            (saveLogCallCount == 1 ? ' time' : ' times') +
+            ' in the current transaction.';
 
         return savingLogMessage;
     }
@@ -2805,12 +2814,11 @@ global with sharing class Logger {
         }
 
         /**
-         * @description Required by the Queueable interface, this method contains the logic executed when
-         * the current instance of the queue runs.
-         * @param queueableContext The context of the current queue.
+         * @description Asynchronoulsy publishes the list of `LogEntryEvent__e` records
+         * @param queueableContext The context of the current queue, provided by the platform
          */
         global void execute(System.QueueableContext queueableContext) {
-            EventBus.publish(this.logEntryEvents);
+            LoggerDataStore.getEventBus().publishRecords(this.logEntryEvents);
         }
     }
 

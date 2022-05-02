@@ -6,5 +6,6 @@
     <externalId>false</externalId>
     <inlineHelpText>Controls if saving is enabled - when disabled, any calls to saveLog() are ignored.</inlineHelpText>
     <label>Enable Saving</label>
+    <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(IsParallel=true)
 private class LogEntryHandler_Tests_Flow {
     private static final String EXAMPLE_FLOW_API_NAME = 'LogEntryHandler_Tests_Flow';
 
@@ -12,10 +12,12 @@ private class LogEntryHandler_Tests_Flow {
     static void setSkipSettingFlowDetailsWhenOriginLocationIsNull() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = null, OriginType__c = 'Flow');
-        insert logEntry;
-        logEntry = getLogEntry();
 
+        insert logEntry;
+
+        logEntry = getLogEntry();
         System.assertEquals(null, logEntry.OriginLocation__c, 'Origin Location was not null.');
         System.assertEquals('Flow', logEntry.OriginType__c, 'Origin Type was not equal to Flow.');
         System.assertEquals(null, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was not null.');
@@ -35,13 +37,14 @@ private class LogEntryHandler_Tests_Flow {
     static void setFlowDetails() {
         FlowDefinitionView flowDefinition = getFlowDefinition();
         FlowVersionView flowVersion = getFlowVersion(flowDefinition.ActiveVersionId);
-
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = flowDefinition.ApiName, OriginType__c = 'Flow');
-        insert logEntry;
-        logEntry = getLogEntry();
 
+        insert logEntry;
+
+        logEntry = getLogEntry();
         System.assertEquals('Flow', logEntry.OriginType__c, 'OriginType was not flow.');
         System.assertEquals(flowDefinition.ActiveVersionId, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was incorrect.');
         System.assertEquals(flowDefinition.Description, logEntry.FlowDescription__c, 'FlowDescription was incorrect.');

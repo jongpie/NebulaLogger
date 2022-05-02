@@ -12,7 +12,7 @@ Copy-Item -Path $rootProject -Destination $unlockedProject -Force
 Write-Output "Overwriting $rootProject with $managedProject"
 Copy-Item -Path $managedProject -Destination $rootProject -Force
 
-# Create a beta of the managed package version (no `--codecoverage` flag)
+# Create a new version of the managed package
 cp -R ./nebula-logger/core/ ./nebula-logger/managed-package/
 $gitBranch = (git branch --show-current)
 $gitCommit = (git rev-parse HEAD)

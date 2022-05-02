@@ -9,24 +9,27 @@
  */
 public without sharing class LoggerSObjectMetadata {
     /**
-     * @description Provides schema details about the the platform event object `LogEntryEvent__e`
-     * @return   An instance of `LoggerSObjectMetadata.SObjectSchema` for the platform event `LogEntryEvent__e`
+     * @description Provides schema details about the specified `SObjectType`
+     * @param  sobjectApiName The API name of the `SObjectType` to convert to an instance of `LoggerSObjectMetadata.SObjectSchema`
+     * @return   An instance of `LoggerSObjectMetadata.SObjectSchema` for the specified `SObjectType`
      */
     @AuraEnabled(cacheable=true)
-    public static SObjectSchema getLogEntryEventSchema() {
-        return buildSObjectSchema(Schema.LogEntryEvent__e.SObjectType.getDescribe());
+    public static SObjectSchema getSchemaForName(String sobjectApiName) {
+        String namespacePrefix = getNamespacePrefix();
+        String qualifiedApiName = String.isBlank(namespacePrefix) == true ? sobjectApiName : namespacePrefix + '__' + sobjectApiName;
+        Type apexType = Type.forName(qualifiedApiName) != null ? Type.forName(qualifiedApiName) : Type.forName(sobjectApiName);
+        Schema.SObjectType sobjectType = ((SObject) apexType.newInstance()).getSObjectType();
+        return getSchema(sobjectType);
     }
 
     /**
-     * @description Provides schema details about the the custom settings object `LoggerSettings__c`
-     * @return   An instance of `LoggerSObjectMetadata.SObjectSchema` for the platform event `LoggerSettings__c`
+     * @description Provides schema details about the specified `SObjectType`
+     * @param  sobjectType The instance of `SObjectType` to convert to an instance of `LoggerSObjectMetadata.SObjectSchema`
+     * @return   An instance of `LoggerSObjectMetadata.SObjectSchema` for the specified `SObjectType`
      */
-    @AuraEnabled(cacheable=true)
-    public static SObjectSchema getLoggerSettingsSchema() {
-        return buildSObjectSchema(Schema.LoggerSettings__c.SObjectType.getDescribe());
-    }
+    public static SObjectSchema getSchema(Schema.SObjectType sobjectType) {
+        Schema.DescribeSObjectResult describe = sobjectType.getDescribe();
 
-    private static SObjectSchema buildSObjectSchema(Schema.DescribeSObjectResult describe) {
         SObjectSchema schema = new SObjectSchema();
         schema.apiName = describe.getName();
         schema.localApiName = describe.getLocalName();
@@ -51,6 +54,13 @@ public without sharing class LoggerSObjectMetadata {
         schema.type = fieldDescribe.getType().name().toLowerCase();
 
         return schema;
+    }
+
+    private static String getNamespacePrefix() {
+        String className = LoggerSObjectMetadata.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
     }
 
     /**

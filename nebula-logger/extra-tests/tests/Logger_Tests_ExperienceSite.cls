@@ -8,7 +8,7 @@
  * @description Additional integration tests for orgs with Experience Sites (Communities) enabled
  */
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.NcssMethodCount')
-@IsTest
+@IsTest(IsParallel=false)
 private class Logger_Tests_ExperienceSite {
     private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Schema.getGlobalDescribe().containsKey('Network');
     private static final String GUEST_USER_PROFILE_NAME = 'Logger Test Site Profile';
@@ -36,7 +36,7 @@ private class Logger_Tests_ExperienceSite {
         }
 
         User guestUser = guestUsers.get(0);
-        LoggerTestUtils.assignLogCreatorPermissionSet(guestUser.Id);
+        LoggerTestConfigurator.assignLogCreatorPermissionSet(guestUser.Id);
     }
 
     @IsTest
@@ -92,7 +92,7 @@ private class Logger_Tests_ExperienceSite {
             Logger.debug(message);
             Logger.saveLog();
 
-            Test.getEventBus().deliver();
+            System.Test.getEventBus().deliver();
         }
 
         LogEntry__c logEntry = [SELECT Id, Log__r.LoggedBy__c, Log__r.OwnerId, Log__r.UserLicenseDefinitionKey__c, Message__c FROM LogEntry__c];

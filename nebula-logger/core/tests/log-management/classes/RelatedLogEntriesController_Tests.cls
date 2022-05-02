@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
-@IsTest
+@IsTest(IsParallel=true)
 private class RelatedLogEntriesController_Tests {
     private static final Integer TOTAL_LOG_ENTRIES = 10;
     private static final Integer TOTAL_RELATED_LOG_ENTRIES = 7;
@@ -19,16 +19,18 @@ private class RelatedLogEntriesController_Tests {
 
     @TestSetup
     static void setupData() {
-        Log__c log = new Log__c(TransactionId__c = '1234');
+        LoggerSObjectHandler.shouldExecute(false);
+
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
             LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'test ' + i);
-
             if (i <= TOTAL_RELATED_LOG_ENTRIES) {
                 logEntry.RecordId__c = UserInfo.getUserId();
             }
+            LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
             logEntries.add(logEntry);
         }
