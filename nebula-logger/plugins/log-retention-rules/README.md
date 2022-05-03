@@ -30,7 +30,7 @@ This plugin is currently in beta and cannot be installed in production - however
 
 After installing the plugin, you can add rules using the custom metadata types `LogRetentionRule__mdt` and `LogRetentionRuleCondition__mdt`. Multiple rules can be configured in your orgs, as shown below:
 
-![Log Retention Rules plugin: Example Rule](./content/example-log-retention-rules-list-view.png)
+![Log Retention Rules plugin: Example Rule](./.images/example-log-retention-rules-list-view.png)
 
 In this example rule, for every inserted `LogEntry__c` record, 2 conditions are checked:
 
@@ -39,4 +39,4 @@ In this example rule, for every inserted `LogEntry__c` record, 2 conditions are 
 
 If any `LogEntry__c` record is inserted that meets these 2 conditions, then the parent `Log__c` record will have the field `LogRetentionDate__c` set to `System.today() + 30`.
 
-![Log Retention Rules plugin: Example Rule](./content/example-log-retention-rule-with-conditions.png)
+![Log Retention Rules plugin: Example Rule](./.images/example-log-retention-rule-with-conditions.png)
