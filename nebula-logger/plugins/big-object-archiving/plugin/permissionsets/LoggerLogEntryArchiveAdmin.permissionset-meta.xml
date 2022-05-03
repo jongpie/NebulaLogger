@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Provides admin access to the BigObject LogEntryEventArchive__b, included with the BigObject plugin for Nebula Logger</description>
+    <description>Provides admin access to the metadata included in the Big Object plugin for Nebula Logger</description>
     <fieldPermissions>
         <editable>true</editable>
         <field>LogEntryArchive__b.ApiReleaseNumber__c</field>

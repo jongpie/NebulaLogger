@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>Description__c</field>
-        <value xsi:type="xsd:string">Adds the ability to log directly to the BigObject LogEntryArchive__b</value>
+        <value xsi:type="xsd:string">Adds the ability to log directly to the Big Object LogEntryArchive__b</value>
     </values>
     <values>
         <field>IsEnabled__c</field>

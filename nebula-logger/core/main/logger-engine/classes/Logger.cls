@@ -53,7 +53,7 @@ global with sharing class Logger {
     }
 
     static {
-        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + CURRENT_VERSION_NUMBER);
+        System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
         System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
     }
 

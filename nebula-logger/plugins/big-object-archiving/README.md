@@ -19,7 +19,7 @@ The `LogEntryArchive__b` object can be used to:
 
 This plugin includes some add-on metadata for Nebula Logger to support storing logging data within a big object
 
-1. BigObject `LogEntryArchive__b`
+1. Big Object `LogEntryArchive__b`
 2. Custom tab "Log Entry Archives" to display the included LWC `logEntryArchives`
 3. Apex classes `LogEntryArchivePlugin`, `LogEntryArchiveBuilder` and corresponding test classes
 4. Plugin configuration details stored in Logger's CMDT objects `LoggerPlugin__mdt` and `LoggerParameter__mdt`

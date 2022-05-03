@@ -18,27 +18,7 @@ Utility class used to help with generating mock data when writing Apex tests for
 
 #### `createAggregateResult()` → `AggregateResult`
 
-Instances of `AggregateResult` can not be created directly in Apex. This method uses a workaround to generate a mock.
-
-##### Return
-
-**Type**
-
-AggregateResult
-
-**Description**
-
-The mock instance of `AggregateResult`
-
-#### `createAggregateResult(Map<String, Object> mockAggregateKeyValues)` → `AggregateResult`
-
-Instances of `AggregateResult` can not be created directly in Apex. This method uses a workaround to generate a mock, using the provided map of aliases &amp; aggregate values
-
-##### Parameters
-
-| Param                    | Description                                                                             |
-| ------------------------ | --------------------------------------------------------------------------------------- |
-| `mockAggregateKeyValues` | A map of aliases &amp; aggregate values to use when creating the mock `AggregateResult` |
+Instances of `AggregateResult` can not be created directly in Apex. This method uses a workaround to generate a mock, although it will not have any fields or aggregate values populated on the object.
 
 ##### Return
 

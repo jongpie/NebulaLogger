@@ -160,6 +160,8 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_apply_scenario_rule_logging_level_when_scenario_is_set() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
+        String transactionId = Logger.getTransactionId();
         String transactionScenarioName = 'some test scenario for this transaction';
         LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, UserLoggingLevel__c = LoggingLevel.FINER.name());
         Logger.setMockScenarioRule(scenarioRule);
@@ -167,10 +169,19 @@ private class Logger_Tests {
         System.assertNotEquals(Logger.getUserSettings().LoggingLevel__c, scenarioRule.UserLoggingLevel__c);
 
         Logger.setScenario(transactionScenarioName);
-        LogEntryEventBuilder builder = Logger.finer('my log entry');
+        for (Integer i = 0; i < 5; i++) {
+            Logger.finer('my log entry');
+        }
+        Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
+        System.Test.getEventBus().deliver();
 
-        System.assertEquals(LoggingLevel.FINER.name(), builder.getLogEntryEvent().LoggingLevel__c);
-        System.assertEquals(transactionScenarioName, builder.getLogEntryEvent().Scenario__c, 'Scenario__c was not properly set on the LogEntryEvent__e record');
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c FROM LogEntry__c WHERE Log__c = :log.Id];
+        for (LogEntry__c logEntry : logEntries) {
+            System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c, 'All log entries should have FINER as the logging level');
+        }
     }
 
     @IsTest

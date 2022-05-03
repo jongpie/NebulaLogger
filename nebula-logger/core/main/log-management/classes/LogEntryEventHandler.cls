@@ -175,10 +175,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ExceptionStackTrace__c = logEntryEvent.ExceptionStackTrace__c,
                 ExceptionType__c = logEntryEvent.ExceptionType__c,
                 HttpRequestBody__c = logEntryEvent.HttpRequestBody__c,
+                HttpRequestBodyMasked__c = logEntryEvent.HttpRequestBodyMasked__c,
                 HttpRequestCompressed__c = logEntryEvent.HttpRequestCompressed__c,
                 HttpRequestEndpoint__c = logEntryEvent.HttpRequestEndpoint__c,
                 HttpRequestMethod__c = logEntryEvent.HttpRequestMethod__c,
                 HttpResponseBody__c = logEntryEvent.HttpResponseBody__c,
+                HttpResponseBodyMasked__c = logEntryEvent.HttpResponseBodyMasked__c,
                 HttpResponseHeaderKeys__c = logEntryEvent.HttpResponseHeaderKeys__c,
                 HttpResponseStatus__c = logEntryEvent.HttpResponseStatus__c,
                 HttpResponseStatusCode__c = logEntryEvent.HttpResponseStatusCode__c,
@@ -446,7 +448,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     @future(callout=true)
     private static void setStatusApiDetails() {
-        System.debug(LoggingLevel.DEBUG, 'Logger - Calling Status API for org details');
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            Logger.debug('Logger - Calling Status API for org details');
+        }
 
         Organization organization = [SELECT InstanceName FROM Organization];
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
@@ -469,7 +473,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        System.debug(LoggingLevel.DEBUG, 'Logger - Status API response: ' + statusApiResponse);
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            Logger.debug('Logger - Status API response: ' + statusApiResponse);
+        }
 
         List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : [
@@ -484,8 +490,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             logsToUpdate.add(log);
         }
-        System.debug(LoggingLevel.DEBUG, 'Logger - logs to update: ' + logsToUpdate);
+
+        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
+            Logger.debug('Logger - logs to update: ' + logsToUpdate);
+        }
+
         LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
+        Logger.saveLog();
     }
 
     // Private class for handling the response from api.status.salesforce.com

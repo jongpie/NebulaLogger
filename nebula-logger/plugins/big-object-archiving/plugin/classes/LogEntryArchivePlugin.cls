@@ -5,7 +5,7 @@
 
 /**
  * @group Plugins
- * @description Optional plugin that provides a BigObject, `LogEntryArchive__b`, as an alternative option
+ * @description Optional plugin that provides a Big Object, `LogEntryArchive__b`, as an alternative option
  *              to the platform event `LogEntryEvent__e`
  * @see LoggerPlugin
  */
