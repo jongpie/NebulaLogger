@@ -22,27 +22,12 @@ public class LoggerMockDataCreator {
 
     /**
      * @description Instances of `AggregateResult` can not be created directly in Apex.
-     *              This method uses a workaround to generate a mock.
+     *              This method uses a workaround to generate a mock, although it will not have any fields or aggregate values populated on the object.
      * @return   The mock instance of `AggregateResult`
      */
     public static AggregateResult createAggregateResult() {
-        Map<String, Object> defaultMockAggregateKeyValues = new Map<String, Object>{
-            'fieldAvg' => 62.5,
-            'fieldMax' => 100,
-            'fieldMin' => 25,
-            'fieldCount' => 4
-        };
-        return createAggregateResult(defaultMockAggregateKeyValues);
-    }
-
-    /**
-     * @description Instances of `AggregateResult` can not be created directly in Apex.
-     *              This method uses a workaround to generate a mock, using the provided map of aliases & aggregate values
-     * @param  mockAggregateKeyValues A map of aliases & aggregate values to use when creating the mock `AggregateResult`
-     * @return   The mock instance of `AggregateResult`
-     */
-    public static AggregateResult createAggregateResult(Map<String, Object> mockAggregateKeyValues) {
-        return (AggregateResult) JSON.deserialize(JSON.serialize(mockAggregateKeyValues), AggregateResult.class);
+        Map<String, Object> emptyAggregateKeyValues = new Map<String, Object>();
+        return (AggregateResult) JSON.deserialize(JSON.serialize(emptyAggregateKeyValues), AggregateResult.class);
     }
 
     /**
