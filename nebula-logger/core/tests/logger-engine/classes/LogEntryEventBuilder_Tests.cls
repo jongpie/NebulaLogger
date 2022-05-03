@@ -893,7 +893,7 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_set_detailed_fields() {
+    static void it_should_not_set_user_fields_when_anonymous_mode_disabled() {
         // Get expected data
         Organization organization = LoggerMockDataCreator.getOrganization();
         String organizationEnvironmentType = LoggerMockDataCreator.getOrganizationEnvironmentType();
@@ -918,6 +918,40 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(USER.Profile.UserLicenseId, builder.getLogEntryEvent().UserLicenseId__c);
         System.assertEquals(USER.Profile.UserLicense.Name, builder.getLogEntryEvent().UserLicenseName__c);
         System.assertEquals(USER.UserRole?.Name, builder.getLogEntryEvent().UserRoleName__c);
+    }
+
+    @IsTest
+    static void it_should_not_set_user_fields_when_anonymous_mode_enabled() {
+        Logger.getUserSettings().IsAnonymousModeEnabled__c = true;
+
+        LogEntryEventBuilder builder = Logger.debug('test log entry');
+
+        System.assertEquals(null, builder.getLogEntryEvent().Locale__c);
+        System.assertEquals(null, builder.getLogEntryEvent().LoggedById__c);
+        System.assertEquals(null, builder.getLogEntryEvent().LoggedByUsername__c);
+        System.assertEquals(null, builder.getLogEntryEvent().LoginApplication__c);
+        System.assertEquals(null, builder.getLogEntryEvent().LoginBrowser__c);
+        System.assertEquals(null, builder.getLogEntryEvent().LoginHistoryId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().LoginPlatform__c);
+        System.assertEquals(null, builder.getLogEntryEvent().LoginType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().LogoutUrl__c);
+        System.assertEquals(null, builder.getLogEntryEvent().ProfileId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().ProfileName__c);
+        System.assertEquals(null, builder.getLogEntryEvent().SessionId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().SessionSecurityLevel__c);
+        System.assertEquals(null, builder.getLogEntryEvent().SessionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().SourceIp__c);
+        System.assertEquals(null, builder.getLogEntryEvent().ThemeDisplayed__c);
+        System.assertEquals(null, builder.getLogEntryEvent().TimeZoneId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().TimeZoneName__c);
+        System.assertEquals(null, builder.getLogEntryEvent().UserLicenseDefinitionKey__c);
+        System.assertEquals(null, builder.getLogEntryEvent().UserLicenseId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().UserLicenseName__c);
+        System.assertEquals(null, builder.getLogEntryEvent().UserLoggingLevel__c);
+        System.assertEquals(null, builder.getLogEntryEvent().UserLoggingLevelOrdinal__c);
+        System.assertEquals(null, builder.getLogEntryEvent().UserRoleId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().UserRoleName__c);
+        System.assertEquals(null, builder.getLogEntryEvent().UserType__c);
     }
 
     @IsTest

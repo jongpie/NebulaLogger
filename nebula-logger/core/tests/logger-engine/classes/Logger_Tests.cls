@@ -101,6 +101,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_transaction_id() {
         String transactionId = Logger.getTransactionId();
+
         System.assert(String.isNotBlank(transactionId));
         System.assertEquals(System.Request.getCurrent().getRequestId(), transactionId);
     }
@@ -110,6 +111,7 @@ private class Logger_Tests {
         Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
 
         Logger.Uuid uuid = new Logger.Uuid();
+
         System.assertEquals(36, uuid.getValue().length());
         Matcher matcher = pattern.matcher(uuid.getValue());
         System.assert(matcher.matches(), 'Generated UUID=' + uuid.getValue());
@@ -119,6 +121,7 @@ private class Logger_Tests {
     static void it_should_set_logger_version_number() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
+
             System.assertNotEquals(null, builder.getLogEntryEvent().LoggerVersionNumber__c);
             System.assertEquals(Logger.CURRENT_VERSION_NUMBER, builder.getLogEntryEvent().LoggerVersionNumber__c);
         }
@@ -128,49 +131,35 @@ private class Logger_Tests {
     static void it_should_set_transaction_entry_number() {
         for (Integer i = 0; i < 10; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
+
             System.assertEquals(i + 1, builder.getLogEntryEvent().TransactionEntryNumber__c);
         }
     }
 
     @IsTest
-    static void it_should_default_scenario_when_configured() {
+    static void it_should_set_scenario_when_default_scenario_configured() {
         String transactionScenarioName = 'some test scenario for this transaction';
-        LoggerSettings__c userSettings = LoggerSettings__c.getInstance();
-        userSettings.DefaultLogScenario__c = transactionScenarioName;
-        upsert userSettings;
+        Logger.getUserSettings().DefaultLogScenario__c = transactionScenarioName;
 
-        String transactionId = Logger.getTransactionId();
-        for (Integer i = 0; i < 5; i++) {
-            Logger.info('my log entry');
-        }
-        Logger.saveLog();
-        System.assertEquals(transactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
+        LogEntryEventBuilder builder = Logger.info('my log entry');
 
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        System.assertEquals(transactionScenarioName, Logger.getScenario(), 'Logger.getScenario() should return the configured scenario');
+        System.assertEquals(transactionScenarioName, builder.getLogEntryEvent().Scenario__c, 'Scenario__c was not properly set on the LogEntryEvent__e record');
     }
 
     @IsTest
-    static void it_should_set_scenario() {
-        String transactionId = Logger.getTransactionId();
+    static void it_should_set_scenario_when_provided() {
         String transactionScenarioName = 'some test scenario for this transaction';
 
         Logger.setScenario(transactionScenarioName);
-        for (Integer i = 0; i < 5; i++) {
-            Logger.info('my log entry');
-        }
-        Logger.saveLog();
-        System.assertEquals(transactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
+        LogEntryEventBuilder builder = Logger.info('my log entry');
 
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        System.assertEquals(transactionScenarioName, Logger.getScenario(), 'Logger.getScenario() should return the configured scenario');
+        System.assertEquals(transactionScenarioName, builder.getLogEntryEvent().Scenario__c, 'Scenario__c was not properly set on the LogEntryEvent__e record');
     }
 
     @IsTest
-    static void it_should_set_scenario_and_apply_scenario_rule_logging_level() {
-        String transactionId = Logger.getTransactionId();
+    static void it_should_apply_scenario_rule_logging_level_when_scenario_is_set() {
         String transactionScenarioName = 'some test scenario for this transaction';
         LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, UserLoggingLevel__c = LoggingLevel.FINER.name());
         Logger.setMockScenarioRule(scenarioRule);
@@ -178,23 +167,15 @@ private class Logger_Tests {
         System.assertNotEquals(Logger.getUserSettings().LoggingLevel__c, scenarioRule.UserLoggingLevel__c);
 
         Logger.setScenario(transactionScenarioName);
-        for (Integer i = 0; i < 5; i++) {
-            Logger.finer('my log entry');
-        }
-        Logger.saveLog();
-        System.assertEquals(transactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
+        LogEntryEventBuilder builder = Logger.finer('my log entry');
 
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
-        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c FROM LogEntry__c WHERE Log__c = :log.Id];
-        for (LogEntry__c logEntry : logEntries) {
-            System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c, 'All log entries should have FINER as the logging level');
-        }
+        System.assertEquals(LoggingLevel.FINER.name(), builder.getLogEntryEvent().LoggingLevel__c);
+        System.assertEquals(transactionScenarioName, builder.getLogEntryEvent().Scenario__c, 'Scenario__c was not properly set on the LogEntryEvent__e record');
     }
 
     @IsTest
     static void it_should_use_last_scenario_when_multiple_scenarios_specified() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         String transactionId = Logger.getTransactionId();
         String initialTransactionScenarioName = 'some test scenario for this transaction';
         String lastTransactionScenarioName = 'some test scenario for this transaction';
@@ -215,48 +196,47 @@ private class Logger_Tests {
     @IsTest
     static void it_should_set_parent_transaction_id() {
         String expectedParentTransactionId = 'imagineThisWereAGuid';
+
         Logger.setParentLogTransactionId(expectedParentTransactionId);
+
         System.assertEquals(expectedParentTransactionId, Logger.getParentLogTransactionId());
     }
 
     @IsTest
     static void it_should_ignore_parent_transaction_id_when_set_to_current_transaction_id() {
         String currentTransactionId = Logger.getTransactionId();
+
         Logger.setParentLogTransactionId(currentTransactionId);
+
         System.assertEquals(null, Logger.getParentLogTransactionId());
     }
 
     @IsTest
     static void it_should_return_quiddity_level() {
         List<Quiddity> acceptableDefaultQuidditiesForTests = new List<Quiddity>{ Quiddity.RUNTEST_ASYNC, Quiddity.RUNTEST_DEPLOY, Quiddity.RUNTEST_SYNC };
-        System.assertEquals(true, acceptableDefaultQuidditiesForTests.contains(Logger.getCurrentQuiddity()));
 
-        System.assertEquals(System.Request.getCurrent().getQuiddity(), Logger.getCurrentQuiddity());
+        Quiddity currentQuiddity = Logger.getCurrentQuiddity();
+
+        System.assertEquals(true, acceptableDefaultQuidditiesForTests.contains(currentQuiddity));
+        System.assertEquals(System.Request.getCurrent().getQuiddity(), currentQuiddity);
     }
 
     @IsTest
     static void it_should_return_user_logging_level() {
-        LoggingLevel expectedValue = LoggingLevel.FINE;
-        Logger.getUserSettings().LoggingLevel__c = expectedValue.name();
+        LoggingLevel expectedLoggingLevel = LoggingLevel.FINE;
+        Logger.getUserSettings().LoggingLevel__c = expectedLoggingLevel.name();
 
-        Test.startTest();
-        LoggingLevel returnedValue = Logger.getUserLoggingLevel();
-        Test.stopTest();
+        LoggingLevel returnedLoggingLevel = Logger.getUserLoggingLevel();
 
-        System.assertEquals(expectedValue, returnedValue);
+        System.assertEquals(expectedLoggingLevel, returnedLoggingLevel);
     }
 
     @IsTest
     static void it_should_return_true_when_enabled() {
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
 
         Boolean returnedValue = Logger.isEnabled();
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -265,15 +245,10 @@ private class Logger_Tests {
     static void it_should_return_true_when_provided_logging_level_is_enabled() {
         LoggingLevel loggingLevel = LoggingLevel.FINE;
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
 
         Boolean returnedValue = Logger.isEnabled(loggingLevel);
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -281,15 +256,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_true_when_error_logging_level_is_enabled() {
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
 
         Boolean returnedValue = Logger.isErrorEnabled();
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -297,15 +267,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_true_when_warn_logging_level_is_enabled() {
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.WARN.name();
 
         Boolean returnedValue = Logger.isWarnEnabled();
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -313,15 +278,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_true_when_info_logging_level_is_enabled() {
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
 
         Boolean returnedValue = Logger.isInfoEnabled();
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -329,15 +289,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_true_when_debug_logging_level_is_enabled() {
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
 
         Boolean returnedValue = Logger.isDebugEnabled();
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -345,15 +300,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_true_when_fine_logging_level_is_enabled() {
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINE.name();
 
         Boolean returnedValue = Logger.isFineEnabled();
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -361,15 +311,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_true_when_finer_logging_level_is_enabled() {
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINER.name();
 
         Boolean returnedValue = Logger.isFinerEnabled();
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -377,15 +322,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_return_true_when_finest_logging_level_is_enabled() {
         Boolean expectedValue = true;
-
-        Test.startTest();
-
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
 
         Boolean returnedValue = Logger.isFinestEnabled();
-
-        Test.stopTest();
 
         System.assertEquals(expectedValue, returnedValue);
     }
@@ -394,15 +334,14 @@ private class Logger_Tests {
     static void it_should_return_true_when_saving_is_suspended() {
         System.assertEquals(false, Logger.isSavingSuspended());
 
-        Test.startTest();
         Logger.suspendSaving();
-        Test.stopTest();
 
         System.assertEquals(true, Logger.isSavingSuspended());
     }
 
     @IsTest
     static void it_should_suspend_saving() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfExistingLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfExistingLogEntries);
 
@@ -424,6 +363,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_resume_saving() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -462,9 +402,9 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
+        // TODO Move this test to LogEntryEventBuilder_Tests, see if there's a way to eliminate creating a user
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
         User testStandardUser = LoggerMockDataCreator.createUser();
-
         // Make sure that the test user has a different time zone from the automated process user
         if (automatedProcessUser.TimeZoneSidKey == testStandardUser.TimeZoneSidKey) {
             switch on automatedProcessUser.TimeZoneSidKey {
@@ -501,20 +441,15 @@ private class Logger_Tests {
     static void it_should_return_the_buffer_size() {
         System.assertEquals(0, Logger.getBufferSize());
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Test.startTest();
-
         Logger.debug('test log entry');
         Logger.warn('another test log entry');
-
-        Test.stopTest();
 
         System.assertEquals(2, Logger.getBufferSize());
     }
 
     @IsTest
     static void it_should_not_save_when_saving_is_disabled() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -545,6 +480,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_event_bus_when_defaulted() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -575,6 +511,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_event_bus_when_specified_via_settings() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -601,6 +538,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_event_bus_when_specified_via_setSaveMethod() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -630,6 +568,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_queueable_when_defaulted() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -662,6 +601,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_queueable_when_specified_via_settings() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -690,6 +630,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_queueable_when_specified_via_setSaveMethod() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.assertEquals(0, countOfLogEntries);
 
@@ -721,6 +662,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_defaulted() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -750,6 +692,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_specified_via_settings() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -775,6 +718,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_rest_api_when_specified_via_setSaveMethod() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -803,6 +747,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_throw_exception_when_save_via_rest_api_fails() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400));
 
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
@@ -832,6 +777,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_synchronous_dml_when_defaulted() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         LoggerSObjectHandler.setMock(
             new LoggerSObjectHandler__mdt(
                 DeveloperName = 'Mock_Log_Entry_Event_Config',
@@ -885,6 +831,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_synchronous_dml_when_specified_via_settings() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         LoggerSObjectHandler.setMock(
             new LoggerSObjectHandler__mdt(
                 DeveloperName = 'Mock_Log_Entry_Event_Config',
@@ -936,6 +883,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_via_synchronous_dml_when_specified_via_setSaveMethod() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         LoggerSObjectHandler.setMock(
             new LoggerSObjectHandler__mdt(
                 DeveloperName = 'Mock_Log_Entry_Event_Config',
@@ -986,117 +934,14 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_not_set_user_fields_when_anonymous_mode_enabled() {
-        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
-
-        Logger.getUserSettings().IsAnonymousModeEnabled__c = true;
-        Logger.debug('test log entry');
-        Logger.debug('another test log entry');
-
-        Test.startTest();
-        Logger.saveLog();
-        Test.stopTest();
-
-        Log__c log = [
-            SELECT
-                Id,
-                Locale__c,
-                LoggedBy__c,
-                LoggedByUsername__c,
-                LoggedByUsernameLink__c,
-                LoginApplication__c,
-                LoginBrowser__c,
-                LoginHistoryId__c,
-                LoginPlatform__c,
-                LoginType__c,
-                LogoutUrl__c,
-                NetworkId__c,
-                NetworkLoginUrl__c,
-                NetworkLogoutUrl__c,
-                NetworkName__c,
-                NetworkSelfRegistrationUrl__c,
-                NetworkUrlPathPrefix__c,
-                OrganizationDomainUrl__c,
-                OrganizationEnvironmentType__c,
-                OrganizationId__c,
-                OrganizationInstanceName__c,
-                OrganizationName__c,
-                OrganizationNamespacePrefix__c,
-                OrganizationType__c,
-                ProfileId__c,
-                ProfileName__c,
-                SessionId__c,
-                SessionSecurityLevel__c,
-                SessionType__c,
-                SourceIp__c,
-                ThemeDisplayed__c,
-                TimeZoneId__c,
-                TimeZoneName__c,
-                UserLicenseDefinitionKey__c,
-                UserLicenseId__c,
-                UserLicenseName__c,
-                UserLoggingLevel__c,
-                UserLoggingLevelOrdinal__c,
-                UserRoleId__c,
-                UserRoleName__c,
-                UserType__c
-            FROM Log__c
-        ];
-
-        System.assertEquals('Anonymous', log.LoggedByUsernameLink__c);
-        System.assertEquals(null, log.NetworkName__c);
-        System.assertEquals(null, log.NetworkLoginUrl__c);
-        System.assertEquals(null, log.NetworkLogoutUrl__c);
-        System.assertEquals(null, log.NetworkSelfRegistrationUrl__c);
-        System.assertEquals(null, log.NetworkUrlPathPrefix__c);
-        System.assertEquals(null, log.LoggedBy__c);
-        System.assertEquals(null, log.LoggedByUsername__c);
-        System.assertEquals(null, log.ProfileName__c);
-        System.assertEquals(null, log.UserLicenseDefinitionKey__c);
-        System.assertEquals(null, log.UserLicenseId__c);
-        System.assertEquals(null, log.UserLicenseName__c);
-        System.assertEquals(null, log.UserRoleName__c);
-        System.assertEquals(null, log.Locale__c);
-        System.assertEquals(null, log.NetworkId__c);
-        System.assertEquals(null, log.LoginHistoryId__c);
-        System.assertEquals(null, log.LoginApplication__c);
-        System.assertEquals(null, log.LoginBrowser__c);
-        System.assertEquals(null, log.LoginPlatform__c);
-        System.assertEquals(null, log.LoginType__c);
-        System.assertEquals(null, log.LogoutUrl__c);
-        System.assertEquals(null, log.ProfileId__c);
-        System.assertEquals(null, log.SessionId__c);
-        System.assertEquals(null, log.SessionSecurityLevel__c);
-        System.assertEquals(null, log.SessionType__c);
-        System.assertEquals(null, log.SourceIp__c);
-        System.assertEquals(null, log.TimeZoneId__c);
-        System.assertEquals(null, log.TimeZoneName__c);
-        System.assertEquals(null, log.UserLoggingLevel__c);
-        System.assertEquals(null, log.UserLoggingLevelOrdinal__c);
-        System.assertEquals(null, log.UserRoleId__c);
-        System.assertEquals(null, log.UserType__c);
-        System.assertEquals(null, log.ThemeDisplayed__c);
-    }
-
-    @IsTest
     static void it_should_flush_buffer() {
-        System.assertEquals(0, Logger.getBufferSize());
-
-        setUserLoggingLevel(LoggingLevel.DEBUG);
-
-        Test.startTest();
-
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
         System.assertEquals(2, Logger.getBufferSize());
 
         Logger.flushBuffer();
 
-        Logger.debug('the only log entry to save');
-        System.assertEquals(1, Logger.getBufferSize());
-
-        Test.stopTest();
+        System.assertEquals(0, Logger.getBufferSize());
     }
 
     // Start ERROR methods for LogMessage
@@ -6254,9 +6099,6 @@ private class Logger_Tests {
         }
         return deleteResults;
     }
-
-    // TODO only some standard objects can be merged - need to find a way to either mock or trigger a merge result that works in all orgs
-    // static Database.MergeResult getMergeResult(Boolean isSuccess) { }
 
     static List<Database.SaveResult> getSaveResultList() {
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>();

@@ -769,13 +769,13 @@ global with sharing class LogEntryEventBuilder {
         LoggingLevel userLoggingLevel = Logger.getUserLoggingLevel();
 
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
-        this.logEntryEvent.NetworkId__c = Network.getNetworkId();
-        this.logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION?.LoginHistoryId;
         this.logEntryEvent.LoginApplication__c = CACHED_AUTH_SESSION?.LoginHistory.Application;
         this.logEntryEvent.LoginBrowser__c = CACHED_AUTH_SESSION?.LoginHistory.Browser;
+        this.logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION?.LoginHistoryId;
         this.logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION?.LoginHistory.Platform;
         this.logEntryEvent.LoginType__c = CACHED_AUTH_SESSION?.LoginType;
         this.logEntryEvent.LogoutUrl__c = CACHED_AUTH_SESSION?.LogoutUrl;
+        this.logEntryEvent.NetworkId__c = Network.getNetworkId();
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
         this.logEntryEvent.SessionId__c = CACHED_AUTH_SESSION?.Id;
         this.logEntryEvent.SessionSecurityLevel__c = CACHED_AUTH_SESSION?.SessionSecurityLevel;
