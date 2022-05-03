@@ -7,18 +7,28 @@
  * @group Log Management
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.AvoidDebugStatements, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
+@SuppressWarnings(
+    'PMD.ApexCrudViolation, PMD.AvoidDebugStatements, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart, PMD.PropertyNamingConventions'
+)
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     @TestVisible
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
+
     @TestVisible
-    private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
+    private static List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES {
+        get {
+            if (TAG_ASSIGNMENT_RULES == null) {
+                TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
+            }
+            return TAG_ASSIGNMENT_RULES;
+        }
+        set;
+    }
 
     @TestVisible
     private List<LogEntryEvent__e> logEntryEvents;
-
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
     private Map<String, List<String>> logEntryEventUuidToTagNames = new Map<String, List<String>>();
     private Set<String> tagNames = new Set<String>();
@@ -360,6 +370,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
+        if (LogEntryTagRule__mdt.getAll().isEmpty() == true) {
+            return new List<LogEntryTagRule__mdt>();
+        }
+
         List<LogEntryTagRule__mdt> tagAssignmentRules = [
             SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
             FROM LogEntryTagRule__mdt
