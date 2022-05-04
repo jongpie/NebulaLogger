@@ -138,24 +138,40 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_set_scenario_when_default_scenario_configured() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         String transactionScenarioName = 'some test scenario for this transaction';
-        Logger.getUserSettings().DefaultLogScenario__c = transactionScenarioName;
+        LoggerSettings__c userSettings = LoggerSettings__c.getInstance();
+        userSettings.DefaultLogScenario__c = transactionScenarioName;
+        upsert userSettings;
 
-        LogEntryEventBuilder builder = Logger.info('my log entry');
+        String transactionId = Logger.getTransactionId();
+        for (Integer i = 0; i < 5; i++) {
+            Logger.info('my log entry');
+        }
+        Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
+        System.Test.getEventBus().deliver();
 
-        System.assertEquals(transactionScenarioName, Logger.getScenario(), 'Logger.getScenario() should return the configured scenario');
-        System.assertEquals(transactionScenarioName, builder.getLogEntryEvent().Scenario__c, 'Scenario__c was not properly set on the LogEntryEvent__e record');
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
     }
 
     @IsTest
-    static void it_should_set_scenario_when_provided() {
+    static void it_should_set_scenario_when_specified() {
+        // TODO eliminate references to Log__c, find alternative way to assert on expected data
+        String transactionId = Logger.getTransactionId();
         String transactionScenarioName = 'some test scenario for this transaction';
 
         Logger.setScenario(transactionScenarioName);
-        LogEntryEventBuilder builder = Logger.info('my log entry');
+        for (Integer i = 0; i < 5; i++) {
+            Logger.info('my log entry');
+        }
+        Logger.saveLog();
+        System.assertEquals(transactionScenarioName, Logger.getScenario());
+        System.Test.getEventBus().deliver();
 
-        System.assertEquals(transactionScenarioName, Logger.getScenario(), 'Logger.getScenario() should return the configured scenario');
-        System.assertEquals(transactionScenarioName, builder.getLogEntryEvent().Scenario__c, 'Scenario__c was not properly set on the LogEntryEvent__e record');
+        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
+        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
     }
 
     @IsTest

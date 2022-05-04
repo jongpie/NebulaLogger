@@ -30,9 +30,9 @@ private class Logger_Tests_InboundEmailHandler {
         System.assertEquals(true, result.success, 'InboundEmailResult returned a failure message');
         List<Log__c> logs = [SELECT Id, TransactionId__c FROM Log__c];
         System.assertEquals(1, logs.size(), 'Logs size did not match expected value of 1.');
-        System.assertEquals(transactionId, logs.get(0).TransactionId__c, 'Transaction Id does match expected value.');
+        System.assertEquals(transactionId, logs.get(0).TransactionId__c, 'Transaction Id does match expected value');
         List<LogEntry__c> logEntries = [SELECT Id, Message__c FROM LogEntry__c];
-        System.assertEquals(1, logEntries.size(), 'Log entries size did not match expected value of 1.');
-        System.assertEquals(ExampleInboundEmailHandler.logEntryMessage, logEntries.get(0).Message__c, 'Log entries message did not match expected value.');
+        System.assertEquals(2, logEntries.size(), 'Log entries size did not match expected value of 2 ' + JSON.serializePretty(logEntries));
+        System.assertEquals(ExampleInboundEmailHandler.logEntryMessage, logEntries.get(0).Message__c, 'Log entries message did not match expected value');
     }
 }
