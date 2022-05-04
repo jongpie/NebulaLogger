@@ -55,7 +55,6 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
      * @description Handles the queuable execute logic. Required by the Queueable interface.
      * @param queueableContext Context of the current queuable instance.
      */
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     public void execute(System.QueueableContext queueableContext) {
         // Since this runs in an async context, requery the logs just in case any field values have changed
         this.requeryLogs();

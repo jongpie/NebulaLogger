@@ -8,7 +8,7 @@
  * @description Class used to manage any data-related operations, including database DML statements,
  *              publishing platform events via the event bus, and enqueueing queueable jobs
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock, PMD.ExcessivePublicCount, PMD.FieldDeclarationsShouldBeAtStart')
+@SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class LoggerDataStore {
     private static Database databaseInstance = new Database();
     private static EventBus eventBusInstance = new EventBus();
@@ -59,6 +59,7 @@ public without sharing class LoggerDataStore {
      * @description Class used to centralize the handling of any DML operations
      */
     public virtual class Database {
+        @SuppressWarnings('PMD.EmptyStatementBlock')
         protected Database() {
         }
 
@@ -254,6 +255,7 @@ public without sharing class LoggerDataStore {
      * @description Class used to centralize the handling of any platform event publishing operations
      */
     public virtual class EventBus {
+        @SuppressWarnings('PMD.EmptyStatementBlock')
         protected EventBus() {
         }
 
@@ -280,6 +282,7 @@ public without sharing class LoggerDataStore {
      * @description Class used to centralize the handling of enqueueing any queueable jobs
      */
     public virtual class JobQueue {
+        @SuppressWarnings('PMD.EmptyStatementBlock')
         protected JobQueue() {
         }
 

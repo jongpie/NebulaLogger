@@ -10,6 +10,8 @@
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock, PMD.FieldDeclarationsShouldBeAtStart')
 public without sharing abstract class LoggerSObjectHandler {
     private static Boolean isEnabled = true;
+    private static final String FLOW_PLUGIN_CONFIGURATION_INPUT_NAME = 'pluginConfiguration';
+    private static final String FLOW_PLUGIN_INPUT_NAME = 'pluginInput';
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
     private static final Map<Schema.SObjectType, LoggerSObjectHandler__mdt> SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS = queryHandlerConfigurations();
 
@@ -180,7 +182,6 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
         try {
             LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
@@ -196,12 +197,11 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeFlowPlugin(LoggerPlugin__mdt configuration) {
         try {
             Map<String, Object> flowInputs = new Map<String, Object>();
-            flowInputs.put('pluginConfiguration', configuration);
-            flowInputs.put('pluginInput', this.input);
+            flowInputs.put(FLOW_PLUGIN_CONFIGURATION_INPUT_NAME, configuration);
+            flowInputs.put(FLOW_PLUGIN_INPUT_NAME, this.input);
 
             Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.SObjectHandlerFlowName__c, flowInputs);
             flowPlugin.start();

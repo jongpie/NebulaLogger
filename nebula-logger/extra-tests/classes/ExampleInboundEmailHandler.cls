@@ -13,7 +13,6 @@ global with sharing class ExampleInboundEmailHandler implements Messaging.Inboun
      * @param env The envelope of the incoming email
      * @return The result of the inbound email and email handling.
      */
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     global Messaging.InboundEmailResult handleInboundEmail(Messaging.InboundEmail email, Messaging.InboundEnvelope env) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
         try {
@@ -23,9 +22,9 @@ global with sharing class ExampleInboundEmailHandler implements Messaging.Inboun
             Logger.error(logEntryMessage, apexException);
         } finally {
             result.success = true;
-            System.debug(LoggingLevel.DEBUG, 'Logger buffer size before save: ' + Logger.getBufferSize());
+            Logger.debug('Logger buffer size before save: ' + Logger.getBufferSize());
             Logger.saveLog();
-            System.debug(LoggingLevel.DEBUG, 'Logger buffer size after save: ' + Logger.getBufferSize());
+            Logger.debug('Logger buffer size after save: ' + Logger.getBufferSize());
         }
 
         return result;

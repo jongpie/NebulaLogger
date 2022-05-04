@@ -244,7 +244,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeApexPlugin(BatchableMethod method, LoggerPlugin__mdt pluginConfiguration, LoggerBatchableContext input, List<SObject> scopeRecords) {
         if (String.isBlank(pluginConfiguration.BatchPurgerApexClass__c) == true) {
             return;
@@ -274,7 +273,6 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         }
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeFlowPlugin(BatchableMethod method, LoggerPlugin__mdt pluginConfiguration, LoggerBatchableContext input, List<SObject> scopeRecords) {
         if (String.isBlank(pluginConfiguration.BatchPurgerFlowName__c) == true) {
             return;

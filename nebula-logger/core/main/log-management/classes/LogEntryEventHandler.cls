@@ -8,12 +8,13 @@
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
 @SuppressWarnings(
-    'PMD.ApexCrudViolation, PMD.AvoidDebugStatements, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart, PMD.PropertyNamingConventions'
+    'PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart, PMD.PropertyNamingConventions'
 )
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     @TestVisible
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
+    private static final String GUEST_USER_LICENSE_NAME = 'Guest User License';
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @TestVisible
@@ -84,8 +85,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             Id logOwnerId = logEntryEvent.CreatedById;
-            String guestUserLicenseName = 'Guest User License';
-            if (logEntryEvent.UserLicenseName__c == guestUserLicenseName || String.isBlank(logEntryEvent.CreatedById)) {
+            if (logEntryEvent.UserLicenseName__c == GUEST_USER_LICENSE_NAME || String.isBlank(logEntryEvent.CreatedById)) {
                 // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
                 logOwnerId = UserInfo.getUserId();
             }
@@ -428,11 +428,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             LIMIT 1
         ];
 
-        if (logs.isEmpty()) {
-            return null;
-        } else {
-            return logs.get(0);
-        }
+        return logs.isEmpty() == true ? null : logs.get(0);
     }
 
     private static Integer getCountOfOpenJobs() {

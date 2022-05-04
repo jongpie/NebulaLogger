@@ -577,7 +577,7 @@ global with sharing class LogEntryEventBuilder {
      * @param stackTraceString The Apex stack trace string to parse
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    @SuppressWarnings('PMD.NcssMethodCount, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
+    @SuppressWarnings('PMD.NcssMethodCount')
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (this.shouldSave == false) {
             return this;
@@ -702,6 +702,8 @@ global with sharing class LogEntryEventBuilder {
         }
 
         if (Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c == true) {
+            // 1 of 2 places in the codebase (except tests) that should use System.debug()
+            // The rest of the codebase should use a method in Logger.cls
             System.debug(this.entryLoggingLevel, this.debugMessage);
         }
     }

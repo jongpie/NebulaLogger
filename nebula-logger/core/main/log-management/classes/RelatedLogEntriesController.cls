@@ -107,7 +107,6 @@ public with sharing class RelatedLogEntriesController {
         return String.join(fieldNames, ',');
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static String getOrderByClause(String sortByFieldName, String sortDirection) {
         sortByFieldName = String.isNotBlank(sortByFieldName) ? sortByFieldName : DEFAULT_SORT_FIELD_NAME;
         sortDirection = String.isNotBlank(sortDirection) ? sortDirection : DEFAULT_SORT_DIRECTION;

@@ -74,7 +74,6 @@ public without sharing class LoggerEmailSender {
         sendErrorEmail(sobjectType, errorMessages);
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static void sendErrorEmail(Schema.SObjectType sobjectType, List<String> errorMessages) {
         if (errorMessages.isEmpty() == true) {
             return;
@@ -118,7 +117,6 @@ public without sharing class LoggerEmailSender {
         return errorMessages;
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static void sendEmail(Messaging.SingleEmailMessage message) {
         if (IS_EMAIL_DELIVERABILITY_ENABLED == true) {
             List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
