@@ -79,7 +79,12 @@
         "test:lwc": "sfdx-lwc-jest --coverage --skipApiVersionCheck --verbose"
     },
     "dependencies": {
+        "ansi-regex": ">=5.0.1",
+        "async": ">=2.6.4",
+        "ejs": ">=3.1.7",
         "follow-redirects": ">=1.14.8",
+        "glob-parent": ">=5.1.2",
+        "json-schema": ">=0.4.0",
         "markdown-it": ">=12.3.2",
         "marked": ">=4.0.10",
         "nanoid": ">=3.1.31",
