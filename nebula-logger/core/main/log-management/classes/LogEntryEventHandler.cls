@@ -151,7 +151,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         // TODO this probably should be moved to LogHandler instead of here
-        if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && getCountOfOpenJobs() == 0) {
+        if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && LogManagementDataSelector.queryCountOfOpenApexJobs() == 0) {
             setStatusApiDetails();
         }
     }
@@ -319,8 +319,17 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
         Map<String, Id> tagNameToId = new Map<String, Id>();
 
-        String tagQuery = 'SELECT Id, Name FROM ' + tagSObjectType + ' WHERE Name IN :tagNames';
-        for (SObject tag : Database.query(String.escapeSingleQuotes(tagQuery))) {
+        List<SObject> tagRecords;
+        switch on tagSObjectType.newSObject() {
+            when LoggerTag__c loggerTag {
+                tagRecords = LogManagementDataSelector.queryTags(this.tagNames);
+            }
+            when Topic topic {
+                tagRecords = LogManagementDataSelector.queryTopics(this.tagNames);
+            }
+        }
+
+        for (SObject tag : tagRecords) {
             tagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
         }
         tagNameToId.putAll(this.insertMissingTags(tagSObjectType, tagNameToId));
@@ -376,11 +385,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return new List<LogEntryTagRule__mdt>();
         }
 
-        List<LogEntryTagRule__mdt> tagAssignmentRules = [
-            SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
-            FROM LogEntryTagRule__mdt
-            WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
-        ];
+        List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerEngineDataSelector.queryTagAssignmentRules();
         for (LogEntryTagRule__mdt rule : tagAssignmentRules) {
             rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
         }
@@ -431,24 +436,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return logs.isEmpty() == true ? null : logs.get(0);
     }
 
-    private static Integer getCountOfOpenJobs() {
-        return [
-            SELECT COUNT()
-            FROM AsyncApexJob
-            WHERE
-                ApexClass.Name = :LogEntryEventHandler.class.getName()
-                AND MethodName = 'setStatusApiDetails'
-                AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing')
-        ];
-    }
-
     @future(callout=true)
     private static void setStatusApiDetails() {
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
             Logger.debug('Logger - Calling Status API for org details');
         }
 
-        Organization organization = [SELECT InstanceName FROM Organization];
+        Organization organization = LoggerEngineDataSelector.queryOrganization();
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
         HttpRequest request = new HttpRequest();

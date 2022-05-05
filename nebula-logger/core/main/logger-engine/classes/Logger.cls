@@ -9,7 +9,7 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
-@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.ExcessiveClassLength, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
+@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
@@ -2491,8 +2491,11 @@ global with sharing class Logger {
 
         // LogScenarioRule__mdt scenarioRule = LogScenarioRule__mdt.getInstance(scenario);
         LogScenarioRule__mdt matchingScenarioRule;
-        for (LogScenarioRule__mdt scenarioRule : [SELECT UserLoggingLevel__c FROM LogScenarioRule__mdt WHERE IsEnabled__c = TRUE AND Scenario__c = :scenario]) {
-            matchingScenarioRule = scenarioRule;
+        for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
+            if (scenarioRule.IsEnabled__c = true && scenarioRule.Scenario__c == scenario) {
+                matchingScenarioRule = scenarioRule;
+                break;
+            }
         }
 
         if (System.Test.isRunningTest() == true) {
@@ -2661,21 +2664,11 @@ global with sharing class Logger {
      */
     @AuraEnabled(cacheable=true)
     public static Log__c getLog(String logId) {
-        List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
-        logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
-        List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
-
-        List<String> textReplacements = new List<String>{
-            String.join(logFieldNames, ','),
-            String.join(logEntryFieldNames, ','),
-            Schema.LogEntry__c.TransactionEntryNumber__c.getDescribe().getName()
-        };
-        String query = String.format(
-            'SELECT {0}, (SELECT {1} FROM LogEntries__r ORDER BY {2}) FROM Log__c WHERE Id = :logId OR TransactionId__c = :logId',
-            textReplacements
+        // TODO move this method outside of Logger, and somewhere in log management module. Logger shouldn't know about Log__c
+        SObjectAccessDecision securityDecision = Security.stripInaccessible(
+            AccessType.READABLE,
+            new List<Log__c>{ LogManagementDataSelector.queryLogById(logId) }
         );
-
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(String.escapeSingleQuotes(query)));
         return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
     }
 

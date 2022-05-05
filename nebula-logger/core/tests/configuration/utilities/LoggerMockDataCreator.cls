@@ -305,6 +305,7 @@ public class LoggerMockDataCreator {
      * @return   The matching `Organization` record
      */
     public static Organization getOrganization() {
+        // TODO Switch to creating mock instance of Organization with sensible defaults that tests can then update as needed for different scenarios
         return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
     }
 

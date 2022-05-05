@@ -9,7 +9,7 @@
  * @see Logger
  */
 @SuppressWarnings(
-    'PMD.ApexCRUDViolation, PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+    'PMD.AvoidGlobalModifier, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.ExcessiveClassLength, PMD.NcssTypeCount, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
@@ -39,7 +39,7 @@ global with sharing class LogEntryEventBuilder {
     public static final Organization CACHED_ORGANIZATION {
         get {
             if (CACHED_ORGANIZATION == null) {
-                CACHED_ORGANIZATION = queryOrganization();
+                CACHED_ORGANIZATION = LoggerEngineDataSelector.queryOrganization();
             }
             return CACHED_ORGANIZATION;
         }
@@ -53,7 +53,7 @@ global with sharing class LogEntryEventBuilder {
     public static final User CACHED_USER {
         get {
             if (CACHED_USER == null) {
-                CACHED_USER = queryUser();
+                CACHED_USER = LoggerEngineDataSelector.queryUser();
             }
             return CACHED_USER;
         }
@@ -64,7 +64,7 @@ global with sharing class LogEntryEventBuilder {
     private static final AuthSession CACHED_AUTH_SESSION {
         get {
             if (CACHED_AUTH_SESSION == null) {
-                CACHED_AUTH_SESSION = queryAuthSession();
+                CACHED_AUTH_SESSION = LoggerEngineDataSelector.queryAuthSession();
             }
             return CACHED_AUTH_SESSION;
         }
@@ -84,7 +84,7 @@ global with sharing class LogEntryEventBuilder {
     private static final SObject CACHED_NETWORK_SITE {
         get {
             if (CACHED_NETWORK_SITE == null) {
-                CACHED_NETWORK_SITE = queryNetwork();
+                CACHED_NETWORK_SITE = LoggerEngineDataSelector.queryNetwork();
             }
             return CACHED_NETWORK_SITE;
         }
@@ -966,56 +966,6 @@ global with sharing class LogEntryEventBuilder {
         }
 
         return true;
-    }
-
-    private static AuthSession queryAuthSession() {
-        if (String.isBlank(UserInfo.getSessionId())) {
-            return new AuthSession();
-        }
-
-        // Scheduled jobs, batch jobs, invocables, future methods and queueables are ALL
-        // run by the Automated Process user - attempting to access Auth.SessionManagement
-        // methods as that user throws an UNCATCHABLE error. Let's sidestep that by querying AuthSession instead.
-        List<AuthSession> sessions = [
-            SELECT
-                Id,
-                LoginType,
-                LoginHistoryId,
-                LoginHistory.Application,
-                LoginHistory.Browser,
-                LoginHistory.Platform,
-                LogoutUrl,
-                SessionSecurityLevel,
-                SessionType,
-                SourceIp
-            FROM AuthSession
-            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
-        ];
-        return sessions.isEmpty() ? new AuthSession() : sessions.get(0);
-    }
-
-    private static SObject queryNetwork() {
-        Id networkId = Network.getNetworkId();
-        if (networkId == null || Type.forName('Network') == null) {
-            return null;
-        }
-
-        // Networks (aka experience sites aka community sites aka portal sites ò_ô)
-        // may not be enabled in the org (no Network object), so run everything dynamically
-        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :networkId';
-        return Database.query(String.escapeSingleQuotes(query));
-    }
-
-    private static Organization queryOrganization() {
-        return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
-    }
-
-    private static User queryUser() {
-        return [
-            SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
-            FROM User
-            WHERE Id = :UserInfo.getUserId()
-        ];
     }
 
     private static List<SObject> stripInaccessible(List<SObject> records) {

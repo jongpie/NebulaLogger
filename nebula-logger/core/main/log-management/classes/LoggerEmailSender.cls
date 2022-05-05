@@ -152,10 +152,9 @@ public without sharing class LoggerEmailSender {
         return String.format(emailBodyTemplate, emailBodyInputs);
     }
 
-    @SuppressWarnings('PMD.ApexCRUDViolation')
     private static List<String> queryApexErrrorRecipients() {
         List<String> apexErrrorRecipients = new List<String>();
-        List<ApexEmailNotification> notifications = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
+        List<ApexEmailNotification> notifications = LogManagementDataSelector.queryApexEmailNotifications();
 
         if (System.Test.isRunningTest() == true) {
             notifications.clear();

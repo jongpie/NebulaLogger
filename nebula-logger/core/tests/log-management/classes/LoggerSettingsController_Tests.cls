@@ -268,7 +268,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_organization_record() {
-        Organization expectedRecord = [SELECT Id, Name FROM Organization];
+        Organization expectedRecord = [SELECT Id, InstanceName, IsSandbox, Name, OrganizationType, TrialExpirationDate FROM Organization];
         Organization returnedOrganization = LoggerSettingsController.getOrganization();
         System.assertEquals(expectedRecord, returnedOrganization);
     }

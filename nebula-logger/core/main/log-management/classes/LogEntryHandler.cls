@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `LogEntry__c` before insert & before update
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
+@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
 public without sharing class LogEntryHandler extends LoggerSObjectHandler {
     private static final Map<Schema.SObjectType, String> SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME = new Map<Schema.SObjectType, String>();
 
@@ -72,12 +72,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         Map<String, ApexClass> classNameToApexClass = new Map<String, ApexClass>();
-        for (ApexClass apexClass : [
-            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
-            FROM ApexClass
-            WHERE Name IN :apexClassNames
-            ORDER BY NamespacePrefix NULLS LAST
-        ]) {
+        for (ApexClass apexClass : LogManagementDataSelector.queryApexClasses(apexClassNames)) {
             classNameToApexClass.put(apexClass.Name, apexClass);
         }
 
@@ -130,23 +125,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         Map<String, FlowDefinitionView> flowApiNameToDefinition = new Map<String, FlowDefinitionView>();
-        for (
-            FlowDefinitionView flowDefinition : [
-                SELECT
-                    ActiveVersionId,
-                    ApiName,
-                    Description,
-                    DurableId,
-                    Label,
-                    LastModifiedBy, // This is a text field of the person's name - it's NOT a lookup to User :'(
-                    LastModifiedDate,
-                    ManageableState,
-                    ProcessType,
-                    TriggerType
-                FROM FlowDefinitionView
-                WHERE ApiName IN :flowApiNames AND IsActive = TRUE
-            ]
-        ) {
+        for (FlowDefinitionView flowDefinition : LogManagementDataSelector.queryFlowDefinitionViewsByFlowApiName(flowApiNames)) {
             flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
         }
 
@@ -182,11 +161,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         Map<String, FlowVersionView> flowDurableId = new Map<String, FlowVersionView>();
-        for (FlowVersionView flowVersionView : [
-            SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber
-            FROM FlowVersionView
-            WHERE DurableId IN :flowActiveVersionIds
-        ]) {
+        for (FlowVersionView flowVersionView : LogManagementDataSelector.queryFlowVersionViewsByDurableId(flowActiveVersionIds)) {
             // Filtering on Status in SOQL seems to always return 0 results, so filter in code instead
             if (flowVersionView.Status == 'Active') {
                 flowDurableId.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
@@ -246,12 +221,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            String query = String.format(
-                'SELECT Id, {0} FROM {1} WHERE Id IN :sobjectTypeRecordIds',
-                new List<Object>{ sobjectDisplayFieldName, sobjectType, sobjectTypeRecordIds }
-            );
-
-            List<SObject> results = Database.query(String.escapeSingleQuotes(query));
+            List<SObject> results = LoggerEngineDataSelector.queryById(sobjectType, new Set<String>{ sobjectDisplayFieldName }, sobjectTypeRecordIds);
             recordIdToRecord.putAll(results);
         }
 
