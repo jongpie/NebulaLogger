@@ -280,7 +280,7 @@ public with sharing class RelatedLogEntriesController {
             this.fields = new List<FieldMetadata>();
 
             Schema.FieldSet fieldSet = sobjectType.getDescribe().fieldSets.getMap().get(fieldSetName);
-            for (FieldSetMember fieldSetMember : fieldSet.getFields()) {
+            for (Schema.FieldSetMember fieldSetMember : fieldSet.getFields()) {
                 // Enforce field-level security (FLS)
                 if (fieldSetMember.getSObjectField().getDescribe().isAccessible()) {
                     this.fields.add(new FieldMetadata(fieldSetMember));
@@ -340,7 +340,7 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String type { get; set; }
 
-        private FieldMetadata(FieldSetMember fieldSetMember) {
+        private FieldMetadata(Schema.FieldSetMember fieldSetMember) {
             Schema.DescribeFieldResult fieldDescribe = fieldSetMember.getSObjectField().getDescribe();
 
             this.fieldName = fieldSetMember.getFieldPath();
