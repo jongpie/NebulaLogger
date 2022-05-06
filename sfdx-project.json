@@ -66,6 +66,14 @@
             "default": false
         },
         {
+            "default": false,
+            "package": "Nebula Logger - Plugin - Async Failure Additions",
+            "path": "./nebula-logger/plugins/async-failure-additions/plugin",
+            "versionName": "Initial release with Finalizer and BatchApexErrorEvent functionality",
+            "versionNumber": "0.0.1.NEXT",
+            "versionDescription": "Adds the capability to get Logs created for unexpected Apex Batch class failures through LoggerParameter__mdt additions, and provides a Finalizer implementation for logging Queueable failures"
+        },
+        {
             "path": "./nebula-logger/extra-tests",
             "default": false
         },

@@ -34,6 +34,26 @@ private class LoggerSObjectHandler_Tests {
     }
 
     @IsTest
+    static void it_should_return_handler_via_override() {
+        Schema.SObjectType sobjectType = new MockSObjectHandler().getSObjectType();
+        LoggerSObjectHandler.setMock(
+            new LoggerSObjectHandler__mdt(
+                IsEnabled__c = true,
+                SObjectHandlerApexClass__c = MockSObjectHandler.class.getName(),
+                SObjectTypeOverride__c = sobjectType.getDescribe().getName()
+            )
+        );
+
+        LoggerSObjectHandler configuredInstance = LoggerSObjectHandler.getHandler(sobjectType);
+
+        System.assertEquals(
+            true,
+            configuredInstance instanceof MockSObjectHandler,
+            'The handler returned via override should be an instance of the configured class, MockSObjectHandler'
+        );
+    }
+
+    @IsTest
     static void it_should_return_default_sobject_handler_implementation_when_no_configuration_provided() {
         Schema.SObjectType sobjectType = new MockDefaultImplementationSObjectHandler().getSObjectType();
         LoggerSObjectHandler defaultImplementation = new MockDefaultImplementationSObjectHandler();
