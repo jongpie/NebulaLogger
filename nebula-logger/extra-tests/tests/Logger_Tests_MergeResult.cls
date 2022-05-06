@@ -34,11 +34,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Logging level name was incorrect.');
@@ -71,11 +71,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.error(getLogMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Logging level was incorrect.');
@@ -103,11 +103,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Logging level was incorrect.');
@@ -140,11 +140,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.error(getMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -177,11 +177,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -214,11 +214,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.warn(getLogMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -246,11 +246,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -283,11 +283,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.warn(getMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -320,11 +320,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -357,11 +357,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.info(getLogMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -389,11 +389,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.info(getMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -426,11 +426,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.info(getMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -463,11 +463,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -500,11 +500,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.debug(getLogMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -532,11 +532,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.debug(getMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -569,11 +569,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.debug(getMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -606,11 +606,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -643,11 +643,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.fine(getLogMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -675,11 +675,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.fine(getMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log event logging level was incorrect.');
@@ -712,11 +712,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.fine(getMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -749,11 +749,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -786,11 +786,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.finer(getLogMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -818,11 +818,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.finer(getMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -855,11 +855,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.finer(getMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -892,11 +892,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -929,11 +929,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.finest(getLogMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -961,11 +961,11 @@ private class Logger_Tests_MergeResult {
 
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.finest(getMessage(), mergeResult);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');
@@ -998,11 +998,11 @@ private class Logger_Tests_MergeResult {
 
         List<Database.MergeResult> mergeResults = getMergeResultList();
 
-        Test.startTest();
+        System.Test.startTest();
 
         LogEntryEventBuilder entryBuilder = Logger.finest(getMessage(), mergeResults);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(1, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
         System.assertEquals(loggingLevel.name(), entryBuilder.getLogEntryEvent().LoggingLevel__c, 'Log entry event logging level was incorrect.');

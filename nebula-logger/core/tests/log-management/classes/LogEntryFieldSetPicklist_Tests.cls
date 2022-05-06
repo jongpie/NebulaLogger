@@ -9,20 +9,20 @@ private class LogEntryFieldSetPicklist_Tests {
     @IsTest
     static void it_should_return_null_for_default_value() {
         // Admins should choose a field set, so always return null for the default
-        Test.startTest();
+        System.Test.startTest();
         LogEntryFieldSetPicklist instance = new LogEntryFieldSetPicklist();
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(null, instance.getDefaultValue());
     }
 
     @IsTest
     static void it_should_return_all_field_sets_as_values() {
-        Map<String, FieldSet> expectedFieldSets = Schema.SObjectType.LogEntry__c.fieldSets.getMap();
+        Map<String, Schema.FieldSet> expectedFieldSets = Schema.SObjectType.LogEntry__c.fieldSets.getMap();
 
-        Test.startTest();
+        System.Test.startTest();
         LogEntryFieldSetPicklist instance = new LogEntryFieldSetPicklist();
-        Test.stopTest();
+        System.Test.stopTest();
 
         List<VisualEditor.DataRow> dataRows = instance.getValues().getDataRows();
         System.assertEquals(expectedFieldSets.size(), dataRows.size());
@@ -32,7 +32,7 @@ private class LogEntryFieldSetPicklist_Tests {
 
             System.assert(expectedFieldSets.containsKey(fieldSetName));
 
-            FieldSet fieldSet = expectedFieldSets.get(fieldSetName);
+            Schema.FieldSet fieldSet = expectedFieldSets.get(fieldSetName);
             System.assertEquals(fieldSet.getLabel(), fieldSetLabel);
         }
     }

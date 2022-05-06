@@ -470,7 +470,7 @@ public class LoggerMockDataCreator {
     /**
      * @description Class used to create or update an `SObject` record with static fake data.
      *              This is useful in situations where you need to have fields populated, but the specific
-     *              values used are not relevant to a particular test.
+     *              values used are not relevant to a particular test method.
      *              This class can be used when Apex writing tests for plugins.
      */
     public without sharing class SObjectTestDataBuilder {

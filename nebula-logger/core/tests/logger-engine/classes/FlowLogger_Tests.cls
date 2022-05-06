@@ -43,7 +43,7 @@ private class FlowLogger_Tests {
     static void it_should_auto_save_entry_when_saveLog_is_true() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel entryLoggingLevel = LoggingLevel.DEBUG;
-        Test.startTest();
+        System.Test.startTest();
         Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         System.assertEquals(0, Logger.getBufferSize());

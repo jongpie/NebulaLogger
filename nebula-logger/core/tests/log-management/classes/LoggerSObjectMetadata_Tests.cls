@@ -27,7 +27,7 @@ private class LoggerSObjectMetadata_Tests {
         validateSObjectDetails(userSObjectType, sobjectSchema);
     }
 
-    private static void validateSObjectDetails(SObjectType sobjectType, LoggerSObjectMetadata.SObjectSchema sobjectSchema) {
+    private static void validateSObjectDetails(Schema.SObjectType sobjectType, LoggerSObjectMetadata.SObjectSchema sobjectSchema) {
         // SObject details
         System.assertEquals(sobjectType.getDescribe().getLabel(), sobjectSchema.label);
         System.assertEquals(sobjectType.getDescribe().getLabelPlural(), sobjectSchema.labelPlural);

@@ -591,7 +591,7 @@ A new copy of the original `SObject` record that has the specified read-only fie
 
 #### LoggerMockDataCreator.SObjectTestDataBuilder class
 
-Class used to create or update an `SObject` record with static fake data. This is useful in situations where you need to have fields populated, but the specific values used are not relevant to a particular test. This class can be used when Apex writing tests for plugins.
+Class used to create or update an `SObject` record with static fake data. This is useful in situations where you need to have fields populated, but the specific values used are not relevant to a particular test method. This class can be used when Apex writing tests for plugins.
 
 ---
 

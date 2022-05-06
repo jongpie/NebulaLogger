@@ -18,7 +18,7 @@ private class Logger_Tests_InboundEmailHandler {
         email.subject = 'My example email';
         Messaging.InboundEnvelope envelope = new Messaging.InboundEnvelope();
         ExampleInboundEmailHandler emailHandler = new ExampleInboundEmailHandler();
-        Test.startTest();
+        System.Test.startTest();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         String transactionId = Logger.getTransactionId();
         System.assertNotEquals(1, Logger.saveLogCallCount, 'No logging should have occurred yet');
@@ -26,7 +26,7 @@ private class Logger_Tests_InboundEmailHandler {
         Messaging.InboundEmailResult result = emailHandler.handleInboundEmail(email, envelope);
 
         System.assertNotEquals(0, Logger.saveLogCallCount, 'ExampleInboundEmailHandler class should have logged & saved some logging data');
-        Test.stopTest();
+        System.Test.stopTest();
         System.assertEquals(true, result.success, 'InboundEmailResult returned a failure message');
         List<Log__c> logs = [SELECT Id, TransactionId__c FROM Log__c];
         System.assertEquals(1, logs.size(), 'Logs size did not match expected value of 1.');

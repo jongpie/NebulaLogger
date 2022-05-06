@@ -28,9 +28,9 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(1, log.LogEntries__r.size(), 'Log entries size was not equal to 1.');
         System.assertEquals(false, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to true.');
         System.assertEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
-        Test.startTest();
+        System.Test.startTest();
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
-        Test.setMock(HttpCalloutMock.class, calloutMock);
+        System.Test.setMock(HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         LoggingLevel slackLoggingLevel = LoggingLevel.ERROR;
         System.assert(logEntryLoggingLevel.ordinal() < slackLoggingLevel.ordinal(), 'Slack logging level ordinal was incorrect.');
@@ -45,7 +45,7 @@ private class SlackLoggerPlugin_Tests {
         // Verify that the internal queueable job has been enqueued
         System.assertEquals(0, Limits.getAsyncCalls(), 'The queueable job should not have been enqueued');
         // Stop the test so the internal queueable job runs
-        Test.stopTest();
+        System.Test.stopTest();
         log = queryLogs(logEntryLoggingLevel).get(0);
         System.assertEquals(1, log.LogEntries__r.size(), 'Log entries size was not equal to 1.');
         System.assertEquals(false, log.SendSlackNotification__c, 'SendSlackNotification incorrectly set to true.');
@@ -75,9 +75,9 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(1, log.LogEntries__r.size(), 'Log entries did not match the expected count of 1.');
         System.assertEquals(false, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to true.');
         System.assertEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
-        Test.startTest();
+        System.Test.startTest();
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
-        Test.setMock(HttpCalloutMock.class, calloutMock);
+        System.Test.setMock(HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         mockConfigurations(logEntryLoggingLevel);
         System.assert(
@@ -93,7 +93,7 @@ private class SlackLoggerPlugin_Tests {
         // Verify that the internal queueable job has been enqueued
         System.assertEquals(1, Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
         // Stop the test so the internal queueable job runs
-        Test.stopTest();
+        System.Test.stopTest();
         log = [SELECT Id, MaxLogEntryLoggingLevelOrdinal__c, SendSlackNotification__c, SlackNotificationDate__c FROM Log__c];
         System.assertEquals(true, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to false.');
         System.assertNotEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was null.');
@@ -123,9 +123,9 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(1, log.LogEntries__r.size(), 'Log entries did not match the expected count of 1.');
         System.assertEquals(false, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to true.');
         System.assertEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
-        Test.startTest();
+        System.Test.startTest();
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
-        Test.setMock(HttpCalloutMock.class, calloutMock);
+        System.Test.setMock(HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         mockConfigurations(logEntryLoggingLevel);
         System.assert(
@@ -141,7 +141,7 @@ private class SlackLoggerPlugin_Tests {
         // Verify that the internal queueable job has been enqueued
         System.assertEquals(1, Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
         // Stop the test so the internal queueable job runs
-        Test.stopTest();
+        System.Test.stopTest();
         log = [SELECT Id, MaxLogEntryLoggingLevelOrdinal__c, SendSlackNotification__c, SlackNotificationDate__c FROM Log__c];
         System.assertEquals(true, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to false.');
         System.assertNotEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was null.');
@@ -171,9 +171,9 @@ private class SlackLoggerPlugin_Tests {
         System.assertEquals(1, log.LogEntries__r.size(), 'Log entries did not match the expected count of 1.');
         System.assertEquals(false, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to true.');
         System.assertEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was not null.');
-        Test.startTest();
+        System.Test.startTest();
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
-        Test.setMock(HttpCalloutMock.class, calloutMock);
+        System.Test.setMock(HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
         mockConfigurations(logEntryLoggingLevel);
         System.assert(
@@ -189,7 +189,7 @@ private class SlackLoggerPlugin_Tests {
         // Verify that the internal queueable job has been enqueued
         System.assertEquals(1, Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
         // Stop the test so the internal queueable job runs
-        Test.stopTest();
+        System.Test.stopTest();
         log = [SELECT Id, MaxLogEntryLoggingLevelOrdinal__c, SendSlackNotification__c, SlackNotificationDate__c FROM Log__c];
         System.assertEquals(true, log.SendSlackNotification__c, 'SendSlackNotification was incorrectly set to false.');
         System.assertNotEquals(null, log.SlackNotificationDate__c, 'SlackNotificationDate was null.');

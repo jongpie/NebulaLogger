@@ -18,10 +18,10 @@ private class LoggerInstallHandler_Tests {
         Version version = null;
         Boolean isUpgrade = false;
 
-        Test.startTest();
+        System.Test.startTest();
         LoggerInstallHandler installHandler = new LoggerInstallHandler();
-        Test.testInstall(installHandler, version, isUpgrade);
-        Test.stopTest();
+        System.Test.testInstall(installHandler, version, isUpgrade);
+        System.Test.stopTest();
 
         // Verify that we now have 1 record...
         List<LoggerSettings__c> loggerSettings = [SELECT Id FROM LoggerSettings__c];
@@ -56,14 +56,14 @@ private class LoggerInstallHandler_Tests {
         Version version = null;
         Boolean isUpgrade = false;
 
-        Test.startTest();
+        System.Test.startTest();
 
         LoggerInstallHandler installHandler = new LoggerInstallHandler();
         installHandler.settingsWithouDefaultSaveMethod = mockSettings;
 
-        Test.testInstall(installHandler, version, isUpgrade);
+        System.Test.testInstall(installHandler, version, isUpgrade);
 
-        Test.stopTest();
+        System.Test.stopTest();
 
         for (LoggerSettings__c setting : mockSettings) {
             System.assertNotEquals(null, setting.DefaultSaveMethod__c);

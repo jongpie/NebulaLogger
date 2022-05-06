@@ -47,7 +47,7 @@ private class RelatedLogEntriesController_Tests {
         String sortDirection = 'ASC';
         String search = null;
 
-        Test.startTest();
+        System.Test.startTest();
 
         RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getQueryResult(
             recordId,
@@ -58,7 +58,7 @@ private class RelatedLogEntriesController_Tests {
             sortDirection,
             search
         );
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(fieldSetName, result.fieldSet.name);
 
@@ -95,7 +95,7 @@ private class RelatedLogEntriesController_Tests {
         }
         System.assertEquals(1, countOfMatches, logEntries);
 
-        Test.startTest();
+        System.Test.startTest();
 
         RelatedLogEntriesController.LogEntryQueryResult result = RelatedLogEntriesController.getQueryResult(
             recordId,
@@ -106,7 +106,7 @@ private class RelatedLogEntriesController_Tests {
             sortDirection,
             search
         );
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(fieldSetName, result.fieldSet.name);
         // FIXME

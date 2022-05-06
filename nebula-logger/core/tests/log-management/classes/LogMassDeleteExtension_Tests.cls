@@ -37,7 +37,7 @@ private class LogMassDeleteExtension_Tests {
         ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
         controller.setSelected(logs);
         PageReference pageReference = Page.LogMassDelete;
-        Test.setCurrentPage(pageReference);
+        System.Test.setCurrentPage(pageReference);
 
         LogMassDeleteExtension extension = new LogMassDeleteExtension(controller);
         List<Log__c> returnedDeletableLogs = extension.getDeletableLogs();
@@ -61,7 +61,7 @@ private class LogMassDeleteExtension_Tests {
         ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
         controller.setSelected(logsToDelete);
         PageReference pageReference = Page.LogMassDelete;
-        Test.setCurrentPage(pageReference);
+        System.Test.setCurrentPage(pageReference);
 
         LogMassDeleteExtension extension = new LogMassDeleteExtension(controller);
         extension.deleteSelectedLogs();

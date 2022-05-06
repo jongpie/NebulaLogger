@@ -101,13 +101,13 @@ private class LogBatchPurger_Tests {
         Log__c log = logs.get(0);
         System.assertNotEquals(null, log.LogRetentionDate__c);
         System.assert(log.LogRetentionDate__c < System.today());
-        Test.startTest();
+        System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(true);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
         Database.executeBatch(new LogBatchPurger());
 
-        Test.stopTest();
+        System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(0, logs.size(), logs);
@@ -131,13 +131,13 @@ private class LogBatchPurger_Tests {
         Log__c log = logs.get(0);
         System.assertNotEquals(null, log.LogRetentionDate__c);
         System.assert(log.LogRetentionDate__c < System.today());
-        Test.startTest();
+        System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
         Database.executeBatch(new LogBatchPurger());
 
-        Test.stopTest();
+        System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(0, logs.size(), logs);
@@ -157,13 +157,13 @@ private class LogBatchPurger_Tests {
         update log;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c];
         System.assert(log.LogRetentionDate__c > System.today());
-        Test.startTest();
+        System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
         Database.executeBatch(new LogBatchPurger());
 
-        Test.stopTest();
+        System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(1, logs.size());
@@ -184,13 +184,13 @@ private class LogBatchPurger_Tests {
         update log;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c];
         System.assertEquals(null, log.LogRetentionDate__c);
-        Test.startTest();
+        System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
         Database.executeBatch(new LogBatchPurger());
 
-        Test.stopTest();
+        System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
         System.assertEquals(1, logs.size(), logs);
@@ -208,13 +208,13 @@ private class LogBatchPurger_Tests {
         log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(retentionDate, log.LogRetentionDate__c, 'Log should not have a retention date');
         System.assertEquals(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
-        Test.startTest();
+        System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
         Database.executeBatch(new LogBatchPurger());
 
-        Test.stopTest();
+        System.Test.stopTest();
         List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(0, matchingLogs.size(), 'Test log should have been deleted');
     }
@@ -229,13 +229,13 @@ private class LogBatchPurger_Tests {
         log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(null, log.LogRetentionDate__c, 'Log should not have a retention date');
         System.assertEquals(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
-        Test.startTest();
+        System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
 
         Database.executeBatch(new LogBatchPurger());
 
-        Test.stopTest();
+        System.Test.stopTest();
         List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(0, matchingLogs.size(), 'Test log should have been deleted');
     }

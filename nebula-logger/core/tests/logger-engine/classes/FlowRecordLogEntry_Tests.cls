@@ -27,7 +27,7 @@ private class FlowRecordLogEntry_Tests {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
         System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
-        Test.startTest();
+        System.Test.startTest();
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();

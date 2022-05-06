@@ -49,7 +49,7 @@ private class Logger_Tests_ExperienceSite {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
 
-        Test.startTest();
+        System.Test.startTest();
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
         List<User> guestUsers = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
@@ -66,7 +66,7 @@ private class Logger_Tests_ExperienceSite {
             String expectedExceptionMessage = 'FIELD_INTEGRITY_EXCEPTION, field integrity exception (Guest users cannot be record owners.)';
             System.assert(ex.getMessage().contains(expectedExceptionMessage), 'Exception did not contain expected message.');
         }
-        Test.stopTest();
+        System.Test.stopTest();
     }
 
     @IsTest
