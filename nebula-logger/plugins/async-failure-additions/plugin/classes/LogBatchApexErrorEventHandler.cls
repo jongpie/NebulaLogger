@@ -21,7 +21,7 @@ public without sharing class LogBatchApexErrorEventHandler extends LoggerSObject
         super();
     }
 
-    public override SObjectType getSObjectType() {
+    public override Schema.SObjectType getSObjectType() {
         return Schema.BatchApexErrorEvent.SObjectType;
     }
 

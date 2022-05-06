@@ -37,15 +37,15 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
         mockParam.DeveloperName = LogBatchApexErrorEventHandler.BATCH_ERROR_LOGGER + 'Test';
         LoggerParameter.setMock(mockParam);
         try {
-            Test.startTest();
+            System.Test.startTest();
             Database.executeBatch(new LogBatchApexErrorEventHandler_Tests(phase));
-            Test.stopTest();
+            System.Test.stopTest();
         } catch (Exception ex) {
             // via https://salesforce.stackexchange.com/questions/263419/testing-batchapexerrorevent-trigger
         }
         // at this point, we're still two async-levels deep into Platform Event-land; we need to call "deliver()" twice
-        Test.getEventBus().deliver(); // fires the platform event for Database.RaisesPlatformEvents
-        Test.getEventBus().deliver(); // fires the logger's platform event
+        System.Test.getEventBus().deliver(); // fires the platform event for Database.RaisesPlatformEvents
+        System.Test.getEventBus().deliver(); // fires the logger's platform event
 
         assertLogWasCreatedForPhase(phase);
     }

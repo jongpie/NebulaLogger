@@ -8,10 +8,10 @@ private class LogFinalizer_Tests {
     private static final String EXPECTED_ERROR_MESSAGE = 'Gack';
     @IsTest
     static void it_should_not_log_on_queueable_success() {
-        Test.startTest();
+        System.Test.startTest();
         System.enqueueJob(new ExampleQueueable());
-        Test.stopTest();
-        Test.getEventBus().deliver();
+        System.Test.stopTest();
+        System.Test.getEventBus().deliver();
 
         System.assertEquals(0, [SELECT COUNT() FROM Log__c], 'Should not log if no errors');
     }
@@ -19,13 +19,13 @@ private class LogFinalizer_Tests {
     @IsTest
     static void it_should_log_on_queueable_error() {
         try {
-            Test.startTest();
+            System.Test.startTest();
             System.enqueueJob(new ExampleFailedQueueable());
-            Test.stopTest();
+            System.Test.stopTest();
         } catch (Exception ex) {
             System.assertEquals(EXPECTED_ERROR_MESSAGE, ex.getMessage());
         }
-        Test.getEventBus().deliver();
+        System.Test.getEventBus().deliver();
 
         List<LogEntry__c> logEntries = [SELECT Message__c, ExceptionMessage__c FROM LogEntry__c];
         System.assertEquals(2, logEntries.size(), 'Should log for errors');
