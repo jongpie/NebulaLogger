@@ -32,6 +32,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
 
     @SuppressWarnings('PMD.EmptyCatchBlock')
     private static void runTestForPhase(Phase phase) {
+        Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c = false;
         LoggerParameter__mdt mockParam = new LoggerParameter__mdt();
         mockParam.Value__c = LogBatchApexErrorEventHandler_Tests.class.getName();
         mockParam.DeveloperName = LogBatchApexErrorEventHandler.BATCH_ERROR_LOGGER + 'Test';
