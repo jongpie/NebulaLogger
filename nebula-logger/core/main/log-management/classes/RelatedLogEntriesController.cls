@@ -9,8 +9,8 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
 public with sharing class RelatedLogEntriesController {
-    private static final SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;
-    private static final SObjectType LOG_ENTRY_SOBJECT_TYPE = Schema.LogEntry__c.SObjectType;
+    private static final Schema.SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;
+    private static final Schema.SObjectType LOG_ENTRY_SOBJECT_TYPE = Schema.LogEntry__c.SObjectType;
     private static final String DEFAULT_SORT_FIELD_NAME = String.valueOf(Schema.LogEntry__c.Timestamp__c);
     private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
@@ -122,7 +122,7 @@ public with sharing class RelatedLogEntriesController {
 
     private static String getDisplayFieldApiName(Schema.DescribeFieldResult lookupFieldDescribe) {
         String relationshipName = lookupFieldDescribe.getRelationshipName();
-        SObjectType lookupSObjectType = lookupFieldDescribe.getReferenceTo().get(0);
+        Schema.SObjectType lookupSObjectType = lookupFieldDescribe.getReferenceTo().get(0);
 
         // Use username instead of name for user
         if (lookupSObjectType == Schema.User.SObjectType) {
@@ -276,7 +276,7 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String name { get; set; }
 
-        private FieldSetMetadata(SObjectType sobjectType, String fieldSetName) {
+        private FieldSetMetadata(Schema.SObjectType sobjectType, String fieldSetName) {
             this.fields = new List<FieldMetadata>();
 
             Schema.FieldSet fieldSet = sobjectType.getDescribe().fieldSets.getMap().get(fieldSetName);

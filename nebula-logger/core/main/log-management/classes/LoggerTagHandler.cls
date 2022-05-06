@@ -17,7 +17,7 @@ public without sharing class LoggerTagHandler extends LoggerSObjectHandler {
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
      */
-    public override SObjectType getSObjectType() {
+    public override Schema.SObjectType getSObjectType() {
         return Schema.LoggerTag__c.SObjectType;
     }
 

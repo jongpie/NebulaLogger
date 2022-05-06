@@ -18,7 +18,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
      */
-    public override SObjectType getSObjectType() {
+    public override Schema.SObjectType getSObjectType() {
         return Schema.LogEntry__c.SObjectType;
     }
 

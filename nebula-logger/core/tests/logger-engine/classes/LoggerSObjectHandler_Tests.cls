@@ -317,7 +317,7 @@ private class LoggerSObjectHandler_Tests {
     }
 
     public class MockDefaultImplementationSObjectHandler extends LoggerSObjectHandler {
-        public override SObjectType getSObjectType() {
+        public override Schema.SObjectType getSObjectType() {
             return Schema.User.SObjectType;
         }
     }
@@ -339,7 +339,7 @@ private class LoggerSObjectHandler_Tests {
             this.sobjectType = sobjectType;
         }
 
-        public override SObjectType getSObjectType() {
+        public override Schema.SObjectType getSObjectType() {
             return this.sobjectType;
         }
 
