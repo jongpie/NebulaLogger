@@ -7,7 +7,7 @@
     <referenceTo>EntityDefinition</referenceTo>
     <relationshipLabel>Logger SObject Handler Configurations</relationshipLabel>
     <relationshipName>LoggerSObjectHandlerConfigurations</relationshipName>
-    <required>true</required>
+    <required>false</required>
     <type>MetadataRelationship</type>
     <unique>true</unique>
 </CustomField>

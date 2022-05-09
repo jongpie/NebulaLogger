@@ -18,6 +18,10 @@
                 <behavior>Required</behavior>
                 <field>SObjectHandlerApexClass__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>SObjectTypeOverride__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
