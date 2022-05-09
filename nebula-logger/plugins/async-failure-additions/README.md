@@ -8,7 +8,7 @@
 
 ### Unexpected Batch Error Logging
 
-By default, this plugin adds support for logging unexpected Batch class failures in Apex. All a batch class needs to do is implement the marker `Database.RaisesPlatformEvents` interface _and_ create a `LoggerParameter__mdt` record where the `Value` field matches the name of the batch class you are looking to add logging for:
+By default, this plugin adds support for logging unexpected Batch class failures in Apex. All a batch class needs to do is implement the marker `Database.RaisesPlatformEvents` interface _and_ create a `LoggerParameter__mdt` record where the `Value` field matches the name of the batch class you are looking to add logging for, and the DeveloperName (the "Name" field) starts with `BatchError`:
 
 ```java
 // the class MUST implement Database.RaisesPlatformEvents for this to work correctly!
@@ -20,6 +20,8 @@ public class MyExampleBatchable implements Database.Batchable<SObject>, Database
 And the CMDT record:
 
 ![Setting up the Logger Parameter record to opt into unexpected Batch failures](.images/opt-into-batch-logging-with-logger-parameter.png)
+
+Once you've correctly configured those two things (the marker interface `Database.RaisesPlatformEvents` on the Apex batchable class, and the Logger Parameter CMDT record), your class will now log any uncaught exceptions that cause that batch class to fail unexpectedly.
 
 ---
 

@@ -20,8 +20,6 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
 
     @IsTest
     static void it_should_create_log_when_batch_job_throws_in_execute_method() {
-        // need an account for the query to actually hand records off to the "execute" method
-        insert new Account(Name = LogBatchApexErrorEventHandler_Tests.class.getName());
         runTestForPhase(Phase.EXECUTE);
     }
 
@@ -52,10 +50,10 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
     }
 
     private static void assertLogWasCreatedForPhase(Phase phase) {
-        Log__c logEntry = getLog();
-        System.assertNotEquals(null, logEntry, 'Log should have been created!');
-        System.assertEquals(2, logEntry.LogEntries__r.size(), 'Two log entries should have been created');
-        System.assertEquals('Batch job terminated unexpectedly', logEntry.LogEntries__r[0].Message__c);
+        Log__c log = getLog();
+        System.assertNotEquals(null, log, 'Log should have been created!');
+        System.assertEquals(2, log.LogEntries__r.size(), 'Two log entries should have been created');
+        System.assertEquals('Batch job terminated unexpectedly', log.LogEntries__r[0].Message__c);
         System.assertEquals(
             String.format(
                     LogBatchApexErrorEventHandler.LOG_MESSAGE,
@@ -63,7 +61,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
                 )
                 .subStringAfter('with')
                 .substringBefore('Stacktrace:'),
-            logEntry.LogEntries__r[1].Message__c.substringAfter('with').substringBefore('Stacktrace:')
+            log.LogEntries__r[1].Message__c.substringAfter('with').substringBefore('Stacktrace:')
         );
     }
 
@@ -79,7 +77,7 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
         throwOnLocationMatch(Phase.START);
-        return Database.getQueryLocator([SELECT Id FROM Account LIMIT 1]);
+        return Database.getQueryLocator([SELECT Id FROM User LIMIT 1]);
     }
 
     public void execute(Database.BatchableContext bc, List<SObject> scope) {
