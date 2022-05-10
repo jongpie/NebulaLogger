@@ -1,8 +1,9 @@
 # Async Failure Additions plugin for Nebula Logger
 
-> :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger's unlocked package
+> :information_source: This plugin requires `v4.7.2` or newer of Nebula Logger's unlocked package
 
-[![Install Unlocked Package](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=TODO)
+[![Install Unlocked Package Plugin in a Sandbox](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lhiQAA)
+[![Install Unlocked Package Plugin in Production](../.images/btn-install-unlocked-package-plugin-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lhiQAA)
 
 ## What's Included
 
@@ -19,7 +20,7 @@ public class MyExampleBatchable implements Database.Batchable<SObject>, Database
 
 And the CMDT record:
 
-![Setting up the Logger Parameter record to opt into unexpected Batch failures](.images/opt-into-batch-logging-with-logger-parameter.png)
+![Setting up the Logger Parameter record to opt into unexpected Batch failures](./.images/opt-into-batch-logging-with-logger-parameter.png)
 
 Once you've correctly configured those two things (the marker interface `Database.RaisesPlatformEvents` on the Apex batchable class, and the Logger Parameter CMDT record), your class will now log any uncaught exceptions that cause that batch class to fail unexpectedly.
 

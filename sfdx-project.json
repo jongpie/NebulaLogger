@@ -14,6 +14,19 @@
             "default": true
         },
         {
+            "default": false,
+            "package": "Nebula Logger - Plugin - Async Failure Additions",
+            "path": "./nebula-logger/plugins/async-failure-additions/plugin",
+            "dependencies": [
+                {
+                    "package": "Nebula Logger - Core@4.7.2-1-parent-log-transaction-id-bugfix"
+                }
+            ],
+            "versionName": "Initial release with Finalizer and BatchApexErrorEvent functionality",
+            "versionNumber": "1.0.0.NEXT",
+            "versionDescription": "Adds the capability to get Logs created for unexpected Apex Batch class failures through LoggerParameter__mdt additions, and provides a Finalizer implementation for logging Queueable failures"
+        },
+        {
             "package": "Nebula Logger - Plugin - Big Object Archiving",
             "path": "./nebula-logger/plugins/big-object-archiving/plugin",
             "dependencies": [
@@ -62,16 +75,8 @@
             ],
             "versionName": "Beta Release: Round 3",
             "versionNumber": "0.10.0.NEXT",
-            "versionDescription": "TODO",
+            "versionDescription": "Updated Slack plugin to work with Nebula Logger v4.7.1",
             "default": false
-        },
-        {
-            "default": false,
-            "package": "Nebula Logger - Plugin - Async Failure Additions",
-            "path": "./nebula-logger/plugins/async-failure-additions/plugin",
-            "versionName": "Initial release with Finalizer and BatchApexErrorEvent functionality",
-            "versionNumber": "0.0.1.NEXT",
-            "versionDescription": "Adds the capability to get Logs created for unexpected Apex Batch class failures through LoggerParameter__mdt additions, and provides a Finalizer implementation for logging Queueable failures"
         },
         {
             "path": "./nebula-logger/extra-tests",
@@ -112,7 +117,9 @@
         "Nebula Logger - Core@4.6.16-0-ui-cleanup": "04t5Y0000015lLzQAI",
         "Nebula Logger - Core@4.7.0-25-spring-'22-release": "04t5Y0000015lXSQAY",
         "Nebula Logger - Core@4.7.1-8-plugin-framework-overhaul": "04t5Y0000015lgBQAQ",
-        "Nebula Logger - Core@4.7.2-NEXT-parent-log-transaction-id-bugfix": "04t5Y0000015lhEQAQ",
+        "Nebula Logger - Core@4.7.2-1-parent-log-transaction-id-bugfix": "04t5Y0000015lhdQAA",
+        "Nebula Logger - Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
+        "Nebula Logger - Plugin - Async Failure Additions@1.0.0-3": "04t5Y0000015lhiQAA",
         "Nebula Logger - Plugin - Big Object Archiving": "0Ho5Y000000blMSSAY",
         "Nebula Logger - Plugin - Big Object Archiving@0.9.0-2": "04t5Y0000015lgLQAQ",
         "Nebula Logger - Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",

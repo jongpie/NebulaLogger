@@ -2,7 +2,8 @@
 
 > :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger's unlocked package
 
-[![Install Unlocked Package Plugin](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgGQAQ)
+[![Install Unlocked Package Plugin in a Sandbox](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgGQAQ)
+[![Install Unlocked Package Plugin in Production](../.images/btn-install-unlocked-package-plugin-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgGQAQ)
 
 Adds the ability to create & deploy advanced, configurable rules for setting the retention date of `Log__c` records, using custom metadata types `LogRetentionRule__mdt` and `LogRetentionRuleCondition__mdt`.
 
