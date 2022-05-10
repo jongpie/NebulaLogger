@@ -5,7 +5,7 @@
 
 /**
  * @group Plugins
- * @description Builder class to create an instance of `LogEntryArchive__b`, used by the BigObject plugin
+ * @description Builder class to create an instance of `LogEntryArchive__b`, used by the Big Object plugin
  * @see LogEntryArchivePlugin
  * @see LogEntryEventBuilder
  */

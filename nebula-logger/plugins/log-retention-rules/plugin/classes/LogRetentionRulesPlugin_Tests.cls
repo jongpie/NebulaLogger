@@ -25,7 +25,7 @@ private class LogRetentionRulesPlugin_Tests {
         LogRetentionRulesPlugin.setMockRetentionRuleConditions(rule, conditions);
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
-        Test.setCreatedDate(log.Id, now.addDays(-1));
+        System.Test.setCreatedDate(log.Id, now.addDays(-1));
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(originalLogRetentionDate, log.LogRetentionDate__c);
 
@@ -54,7 +54,7 @@ private class LogRetentionRulesPlugin_Tests {
 
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
-        Test.setCreatedDate(log.Id, now);
+        System.Test.setCreatedDate(log.Id, now);
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(originalLogRetentionDate, log.LogRetentionDate__c);
 

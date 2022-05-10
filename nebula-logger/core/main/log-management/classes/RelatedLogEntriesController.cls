@@ -9,8 +9,8 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
 public with sharing class RelatedLogEntriesController {
-    private static final SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;
-    private static final SObjectType LOG_ENTRY_SOBJECT_TYPE = Schema.LogEntry__c.SObjectType;
+    private static final Schema.SObjectType LOG_SOBJECT_TYPE = Schema.Log__c.SObjectType;
+    private static final Schema.SObjectType LOG_ENTRY_SOBJECT_TYPE = Schema.LogEntry__c.SObjectType;
     private static final String DEFAULT_SORT_FIELD_NAME = String.valueOf(Schema.LogEntry__c.Timestamp__c);
     private static final String DEFAULT_SORT_DIRECTION = 'DESC';
 
@@ -107,7 +107,6 @@ public with sharing class RelatedLogEntriesController {
         return String.join(fieldNames, ',');
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private static String getOrderByClause(String sortByFieldName, String sortDirection) {
         sortByFieldName = String.isNotBlank(sortByFieldName) ? sortByFieldName : DEFAULT_SORT_FIELD_NAME;
         sortDirection = String.isNotBlank(sortDirection) ? sortDirection : DEFAULT_SORT_DIRECTION;
@@ -123,7 +122,7 @@ public with sharing class RelatedLogEntriesController {
 
     private static String getDisplayFieldApiName(Schema.DescribeFieldResult lookupFieldDescribe) {
         String relationshipName = lookupFieldDescribe.getRelationshipName();
-        SObjectType lookupSObjectType = lookupFieldDescribe.getReferenceTo().get(0);
+        Schema.SObjectType lookupSObjectType = lookupFieldDescribe.getReferenceTo().get(0);
 
         // Use username instead of name for user
         if (lookupSObjectType == Schema.User.SObjectType) {
@@ -277,11 +276,11 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String name { get; set; }
 
-        private FieldSetMetadata(SObjectType sobjectType, String fieldSetName) {
+        private FieldSetMetadata(Schema.SObjectType sobjectType, String fieldSetName) {
             this.fields = new List<FieldMetadata>();
 
             Schema.FieldSet fieldSet = sobjectType.getDescribe().fieldSets.getMap().get(fieldSetName);
-            for (FieldSetMember fieldSetMember : fieldSet.getFields()) {
+            for (Schema.FieldSetMember fieldSetMember : fieldSet.getFields()) {
                 // Enforce field-level security (FLS)
                 if (fieldSetMember.getSObjectField().getDescribe().isAccessible()) {
                     this.fields.add(new FieldMetadata(fieldSetMember));
@@ -341,7 +340,7 @@ public with sharing class RelatedLogEntriesController {
         @AuraEnabled
         public String type { get; set; }
 
-        private FieldMetadata(FieldSetMember fieldSetMember) {
+        private FieldMetadata(Schema.FieldSetMember fieldSetMember) {
             Schema.DescribeFieldResult fieldDescribe = fieldSetMember.getSObjectField().getDescribe();
 
             this.fieldName = fieldSetMember.getFieldPath();

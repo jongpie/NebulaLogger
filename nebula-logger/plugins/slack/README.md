@@ -2,11 +2,12 @@
 
 > :information_source: This plugin requires `v4.7.1` or newer of Nebula Logger's unlocked package
 
-[![Install Unlocked Package](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgQQAQ)
+[![Install Unlocked Package Plugin in a Sandbox](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgQQAQ)
+[![Install Unlocked Package Plugin in Production](../.images/btn-install-unlocked-package-plugin-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lgQQAQ)
 
 Adds a Slack integration for the unlocked package edition of Nebula Logger. Any logs with log entries that meet a certain (configurable) logging level will automatically be posted to your Slack channel via an asynchronous `Queueable` job.
 
-![Slack plugin: notification](./images/slack-plugin-notification.png)
+![Slack plugin: notification](./.images/slack-plugin-notification.png)
 
 ---
 
@@ -48,4 +49,4 @@ Check out [Slack's webhooks documentation](https://api.slack.com/messaging/webho
 
 The Slack integration should now be setup & working - any new logs that meet the specified notification logging level (step 6 above) will send a Slack notification.
 
-![Slack plugin: parameters](./images/slack-plugin-parameters.png)
+![Slack plugin: parameters](./.images/slack-plugin-parameters.png)

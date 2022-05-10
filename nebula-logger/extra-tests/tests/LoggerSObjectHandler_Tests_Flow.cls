@@ -36,7 +36,7 @@ private class LoggerSObjectHandler_Tests_Flow {
     }
 
     private class MockLogHandler extends LoggerSObjectHandler {
-        public override SObjectType getSObjectType() {
+        public override Schema.SObjectType getSObjectType() {
             return Schema.Log__c.SObjectType;
         }
     }

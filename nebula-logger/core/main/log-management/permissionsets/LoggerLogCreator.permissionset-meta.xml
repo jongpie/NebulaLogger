@@ -28,7 +28,8 @@
         <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
-    <description>Provides access to generate log entries via Apex, Lightning Components, Flow and Process Builder</description>
+    <description
+    >Provides access to generate log entries via Apex, Lightning Components, Flow and Process Builder. This is currently optional, but required if/when Salesforce activates the release update called "Require User Access to Apex Classes Invoked by Flow".</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Logger: Log Creator</label>
     <objectPermissions>

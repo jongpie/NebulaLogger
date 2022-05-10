@@ -169,11 +169,11 @@ private class LogEntryEventHandler_Tests {
     //         TransactionId__c = transactionId
     //     );
 
-    //     Test.startTest();
+    //     System.Test.startTest();
     //     LogEntryEventHandler.TAGGING_IS_ENABLED = true;
     //     LogEntryEventHandler.TAG_USING_TOPICS = true;
     //     Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
-    //     Test.stopTest();
+    //     System.Test.stopTest();
 
     //     System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
 
@@ -437,7 +437,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
-        // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
+        // TODO System.Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
         // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
         System.Test.startTest();
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -472,7 +472,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
-        // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
+        // TODO System.Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
         // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
         System.Test.startTest();
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -502,12 +502,12 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
+        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'false');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
-        // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
+        // TODO System.Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
         // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
         System.Test.startTest();
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -537,14 +537,14 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
+        System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(400).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         Database.SaveResult saveResult;
 
         try {
-            // TODO Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
+            // TODO System.Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
             // but it be nice if this was instead mocked via LoggerMockDataStore (? or some other similar class?)
             System.Test.startTest();
             saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -587,7 +587,6 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.UserLoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
         logEntryEvent.ProfileId__c = UserInfo.getProfileId();
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
-        logEntryEvent.ParentLogTransactionId__c = null;
         logEntryEvent.RecordId__c = UserInfo.getUserId();
         logEntryEvent.RecordCollectionSize__c = 1;
         logEntryEvent.RecordCollectionType__c = 'Single';
@@ -626,7 +625,7 @@ private class LogEntryEventHandler_Tests {
                 OrganizationNamespacePrefix__c,
                 OrganizationType__c,
                 OwnerId,
-                ParentLog__c,
+                ParentLogTransactionId__c,
                 ProfileId__c,
                 ProfileName__c,
                 Scenario__c,
@@ -755,6 +754,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c, 'log.LogoutUrl__c was not properly set');
         System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c, 'log.NetworkId__c was not properly set');
         System.assertEquals(logOwnerId, log.OwnerId, 'log.OwnerId was not properly set');
+        System.assertEquals(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
         System.assertEquals(logEntryEvent.Scenario__c, log.Scenario__c, 'log.Scenario__c was not properly set');

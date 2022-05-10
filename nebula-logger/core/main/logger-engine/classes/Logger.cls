@@ -9,13 +9,11 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
-@SuppressWarnings(
-    'PMD.ApexCrudViolation, PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength'
-)
+@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.ExcessiveClassLength, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.7.1';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.7.2';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
@@ -53,6 +51,8 @@ global with sharing class Logger {
     }
 
     static {
+        // 1 of 2 places in the codebase (except tests) that should use System.debug()
+        // The rest of the codebase should use a method in Logger.cls
         System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
         System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
     }
@@ -2485,6 +2485,7 @@ global with sharing class Logger {
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
      * @param  scenario The name to use for the current transaction's scenario
      */
+    @SuppressWarnings('PMD.ApexCrudViolation')
     global static void setScenario(String scenario) {
         transactionScenario = scenario;
 
@@ -2546,7 +2547,7 @@ global with sharing class Logger {
      *   All subsequent calls to saveLog() will use the transaction save method.
      * @param  saveMethodName The String value of the save method to use for this specific save action.
      */
-    @SuppressWarnings('PMD.NcssMethodCount')
+    @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.NcssMethodCount')
     public static void saveLog(String saveMethodName) {
         saveLogCallCount++;
         lastSaveMethodNameUsed = saveMethodName;

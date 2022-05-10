@@ -34,11 +34,11 @@ private class LogEntryArchivePlugin_Tests {
         createPluginConfiguration();
         LogBatchPurger batchPurger = new LogBatchPurger();
         Log__c log = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
-        Test.startTest();
+        System.Test.startTest();
 
         Database.executeBatch(batchPurger);
 
-        Test.stopTest();
+        System.Test.stopTest();
         System.assertEquals(log.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
         List<Log__c> existingLogs = [SELECT Id FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
         System.assertEquals(0, existingLogs.size());
@@ -66,11 +66,11 @@ private class LogEntryArchivePlugin_Tests {
             logToSkip.LogEntries__r.isEmpty(),
             'Test has started under the wrong condiations - log record should have some related log entries'
         );
-        Test.startTest();
+        System.Test.startTest();
 
         Database.executeBatch(batchPurger);
 
-        Test.stopTest();
+        System.Test.stopTest();
         System.assertEquals(
             logToArchive.LogEntries__r.size(),
             LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(),
@@ -98,12 +98,12 @@ private class LogEntryArchivePlugin_Tests {
             logEntryTags.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id));
         }
         insert logEntryTags;
-        Test.startTest();
+        System.Test.startTest();
 
         Database.executeBatch(batchPurger);
 
         System.assertEquals(0, Limits.getPublishImmediateDml());
-        Test.stopTest();
+        System.Test.stopTest();
         System.assertEquals(0, Limits.getPublishImmediateDml());
         System.assertEquals(logToArchive.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
         for (LogEntryArchive__b logEntryArchive : LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE) {
@@ -198,7 +198,7 @@ private class LogEntryArchivePlugin_Tests {
         Logger.getUserSettings().DefaultSaveMethod__c = LogEntryArchivePlugin.BIG_OBJECT_QUEUEABLE_LOGGER_SAVE_METHOD;
         createPluginConfiguration();
         Logger.info('Testing big object creation').getLogEntryEvent();
-        Test.startTest();
+        System.Test.startTest();
         System.assertEquals(0, Limits.getAsyncCalls(), 'Should not have executed any queueable jobs');
 
         Logger.saveLog();
@@ -216,7 +216,7 @@ private class LogEntryArchivePlugin_Tests {
             LogEntryArchivePlugin.lastSaveMethodUsed,
             'Last save method used should have been set to BIG_OBJECT_QUEUEABLE'
         );
-        Test.stopTest();
+        System.Test.stopTest();
     }
 
     private static void createParameterConfigurations() {

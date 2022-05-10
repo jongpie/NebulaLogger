@@ -7,18 +7,29 @@
  * @group Log Management
  * @description Processes `LogEntryEvent__e` platform events and normalizes the data into `Log__c` and `LogEntry__c` records
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.AvoidDebugStatements, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
+@SuppressWarnings(
+    'PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity, PMD.FieldDeclarationsShouldBeAtStart, PMD.PropertyNamingConventions'
+)
 public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     @TestVisible
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
+    private static final String GUEST_USER_LICENSE_NAME = 'Guest User License';
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
+
     @TestVisible
-    private static final List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
+    private static List<LogEntryTagRule__mdt> TAG_ASSIGNMENT_RULES {
+        get {
+            if (TAG_ASSIGNMENT_RULES == null) {
+                TAG_ASSIGNMENT_RULES = getTagAssignmentRules();
+            }
+            return TAG_ASSIGNMENT_RULES;
+        }
+        set;
+    }
 
     @TestVisible
     private List<LogEntryEvent__e> logEntryEvents;
-
     private List<LogEntry__c> logEntries = new List<LogEntry__c>();
     private Map<String, List<String>> logEntryEventUuidToTagNames = new Map<String, List<String>>();
     private Set<String> tagNames = new Set<String>();
@@ -34,7 +45,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
      */
-    public override SObjectType getSObjectType() {
+    public override Schema.SObjectType getSObjectType() {
         return Schema.LogEntryEvent__e.SObjectType;
     }
 
@@ -73,70 +84,63 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            Log__c parentLog = new Log__c(TransactionId__c = logEntryEvent.ParentLogTransactionId__c);
-            Log__c log = new Log__c();
-
-            // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
-            String guestUserLicenseName = 'Guest User License';
-            Id logOwnerId;
-            if (logEntryEvent.UserLicenseName__c == guestUserLicenseName || String.isBlank(logEntryEvent.CreatedById)) {
+            Id logOwnerId = logEntryEvent.CreatedById;
+            if (logEntryEvent.UserLicenseName__c == GUEST_USER_LICENSE_NAME || String.isBlank(logEntryEvent.CreatedById)) {
+                // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
                 logOwnerId = UserInfo.getUserId();
-            } else {
-                logOwnerId = logEntryEvent.CreatedById;
             }
 
-            if (recentLogWithApiReleaseDetails != null) {
-                log.ApiReleaseNumber__c = recentLogWithApiReleaseDetails.ApiReleaseNumber__c;
-                log.ApiReleaseVersion__c = recentLogWithApiReleaseDetails.ApiReleaseVersion__c;
-            }
-
-            log.ApiVersion__c = logEntryEvent.ApiVersion__c;
-            log.Locale__c = logEntryEvent.Locale__c;
-            log.LoggedBy__c = logEntryEvent.LoggedById__c;
-            log.LoggedByUsername__c = logEntryEvent.LoggedByUsername__c;
-            log.LoggerVersionNumber__c = logEntryEvent.LoggerVersionNumber__c;
-            log.LoginApplication__c = logEntryEvent.LoginApplication__c;
-            log.LoginBrowser__c = logEntryEvent.LoginBrowser__c;
-            log.LoginDomain__c = logEntryEvent.LoginDomain__c;
-            log.LoginHistoryId__c = logEntryEvent.LoginHistoryId__c;
-            log.LoginPlatform__c = logEntryEvent.LoginPlatform__c;
-            log.LoginType__c = logEntryEvent.LoginType__c;
-            log.LogoutUrl__c = logEntryEvent.LogoutUrl__c;
-            log.NetworkId__c = logEntryEvent.NetworkId__c;
-            log.NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c;
-            log.NetworkLogoutUrl__c = logEntryEvent.NetworkLogoutUrl__c;
-            log.NetworkName__c = logEntryEvent.NetworkName__c;
-            log.NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c;
-            log.NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c;
-            log.OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c;
-            log.OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c;
-            log.OrganizationId__c = logEntryEvent.OrganizationId__c;
-            log.OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c;
-            log.OrganizationName__c = logEntryEvent.OrganizationName__c;
-            log.OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c;
-            log.OrganizationType__c = logEntryEvent.OrganizationType__c;
-            log.OwnerId = logOwnerId;
-            log.ParentLog__r = logEntryEvent.ParentLogTransactionId__c == null ? null : parentLog;
-            log.ProfileId__c = logEntryEvent.ProfileId__c;
-            log.ProfileName__c = logEntryEvent.ProfileName__c;
-            log.Scenario__c = logEntryEvent.Scenario__c;
-            log.SessionId__c = logEntryEvent.SessionId__c;
-            log.SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c;
-            log.SessionType__c = logEntryEvent.SessionType__c;
-            log.SourceIp__c = logEntryEvent.SourceIp__c;
-            log.SystemMode__c = logEntryEvent.SystemMode__c;
-            log.ThemeDisplayed__c = logEntryEvent.ThemeDisplayed__c;
-            log.TimeZoneId__c = logEntryEvent.TimeZoneId__c;
-            log.TimeZoneName__c = logEntryEvent.TimeZoneName__c;
-            log.TransactionId__c = logEntryEvent.TransactionId__c;
-            log.UserLicenseDefinitionKey__c = logEntryEvent.UserLicenseDefinitionKey__c;
-            log.UserLicenseId__c = logEntryEvent.UserLicenseId__c;
-            log.UserLicenseName__c = logEntryEvent.UserLicenseName__c;
-            log.UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c;
-            log.UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c;
-            log.UserRoleId__c = logEntryEvent.UserRoleId__c;
-            log.UserRoleName__c = logEntryEvent.UserRoleName__c;
-            log.UserType__c = logEntryEvent.UserType__c;
+            Log__c log = new Log__c(
+                ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
+                ApiReleaseVersion__c = recentLogWithApiReleaseDetails?.ApiReleaseVersion__c,
+                ApiVersion__c = logEntryEvent.ApiVersion__c,
+                Locale__c = logEntryEvent.Locale__c,
+                LoggedBy__c = logEntryEvent.LoggedById__c,
+                LoggedByUsername__c = logEntryEvent.LoggedByUsername__c,
+                LoggerVersionNumber__c = logEntryEvent.LoggerVersionNumber__c,
+                LoginApplication__c = logEntryEvent.LoginApplication__c,
+                LoginBrowser__c = logEntryEvent.LoginBrowser__c,
+                LoginDomain__c = logEntryEvent.LoginDomain__c,
+                LoginHistoryId__c = logEntryEvent.LoginHistoryId__c,
+                LoginPlatform__c = logEntryEvent.LoginPlatform__c,
+                LoginType__c = logEntryEvent.LoginType__c,
+                LogoutUrl__c = logEntryEvent.LogoutUrl__c,
+                NetworkId__c = logEntryEvent.NetworkId__c,
+                NetworkLoginUrl__c = logEntryEvent.NetworkLoginUrl__c,
+                NetworkLogoutUrl__c = logEntryEvent.NetworkLogoutUrl__c,
+                NetworkName__c = logEntryEvent.NetworkName__c,
+                NetworkSelfRegistrationUrl__c = logEntryEvent.NetworkSelfRegistrationUrl__c,
+                NetworkUrlPathPrefix__c = logEntryEvent.NetworkUrlPathPrefix__c,
+                OrganizationDomainUrl__c = logEntryEvent.OrganizationDomainUrl__c,
+                OrganizationEnvironmentType__c = logEntryEvent.OrganizationEnvironmentType__c,
+                OrganizationId__c = logEntryEvent.OrganizationId__c,
+                OrganizationInstanceName__c = logEntryEvent.OrganizationInstanceName__c,
+                OrganizationName__c = logEntryEvent.OrganizationName__c,
+                OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c,
+                OrganizationType__c = logEntryEvent.OrganizationType__c,
+                OwnerId = logOwnerId,
+                ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
+                ProfileId__c = logEntryEvent.ProfileId__c,
+                ProfileName__c = logEntryEvent.ProfileName__c,
+                Scenario__c = logEntryEvent.Scenario__c,
+                SessionId__c = logEntryEvent.SessionId__c,
+                SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c,
+                SessionType__c = logEntryEvent.SessionType__c,
+                SourceIp__c = logEntryEvent.SourceIp__c,
+                SystemMode__c = logEntryEvent.SystemMode__c,
+                ThemeDisplayed__c = logEntryEvent.ThemeDisplayed__c,
+                TimeZoneId__c = logEntryEvent.TimeZoneId__c,
+                TimeZoneName__c = logEntryEvent.TimeZoneName__c,
+                TransactionId__c = logEntryEvent.TransactionId__c,
+                UserLicenseDefinitionKey__c = logEntryEvent.UserLicenseDefinitionKey__c,
+                UserLicenseId__c = logEntryEvent.UserLicenseId__c,
+                UserLicenseName__c = logEntryEvent.UserLicenseName__c,
+                UserLoggingLevel__c = logEntryEvent.UserLoggingLevel__c,
+                UserLoggingLevelOrdinal__c = logEntryEvent.UserLoggingLevelOrdinal__c,
+                UserRoleId__c = logEntryEvent.UserRoleId__c,
+                UserRoleName__c = logEntryEvent.UserRoleName__c,
+                UserType__c = logEntryEvent.UserType__c
+            );
 
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
@@ -368,6 +372,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
+        if (LogEntryTagRule__mdt.getAll().isEmpty() == true) {
+            return new List<LogEntryTagRule__mdt>();
+        }
+
         List<LogEntryTagRule__mdt> tagAssignmentRules = [
             SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
             FROM LogEntryTagRule__mdt
@@ -420,11 +428,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             LIMIT 1
         ];
 
-        if (logs.isEmpty()) {
-            return null;
-        } else {
-            return logs.get(0);
-        }
+        return logs.isEmpty() == true ? null : logs.get(0);
     }
 
     private static Integer getCountOfOpenJobs() {

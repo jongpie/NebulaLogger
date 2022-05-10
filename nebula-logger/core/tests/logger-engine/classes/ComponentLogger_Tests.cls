@@ -87,7 +87,7 @@ private class ComponentLogger_Tests {
         componentLogEntry.record = currentUser;
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);
         componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
-        Test.startTest();
+        System.Test.startTest();
         System.assertEquals(0, Logger.saveLogCallCount);
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());

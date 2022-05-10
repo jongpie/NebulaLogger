@@ -11,7 +11,7 @@ private class LogEntryHandler_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
-        Test.setCreatedDate(log.Id, System.now().addDays(-8));
+        System.Test.setCreatedDate(log.Id, System.now().addDays(-8));
     }
 
     @IsTest

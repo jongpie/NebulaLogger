@@ -105,7 +105,7 @@ private class FlowCollectionLogEntry_Tests {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
         System.assert(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
-        Test.startTest();
+        System.Test.startTest();
         System.assertEquals(0, Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();

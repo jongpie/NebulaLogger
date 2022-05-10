@@ -24,8 +24,8 @@ public without sharing class LogEntryFieldSetPicklist extends VisualEditor.Dynam
     public override VisualEditor.DynamicPickListRows getValues() {
         VisualEditor.DynamicPickListRows picklistRows = new VisualEditor.DynamicPickListRows();
 
-        List<FieldSet> fieldSets = Schema.SObjectType.LogEntry__c.fieldSets.getMap().values();
-        for (FieldSet fieldSet : fieldSets) {
+        List<Schema.FieldSet> fieldSets = Schema.SObjectType.LogEntry__c.fieldSets.getMap().values();
+        for (Schema.FieldSet fieldSet : fieldSets) {
             String namespacePrefix = String.isBlank(fieldSet.getNameSpace()) ? '' : fieldSet.getNameSpace() + '__';
 
             VisualEditor.DataRow picklistRow = new VisualEditor.DataRow(fieldSet.getLabel(), namespacePrefix + fieldSet.getName());

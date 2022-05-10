@@ -577,7 +577,7 @@ global with sharing class LogEntryEventBuilder {
      * @param stackTraceString The Apex stack trace string to parse
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
-    @SuppressWarnings('PMD.NcssMethodCount, PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity, PMD.CognitiveComplexity')
+    @SuppressWarnings('PMD.NcssMethodCount')
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
         if (this.shouldSave == false) {
             return this;
@@ -702,6 +702,8 @@ global with sharing class LogEntryEventBuilder {
         }
 
         if (Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c == true) {
+            // 1 of 2 places in the codebase (except tests) that should use System.debug()
+            // The rest of the codebase should use a method in Logger.cls
             System.debug(this.entryLoggingLevel, this.debugMessage);
         }
     }
@@ -769,13 +771,13 @@ global with sharing class LogEntryEventBuilder {
         LoggingLevel userLoggingLevel = Logger.getUserLoggingLevel();
 
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
-        this.logEntryEvent.NetworkId__c = Network.getNetworkId();
-        this.logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION?.LoginHistoryId;
         this.logEntryEvent.LoginApplication__c = CACHED_AUTH_SESSION?.LoginHistory.Application;
         this.logEntryEvent.LoginBrowser__c = CACHED_AUTH_SESSION?.LoginHistory.Browser;
+        this.logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION?.LoginHistoryId;
         this.logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION?.LoginHistory.Platform;
         this.logEntryEvent.LoginType__c = CACHED_AUTH_SESSION?.LoginType;
         this.logEntryEvent.LogoutUrl__c = CACHED_AUTH_SESSION?.LogoutUrl;
+        this.logEntryEvent.NetworkId__c = Network.getNetworkId();
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
         this.logEntryEvent.SessionId__c = CACHED_AUTH_SESSION?.Id;
         this.logEntryEvent.SessionSecurityLevel__c = CACHED_AUTH_SESSION?.SessionSecurityLevel;

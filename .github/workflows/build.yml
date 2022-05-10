@@ -235,9 +235,49 @@ jobs:
               run: npm run org:delete:noprompt
               if: ${{ always() }}
 
+    create-managed-package-beta:
+        name: 'Create Managed Package Beta'
+        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+        if: ${{ github.ref != 'refs/heads/main' }}
+        runs-on: ubuntu-latest
+        environment: 'Demo Org'
+        steps:
+            - name: 'Checkout source code'
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.event.pull_request.head.ref }}
+
+            - name: 'Restore node_modules cache'
+              id: cache-npm
+              uses: actions/cache@v2
+              with:
+                  path: node_modules
+                  key: npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      npm-${{ env.cache-name }}-
+                      npm-
+
+            - name: 'Install npm dependencies'
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: npm ci
+
+            - name: 'Authorize Dev Hub'
+              shell: bash
+              run: |
+                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
+                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
+              env:
+                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
+                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
+                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
+                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
+
+            - name: 'Create Beta Managed Package Version'
+              run: npm run package:version:create:managed
+
     create-unlocked-package-release-candidate:
         name: 'Create Core Package Release Candidate'
-        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
+        needs: [create-managed-package-beta]
         if: ${{ github.ref != 'refs/heads/main' }}
         runs-on: ubuntu-latest
         environment: 'Demo Org'
@@ -293,46 +333,6 @@ jobs:
                   git add ./sfdx-project.json
                   git commit -m "Created new package version"
                   git push
-
-    create-managed-package-beta:
-        name: 'Create Managed Package Beta'
-        needs: [lwc-tests, base-scratch-org-tests, experience-cloud-scratch-org-tests]
-        if: ${{ github.ref != 'refs/heads/main' }}
-        runs-on: ubuntu-latest
-        environment: 'Demo Org'
-        steps:
-            - name: 'Checkout source code'
-              uses: actions/checkout@v2
-              with:
-                  ref: ${{ github.event.pull_request.head.ref }}
-
-            - name: 'Restore node_modules cache'
-              id: cache-npm
-              uses: actions/cache@v2
-              with:
-                  path: node_modules
-                  key: npm-${{ hashFiles('**/package-lock.json') }}
-                  restore-keys: |
-                      npm-${{ env.cache-name }}-
-                      npm-
-
-            - name: 'Install npm dependencies'
-              if: steps.cache-npm.outputs.cache-hit != 'true'
-              run: npm ci
-
-            - name: 'Authorize Dev Hub'
-              shell: bash
-              run: |
-                  echo "${{ env.DEV_HUB_JWT_SERVER_KEY }}" > ./jwt-server.key
-                  npx sfdx force:auth:jwt:grant --instanceurl ${{ env.DEV_HUB_AUTH_URL }} --clientid ${{ env.DEV_HUB_CONSUMER_KEY }} --username ${{ env.DEV_HUB_BOT_USERNAME }} --jwtkeyfile ./jwt-server.key --setdefaultdevhubusername
-              env:
-                  DEV_HUB_AUTH_URL: ${{ secrets.DEV_HUB_AUTH_URL }}
-                  DEV_HUB_BOT_USERNAME: ${{ secrets.DEV_HUB_BOT_USERNAME }}
-                  DEV_HUB_CONSUMER_KEY: ${{ secrets.DEV_HUB_CONSUMER_KEY }}
-                  DEV_HUB_JWT_SERVER_KEY: ${{ secrets.DEV_HUB_JWT_SERVER_KEY }}
-
-            - name: 'Create Beta Managed Package Version'
-              run: npm run package:version:create:managed
 
     promote-package-versions:
         name: 'Promote Package Versions'

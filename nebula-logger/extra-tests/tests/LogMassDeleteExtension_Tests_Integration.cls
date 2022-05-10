@@ -36,7 +36,7 @@ private class LogMassDeleteExtension_Tests_Integration {
         ApexPages.StandardSetController controller = new ApexPages.StandardSetController(logs);
         controller.setSelected(logsToDelete);
         PageReference pageReference = Page.LogMassDelete;
-        Test.setCurrentPage(pageReference);
+        System.Test.setCurrentPage(pageReference);
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
             System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());

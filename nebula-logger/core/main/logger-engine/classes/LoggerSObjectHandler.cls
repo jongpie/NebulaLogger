@@ -10,6 +10,8 @@
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.EmptyStatementBlock, PMD.FieldDeclarationsShouldBeAtStart')
 public without sharing abstract class LoggerSObjectHandler {
     private static Boolean isEnabled = true;
+    private static final String FLOW_PLUGIN_CONFIGURATION_INPUT_NAME = 'pluginConfiguration';
+    private static final String FLOW_PLUGIN_INPUT_NAME = 'pluginInput';
     private static final Map<Schema.SObjectType, List<LoggerSObjectHandler>> SOBJECT_TYPE_TO_EXECUTED_HANDLERS = new Map<Schema.SObjectType, List<LoggerSObjectHandler>>();
     private static final Map<Schema.SObjectType, LoggerSObjectHandler__mdt> SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS = queryHandlerConfigurations();
 
@@ -180,7 +182,6 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeApexPlugin(LoggerPlugin__mdt configuration) {
         try {
             LoggerPlugin.Triggerable apexPlugin = LoggerPlugin.newTriggerableInstance(configuration.SObjectHandlerApexClass__c);
@@ -196,12 +197,11 @@ public without sharing abstract class LoggerSObjectHandler {
         }
     }
 
-    @SuppressWarnings('PMD.AvoidDebugStatements')
     private void executeFlowPlugin(LoggerPlugin__mdt configuration) {
         try {
             Map<String, Object> flowInputs = new Map<String, Object>();
-            flowInputs.put('pluginConfiguration', configuration);
-            flowInputs.put('pluginInput', this.input);
+            flowInputs.put(FLOW_PLUGIN_CONFIGURATION_INPUT_NAME, configuration);
+            flowInputs.put(FLOW_PLUGIN_INPUT_NAME, this.input);
 
             Flow.Interview flowPlugin = Flow.Interview.createInterview(configuration.SObjectHandlerFlowName__c, flowInputs);
             flowPlugin.start();
@@ -250,12 +250,12 @@ public without sharing abstract class LoggerSObjectHandler {
     private static Map<Schema.SObjectType, LoggerSObjectHandler__mdt> queryHandlerConfigurations() {
         Map<Schema.SObjectType, LoggerSObjectHandler__mdt> sobjectTypeToHandlerConfiguration = new Map<Schema.SObjectType, LoggerSObjectHandler__mdt>();
         for (LoggerSObjectHandler__mdt handlerConfiguration : [
-            SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName
+            SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
             FROM LoggerSObjectHandler__mdt
             WHERE IsEnabled__c = TRUE
         ]) {
             handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectType__r.QualifiedApiName;
-            Schema.SObjectType sobjectType = ((SObject) Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
+            Schema.SObjectType sobjectType = prepHandlerType(handlerConfiguration);
             sobjectTypeToHandlerConfiguration.put(sobjectType, handlerConfiguration);
         }
 
@@ -266,6 +266,14 @@ public without sharing abstract class LoggerSObjectHandler {
         return sobjectTypeToHandlerConfiguration;
     }
 
+    private static Schema.SObjectType prepHandlerType(LoggerSObjectHandler__mdt handlerConfiguration) {
+        if (String.isNotBlank(handlerConfiguration.SObjectTypeOverride__c)) {
+            handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectTypeOverride__c;
+        }
+
+        return ((SObject) Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
+    }
+
     @TestVisible
     private static LoggerSObjectHandler__mdt getHandlerConfiguration(Schema.SObjectType sobjectType) {
         return SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS.get(sobjectType);
@@ -273,8 +281,7 @@ public without sharing abstract class LoggerSObjectHandler {
 
     @TestVisible
     private static void setMock(LoggerSObjectHandler__mdt handlerConfiguration) {
-        //TODO cleanup code duplication
-        Schema.SObjectType sobjectType = ((SObject) Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
+        Schema.SObjectType sobjectType = prepHandlerType(handlerConfiguration);
         SOBJECT_TYPE_TO_HANDLER_CONFIGURATIONS.put(sobjectType, handlerConfiguration);
     }
 

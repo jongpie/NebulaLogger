@@ -48,9 +48,9 @@ private class LogBatchPurger_Tests_Integration {
             System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
 
             try {
-                Test.startTest();
+                System.Test.startTest();
                 Database.executeBatch(new LogBatchPurger());
-                Test.stopTest();
+                System.Test.stopTest();
             } catch (NoAccessException ex) {
                 System.assertEquals(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
             }

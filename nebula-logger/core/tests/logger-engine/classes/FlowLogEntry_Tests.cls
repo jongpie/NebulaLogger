@@ -188,7 +188,7 @@ private class FlowLogEntry_Tests {
     static void it_should_set_log_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        Test.startTest();
+        System.Test.startTest();
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowLogEntry flowEntry = createFlowLogEntry();
@@ -216,7 +216,7 @@ private class FlowLogEntry_Tests {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
         System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
-        Test.startTest();
+        System.Test.startTest();
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         List<String> tags = new List<String>{ 'first tag', 'SECOND TAG' };

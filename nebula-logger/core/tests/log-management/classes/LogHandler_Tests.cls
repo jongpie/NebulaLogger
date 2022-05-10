@@ -194,6 +194,32 @@ private class LogHandler_Tests {
     }
 
     @IsTest
+    static void it_should_skip_setting_parent_log_when_it_does_not_exist() {
+        String parentLogTransactionId = 'ABC-1234';
+        Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
+
+        insert log;
+
+        log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(parentLogTransactionId, log.ParentLogTransactionId__c, log);
+        System.assertEquals(null, log.ParentLog__c, log);
+    }
+
+    @IsTest
+    static void it_should_set_parent_log_when_it_exists() {
+        String parentLogTransactionId = 'ABC-1234';
+        Log__c parentLog = new Log__c(TransactionId__c = parentLogTransactionId);
+        insert parentLog;
+        Log__c log = new Log__c(ParentLogTransactionId__c = parentLogTransactionId, TransactionId__c = 'XYZ-5678');
+
+        insert log;
+
+        log = [SELECT Id, ParentLogTransactionId__c, ParentLog__c FROM Log__c WHERE Id = :log.Id];
+        System.assertEquals(parentLogTransactionId, log.ParentLogTransactionId__c, log);
+        System.assertEquals(parentLog.Id, log.ParentLog__c, log);
+    }
+
+    @IsTest
     static void it_should_keep_existing_retention_details_when_populated() {
         setupConfigurations();
         Integer defaultDaysToRetainLog = 10;
