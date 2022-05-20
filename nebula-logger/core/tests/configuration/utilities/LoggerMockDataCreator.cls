@@ -297,7 +297,7 @@ public class LoggerMockDataCreator {
             LocaleSidKey = 'en_US',
             ProfileId = profileId,
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'user_xyz' + (userMockUsernameCount++) + '.' + getOrganization().Id + '@test.com.net.org'
+            Username = Logger.getTransactionId() + (userMockUsernameCount++) + '@test.com'
         );
     }
 
