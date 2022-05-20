@@ -118,17 +118,17 @@ public without sharing class LoggerEmailSender {
     }
 
     private static void sendEmail(Messaging.SingleEmailMessage message) {
+        SENT_EMAILS.add(message);
         if (IS_EMAIL_DELIVERABILITY_ENABLED == true) {
             List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
             List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
-            SENT_EMAILS.add(message);
 
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == false) {
                 return;
             } else if (emailResults.get(0).success == true) {
                 Logger.info('Logger - The email was sent successfully');
             } else {
-                Logger.info('Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
+                Logger.warn('Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
             }
         }
     }
