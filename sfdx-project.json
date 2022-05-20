@@ -12,9 +12,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.7.2.NEXT",
-            "versionName": "Parent Log Transaction ID Bugfix",
-            "versionDescription": "Fixes an issue that would prevent logs from saving if the specified parent log transaction ID could not be found",
+            "versionNumber": "4.7.3.NEXT",
+            "versionName": "Query Selector Classes",
+            "versionDescription": "Introduced 2 new selector classes to centralize queries (which will later help with some planned future enhancements), fixed some bugs",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },
