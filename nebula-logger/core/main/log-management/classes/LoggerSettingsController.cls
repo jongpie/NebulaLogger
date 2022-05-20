@@ -125,7 +125,7 @@ public without sharing class LoggerSettingsController {
      */
     @AuraEnabled(cacheable=true)
     public static Organization getOrganization() {
-        return LoggerEngineDataSelector.queryOrganization();
+        return LoggerEngineDataSelector.getInstance().getCachedOrganization();
     }
 
     /**
@@ -141,7 +141,7 @@ public without sharing class LoggerSettingsController {
             List<SetupOwnerSearchResult> searchResults = new List<SetupOwnerSearchResult>();
             switch on setupOwnerType {
                 when 'Profile' {
-                    for (Profile matchingProfile : LogManagementDataSelector.queryProfilesByNameSearch(searchTerm)) {
+                    for (Profile matchingProfile : LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm)) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingProfile.Id;
                         result.label = matchingProfile.Name;
@@ -151,7 +151,7 @@ public without sharing class LoggerSettingsController {
                     }
                 }
                 when 'User' {
-                    for (User matchingUser : LogManagementDataSelector.queryUsersByNameSearch(searchTerm)) {
+                    for (User matchingUser : LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm)) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingUser.Id;
                         result.label = matchingUser.Username;
@@ -314,15 +314,15 @@ public without sharing class LoggerSettingsController {
         fieldNames.add('LastModifiedBy.Username');
         fieldNames.add('SetupOwner.Name');
         fieldNames.add('SetupOwner.Type');
-        return (List<LoggerSettings__c>) LoggerEngineDataSelector.queryAll(Schema.LoggerSettings__c.SObjectType, fieldNames);
+        return (List<LoggerSettings__c>) LogManagementDataSelector.getInstance().getAll(Schema.LoggerSettings__c.SObjectType, fieldNames);
     }
 
     private static Map<Id, String> querySetupOwnerNames(List<Id> setupOwnerIds) {
         Map<Id, String> setupOwnerIdToName = new Map<Id, String>();
-        for (Profile profile : LogManagementDataSelector.queryProfilesById(setupOwnerIds)) {
+        for (Profile profile : LogManagementDataSelector.getInstance().getProfilesById(setupOwnerIds)) {
             setupOwnerIdToName.put(profile.Id, profile.Name);
         }
-        for (User user : LogManagementDataSelector.queryUsersById(setupOwnerIds)) {
+        for (User user : LogManagementDataSelector.getInstance().getUsersById(setupOwnerIds)) {
             setupOwnerIdToName.put(user.Id, user.Username);
         }
         return setupOwnerIdToName;

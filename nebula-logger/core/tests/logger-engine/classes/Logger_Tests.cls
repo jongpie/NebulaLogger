@@ -6067,30 +6067,6 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
         System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
     }
-
-    @IsTest
-    static void it_should_return_log_when_id_provided() {
-        Log__c log = new Log__c(TransactionId__c = '1234');
-        insert log;
-
-        System.Test.startTest();
-        Log__c returnedLog = Logger.getLog(log.Id);
-        System.Test.stopTest();
-
-        System.assertEquals(log.Id, returnedLog.Id);
-    }
-
-    @IsTest
-    static void it_should_return_log_when_transaction_id_provided() {
-        Log__c log = new Log__c(TransactionId__c = '1234');
-        insert log;
-
-        System.Test.startTest();
-        Log__c returnedLog = Logger.getLog(log.TransactionId__c);
-        System.Test.stopTest();
-
-        System.assertEquals(log.Id, returnedLog.Id);
-    }
     // End tests for utility methods
 
     // Helper methods

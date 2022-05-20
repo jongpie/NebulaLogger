@@ -2,6 +2,11 @@
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "54.0",
+    "plugins": {
+        "sfdx-plugin-prettier": {
+            "enabled": true
+        }
+    },
     "packageDirectories": [
         {
             "package": "Nebula Logger - Core",

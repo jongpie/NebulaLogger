@@ -151,7 +151,16 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         // If no recent logs have the details, and there is not another instance of the job in progress, then start a new one
         // TODO this probably should be moved to LogHandler instead of here
-        if (LoggerParameter.CALL_STATUS_API == true && recentLogWithApiReleaseDetails == null && LogManagementDataSelector.queryCountOfOpenApexJobs() == 0) {
+        String apexClassName = LogEntryEventHandler.class.getName();
+        // I really dislike hardcoding this method name, but haven't found a better approach yet
+        // FIXME by possibly converting the future method to a private queueable class (which would be better than future method anyway)
+        String apexMethodName = 'setStatusApiDetails';
+        List<String> jobStatuses = new List<String>{ 'Holding', 'Queued', 'Preparing', 'Processing' };
+        if (
+            LoggerParameter.CALL_STATUS_API == true &&
+            recentLogWithApiReleaseDetails == null &&
+            LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses) == 0
+        ) {
             setStatusApiDetails();
         }
     }
@@ -322,10 +331,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         List<SObject> tagRecords;
         switch on tagSObjectType.newSObject() {
             when LoggerTag__c loggerTag {
-                tagRecords = LogManagementDataSelector.queryTags(this.tagNames);
+                tagRecords = LogManagementDataSelector.getInstance().getTagsByName(this.tagNames);
             }
             when Topic topic {
-                tagRecords = LogManagementDataSelector.queryTopics(this.tagNames);
+                tagRecords = LogManagementDataSelector.getInstance().getTopicsByName(this.tagNames);
             }
         }
 
@@ -385,7 +394,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return new List<LogEntryTagRule__mdt>();
         }
 
-        List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerEngineDataSelector.queryTagAssignmentRules();
+        List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
         for (LogEntryTagRule__mdt rule : tagAssignmentRules) {
             rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
         }
@@ -442,7 +451,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             Logger.debug('Logger - Calling Status API for org details');
         }
 
-        Organization organization = LoggerEngineDataSelector.queryOrganization();
+        Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
         HttpRequest request = new HttpRequest();

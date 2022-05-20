@@ -37,12 +37,12 @@ public with sharing class LogMassDeleteExtension {
 
         // Get the list of record IDs that the current user can delete
         List<Id> deletableLogIds = new List<Id>();
-        for (UserRecordAccess recordAccess : LogManagementDataSelector.queryDeleteableUserRecordAccess(logIds)) {
+        for (UserRecordAccess recordAccess : LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(logIds)) {
             deletableLogIds.add(recordAccess.RecordId);
         }
 
         // Get the logs + any fields shown in the VF page
-        return LogManagementDataSelector.queryLogsById(deletableLogIds);
+        return LogManagementDataSelector.getInstance().getLogsById(deletableLogIds);
     }
 
     /**

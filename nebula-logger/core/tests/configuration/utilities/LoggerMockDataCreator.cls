@@ -18,6 +18,7 @@ public class LoggerMockDataCreator {
     private static final Map<Schema.SObjectType, List<Schema.SObjectField>> SOBJECT_TYPE_TO_REQUIRED_FIELDS = new Map<Schema.SObjectType, List<Schema.SObjectField>>();
     private static final Map<Schema.SObjectType, Integer> SOBJECT_TYPE_TO_MOCK_ID_COUNT = new Map<Schema.SObjectType, Integer>();
 
+    private static Organization cachedOrganization;
     private static Integer userMockUsernameCount = 0;
 
     /**
@@ -296,7 +297,7 @@ public class LoggerMockDataCreator {
             LocaleSidKey = 'en_US',
             ProfileId = profileId,
             TimeZoneSidKey = 'America/Los_Angeles',
-            Username = 'user_xyz' + (userMockUsernameCount++) + '@test.com.net.org'
+            Username = 'user_xyz' + (userMockUsernameCount++) + '.' + getOrganization().Id + '@test.com.net.org'
         );
     }
 
@@ -306,7 +307,10 @@ public class LoggerMockDataCreator {
      */
     public static Organization getOrganization() {
         // TODO Switch to creating mock instance of Organization with sensible defaults that tests can then update as needed for different scenarios
-        return [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+        if (cachedOrganization == null) {
+            cachedOrganization = [SELECT Id, Name, InstanceName, IsSandbox, NamespacePrefix, OrganizationType, TrialExpirationDate FROM Organization];
+        }
+        return cachedOrganization;
     }
 
     /**

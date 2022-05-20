@@ -2654,24 +2654,6 @@ global with sharing class Logger {
         }
     }
 
-    // For orgs that already have the aura cmp + quickAction deployed, this method is still needed (otherwise, deployment errors will occur)
-    // TODO consider removing this method after converting aura cmp to lwc (and presumably create a dedicated Apex ctrl w/ this method)
-    // But the safe choice is to just keep it now/forever
-    /**
-     * @description Returns a Log__c record from the database, using either the Salesforce ID or transaction ID
-     * @param  logId The Salesforce ID or TransactionId__c of the Log__c
-     * @return       The matching record, with all fields that the current user can access
-     */
-    @AuraEnabled(cacheable=true)
-    public static Log__c getLog(String logId) {
-        // TODO move this method outside of Logger, and somewhere in log management module. Logger shouldn't know about Log__c
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(
-            AccessType.READABLE,
-            new List<Log__c>{ LogManagementDataSelector.queryLogById(logId) }
-        );
-        return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
-    }
-
     // Private logging level methods to keep global methods simpler/cleaner
     private static LogEntryEventBuilder error() {
         return newEntry(LoggingLevel.ERROR);
@@ -2722,7 +2704,7 @@ global with sharing class Logger {
         // skip calling System.Request.getCurrent() if there is no user session.
         // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
         String transactionId;
-        if (String.isNotBlank(UserInfo.getSessionId())) {
+        if (String.isNotBlank(UserInfo.getSessionId()) == true) {
             transactionId = System.Request.getCurrent().getRequestId();
         }
         return String.isNotBlank(transactionId) ? transactionId : new Uuid().getValue();

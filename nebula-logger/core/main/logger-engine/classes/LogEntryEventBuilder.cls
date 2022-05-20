@@ -28,65 +28,12 @@ global with sharing class LogEntryEventBuilder {
     private Set<String> tags = new Set<String>();
     private Boolean tagDetailsAreSet = true;
 
-    // These constants all involve queries and/or increasing heap size, so custom getters are used for lazy-loading
-    // This avoids unnecessarily consuming resources when logging is disabled, etc.
-
-    // Public constants - exposed as public so other code can leverage the cached query results
-    /**
-     * @description Returns the current org's `Organization` record
-     * @return The current org's `Organization` record
-     */
-    public static final Organization CACHED_ORGANIZATION {
-        get {
-            if (CACHED_ORGANIZATION == null) {
-                CACHED_ORGANIZATION = LoggerEngineDataSelector.queryOrganization();
-            }
-            return CACHED_ORGANIZATION;
-        }
-        set;
-    }
-
-    /**
-     * @description Returns the current user, including parent fields for profile and user role
-     * @return The current user's record
-     */
-    public static final User CACHED_USER {
-        get {
-            if (CACHED_USER == null) {
-                CACHED_USER = LoggerEngineDataSelector.queryUser();
-            }
-            return CACHED_USER;
-        }
-        set;
-    }
-
-    // Private constants
-    private static final AuthSession CACHED_AUTH_SESSION {
-        get {
-            if (CACHED_AUTH_SESSION == null) {
-                CACHED_AUTH_SESSION = LoggerEngineDataSelector.queryAuthSession();
-            }
-            return CACHED_AUTH_SESSION;
-        }
-        set;
-    }
-
     private static final Map<String, LogEntryDataMaskRule__mdt> CACHED_DATA_MASK_RULES {
         get {
             if (CACHED_DATA_MASK_RULES == null) {
                 CACHED_DATA_MASK_RULES = loadDataMaskRules();
             }
             return CACHED_DATA_MASK_RULES;
-        }
-        set;
-    }
-
-    private static final SObject CACHED_NETWORK_SITE {
-        get {
-            if (CACHED_NETWORK_SITE == null) {
-                CACHED_NETWORK_SITE = LoggerEngineDataSelector.queryNetwork();
-            }
-            return CACHED_NETWORK_SITE;
         }
         set;
     }
@@ -709,15 +656,16 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setNetworkDetails() {
-        if (CACHED_NETWORK_SITE == null) {
+        SObject networkRecord = LoggerEngineDataSelector.getInstance().getCachedNetwork();
+        if (networkRecord == null) {
             return;
         }
 
-        this.logEntryEvent.NetworkName__c = (String) CACHED_NETWORK_SITE.get('Name');
-        this.logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(CACHED_NETWORK_SITE.ID);
-        this.logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(CACHED_NETWORK_SITE.ID);
-        this.logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(CACHED_NETWORK_SITE.ID);
-        this.logEntryEvent.NetworkUrlPathPrefix__c = (String) CACHED_NETWORK_SITE.get('UrlPathPrefix');
+        this.logEntryEvent.NetworkName__c = (String) networkRecord.get('Name');
+        this.logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(networkRecord.Id);
+        this.logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(networkRecord.Id);
+        this.logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(networkRecord.Id);
+        this.logEntryEvent.NetworkUrlPathPrefix__c = (String) networkRecord.get('UrlPathPrefix');
     }
 
     private void setTagsDetails() {
@@ -731,6 +679,8 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setTransactionDetails() {
+        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+
         this.logEntryEvent.ApiVersion__c = API_VERSION;
         this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
         this.logEntryEvent.LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls();
@@ -750,39 +700,42 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries();
         this.logEntryEvent.OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm();
         this.logEntryEvent.OrganizationEnvironmentType__c = CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
-        this.logEntryEvent.OrganizationId__c = CACHED_ORGANIZATION.Id;
-        this.logEntryEvent.OrganizationInstanceName__c = CACHED_ORGANIZATION.InstanceName;
-        this.logEntryEvent.OrganizationName__c = CACHED_ORGANIZATION.Name;
-        this.logEntryEvent.OrganizationNamespacePrefix__c = CACHED_ORGANIZATION.NamespacePrefix;
-        this.logEntryEvent.OrganizationType__c = CACHED_ORGANIZATION.OrganizationType;
+        this.logEntryEvent.OrganizationId__c = cachedOrganization.Id;
+        this.logEntryEvent.OrganizationInstanceName__c = cachedOrganization.InstanceName;
+        this.logEntryEvent.OrganizationName__c = cachedOrganization.Name;
+        this.logEntryEvent.OrganizationNamespacePrefix__c = cachedOrganization.NamespacePrefix;
+        this.logEntryEvent.OrganizationType__c = cachedOrganization.OrganizationType;
     }
 
     private void setUserDetails() {
-        this.logEntryEvent.LoggedById__c = CACHED_USER.Id;
-        this.logEntryEvent.LoggedByUsername__c = CACHED_USER.Username;
-        this.logEntryEvent.ProfileName__c = CACHED_USER.Profile.Name;
-        this.logEntryEvent.UserLicenseDefinitionKey__c = CACHED_USER.Profile.UserLicense.LicenseDefinitionKey;
-        this.logEntryEvent.UserLicenseId__c = CACHED_USER.Profile.UserLicenseId;
-        this.logEntryEvent.UserLicenseName__c = CACHED_USER.Profile.UserLicense.Name;
-        this.logEntryEvent.UserRoleName__c = CACHED_USER.UserRole?.Name;
+        User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+
+        this.logEntryEvent.LoggedById__c = cachedUser.Id;
+        this.logEntryEvent.LoggedByUsername__c = cachedUser.Username;
+        this.logEntryEvent.ProfileName__c = cachedUser.Profile.Name;
+        this.logEntryEvent.UserLicenseDefinitionKey__c = cachedUser.Profile.UserLicense.LicenseDefinitionKey;
+        this.logEntryEvent.UserLicenseId__c = cachedUser.Profile.UserLicenseId;
+        this.logEntryEvent.UserLicenseName__c = cachedUser.Profile.UserLicense.Name;
+        this.logEntryEvent.UserRoleName__c = cachedUser.UserRole?.Name;
     }
 
     private void setUserSessionDetails() {
         LoggingLevel userLoggingLevel = Logger.getUserLoggingLevel();
+        AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
 
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
-        this.logEntryEvent.LoginApplication__c = CACHED_AUTH_SESSION?.LoginHistory.Application;
-        this.logEntryEvent.LoginBrowser__c = CACHED_AUTH_SESSION?.LoginHistory.Browser;
-        this.logEntryEvent.LoginHistoryId__c = CACHED_AUTH_SESSION?.LoginHistoryId;
-        this.logEntryEvent.LoginPlatform__c = CACHED_AUTH_SESSION?.LoginHistory.Platform;
-        this.logEntryEvent.LoginType__c = CACHED_AUTH_SESSION?.LoginType;
-        this.logEntryEvent.LogoutUrl__c = CACHED_AUTH_SESSION?.LogoutUrl;
+        this.logEntryEvent.LoginApplication__c = cachedAuthSession?.LoginHistory.Application;
+        this.logEntryEvent.LoginBrowser__c = cachedAuthSession?.LoginHistory.Browser;
+        this.logEntryEvent.LoginHistoryId__c = cachedAuthSession?.LoginHistoryId;
+        this.logEntryEvent.LoginPlatform__c = cachedAuthSession?.LoginHistory.Platform;
+        this.logEntryEvent.LoginType__c = cachedAuthSession?.LoginType;
+        this.logEntryEvent.LogoutUrl__c = cachedAuthSession?.LogoutUrl;
         this.logEntryEvent.NetworkId__c = Network.getNetworkId();
         this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        this.logEntryEvent.SessionId__c = CACHED_AUTH_SESSION?.Id;
-        this.logEntryEvent.SessionSecurityLevel__c = CACHED_AUTH_SESSION?.SessionSecurityLevel;
-        this.logEntryEvent.SessionType__c = CACHED_AUTH_SESSION?.SessionType;
-        this.logEntryEvent.SourceIp__c = CACHED_AUTH_SESSION?.SourceIp;
+        this.logEntryEvent.SessionId__c = cachedAuthSession?.Id;
+        this.logEntryEvent.SessionSecurityLevel__c = cachedAuthSession?.SessionSecurityLevel;
+        this.logEntryEvent.SessionType__c = cachedAuthSession?.SessionType;
+        this.logEntryEvent.SourceIp__c = cachedAuthSession?.SourceIp;
         this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
         this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
         this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
@@ -824,21 +777,6 @@ global with sharing class LogEntryEventBuilder {
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
-    private static Map<String, LogEntryDataMaskRule__mdt> loadDataMaskRules() {
-        Map<String, LogEntryDataMaskRule__mdt> activeDataMaskRules = new Map<String, LogEntryDataMaskRule__mdt>();
-        for (LogEntryDataMaskRule__mdt dataMaskRule : LogEntryDataMaskRule__mdt.getAll().values()) {
-            if (dataMaskRule.IsEnabled__c == true) {
-                activeDataMaskRules.put(dataMaskRule.DeveloperName, dataMaskRule);
-            }
-        }
-        if (System.Test.isRunningTest() == true) {
-            // Tests shouldn't rely on the actual CMDT rules in the org
-            // Clear the org's loaded records during tests, and mock via setMockDataMaskRule()
-            activeDataMaskRules.clear();
-        }
-        return activeDataMaskRules;
-    }
-
     private static List<String> getIgnoredClasses() {
         return new List<String>{
             ComponentLogger.class.getName(),
@@ -860,10 +798,11 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String getOrganizationEnvironmentType() {
+        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String orgEnvironmentType;
-        if (CACHED_ORGANIZATION.IsSandbox == true && CACHED_ORGANIZATION.TrialExpirationDate != null) {
+        if (cachedOrganization.IsSandbox == true && cachedOrganization.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';
-        } else if (CACHED_ORGANIZATION.IsSandbox == true) {
+        } else if (cachedOrganization.IsSandbox == true) {
             orgEnvironmentType = 'Sandbox';
         } else {
             orgEnvironmentType = 'Production';
@@ -966,6 +905,21 @@ global with sharing class LogEntryEventBuilder {
         }
 
         return true;
+    }
+
+    private static Map<String, LogEntryDataMaskRule__mdt> loadDataMaskRules() {
+        Map<String, LogEntryDataMaskRule__mdt> activeDataMaskRules = new Map<String, LogEntryDataMaskRule__mdt>();
+        for (LogEntryDataMaskRule__mdt dataMaskRule : LogEntryDataMaskRule__mdt.getAll().values()) {
+            if (dataMaskRule.IsEnabled__c == true) {
+                activeDataMaskRules.put(dataMaskRule.DeveloperName, dataMaskRule);
+            }
+        }
+        if (System.Test.isRunningTest() == true) {
+            // Tests shouldn't rely on the actual CMDT rules in the org
+            // Clear the org's loaded records during tests, and mock via setMockDataMaskRule()
+            activeDataMaskRules.clear();
+        }
+        return activeDataMaskRules;
     }
 
     private static List<SObject> stripInaccessible(List<SObject> records) {

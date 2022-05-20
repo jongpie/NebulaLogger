@@ -1,6 +1,40 @@
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.ApexDoc, PMD.ExcessivePublicCount')
+//------------------------------------------------------------------------------------------------//
+// This file is part of the Nebula Logger project, released under the MIT License.                //
+// See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
+//------------------------------------------------------------------------------------------------//
+
+/**
+ * @group Log Management
+ * @description Selector class used for all queries that are specific to the log management layer
+ */
+@SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
 public without sharing class LogManagementDataSelector {
-    public static List<ApexClass> queryApexClasses(List<String> apexClassNames) {
+    private static final LogManagementDataSelector INSTANCE = new LogManagementDataSelector();
+
+    @SuppressWarnings('PMD.EmptyStatementBlock')
+    private LogManagementDataSelector() {
+    }
+
+    public static LogManagementDataSelector getInstance() {
+        return INSTANCE;
+    }
+
+    public List<SObject> getAll(Schema.SObjectType sobjectType, Set<String> fieldNames) {
+        // fieldNames.add('Id');
+        String query = String.format('SELECT {0} FROM {1}', new List<Object>{ String.join(new List<String>(fieldNames), ', '), sobjectType });
+        return Database.query(String.escapeSingleQuotes(query));
+    }
+
+    public List<SObject> getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds) {
+        // fieldNames.add('Id');
+        String query = String.format(
+            'SELECT {0} FROM {1} WHERE Id IN :recordIds',
+            new List<Object>{ String.join(new List<String>(fieldNames), ', '), sobjectType }
+        );
+        return Database.query(String.escapeSingleQuotes(query));
+    }
+
+    public List<ApexClass> getApexClasses(List<String> apexClassNames) {
         return [
             SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
             FROM ApexClass
@@ -9,36 +43,30 @@ public without sharing class LogManagementDataSelector {
         ];
     }
 
-    public static List<ApexEmailNotification> queryApexEmailNotifications() {
+    public List<ApexEmailNotification> getCachedApexEmailNotifications() {
         String cacheKeyName = 'ApexEmailNotifications';
-        if (LoggerCache.getOrganizationCache().containsKey(cacheKeyName) == true) {
-            return (List<ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKeyName);
+        if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
+            return (List<ApexEmailNotification>) LoggerCache.getTransactionCache().get(cacheKeyName);
         }
+
         List<ApexEmailNotification> apexEmailNotifications = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
-        LoggerCache.getOrganizationCache().put(cacheKeyName, apexEmailNotifications);
+        LoggerCache.getTransactionCache().put(cacheKeyName, apexEmailNotifications);
         return apexEmailNotifications;
     }
 
-    public static Integer queryCountOfOpenApexJobs() {
-        return [
-            SELECT COUNT()
-            FROM AsyncApexJob
-            WHERE
-                ApexClass.Name = :LogEntryEventHandler.class.getName()
-                AND MethodName = 'setStatusApiDetails'
-                AND Status IN ('Holding', 'Queued', 'Preparing', 'Processing')
-        ];
+    public Integer getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses) {
+        return [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :apexClassName AND MethodName = :apexMethodName AND Status IN :jobStatuses];
     }
 
-    public static Integer queryCountOfRelatedRecordLogEntries(Id recordId) {
+    public Integer getCountOfRelatedRecordLogEntries(Id recordId) {
         return [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
     }
 
-    public static List<UserRecordAccess> queryDeleteableUserRecordAccess(List<Id> recordIds) {
+    public List<UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
         return [SELECT RecordId FROM UserRecordAccess WHERE UserId = :UserInfo.getUserId() AND RecordId IN :recordIds AND HasDeleteAccess = TRUE];
     }
 
-    public static List<FlowDefinitionView> queryFlowDefinitionViewsByFlowApiName(List<String> flowApiNames) {
+    public List<FlowDefinitionView> getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames) {
         return [
             SELECT
                 ActiveVersionId,
@@ -56,11 +84,11 @@ public without sharing class LogManagementDataSelector {
         ];
     }
 
-    public static List<FlowVersionView> queryFlowVersionViewsByDurableId(List<String> durableIds) {
+    public List<FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
         return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId IN :durableIds];
     }
 
-    public static Log__c queryLogById(String logId) {
+    public Log__c getLogById(String logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
         logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
         List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
@@ -79,32 +107,32 @@ public without sharing class LogManagementDataSelector {
         return (Log__c) Database.query(String.escapeSingleQuotes(query));
     }
 
-    public static List<Log__c> queryLogsById(List<Id> logIds) {
+    public List<Log__c> getLogsById(List<Id> logIds) {
         return [SELECT Id, Name, LoggedBy__c, LoggedBy__r.Name, StartTime__c, TotalLogEntries__c, TransactionId__c FROM Log__c WHERE Id IN :logIds];
     }
 
-    public static List<Log__c> queryLogsByTransactionId(Set<String> transactionIds) {
+    public List<Log__c> getLogsByTransactionId(Set<String> transactionIds) {
         return [SELECT Id, TransactionId__c FROM Log__c WHERE TransactionId__c IN :transactionIds];
     }
 
-    public static List<Profile> queryProfilesById(List<Id> profileIds) {
+    public List<Profile> getProfilesById(List<Id> profileIds) {
         return [SELECT Id, Name FROM Profile WHERE Id IN :profileIds ORDER BY Name];
     }
 
-    public static List<Profile> queryProfilesByNameSearch(String searchTerm) {
+    public List<Profile> getProfilesByNameSearch(String searchTerm) {
         return [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name];
     }
 
-    public static List<Group> queryQueuesByDeveloperName(List<String> queueDeveloperNames) {
+    public List<Group> getQueuesByDeveloperName(List<String> queueDeveloperNames) {
         return [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :queueDeveloperNames];
     }
 
     @SuppressWarnings('PMD.ExcessiveParameterList')
-    public static List<LogEntry__c> queryRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
+    public List<LogEntry__c> getRecordLogEntries(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
         List<Object> queryTextReplacements = new List<Object>{
             fieldsClause,
-            String.valueOf(Schema.LogEntry__c.SObjectType),
-            String.valueOf(Schema.LogEntry__c.RecordId__c),
+            Schema.LogEntry__c.SObjectType.getDescribe().getName(),
+            Schema.LogEntry__c.RecordId__c.getDescribe().getName(),
             orderByClause,
             rowLimit
         };
@@ -114,23 +142,23 @@ public without sharing class LogManagementDataSelector {
         return (List<LogEntry__c>) Database.query(String.escapeSingleQuotes(logEntryQuery));
     }
 
-    public static List<LoggerTag__c> queryTags(Set<String> tagNames) {
+    public List<LoggerTag__c> getTagsByName(Set<String> tagNames) {
         return [SELECT Id, Name FROM LoggerTag__c WHERE Name IN :tagNames];
     }
 
-    public static List<Topic> queryTopics(Set<String> topicNames) {
+    public List<Topic> getTopicsByName(Set<String> topicNames) {
         return [SELECT Id, Name FROM Topic WHERE Name IN :topicNames];
     }
 
-    public static List<User> queryUsersById(List<Id> userIds) {
+    public List<User> getUsersById(List<Id> userIds) {
         return [SELECT Id, Username FROM User WHERE Id IN :userIds ORDER BY Username];
     }
 
-    public static List<User> queryUsersByNameSearch(String searchTerm) {
+    public List<User> getUsersByNameSearch(String searchTerm) {
         return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username];
     }
 
-    public static List<User> queryUsersByUsername(List<String> usernames) {
+    public List<User> getUsersByUsername(List<String> usernames) {
         return [SELECT Id, Username FROM User WHERE Username IN :userNames ORDER BY Username];
     }
 }

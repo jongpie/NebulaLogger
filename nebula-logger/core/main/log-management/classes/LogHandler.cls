@@ -119,7 +119,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
 
         Map<String, Id> parentLogTransactionIdToRecordId = new Map<String, Id>();
-        for (Log__c parentLog : LogManagementDataSelector.queryLogsByTransactionId(parentLogTransactionIds)) {
+        for (Log__c parentLog : LogManagementDataSelector.getInstance().getLogsByTransactionId(parentLogTransactionIds)) {
             parentLogTransactionIdToRecordId.put(parentLog.TransactionId__c, parentLog.Id);
         }
 
@@ -228,7 +228,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     private static Map<String, Id> queryQueues(List<String> possibleQueueNames) {
         Map<String, Id> queuesByDeveloperName = new Map<String, Id>();
-        for (Group queue : LogManagementDataSelector.queryQueuesByDeveloperName(possibleQueueNames)) {
+        for (Group queue : LogManagementDataSelector.getInstance().getQueuesByDeveloperName(possibleQueueNames)) {
             queuesByDeveloperName.put(queue.DeveloperName, queue.Id);
         }
         return queuesByDeveloperName;
@@ -236,7 +236,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     private static Map<String, Id> queryUsers(List<String> possibleUsernames) {
         Map<String, Id> usersByUsername = new Map<String, Id>();
-        for (User user : LogManagementDataSelector.queryUsersByUsername(possibleUsernames)) {
+        for (User user : LogManagementDataSelector.getInstance().getUsersByUsername(possibleUsernames)) {
             usersByUsername.put(user.Username, user.Id);
         }
         return usersByUsername;

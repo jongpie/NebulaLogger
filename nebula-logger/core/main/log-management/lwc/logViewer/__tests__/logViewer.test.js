@@ -1,10 +1,10 @@
 import { createElement } from 'lwc';
 import LogViewer from 'c/logViewer';
-import getLog from '@salesforce/apex/Logger.getLog';
+import getLog from '@salesforce/apex/LogViewerController.getLog';
 import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 
 // Mock data
-const mockGetLog = require('./data/getLog.json');
+const mockGetLog = require('./data/LogViewerController.getLog.json');
 
 // Register a test wire adapter
 const getLogAdapter = registerApexTestWireAdapter(getLog);
@@ -12,7 +12,7 @@ const getLogAdapter = registerApexTestWireAdapter(getLog);
 document.execCommand = jest.fn();
 
 jest.mock(
-    '@salesforce/apex/Logger.getLog',
+    '@salesforce/apex/LogViewerController.getLog',
     () => {
         return {
             default: () => mockGetLog

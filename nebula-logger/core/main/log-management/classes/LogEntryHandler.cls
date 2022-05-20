@@ -72,7 +72,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         Map<String, ApexClass> classNameToApexClass = new Map<String, ApexClass>();
-        for (ApexClass apexClass : LogManagementDataSelector.queryApexClasses(apexClassNames)) {
+        for (ApexClass apexClass : LogManagementDataSelector.getInstance().getApexClasses(apexClassNames)) {
             classNameToApexClass.put(apexClass.Name, apexClass);
         }
 
@@ -125,7 +125,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         Map<String, FlowDefinitionView> flowApiNameToDefinition = new Map<String, FlowDefinitionView>();
-        for (FlowDefinitionView flowDefinition : LogManagementDataSelector.queryFlowDefinitionViewsByFlowApiName(flowApiNames)) {
+        for (FlowDefinitionView flowDefinition : LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(flowApiNames)) {
             flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
         }
 
@@ -161,7 +161,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         }
 
         Map<String, FlowVersionView> flowDurableId = new Map<String, FlowVersionView>();
-        for (FlowVersionView flowVersionView : LogManagementDataSelector.queryFlowVersionViewsByDurableId(flowActiveVersionIds)) {
+        for (FlowVersionView flowVersionView : LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(flowActiveVersionIds)) {
             // Filtering on Status in SOQL seems to always return 0 results, so filter in code instead
             if (flowVersionView.Status == 'Active') {
                 flowDurableId.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
@@ -221,7 +221,8 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            List<SObject> results = LoggerEngineDataSelector.queryById(sobjectType, new Set<String>{ sobjectDisplayFieldName }, sobjectTypeRecordIds);
+            List<SObject> results = LogManagementDataSelector.getInstance()
+                .getById(sobjectType, new Set<String>{ sobjectDisplayFieldName }, sobjectTypeRecordIds);
             recordIdToRecord.putAll(results);
         }
 

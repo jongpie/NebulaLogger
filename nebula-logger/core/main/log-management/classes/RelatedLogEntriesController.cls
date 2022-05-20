@@ -46,14 +46,14 @@ public with sharing class RelatedLogEntriesController {
         if (String.isNotBlank(search) && search.length() >= 3) {
             records = search(recordId, search, fieldsClause, orderByClause, rowLimit);
         } else {
-            records = LogManagementDataSelector.queryRecordLogEntries(recordId, fieldsClause, orderByClause, rowLimit);
+            records = LogManagementDataSelector.getInstance().getRecordLogEntries(recordId, fieldsClause, orderByClause, rowLimit);
         }
 
         // Somewhat redundant security check for FLS (but extra security > less security)
         SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records);
         records = securityDecision.getRecords();
 
-        Integer totalLogEntriesCount = LogManagementDataSelector.queryCountOfRelatedRecordLogEntries(recordId);
+        Integer totalLogEntriesCount = LogManagementDataSelector.getInstance().getCountOfRelatedRecordLogEntries(recordId);
 
         return new LogEntryQueryResult(fieldSetMetdata, records, totalLogEntriesCount);
     }

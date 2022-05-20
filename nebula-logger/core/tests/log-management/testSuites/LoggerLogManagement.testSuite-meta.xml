@@ -12,6 +12,8 @@
     <testClassName>LoggerSObjectMetadata_Tests</testClassName>
     <testClassName>LoggerTagHandler_Tests</testClassName>
     <testClassName>LogHandler_Tests</testClassName>
+    <testClassName>LogManagementDataSelector_Tests</testClassName>
     <testClassName>LogMassDeleteExtension_Tests</testClassName>
+    <testClassName>LogViewerController_Tests</testClassName>
     <testClassName>RelatedLogEntriesController_Tests</testClassName>
 </ApexTestSuite>
