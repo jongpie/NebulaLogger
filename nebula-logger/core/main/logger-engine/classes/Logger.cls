@@ -17,7 +17,7 @@ global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
-    private static final String TRANSACTION_ID = setTransactionId();
+    private static final String TRANSACTION_ID = new Uuid().getValue();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
 
     private static Integer currentTransactionEntryNumber = 1;
@@ -2696,18 +2696,6 @@ global with sharing class Logger {
         }
 
         return logEntryEventBuilder;
-    }
-
-    private static String setTransactionId() {
-        // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
-        // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
-        // skip calling System.Request.getCurrent() if there is no user session.
-        // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
-        String transactionId;
-        if (String.isNotBlank(UserInfo.getSessionId()) == true) {
-            transactionId = System.Request.getCurrent().getRequestId();
-        }
-        return String.isNotBlank(transactionId) ? transactionId : new Uuid().getValue();
     }
 
     private static Quiddity setTransactionQuiddity() {
