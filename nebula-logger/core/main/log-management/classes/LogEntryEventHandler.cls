@@ -85,7 +85,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             Id logOwnerId = logEntryEvent.CreatedById;
-            if (logEntryEvent.UserType__c == 'temp' + GUEST_USER_TYPE || String.isBlank(logEntryEvent.CreatedById)) {
+            if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logEntryEvent.CreatedById)) {
                 // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
                 logOwnerId = UserInfo.getUserId();
             }

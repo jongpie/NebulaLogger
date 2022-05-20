@@ -27,18 +27,6 @@ Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 ---
 
-### Properties
-
-#### `CACHED_ORGANIZATION` → `Organization`
-
-Returns the current org&apos;s `Organization` record @return The current org&apos;s `Organization` record
-
-#### `CACHED_USER` → `User`
-
-Returns the current user, including parent fields for profile and user role @return The current user&apos;s record
-
----
-
 ### Methods
 
 #### `addTag(String tag)` → `LogEntryEventBuilder`

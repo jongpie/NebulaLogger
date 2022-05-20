@@ -292,8 +292,9 @@ private class LogManagementDataSelector_Tests {
         System.assertEquals(expectedResults, returnedResults);
     }
 
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     @future
     private static void executeSomeFutureMethod() {
-        System.debug('This method intentionally does nothing - it\'s only used to help test queries on AsynxApexJob');
+        // This method intentionally does nothing - it\'s only used to help test queries on AsynxApexJob
     }
 }

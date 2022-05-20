@@ -14,7 +14,7 @@ public with sharing class LogViewerController {
      * @return       The matching record, with all fields that the current user can access
      */
     @AuraEnabled(cacheable=true)
-    public static Log__c getLog(String logId) {
+    public static Log__c getLog(Id logId) {
         SObjectAccessDecision securityDecision = Security.stripInaccessible(
             AccessType.READABLE,
             new List<Log__c>{ LogManagementDataSelector.getInstance().getLogById(logId) }

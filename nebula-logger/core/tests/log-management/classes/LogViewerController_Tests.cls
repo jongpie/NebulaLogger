@@ -26,13 +26,4 @@ private class LogViewerController_Tests {
 
         System.assertEquals(log.Id, returnedLog.Id);
     }
-
-    @IsTest
-    static void it_should_return_log_when_transaction_id_provided() {
-        Log__c log = [SELECT Id, TransactionId__c FROM Log__c];
-
-        Log__c returnedLog = LogViewerController.getLog(log.TransactionId__c);
-
-        System.assertEquals(log.Id, returnedLog.Id);
-    }
 }

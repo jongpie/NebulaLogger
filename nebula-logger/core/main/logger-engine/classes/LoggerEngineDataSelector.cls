@@ -15,10 +15,19 @@ public without sharing class LoggerEngineDataSelector {
     private LoggerEngineDataSelector() {
     }
 
+    /**
+     * @description The instance `LoggerEngineDataSelector` used for any querying specific to the logger engine layer
+     * @return   The singleton instance of `LoggerEngineDataSelector`
+     */
     public static LoggerEngineDataSelector getInstance() {
         return INSTANCE;
     }
 
+    /**
+     * @description Returns a cached copy of `AuthSession` for the current user's current session,
+     *              or `null` if there is not a current session
+     * @return   The cached `AuthSession` record
+     */
     public AuthSession getCachedAuthSession() {
         Id userId = UserInfo.getUserId();
         String cacheKeyName = 'AuthSession' + userId;
@@ -47,6 +56,11 @@ public without sharing class LoggerEngineDataSelector {
         return session;
     }
 
+    /**
+     * @description Returns a cached copy of the `LoggerSObjectHandler__mdt` records in the org,
+     *              including the field `SObjectType__r.QualifiedApiName` that cannot be accessed via `LoggerSObjectHandler__mdt.getAll()`
+     * @return   The cached `List<LoggerSObjectHandler__mdt>` records
+     */
     public List<LoggerSObjectHandler__mdt> getCachedLoggerSObjectHandlers() {
         String cacheKeyName = 'EnabledLoggerSObjectHandlers';
         if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
@@ -62,11 +76,13 @@ public without sharing class LoggerEngineDataSelector {
         return enabledSObjectHandlers;
     }
 
+    /**
+     * @description Returns a cached copy of the current user's `Network` site, or `null` if the current user is not associated
+     *              with a `Network` site
+     * @return   The cached `Network` record
+     */
     public SObject getCachedNetwork() {
-        return getCachedNetworkById(System.Network.getNetworkId());
-    }
-
-    public SObject getCachedNetworkById(Id networkId) {
+        Id networkId = System.Network.getNetworkId();
         if (networkId == null || Type.forName('System.Network') == null) {
             return null;
         }
@@ -84,6 +100,10 @@ public without sharing class LoggerEngineDataSelector {
         return networkSite;
     }
 
+    /**
+     * @description Returns a cached copy of the `Organization` record in the org, including some fields that cannot be accessed via `UserInfo`
+     * @return   The cached `Organization` record
+     */
     public Organization getCachedOrganization() {
         String cacheKeyName = 'Organization';
         if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
@@ -95,6 +115,11 @@ public without sharing class LoggerEngineDataSelector {
         return organization;
     }
 
+    /**
+     * @description Returns a cached copy of the `LogEntryTagRule__mdt` records in the org,
+     *              including the field `SObjectField__r.QualifiedApiName` that cannot be accessed via `LogEntryTagRule__mdt.getAll()`
+     * @return   The cached `List<LogEntryTagRule__mdt>` records
+     */
     public List<LogEntryTagRule__mdt> getCachedTagAssignmentRules() {
         String cacheKeyName = 'TagAssignmentRules';
         if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
@@ -113,11 +138,13 @@ public without sharing class LoggerEngineDataSelector {
         return tagAssignmentRules;
     }
 
+    /**
+     * @description Returns a cached copy of the current user, including some profile fields that cannot be accessed via `UserInfo`
+     * @return   The cached `User` record for the current user
+     */
     public User getCachedUser() {
-        return getCachedUser(UserInfo.getUserId());
-    }
+        Id userId = UserInfo.getUserId();
 
-    public User getCachedUser(Id userId) {
         String cacheKeyName = 'User' + userId;
         if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
             return (User) LoggerCache.getTransactionCache().get(cacheKeyName);

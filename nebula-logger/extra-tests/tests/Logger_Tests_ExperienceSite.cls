@@ -7,11 +7,12 @@
  * @group Extra Tests
  * @description Additional integration tests for orgs with Experience Sites (Communities) enabled
  */
-@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.NcssMethodCount')
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=false)
 private class Logger_Tests_ExperienceSite {
     private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Schema.getGlobalDescribe().containsKey('Network');
     private static final String GUEST_USER_PROFILE_NAME = 'Logger Test Site Profile';
+    private static final String GUEST_USER_TYPE = 'Guest';
     private static final String LOG_CREATOR_PERMISSION_SET_NAME = 'LoggerLogCreator';
 
     @TestSetup
@@ -30,7 +31,7 @@ private class Logger_Tests_ExperienceSite {
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license did not match Guest User License.');
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :GUEST_USER_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
         if (guestUsers.isEmpty() == true) {
             return;
         }
@@ -40,7 +41,7 @@ private class Logger_Tests_ExperienceSite {
     }
 
     @IsTest
-    private static void failToSaveLogWhenAssignedToGuestUser() {
+    private static void it_fails_to_save_log_when_assigned_to_guest_user() {
         // No need to fail the test if it's running in an org that does not have Experience Cloud enabled
         if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return;
@@ -52,7 +53,7 @@ private class Logger_Tests_ExperienceSite {
         System.Test.startTest();
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :GUEST_USER_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
         if (guestUsers.isEmpty() == true) {
             return;
         }
@@ -70,17 +71,14 @@ private class Logger_Tests_ExperienceSite {
     }
 
     @IsTest
-    private static void saveLogForGuestUser() {
+    private static void it_saves_log_for_guest_user() {
         // No need to fail the test if it's running in an org that does not have Experience Cloud enabled
         if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return;
         }
 
-        Profile loggerSiteProfile = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
-        System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license was NOT the guest user license.');
-
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [SELECT Id FROM USER WHERE Profile.NAME = :GUEST_USER_PROFILE_NAME];
+        List<User> guestUsers = [SELECT Id, Profile.UserType FROM User WHERE Profile.Name = :GUEST_USER_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
         if (guestUsers.isEmpty() == true) {
             return;
         }
@@ -95,10 +93,14 @@ private class Logger_Tests_ExperienceSite {
             System.Test.getEventBus().deliver();
         }
 
-        LogEntry__c logEntry = [SELECT Id, Log__r.LoggedBy__c, Log__r.OwnerId, Log__r.UserLicenseDefinitionKey__c, Message__c FROM LogEntry__c];
-        System.assertEquals(guestUser.Id, logEntry.Log__r.LoggedBy__c, 'LoggedBy was set to the wrong user id.');
-        System.assertNotEquals(guestUser.Id, logEntry.Log__r.OwnerId, 'Log owner id was incorrect.');
-        System.assertEquals('PID_Guest_User', logEntry.Log__r.UserLicenseDefinitionKey__c, 'UserLicenseDefinitionKey was incorrect.');
-        System.assertEquals(message, logEntry.Message__c, 'Log Entry message was incorrect.');
+        LogEntry__c logEntry = [
+            SELECT Id, Log__r.LoggedBy__c, Log__r.OwnerId, Log__r.UserLicenseDefinitionKey__c, Log__r.UserType__c, Message__c
+            FROM LogEntry__c
+        ];
+        System.assertEquals(guestUser.Id, logEntry.Log__r.LoggedBy__c, 'LoggedBy was set to the wrong user ID');
+        System.assertNotEquals(guestUser.Id, logEntry.Log__r.OwnerId, 'Log owner ID was incorrect');
+        System.assertEquals(GUEST_USER_TYPE, logEntry.Log__r.UserType__c, 'UserType was incorrect');
+        System.assertEquals('PID_Guest_User', logEntry.Log__r.UserLicenseDefinitionKey__c, 'UserLicenseDefinitionKey was incorrect');
+        System.assertEquals(message, logEntry.Message__c, 'Log Entry message was incorrect');
     }
 }
