@@ -27,7 +27,6 @@ public with sharing class LogMassDeleteExtension {
      * @description Filters the list of selected `Log__c` records to only include records that the current user can delete (based on object-level access)
      * @return      The matching `Log__c` records that the current user has access to delete
      */
-    @SuppressWarnings('PMD.ApexCRUDViolation')
     public List<Log__c> getDeletableLogs() {
         // The UserRecordAccess object is weird - RecordId is not an actual ID field, so you can't filter using `List<SObject>` or `List<Id>`, you have to use strings
         // So, here's some code that would be unnecessary if RecordId were a polymorphic ID field instead
@@ -38,16 +37,12 @@ public with sharing class LogMassDeleteExtension {
 
         // Get the list of record IDs that the current user can delete
         List<Id> deletableLogIds = new List<Id>();
-        for (UserRecordAccess recordAccess : [
-            SELECT RecordId
-            FROM UserRecordAccess
-            WHERE UserId = :UserInfo.getUserId() AND RecordId IN :logIds AND HasDeleteAccess = TRUE
-        ]) {
+        for (UserRecordAccess recordAccess : LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(logIds)) {
             deletableLogIds.add(recordAccess.RecordId);
         }
 
         // Get the logs + any fields shown in the VF page
-        return [SELECT Id, Name, LoggedBy__c, LoggedBy__r.Name, StartTime__c, TotalLogEntries__c FROM Log__c WHERE Id IN :deletableLogIds];
+        return LogManagementDataSelector.getInstance().getLogsById(deletableLogIds);
     }
 
     /**

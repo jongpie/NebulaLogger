@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
  */
-@SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
+@SuppressWarnings('PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public without sharing class LoggerSettingsController {
     @TestVisible
     private static final String CUSTOM_SAVE_METHOD_PREFIX = 'CustomSaveMethod';
@@ -125,7 +125,7 @@ public without sharing class LoggerSettingsController {
      */
     @AuraEnabled(cacheable=true)
     public static Organization getOrganization() {
-        return [SELECT Id, Name FROM Organization];
+        return LoggerEngineDataSelector.getInstance().getCachedOrganization();
     }
 
     /**
@@ -141,7 +141,7 @@ public without sharing class LoggerSettingsController {
             List<SetupOwnerSearchResult> searchResults = new List<SetupOwnerSearchResult>();
             switch on setupOwnerType {
                 when 'Profile' {
-                    for (Profile matchingProfile : [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name]) {
+                    for (Profile matchingProfile : LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm)) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingProfile.Id;
                         result.label = matchingProfile.Name;
@@ -151,12 +151,7 @@ public without sharing class LoggerSettingsController {
                     }
                 }
                 when 'User' {
-                    for (User matchingUser : [
-                        SELECT Id, Name, Username, SmallPhotoUrl
-                        FROM User
-                        WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm
-                        ORDER BY Username
-                    ]) {
+                    for (User matchingUser : LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm)) {
                         SetupOwnerSearchResult result = new SetupOwnerSearchResult();
                         result.recordId = matchingUser.Id;
                         result.label = matchingUser.Username;
@@ -314,21 +309,20 @@ public without sharing class LoggerSettingsController {
     }
 
     private static List<LoggerSettings__c> queryLoggerSettings() {
-        List<String> fieldNames = new List<String>(Schema.LoggerSettings__c.SObjectType.getDescribe().fields.getMap().keySet());
+        Set<String> fieldNames = new Set<String>(Schema.LoggerSettings__c.SObjectType.getDescribe().fields.getMap().keySet());
         fieldNames.add('CreatedBy.Username');
         fieldNames.add('LastModifiedBy.Username');
         fieldNames.add('SetupOwner.Name');
         fieldNames.add('SetupOwner.Type');
-        String query = 'SELECT ' + String.join(fieldNames, ', ') + ' FROM ' + Schema.LoggerSettings__c.SObjectType;
-        return (List<LoggerSettings__c>) Database.query(String.escapeSingleQuotes(query));
+        return (List<LoggerSettings__c>) LogManagementDataSelector.getInstance().getAll(Schema.LoggerSettings__c.SObjectType, fieldNames);
     }
 
     private static Map<Id, String> querySetupOwnerNames(List<Id> setupOwnerIds) {
         Map<Id, String> setupOwnerIdToName = new Map<Id, String>();
-        for (Profile profile : [SELECT Id, Name FROM Profile WHERE Id IN :setupOwnerIds]) {
+        for (Profile profile : LogManagementDataSelector.getInstance().getProfilesById(setupOwnerIds)) {
             setupOwnerIdToName.put(profile.Id, profile.Name);
         }
-        for (User user : [SELECT Id, Username FROM User WHERE Id IN :setupOwnerIds]) {
+        for (User user : LogManagementDataSelector.getInstance().getUsersById(setupOwnerIds)) {
             setupOwnerIdToName.put(user.Id, user.Username);
         }
         return setupOwnerIdToName;

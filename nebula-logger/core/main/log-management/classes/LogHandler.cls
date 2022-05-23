@@ -7,7 +7,7 @@
  * @group Log Management
  * @description Manages setting fields on `Log__c` before insert & before update
  */
-@SuppressWarnings('PMD.ApexCrudViolation, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
+@SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class LogHandler extends LoggerSObjectHandler {
     private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_TO_STATUS = new Map<String, LogStatus__mdt>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
@@ -119,7 +119,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
 
         Map<String, Id> parentLogTransactionIdToRecordId = new Map<String, Id>();
-        for (Log__c parentLog : [SELECT Id, TransactionId__c FROM Log__c WHERE TransactionId__c IN :parentLogTransactionIds]) {
+        for (Log__c parentLog : LogManagementDataSelector.getInstance().getLogsByTransactionId(parentLogTransactionIds)) {
             parentLogTransactionIdToRecordId.put(parentLog.TransactionId__c, parentLog.Id);
         }
 
@@ -228,7 +228,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     private static Map<String, Id> queryQueues(List<String> possibleQueueNames) {
         Map<String, Id> queuesByDeveloperName = new Map<String, Id>();
-        for (Group queue : [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :possibleQueueNames]) {
+        for (Group queue : LogManagementDataSelector.getInstance().getQueuesByDeveloperName(possibleQueueNames)) {
             queuesByDeveloperName.put(queue.DeveloperName, queue.Id);
         }
         return queuesByDeveloperName;
@@ -236,14 +236,14 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     private static Map<String, Id> queryUsers(List<String> possibleUsernames) {
         Map<String, Id> usersByUsername = new Map<String, Id>();
-        for (User user : [SELECT Id, Username FROM User WHERE Username IN :possibleUsernames]) {
+        for (User user : LogManagementDataSelector.getInstance().getUsersByUsername(possibleUsernames)) {
             usersByUsername.put(user.Username, user.Id);
         }
         return usersByUsername;
     }
 
     private static Map<String, LogScenarioRule__mdt> queryScenarioRules(List<Log__c> logs) {
-        List<String> scenarios = new List<String>();
+        Set<String> scenarios = new Set<String>();
         for (Log__c log : logs) {
             if (log.Scenario__c != null) {
                 scenarios.add(log.Scenario__c);
@@ -251,12 +251,10 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
 
         Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = new Map<String, LogScenarioRule__mdt>();
-        for (LogScenarioRule__mdt scenarioRule : [
-            SELECT Scenario__c, NumberOfDaysToRetainLogs__c
-            FROM LogScenarioRule__mdt
-            WHERE IsEnabled__c = TRUE AND Scenario__c IN :scenarios
-        ]) {
-            scenarioToScenarioRule.put(scenarioRule.Scenario__c, scenarioRule);
+        for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
+            if (scenarioRule.IsEnabled__c == true && scenarios.contains(scenarioRule.Scenario__c) == true) {
+                scenarioToScenarioRule.put(scenarioRule.Scenario__c, scenarioRule);
+            }
         }
 
         if (System.Test.isRunningTest() == true) {

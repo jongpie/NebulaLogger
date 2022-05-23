@@ -2,14 +2,19 @@
     "namespace": "",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "54.0",
+    "plugins": {
+        "sfdx-plugin-prettier": {
+            "enabled": true
+        }
+    },
     "packageDirectories": [
         {
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.7.2.NEXT",
-            "versionName": "Parent Log Transaction ID Bugfix",
-            "versionDescription": "Fixes an issue that would prevent logs from saving if the specified parent log transaction ID could not be found",
+            "versionNumber": "4.7.3.NEXT",
+            "versionName": "Query Selector Classes",
+            "versionDescription": "Introduced 2 new selector classes to centralize queries (which will later help with some planned future enhancements), fixed some bugs",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },
@@ -22,9 +27,9 @@
                     "package": "Nebula Logger - Core@4.7.2-1-parent-log-transaction-id-bugfix"
                 }
             ],
-            "versionName": "Initial release with Finalizer and BatchApexErrorEvent functionality",
-            "versionNumber": "1.0.0.NEXT",
-            "versionDescription": "Adds the capability to get Logs created for unexpected Apex Batch class failures through LoggerParameter__mdt additions, and provides a Finalizer implementation for logging Queueable failures"
+            "versionName": "Added missing CMDT file LoggerSObjectHandler.BatchApexErrorEvent",
+            "versionNumber": "1.0.1.NEXT",
+            "versionDescription": "Fixed an issue where batchable logging did not work out-of-the-box due to a missing custom metadata record"
         },
         {
             "package": "Nebula Logger - Plugin - Big Object Archiving",
@@ -118,8 +123,10 @@
         "Nebula Logger - Core@4.7.0-25-spring-'22-release": "04t5Y0000015lXSQAY",
         "Nebula Logger - Core@4.7.1-8-plugin-framework-overhaul": "04t5Y0000015lgBQAQ",
         "Nebula Logger - Core@4.7.2-1-parent-log-transaction-id-bugfix": "04t5Y0000015lhdQAA",
+        "Nebula Logger - Core@4.7.3-NEXT-query-selector-classes": "04t5Y0000015liHQAQ",
         "Nebula Logger - Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Plugin - Async Failure Additions@1.0.0-3": "04t5Y0000015lhiQAA",
+        "Nebula Logger - Plugin - Async Failure Additions@1.0.1-1": "04t5Y0000015lhsQAA",
         "Nebula Logger - Plugin - Big Object Archiving": "0Ho5Y000000blMSSAY",
         "Nebula Logger - Plugin - Big Object Archiving@0.9.0-2": "04t5Y0000015lgLQAQ",
         "Nebula Logger - Plugin - Log Retention Rules": "0Ho5Y000000blNfSAI",

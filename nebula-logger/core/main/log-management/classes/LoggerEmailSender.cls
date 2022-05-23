@@ -118,24 +118,27 @@ public without sharing class LoggerEmailSender {
     }
 
     private static void sendEmail(Messaging.SingleEmailMessage message) {
+        SENT_EMAILS.add(message);
         if (IS_EMAIL_DELIVERABILITY_ENABLED == true) {
             List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>{ message };
             List<Messaging.SendEmailResult> emailResults = Messaging.sendEmail(messages);
-            SENT_EMAILS.add(message);
 
             if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == false) {
                 return;
             } else if (emailResults.get(0).success == true) {
                 Logger.info('Logger - The email was sent successfully');
             } else {
-                Logger.info('Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
+                Logger.warn('Logger - The email failed to send: ' + emailResults.get(0).errors.get(0).message);
             }
         }
     }
 
     private static String buildSubject(List<String> errorMessages) {
         String emailSubjectTemplate = 'Logger - Error Notification - {0} ({1})';
-        List<Object> emailSubjectInputs = new List<Object>{ LogEntryEventBuilder.CACHED_ORGANIZATION.Name, LogEntryEventBuilder.CACHED_ORGANIZATION.Id };
+        List<Object> emailSubjectInputs = new List<Object>{
+            LoggerEngineDataSelector.getInstance().getCachedOrganization().Name,
+            LoggerEngineDataSelector.getInstance().getCachedOrganization().Id
+        };
         return String.format(emailSubjectTemplate, emailSubjectInputs);
     }
 
@@ -145,18 +148,16 @@ public without sharing class LoggerEmailSender {
         List<Object> emailBodyInputs = new List<Object>{
             errorMessages.size(),
             sobjectType,
-            LogEntryEventBuilder.CACHED_USER.Username,
-            LogEntryEventBuilder.CACHED_USER.Id,
+            LoggerEngineDataSelector.getInstance().getCachedUser().Username,
+            LoggerEngineDataSelector.getInstance().getCachedUser().Id,
             formattedErrorMessages
         };
         return String.format(emailBodyTemplate, emailBodyInputs);
     }
 
-    @SuppressWarnings('PMD.ApexCRUDViolation')
     private static List<String> queryApexErrrorRecipients() {
         List<String> apexErrrorRecipients = new List<String>();
-        List<ApexEmailNotification> notifications = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
-
+        List<ApexEmailNotification> notifications = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
         if (System.Test.isRunningTest() == true) {
             notifications.clear();
             notifications.addAll(MOCK_NOTIFICATIONS);

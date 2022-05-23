@@ -57,6 +57,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LoggerSObjectMetadata</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>LogViewerController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>RelatedLogEntriesController</apexClass>
         <enabled>true</enabled>
     </classAccesses>

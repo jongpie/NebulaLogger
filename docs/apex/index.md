@@ -38,9 +38,17 @@ Provides the ability to generate string messages on demand, using String.format(
 
 The core class for logging
 
+### [LoggerCache](Logger-Engine/LoggerCache)
+
+Class used to cache query results returned by the selector classes
+
 ### [LoggerDataStore](Logger-Engine/LoggerDataStore)
 
 Class used to manage any data-related operations, including database DML statements, publishing platform events via the event bus, and enqueueing queueable jobs
+
+### [LoggerEngineDataSelector](Logger-Engine/LoggerEngineDataSelector)
+
+Selector class used for all queries that are specific to the logger engine layer
 
 ### [LoggerSObjectHandler](Logger-Engine/LoggerSObjectHandler)
 
@@ -80,9 +88,17 @@ Handles trigger events for the `LogEntryTag__c` object
 
 Manages setting fields on `Log__c` before insert &amp; before update
 
+### [LogManagementDataSelector](Log-Management/LogManagementDataSelector)
+
+Selector class used for all queries that are specific to the log management layer
+
 ### [LogMassDeleteExtension](Log-Management/LogMassDeleteExtension)
 
 Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
+
+### [LogViewerController](Log-Management/LogViewerController)
+
+Controller class for the LWC `logViewer`, used to provided different views on a `Log__c` record
 
 ### [LoggerBatchableContext](Log-Management/LoggerBatchableContext)
 

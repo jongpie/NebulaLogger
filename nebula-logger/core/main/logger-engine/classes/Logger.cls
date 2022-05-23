@@ -9,15 +9,15 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
-@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.ExcessiveClassLength, PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
+@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.7.2';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.7.3';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
-    private static final String TRANSACTION_ID = setTransactionId();
+    private static final String TRANSACTION_ID = new Uuid().getValue();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
 
     private static Integer currentTransactionEntryNumber = 1;
@@ -2491,8 +2491,11 @@ global with sharing class Logger {
 
         // LogScenarioRule__mdt scenarioRule = LogScenarioRule__mdt.getInstance(scenario);
         LogScenarioRule__mdt matchingScenarioRule;
-        for (LogScenarioRule__mdt scenarioRule : [SELECT UserLoggingLevel__c FROM LogScenarioRule__mdt WHERE IsEnabled__c = TRUE AND Scenario__c = :scenario]) {
-            matchingScenarioRule = scenarioRule;
+        for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
+            if (scenarioRule.IsEnabled__c = true && scenarioRule.Scenario__c == scenario) {
+                matchingScenarioRule = scenarioRule;
+                break;
+            }
         }
 
         if (System.Test.isRunningTest() == true) {
@@ -2651,34 +2654,6 @@ global with sharing class Logger {
         }
     }
 
-    // For orgs that already have the aura cmp + quickAction deployed, this method is still needed (otherwise, deployment errors will occur)
-    // TODO consider removing this method after converting aura cmp to lwc (and presumably create a dedicated Apex ctrl w/ this method)
-    // But the safe choice is to just keep it now/forever
-    /**
-     * @description Returns a Log__c record from the database, using either the Salesforce ID or transaction ID
-     * @param  logId The Salesforce ID or TransactionId__c of the Log__c
-     * @return       The matching record, with all fields that the current user can access
-     */
-    @AuraEnabled(cacheable=true)
-    public static Log__c getLog(String logId) {
-        List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
-        logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
-        List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
-
-        List<String> textReplacements = new List<String>{
-            String.join(logFieldNames, ','),
-            String.join(logEntryFieldNames, ','),
-            Schema.LogEntry__c.TransactionEntryNumber__c.getDescribe().getName()
-        };
-        String query = String.format(
-            'SELECT {0}, (SELECT {1} FROM LogEntries__r ORDER BY {2}) FROM Log__c WHERE Id = :logId OR TransactionId__c = :logId',
-            textReplacements
-        );
-
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, Database.query(String.escapeSingleQuotes(query)));
-        return securityDecision.getRecords().isEmpty() ? null : (Log__c) securityDecision.getRecords().get(0);
-    }
-
     // Private logging level methods to keep global methods simpler/cleaner
     private static LogEntryEventBuilder error() {
         return newEntry(LoggingLevel.ERROR);
@@ -2721,18 +2696,6 @@ global with sharing class Logger {
         }
 
         return logEntryEventBuilder;
-    }
-
-    private static String setTransactionId() {
-        // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
-        // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
-        // skip calling System.Request.getCurrent() if there is no user session.
-        // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
-        String transactionId;
-        if (String.isNotBlank(UserInfo.getSessionId())) {
-            transactionId = System.Request.getCurrent().getRequestId();
-        }
-        return String.isNotBlank(transactionId) ? transactionId : new Uuid().getValue();
     }
 
     private static Quiddity setTransactionQuiddity() {

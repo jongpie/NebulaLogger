@@ -5,6 +5,7 @@
     <columns>DeveloperName</columns>
     <columns>IsEnabled__c</columns>
     <columns>SObjectType__c</columns>
+    <columns>SObjectTypeOverride__c</columns>
     <columns>SObjectHandlerApexClass__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>

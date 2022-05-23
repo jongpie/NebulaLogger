@@ -25,7 +25,7 @@ public with sharing class RelatedLogEntriesController {
      * @param  search          An optional search term to filter by
      * @return                 The instance of LogEntryQueryResult, containing matching records and metadata
      */
-    @SuppressWarnings('PMD.ApexCRUDViolation, PMD.ExcessiveParameterList')
+    @SuppressWarnings('PMD.ExcessiveParameterList')
     @AuraEnabled(cacheable=true)
     public static LogEntryQueryResult getQueryResult(
         Id recordId,
@@ -46,14 +46,14 @@ public with sharing class RelatedLogEntriesController {
         if (String.isNotBlank(search) && search.length() >= 3) {
             records = search(recordId, search, fieldsClause, orderByClause, rowLimit);
         } else {
-            records = query(recordId, fieldsClause, orderByClause, rowLimit);
+            records = LogManagementDataSelector.getInstance().getRecordLogEntries(recordId, fieldsClause, orderByClause, rowLimit);
         }
 
         // Somewhat redundant security check for FLS (but extra security > less security)
         SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records);
         records = securityDecision.getRecords();
 
-        Integer totalLogEntriesCount = [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
+        Integer totalLogEntriesCount = LogManagementDataSelector.getInstance().getCountOfRelatedRecordLogEntries(recordId);
 
         return new LogEntryQueryResult(fieldSetMetdata, records, totalLogEntriesCount);
     }
@@ -76,21 +76,6 @@ public with sharing class RelatedLogEntriesController {
         logEntrySearch = String.format(logEntrySearch, searchTextReplacements);
 
         return (List<LogEntry__c>) Search.query(logEntrySearch).get(0);
-    }
-
-    @SuppressWarnings('PMD.ExcessiveParameterList')
-    private static List<LogEntry__c> query(Id recordId, String fieldsClause, String orderByClause, Integer rowLimit) {
-        List<Object> queryTextReplacements = new List<Object>{
-            fieldsClause,
-            String.valueOf(Schema.LogEntry__c.SObjectType),
-            String.valueOf(Schema.LogEntry__c.RecordId__c),
-            orderByClause,
-            rowLimit
-        };
-        String logEntryQuery = 'SELECT {0} FROM {1} WHERE {2} = :recordId ORDER BY {3} LIMIT {4}';
-        logEntryQuery = String.format(logEntryQuery, queryTextReplacements);
-
-        return (List<LogEntry__c>) Database.query(String.escapeSingleQuotes(logEntryQuery));
     }
 
     private static String getFieldsClause(List<FieldMetadata> fields) {

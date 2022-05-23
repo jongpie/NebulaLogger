@@ -13,6 +13,7 @@ public without sharing class LoggerDataStore {
     private static Database databaseInstance = new Database();
     private static EventBus eventBusInstance = new EventBus();
     private static JobQueue jobQueueInstance = new JobQueue();
+
     /**
      * @description The instance `LoggerDataStore.Database` used for any DML
      *              operations in the current transaction.

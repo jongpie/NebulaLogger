@@ -99,14 +99,6 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_return_transaction_id() {
-        String transactionId = Logger.getTransactionId();
-
-        System.assert(String.isNotBlank(transactionId));
-        System.assertEquals(System.Request.getCurrent().getRequestId(), transactionId);
-    }
-
-    @IsTest
     static void it_should_generate_a_valid_uuid() {
         Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
 
@@ -115,6 +107,18 @@ private class Logger_Tests {
         System.assertEquals(36, uuid.getValue().length());
         Matcher matcher = pattern.matcher(uuid.getValue());
         System.assert(matcher.matches(), 'Generated UUID=' + uuid.getValue());
+    }
+
+    @IsTest
+    static void it_should_return_uuid_transaction_id() {
+        Pattern pattern = Pattern.compile('[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}');
+
+        String transactionId = Logger.getTransactionId();
+
+        System.assert(String.isNotBlank(transactionId));
+        System.assertEquals(36, transactionId.length());
+        Matcher matcher = pattern.matcher(transactionId);
+        System.assert(matcher.matches(), 'Generated UUID=' + transactionId);
     }
 
     @IsTest
@@ -6066,30 +6070,6 @@ private class Logger_Tests {
         System.assertEquals(LoggingLevel.FINE, Logger.getLoggingLevel('fine'));
         System.assertEquals(LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
         System.assertEquals(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
-    }
-
-    @IsTest
-    static void it_should_return_log_when_id_provided() {
-        Log__c log = new Log__c(TransactionId__c = '1234');
-        insert log;
-
-        System.Test.startTest();
-        Log__c returnedLog = Logger.getLog(log.Id);
-        System.Test.stopTest();
-
-        System.assertEquals(log.Id, returnedLog.Id);
-    }
-
-    @IsTest
-    static void it_should_return_log_when_transaction_id_provided() {
-        Log__c log = new Log__c(TransactionId__c = '1234');
-        insert log;
-
-        System.Test.startTest();
-        Log__c returnedLog = Logger.getLog(log.TransactionId__c);
-        System.Test.stopTest();
-
-        System.assertEquals(log.Id, returnedLog.Id);
     }
     // End tests for utility methods
 
