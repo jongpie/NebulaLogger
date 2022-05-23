@@ -323,6 +323,9 @@ jobs:
             - name: 'Create & Install Package Version'
               run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
 
+            - name: 'Run Apex Tests'
+              run: npm run test:apex:without-coverage -- --targetusername nebula-logger-package-demo
+
             - name: 'Commit New Package Version'
               run: |
                   git config --local user.email "action@github.com"

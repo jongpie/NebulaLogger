@@ -156,6 +156,7 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_returns_profiles_for_specified_profile_ids() {
         List<Profile> expectedResults = [SELECT Id, Name FROM Profile ORDER BY Name LIMIT 3];
+        expectedResults.sort();
         List<Id> targetProfileIds = new List<Id>(new Map<Id, Profile>(expectedResults).keySet());
 
         List<Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesById(targetProfileIds);
@@ -256,7 +257,7 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_users_for_user_ids() {
-        List<User> expectedResults = [SELECT Id, Username FROM User ORDER BY Name LIMIT 3];
+        List<User> expectedResults = [SELECT Id, Username FROM User ORDER BY Username LIMIT 3];
         List<Id> targetUserIds = new List<Id>(new Map<Id, User>(expectedResults).keySet());
 
         List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersById(targetUserIds);
@@ -281,7 +282,7 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_users_for_user_usernames() {
-        List<User> expectedResults = [SELECT Id, Username FROM User ORDER BY Name LIMIT 3];
+        List<User> expectedResults = [SELECT Id, Username FROM User ORDER BY Username LIMIT 3];
         List<String> targetUserUsernames = new List<String>();
         for (User user : expectedResults) {
             targetUserUsernames.add(user.Username);
