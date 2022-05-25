@@ -187,7 +187,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     @SuppressWarnings('PMD.NcssMethodCount')
     private LogDto convertLog(Log__c log) {
         LogEntry__c lastLogEntry = log.LogEntries__r.get(0);
-        String messageText = 'Last Log Entry Message' + '\n`' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '`';
+        String messageText = 'Last Log Entry Message' + '\n```' + lastLogEntry.LoggingLevel__c + ': ' + lastLogEntry.Message__c + '```';
 
         LogDto notification = new LogDto();
         notification.author_link = Url.getSalesforceBaseUrl().toExternalForm() + '/' + log.LoggedBy__c;
@@ -202,14 +202,14 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             FieldDto exceptionStackTraceField = new FieldDto();
             exceptionStackTraceField.isShort = false;
             exceptionStackTraceField.title = Schema.LogEntry__c.ExceptionStackTrace__c.getDescribe().getLabel();
-            exceptionStackTraceField.value = '`' + lastLogEntry.ExceptionStackTrace__c + '`';
+            exceptionStackTraceField.value = '```' + lastLogEntry.ExceptionStackTrace__c + '```';
             notification.fields.add(exceptionStackTraceField);
         }
 
         FieldDto stackTraceField = new FieldDto();
         stackTraceField.isShort = false;
         stackTraceField.title = Schema.LogEntry__c.StackTrace__c.getDescribe().getLabel();
-        stackTraceField.value = '`' + lastLogEntry.StackTrace__c + '`';
+        stackTraceField.value = '```' + lastLogEntry.StackTrace__c + '```';
         notification.fields.add(stackTraceField);
 
         // TODO: switch to dynamically creating Slack DTO fields based on a new `Log__c` field set parameter
