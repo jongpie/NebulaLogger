@@ -15,6 +15,7 @@ global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
     private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
+    private static final Boolean SHOULD_PARSE_STACK_TRACE = LoggerParameter.getBoolean('EnableStackTraceParsing', true);
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
 
@@ -526,7 +527,7 @@ global with sharing class LogEntryEventBuilder {
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
-        if (this.shouldSave == false) {
+        if (SHOULD_PARSE_STACK_TRACE == false || this.shouldSave == false) {
             return this;
         }
 
