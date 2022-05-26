@@ -44,7 +44,7 @@ export default class BatchPurge extends LightningElement {
   purgeBatchJobRecords;
   disableRunPurgeButton;
 
-  async connectedCallback() {
+  connectedCallback() {
     document.title = this.title;
     this.selectedDateFilterOption = "TODAY";
 
