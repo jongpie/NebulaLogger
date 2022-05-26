@@ -30,6 +30,8 @@ The singleton instance of `TransactionCache`
 
 #### LoggerCache.TransactionCache class
 
+Manages any transaction-specific caching
+
 ---
 
 ##### Methods
