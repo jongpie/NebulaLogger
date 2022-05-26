@@ -64,7 +64,9 @@ public class LoggerMockDataCreator {
             return (Database.DeleteResult) JSON.deserialize('{"success": true, "id": "' + recordId + '"}', Database.DeleteResult.class);
         } else {
             return (Database.DeleteResult) JSON.deserialize(
-                '{"success":false,"errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
+                '{"success":false, "id": "' +
+                recordId +
+                '", "errors":[{"message": "Could not delete...", "statusCode": "DELETE_FAILED"}]}',
                 Database.DeleteResult.class
             );
         }

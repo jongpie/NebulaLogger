@@ -5916,6 +5916,208 @@ private class Logger_Tests {
     }
     // End FINEST methods for String
 
+    // Start logDatabaseErrors() test methods
+    @IsTest
+    static void it_should_log_only_database_deleteResult_for_logMessage_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
+        Id recordId = UserInfo.getUserId();
+        Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+        Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
+        List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, deleteResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_deleteResult_for_string_message_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        String message = 'Some message';
+        Id recordId = UserInfo.getUserId();
+        Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
+        Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
+        List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, deleteResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_mergeResult_for_logMessage_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
+        Id recordId = UserInfo.getUserId();
+        Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+        Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
+        List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, mergeResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_mergeResult_for_string_message_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        String message = 'Some message';
+        Id recordId = UserInfo.getUserId();
+        Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
+        Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
+        List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, mergeResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_saveResult_for_logMessage_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
+        Id recordId = UserInfo.getUserId();
+        Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+        Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
+        List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, saveResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_saveResult_for_string_message_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        String message = 'Some message';
+        Id recordId = UserInfo.getUserId();
+        Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
+        Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
+        List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, saveResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_upsertResult_for_logMessage_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
+        Id recordId = UserInfo.getUserId();
+        Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+        Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
+        List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, upsertResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_upsertResult_for_string_message_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        String message = 'Some message';
+        Id recordId = UserInfo.getUserId();
+        Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
+        Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
+        List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, upsertResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_undeleteResult_for_logMessage_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
+        Id recordId = UserInfo.getUserId();
+        Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+        Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
+        List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, undeleteResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+
+    @IsTest
+    static void it_should_log_only_database_undeleteResult_for_string_message_when_isSuccess_is_false() {
+        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        String message = 'Some message';
+        Id recordId = UserInfo.getUserId();
+        Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
+        Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
+        List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
+        System.assertEquals(2, undeleteResults.size());
+        System.assertEquals(0, Logger.getBufferSize());
+
+        LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
+
+        System.assertEquals(1, Logger.getBufferSize());
+        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
+        String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
+        System.assertEquals(expectedDatabaseResultJson, returnedBuilder.getLogEntryEvent().DatabaseResultJson__c);
+    }
+    // End logDatabaseErrors() test methods
+
     // Start newEntry for LogMessage test methods
     @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldSave_override() {

@@ -2429,6 +2429,211 @@ global with sharing class Logger {
     }
 
     /**
+     * @description Creates a log entry for any results within the provided List DeleteResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        } else {
+            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults);
+        }
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List DeleteResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  message       The string to use to set the entry's message field
+     * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        }
+
+        List<Database.DeleteResult> resultsToLog = new List<Database.DeleteResult>();
+        for (Database.DeleteResult deleteResult : deleteResults) {
+            if (deleteResult.isSuccess() == false) {
+                resultsToLog.add(deleteResult);
+            }
+        }
+
+        LogEntryEventBuilder logEntryEventBuilder;
+        if (resultsToLog.isEmpty() == false) {
+            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
+        }
+        return logEntryEventBuilder;
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List MergeResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        } else {
+            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults);
+        }
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List MergeResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  message       The string to use to set the entry's message field
+     * @param  mergeResults The instance of `List<Database.MergeResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        }
+
+        List<Database.MergeResult> resultsToLog = new List<Database.MergeResult>();
+        for (Database.MergeResult mergeResult : mergeResults) {
+            if (mergeResult.isSuccess() == false) {
+                resultsToLog.add(mergeResult);
+            }
+        }
+
+        LogEntryEventBuilder logEntryEventBuilder;
+        if (resultsToLog.isEmpty() == false) {
+            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
+        }
+        return logEntryEventBuilder;
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List SaveResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        } else {
+            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults);
+        }
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List SaveResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  message       The string to use to set the entry's message field
+     * @param  saveResults The instance of `List<Database.SaveResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        }
+
+        List<Database.SaveResult> resultsToLog = new List<Database.SaveResult>();
+        for (Database.SaveResult saveResult : saveResults) {
+            if (saveResult.isSuccess() == false) {
+                resultsToLog.add(saveResult);
+            }
+        }
+
+        LogEntryEventBuilder logEntryEventBuilder;
+        if (resultsToLog.isEmpty() == false) {
+            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
+        }
+        return logEntryEventBuilder;
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List UpsertResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        } else {
+            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults);
+        }
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List UpsertResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  message       The string to use to set the entry's message field
+     * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        }
+
+        List<Database.UpsertResult> resultsToLog = new List<Database.UpsertResult>();
+        for (Database.UpsertResult upsertResult : upsertResults) {
+            if (upsertResult.isSuccess() == false) {
+                resultsToLog.add(upsertResult);
+            }
+        }
+
+        LogEntryEventBuilder logEntryEventBuilder;
+        if (resultsToLog.isEmpty() == false) {
+            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
+        }
+        return logEntryEventBuilder;
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List UndeleteResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        } else {
+            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults);
+        }
+    }
+
+    /**
+     * @description Creates a log entry for any results within the provided List UndeleteResult> where isSuccess() == true
+     * @param  loggingLevel  The logging level to use for the log entry
+     * @param  message       The string to use to set the entry's message field
+     * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
+     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     */
+    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults) {
+        if (isEnabled(loggingLevel) == false) {
+            return null;
+        }
+
+        List<Database.UndeleteResult> resultsToLog = new List<Database.UndeleteResult>();
+        for (Database.UndeleteResult undeleteResult : undeleteResults) {
+            if (undeleteResult.isSuccess() == false) {
+                resultsToLog.add(undeleteResult);
+            }
+        }
+
+        LogEntryEventBuilder logEntryEventBuilder;
+        if (resultsToLog.isEmpty() == false) {
+            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
+        }
+        return logEntryEventBuilder;
+    }
+
+    /**
      * @description Adds a new instance of LogEntryEventBuilder to Logger's buffer, if shouldSave == true
      * @param  loggingLevel The logging level enum value for the new entry
      * @param  logMessage   The instance of LogMessage to use as the entry's message
