@@ -4086,7 +4086,7 @@ Boolean
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List DeleteResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;DeleteResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4108,7 +4108,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List DeleteResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;DeleteResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4130,7 +4130,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List MergeResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;MergeResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4152,7 +4152,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List MergeResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;MergeResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4174,7 +4174,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List SaveResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;SaveResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4196,7 +4196,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List SaveResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;SaveResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4218,7 +4218,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List UpsertResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;UpsertResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4240,7 +4240,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List UpsertResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;UpsertResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4262,7 +4262,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List UndeleteResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;UndeleteResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 
@@ -4284,7 +4284,7 @@ The instance of `LogEntryBuilder` was generated to log any errors, or `null` if 
 
 #### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
 
-Creates a log entry for any results within the provided List UndeleteResult&gt; where isSuccess() == true
+Creates a log entry for any results within the provided `List&lt;UndeleteResult&gt;` where `isSuccess() != true`
 
 ##### Parameters
 

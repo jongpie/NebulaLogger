@@ -2429,7 +2429,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List DeleteResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<DeleteResult>` where `isSuccess() != true`
      * @param  loggingLevel  The logging level to use for the log entry
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
@@ -2444,7 +2444,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List DeleteResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<DeleteResult>` where `isSuccess() != true`
      * @param  loggingLevel  The logging level to use for the log entry
      * @param  message       The string to use to set the entry's message field
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
@@ -2470,7 +2470,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List MergeResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<MergeResult>` where `isSuccess() != true`
      * @param  loggingLevel The logging level to use for the log entry
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
@@ -2485,7 +2485,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List MergeResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<MergeResult>` where `isSuccess() != true`
      * @param  loggingLevel The logging level to use for the log entry
      * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
@@ -2511,7 +2511,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List SaveResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<SaveResult>` where `isSuccess() != true`
      * @param  loggingLevel The logging level to use for the log entry
      * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  saveResults  The instance of `List<Database.SaveResult>` to log
@@ -2526,7 +2526,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List SaveResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<SaveResult>` where `isSuccess() != true`
      * @param  loggingLevel The logging level to use for the log entry
      * @param  message      The string to use to set the entry's message field
      * @param  saveResults  The instance of `List<Database.SaveResult>` to log
@@ -2552,7 +2552,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List UpsertResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<UpsertResult>` where `isSuccess() != true`
      * @param  loggingLevel  The logging level to use for the log entry
      * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
@@ -2567,7 +2567,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List UpsertResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<UpsertResult>` where `isSuccess() != true`
      * @param  loggingLevel  The logging level to use for the log entry
      * @param  message       The string to use to set the entry's message field
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
@@ -2593,7 +2593,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List UndeleteResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<UndeleteResult>` where `isSuccess() != true`
      * @param  loggingLevel    The logging level to use for the log entry
      * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
@@ -2608,7 +2608,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Creates a log entry for any results within the provided List UndeleteResult> where isSuccess() == true
+     * @description Creates a log entry for any results within the provided `List<UndeleteResult>` where `isSuccess() != true`
      * @param  loggingLevel    The logging level to use for the log entry
      * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
