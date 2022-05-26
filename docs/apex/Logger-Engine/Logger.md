@@ -4084,6 +4084,226 @@ Boolean
 
 Boolean
 
+#### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List DeleteResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `loggingLevel`  | The logging level to use for the log entry                                |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `deleteResults` | The instance of `List&lt;Database.DeleteResult&gt;` to log                |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List DeleteResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param           | Description                                                |
+| --------------- | ---------------------------------------------------------- |
+| `loggingLevel`  | The logging level to use for the log entry                 |
+| `message`       | The string to use to set the entry&apos;s message field    |
+| `deleteResults` | The instance of `List&lt;Database.DeleteResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List MergeResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `loggingLevel` | The logging level to use for the log entry                                |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `mergeResults` | The instance of `List&lt;Database.MergeResult&gt;` to log                 |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List MergeResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param          | Description                                               |
+| -------------- | --------------------------------------------------------- |
+| `loggingLevel` | The logging level to use for the log entry                |
+| `message`      | The string to use to set the entry&apos;s message field   |
+| `mergeResults` | The instance of `List&lt;Database.MergeResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List SaveResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param          | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `loggingLevel` | The logging level to use for the log entry                                |
+| `logMessage`   | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `saveResults`  | The instance of `List&lt;Database.SaveResult&gt;` to log                  |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List SaveResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param          | Description                                              |
+| -------------- | -------------------------------------------------------- |
+| `loggingLevel` | The logging level to use for the log entry               |
+| `message`      | The string to use to set the entry&apos;s message field  |
+| `saveResults`  | The instance of `List&lt;Database.SaveResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List UpsertResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param           | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `loggingLevel`  | The logging level to use for the log entry                                |
+| `logMessage`    | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `upsertResults` | The instance of `List&lt;Database.UpsertResult&gt;` to log                |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List UpsertResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param           | Description                                                |
+| --------------- | ---------------------------------------------------------- |
+| `loggingLevel`  | The logging level to use for the log entry                 |
+| `message`       | The string to use to set the entry&apos;s message field    |
+| `upsertResults` | The instance of `List&lt;Database.UpsertResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List UndeleteResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param             | Description                                                               |
+| ----------------- | ------------------------------------------------------------------------- |
+| `loggingLevel`    | The logging level to use for the log entry                                |
+| `logMessage`      | The instance of `LogMessage` to use to set the entry&apos;s message field |
+| `undeleteResults` | The instance of `List&lt;Database.UndeleteResult&gt;` to log              |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
+#### `logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults)` → `LogEntryEventBuilder`
+
+Creates a log entry for any results within the provided List UndeleteResult&gt; where isSuccess() == true
+
+##### Parameters
+
+| Param             | Description                                                  |
+| ----------------- | ------------------------------------------------------------ |
+| `loggingLevel`    | The logging level to use for the log entry                   |
+| `message`         | The string to use to set the entry&apos;s message field      |
+| `undeleteResults` | The instance of `List&lt;Database.UndeleteResult&gt;` to log |
+
+##### Return
+
+**Type**
+
+LogEntryEventBuilder
+
+**Description**
+
+The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+
 #### `meetsUserLoggingLevel(LoggingLevel logEntryLoggingLevel)` → `Boolean`
 
 Indicates if the specified logging level is enabled for the current user, based on the custom setting LoggerSettings\_\_c

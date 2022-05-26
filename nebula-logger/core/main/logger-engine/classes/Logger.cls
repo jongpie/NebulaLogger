@@ -2435,7 +2435,7 @@ global with sharing class Logger {
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         } else {
@@ -2450,7 +2450,7 @@ global with sharing class Logger {
      * @param  deleteResults The instance of `List<Database.DeleteResult>` to log
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         }
@@ -2471,12 +2471,12 @@ global with sharing class Logger {
 
     /**
      * @description Creates a log entry for any results within the provided List MergeResult> where isSuccess() == true
-     * @param  loggingLevel  The logging level to use for the log entry
-     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  loggingLevel The logging level to use for the log entry
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
-     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         } else {
@@ -2486,12 +2486,12 @@ global with sharing class Logger {
 
     /**
      * @description Creates a log entry for any results within the provided List MergeResult> where isSuccess() == true
-     * @param  loggingLevel  The logging level to use for the log entry
-     * @param  message       The string to use to set the entry's message field
+     * @param  loggingLevel The logging level to use for the log entry
+     * @param  message      The string to use to set the entry's message field
      * @param  mergeResults The instance of `List<Database.MergeResult>` to log
-     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         }
@@ -2512,12 +2512,12 @@ global with sharing class Logger {
 
     /**
      * @description Creates a log entry for any results within the provided List SaveResult> where isSuccess() == true
-     * @param  loggingLevel  The logging level to use for the log entry
-     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
-     * @param  saveResults The instance of `List<Database.SaveResult>` to log
-     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     * @param  loggingLevel The logging level to use for the log entry
+     * @param  logMessage   The instance of `LogMessage` to use to set the entry's message field
+     * @param  saveResults  The instance of `List<Database.SaveResult>` to log
+     * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         } else {
@@ -2527,12 +2527,12 @@ global with sharing class Logger {
 
     /**
      * @description Creates a log entry for any results within the provided List SaveResult> where isSuccess() == true
-     * @param  loggingLevel  The logging level to use for the log entry
-     * @param  message       The string to use to set the entry's message field
-     * @param  saveResults The instance of `List<Database.SaveResult>` to log
-     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     * @param  loggingLevel The logging level to use for the log entry
+     * @param  message      The string to use to set the entry's message field
+     * @param  saveResults  The instance of `List<Database.SaveResult>` to log
+     * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         }
@@ -2558,7 +2558,7 @@ global with sharing class Logger {
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         } else {
@@ -2573,7 +2573,7 @@ global with sharing class Logger {
      * @param  upsertResults The instance of `List<Database.UpsertResult>` to log
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         }
@@ -2594,12 +2594,12 @@ global with sharing class Logger {
 
     /**
      * @description Creates a log entry for any results within the provided List UndeleteResult> where isSuccess() == true
-     * @param  loggingLevel  The logging level to use for the log entry
-     * @param  logMessage    The instance of `LogMessage` to use to set the entry's message field
+     * @param  loggingLevel    The logging level to use for the log entry
+     * @param  logMessage      The instance of `LogMessage` to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
-     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         } else {
@@ -2609,12 +2609,12 @@ global with sharing class Logger {
 
     /**
      * @description Creates a log entry for any results within the provided List UndeleteResult> where isSuccess() == true
-     * @param  loggingLevel  The logging level to use for the log entry
-     * @param  message       The string to use to set the entry's message field
+     * @param  loggingLevel    The logging level to use for the log entry
+     * @param  message         The string to use to set the entry's message field
      * @param  undeleteResults The instance of `List<Database.UndeleteResult>` to log
-     * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
+     * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
-    public static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults) {
+    global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults) {
         if (isEnabled(loggingLevel) == false) {
             return null;
         }
