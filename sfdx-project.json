@@ -12,9 +12,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.7.3.NEXT",
-            "versionName": "Query Selector Classes",
-            "versionDescription": "Introduced 2 new selector classes to centralize queries (which will later help with some planned future enhancements), fixed some bugs",
+            "versionNumber": "4.7.4.NEXT",
+            "versionName": "New method Logger.logDatabaseErrors()",
+            "versionDescription": "Added new method Logger.logDatabaseErrors(), including several overloads for using LogMessage/String, as well as the different database result classes (Database.DeleteResult, Database.MergeResult, Database.SaveResult, Database.UpsertResult, Database.UndeleteResult)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },
