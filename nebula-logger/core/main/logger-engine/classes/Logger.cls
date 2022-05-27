@@ -13,12 +13,13 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.7.4';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.7.5';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
+    private static final Boolean USE_FIRST_SPECIFIED_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
 
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
@@ -2690,11 +2691,13 @@ global with sharing class Logger {
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
      * @param  scenario The name to use for the current transaction's scenario
      */
-    @SuppressWarnings('PMD.ApexCrudViolation')
     global static void setScenario(String scenario) {
+        if (USE_FIRST_SPECIFIED_SCENARIO == true && String.isNotBlank(transactionScenario) == true) {
+            return;
+        }
+
         transactionScenario = scenario;
 
-        // LogScenarioRule__mdt scenarioRule = LogScenarioRule__mdt.getInstance(scenario);
         LogScenarioRule__mdt matchingScenarioRule;
         for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
             if (scenarioRule.IsEnabled__c = true && scenarioRule.Scenario__c == scenario) {
