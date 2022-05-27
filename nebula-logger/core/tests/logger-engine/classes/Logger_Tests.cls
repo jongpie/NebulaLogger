@@ -181,10 +181,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_use_the_first_specified_scenario_when_parameter_is_true() {
         // TODO eliminate references to Log__c, find alternative way to assert on expected data
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));
         String transactionId = Logger.getTransactionId();
         String firstTransactionScenarioName = 'the first test scenario specified for this transaction';
         String secondTransactionScenarioName = 'the second test scenario specified for this transaction';
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));
 
         Logger.setScenario(firstTransactionScenarioName);
         Logger.setScenario(secondTransactionScenarioName);
@@ -202,10 +202,10 @@ private class Logger_Tests {
     @IsTest
     static void it_should_use_the_last_specified_scenario_when_parameter_is_false() {
         // TODO eliminate references to Log__c, find alternative way to assert on expected data
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(false)));
         String transactionId = Logger.getTransactionId();
         String firstTransactionScenarioName = 'the first test scenario specified for this transaction';
         String secondTransactionScenarioName = 'the second test scenario specified for this transaction';
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(false)));
 
         Logger.setScenario(firstTransactionScenarioName);
         Logger.setScenario(secondTransactionScenarioName);
