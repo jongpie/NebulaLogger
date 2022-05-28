@@ -180,44 +180,26 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_use_the_first_specified_scenario_when_parameter_is_true() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));
-        String transactionId = Logger.getTransactionId();
         String firstTransactionScenarioName = 'the first test scenario specified for this transaction';
         String secondTransactionScenarioName = 'the second test scenario specified for this transaction';
 
         Logger.setScenario(firstTransactionScenarioName);
         Logger.setScenario(secondTransactionScenarioName);
-        for (Integer i = 0; i < 5; i++) {
-            Logger.info('my log entry');
-        }
 
-        Logger.saveLog();
-        System.assertEquals(firstTransactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(firstTransactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        System.assertEquals(firstTransactionScenarioName, Logger.getScenario(), 'The first specified scenario should have been used');
     }
 
     @IsTest
     static void it_should_use_the_last_specified_scenario_when_parameter_is_false() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(false)));
-        String transactionId = Logger.getTransactionId();
         String firstTransactionScenarioName = 'the first test scenario specified for this transaction';
         String secondTransactionScenarioName = 'the second test scenario specified for this transaction';
 
         Logger.setScenario(firstTransactionScenarioName);
         Logger.setScenario(secondTransactionScenarioName);
-        for (Integer i = 0; i < 5; i++) {
-            Logger.info('my log entry');
-        }
 
-        Logger.saveLog();
-        System.assertEquals(secondTransactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(secondTransactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        System.assertEquals(secondTransactionScenarioName, Logger.getScenario(), 'The last specified scenario should have been used');
     }
 
     @IsTest
