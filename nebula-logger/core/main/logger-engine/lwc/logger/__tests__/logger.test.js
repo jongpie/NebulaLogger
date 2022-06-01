@@ -189,6 +189,30 @@ describe('Logger lwc tests', () => {
         expect(logEntry.error.type).toEqual('JavaScript.TypeError');
     });
 
+    it('sets Apex error details', async () => {
+        const logger = createElement('c-logger', { is: Logger });
+        document.body.appendChild(logger);
+        getSettings.emit({ ...MOCK_GET_SETTINGS });
+        const logEntry = logger.info('example log entry');
+        expect(logEntry.error).toBeFalsy();
+        const error = {
+            body: {
+                exceptionType: 'System.DmlException',
+                message: 'Some Apex error, oh no!',
+                stackTrace: 'Class.SomeApexClass.runSomeMethod: line 314, column 42"'
+            }
+        };
+        expect(error).toBeTruthy();
+        expect(error.body.message).toBeTruthy();
+        expect(error.body.stackTrace).toBeTruthy();
+
+        logEntry.setError(error);
+
+        expect(logEntry.error.message).toEqual(error.body.message);
+        expect(logEntry.error.stack).toEqual(error.body.stackTrace);
+        expect(logEntry.error.type).toEqual(error.body.exceptionType);
+    });
+
     it('adds tags', async () => {
         const logger = createElement('c-logger', { is: Logger });
         document.body.appendChild(logger);

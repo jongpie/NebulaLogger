@@ -11,9 +11,6 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount, PMD.StdCyclomaticComplexity')
 public inherited sharing class ComponentLogger {
-    @TestVisible
-    private static final String EXCEPTION_TYPE_PREFIX = 'JavaScript.';
-
     /**
      * @description Provides data to the frontend about `LoggerSettings__c` & server-supported logging details
      * @return   return The instance of `ComponentLoggerSettings` for the current user
@@ -37,10 +34,14 @@ public inherited sharing class ComponentLogger {
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 Logger.setScenario(componentLogEntry.scenario);
                 LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
-                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message)
-                    .setRecord(componentLogEntry.recordId)
-                    .setRecord(componentLogEntry.record)
-                    .addTags(componentLogEntry.tags);
+                LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message).addTags(componentLogEntry.tags);
+
+                if (componentLogEntry.recordId != null) {
+                    logEntryEventBuilder.setRecord(componentLogEntry.recordId);
+                }
+                if (componentLogEntry.record != null) {
+                    logEntryEventBuilder.setRecord(componentLogEntry.record);
+                }
 
                 logEntryEventBuilder.getLogEntryEvent().Timestamp__c = componentLogEntry.timestamp;
                 setComponentErrorDetails(logEntryEventBuilder, componentLogEntry.error);
@@ -66,7 +67,7 @@ public inherited sharing class ComponentLogger {
 
         logEntryEventBuilder.getLogEntryEvent().ExceptionMessage__c = componentError.message;
         logEntryEventBuilder.getLogEntryEvent().ExceptionStackTrace__c = componentError.stack;
-        logEntryEventBuilder.getLogEntryEvent().ExceptionType__c = EXCEPTION_TYPE_PREFIX + componentError.type;
+        logEntryEventBuilder.getLogEntryEvent().ExceptionType__c = componentError.type;
     }
 
     @SuppressWarnings('PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.AvoidDeeplyNestedIfStmts')

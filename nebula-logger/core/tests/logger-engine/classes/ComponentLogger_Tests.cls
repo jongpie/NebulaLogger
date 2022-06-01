@@ -119,7 +119,7 @@ private class ComponentLogger_Tests {
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = 'some javascript error message';
         mockComponentError.stack = 'some \nstack \ntrace \nstring';
-        mockComponentError.type = 'ReferenceError';
+        mockComponentError.type = 'JavaScript.ReferenceError';
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.error = mockComponentError;
         componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
@@ -144,7 +144,7 @@ private class ComponentLogger_Tests {
         System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
         System.assertEquals(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
         System.assertEquals(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
-        System.assertEquals(ComponentLogger.EXCEPTION_TYPE_PREFIX + componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
+        System.assertEquals(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
     }
 
     @IsTest

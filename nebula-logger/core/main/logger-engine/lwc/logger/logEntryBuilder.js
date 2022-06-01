@@ -67,9 +67,15 @@ const LogEntryBuilder = class {
     setError(error) {
         if (this.shouldSave === true) {
             this.error = {};
-            this.error.message = error.message;
-            this.error.stack = error.stack;
-            this.error.type = error.name;
+            if (!!error.body) {
+                this.error.message = error.body.message;
+                this.error.stack = error.body.stackTrace;
+                this.error.type = error.body.exceptionType;
+            } else {
+                this.error.message = error.message;
+                this.error.stack = error.stack;
+                this.error.type = 'JavaScript.' + error.name;
+            }
         }
         return this;
     }
