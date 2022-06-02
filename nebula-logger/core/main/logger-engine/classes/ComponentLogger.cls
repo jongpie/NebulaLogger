@@ -70,7 +70,7 @@ public inherited sharing class ComponentLogger {
         logEntryEventBuilder.getLogEntryEvent().ExceptionType__c = componentError.type;
     }
 
-    @SuppressWarnings('PMD.StdCyclomaticComplexity, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.AvoidDeeplyNestedIfStmts')
+    @SuppressWarnings('PMD.AvoidDeeplyNestedIfStmts, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.NcssMethodCount, PMD.StdCyclomaticComplexity')
     private static void setStackTraceDetails(LogEntryEventBuilder logEntryEventBuilder, String stackTraceString) {
         String originLocation;
         Boolean isAuraComponent = false;
@@ -98,17 +98,23 @@ public inherited sharing class ComponentLogger {
             }
 
             stackTraceString = String.join(stackTraceLines, '\n');
-            if (String.isNotBlank(stackTraceString)) {
+            if (String.isNotBlank(stackTraceString) == true) {
                 String componentName;
                 String componentFunction;
-                if (isAuraComponent == true) {
-                    componentName = stackTraceLines.get(0).substringAfterLast(auraComponentContent).substringBefore('.js');
-                    componentFunction = stackTraceLines.get(0).substringBefore(' (').substringAfter('at ');
-                } else {
-                    componentName = stackTraceLines.get(0).substringAfterLast(lwcModuleContent).substringBefore('.js');
-                    componentFunction = stackTraceLines.get(0).substringBefore(' (').substringAfter('at ').substringAfter('.');
-                }
+                for (String currentStackTraceLine : stackTraceString.split('\n')) {
+                    if (currentStackTraceLine.trim().startsWith('at eval') == true) {
+                        continue;
+                    }
 
+                    if (isAuraComponent == true) {
+                        componentName = currentStackTraceLine.substringAfterLast(auraComponentContent).substringBefore('.js');
+                        componentFunction = currentStackTraceLine.substringBefore(' (').substringAfter('at ');
+                    } else {
+                        componentName = currentStackTraceLine.substringAfterLast(lwcModuleContent).substringBefore('.js');
+                        componentFunction = currentStackTraceLine.substringBefore(' (').substringAfter('at ').substringAfter('.');
+                    }
+                    break;
+                }
                 originLocation = componentName + '.' + componentFunction;
             }
         }

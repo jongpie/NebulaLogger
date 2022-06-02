@@ -199,10 +199,11 @@ describe('Logger lwc tests', () => {
             body: {
                 exceptionType: 'System.DmlException',
                 message: 'Some Apex error, oh no!',
-                stackTrace: 'Class.SomeApexClass.runSomeMethod: line 314, column 42"'
+                stackTrace: 'Class.SomeApexClass.runSomeMethod: line 314, column 42'
             }
         };
         expect(error).toBeTruthy();
+        expect(error.body.exceptionType).toBeTruthy();
         expect(error.body.message).toBeTruthy();
         expect(error.body.stackTrace).toBeTruthy();
 
