@@ -67,7 +67,7 @@ const LogEntryBuilder = class {
     setError(error) {
         if (this.shouldSave === true) {
             this.error = {};
-            if (!!error.body) {
+            if (error.body) {
                 this.error.message = error.body.message;
                 this.error.stack = error.body.stackTrace;
                 this.error.type = error.body.exceptionType;

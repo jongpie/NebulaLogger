@@ -4,6 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 /* eslint-disable no-console */
+import { LightningElement } from 'lwc';
 import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
 
 const LOGGER_NAME = 'c-logger';
