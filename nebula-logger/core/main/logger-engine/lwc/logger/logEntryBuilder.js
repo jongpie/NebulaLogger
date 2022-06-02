@@ -61,7 +61,7 @@ const LogEntryBuilder = class {
 
     /**
      * @description Sets the log entry event's exception fields
-     * @param {Error} error The instance of a JavaScript `Error` object to use.
+     * @param {Error} error The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setError(error) {

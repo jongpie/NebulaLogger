@@ -74,9 +74,9 @@ Sets the log entry event's exception fields
 **Kind**: instance method of [<code>LogEntryBuilder</code>](#LogEntryBuilder)
 **Returns**: [<code>LogEntryBuilder</code>](#LogEntryBuilder) - The same instance of `LogEntryBuilder`, useful for chaining methods
 
-| Param | Type               | Description                                         |
-| ----- | ------------------ | --------------------------------------------------- |
-| error | <code>Error</code> | The instance of a JavaScript `Error` object to use. |
+| Param | Type               | Description                                                                      |
+| ----- | ------------------ | -------------------------------------------------------------------------------- |
+| error | <code>Error</code> | The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use |
 
 <a name="LogEntryBuilder+addTag"></a>
 
