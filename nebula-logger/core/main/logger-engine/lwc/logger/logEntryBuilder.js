@@ -61,15 +61,21 @@ const LogEntryBuilder = class {
 
     /**
      * @description Sets the log entry event's exception fields
-     * @param {Error} error The instance of a JavaScript `Error` object to use.
+     * @param {Error} error The instance of a JavaScript `Error` object to use, or an Apex HTTP error to use
      * @return {LogEntryBuilder} The same instance of `LogEntryBuilder`, useful for chaining methods
      */
     setError(error) {
         if (this.shouldSave === true) {
             this.error = {};
-            this.error.message = error.message;
-            this.error.stack = error.stack;
-            this.error.type = error.name;
+            if (error.body) {
+                this.error.message = error.body.message;
+                this.error.stack = error.body.stackTrace;
+                this.error.type = error.body.exceptionType;
+            } else {
+                this.error.message = error.message;
+                this.error.stack = error.stack;
+                this.error.type = 'JavaScript.' + error.name;
+            }
         }
         return this;
     }
