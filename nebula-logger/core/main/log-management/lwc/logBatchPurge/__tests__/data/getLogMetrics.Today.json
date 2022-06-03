@@ -1,0 +1,14 @@
+{
+    "Log__c": [
+        { "LogPurgeAction__c": "Delete", "expr0": 2 },
+        { "LogPurgeAction__c": "Custom", "expr0": 4 }
+    ],
+    "LogEntry__c": [
+        { "LogPurgeAction__c": "Delete", "expr0": 4 },
+        { "LogPurgeAction__c": "Custom", "expr0": 8 }
+    ],
+    "LogEntryTag__c": [
+        { "LogPurgeAction__c": "Delete", "expr0": 10 },
+        { "LogPurgeAction__c": "Custom", "expr0": 20 }
+    ]
+}

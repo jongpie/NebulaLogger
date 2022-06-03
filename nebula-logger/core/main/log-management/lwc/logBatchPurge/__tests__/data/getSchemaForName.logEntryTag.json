@@ -1,0 +1,38 @@
+{
+    "apiName": "LogEntryTag__c",
+    "fields": {
+        "Id": { "apiName": "Id", "label": "Record ID", "localApiName": "Id", "type": "id" },
+        "IsDeleted": { "apiName": "IsDeleted", "label": "Deleted", "localApiName": "IsDeleted", "type": "boolean" },
+        "Name": { "apiName": "Name", "label": "Log Entry Tag Number", "localApiName": "Name", "type": "string" },
+        "CreatedDate": { "apiName": "CreatedDate", "label": "Created Date", "localApiName": "CreatedDate", "type": "datetime" },
+        "CreatedById": { "apiName": "CreatedById", "label": "Created By ID", "localApiName": "CreatedById", "type": "reference" },
+        "LastModifiedDate": { "apiName": "LastModifiedDate", "label": "Last Modified Date", "localApiName": "LastModifiedDate", "type": "datetime" },
+        "LastModifiedById": { "apiName": "LastModifiedById", "label": "Last Modified By ID", "localApiName": "LastModifiedById", "type": "reference" },
+        "SystemModstamp": { "apiName": "SystemModstamp", "label": "System Modstamp", "localApiName": "SystemModstamp", "type": "datetime" },
+        "LastActivityDate": { "apiName": "LastActivityDate", "label": "Last Activity Date", "localApiName": "LastActivityDate", "type": "date" },
+        "LastViewedDate": { "apiName": "LastViewedDate", "label": "Last Viewed Date", "localApiName": "LastViewedDate", "type": "datetime" },
+        "LastReferencedDate": { "apiName": "LastReferencedDate", "label": "Last Referenced Date", "localApiName": "LastReferencedDate", "type": "datetime" },
+        "LogEntry__c": { "apiName": "LogEntry__c", "label": "Log Entry", "localApiName": "LogEntry__c", "type": "reference" },
+        "Tag__c": { "apiName": "Tag__c", "label": "Logger Tag", "localApiName": "Tag__c", "type": "reference" },
+        "LogEntryOrigin__c": { "apiName": "LogEntryOrigin__c", "label": "Log Entry Origin", "localApiName": "LogEntryOrigin__c", "type": "string" },
+        "LogEntryTimestamp__c": {
+            "apiName": "LogEntryTimestamp__c",
+            "label": "Log Entry Timestamp",
+            "localApiName": "LogEntryTimestamp__c",
+            "type": "datetime"
+        },
+        "LogLink__c": { "apiName": "LogLink__c", "label": "Log", "localApiName": "LogLink__c", "type": "string" },
+        "LoggedByUsernameLink__c": { "apiName": "LoggedByUsernameLink__c", "label": "Username", "localApiName": "LoggedByUsernameLink__c", "type": "string" },
+        "UniqueId__c": {
+            "apiName": "UniqueId__c",
+            "inlineHelpText": "An external ID field used to ensure that Log Entry Tag records are unique",
+            "label": "Unique ID",
+            "localApiName": "UniqueId__c",
+            "type": "string"
+        }
+    },
+    "label": "Log Entry Tag",
+    "labelPlural": "Log Entry Tags",
+    "localApiName": "LogEntryTag__c",
+    "namespacePrefix": ""
+}

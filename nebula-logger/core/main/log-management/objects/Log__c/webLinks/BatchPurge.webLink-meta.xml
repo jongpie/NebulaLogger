@@ -9,5 +9,5 @@
     <openType>replace</openType>
     <protected>false</protected>
     <requireRowSelection>true</requireRowSelection>
-    <url>lightning/n/BatchPurge</url>
+    <url>/lightning/n/LogBatchPurge</url>
 </WebLink>

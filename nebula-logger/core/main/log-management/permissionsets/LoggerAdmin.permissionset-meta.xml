@@ -92,6 +92,10 @@
         <enabled>true</enabled>
         <name>CanModifyLoggerSettings</name>
     </customPermissions>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>CanExecuteLogBatchPurger</name>
+    </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>
         <name>LoggerSettings__c</name>
@@ -1206,6 +1210,10 @@
     </tabSettings>
     <tabSettings>
         <tab>LoggerTag__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LogBatchPurge</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>
