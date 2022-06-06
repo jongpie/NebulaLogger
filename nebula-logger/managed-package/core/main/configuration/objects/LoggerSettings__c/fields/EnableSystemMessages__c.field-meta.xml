@@ -2,11 +2,13 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>EnableSystemMessages__c</fullName>
     <businessStatus>DeprecateCandidate</businessStatus>
+    <complianceGroup>CCPA;GDPR;PII</complianceGroup>
     <defaultValue>true</defaultValue>
     <description>When enabled, log entries may be generated that contain additional details about the logging system.</description>
     <externalId>false</externalId>
     <inlineHelpText>When enabled, log entries may be generated that contain additional details about the logging system.</inlineHelpText>
     <label>DEPRECATED: Enable System Messages</label>
+    <securityClassification>Confidential</securityClassification>
     <trackTrending>false</trackTrending>
     <type>Checkbox</type>
 </CustomField>

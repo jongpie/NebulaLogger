@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>TotalWARNLogEntries__c</fullName>
     <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
     <description>The total number of log entries with logging level == &apos;WARN&apos;</description>
     <externalId>false</externalId>
     <inlineHelpText>The total number of log entries with logging level == &apos;WARN&apos;</inlineHelpText>

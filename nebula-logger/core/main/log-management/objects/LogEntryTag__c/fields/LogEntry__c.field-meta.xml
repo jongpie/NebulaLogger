@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LogEntry__c</fullName>
     <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <label>Log Entry</label>
     <referenceTo>LogEntry__c</referenceTo>

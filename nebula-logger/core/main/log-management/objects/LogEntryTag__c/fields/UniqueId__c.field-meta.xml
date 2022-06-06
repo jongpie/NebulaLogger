@@ -3,6 +3,7 @@
     <fullName>UniqueId__c</fullName>
     <businessStatus>Active</businessStatus>
     <caseSensitive>false</caseSensitive>
+    <complianceGroup>None</complianceGroup>
     <description>An external ID field used to ensure that Log Entry Tag records are unique</description>
     <externalId>true</externalId>
     <inlineHelpText>An external ID field used to ensure that Log Entry Tag records are unique</inlineHelpText>

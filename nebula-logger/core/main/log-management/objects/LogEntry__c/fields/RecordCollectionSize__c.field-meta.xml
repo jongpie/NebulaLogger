@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RecordCollectionSize__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
     <description>The number of items contained in the collection of records</description>
     <externalId>false</externalId>
     <inlineHelpText>The number of items contained in the collection of records</inlineHelpText>
@@ -8,6 +10,7 @@
     <precision>10</precision>
     <required>false</required>
     <scale>0</scale>
+    <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Number</type>

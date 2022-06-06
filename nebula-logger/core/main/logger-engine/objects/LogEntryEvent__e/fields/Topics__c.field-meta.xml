@@ -2,12 +2,14 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Topics__c</fullName>
     <businessStatus>DeprecateCandidate</businessStatus>
+    <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
     <label>DEPRECATED: Topics</label>
     <length>131072</length>
+    <securityClassification>Confidential</securityClassification>
     <type>LongTextArea</type>
     <visibleLines>8</visibleLines>
 </CustomField>
