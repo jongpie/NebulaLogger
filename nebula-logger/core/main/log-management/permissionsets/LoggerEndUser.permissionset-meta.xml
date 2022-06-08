@@ -29,11 +29,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>Logger</apexClass>
+        <apexClass>LogViewerController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LogViewerController</apexClass>
+        <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -730,17 +730,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.ParentLog__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Log__c.ParentLogLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.ParentLogTransactionId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ParentLog__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

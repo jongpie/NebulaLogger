@@ -15,6 +15,10 @@
         <value xsi:type="xsd:string">LogEntryTagHandler</value>
     </values>
     <values>
+        <field>SObjectTypeOverride__c</field>
+        <value xsi:nil="true" />
+    </values>
+    <values>
         <field>SObjectType__c</field>
         <value xsi:type="xsd:string">LogEntryTag__c</value>
     </values>
