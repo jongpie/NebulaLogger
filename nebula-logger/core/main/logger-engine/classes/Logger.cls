@@ -13,7 +13,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.7.6';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.7.7';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
@@ -2700,7 +2700,7 @@ global with sharing class Logger {
 
         LogScenarioRule__mdt matchingScenarioRule;
         for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
-            if (scenarioRule.IsEnabled__c = true && scenarioRule.Scenario__c == scenario) {
+            if (scenarioRule.IsEnabled__c == true && scenarioRule.Scenario__c == scenario) {
                 matchingScenarioRule = scenarioRule;
                 break;
             }
@@ -2713,11 +2713,6 @@ global with sharing class Logger {
         if (matchingScenarioRule != null) {
             getUserSettings().LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
         }
-    }
-
-    @TestVisible
-    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 
     /**
@@ -2916,6 +2911,19 @@ global with sharing class Logger {
         } else {
             return null;
         }
+    }
+
+    @TestVisible
+    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
+        // TODO Add validation for DeveloperName and Scenario__c fields != null
+        // if (String.isBlank(scenarioRule.DeveloperName) == true) {
+        //     throw new IllegalArgumentException('DeveloperName is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
+        // }
+        // if (String.isBlank(scenarioRule.Scenario__c) == true) {
+        //     throw new IllegalArgumentException('Scenario__c is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
+        // }
+
+        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 
     private static SaveMethod getSaveMethod(String saveMethodName) {
