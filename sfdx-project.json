@@ -12,7 +12,7 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.7.6.NEXT",
+            "versionNumber": "4.7.7.NEXT",
             "versionName": "Bugfix in Logger.setScenario()",
             "versionDescription": "Fixed a typo in Logger.setScenario() that had the wrong comparison operator, made a few small changes to Logger_Tests so it can run tests in parallel",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
