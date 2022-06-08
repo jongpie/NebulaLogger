@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
-@IsTest(IsParallel=false)
+@IsTest(IsParallel=true)
 private class Logger_Tests {
     @IsTest
     static void it_should_return_version_number() {
@@ -427,34 +427,33 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
-        // TODO Move this test to LogEntryEventBuilder_Tests, see if there's a way to eliminate creating a user
+        // TODO Move this test to LogEntryEventBuilder_Tests
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
-        User testStandardUser = LoggerMockDataCreator.createUser();
+        User currentUser = new User(Id = UserInfo.getUserId());
         // Make sure that the test user has a different time zone from the automated process user
-        if (automatedProcessUser.TimeZoneSidKey == testStandardUser.TimeZoneSidKey) {
+        if (automatedProcessUser.TimeZoneSidKey == currentUser.TimeZoneSidKey) {
             switch on automatedProcessUser.TimeZoneSidKey {
                 when 'America/Los_Angeles' {
-                    testStandardUser.TimeZoneSidKey = 'America/New_York';
+                    currentUser.TimeZoneSidKey = 'America/New_York';
                 }
                 when else {
-                    testStandardUser.TimeZoneSidKey = 'America/Los_Angeles';
+                    currentUser.TimeZoneSidKey = 'America/Los_Angeles';
                 }
             }
-            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, testStandardUser.TimeZoneSidKey);
+            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, currentUser.TimeZoneSidKey);
         }
 
         Datetime originalTimestamp;
-        System.runAs(testStandardUser) {
+        System.runAs(currentUser) {
             Logger.getUserSettings().IsEnabled__c = true;
             Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
 
             LogEntryEventBuilder builder = Logger.info('test log entry');
+
             originalTimestamp = builder.getLogEntryEvent().TimeStamp__c;
             System.assertNotEquals(null, originalTimestamp);
-
             System.assertEquals(1, Logger.getBufferSize());
             Logger.saveLog();
-
             System.Test.getEventBus().deliver();
         }
 
