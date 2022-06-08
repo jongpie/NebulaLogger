@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.7.4",
+    "version": "4.7.8",
     "description": "Designed for Salesforce admins, developers & architects. A robust logger for Apex, Flow, Process Builder & Integrations.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
