@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>default</label>
+    <protected>false</protected>
+    <values>
+        <field>Omitted_Fields__c</field>
+        <value
+            xsi:type="xsd:string"
+        >[&quot;CreatedBy&quot;,&quot;CreatedDate&quot;,&quot;DeveloperName&quot;,&quot;EventUuid&quot;,&quot;Id&quot;,&quot;IsDeleted&quot;,&quot;Label&quot;,&quot;Language&quot;,&quot;LastActivityDate&quot;,&quot;LastModifiedBy&quot;,&quot;LastModifiedDate&quot;,&quot;LastModifiedDateBy&quot;,&quot;LastReferencedDate&quot;,&quot;LastViewedDate&quot;,&quot;MasterLabel&quot;,&quot;MasterRecordId&quot;,&quot;Name&quot;,&quot;NamespacePrefix&quot;,&quot;Owner&quot;,&quot;QualifiedApiName&quot;,&quot;RecordVisibility&quot;,&quot;ReplayId&quot;,&quot;SetupOwnerId&quot;,&quot;SystemModstamp&quot;,&quot;UserRecordAccess&quot;]</value>
+    </values>
+    <values>
+        <field>reportable_entity_json__c</field>
+        <value
+            xsi:type="xsd:string"
+        >[&quot;LogEntryArchive__b&quot;,&quot;LogEntryDataMaskRule__mdt&quot;,&quot;LogEntryEvent__e&quot;,&quot;LogEntryTagRule__mdt&quot;,&quot;LogEntryTag__c&quot;,&quot;LogEntry__c&quot;,&quot;LogScenarioRule__mdt&quot;,&quot;LogStatus__mdt&quot;,&quot;Log__c&quot;,&quot;LoggerParameter__mdt&quot;,&quot;LoggerPlugin__mdt&quot;,&quot;LogRetentionRule__mdt&quot;,&quot;LogRetentionRuleCondition__mdt&quot;,
+        &quot;LoggerSObjectHandler__mdt&quot;,
+        &quot;LoggerSObjectHandlerParameter__mdt&quot;,
+        &quot;LoggerSObjectHandlerPlugin__mdt&quot;,
+        &quot;LoggerSObjectHandlerPluginParameter__mdt&quot;,
+
+        &quot;LoggerSettings__c&quot;,&quot;LoggerTag__c&quot;]</value>
+    </values>
+</CustomMetadata>

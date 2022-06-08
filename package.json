@@ -75,9 +75,11 @@
         "source:push:test": "npm run source:push && npm run test:apex",
         "test": "npm run test:lwc && npm run test:apex",
         "test:apex": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./test-coverage/apex",
-        "test:apex:without-coverage": "sfdx force:apex:test:run --verbose --testlevel RunLocalTests --wait 30 --resultformat human --outputdir ./test-coverage/apex",
+        "test:apex:nocoverage": "sfdx force:apex:test:run --testlevel RunLocalTests --wait 30 --resultformat human --outputdir ./test-coverage/apex",
         "test:apex:suites": "sfdx force:apex:test:run --verbose --suitenames LoggerConfiguration,LoggerEngine,LoggerLogManagement --wait 30 --resultformat human --codecoverage --detailedcoverage --outputdir ./tests/apex",
-        "test:lwc": "sfdx-lwc-jest --coverage --skipApiVersionCheck --verbose"
+        "test:lwc": "sfdx-lwc-jest --coverage --skipApiVersionCheck --verbose",
+        "test:lwc:nocoverage": "sfdx-lwc-jest --skipApiVersionCheck --verbose",
+        "test:nocoverage": "npm run test:lwc && npm run test:apex"
     },
     "dependencies": {
         "ansi-regex": ">=5.0.1",

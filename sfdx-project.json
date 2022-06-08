@@ -16,7 +16,7 @@
             "versionName": "Bugfix in Logger.setScenario()",
             "versionDescription": "Fixed a typo in Logger.setScenario() that had the wrong comparison operator, made a few small changes to Logger_Tests so it can run tests in parallel",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
-            "default": true
+            "default": false
         },
         {
             "default": false,
@@ -90,6 +90,10 @@
         {
             "path": "./nebula-logger/recipes",
             "default": false
+        },
+        {
+            "path": "./supplemental-metadata",
+            "default": true
         }
     ],
     "packageAliases": {

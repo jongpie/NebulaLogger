@@ -17,15 +17,3 @@ nebula-logger/managed-package/**/*.testSuite-meta.xml
 # LWC Jest
 **/__tests__/**
 **/jest-mocks/**
-
-# Temporarily ignoring of some files - will remove in a future release
-nebula-logger/extra-tests/classes/FieldSet.cls
-nebula-logger/extra-tests/classes/FieldSet.cls-meta.xml
-nebula-logger/extra-tests/classes/FieldSetMember.cls
-nebula-logger/extra-tests/classes/FieldSetMember.cls-meta.xml
-nebula-logger/extra-tests/classes/SObjectField.cls
-nebula-logger/extra-tests/classes/SObjectField.cls-meta.xml
-nebula-logger/extra-tests/classes/SObjectType.cls
-nebula-logger/extra-tests/classes/SObjectType.cls-meta.xml
-nebula-logger/extra-tests/classes/Test.cls
-nebula-logger/extra-tests/classes/Test.cls-meta.xml
