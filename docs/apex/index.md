@@ -60,6 +60,10 @@ Class used by the logging system for trigger contextual details
 
 ## Log Management
 
+### [LogBatchPurgeController](Log-Management/LogBatchPurgeController)
+
+Controller class for lwc `logBatchPurge`, used to provide metrics of `Log__c`, `LogEntry__c`, `LogEntryTag__c` records to purge and allow user to manually run `LogBatchPurger` from the UI.
+
 ### [LogBatchPurgeScheduler](Log-Management/LogBatchPurgeScheduler)
 
 Schedulable class used to schedule the batch job `LogBatchPurger`

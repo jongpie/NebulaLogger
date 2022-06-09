@@ -5,8 +5,8 @@
 
 /**
  * @group Log Management
- * @description Controller class for lwc `logBatchPurge`, used to provide metrics of Log__c,logEntry__c,
- * LogEntryTag__c records to purge and allow user to manually run LogBatchPurger from UI.
+ * @description Controller class for lwc `logBatchPurge`, used to provide metrics of `Log__c`, `LogEntry__c`,
+ *              `LogEntryTag__c` records to purge and allow user to manually run `LogBatchPurger` from the UI.
  */
 @SuppressWarnings('PMD.ApexCRUDViolation, PMD.CyclomaticComplexity, PMD.ExcessivePublicCount')
 public with sharing class LogBatchPurgeController {
@@ -55,11 +55,12 @@ public with sharing class LogBatchPurgeController {
     }
 
     /**
-     * @description return a `Map<String,Object>` contains metrics for number of Log__c,LogEntry__c,LogEntryTag__c records to purge,
-     * for the given timeframe TODAY/ THIS_WEEK/ THIS_MONTH. The metrics is grouped by Log__c.LogPurgeAction__c.
-     * @param dateFilterOption a Date Literals used to filter log records. Possible values are TODAY, THIS_WEEK, THIS_MONTH
-     * @return The instance of `Map<String,Object>`,contains keys as Log__c,LogEntry__c,LogEntryTag__c and value as metrics for the corresponding object records to purge
-     * for the given timeframe TODAY/ THIS_WEEK/ THIS_MONTH. The metrics is grouped by Log__c.LogPurgeAction__c. */
+     * @description return a `Map<String,Object>` contains metrics for number of `Log__c`, `LogEntry__c`, `LogEntryTag__c` records to purge,
+     *              for the given timeframe TODAY/ THIS_WEEK/ THIS_MONTH. The metrics is grouped by `Log__c.LogPurgeAction__c`.
+     * @param dateFilterOption a Date Literal used to filter log records. Possible values are TODAY, THIS_WEEK, THIS_MONTH
+     * @return The instance of `Map<String,Object>`,contains keys as `Log__c`, `LogEntry__c`, `LogEntryTag__c` and value as metrics for the corresponding object records to purge
+     *         for the given timeframe TODAY/ THIS_WEEK/ THIS_MONTH. The metrics is grouped by `Log__c.LogPurgeAction__c`.
+     */
     @AuraEnabled
     public static Map<String, Object> getMetrics(String dateFilterOption) {
         try {

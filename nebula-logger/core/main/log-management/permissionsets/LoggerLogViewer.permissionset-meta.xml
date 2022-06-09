@@ -5,6 +5,10 @@
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>LogBatchPurgeController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LogMassDeleteExtension</apexClass>
         <enabled>true</enabled>
     </classAccesses>

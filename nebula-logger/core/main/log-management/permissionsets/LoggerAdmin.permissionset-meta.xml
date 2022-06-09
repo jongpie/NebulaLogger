@@ -25,6 +25,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LogBatchPurgeController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LogBatchPurgeScheduler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -90,11 +94,11 @@
     </customMetadataTypeAccesses>
     <customPermissions>
         <enabled>true</enabled>
-        <name>CanModifyLoggerSettings</name>
+        <name>CanExecuteLogBatchPurger</name>
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
-        <name>CanExecuteLogBatchPurger</name>
+        <name>CanModifyLoggerSettings</name>
     </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>
@@ -1189,6 +1193,10 @@
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <tabSettings>
+        <tab>LogBatchPurge</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>LogEntryEventStream</tab>
         <visibility>Visible</visibility>
     </tabSettings>
@@ -1210,10 +1218,6 @@
     </tabSettings>
     <tabSettings>
         <tab>LoggerTag__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>LogBatchPurge</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

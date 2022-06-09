@@ -20,8 +20,8 @@ const mockLogEntryObjectSchema = require('./data/getSchemaForName.logEntry.json'
 const mockLogEntryTagObjectSchema = require('./data/getSchemaForName.logEntryTag.json');
 
 const mockGetLogMetricsForToday = require('./data/getLogMetrics.Today.json');
-const mockGetLogMetricsForThisWeek = require('./data/getlogMetrics.ThisWeek.json');
-const mockGetLogMetricsForThisMonth = require('./data/getlogMetrics.ThisMonth.json');
+const mockGetLogMetricsForThisWeek = require('./data/getLogMetrics.ThisWeek.json');
+const mockGetLogMetricsForThisMonth = require('./data/getLogMetrics.ThisMonth.json');
 const mockGetLogMetricsWhenNoLogRecords = require('./data/getLogMetrics.noLogRecords.json');
 
 const mockGetPurgeBatchJobRecords = require('./data/getPurgeBatchJobRecords.json');

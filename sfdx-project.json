@@ -16,7 +16,7 @@
             "versionName": "New 'Batch Purge' LWC",
             "versionDescription": "Added a new 'Batch Purge' LWC, available as a button on Log__c list views. Also added data classification metadata to all custom fields",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
-            "default": false
+            "default": true
         },
         {
             "default": false,
@@ -90,10 +90,6 @@
         {
             "path": "./nebula-logger/recipes",
             "default": false
-        },
-        {
-            "path": "./supplemental-metadata",
-            "default": true
         }
     ],
     "packageAliases": {
