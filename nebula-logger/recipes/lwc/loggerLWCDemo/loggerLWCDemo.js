@@ -5,6 +5,7 @@
 
 /* eslint-disable no-console */
 import { LightningElement } from 'lwc';
+import throwSomeError from '@salesforce/apex/LoggerLWCDemoController.throwSomeError';
 
 const LOGGER_NAME = 'c-logger';
 
@@ -23,6 +24,22 @@ export default class LoggerLWCDemo extends LightningElement {
 
     tagsStringChange(event) {
         this.tagsString = event.target.value;
+    }
+
+    async logApexErrorExample() {
+        console.log('running logApexError for btn');
+        const logger = this.template.querySelector(LOGGER_NAME);
+        console.log(JSON.parse(JSON.stringify(logger)));
+        await throwSomeError()
+            .then(result => {
+                console.log('the result', JSON.parse(JSON.stringify(result)));
+            })
+            .catch(error => {
+                console.log('apex error', error);
+                console.log('and a stack trace', new Error().stack);
+                const entry = logger.error(this.message).setError(error).addTag('lwc logging demo');
+                console.log('entry==', JSON.parse(JSON.stringify(entry)));
+            });
     }
 
     logErrorExample() {

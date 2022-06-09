@@ -19,6 +19,7 @@ global with sharing class Logger {
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
+    private static final Boolean USE_FIRST_SPECIFIED_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
 
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
@@ -2690,14 +2691,16 @@ global with sharing class Logger {
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
      * @param  scenario The name to use for the current transaction's scenario
      */
-    @SuppressWarnings('PMD.ApexCrudViolation')
     global static void setScenario(String scenario) {
+        if (USE_FIRST_SPECIFIED_SCENARIO == true && String.isNotBlank(transactionScenario) == true) {
+            return;
+        }
+
         transactionScenario = scenario;
 
-        // LogScenarioRule__mdt scenarioRule = LogScenarioRule__mdt.getInstance(scenario);
         LogScenarioRule__mdt matchingScenarioRule;
         for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
-            if (scenarioRule.IsEnabled__c = true && scenarioRule.Scenario__c == scenario) {
+            if (scenarioRule.IsEnabled__c == true && scenarioRule.Scenario__c == scenario) {
                 matchingScenarioRule = scenarioRule;
                 break;
             }
@@ -2710,11 +2713,6 @@ global with sharing class Logger {
         if (matchingScenarioRule != null) {
             getUserSettings().LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
         }
-    }
-
-    @TestVisible
-    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 
     /**
@@ -2913,6 +2911,19 @@ global with sharing class Logger {
         } else {
             return null;
         }
+    }
+
+    @TestVisible
+    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
+        // TODO Add validation for DeveloperName and Scenario__c fields != null
+        // if (String.isBlank(scenarioRule.DeveloperName) == true) {
+        //     throw new IllegalArgumentException('DeveloperName is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
+        // }
+        // if (String.isBlank(scenarioRule.Scenario__c) == true) {
+        //     throw new IllegalArgumentException('Scenario__c is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
+        // }
+
+        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 
     private static SaveMethod getSaveMethod(String saveMethodName) {

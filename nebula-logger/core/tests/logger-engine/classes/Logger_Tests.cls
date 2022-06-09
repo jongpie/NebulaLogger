@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
-@IsTest(IsParallel=false)
+@IsTest(IsParallel=true)
 private class Logger_Tests {
     @IsTest
     static void it_should_return_version_number() {
@@ -133,7 +133,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_set_transaction_entry_number() {
-        for (Integer i = 0; i < 10; i++) {
+        for (Integer i = 0; i < 5; i++) {
             LogEntryEventBuilder builder = Logger.info('my log entry');
 
             System.assertEquals(i + 1, builder.getLogEntryEvent().TransactionEntryNumber__c);
@@ -142,86 +142,80 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_set_scenario_when_default_scenario_configured() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        String transactionScenarioName = 'some test scenario for this transaction';
+        String mockScenario = 'some test scenario for this transaction';
         LoggerSettings__c userSettings = LoggerSettings__c.getInstance();
-        userSettings.DefaultLogScenario__c = transactionScenarioName;
+        userSettings.DefaultLogScenario__c = mockScenario;
         upsert userSettings;
 
-        String transactionId = Logger.getTransactionId();
-        for (Integer i = 0; i < 5; i++) {
-            Logger.info('my log entry');
-        }
-        Logger.saveLog();
-        System.assertEquals(transactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
+        String currentScenario = Logger.getScenario();
 
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        System.assertEquals(
+            mockScenario,
+            currentScenario,
+            'The value of LoggerSettings__c.DefaultLogScenario__c should have been used as the current transaction scenario'
+        );
     }
 
     @IsTest
     static void it_should_set_scenario_when_specified() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        String transactionId = Logger.getTransactionId();
-        String transactionScenarioName = 'some test scenario for this transaction';
+        String mockScenario = 'some test scenario for this transaction';
 
-        Logger.setScenario(transactionScenarioName);
-        for (Integer i = 0; i < 5; i++) {
-            Logger.info('my log entry');
-        }
-        Logger.saveLog();
-        System.assertEquals(transactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
+        Logger.setScenario(mockScenario);
 
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        System.assertEquals(mockScenario, Logger.getScenario(), 'The mock scenario should have been used as the current transaction scenario');
+    }
+
+    @IsTest
+    static void it_should_use_the_first_specified_scenario_when_parameter_is_true() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));
+        String firstMockScenario = 'the first test scenario specified for this transaction';
+        String secondMockScenario = 'the second test scenario specified for this transaction';
+
+        Logger.setScenario(firstMockScenario);
+        Logger.setScenario(secondMockScenario);
+
+        System.assertEquals(firstMockScenario, Logger.getScenario(), 'The first specified scenario should have been used');
+    }
+
+    @IsTest
+    static void it_should_use_the_last_specified_scenario_when_parameter_is_false() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(false)));
+        String firstMockScenario = 'the first test scenario specified for this transaction';
+        String secondMockScenario = 'the second test scenario specified for this transaction';
+
+        Logger.setScenario(firstMockScenario);
+        Logger.setScenario(secondMockScenario);
+
+        System.assertEquals(secondMockScenario, Logger.getScenario(), 'The last specified scenario should have been used');
     }
 
     @IsTest
     static void it_should_apply_scenario_rule_logging_level_when_scenario_is_set() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        String transactionId = Logger.getTransactionId();
-        String transactionScenarioName = 'some test scenario for this transaction';
-        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = transactionScenarioName, UserLoggingLevel__c = LoggingLevel.FINER.name());
+        String mockScenario = 'some test scenario for this transaction';
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = mockScenario, UserLoggingLevel__c = LoggingLevel.FINER.name());
         Logger.setMockScenarioRule(scenarioRule);
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
-        System.assertNotEquals(Logger.getUserSettings().LoggingLevel__c, scenarioRule.UserLoggingLevel__c);
+        System.assertNotEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
 
-        Logger.setScenario(transactionScenarioName);
-        for (Integer i = 0; i < 5; i++) {
-            Logger.finer('my log entry');
-        }
-        Logger.saveLog();
-        System.assertEquals(transactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
+        Logger.setScenario(mockScenario);
 
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(transactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
-        List<LogEntry__c> logEntries = [SELECT Id, LoggingLevel__c FROM LogEntry__c WHERE Log__c = :log.Id];
-        for (LogEntry__c logEntry : logEntries) {
-            System.assertEquals(LoggingLevel.FINER.name(), logEntry.LoggingLevel__c, 'All log entries should have FINER as the logging level');
-        }
+        System.assertEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
     }
 
     @IsTest
-    static void it_should_use_last_scenario_when_multiple_scenarios_specified() {
-        // TODO eliminate references to Log__c, find alternative way to assert on expected data
-        String transactionId = Logger.getTransactionId();
-        String initialTransactionScenarioName = 'some test scenario for this transaction';
-        String lastTransactionScenarioName = 'some test scenario for this transaction';
+    static void it_should_set_scenario_when_platform_events_are_published() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String mockScenario = 'some test scenario for this transaction';
 
-        Logger.setScenario(initialTransactionScenarioName);
-        for (Integer i = 0; i < 5; i++) {
-            Logger.info('my log entry');
-        }
-        Logger.setScenario(lastTransactionScenarioName);
+        Logger.info('hello');
+        Logger.setScenario(mockScenario);
+        Logger.info('world');
         Logger.saveLog();
-        System.assertEquals(lastTransactionScenarioName, Logger.getScenario());
-        System.Test.getEventBus().deliver();
 
-        Log__c log = [SELECT Id, Scenario__c FROM Log__c WHERE TransactionId__c = :transactionId];
-        System.assertEquals(lastTransactionScenarioName, log.Scenario__c, 'Scenario__c was not properly set on the Log__c record');
+        System.assertEquals(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents()) {
+            System.assertEquals(mockScenario, logEntryEvent.Scenario__c);
+        }
     }
 
     @IsTest
@@ -433,34 +427,33 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
-        // TODO Move this test to LogEntryEventBuilder_Tests, see if there's a way to eliminate creating a user
+        // TODO Move this test to LogEntryEventBuilder_Tests
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
-        User testStandardUser = LoggerMockDataCreator.createUser();
+        User currentUser = new User(Id = UserInfo.getUserId());
         // Make sure that the test user has a different time zone from the automated process user
-        if (automatedProcessUser.TimeZoneSidKey == testStandardUser.TimeZoneSidKey) {
+        if (automatedProcessUser.TimeZoneSidKey == currentUser.TimeZoneSidKey) {
             switch on automatedProcessUser.TimeZoneSidKey {
                 when 'America/Los_Angeles' {
-                    testStandardUser.TimeZoneSidKey = 'America/New_York';
+                    currentUser.TimeZoneSidKey = 'America/New_York';
                 }
                 when else {
-                    testStandardUser.TimeZoneSidKey = 'America/Los_Angeles';
+                    currentUser.TimeZoneSidKey = 'America/Los_Angeles';
                 }
             }
-            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, testStandardUser.TimeZoneSidKey);
+            System.assertNotEquals(automatedProcessUser.TimeZoneSidKey, currentUser.TimeZoneSidKey);
         }
 
         Datetime originalTimestamp;
-        System.runAs(testStandardUser) {
+        System.runAs(currentUser) {
             Logger.getUserSettings().IsEnabled__c = true;
             Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
 
             LogEntryEventBuilder builder = Logger.info('test log entry');
+
             originalTimestamp = builder.getLogEntryEvent().TimeStamp__c;
             System.assertNotEquals(null, originalTimestamp);
-
             System.assertEquals(1, Logger.getBufferSize());
             Logger.saveLog();
-
             System.Test.getEventBus().deliver();
         }
 

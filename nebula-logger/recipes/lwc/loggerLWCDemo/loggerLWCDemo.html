@@ -14,6 +14,7 @@
             <lightning-input label="Scenario" value={scenario} onchange={scenarioChange}></lightning-input>
             <lightning-input label="Comma-Separated Tags" value={tagsString} onchange={tagsStringChange}></lightning-input>
             <div class="slds-button-group" role="group">
+                <lightning-button label="Log Apex ERROR" onclick={logApexErrorExample}></lightning-button>
                 <lightning-button label="Log ERROR" onclick={logErrorExample}></lightning-button>
                 <lightning-button label="Log WARN" onclick={logWarnExample}></lightning-button>
                 <lightning-button label="Log INFO" onclick={logInfoExample}></lightning-button>

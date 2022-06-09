@@ -3,22 +3,15 @@ import { registerApexTestWireAdapter } from '@salesforce/sfdx-lwc-jest';
 import RelatedLogEntries from 'c/relatedLogEntries';
 import getQueryResult from '@salesforce/apex/RelatedLogEntriesController.getQueryResult';
 
-// Mock data
-const mockRecordId = '0015400000gY3OuAAK';
-const mockQueryResult = require('./data/getQueryResult.json');
-
-// Register a test wire adapter
-const getQueryResultAdapter = registerApexTestWireAdapter(getQueryResult);
-
-function flushPromises() {
-    return new Promise(resolve => setTimeout(resolve, 0));
-}
+const MOCK_RECORD_ID = '0015400000gY3OuAAK';
+const MOCK_QUERY_RESULT = require('./data/getQueryResult.json');
 
 jest.mock(
     '@salesforce/apex/RelatedLogEntriesController.getQueryResult',
     () => {
+        const { createApexTestWireAdapter } = require('@salesforce/sfdx-lwc-jest');
         return {
-            default: () => jest.fn()
+            default: createApexTestWireAdapter(jest.fn())
         };
     },
     { virtual: true }
@@ -34,16 +27,14 @@ describe('Related Log Entries lwc tests', () => {
 
     it('sets query result', async () => {
         const relatedLogEntriesElement = createElement('c-related-log-entries', { is: RelatedLogEntries });
-        relatedLogEntriesElement.recordId = mockRecordId;
+        relatedLogEntriesElement.recordId = MOCK_RECORD_ID;
         document.body.appendChild(relatedLogEntriesElement);
 
-        getQueryResultAdapter.emit(mockQueryResult);
+        getQueryResult.emit({ ...MOCK_QUERY_RESULT });
 
-        // Resolve a promise to wait for a rerender of the new content
-        return flushPromises().then(() => {
-            expect(relatedLogEntriesElement.queryResult).toBeTruthy();
-            expect(relatedLogEntriesElement.queryResult.records[0].Id).toEqual(mockQueryResult.records[0].Id);
-            // expect(relatedLogEntriesElement.fieldSetName).not.toBe(undefined);
-        });
+        await Promise.resolve();
+        expect(relatedLogEntriesElement.queryResult).toBeTruthy();
+        expect(relatedLogEntriesElement.queryResult.records[0].Id).toEqual(MOCK_QUERY_RESULT.records[0].Id);
+        // expect(relatedLogEntriesElement.fieldSetName).not.toBe(undefined);
     });
 });

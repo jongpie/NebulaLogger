@@ -117,9 +117,9 @@ private class ComponentLogger_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
-        mockComponentError.message = 'some javascript error message';
+        mockComponentError.message = 'some JavaScript error message';
         mockComponentError.stack = 'some \nstack \ntrace \nstring';
-        mockComponentError.type = 'ReferenceError';
+        mockComponentError.type = 'JavaScript.ReferenceError';
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.error = mockComponentError;
         componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
@@ -144,7 +144,43 @@ private class ComponentLogger_Tests {
         System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
         System.assertEquals(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
         System.assertEquals(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
-        System.assertEquals(ComponentLogger.EXCEPTION_TYPE_PREFIX + componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
+        System.assertEquals(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
+    }
+
+    @IsTest
+    static void it_should_save_component_log_entry_with_apex_controller_error() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        Exception mockApexException = new DmlException('It is with much sadness that I must inform you that this DML statement was most unsuccessful');
+        ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
+        mockComponentError.message = mockApexException.getMessage();
+        mockComponentError.stack = mockApexException.getStackTraceString();
+        mockComponentError.type = mockApexException.getTypeName();
+        ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
+        componentLogEntry.error = mockComponentError;
+        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.message = 'hello, world';
+        componentLogEntry.recordId = currentUser.Id;
+        componentLogEntry.record = currentUser;
+        componentLogEntry.timestamp = System.now().addDays(-1 / 24);
+        componentLogEntry.tags = new List<String>{ 'some tag', 'one more tag' };
+        System.assertEquals(0, Logger.saveLogCallCount);
+        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+
+        ComponentLogger.saveComponentLogEntries(new List<ComponentLogger.ComponentLogEntry>{ componentLogEntry }, null);
+
+        System.assertEquals(1, Logger.saveLogCallCount);
+        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
+        System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
+        System.assertEquals(componentLogEntry.loggingLevel, publishedLogEntryEvent.LoggingLevel__c);
+        System.assertEquals(componentLogEntry.message, publishedLogEntryEvent.Message__c);
+        System.assertEquals(componentLogEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        System.assertEquals(componentLogEntry.error.message, publishedLogEntryEvent.ExceptionMessage__c);
+        System.assertEquals(componentLogEntry.error.stack, publishedLogEntryEvent.ExceptionStackTrace__c);
+        System.assertEquals(componentLogEntry.error.type, publishedLogEntryEvent.ExceptionType__c);
     }
 
     @IsTest
