@@ -12,9 +12,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.7.7.NEXT",
-            "versionName": "Bugfix in Logger.setScenario()",
-            "versionDescription": "Fixed a typo in Logger.setScenario() that had the wrong comparison operator, made a few small changes to Logger_Tests so it can run tests in parallel",
+            "versionNumber": "4.7.8.NEXT",
+            "versionName": "New 'Batch Purge' LWC",
+            "versionDescription": "Added a new 'Batch Purge' LWC, available as a button on Log__c list views. Also added data classification metadata to all custom fields",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": false
         },
