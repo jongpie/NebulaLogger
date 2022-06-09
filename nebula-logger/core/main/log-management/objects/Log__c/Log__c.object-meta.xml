@@ -183,6 +183,7 @@
         <excludedStandardButtons>Import</excludedStandardButtons>
         <excludedStandardButtons>PrintableListView</excludedStandardButtons>
         <listViewButtons>MassDelete</listViewButtons>
+        <listViewButtons>BatchPurge</listViewButtons>
         <lookupDialogsAdditionalFields>LoggedByUsernameLink__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>StartTime__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OWNER.ALIAS</lookupDialogsAdditionalFields>

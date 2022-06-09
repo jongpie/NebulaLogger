@@ -1,0 +1,563 @@
+{
+    "apiName": "LogEntry__c",
+    "fields": {
+        "Id": { "apiName": "Id", "label": "Record ID", "localApiName": "Id", "type": "id" },
+        "IsDeleted": { "apiName": "IsDeleted", "label": "Deleted", "localApiName": "IsDeleted", "type": "boolean" },
+        "Name": { "apiName": "Name", "label": "Entry ID", "localApiName": "Name", "type": "string" },
+        "CreatedDate": { "apiName": "CreatedDate", "label": "Created Date", "localApiName": "CreatedDate", "type": "datetime" },
+        "CreatedById": { "apiName": "CreatedById", "label": "Created By ID", "localApiName": "CreatedById", "type": "reference" },
+        "LastModifiedDate": { "apiName": "LastModifiedDate", "label": "Last Modified Date", "localApiName": "LastModifiedDate", "type": "datetime" },
+        "LastModifiedById": { "apiName": "LastModifiedById", "label": "Last Modified By ID", "localApiName": "LastModifiedById", "type": "reference" },
+        "SystemModstamp": { "apiName": "SystemModstamp", "label": "System Modstamp", "localApiName": "SystemModstamp", "type": "datetime" },
+        "LastActivityDate": { "apiName": "LastActivityDate", "label": "Last Activity Date", "localApiName": "LastActivityDate", "type": "date" },
+        "LastViewedDate": { "apiName": "LastViewedDate", "label": "Last Viewed Date", "localApiName": "LastViewedDate", "type": "datetime" },
+        "LastReferencedDate": { "apiName": "LastReferencedDate", "label": "Last Referenced Date", "localApiName": "LastReferencedDate", "type": "datetime" },
+        "Log__c": { "apiName": "Log__c", "label": "Log", "localApiName": "Log__c", "type": "reference" },
+        "ApexClassApiVersion__c": {
+            "apiName": "ApexClassApiVersion__c",
+            "inlineHelpText": "The API version for this class. Every class has an API version specified at creation.",
+            "label": "Apex Class API Version",
+            "localApiName": "ApexClassApiVersion__c",
+            "type": "picklist"
+        },
+        "ApexClassCreatedDate__c": {
+            "apiName": "ApexClassCreatedDate__c",
+            "label": "Apex Class Created Date",
+            "localApiName": "ApexClassCreatedDate__c",
+            "type": "datetime"
+        },
+        "ApexClassId__c": {
+            "apiName": "ApexClassId__c",
+            "inlineHelpText": "The ID of the Apex class in the current org.",
+            "label": "Apex Class ID",
+            "localApiName": "ApexClassId__c",
+            "type": "string"
+        },
+        "ApexClassLastModifiedDate__c": {
+            "apiName": "ApexClassLastModifiedDate__c",
+            "label": "Apex Class Last Modified Date",
+            "localApiName": "ApexClassLastModifiedDate__c",
+            "type": "datetime"
+        },
+        "ApexClassName__c": { "apiName": "ApexClassName__c", "label": "Apex Class", "localApiName": "ApexClassName__c", "type": "string" },
+        "ApexInnerClassName__c": {
+            "apiName": "ApexInnerClassName__c",
+            "inlineHelpText": "When the log entry is created via an Apex inner class, this field is populated with the fully-qualified class name (e.g., MyClass.MyInnerClass)",
+            "label": "Apex Inner Class",
+            "localApiName": "ApexInnerClassName__c",
+            "type": "string"
+        },
+        "ApexMethodName__c": { "apiName": "ApexMethodName__c", "label": "Apex Method", "localApiName": "ApexMethodName__c", "type": "string" },
+        "ComponentApiName__c": { "apiName": "ComponentApiName__c", "label": "Component Name", "localApiName": "ComponentApiName__c", "type": "string" },
+        "ComponentFunctionName__c": {
+            "apiName": "ComponentFunctionName__c",
+            "label": "Component Function",
+            "localApiName": "ComponentFunctionName__c",
+            "type": "string"
+        },
+        "ComponentType__c": {
+            "apiName": "ComponentType__c",
+            "inlineHelpText": "Indicates if the component is a lightning web component (lwc) or an aura component",
+            "label": "Component Type",
+            "localApiName": "ComponentType__c",
+            "type": "picklist"
+        },
+        "DatabaseResultCollectionSize__c": {
+            "apiName": "DatabaseResultCollectionSize__c",
+            "inlineHelpText": "The number of items contained in the collection of database results",
+            "label": "Database Result Collection Size",
+            "localApiName": "DatabaseResultCollectionSize__c",
+            "type": "double"
+        },
+        "DatabaseResultCollectionType__c": {
+            "apiName": "DatabaseResultCollectionType__c",
+            "label": "Database Result Collection Type",
+            "localApiName": "DatabaseResultCollectionType__c",
+            "type": "picklist"
+        },
+        "DatabaseResultJson__c": {
+            "apiName": "DatabaseResultJson__c",
+            "label": "Database Result JSON",
+            "localApiName": "DatabaseResultJson__c",
+            "type": "textarea"
+        },
+        "DatabaseResultType__c": {
+            "apiName": "DatabaseResultType__c",
+            "label": "Database Result Type",
+            "localApiName": "DatabaseResultType__c",
+            "type": "picklist"
+        },
+        "EpochTimestamp__c": {
+            "apiName": "EpochTimestamp__c",
+            "inlineHelpText": "Timestamp in milliseconds elapsed since 1 January 1970 of the log event",
+            "label": "Epoch Timestamp",
+            "localApiName": "EpochTimestamp__c",
+            "type": "double"
+        },
+        "EventUuid__c": {
+            "apiName": "EventUuid__c",
+            "inlineHelpText": "The UUID of the LogEntryEvent__e platform event that created this LogEntry__c record.\n\nFor more details, refer to https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_event_uuid.htm",
+            "label": "Event UUID",
+            "localApiName": "EventUuid__c",
+            "type": "string"
+        },
+        "ExceptionMessage__c": { "apiName": "ExceptionMessage__c", "label": "Exception Message", "localApiName": "ExceptionMessage__c", "type": "textarea" },
+        "ExceptionStackTrace__c": {
+            "apiName": "ExceptionStackTrace__c",
+            "label": "Exception Stack Trace",
+            "localApiName": "ExceptionStackTrace__c",
+            "type": "textarea"
+        },
+        "ExceptionType__c": { "apiName": "ExceptionType__c", "label": "Exception Type", "localApiName": "ExceptionType__c", "type": "picklist" },
+        "FlowActiveVersionId__c": {
+            "apiName": "FlowActiveVersionId__c",
+            "inlineHelpText": "The ID of the active flow version.",
+            "label": "Flow Active Version ID",
+            "localApiName": "FlowActiveVersionId__c",
+            "type": "string"
+        },
+        "FlowDescription__c": {
+            "apiName": "FlowDescription__c",
+            "inlineHelpText": "Flow definition information, specified by the org’s admin.",
+            "label": "Flow Description",
+            "localApiName": "FlowDescription__c",
+            "type": "textarea"
+        },
+        "FlowDurableId__c": {
+            "apiName": "FlowDurableId__c",
+            "inlineHelpText": "The ID of the flow definition.",
+            "label": "Flow Durable ID",
+            "localApiName": "FlowDurableId__c",
+            "type": "string"
+        },
+        "FlowLabel__c": {
+            "apiName": "FlowLabel__c",
+            "inlineHelpText": "The label of the flow definition.",
+            "label": "Flow Label",
+            "localApiName": "FlowLabel__c",
+            "type": "string"
+        },
+        "FlowLastModifiedByName__c": {
+            "apiName": "FlowLastModifiedByName__c",
+            "inlineHelpText": "The name of the user who last updated this flow definition.",
+            "label": "Flow Last Modified By",
+            "localApiName": "FlowLastModifiedByName__c",
+            "type": "string"
+        },
+        "FlowLastModifiedDate__c": {
+            "apiName": "FlowLastModifiedDate__c",
+            "label": "Flow Last Modified Date",
+            "localApiName": "FlowLastModifiedDate__c",
+            "type": "datetime"
+        },
+        "FlowProcessType__c": {
+            "apiName": "FlowProcessType__c",
+            "inlineHelpText": "The type of the flow.",
+            "label": "Flow Process Type",
+            "localApiName": "FlowProcessType__c",
+            "type": "picklist"
+        },
+        "FlowTriggerType__c": {
+            "apiName": "FlowTriggerType__c",
+            "inlineHelpText": "Specifies what causes the flow to run.",
+            "label": "Flow Trigger Type",
+            "localApiName": "FlowTriggerType__c",
+            "type": "picklist"
+        },
+        "FlowVersionApiVersionRuntime__c": {
+            "apiName": "FlowVersionApiVersionRuntime__c",
+            "inlineHelpText": "The API version for running the flow. This value determines which versioned run-time behavior improvements are adopted by the flow version.",
+            "label": "Flow API Version Runtime",
+            "localApiName": "FlowVersionApiVersionRuntime__c",
+            "type": "picklist"
+        },
+        "FlowVersionNumber__c": {
+            "apiName": "FlowVersionNumber__c",
+            "inlineHelpText": "The flow’s version number.",
+            "label": "Flow Version Number",
+            "localApiName": "FlowVersionNumber__c",
+            "type": "double"
+        },
+        "FlowVersionRunInMode__c": {
+            "apiName": "FlowVersionRunInMode__c",
+            "inlineHelpText": "The mode that the flow runs in.",
+            "label": "Flow Run-In Mode",
+            "localApiName": "FlowVersionRunInMode__c",
+            "type": "picklist"
+        },
+        "HasDatabaseResult__c": {
+            "apiName": "HasDatabaseResult__c",
+            "label": "Has Database Result",
+            "localApiName": "HasDatabaseResult__c",
+            "type": "boolean"
+        },
+        "HasExceptionStackTrace__c": {
+            "apiName": "HasExceptionStackTrace__c",
+            "label": "Has Exception Stack Trace",
+            "localApiName": "HasExceptionStackTrace__c",
+            "type": "boolean"
+        },
+        "HasException__c": { "apiName": "HasException__c", "label": "Has Exception", "localApiName": "HasException__c", "type": "boolean" },
+        "HasRecordId__c": { "apiName": "HasRecordId__c", "label": "Has Related Record ID", "localApiName": "HasRecordId__c", "type": "boolean" },
+        "HasRecordJson__c": { "apiName": "HasRecordJson__c", "label": "Has Related Record JSON", "localApiName": "HasRecordJson__c", "type": "boolean" },
+        "HasStackTrace__c": { "apiName": "HasStackTrace__c", "label": "Has Stack Trace", "localApiName": "HasStackTrace__c", "type": "boolean" },
+        "HttpRequestBodyMasked__c": {
+            "apiName": "HttpRequestBodyMasked__c",
+            "inlineHelpText": "Indicates if sensitive data was removed from the HTTP Request Body, using log entry data mask rules",
+            "label": "HTTP Request Body Masked",
+            "localApiName": "HttpRequestBodyMasked__c",
+            "type": "boolean"
+        },
+        "HttpRequestBody__c": { "apiName": "HttpRequestBody__c", "label": "HTTP Request Body", "localApiName": "HttpRequestBody__c", "type": "textarea" },
+        "HttpRequestCompressed__c": {
+            "apiName": "HttpRequestCompressed__c",
+            "label": "HTTP Request Compressed",
+            "localApiName": "HttpRequestCompressed__c",
+            "type": "boolean"
+        },
+        "HttpRequestEndpoint__c": {
+            "apiName": "HttpRequestEndpoint__c",
+            "label": "HTTP Request Endpoint",
+            "localApiName": "HttpRequestEndpoint__c",
+            "type": "string"
+        },
+        "HttpRequestMethod__c": {
+            "apiName": "HttpRequestMethod__c",
+            "label": "HTTP Request Method",
+            "localApiName": "HttpRequestMethod__c",
+            "type": "picklist"
+        },
+        "HttpResponseBodyMasked__c": {
+            "apiName": "HttpResponseBodyMasked__c",
+            "inlineHelpText": "Indicates if sensitive data was removed from the HTTP Response Body, using log entry data mask rules",
+            "label": "HTTP Response Body Masked",
+            "localApiName": "HttpResponseBodyMasked__c",
+            "type": "boolean"
+        },
+        "HttpResponseBody__c": { "apiName": "HttpResponseBody__c", "label": "HTTP Response Body", "localApiName": "HttpResponseBody__c", "type": "textarea" },
+        "HttpResponseHeaderKeys__c": {
+            "apiName": "HttpResponseHeaderKeys__c",
+            "label": "HTTP Response Header Keys",
+            "localApiName": "HttpResponseHeaderKeys__c",
+            "type": "textarea"
+        },
+        "HttpResponseStatusCode__c": {
+            "apiName": "HttpResponseStatusCode__c",
+            "label": "HTTP Response Status Code",
+            "localApiName": "HttpResponseStatusCode__c",
+            "type": "double"
+        },
+        "HttpResponseStatus__c": {
+            "apiName": "HttpResponseStatus__c",
+            "label": "HTTP Response Status",
+            "localApiName": "HttpResponseStatus__c",
+            "type": "string"
+        },
+        "LimitsAggregateQueriesMax__c": {
+            "apiName": "LimitsAggregateQueriesMax__c",
+            "label": "Aggregate Queries Max",
+            "localApiName": "LimitsAggregateQueriesMax__c",
+            "type": "double"
+        },
+        "LimitsAggregateQueriesUsed__c": {
+            "apiName": "LimitsAggregateQueriesUsed__c",
+            "label": "Aggregate Queries Used",
+            "localApiName": "LimitsAggregateQueriesUsed__c",
+            "type": "double"
+        },
+        "LimitsAggregateQueries__c": {
+            "apiName": "LimitsAggregateQueries__c",
+            "label": "Aggregate Queries",
+            "localApiName": "LimitsAggregateQueries__c",
+            "type": "string"
+        },
+        "LimitsAsyncCallsMax__c": {
+            "apiName": "LimitsAsyncCallsMax__c",
+            "label": "Async Calls Max",
+            "localApiName": "LimitsAsyncCallsMax__c",
+            "type": "double"
+        },
+        "LimitsAsyncCallsUsed__c": {
+            "apiName": "LimitsAsyncCallsUsed__c",
+            "label": "Async Calls Used",
+            "localApiName": "LimitsAsyncCallsUsed__c",
+            "type": "double"
+        },
+        "LimitsAsyncCalls__c": { "apiName": "LimitsAsyncCalls__c", "label": "Async Calls", "localApiName": "LimitsAsyncCalls__c", "type": "string" },
+        "LimitsCalloutsMax__c": { "apiName": "LimitsCalloutsMax__c", "label": "Callouts Max", "localApiName": "LimitsCalloutsMax__c", "type": "double" },
+        "LimitsCalloutsUsed__c": { "apiName": "LimitsCalloutsUsed__c", "label": "Callouts Used", "localApiName": "LimitsCalloutsUsed__c", "type": "double" },
+        "LimitsCallouts__c": { "apiName": "LimitsCallouts__c", "label": "Callouts", "localApiName": "LimitsCallouts__c", "type": "string" },
+        "LimitsCpuTimeMax__c": { "apiName": "LimitsCpuTimeMax__c", "label": "CPU Time Max", "localApiName": "LimitsCpuTimeMax__c", "type": "double" },
+        "LimitsCpuTimeUsed__c": { "apiName": "LimitsCpuTimeUsed__c", "label": "CPU Time Used", "localApiName": "LimitsCpuTimeUsed__c", "type": "double" },
+        "LimitsCpuTime__c": { "apiName": "LimitsCpuTime__c", "label": "CPU Time", "localApiName": "LimitsCpuTime__c", "type": "string" },
+        "LimitsDmlRowsMax__c": { "apiName": "LimitsDmlRowsMax__c", "label": "DML Rows Max", "localApiName": "LimitsDmlRowsMax__c", "type": "double" },
+        "LimitsDmlRowsUsed__c": { "apiName": "LimitsDmlRowsUsed__c", "label": "DML Rows Used", "localApiName": "LimitsDmlRowsUsed__c", "type": "double" },
+        "LimitsDmlRows__c": { "apiName": "LimitsDmlRows__c", "label": "DML Rows", "localApiName": "LimitsDmlRows__c", "type": "string" },
+        "LimitsDmlStatementsMax__c": {
+            "apiName": "LimitsDmlStatementsMax__c",
+            "label": "DML Statements Max",
+            "localApiName": "LimitsDmlStatementsMax__c",
+            "type": "double"
+        },
+        "LimitsDmlStatementsUsed__c": {
+            "apiName": "LimitsDmlStatementsUsed__c",
+            "label": "DML Statements Used",
+            "localApiName": "LimitsDmlStatementsUsed__c",
+            "type": "double"
+        },
+        "LimitsDmlStatements__c": {
+            "apiName": "LimitsDmlStatements__c",
+            "label": "DML Statements",
+            "localApiName": "LimitsDmlStatements__c",
+            "type": "string"
+        },
+        "LimitsEmailInvocationsMax__c": {
+            "apiName": "LimitsEmailInvocationsMax__c",
+            "label": "Email Invocations Max",
+            "localApiName": "LimitsEmailInvocationsMax__c",
+            "type": "double"
+        },
+        "LimitsEmailInvocationsUsed__c": {
+            "apiName": "LimitsEmailInvocationsUsed__c",
+            "label": "Email Invocations Used",
+            "localApiName": "LimitsEmailInvocationsUsed__c",
+            "type": "double"
+        },
+        "LimitsEmailInvocations__c": {
+            "apiName": "LimitsEmailInvocations__c",
+            "label": "Email Invocations",
+            "localApiName": "LimitsEmailInvocations__c",
+            "type": "string"
+        },
+        "LimitsFutureCallsMax__c": {
+            "apiName": "LimitsFutureCallsMax__c",
+            "label": "Future Calls Max",
+            "localApiName": "LimitsFutureCallsMax__c",
+            "type": "double"
+        },
+        "LimitsFutureCallsUsed__c": {
+            "apiName": "LimitsFutureCallsUsed__c",
+            "label": "Future Calls Used",
+            "localApiName": "LimitsFutureCallsUsed__c",
+            "type": "double"
+        },
+        "LimitsFutureCalls__c": { "apiName": "LimitsFutureCalls__c", "label": "Future Calls", "localApiName": "LimitsFutureCalls__c", "type": "string" },
+        "LimitsHeapSizeMax__c": { "apiName": "LimitsHeapSizeMax__c", "label": "Heap Size Max", "localApiName": "LimitsHeapSizeMax__c", "type": "double" },
+        "LimitsHeapSizeUsed__c": { "apiName": "LimitsHeapSizeUsed__c", "label": "Heap Size Used", "localApiName": "LimitsHeapSizeUsed__c", "type": "double" },
+        "LimitsHeapSize__c": { "apiName": "LimitsHeapSize__c", "label": "Heap Size", "localApiName": "LimitsHeapSize__c", "type": "string" },
+        "LimitsMobilePushApexCallsMax__c": {
+            "apiName": "LimitsMobilePushApexCallsMax__c",
+            "label": "Mobile Push Apex Calls Max",
+            "localApiName": "LimitsMobilePushApexCallsMax__c",
+            "type": "double"
+        },
+        "LimitsMobilePushApexCallsUsed__c": {
+            "apiName": "LimitsMobilePushApexCallsUsed__c",
+            "label": "Mobile Push Apex Calls Used",
+            "localApiName": "LimitsMobilePushApexCallsUsed__c",
+            "type": "double"
+        },
+        "LimitsMobilePushApexCalls__c": {
+            "apiName": "LimitsMobilePushApexCalls__c",
+            "label": "Mobile Push Apex Calls",
+            "localApiName": "LimitsMobilePushApexCalls__c",
+            "type": "string"
+        },
+        "LimitsPublishImmediateDmlStatementsMax__c": {
+            "apiName": "LimitsPublishImmediateDmlStatementsMax__c",
+            "label": "Publish Immediate Statements DML Max",
+            "localApiName": "LimitsPublishImmediateDmlStatementsMax__c",
+            "type": "double"
+        },
+        "LimitsPublishImmediateDmlStatementsUsed__c": {
+            "apiName": "LimitsPublishImmediateDmlStatementsUsed__c",
+            "label": "Publish Immediate Statements DML Used",
+            "localApiName": "LimitsPublishImmediateDmlStatementsUsed__c",
+            "type": "double"
+        },
+        "LimitsPublishImmediateDmlStatements__c": {
+            "apiName": "LimitsPublishImmediateDmlStatements__c",
+            "label": "Publish Immediate DML Statements",
+            "localApiName": "LimitsPublishImmediateDmlStatements__c",
+            "type": "string"
+        },
+        "LimitsQueueableJobsMax__c": {
+            "apiName": "LimitsQueueableJobsMax__c",
+            "label": "Queueable Jobs Max",
+            "localApiName": "LimitsQueueableJobsMax__c",
+            "type": "double"
+        },
+        "LimitsQueueableJobsUsed__c": {
+            "apiName": "LimitsQueueableJobsUsed__c",
+            "label": "Queueable Jobs Used",
+            "localApiName": "LimitsQueueableJobsUsed__c",
+            "type": "double"
+        },
+        "LimitsQueueableJobs__c": {
+            "apiName": "LimitsQueueableJobs__c",
+            "label": "Queueable Jobs",
+            "localApiName": "LimitsQueueableJobs__c",
+            "type": "string"
+        },
+        "LimitsSoqlQueriesMax__c": {
+            "apiName": "LimitsSoqlQueriesMax__c",
+            "label": "SOQL Queries Max",
+            "localApiName": "LimitsSoqlQueriesMax__c",
+            "type": "double"
+        },
+        "LimitsSoqlQueriesUsed__c": {
+            "apiName": "LimitsSoqlQueriesUsed__c",
+            "label": "SOQL Queries Used",
+            "localApiName": "LimitsSoqlQueriesUsed__c",
+            "type": "double"
+        },
+        "LimitsSoqlQueries__c": { "apiName": "LimitsSoqlQueries__c", "label": "SOQL Queries", "localApiName": "LimitsSoqlQueries__c", "type": "string" },
+        "LimitsSoqlQueryLocatorRowsMax__c": {
+            "apiName": "LimitsSoqlQueryLocatorRowsMax__c",
+            "label": "SOQL Query Locator Rows Max",
+            "localApiName": "LimitsSoqlQueryLocatorRowsMax__c",
+            "type": "double"
+        },
+        "LimitsSoqlQueryLocatorRowsUsed__c": {
+            "apiName": "LimitsSoqlQueryLocatorRowsUsed__c",
+            "label": "SOQL Query Locator Rows Used",
+            "localApiName": "LimitsSoqlQueryLocatorRowsUsed__c",
+            "type": "double"
+        },
+        "LimitsSoqlQueryLocatorRows__c": {
+            "apiName": "LimitsSoqlQueryLocatorRows__c",
+            "label": "SOQL Query Locator Rows",
+            "localApiName": "LimitsSoqlQueryLocatorRows__c",
+            "type": "string"
+        },
+        "LimitsSoqlQueryRowsMax__c": {
+            "apiName": "LimitsSoqlQueryRowsMax__c",
+            "label": "SOQL Query Rows Max",
+            "localApiName": "LimitsSoqlQueryRowsMax__c",
+            "type": "double"
+        },
+        "LimitsSoqlQueryRowsUsed__c": {
+            "apiName": "LimitsSoqlQueryRowsUsed__c",
+            "label": "SOQL Query Rows Used",
+            "localApiName": "LimitsSoqlQueryRowsUsed__c",
+            "type": "double"
+        },
+        "LimitsSoqlQueryRows__c": {
+            "apiName": "LimitsSoqlQueryRows__c",
+            "label": "SOQL Query Rows",
+            "localApiName": "LimitsSoqlQueryRows__c",
+            "type": "string"
+        },
+        "LimitsSoslSearchesMax__c": {
+            "apiName": "LimitsSoslSearchesMax__c",
+            "label": "SOSL Searches Max",
+            "localApiName": "LimitsSoslSearchesMax__c",
+            "type": "double"
+        },
+        "LimitsSoslSearchesUsed__c": {
+            "apiName": "LimitsSoslSearchesUsed__c",
+            "label": "SOSL Searches Used",
+            "localApiName": "LimitsSoslSearchesUsed__c",
+            "type": "double"
+        },
+        "LimitsSoslSearches__c": { "apiName": "LimitsSoslSearches__c", "label": "SOSL Searches", "localApiName": "LimitsSoslSearches__c", "type": "string" },
+        "LogTransactionId__c": { "apiName": "LogTransactionId__c", "label": "Log Transaction ID", "localApiName": "LogTransactionId__c", "type": "string" },
+        "LoggedByUsernameLink__c": { "apiName": "LoggedByUsernameLink__c", "label": "Username", "localApiName": "LoggedByUsernameLink__c", "type": "string" },
+        "LoggingLevelOrdinal__c": {
+            "apiName": "LoggingLevelOrdinal__c",
+            "label": "Logging Level Ordinal",
+            "localApiName": "LoggingLevelOrdinal__c",
+            "type": "double"
+        },
+        "LoggingLevelWithImage__c": { "apiName": "LoggingLevelWithImage__c", "label": "Level", "localApiName": "LoggingLevelWithImage__c", "type": "string" },
+        "LoggingLevel__c": { "apiName": "LoggingLevel__c", "label": "Logging Level", "localApiName": "LoggingLevel__c", "type": "picklist" },
+        "MessageMasked__c": {
+            "apiName": "MessageMasked__c",
+            "inlineHelpText": "Indicates if sensitive data was removed from the message, using log entry data mask rules",
+            "label": "Message Masked",
+            "localApiName": "MessageMasked__c",
+            "type": "boolean"
+        },
+        "MessageTruncated__c": {
+            "apiName": "MessageTruncated__c",
+            "inlineHelpText": "Indicates if the message was truncated due to being too long to fit into the Message field",
+            "label": "Message Truncated",
+            "localApiName": "MessageTruncated__c",
+            "type": "boolean"
+        },
+        "Message__c": { "apiName": "Message__c", "label": "Message", "localApiName": "Message__c", "type": "textarea" },
+        "OriginLocation__c": { "apiName": "OriginLocation__c", "label": "Origin Location", "localApiName": "OriginLocation__c", "type": "string" },
+        "OriginType__c": { "apiName": "OriginType__c", "label": "Origin Type", "localApiName": "OriginType__c", "type": "picklist" },
+        "Origin__c": { "apiName": "Origin__c", "label": "Origin", "localApiName": "Origin__c", "type": "string" },
+        "RecordCollectionSize__c": {
+            "apiName": "RecordCollectionSize__c",
+            "inlineHelpText": "The number of items contained in the collection of records",
+            "label": "Related Record Collection Size",
+            "localApiName": "RecordCollectionSize__c",
+            "type": "double"
+        },
+        "RecordCollectionType__c": {
+            "apiName": "RecordCollectionType__c",
+            "label": "Related Record Collection Type",
+            "localApiName": "RecordCollectionType__c",
+            "type": "picklist"
+        },
+        "RecordDetailedLink__c": { "apiName": "RecordDetailedLink__c", "label": "Related Record", "localApiName": "RecordDetailedLink__c", "type": "string" },
+        "RecordId__c": { "apiName": "RecordId__c", "label": "Related Record ID", "localApiName": "RecordId__c", "type": "string" },
+        "RecordJsonMasked__c": {
+            "apiName": "RecordJsonMasked__c",
+            "inlineHelpText": "Indicates if sensitive data was removed from the record JSON, using log entry data mask rules",
+            "label": "Record JSON Masked",
+            "localApiName": "RecordJsonMasked__c",
+            "type": "boolean"
+        },
+        "RecordJson__c": { "apiName": "RecordJson__c", "label": "Related Record JSON", "localApiName": "RecordJson__c", "type": "textarea" },
+        "RecordLink__c": { "apiName": "RecordLink__c", "label": "Related Record", "localApiName": "RecordLink__c", "type": "string" },
+        "RecordName__c": { "apiName": "RecordName__c", "label": "Related Record Name", "localApiName": "RecordName__c", "type": "string" },
+        "RecordSObjectClassification__c": {
+            "apiName": "RecordSObjectClassification__c",
+            "label": "Related Record Object Classification",
+            "localApiName": "RecordSObjectClassification__c",
+            "type": "picklist"
+        },
+        "RecordSObjectTypeNamespace__c": {
+            "apiName": "RecordSObjectTypeNamespace__c",
+            "label": "Related Record Object Namespace",
+            "localApiName": "RecordSObjectTypeNamespace__c",
+            "type": "string"
+        },
+        "RecordSObjectType__c": {
+            "apiName": "RecordSObjectType__c",
+            "label": "Related Record Object",
+            "localApiName": "RecordSObjectType__c",
+            "type": "picklist"
+        },
+        "StackTrace__c": { "apiName": "StackTrace__c", "label": "Stack Trace", "localApiName": "StackTrace__c", "type": "textarea" },
+        "Timestamp__c": { "apiName": "Timestamp__c", "label": "Timestamp", "localApiName": "Timestamp__c", "type": "datetime" },
+        "TransactionEntryNumber__c": {
+            "apiName": "TransactionEntryNumber__c",
+            "inlineHelpText": "The sequential number of this log entry within the transaction",
+            "label": "Entry #",
+            "localApiName": "TransactionEntryNumber__c",
+            "type": "double"
+        },
+        "TriggerIsExecuting__c": {
+            "apiName": "TriggerIsExecuting__c",
+            "label": "Trigger Is Executing",
+            "localApiName": "TriggerIsExecuting__c",
+            "type": "boolean"
+        },
+        "TriggerOperationType__c": {
+            "apiName": "TriggerOperationType__c",
+            "label": "Trigger Operation Type",
+            "localApiName": "TriggerOperationType__c",
+            "type": "picklist"
+        },
+        "TriggerSObjectType__c": { "apiName": "TriggerSObjectType__c", "label": "Trigger Object", "localApiName": "TriggerSObjectType__c", "type": "picklist" },
+        "Trigger__c": { "apiName": "Trigger__c", "label": "Trigger", "localApiName": "Trigger__c", "type": "string" }
+    },
+    "label": "Log Entry",
+    "labelPlural": "Log Entries",
+    "localApiName": "LogEntry__c",
+    "namespacePrefix": ""
+}
