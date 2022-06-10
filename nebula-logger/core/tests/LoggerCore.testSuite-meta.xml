@@ -6,6 +6,7 @@
     <testClassName>FlowLogger_Tests</testClassName>
     <testClassName>FlowRecordLogEntry_Tests</testClassName>
     <testClassName>LogBatchPurger_Tests</testClassName>
+    <testClassName>LogBatchPurgeController_Tests</testClassName>
     <testClassName>LogBatchPurgeScheduler_Tests</testClassName>
     <testClassName>LogEntryEventBuilder_Tests</testClassName>
     <testClassName>LogEntryEventHandler_Tests</testClassName>

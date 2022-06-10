@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions,PMD.CognitiveComplexity')
-@isTest
+@IsTest
 private class LogBatchPurgeController_Tests {
     static final String CUSTOM_PURGE_ACTION = 'Custom';
     static final String DEFAULT_PURGE_ACTION = 'Delete';
@@ -34,7 +34,7 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_return_summary_for_logs_created_today() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -63,7 +63,8 @@ private class LogBatchPurgeController_Tests {
             }
         }
     }
-    @isTest
+
+    @IsTest
     private static void it_should_return_summary_for_logs_created_this_week() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -86,7 +87,8 @@ private class LogBatchPurgeController_Tests {
             }
         }
     }
-    @isTest
+
+    @IsTest
     private static void it_should_return_summary_for_logs_created_this_month() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -117,7 +119,7 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_return_summary_for_logEntry_created_today() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -147,7 +149,7 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_return_summary_for_logEntry_created_this_week() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -178,7 +180,7 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_return_summary_for_logEntry_created_this_month() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -208,7 +210,8 @@ private class LogBatchPurgeController_Tests {
             }
         }
     }
-    @isTest
+
+    @IsTest
     private static void it_should_return_summary_for_logEntryTag_created_today() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -238,7 +241,7 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_return_summary_for_logEntryTag_created_This_Week() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -268,7 +271,7 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_return_summary_for_logEntryTag_created_This_Month() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -298,7 +301,7 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_return_metrics_for_all_logObjects() {
         Integer expectedRecordCountWithPurgeActionDelete = 5;
         Integer expectedRecordCountWithPurgeActionCustom = 4;
@@ -343,7 +346,7 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_return_purge_batch_job_records() {
         System.Test.startTest();
         LogBatchPurgeController.runPurgeBatch();
@@ -355,8 +358,8 @@ private class LogBatchPurgeController_Tests {
             System.assertNotEquals(null, job.JobItemsProcessed, 'it should return JobItemsProcessed');
             System.assertNotEquals(null, job.NumberOfErrors, 'it should return noOfErrors');
             System.assertNotEquals(null, job.Status, 'it should return JobStatus');
-            System.assertNotEquals(null, job.createdDate, 'it should return job createdDate');
-            System.assertNotEquals(null, job.createdBy.name, 'it should return job createdDate');
+            System.assertNotEquals(null, job.CreatedDate, 'it should return job CreatedDate');
+            System.assertNotEquals(null, job.CreatedBy.Name, 'it should return job CreatedBy.Name');
         }
     }
 
@@ -383,17 +386,25 @@ private class LogBatchPurgeController_Tests {
         }
     }
 
-    @isTest
+    @IsTest
     private static void it_should_execute_the_purge_batch() {
         System.Test.startTest();
         String jobId = LogBatchPurgeController.runPurgeBatch();
         System.Test.stopTest();
-        List<AsyncApexJob> purgeBatchJobs = [
-            SELECT id
-            FROM AsyncApexJob
-            WHERE jobType IN ('ScheduledApex', 'BatchApex', 'BatchApexWorker') AND ApexClass.Name = :LogBatchPurger.class.getName() AND id = :jobId
-        ];
 
+        String apexClassNamespacePrefix = LogBatchPurger.class.getName().contains('.') ? LogBatchPurger.class.getName().substringBefore('.') : null;
+        String apexClassName = LogBatchPurger.class.getName().contains('.')
+            ? LogBatchPurger.class.getName().substringAfter('.')
+            : LogBatchPurger.class.getName();
+        List<AsyncApexJob> purgeBatchJobs = [
+            SELECT Id
+            FROM AsyncApexJob
+            WHERE
+                JobType IN ('ScheduledApex', 'BatchApex', 'BatchApexWorker')
+                AND ApexClass.NamespacePrefix = :apexClassNamespacePrefix
+                AND ApexClass.Name = :apexClassName
+                AND Id = :jobId
+        ];
         System.assertEquals(1, purgeBatchJobs.size(), 'should execute the purge batch job');
     }
 

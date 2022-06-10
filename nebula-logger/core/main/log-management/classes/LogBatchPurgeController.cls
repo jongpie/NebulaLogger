@@ -32,14 +32,17 @@ public with sharing class LogBatchPurgeController {
 
     @TestVisible
     private static List<AggregateResult> getLogObjectSummary(String dateFilterOption) {
-        String query = 'select LogPurgeAction__c,count(id) from Log__c where CreatedDate=' + dateFilterOption + ' group by LogPurgeAction__c';
+        String query =
+            'select LogPurgeAction__c LogPurgeAction__c, count(id) from Log__c where CreatedDate=' +
+            dateFilterOption +
+            ' group by LogPurgeAction__c';
         return Database.query(String.escapeSingleQuotes(query));
     }
 
     @TestVisible
     private static List<AggregateResult> getLogEntryObjectSummary(String dateFilterOption) {
         String query =
-            'select Log__r.LogPurgeAction__c,count(id) from LogEntry__c where CreatedDate=' +
+            'select Log__r.LogPurgeAction__c LogPurgeAction__c, count(id) from LogEntry__c where CreatedDate=' +
             dateFilterOption +
             ' group by Log__r.LogPurgeAction__c';
         return Database.query(String.escapeSingleQuotes(query));
@@ -48,7 +51,7 @@ public with sharing class LogBatchPurgeController {
     @TestVisible
     private static List<AggregateResult> getLogEntryTagObjectSummary(String dateFilterOption) {
         String query =
-            'select LogEntry__r.Log__r.LogPurgeAction__c,count(id) from LogEntryTag__c where CreatedDate=' +
+            'select LogEntry__r.Log__r.LogPurgeAction__c LogPurgeAction__c, count(id) from LogEntryTag__c where CreatedDate=' +
             dateFilterOption +
             ' group by LogEntry__r.Log__r.LogPurgeAction__c';
         return Database.query(String.escapeSingleQuotes(query));
@@ -102,13 +105,21 @@ public with sharing class LogBatchPurgeController {
     @AuraEnabled
     public static List<AsyncApexJob> getPurgeBatchJobRecords() {
         try {
-            List<AsyncApexJob> scheduledJobs = [
-                SELECT Id, JobType, JobItemsProcessed, MethodName, NumberOfErrors, Status, createdDate, createdBy.name
+            String apexClassNamespacePrefix = LogBatchPurger.class.getName().contains('.') ? LogBatchPurger.class.getName().substringBefore('.') : null;
+            String apexClassName = LogBatchPurger.class.getName().contains('.')
+                ? LogBatchPurger.class.getName().substringAfter('.')
+                : LogBatchPurger.class.getName();
+            List<AsyncApexJob> purgeBatchJobs = [
+                SELECT Id, JobType, JobItemsProcessed, MethodName, NumberOfErrors, Status, CreatedDate, CreatedBy.Name
                 FROM AsyncApexJob
-                WHERE jobType IN ('ScheduledApex', 'BatchApex', 'BatchApexWorker') AND ApexClass.Name = :LogBatchPurger.class.getName()
-                ORDER BY createdDate DESC
+                WHERE
+                    JobType IN ('ScheduledApex', 'BatchApex', 'BatchApexWorker')
+                    AND ApexClass.NamespacePrefix = :apexClassNamespacePrefix
+                    AND ApexClass.Name = :apexClassName
+                ORDER BY CreatedDate DESC
+                LIMIT 50
             ];
-            return scheduledJobs;
+            return purgeBatchJobs;
         } catch (Exception ex) {
             throw createAuraHandledException(ex);
         }
