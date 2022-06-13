@@ -18,11 +18,15 @@
     <tabs>LoggerTag__c</tabs>
     <tabs>LogEntryEventStream</tabs>
     <tabs>LoggerSettings</tabs>
+    <tabs>LogBatchPurge</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LoggerConsoleUtilityBar</utilityBar>
     <workspaceConfig>
+        <mappings>
+            <tab>LogBatchPurge</tab>
+        </mappings>
         <mappings>
             <tab>LogEntryEventStream</tab>
         </mappings>
