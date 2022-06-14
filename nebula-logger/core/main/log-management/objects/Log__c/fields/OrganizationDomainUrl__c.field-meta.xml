@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>OrganizationDomainUrl__c</fullName>
     <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
     <description>The value returned from Url..getOrgDomainUrl()</description>
     <externalId>false</externalId>
     <inlineHelpText>The value returned from Url..getOrgDomainUrl()</inlineHelpText>

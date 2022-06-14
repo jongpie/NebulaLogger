@@ -2,6 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>LogPurgeAction__c</fullName>
     <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <inlineHelpText
     >Used by the batch job LogBatchPurger, this indicates the action that should be taken for a Log__c record when LogRetentionDate__c &lt; TODAY. Out of the box, only &apos;Delete&apos; is used by Logger, but plugins can add &amp; use new values.</inlineHelpText>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>EventUuid__c</fullName>
+    <businessStatus>Active</businessStatus>
     <caseSensitive>false</caseSensitive>
+    <complianceGroup>None</complianceGroup>
     <description>The UUID of the LogEntryEvent__e platform event that created this LogEntry__c record.
 
 For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_event_uuid.htm</description>
@@ -12,6 +14,7 @@ For more details, refer to https://developer.salesforce.com/docs/atlas.en-us.pla
     <label>Event UUID</label>
     <length>36</length>
     <required>false</required>
+    <securityClassification>Confidential</securityClassification>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>

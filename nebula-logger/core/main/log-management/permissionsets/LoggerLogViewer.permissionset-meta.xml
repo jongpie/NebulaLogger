@@ -5,11 +5,15 @@
         <visible>true</visible>
     </applicationVisibilities>
     <classAccesses>
+        <apexClass>LogBatchPurgeController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LogMassDeleteExtension</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerSettingsController</apexClass>
+        <apexClass>LogViewerController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -17,7 +21,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LogViewerController</apexClass>
+        <apexClass>LoggerSettingsController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -232,12 +236,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpRequestBody__c</field>
+        <field>LogEntry__c.HttpRequestBodyMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpRequestBodyMasked__c</field>
+        <field>LogEntry__c.HttpRequestBody__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -252,12 +256,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpResponseBody__c</field>
+        <field>LogEntry__c.HttpResponseBodyMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpResponseBodyMasked__c</field>
+        <field>LogEntry__c.HttpResponseBody__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -862,17 +866,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.ParentLog__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Log__c.ParentLogLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.ParentLogTransactionId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ParentLog__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>

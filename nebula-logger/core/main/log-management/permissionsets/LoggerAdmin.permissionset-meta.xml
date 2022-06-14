@@ -25,6 +25,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LogBatchPurgeController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>LogBatchPurgeScheduler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -45,6 +49,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>LogViewerController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>Logger</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -53,15 +61,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerSettingsController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>LoggerSObjectMetadata</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LogViewerController</apexClass>
+        <apexClass>LoggerSettingsController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -90,11 +94,11 @@
     </customMetadataTypeAccesses>
     <customPermissions>
         <enabled>true</enabled>
-        <name>CanModifyLoggerSettings</name>
+        <name>CanExecuteLogBatchPurger</name>
     </customPermissions>
     <customPermissions>
         <enabled>true</enabled>
-        <name>CanExecuteLogBatchPurger</name>
+        <name>CanModifyLoggerSettings</name>
     </customPermissions>
     <customSettingAccesses>
         <enabled>true</enabled>
@@ -308,12 +312,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpRequestBody__c</field>
+        <field>LogEntry__c.HttpRequestBodyMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpRequestBodyMasked__c</field>
+        <field>LogEntry__c.HttpRequestBody__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -328,12 +332,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpResponseBody__c</field>
+        <field>LogEntry__c.HttpResponseBodyMasked__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogEntry__c.HttpResponseBodyMasked__c</field>
+        <field>LogEntry__c.HttpResponseBody__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -938,17 +942,17 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Log__c.ParentLog__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Log__c.ParentLogLink__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.ParentLogTransactionId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.ParentLog__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1189,6 +1193,10 @@
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <tabSettings>
+        <tab>LogBatchPurge</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>LogEntryEventStream</tab>
         <visibility>Visible</visibility>
     </tabSettings>
@@ -1210,10 +1218,6 @@
     </tabSettings>
     <tabSettings>
         <tab>LoggerTag__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
-        <tab>LogBatchPurge</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

@@ -18,4 +18,8 @@
         <field>SObjectTypeOverride__c</field>
         <value xsi:type="xsd:string">BatchApexErrorEvent</value>
     </values>
+    <values>
+        <field>SObjectType__c</field>
+        <value xsi:nil="true" />
+    </values>
 </CustomMetadata>

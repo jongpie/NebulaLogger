@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>SObjectField__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
     <fieldManageability>SubscriberControlled</fieldManageability>
     <label>Field</label>
@@ -9,6 +11,7 @@
     <relationshipLabel>Log Entry Tag Rules</relationshipLabel>
     <relationshipName>LogEntryTagRules</relationshipName>
     <required>true</required>
+    <securityClassification>Confidential</securityClassification>
     <type>MetadataRelationship</type>
     <unique>false</unique>
 </CustomField>

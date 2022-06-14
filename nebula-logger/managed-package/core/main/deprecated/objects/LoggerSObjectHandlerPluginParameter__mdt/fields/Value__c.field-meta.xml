@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Value__c</fullName>
+    <businessStatus>DeprecateCandidate</businessStatus>
+    <complianceGroup>None</complianceGroup>
+    <securityClassification>Confidential</securityClassification>
     <description>The value used by the plugin for this parameter. Since custom metadata type (CMDT) records can be deployed between orgs, you can either:
  - Deploy the CMDT records between your orgs - for parameters that should be consistent in all environments
  - Manually configure the CMDT records in each org - for parameters that should be environment-specific</description>

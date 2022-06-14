@@ -114,9 +114,8 @@ export default class LogBatchPurge extends LightningElement {
 
     loadPurgeBatchColumns() {
         let columns = [
-            { label: 'Job Id', fieldName: 'Id', initialWidth: 180 },
+            { label: 'Job ID', fieldName: 'Id', initialWidth: 180 },
             { label: 'Job Type', fieldName: 'JobType', initialWidth: 170 },
-            { label: 'Method Name', fieldName: 'MethodName', initialWidth: 180 },
             {
                 label: 'Job Items Processed',
                 fieldName: 'JobItemsProcessed',

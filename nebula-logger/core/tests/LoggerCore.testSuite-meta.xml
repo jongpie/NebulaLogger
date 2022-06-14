@@ -6,13 +6,13 @@
     <testClassName>FlowLogger_Tests</testClassName>
     <testClassName>FlowRecordLogEntry_Tests</testClassName>
     <testClassName>LogBatchPurger_Tests</testClassName>
+    <testClassName>LogBatchPurgeController_Tests</testClassName>
     <testClassName>LogBatchPurgeScheduler_Tests</testClassName>
     <testClassName>LogEntryEventBuilder_Tests</testClassName>
     <testClassName>LogEntryEventHandler_Tests</testClassName>
     <testClassName>LogEntryFieldSetPicklist_Tests</testClassName>
     <testClassName>LogEntryHandler_Tests</testClassName>
     <testClassName>LogEntryTagHandler_Tests</testClassName>
-    <testClassName>Logger_Tests</testClassName>
     <testClassName>LoggerBatchableContext_Tests</testClassName>
     <testClassName>LoggerCache_Tests</testClassName>
     <testClassName>LoggerDataStore_Tests</testClassName>
@@ -25,6 +25,7 @@
     <testClassName>LoggerSObjectMetadata_Tests</testClassName>
     <testClassName>LoggerTagHandler_Tests</testClassName>
     <testClassName>LoggerTriggerableContext_Tests</testClassName>
+    <testClassName>Logger_Tests</testClassName>
     <testClassName>LogHandler_Tests</testClassName>
     <testClassName>LogManagementDataSelector_Tests</testClassName>
     <testClassName>LogMassDeleteExtension_Tests</testClassName>
