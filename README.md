@@ -695,7 +695,7 @@ Note: the logger plugin framework is not available in the managed package due to
 
 ### Beta Plugin: Slack Integration
 
-The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:
+The optional [Slack plugin](./nebula-logger/plugins/Slack/) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:
 
 -   Use Apex to apply custom logic to `Log__c` and `LogEntry__c` records
 -   Add custom fields and list views to Logger's objects
