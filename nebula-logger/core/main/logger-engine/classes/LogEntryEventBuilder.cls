@@ -55,7 +55,13 @@ global with sharing class LogEntryEventBuilder {
      * @param  shouldSave        Determines if the builder's instance of `LogEntryEvent__e` should be saved
      */
     @SuppressWarnings('PMD.NcssConstructorCount')
-    public LogEntryEventBuilder(LoggingLevel entryLoggingLevel, Boolean shouldSave) {
+    public LogEntryEventBuilder(
+        LoggingLevel entryLoggingLevel,
+        LoggingLevel userLoggingLevel,
+        LoggerSettings__c userSettings,
+        Boolean shouldSave,
+        String stackTrace
+    ) {
         this.entryLoggingLevel = entryLoggingLevel;
         this.shouldSave = shouldSave;
 

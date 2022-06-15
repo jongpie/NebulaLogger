@@ -9,6 +9,7 @@
  * @see LogEntryArchivePlugin
  * @see LogEntryArchiveBuilder
  */
+@SuppressWarnings('PMD.ApexCRUDViolation')
 public with sharing class LogEntryArchiveController {
     @TestVisible
     private static final List<LogEntryArchive__b> MOCK_RECORDS = new List<LogEntryArchive__b>();
@@ -51,7 +52,6 @@ public with sharing class LogEntryArchiveController {
                 TransactionId__c
             FROM LogEntryArchive__b
             WHERE Timestamp__c >= :startDate AND Timestamp__c <= :endDate.addDays(1)
-            WITH SECURITY_ENFORCED
             ORDER BY Timestamp__c DESC, TransactionId__c ASC, TransactionEntryNumber__c DESC
             LIMIT :queryLimit
         ]) {

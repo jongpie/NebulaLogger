@@ -2892,7 +2892,13 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
-        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
+        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(
+            LoggingLevel,
+            getUserLoggingLevel(),
+            getUserSettings(),
+            shouldSave,
+            new DmlException().getStackTraceString()
+        );
         if (logEntryEventBuilder.shouldSave() == true) {
             logEntryEventBuilder.getLogEntryEvent().LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
             logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
