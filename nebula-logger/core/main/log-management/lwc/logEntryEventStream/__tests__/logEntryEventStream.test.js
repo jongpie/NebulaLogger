@@ -2,6 +2,7 @@ import { createElement } from 'lwc';
 import LogEntryEventStream from 'c/logEntryEventStream';
 import { jestMockPublish } from 'lightning/empApi';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
+import getDataTableDisplayFields from '@salesforce/apex/LogEntryEventStreamController.getDataTableDisplayFields';
 
 const loggingLevels = {
     FINEST: 2,
@@ -26,6 +27,7 @@ const mockLogEntryEventTemplate = {
 };
 
 const mockLogEntryEventSchemaTemplate = require('./data/getSchemaForName.json');
+const MockTableViewDisplayFields = require('./data/getDataTableDisplayFields.json');
 
 jest.mock(
     '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName',
@@ -36,15 +38,27 @@ jest.mock(
     },
     { virtual: true }
 );
+jest.mock(
+    '@salesforce/apex/LogEntryEventStreamController.getDataTableDisplayFields',
+    () => {
+        return {
+            default: jest.fn()
+        };
+    },
+    { virtual: true }
+);
+
+const flushPromises = () => new Promise(process.nextTick);
 
 async function createStreamElement(namespace) {
+    getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
     const mockLogEntryEventSchema = generateLogEntryEventSchema(namespace);
     getSchemaForName.mockResolvedValue(mockLogEntryEventSchema);
     const element = createElement('log-entry-event-stream', {
         is: LogEntryEventStream
     });
     document.body.appendChild(element);
-    await Promise.resolve();
+    await flushPromises();
     return element;
 }
 
@@ -112,6 +126,7 @@ describe('LogEntryEventStream tests', () => {
     });
 
     const namespaces = ['', 'SomeNamespace'];
+
     it('streams a single log entry event', async () => {
         await Promise.all(
             namespaces.map(async namespace => {
@@ -126,6 +141,7 @@ describe('LogEntryEventStream tests', () => {
             })
         );
     });
+
     it('toggles streaming when button clicked', async () => {
         await Promise.all(
             namespaces.map(async namespace => {
@@ -172,6 +188,7 @@ describe('LogEntryEventStream tests', () => {
                 const loggingLevelFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="loggingLevelFilter"]');
                 loggingLevelFilterDropdown.value = loggingLevels.DEBUG;
                 loggingLevelFilterDropdown.dispatchEvent(new CustomEvent('change'));
+                await flushPromises();
 
                 const matchingLogEntryEvent = generatePlatformEvent(namespace);
                 const namespacePrefix = !!namespace ? namespace + '__' : '';
@@ -180,7 +197,6 @@ describe('LogEntryEventStream tests', () => {
                 expect(matchingLogEntryEvent[namespacePrefix + 'LoggingLevelOrdinal__c']).toBeGreaterThan(Number(loggingLevelFilterDropdown.value));
 
                 await publishPlatformEvent(namespace, matchingLogEntryEvent);
-
                 const expectedStreamText = getPlatformEventText(matchingLogEntryEvent, namespace);
                 const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
                 expect(eventStreamDiv.textContent).toBe(expectedStreamText);
@@ -211,12 +227,14 @@ describe('LogEntryEventStream tests', () => {
     });
     it('includes matching log entry event for origin type filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+        await flushPromises();
+
         const originTypeFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="originTypeFilter"]');
         originTypeFilterDropdown.value = 'Flow';
         originTypeFilterDropdown.dispatchEvent(new CustomEvent('change'));
@@ -236,15 +254,17 @@ describe('LogEntryEventStream tests', () => {
     });
     it('excludes non-matching log entry event for origin type filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+
         const originTypeFilterDropdown = element.shadowRoot.querySelector('lightning-combobox[data-id="originTypeFilter"]');
         originTypeFilterDropdown.value = 'Flow';
         originTypeFilterDropdown.dispatchEvent(new CustomEvent('change'));
+
+        await flushPromises();
 
         const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
         nonMatchingLogEntryEvent.OriginType__c = 'Apex';
@@ -260,15 +280,16 @@ describe('LogEntryEventStream tests', () => {
     });
     it('includes matching log entry event for origin location filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+
         const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="originLocationFilter"]');
         originLocationFilterDropdown.value = 'SomeClass.someMethod';
         originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
+        await flushPromises();
 
         const matchingLogEntryEvent = { ...mockLogEntryEventTemplate };
         matchingLogEntryEvent.OriginLocation__c = 'SomeClass.someMethod';
@@ -285,15 +306,18 @@ describe('LogEntryEventStream tests', () => {
     });
     it('excludes non-matching log entry event for origin location filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+
         const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="originLocationFilter"]');
         originLocationFilterDropdown.value = 'SomeClass.someMethod';
         originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
+
+        await flushPromises();
 
         const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
         nonMatchingLogEntryEvent.OriginLocation__c = 'AnotherClass.someOtherMethod';
@@ -309,15 +333,17 @@ describe('LogEntryEventStream tests', () => {
     });
     it('includes matching log entry event for logged by filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+
         const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="loggedByFilter"]');
         originLocationFilterDropdown.value = 'some.person@test.com';
         originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
+        await flushPromises();
 
         const matchingLogEntryEvent = { ...mockLogEntryEventTemplate };
         matchingLogEntryEvent.LoggedByUsername__c = 'some.person@test.com';
@@ -334,12 +360,14 @@ describe('LogEntryEventStream tests', () => {
     });
     it('excludes non-matching log entry event for logged by filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+        await flushPromises();
+
         const originLocationFilterDropdown = element.shadowRoot.querySelector('lightning-input[data-id="loggedByFilter"]');
         originLocationFilterDropdown.value = 'some.person@test.com';
         originLocationFilterDropdown.dispatchEvent(new CustomEvent('change'));
@@ -358,12 +386,13 @@ describe('LogEntryEventStream tests', () => {
     });
     it('includes matching log entry event using string for message filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+        await flushPromises();
+
         const messageFilterTextarea = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
         messageFilterTextarea.value = 'matching text';
         messageFilterTextarea.dispatchEvent(new CustomEvent('change'));
@@ -383,12 +412,14 @@ describe('LogEntryEventStream tests', () => {
     });
     it('excludes non-matching log entry event for message filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+        await flushPromises();
+
         const messageFilterTextarea = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
         messageFilterTextarea.value = 'non-matching text';
         messageFilterTextarea.dispatchEvent(new CustomEvent('change'));
@@ -408,16 +439,18 @@ describe('LogEntryEventStream tests', () => {
 
     it('includes matching log entry event using regex for message filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
         document.body.appendChild(element);
-        await Promise.resolve();
+        await flushPromises();
 
         const messageFilterTextarea = element.shadowRoot.querySelector('lightning-textarea[data-id="messageFilter"]');
         messageFilterTextarea.value = 'Something.+? blah$';
         messageFilterTextarea.dispatchEvent(new CustomEvent('change'));
+        await Promise.resolve();
 
         const matchingLogEntryEvent = { ...mockLogEntryEventTemplate };
         matchingLogEntryEvent.Message__c = 'Something, something, something, beep boop beep!!!!!!!%@#$!%, blah, blah, blah';
@@ -430,5 +463,150 @@ describe('LogEntryEventStream tests', () => {
         const expectedStreamText = getPlatformEventText(matchingLogEntryEvent);
         const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
         expect(eventStreamDiv.textContent).toBe(expectedStreamText);
+    });
+
+    it('it should show the splitview as expanded by default', async () => {
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        nonMatchingLogEntryEvent.LoggedByUsername__c = 'a.different.person@test.com';
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: nonMatchingLogEntryEvent
+            }
+        });
+        document.body.appendChild(element);
+        await flushPromises();
+
+        const splitViewContainer = element.shadowRoot.querySelector('[data-id="split-view-container"]');
+        expect(splitViewContainer.className).toContain('slds-is-open');
+
+        const toggleSplitViewButton = element.shadowRoot.querySelector('[data-id="split-view-button"]');
+        expect(toggleSplitViewButton.className).toContain('slds-is-open');
+
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    });
+    it('it should colapse the split view when user click on the splitview panel button', async () => {
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        nonMatchingLogEntryEvent.LoggedByUsername__c = 'a.different.person@test.com';
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: nonMatchingLogEntryEvent
+            }
+        });
+
+        document.body.appendChild(element);
+        await flushPromises();
+
+        const splitViewContainer = element.shadowRoot.querySelector('[data-id="split-view-container"]');
+        const toggleSplitViewButton = element.shadowRoot.querySelector('[data-id="split-view-button"]');
+        toggleSplitViewButton.click();
+
+        expect(splitViewContainer.className).toContain('slds-is-closed');
+        expect(toggleSplitViewButton.className).toContain('slds-is-closed');
+
+        const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+    });
+
+    it('it should expand the console when user click on the expand button', async () => {
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        nonMatchingLogEntryEvent.LoggedByUsername__c = 'a.different.person@test.com';
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: nonMatchingLogEntryEvent
+            }
+        });
+
+        document.body.appendChild(element);
+        await flushPromises();
+
+        const toggleExpandButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="expand-toggle"]');
+        toggleExpandButton.click();
+
+        const consoleBlock = element.shadowRoot.querySelector('[data-id="event-stream-console"]');
+        expect(consoleBlock.className).toContain('expanded');
+    });
+
+    it('it should exit full screen mode when user click on the contract button', async () => {
+        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
+
+        const element = createElement('log-entry-event-stream', {
+            is: LogEntryEventStream
+        });
+        const nonMatchingLogEntryEvent = { ...mockLogEntryEventTemplate };
+        nonMatchingLogEntryEvent.LoggedByUsername__c = 'a.different.person@test.com';
+        await jestMockPublish('/event/LogEntryEvent__e', {
+            data: {
+                payload: nonMatchingLogEntryEvent
+            }
+        });
+
+        document.body.appendChild(element);
+        await flushPromises();
+
+        const toggleExpandButton = element.shadowRoot.querySelector('lightning-button-stateful[data-id="expand-toggle"]');
+        toggleExpandButton.click(); //expanded
+        toggleExpandButton.click(); //contracted
+
+        const consoleBlock = element.shadowRoot.querySelector('[data-id="event-stream-console"]');
+        expect(consoleBlock.className).not.toContain('expanded');
+    });
+
+    it('it should show log entries in console when user select console view ', async () => {
+        await Promise.all(
+            namespaces.map(async namespace => {
+                const element = await createStreamElement(namespace);
+                const mockLogEntryEvent = await generatePlatformEvent(namespace);
+
+                await publishPlatformEvent(namespace, mockLogEntryEvent);
+                const buttonMenu = element.shadowRoot.querySelector('lightning-button-menu');
+                buttonMenu.dispatchEvent(new CustomEvent('select', { detail: { value: 'console' } }));
+                await flushPromises();
+
+                const dataTable = element.shadowRoot.querySelector('[data-id="event-stream-datatable"]');
+                expect(dataTable).toBe(null);
+                const expectedStreamText = getPlatformEventText(mockLogEntryEvent, namespace);
+                const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+                expect(eventStreamDiv.textContent).toBe(expectedStreamText);
+            })
+        );
+    });
+
+    it('it should show log entries in datatable when user select tabular view ', async () => {
+        await Promise.all(
+            namespaces.map(async namespace => {
+                const element = await createStreamElement(namespace);
+                const mockLogEntryEvent = await generatePlatformEvent(namespace);
+
+                await publishPlatformEvent(namespace, mockLogEntryEvent);
+                const buttonMenu = element.shadowRoot.querySelector('lightning-button-menu');
+                buttonMenu.dispatchEvent(new CustomEvent('select', { detail: { value: 'table' } }));
+                await flushPromises();
+
+                const dataTable = element.shadowRoot.querySelector('[data-id="event-stream-datatable"]');
+                expect(dataTable.columns.length).toBe(2);
+                expect(dataTable.data.length).toBe(1);
+                const expectedStreamText = getPlatformEventText(mockLogEntryEvent, namespace);
+                const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
+                expect(eventStreamDiv).toBe(null);
+            })
+        );
     });
 });

@@ -2,13 +2,11 @@
     position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 999;
-}
-
-.expanded .event-stream {
     height: 100vh;
+    width: 100vw;
+    z-index: 9999;
+    padding: 0;
+    margin: 0;
 }
 
 .event-stream {
@@ -17,8 +15,9 @@
     font-family: 'Lucida Console', 'Courier New', monospace;
     text-indent: -32px;
     padding-left: 32px;
-    height: calc(100vh - 300px);
-    margin-right: 8px;
+    /*height: calc(100vh - 300px);
+    margin-right: 8px;*/
+    height: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
 
@@ -52,4 +51,20 @@
     color: white;
     margin-right: 8px;
     padding: 4px;
+}
+
+.main-container {
+    display: flex;
+    width: 100vw;
+}
+.event-stream-container {
+    width: calc(100vw - 24rem);
+}
+
+.height-full {
+    height: 100%;
+}
+
+.card-body {
+    height: calc(100% - 70px);
 }
