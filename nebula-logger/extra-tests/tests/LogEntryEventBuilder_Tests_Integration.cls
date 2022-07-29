@@ -32,7 +32,7 @@ private class LogEntryEventBuilder_Tests_Integration {
             System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
 
             Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrand);
+            builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAccountBrand);
         }
 
         System.assertNotEquals(JSON.serializePretty(mockAccountBrand), builder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
@@ -70,10 +70,16 @@ private class LogEntryEventBuilder_Tests_Integration {
             System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
 
             Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(LoggingLevel.INFO, true).setRecord(mockAccountBrands);
+            builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAccountBrands);
         }
 
         System.assertNotEquals(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
         System.assertEquals(JSON.serializePretty(strippedAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
+    }
+
+    static LoggerSettings__c getUserSettings() {
+        LoggerSettings__c userSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
+        userSettings.SetupOwnerId = UserInfo.getUserId();
+        return userSettings;
     }
 }
