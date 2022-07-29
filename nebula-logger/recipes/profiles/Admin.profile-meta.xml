@@ -291,27 +291,11 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>LoggerEmailUtils</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerEmailUtils_Tests</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>LoggerEngineDataSelector</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>LoggerEngineDataSelector_Tests</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerInstallHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerInstallHandler_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -344,14 +328,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>LoggerSObjectHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerSObjectHandlerPlugin</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerSObjectHandlerPlugin_Tests</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -392,10 +368,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>LoggerTestConfigurator</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LoggerTestUtils</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -2948,51 +2920,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LoggerSObjectHandlerParameter__mdt.Description__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerParameter__mdt.IsEnabled__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerParameter__mdt.Value__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPluginParameter__mdt.Description__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPluginParameter__mdt.IsEnabled__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPluginParameter__mdt.Value__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPlugin__mdt.Description__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPlugin__mdt.ExecutionOrder__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>LoggerSObjectHandlerPlugin__mdt.IsEnabled__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>LoggerSObjectHandler__mdt.IsEnabled__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -3053,18 +2980,6 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>LoggerPlugin__mdt-Logger Plugin Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>LoggerSObjectHandlerParameter__mdt-Logger SObject Handler Parameter Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>LoggerSObjectHandlerPluginParameter__mdt-Logger SObject Handler Plugin Parameter Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>LoggerSObjectHandlerPlugin__mdt-Logger SObject Handler Plugin Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>LoggerSObjectHandler__mdt-Logger SObject Handler Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>LoggerTag__c-Logger Tag Layout</layout>
@@ -3138,35 +3053,35 @@
     </pageAccesses>
     <tabVisibilities>
         <tab>LogEntryArchives</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>LogEntryEventStream</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>LogEntryTag__c</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>LogEntry__c</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>Log__c</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>LoggerAuraDemo</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>LoggerSettings</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>LoggerTag__c</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>Logger_lwc_demo</tab>
