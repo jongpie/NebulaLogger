@@ -785,7 +785,7 @@ global with sharing class LogEntryEventBuilder {
     private static String getJson(SObject record) {
         List<SObject> strippedRecords = stripInaccessible(new List<SObject>{ record });
 
-        if (strippedRecords.isEmpty() == true) {
+        if (strippedRecords == null) {
             return null;
         }
 
@@ -795,11 +795,6 @@ global with sharing class LogEntryEventBuilder {
 
     private static String getJson(List<SObject> records) {
         List<SObject> strippedRecords = stripInaccessible(records);
-
-        if (strippedRecords.isEmpty() == true) {
-            return null;
-        }
-
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecords));
     }
 
