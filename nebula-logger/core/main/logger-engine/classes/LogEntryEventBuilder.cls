@@ -784,12 +784,23 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static String getJson(SObject record) {
-        SObject strippedRecord = stripInaccessible(new List<SObject>{ record }).get(0);
+        List<SObject> strippedRecords = stripInaccessible(new List<SObject>{ record });
+
+        if (strippedRecords.isEmpty() == true) {
+            return null;
+        }
+
+        SObject strippedRecord = strippedRecords.get(0);
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecord));
     }
 
     private static String getJson(List<SObject> records) {
         List<SObject> strippedRecords = stripInaccessible(records);
+
+        if (strippedRecords.isEmpty() == true) {
+            return null;
+        }
+
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecords));
     }
 
@@ -922,6 +933,7 @@ global with sharing class LogEntryEventBuilder {
         if (
             Logger.getUserSettings().IsRecordFieldStrippingEnabled__c == false ||
             records == null ||
+            records.isEmpty() == true ||
             records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType
         ) {
             return records;
