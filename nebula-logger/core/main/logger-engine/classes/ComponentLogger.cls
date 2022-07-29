@@ -11,6 +11,10 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount, PMD.StdCyclomaticComplexity')
 public inherited sharing class ComponentLogger {
+    static {
+        Logger.ignoreOrigin(ComponentLogger.class);
+    }
+
     /**
      * @description Provides data to the frontend about `LoggerSettings__c` & server-supported logging details
      * @return   return The instance of `ComponentLoggerSettings` for the current user

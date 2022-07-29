@@ -13,8 +13,9 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.7.8';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.8.0';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
+    private static final Set<String> IGNORED_APEX_CLASSES = getIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
@@ -250,7 +251,7 @@ global with sharing class Logger {
             // Next, use the org defaults (if configured)
             loggingUserSettings = LoggerSettings__c.getOrgDefaults();
         } else {
-            loggingUserSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+            loggingUserSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
         }
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
@@ -2716,6 +2717,16 @@ global with sharing class Logger {
     }
 
     /**
+     * @description Adds the specified Apex type to the list of ignored origin locations for the current transaction.
+     *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
+     *              the log entry's origin location
+     * @param  apexType The Apex type of the class to ignore
+     */
+    public static void ignoreOrigin(Type apexType) {
+        IGNORED_APEX_CLASSES.add(apexType.getName());
+    }
+
+    /**
      * @description Returns the default save method used when calling saveLog() - set via LoggerSettings__c or by calling setSaveMethod(SaveMethod saveMethod)
      * @return   The enum value of Logger.SaveMethod to use for any calls to saveLog() in the current transaction
      */
@@ -2779,8 +2790,6 @@ global with sharing class Logger {
                 LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
                 logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
                 logEntryEvent.Scenario__c = transactionScenario;
-                logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
-                logEntryEvent.TransactionId__c = getTransactionId();
 
                 logEntryEvents.add(logEntryEvent);
             }
@@ -2891,14 +2900,22 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
-        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
+        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave, IGNORED_APEX_CLASSES);
         if (logEntryEventBuilder.shouldSave() == true) {
             logEntryEventBuilder.getLogEntryEvent().LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            logEntryEventBuilder.getLogEntryEvent().SystemMode__c = getCurrentQuiddity()?.name();
             logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
+            logEntryEventBuilder.getLogEntryEvent().TransactionId__c = getTransactionId();
+            logEntryEventBuilder.getLogEntryEvent().UserLoggingLevel__c = userLoggingLevel.name();
+            logEntryEventBuilder.getLogEntryEvent().UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 
         return logEntryEventBuilder;
+    }
+
+    private static Set<String> getIgnoredApexClasses() {
+        return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
     }
 
     private static Quiddity setTransactionQuiddity() {

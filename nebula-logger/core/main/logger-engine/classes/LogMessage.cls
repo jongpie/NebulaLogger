@@ -23,6 +23,7 @@ global inherited sharing virtual class LogMessage {
      * String formattedMessage = new LogMessage('Today is {0}', System.today()).getMessage();
      */
     global LogMessage(String unformattedMessage, Object messageInput) {
+        this();
         this.unformattedMessage = unformattedMessage;
         this.messageInputs = new List<Object>{ messageInput };
     }
@@ -37,6 +38,7 @@ global inherited sharing virtual class LogMessage {
      * String formattedMessage = new LogMessage(unformattedMessage, 'something', 'something else').getMessage();
      */
     global LogMessage(String unformattedMessage, Object messageInput1, Object messageInput2) {
+        this();
         this.unformattedMessage = unformattedMessage;
         this.messageInputs = new List<Object>{ messageInput1, messageInput2 };
     }
@@ -53,6 +55,7 @@ global inherited sharing virtual class LogMessage {
      */
     @SuppressWarnings('PMD.ExcessiveParameterList')
     global LogMessage(String unformattedMessage, Object messageInput1, Object messageInput2, Object messageInput3) {
+        this();
         this.unformattedMessage = unformattedMessage;
         this.messageInputs = new List<Object>{ messageInput1, messageInput2, messageInput3 };
     }
@@ -67,13 +70,13 @@ global inherited sharing virtual class LogMessage {
      * String formattedMessage = new LogMessage(unformattedMessage, arguments).getMessage();
      */
     global LogMessage(String unformattedMessage, List<Object> messageInputs) {
+        this();
         this.unformattedMessage = unformattedMessage;
         this.messageInputs = messageInputs;
     }
 
-    // Parameterless constructor that can be used by subclasses when extending LogMessage
-    @SuppressWarnings('PMD.EmptyStatementBlock')
     protected LogMessage() {
+        Logger.ignoreOrigin(LogMessage.class);
     }
 
     /**

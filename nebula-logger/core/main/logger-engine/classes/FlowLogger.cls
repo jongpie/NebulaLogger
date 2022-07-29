@@ -13,6 +13,10 @@
  * @see LogEntryEventBuilder
  */
 public inherited sharing class FlowLogger {
+    static {
+        Logger.ignoreOrigin(FlowLogger.class);
+    }
+
     // Invocable methods and properties are goofy, but we can be goofier
     // Properties goofiness: you can’t keep common properties in a parent class & extend properties in other classes,
     //                       which also causes issues with sharing logic between classes (via abstract and virtual classes)
