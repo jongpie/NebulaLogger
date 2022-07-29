@@ -1,6 +1,7 @@
 # Folders to exclude
 .localdevserver/
 .settings/
+.sf/
 .sfdx/
 .vscode/
 nebula-logger/**/main/default/

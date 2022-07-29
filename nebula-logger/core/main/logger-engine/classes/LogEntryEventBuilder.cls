@@ -13,7 +13,6 @@
 )
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
-    private static final String IGNORED_ORIGIN_PARAMETER_PREFIX = 'CustomIgnoredOrigin';
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
