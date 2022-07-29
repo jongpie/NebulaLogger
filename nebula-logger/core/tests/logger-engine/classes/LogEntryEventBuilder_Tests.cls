@@ -818,7 +818,8 @@ private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_set_stack_trace_and_origin_location_for_stack_trace_string() {
         DmlException stackTraceHandler = new DmlException();
-        String expectedOriginLocation = 'LogEntryEventBuilder_Tests.it_should_set_stack_trace_and_origin_location_for_stack_trace_string';
+        String qualifiedClassName = LogEntryEventBuilder_Tests.class.getName();
+        String expectedOriginLocation = qualifiedClassName + '.it_should_set_stack_trace_and_origin_location_for_stack_trace_string';
         String expectedStackTrace = stackTraceHandler.getStackTraceString();
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, true, new Set<String>());
         builder.getLogEntryEvent().OriginLocation__c = null;
@@ -833,9 +834,12 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_ignore_stack_trace_line_when_ignore_origin_location_method_is_called() {
+    static void it_should_ignore_stack_trace_line_when_matching_class_type_is_specified() {
+        String qualifiedClassName = LogEntryEventBuilder_Tests.class.getName();
         String mockStackTrace =
-            'Class.LogEntryEventBuilder_Tests.it_should_ignore_stack_trace_line_when_ignore_origin_location_method_is_called: line 99999, column 1' +
+            'Class.' +
+            qualifiedClassName +
+            '.it_should_ignore_stack_trace_line_when_ignore_origin_location_method_is_called: line 99999, column 1' +
             '\nClass.ExampleClassWithLogging.doSomething: line 17, column 1' +
             '\nAnonymousBlock: line 1, column 1';
         String expectedStackTrace = 'Class.ExampleClassWithLogging.doSomething: line 17, column 1' + '\nAnonymousBlock: line 1, column 1';
