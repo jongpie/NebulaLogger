@@ -190,6 +190,29 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_not_ignore_origin_when_apex_class_type_not_specified() {
+        Type nonIgnoredApexClassType = MockClassWithLogging.class;
+        String qualifiedNonIgnoredClassName = nonIgnoredApexClassType.getName();
+        String expectedOriginLocation = qualifiedNonIgnoredClassName + '.logSomething';
+
+        LogEntryEventBuilder builder = new MockClassWithLogging().logSomething();
+
+        System.assertEquals(expectedOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
+    }
+
+    @IsTest
+    static void it_should_ignore_origin_when_apex_class_type_specified() {
+        Type ignoredApexClassType = MockClassWithLogging.class;
+        String qualifiedTopLevelClassName = Logger_Tests.class.getName();
+        String expectedOriginLocation = qualifiedTopLevelClassName + '.it_should_ignore_origin_when_apex_class_type_specified';
+
+        Logger.ignoreOrigin(ignoredApexClassType);
+        LogEntryEventBuilder builder = new MockClassWithLogging().logSomething();
+
+        System.assertEquals(expectedOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
+    }
+
+    @IsTest
     static void it_should_apply_scenario_rule_logging_level_when_scenario_is_set() {
         String mockScenario = 'some test scenario for this transaction';
         LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = mockScenario, UserLoggingLevel__c = LoggingLevel.FINER.name());
@@ -6716,6 +6739,12 @@ private class Logger_Tests {
         }
 
         return originLocation;
+    }
+
+    public class MockClassWithLogging {
+        public LogEntryEventBuilder logSomething() {
+            return Logger.info('Hello, world');
+        }
     }
 
     public class MockSObjectHandler extends LoggerSObjectHandler {

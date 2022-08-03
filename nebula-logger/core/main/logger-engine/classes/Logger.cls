@@ -2722,6 +2722,7 @@ global with sharing class Logger {
      *              the log entry's origin location
      * @param  apexType The Apex type of the class to ignore
      */
+    // TODO promote to global before v4.9.0 (Winter '23 release)'
     public static void ignoreOrigin(Type apexType) {
         IGNORED_APEX_CLASSES.add(apexType.getName());
     }
