@@ -316,7 +316,7 @@ Each of the logging methods in `Logger` (such as `Logger.error()`, `Logger.debug
 -   Log a message and a save result - `Logger.error(String message, Database.SaveResult saveResult)`
 -   ...
 
-To see the full list of overloads, check out the `Logger` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/Logger).
+To see the full list of overloads, check out the `Logger` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/Logger).
 
 ### Using the Fluent Interface
 
@@ -365,7 +365,7 @@ The class `LogMessage` provides the ability to generate string messages on deman
      System.assertEquals(expectedMessage, formattedMessage);
     ```
 
-For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
+For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/LogMessage).
 
 ---
 
