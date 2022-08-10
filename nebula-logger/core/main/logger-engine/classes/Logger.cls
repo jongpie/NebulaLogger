@@ -2787,7 +2787,7 @@ global with sharing class Logger {
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
-            if (logEntryEventBuilder.shouldSave()) {
+            if (logEntryEventBuilder.shouldSave() == true) {
                 LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
                 logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
                 logEntryEvent.Scenario__c = transactionScenario;

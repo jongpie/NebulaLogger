@@ -303,7 +303,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Set<SObject> tagAssignments = new Set<SObject>();
         for (LogEntry__c logEntry : this.logEntries) {
             List<String> logEntryTagNames = this.logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
-            if (logEntryTagNames == null || logEntryEventUuidToTagNames.isEmpty()) {
+            if (logEntryTagNames == null || logEntryEventUuidToTagNames.isEmpty() == true) {
                 continue;
             }
 
