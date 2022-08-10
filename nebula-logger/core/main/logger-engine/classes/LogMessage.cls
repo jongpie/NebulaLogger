@@ -86,7 +86,7 @@ global inherited sharing virtual class LogMessage {
     global virtual String getMessage() {
         // Just in case getMessage() is called multiple times (first by the originating code, then by Logger),
         // cache the result (save CPU time from multiple calls) and discard the original parameters (reduce heap size)
-        if (this.formattedMessage == null) {
+        if (this.formattedMessage == null && this.unformattedMessage != null) {
             this.formattedMessage = String.format(this.unformattedMessage, this.messageInputs);
 
             this.unformattedMessage = null;

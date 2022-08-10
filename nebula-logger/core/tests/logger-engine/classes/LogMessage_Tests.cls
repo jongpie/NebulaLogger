@@ -7,22 +7,23 @@
 @IsTest(IsParallel=true)
 private class LogMessage_Tests {
     private static final String CUSTOM_MESSAGE_PREFIX = 'Just confirming that CustomLogMessage class is used';
-    private class CustomLogMessage extends LogMessage {
-        private String inputString;
-        public CustomLogMessage(String inputString) {
-            this.inputString = CUSTOM_MESSAGE_PREFIX + inputString;
-        }
-        public override String getMessage() {
-            return inputString;
-        }
-    }
 
     @IsTest
     static void it_should_support_extending_LogMessage_class() {
+        // There's no override for getMessage() implemented to ensure no errors are thrown & null is returned
+        String expectedMessage = null;
+
+        String returnedMessage = new CustomLogMessageWithoutImplementation().getMessage();
+
+        System.assertEquals(expectedMessage, returnedMessage);
+    }
+
+    @IsTest
+    static void it_should_support_overriding_getMessage_method() {
         String originalMessage = CUSTOM_MESSAGE_PREFIX + 'The current time is: ' + System.now();
         String expectedMessage = CUSTOM_MESSAGE_PREFIX + originalMessage;
 
-        String returnedMessage = new CustomLogMessage(originalMessage).getMessage();
+        String returnedMessage = new CustomLogMessageWithMessageOverride(originalMessage).getMessage();
 
         System.assertEquals(expectedMessage, returnedMessage);
     }
@@ -72,5 +73,20 @@ private class LogMessage_Tests {
         String returnedMessage = new LogMessage(unformattedMessage, argument1, argument2, argument3).getMessage();
 
         System.assertEquals(expectedMessage, returnedMessage);
+    }
+
+    private class CustomLogMessageWithoutImplementation extends LogMessage {
+    }
+
+    private class CustomLogMessageWithMessageOverride extends LogMessage {
+        private String inputString;
+
+        public CustomLogMessageWithMessageOverride(String inputString) {
+            this.inputString = CUSTOM_MESSAGE_PREFIX + inputString;
+        }
+
+        public override String getMessage() {
+            return inputString;
+        }
     }
 }
