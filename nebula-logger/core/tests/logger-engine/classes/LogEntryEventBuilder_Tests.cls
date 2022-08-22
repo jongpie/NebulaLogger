@@ -817,6 +817,12 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_stack_trace_and_origin_location_for_stack_trace_string() {
+        // Don't bother testing stack trace logic when using a namespace prefix - there are
+        // some platform limitations that prevent these tests from behaving as expected
+        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+            return;
+        }
+
         DmlException stackTraceHandler = new DmlException();
         String qualifiedClassName = LogEntryEventBuilder_Tests.class.getName();
         String expectedOriginLocation = qualifiedClassName + '.it_should_set_stack_trace_and_origin_location_for_stack_trace_string';
@@ -983,6 +989,12 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_use_configured_log_entry_event_fields_for_debug_string() {
+        // Don't bother testing stack trace logic when using a namespace prefix - there are
+        // some platform limitations that prevent these tests from behaving as expected
+        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+            return;
+        }
+
         LoggerParameter.setMock(
             new LoggerParameter__mdt(DeveloperName = 'SystemDebugMessageFormat', Value__c = '{OriginLocation__c}\n{Message__c}: {LoggingLevel__c}')
         );
@@ -1007,6 +1019,13 @@ private class LogEntryEventBuilder_Tests {
 
     static LogMessage getLogMessage() {
         return new LogMessage('The current date is {0}', System.today());
+    }
+
+    static String getNamespacePrefix() {
+        String className = LogEntryEventBuilder_Tests.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : '';
+
+        return namespacePrefix;
     }
 
     static LogEntryDataMaskRule__mdt getSocialSecurityNumberDataMaskRule() {
