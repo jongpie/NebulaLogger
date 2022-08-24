@@ -152,6 +152,50 @@ private class LogEntryEventHandler_Tests {
         }
     }
 
+    @IsTest
+    static void it_should_set_logging_user_as_log_owner_when_anonymous_mode_is_disabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
+        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
+        currentUserSettings.IsAnonymousModeEnabled__c = true;
+        insert currentUserSettings;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+
+        System.runAs(automatedProcessUser) {
+            LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+            LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+        }
+
+        Log__c log = getLog();
+        System.assertEquals(currentUser.Id, log.OwnerId);
+    }
+
+    @IsTest
+    static void it_should_not_set_logging_user_as_log_owner_when_anonymous_mode_is_enabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
+        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
+        currentUserSettings.IsAnonymousModeEnabled__c = true;
+        insert currentUserSettings;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+
+        System.runAs(automatedProcessUser) {
+            LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+            LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+        }
+
+        Log__c log = getLog();
+        System.assertEquals(automatedProcessUser.Id, log.OwnerId);
+    }
+
     // TODO - testing topics is tricky. Within the unlocked package, we can test it,
     // but for people that prefer using the unpackaged metadata + don't use topics,
     // the tests would fail. Need to further investigate ways to handle this
@@ -497,7 +541,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_not_api_release_number_or_api_release_version_from_callout_when_disabled() {
+    static void it_should_not_set_api_release_number_or_api_release_version_from_callout_when_disabled() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
