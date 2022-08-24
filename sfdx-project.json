@@ -129,6 +129,7 @@
         "Nebula Logger - Core@4.7.6-NEXT-support-for-component-logging-of-apex-controller-errors": "04t5Y0000015lkmQAA",
         "Nebula Logger - Core@4.7.7-NEXT-bugfix-in-logger.setscenario()": "04t5Y0000015llLQAQ",
         "Nebula Logger - Core@4.7.8-NEXT-new-'batch-purge'-lwc": "04t5Y0000015lmOQAQ",
+        "Nebula Logger - Core@4.8.0-NEXT-ignore-origin-method": "04t5Y0000015lslQAA",
         "Nebula Logger - Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Plugin - Async Failure Additions@1.0.0-3": "04t5Y0000015lhiQAA",
         "Nebula Logger - Plugin - Async Failure Additions@1.0.1-1": "04t5Y0000015lhsQAA",
