@@ -816,7 +816,31 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_set_stack_trace_and_origin_location_for_stack_trace_string() {
+    static void it_should_set_stack_trace_and_origin_location_for_method_constructor_trace_string() {
+        // Don't bother testing stack trace logic when using a namespace prefix - there are
+        // some platform limitations that prevent these tests from behaving as expected
+        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+            return;
+        }
+
+        String qualifiedClassName = DebugStringExample.class.getName();
+        String expectedOriginLocation = qualifiedClassName + '.<init>';
+        DebugStringExample constructedClass = new DebugStringExample();
+        String expectedStackTrace = constructedClass.getStackTraceString();
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, true, new Set<String>());
+        builder.getLogEntryEvent().OriginLocation__c = null;
+        builder.getLogEntryEvent().StackTrace__c = null;
+
+        builder.parseStackTrace(constructedClass.getStackTraceString());
+
+        System.assertNotEquals(null, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertEquals(expectedOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertNotEquals(null, builder.getLogEntryEvent().StackTrace__c);
+        System.assertEquals(expectedStackTrace, builder.getLogEntryEvent().StackTrace__c);
+    }
+
+    @IsTest
+    static void it_should_set_stack_trace_and_origin_location_for_method_stack_trace_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
         if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
@@ -825,7 +849,7 @@ private class LogEntryEventBuilder_Tests {
 
         DmlException stackTraceHandler = new DmlException();
         String qualifiedClassName = LogEntryEventBuilder_Tests.class.getName();
-        String expectedOriginLocation = qualifiedClassName + '.it_should_set_stack_trace_and_origin_location_for_stack_trace_string';
+        String expectedOriginLocation = qualifiedClassName + '.it_should_set_stack_trace_and_origin_location_for_method_stack_trace_string';
         String expectedStackTrace = stackTraceHandler.getStackTraceString();
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, true, new Set<String>());
         builder.getLogEntryEvent().OriginLocation__c = null;
@@ -1044,7 +1068,18 @@ private class LogEntryEventBuilder_Tests {
     }
 
     private class DebugStringExample {
-        public final String loggingString = 'Inside DebugStringExample.myMethod !';
+        public final String loggingString = 'Inside DebugStringExample.myMethod!';
+        private Exception stackTraceHandler;
+
+        public DebugStringExample() {
+            this.stackTraceHandler = new DmlException();
+            Logger.debug('Logging in a constructor');
+        }
+
+        public String getStackTraceString() {
+            return this.stackTraceHandler.getStackTraceString();
+        }
+
         public LogEntryEventBuilder myMethod() {
             return Logger.debug(loggingString);
         }
