@@ -153,6 +153,34 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_upsert_log_entries_when_event_uuid_is_populated() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e originalLogEntryEvent = createLogEntryEvent();
+        System.assertNotEquals(null, originalLogEntryEvent.EventUuid);
+        LogEntryEvent__e duplicateLogEntryEvent = originalLogEntryEvent.clone();
+
+        Database.SaveResult firstSaveResult = LoggerMockDataStore.getEventBus().publishRecord(originalLogEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+        List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c WHERE EventUuid__c = :originalLogEntryEvent.EventUuid];
+        System.assertEquals(1, logEntries.size());
+        Database.SaveResult secondSaveResult = LoggerMockDataStore.getEventBus().publishRecord(duplicateLogEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.assertEquals(true, firstSaveResult.isSuccess(), firstSaveResult.getErrors());
+        System.assertEquals(true, secondSaveResult.isSuccess(), secondSaveResult.getErrors());
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed two times for AFTER_INSERT (once for each LogEntryEvent__e record'
+        );
+        logEntries = [SELECT Id FROM LogEntry__c WHERE EventUuid__c = :originalLogEntryEvent.EventUuid];
+        System.assertEquals(1, logEntries.size());
+    }
+
+    @IsTest
     static void it_should_set_logging_user_as_log_owner_when_anonymous_mode_is_disabled() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -161,7 +189,7 @@ private class LogEntryEventHandler_Tests {
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
         User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
-        currentUserSettings.IsAnonymousModeEnabled__c = true;
+        currentUserSettings.IsAnonymousModeEnabled__c = false;
         insert currentUserSettings;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
@@ -245,6 +273,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
         List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        System.assertNotEquals(null, logEntryEvent.EventUuid);
         logEntryEvent.Tags__c = String.join(tags, '\n');
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -281,6 +310,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
         insert tag;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        System.assertNotEquals(null, logEntryEvent.EventUuid);
         logEntryEvent.Tags__c = testTagName;
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -634,6 +664,11 @@ private class LogEntryEventHandler_Tests {
         logEntryEvent.RecordId__c = UserInfo.getUserId();
         logEntryEvent.RecordCollectionSize__c = 1;
         logEntryEvent.RecordCollectionType__c = 'Single';
+        logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(
+            logEntryEvent,
+            Schema.LogEntryEvent__e.EventUuid,
+            new Logger.Uuid().getValue()
+        );
 
         return logEntryEvent;
     }

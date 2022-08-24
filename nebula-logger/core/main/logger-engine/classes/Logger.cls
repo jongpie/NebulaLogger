@@ -240,6 +240,8 @@ global with sharing class Logger {
         // However, some settings fields are expected to have null values, which conflicts with how `getInstance()` behaves
         // So, instead use LoggerSettings__c.getValues(Id userOrProfileId) to load exactly what's been configured (including nulls)
 
+        // TODO cache the generated instances of LoggerSettings__c in LoggerCache.getTransactionCache().put()
+        // (key would be 'Settings' + user ID)
         LoggerSettings__c loggingUserSettings;
         if (loggingUser.Id != null && LoggerSettings__c.getValues(loggingUser.Id) != null) {
             // Check for User-level settings
