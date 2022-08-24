@@ -11,6 +11,10 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount, PMD.StdCyclomaticComplexity')
 public inherited sharing class ComponentLogger {
+    static {
+        Logger.ignoreOrigin(ComponentLogger.class);
+    }
+
     /**
      * @description Provides data to the frontend about `LoggerSettings__c` & server-supported logging details
      * @return   return The instance of `ComponentLoggerSettings` for the current user
@@ -99,6 +103,7 @@ public inherited sharing class ComponentLogger {
 
             stackTraceString = String.join(stackTraceLines, '\n');
             if (String.isNotBlank(stackTraceString) == true) {
+                String componentContent = isAuraComponent == true ? auraComponentContent : lwcModuleContent;
                 String componentName;
                 String componentFunction;
                 for (String currentStackTraceLine : stackTraceString.split('\n')) {
@@ -106,13 +111,8 @@ public inherited sharing class ComponentLogger {
                         continue;
                     }
 
-                    if (isAuraComponent == true) {
-                        componentName = currentStackTraceLine.substringAfterLast(auraComponentContent).substringBefore('.js');
-                        componentFunction = currentStackTraceLine.substringBefore(' (').substringAfter('at ');
-                    } else {
-                        componentName = currentStackTraceLine.substringAfterLast(lwcModuleContent).substringBefore('.js');
-                        componentFunction = currentStackTraceLine.substringBefore(' (').substringAfter('at ').substringAfter('.');
-                    }
+                    componentName = currentStackTraceLine.substringAfterLast(componentContent).substringBefore('.js');
+                    componentFunction = currentStackTraceLine.substringBefore('@');
                     break;
                 }
                 originLocation = componentName + '.' + componentFunction;

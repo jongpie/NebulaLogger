@@ -41,6 +41,7 @@
     <selfRegistration>false</selfRegistration>
     <sendWelcomeEmail>true</sendWelcomeEmail>
     <site>Logger_Test_Site</site>
+    <siteArchiveStatus>NotArchived</siteArchiveStatus>
     <status>UnderConstruction</status>
     <tabs>
         <defaultTab>home</defaultTab>

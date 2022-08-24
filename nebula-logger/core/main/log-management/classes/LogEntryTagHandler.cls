@@ -14,6 +14,16 @@ public without sharing class LogEntryTagHandler extends LoggerSObjectHandler {
     private List<LogEntryTag__c> logEntryTags;
 
     /**
+     * @description Generates a unique composite key for the `LogEntryTag__c` record, which
+     *              is used to set the field `LogEntryTag__c.UniqueId__c`
+     * @param  logEntryTag The `LogEntryTag__c` record to use for generating a unique ID
+     * @return             The unique composite key for the record
+     */
+    public static String generateUniqueId(LogEntryTag__c logEntryTag) {
+        return logEntryTag.LogEntry__c + '' + logEntryTag.Tag__c;
+    }
+
+    /**
      * @description Returns SObject Type that the handler is responsible for processing
      * @return      The instance of `SObjectType`
      */
@@ -35,7 +45,7 @@ public without sharing class LogEntryTagHandler extends LoggerSObjectHandler {
 
     private void setUniqueIdField() {
         for (LogEntryTag__c logEntryTag : this.logEntryTags) {
-            logEntryTag.UniqueId__c = logEntryTag.LogEntry__c + '' + logEntryTag.Tag__c;
+            logEntryTag.UniqueId__c = generateUniqueId(logEntryTag);
         }
     }
 }

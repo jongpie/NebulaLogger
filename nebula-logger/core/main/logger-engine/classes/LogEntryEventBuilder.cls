@@ -13,17 +13,18 @@
 )
 global with sharing class LogEntryEventBuilder {
     private static final String API_VERSION = getApiVersion();
-    private static final List<String> IGNORED_CLASSES = getIgnoredClasses();
     private static final String NAMESPACE_PREFIX = getNamespacePrefix();
     private static final Map<String, String> SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final Map<String, String> SOBJECT_SUFFIX_TO_CLASSIFICATION = getSObjectSuffixToClassification();
 
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
+    private final LoggerSettings__c userSettings;
 
     @TestVisible
     private String debugMessage = '';
     private Boolean detailsAreSet = false;
+    private Set<String> ignoredApexClasses = new Set<String>();
     private Boolean shouldSave;
     private Set<String> tags = new Set<String>();
     private Boolean tagDetailsAreSet = true;
@@ -48,21 +49,29 @@ global with sharing class LogEntryEventBuilder {
         set;
     }
 
+    @SuppressWarnings('PMD.ExcessiveParameterList, PMD.NcssConstructorCount')
     /**
      * @description Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
-     * @param  entryLoggingLevel The `LoggingLevel` enum to use for the builder's instance of `LogEntryEvent__e`
-     * @param  shouldSave        Determines if the builder's instance of `LogEntryEvent__e` should be saved
+     * @param  userSettings      The instance of `LoggerSettings__c` for the current to use to control any feature flags
+     * @param  entryLoggingLevel The `LoggingLevel` value to use for the log entry
+     * @param  shouldSave        Indicates if the builder's instance of `LogEntryEvent__e` should be saved
+     * @param  ignoredOrigins    A `Set<String>` of the names of any Apex classes that should be ignored when parsing the entry's origin
      */
-    @SuppressWarnings('PMD.NcssConstructorCount')
-    public LogEntryEventBuilder(LoggingLevel entryLoggingLevel, Boolean shouldSave) {
+    public LogEntryEventBuilder(LoggerSettings__c userSettings, LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins) {
+        this.userSettings = userSettings;
         this.entryLoggingLevel = entryLoggingLevel;
         this.shouldSave = shouldSave;
+        if (ignoredOrigins != null) {
+            this.ignoredApexClasses.addAll(ignoredOrigins);
+        }
 
         if (this.shouldSave == false) {
             return;
         }
 
+        Datetime timestamp = System.now();
         this.logEntryEvent = new LogEntryEvent__e(
+            EpochTimestamp__c = timestamp.getTime(),
             LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries(),
             LimitsAsyncCallsUsed__c = Limits.getAsyncCalls(),
             LimitsCalloutsUsed__c = Limits.getCallouts(),
@@ -82,8 +91,7 @@ global with sharing class LogEntryEventBuilder {
             LoggingLevel__c = entryLoggingLevel.NAME(),
             LoggingLevelOrdinal__c = entryLoggingLevel.ORDINAL(),
             OriginType__c = 'Apex',
-            Timestamp__c = System.now(),
-            EpochTimestamp__c = System.now().getTime(),
+            Timestamp__c = timestamp,
             TriggerIsExecuting__c = Trigger.isExecuting,
             TriggerOperationType__c = Trigger.operationType?.name(),
             TriggerSObjectType__c = Trigger.new?.getSObjectType().getDescribe().getName()
@@ -545,8 +553,8 @@ global with sharing class LogEntryEventBuilder {
 
             // Don't include the logging system's classes in the stack trace
             Boolean ignoreLine = false;
-            for (String ignoredClass : IGNORED_CLASSES) {
-                if (currentStackTraceLine.contains('.' + ignoredClass + '.')) {
+            for (String ignoredApexClass : this.ignoredApexClasses) {
+                if (currentStackTraceLine.contains('.' + ignoredApexClass.trim() + '.')) {
                     ignoreLine = true;
                     continue;
                 }
@@ -720,7 +728,6 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private void setUserSessionDetails() {
-        LoggingLevel userLoggingLevel = Logger.getUserLoggingLevel();
         AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
 
         this.logEntryEvent.Locale__c = UserInfo.getLocale();
@@ -738,8 +745,6 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.SourceIp__c = cachedAuthSession?.SourceIp;
         this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
         this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
-        this.logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
-        this.logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
         this.logEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
         this.logEntryEvent.UserType__c = UserInfo.getUserType();
 
@@ -777,18 +782,14 @@ global with sharing class LogEntryEventBuilder {
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 
-    private static List<String> getIgnoredClasses() {
-        return new List<String>{
-            ComponentLogger.class.getName(),
-            FlowLogger.class.getName(),
-            Logger.class.getName(),
-            LogMessage.class.getName(),
-            LogEntryEventBuilder.class.getName()
-        };
-    }
-
     private static String getJson(SObject record) {
-        SObject strippedRecord = stripInaccessible(new List<SObject>{ record }).get(0);
+        List<SObject> strippedRecords = stripInaccessible(new List<SObject>{ record });
+
+        if (strippedRecords == null) {
+            return null;
+        }
+
+        SObject strippedRecord = strippedRecords.get(0);
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecord));
     }
 
@@ -926,6 +927,7 @@ global with sharing class LogEntryEventBuilder {
         if (
             Logger.getUserSettings().IsRecordFieldStrippingEnabled__c == false ||
             records == null ||
+            records.isEmpty() == true ||
             records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType
         ) {
             return records;

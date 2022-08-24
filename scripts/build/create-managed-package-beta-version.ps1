@@ -16,7 +16,7 @@ Copy-Item -Path $managedProject -Destination $rootProject -Force
 cp -R ./nebula-logger/core/ ./nebula-logger/managed-package/
 $gitBranch = (git branch --show-current)
 $gitCommit = (git rev-parse HEAD)
-npx sfdx force:package:version:create --json --package "Nebula Logger - Managed Package" --codecoverage --installationkeybypass --wait 30 --branch $gitBranch --tag $gitCommit
+npx sfdx force:package:version:create --json --package "Nebula Logger - Managed Package" --codecoverage --installationkeybypass --wait 60 --branch $gitBranch --tag $gitCommit
 if ($LASTEXITCODE -ne 0) {
     throw "Error creating package version for managed package"
 }

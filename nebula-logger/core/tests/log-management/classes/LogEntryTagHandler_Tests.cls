@@ -25,6 +25,18 @@ private class LogEntryTagHandler_Tests {
     }
 
     @IsTest
+    static void it_generates_a_unique_composite_id() {
+        Id logEntryId = LoggerMockDataCreator.createId(Schema.LogEntry__c.SObjectType);
+        Id loggerTagId = LoggerMockDataCreator.createId(Schema.LoggerTag__c.SObjectType);
+        LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntryId, Tag__c = loggerTagId);
+        String expectedUniqueId = logEntryTag.LogEntry__c + '' + logEntryTag.Tag__c;
+
+        String generatedUniqueId = LogEntryTagHandler.generateUniqueId(logEntryTag);
+
+        System.assertEquals(expectedUniqueId, generatedUniqueId);
+    }
+
+    @IsTest
     static void it_should_return_the_logEntryTag_sobjectType() {
         System.assertEquals(Schema.LogEntryTag__c.SObjectType, new LogEntryTagHandler().getSObjectType());
     }
