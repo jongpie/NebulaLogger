@@ -69,6 +69,7 @@ public without sharing class LoggerMockDataStore {
     public class MockEventBus extends LoggerDataStore.EventBus {
         private List<SObject> publishedPlatformEvents;
         private Integer publishCount;
+
         private MockEventBus() {
             this.publishedPlatformEvents = new List<SObject>();
             this.publishCount = 0;
@@ -121,12 +122,14 @@ public without sharing class LoggerMockDataStore {
                 this.publishedPlatformEvents
             );
             sobjectHandlerInstance?.overrideTriggerableContext(platformEventsTriggerContext).execute();
+            this.publishedPlatformEvents.clear();
         }
     }
 
     public class MockJobQueue extends LoggerDataStore.JobQueue {
         private List<Queueable> enqueuedJobs;
         private Integer publishCount;
+
         private MockJobQueue() {
             this.enqueuedJobs = new List<Queueable>();
         }

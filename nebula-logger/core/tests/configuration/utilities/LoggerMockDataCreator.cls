@@ -433,12 +433,12 @@ public class LoggerMockDataCreator {
             this.childJobId = childJobId;
         }
 
-        public String getChildJobId() {
-            return childJobId;
+        public String getJobId() {
+            return this.jobId;
         }
 
-        public String getJobId() {
-            return jobId;
+        public String getChildJobId() {
+            return this.childJobId;
         }
     }
 

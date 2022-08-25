@@ -5,17 +5,17 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-## Unlocked Package - v4.7.9
+## Unlocked Package - v4.8.0
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lmOQAQ)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lmOQAQ)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lslQAA)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lslQAA)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
-## Managed Package - v4.7.0
+## Managed Package - v4.8.0
 
-[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015lXNQAY)
-[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015lXNQAY)
-[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/7)
+[![Install Managed Package in a Sandbox](./images/btn-install-managed-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015lsgQAA)
+[![Install Managed Package in Production](./images/btn-install-managed-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?mgd=true&p0=04t5Y0000015lsgQAA)
+[![View Milestone](./images/btn-view-managed-package-milestone.png)](https://github.com/jongpie/NebulaLogger/milestone/8)
 
 ---
 
@@ -316,7 +316,7 @@ Each of the logging methods in `Logger` (such as `Logger.error()`, `Logger.debug
 -   Log a message and a save result - `Logger.error(String message, Database.SaveResult saveResult)`
 -   ...
 
-To see the full list of overloads, check out the `Logger` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/Logger).
+To see the full list of overloads, check out the `Logger` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/Logger).
 
 ### Using the Fluent Interface
 
@@ -365,7 +365,7 @@ The class `LogMessage` provides the ability to generate string messages on deman
      System.assertEquals(expectedMessage, formattedMessage);
     ```
 
-For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/logger-engine/LogMessage).
+For more details, check out the `LogMessage` class [documentation](https://jongpie.github.io/NebulaLogger/apex/Logger-Engine/LogMessage).
 
 ---
 
@@ -695,14 +695,14 @@ Note: the logger plugin framework is not available in the managed package due to
 
 ### Beta Plugin: Slack Integration
 
-The optional [Slack plugin](./nebula-logger-plugins/Slack/) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:
+The optional [Slack plugin](./nebula-logger/plugins/slack) leverages the Nebula Logger plugin framework to automatically send Slack notifications for logs that meet a certain (configurable) logging level. The plugin also serves as a functioning example of how to build your own plugin for Nebula Logger, such as how to:
 
 -   Use Apex to apply custom logic to `Log__c` and `LogEntry__c` records
 -   Add custom fields and list views to Logger's objects
 -   Extend permission sets to include field-level security for your custom fields
 -   Leverage the new `LoggerParameter__mdt` CMDT object to store configuration for your plugin
 
-Check out the [Slack plugin](./nebula-logger-plugins/slack/) for more details on how to install & customize the plugin
+Check out the [Slack plugin](./nebula-logger/plugins/slack) for more details on how to install & customize the plugin
 
 ![Slack plugin: notification](./nebula-logger/plugins/slack/.images/slack-plugin-notification.png)
 

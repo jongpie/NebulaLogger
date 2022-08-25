@@ -54,9 +54,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         if (this.logEntryEvents.isEmpty() == false) {
             this.upsertLogs();
-            this.insertLogEntries();
+            this.upsertLogEntries();
             this.appendRuleBasedTags();
-            this.insertLogEntryTags();
+            this.upsertLogEntryTags();
         }
     }
 
@@ -84,9 +84,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            Id logOwnerId = logEntryEvent.CreatedById;
-            if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logEntryEvent.CreatedById)) {
-                // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
+            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
+            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
+            Id logOwnerId = loggingUser.Id;
+            if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
                 logOwnerId = UserInfo.getUserId();
             }
 
@@ -165,7 +166,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void insertLogEntries() {
+    private void upsertLogEntries() {
+        List<LogEntry__c> logEntriesWithUuid = new List<LogEntry__c>();
+        List<LogEntry__c> logEntriesWithoutUuid = new List<LogEntry__c>();
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             // Workaround field for platform issue w/ accurate datetimes
             Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
@@ -249,18 +252,25 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,
                 TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
             );
+            logEntry.setOptions(DML_OPTIONS);
 
             this.logEntries.add(logEntry);
-            if (logEntryEvent.Tags__c != null) {
-                List<String> logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
+            if (logEntry.EventUuid__c == null) {
+                logEntriesWithoutUuid.add(logEntry);
+            } else {
+                logEntriesWithUuid.add(logEntry);
+                if (logEntryEvent.Tags__c != null) {
+                    List<String> logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
 
-                this.tagNames.addAll(logEntryTagNames);
-                this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
+                    this.tagNames.addAll(logEntryTagNames);
+                    this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
+                }
             }
         }
-
-        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(this.logEntries, DML_OPTIONS);
+        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(logEntriesWithoutUuid);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
+        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase().upsertRecords(logEntriesWithUuid, Schema.LogEntry__c.EventUuid__c);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResults);
     }
 
     private void appendRuleBasedTags() {
@@ -288,7 +298,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void insertLogEntryTags() {
+    private void upsertLogEntryTags() {
         if (LoggerParameter.TAGGING_IS_ENABLED == false || this.tagNames.isEmpty()) {
             return;
         }
@@ -302,27 +312,46 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Schema.SObjectType tagAssignmentSObjectType;
         Set<SObject> tagAssignments = new Set<SObject>();
         for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.EventUuid__c == null) {
+                continue;
+            }
+
             List<String> logEntryTagNames = this.logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
-            if (logEntryTagNames == null || logEntryEventUuidToTagNames.isEmpty()) {
+            if (logEntryTagNames == null || logEntryEventUuidToTagNames.isEmpty() == true) {
                 continue;
             }
 
             for (String tagName : logEntryTagNames) {
                 if (LoggerParameter.TAG_USING_TOPICS == true) {
-                    // Add the topic for the LogEntry__c & the parent Log__c
+                    // Add TopicAssignment records for both the LogEntry__c & the parent Log__c
                     tagAssignmentSObjectType = Schema.TopicAssignment.SObjectType;
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
                 } else {
-                    // Add a LogEntryTag__c record that links to the LogEntry__c - the handler class will also related it to the parent Log__c
+                    // Add a LogEntryTag__c record for only the LogEntry__c - this approach does not directly link to the Log__c record
                     tagAssignmentSObjectType = Schema.LogEntryTag__c.SObjectType;
-                    tagAssignments.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tagNameToId.get(tagName)));
+                    LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tagNameToId.get(tagName));
+                    logEntryTag.UniqueId__c = LogEntryTagHandler.generateUniqueId(logEntryTag);
+                    logEntryTag.setOptions(DML_OPTIONS);
+                    tagAssignments.add(logEntryTag);
                 }
             }
         }
 
-        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(new List<SObject>(tagAssignments), DML_OPTIONS);
-        LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, saveResults);
+        switch on tagAssignmentSObjectType.newSObject() {
+            when LogEntryTag__c logEntryTag {
+                List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
+                    .upsertRecords(new List<SObject>(tagAssignments), Schema.LogEntryTag__c.UniqueId__c);
+                LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, upsertResults);
+            }
+            when TopicAssignment topicAssignment {
+                Database.DmlOptions topicAssignmentDmlOptions = createDmlOptions();
+                topicAssignmentDmlOptions.OptAllOrNone = false;
+                List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase()
+                    .insertRecords(new List<SObject>(tagAssignments), topicAssignmentDmlOptions);
+                LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, saveResults);
+            }
+        }
     }
 
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {

@@ -330,8 +330,7 @@ private class LogBatchPurgeController_Tests {
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
-            SetupEntityId = [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION]
-            .Id
+            SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId()
         );
         PermissionSetAssignment permissionSetAssignment = new PermissionSetAssignment(AssigneeId = standardUser.Id, PermissionSetId = permissionSet.Id);
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
@@ -371,8 +370,7 @@ private class LogBatchPurgeController_Tests {
         insert permissionSet;
         SetupEntityAccess setupEntityAccess = new SetupEntityAccess(
             ParentId = permissionSet.Id,
-            SetupEntityId = [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION]
-            .Id
+            SetupEntityId = getCanExecuteLogBatchPurgerCustomPermissionId()
         );
         insert new List<SObject>{ setupEntityAccess };
 
@@ -468,5 +466,11 @@ private class LogBatchPurgeController_Tests {
         for (LogEntryTag__c logEntryTag : logEntryTags) {
             System.Test.setCreatedDate(logEntryTag.Id, createDate);
         }
+    }
+
+    private static Id getCanExecuteLogBatchPurgerCustomPermissionId() {
+        String className = LogBatchPurgeController_Tests.class.getName();
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') : null;
+        return [SELECT Id FROM CustomPermission WHERE DeveloperName = :CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION AND NamespacePrefix = :namespacePrefix].Id;
     }
 }

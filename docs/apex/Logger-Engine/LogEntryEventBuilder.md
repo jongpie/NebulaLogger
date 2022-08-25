@@ -14,16 +14,18 @@ Builder class that generates each `LogEntryEvent__e` record
 
 ### Constructors
 
-#### `LogEntryEventBuilder(LoggingLevel entryLoggingLevel, Boolean shouldSave)`
+#### `LogEntryEventBuilder(LoggerSettings__c userSettings, LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins)`
 
 Used by `Logger` to instantiate a new instance of `LogEntryEventBuilder`
 
 ##### Parameters
 
-| Param               | Description                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------ |
-| `entryLoggingLevel` | The `LoggingLevel` enum to use for the builder&apos;s instance of `LogEntryEvent__e` |
-| `shouldSave`        | Determines if the builder&apos;s instance of `LogEntryEvent__e` should be saved      |
+| Param               | Description                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `userSettings`      | The instance of `LoggerSettings__c` for the current to use to control any feature flags                            |
+| `entryLoggingLevel` | The `LoggingLevel` value to use for the log entry                                                                  |
+| `shouldSave`        | Indicates if the builder&apos;s instance of `LogEntryEvent__e` should be saved                                     |
+| `ignoredOrigins`    | A `Set&lt;String&gt;` of the names of any Apex classes that should be ignored when parsing the entry&apos;s origin |
 
 ---
 
