@@ -165,7 +165,7 @@ public class LoggerParameter {
         private set;
     }
 
-     /**
+    /**
      * @description Indicates if `Logger.setScenario(String)` uses the first specified value (when `true`), or the last specified value (when `false`)
      *              Controlled by the custom metadata record LoggerParamer.UseFirstSpecifiedScenario, or `true` as the default
      */

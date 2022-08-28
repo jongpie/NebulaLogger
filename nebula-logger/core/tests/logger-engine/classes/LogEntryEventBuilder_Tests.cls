@@ -36,25 +36,158 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_not_run_queries_when_logging_disabled() {
-        Logger.getUserSettings().IsEnabled__c = false;
-        System.assertEquals(false, Logger.isEnabled());
-        System.assertEquals(0, Limits.getQueries());
-
-        new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, false, new Set<String>()).setMessage('some message').getLogEntryEvent();
-        System.assertEquals(0, Limits.getQueries());
-    }
-
-    @IsTest
     static void it_should_short_circuit_when_enabled_logging_level_above_called_level() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, false, new Set<String>());
         System.assertEquals(null, builder.getLogEntryEvent());
     }
 
     @IsTest
-    static void it_should_not_short_circuit_when_enabledl() {
+    static void it_should_not_short_circuit_when_enabled() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, true, new Set<String>());
         System.assertNotEquals(null, builder.getLogEntryEvent());
+    }
+
+    @IsTest
+    static void it_should_not_run_queries_when_logging_disabled() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = 'true'));
+        Logger.getUserSettings().IsEnabled__c = false;
+        System.assertEquals(false, Logger.isEnabled());
+        System.assertEquals(0, Limits.getQueries());
+
+        new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, Logger.getUserSettings().IsEnabled__c, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+        System.assertEquals(0, Limits.getQueries());
+    }
+
+    @IsTest
+    static void it_should_not_run_authSession_query_when_disabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = 'false'));
+        System.assertEquals(false, LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
+        System.assertEquals(0, Limits.getQueries());
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+
+        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(null, logEntryEvent.LoginApplication__c);
+        System.assertEquals(null, logEntryEvent.LoginBrowser__c);
+        System.assertEquals(null, logEntryEvent.LoginHistoryId__c);
+        System.assertEquals(null, logEntryEvent.LoginPlatform__c);
+        System.assertEquals(null, logEntryEvent.LoginType__c);
+        System.assertEquals(null, logEntryEvent.LogoutUrl__c);
+        System.assertEquals(null, logEntryEvent.SessionId__c);
+        System.assertEquals(null, logEntryEvent.SessionSecurityLevel__c);
+        System.assertEquals(null, logEntryEvent.SessionType__c);
+        System.assertEquals(null, logEntryEvent.SourceIp__c);
+    }
+
+    @IsTest
+    static void it_should_run_authSession_query_when_enabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = 'true'));
+        System.assertEquals(true, LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
+        System.assertEquals(0, Limits.getQueries());
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+
+        System.assertEquals(1, Limits.getQueries());
+        AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
+        System.assertEquals(cachedAuthSession?.LoginHistory.Application, logEntryEvent.LoginApplication__c);
+        System.assertEquals(cachedAuthSession?.LoginHistory.Browser, logEntryEvent.LoginBrowser__c);
+        System.assertEquals(cachedAuthSession?.LoginHistoryId, logEntryEvent.LoginHistoryId__c);
+        System.assertEquals(cachedAuthSession?.LoginHistory.Platform, logEntryEvent.LoginPlatform__c);
+        System.assertEquals(cachedAuthSession?.LoginType, logEntryEvent.LoginType__c);
+        System.assertEquals(cachedAuthSession?.LogoutUrl, logEntryEvent.LogoutUrl__c);
+        System.assertEquals(cachedAuthSession?.Id, logEntryEvent.SessionId__c);
+        System.assertEquals(cachedAuthSession?.SessionSecurityLevel, logEntryEvent.SessionSecurityLevel__c);
+        System.assertEquals(cachedAuthSession?.SessionType, logEntryEvent.SessionType__c);
+        System.assertEquals(cachedAuthSession?.SourceIp, logEntryEvent.SourceIp__c);
+    }
+
+    // TODO Add integration tests when running as an experience cloud user
+    // @IsTest
+    // static void it_should_not_run_network_query_when_disabled_via_logger_parameter() {}
+
+    @IsTest
+    static void it_should_not_run_organization_query_when_disabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = 'false'));
+        System.assertEquals(false, LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
+        System.assertEquals(0, Limits.getQueries());
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+
+        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(null, logEntryEvent.OrganizationId__c);
+        System.assertEquals(null, logEntryEvent.OrganizationInstanceName__c);
+        System.assertEquals(null, logEntryEvent.OrganizationName__c);
+        System.assertEquals(null, logEntryEvent.OrganizationNamespacePrefix__c);
+        System.assertEquals(null, logEntryEvent.OrganizationType__c);
+    }
+
+    @IsTest
+    static void it_should_run_organization_query_when_enabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = 'true'));
+        System.assertEquals(true, LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
+        System.assertEquals(0, Limits.getQueries());
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+
+        System.assertEquals(1, Limits.getQueries());
+        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        System.assertEquals(cachedOrganization.Id, logEntryEvent.OrganizationId__c);
+        System.assertEquals(cachedOrganization.InstanceName, logEntryEvent.OrganizationInstanceName__c);
+        System.assertEquals(cachedOrganization.Name, logEntryEvent.OrganizationName__c);
+        System.assertEquals(cachedOrganization.NamespacePrefix, logEntryEvent.OrganizationNamespacePrefix__c);
+        System.assertEquals(cachedOrganization.OrganizationType, logEntryEvent.OrganizationType__c);
+    }
+
+    @IsTest
+    static void it_should_not_run_user_query_when_disabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = 'false'));
+        System.assertEquals(false, LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY);
+        System.assertEquals(0, Limits.getQueries());
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+
+        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(null, logEntryEvent.LoggedByUsername__c);
+        System.assertEquals(null, logEntryEvent.ProfileName__c);
+        System.assertEquals(null, logEntryEvent.UserLicenseDefinitionKey__c);
+        System.assertEquals(null, logEntryEvent.UserLicenseId__c);
+        System.assertEquals(null, logEntryEvent.UserLicenseName__c);
+        System.assertEquals(null, logEntryEvent.UserRoleName__c);
+    }
+
+    @IsTest
+    static void it_should_run_user_query_when_enabled_via_logger_parameter() {
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = 'true'));
+        System.assertEquals(true, LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY);
+        System.assertEquals(0, Limits.getQueries());
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+
+        System.assertEquals(1, Limits.getQueries());
+        User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+        System.assertEquals(cachedUser.Username, logEntryEvent.LoggedByUsername__c);
+        System.assertEquals(cachedUser.Profile.Name, logEntryEvent.ProfileName__c);
+        System.assertEquals(cachedUser.Profile.UserLicense.LicenseDefinitionKey, logEntryEvent.UserLicenseDefinitionKey__c);
+        System.assertEquals(cachedUser.Profile.UserLicenseId, logEntryEvent.UserLicenseId__c);
+        System.assertEquals(cachedUser.Profile.UserLicense.Name, logEntryEvent.UserLicenseName__c);
+        System.assertEquals(cachedUser.UserRole?.Name, logEntryEvent.UserRoleName__c);
     }
 
     @IsTest
@@ -816,7 +949,44 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
-    static void it_should_set_stack_trace_and_origin_location_for_method_constructor_trace_string() {
+    static void it_should_not_set_stack_trace_for_new_builder_instance_when_disabled_via_logger_parameter() {
+        // Don't bother testing stack trace logic when using a namespace prefix - there are
+        // some platform limitations that prevent these tests from behaving as expected
+        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+            return;
+        }
+
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = 'false');
+        LoggerParameter.setMock(mockParameter);
+        System.assertEquals(false, LoggerParameter.ENABLE_STACK_TRACE_PARSING);
+
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+
+        System.assertEquals(null, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertEquals(null, builder.getLogEntryEvent().StackTrace__c);
+    }
+
+    @IsTest
+    static void it_should_not_set_stack_trace_for_parseStackTrace_method_when_disabled_via_logger_parameter() {
+        // Don't bother testing stack trace logic when using a namespace prefix - there are
+        // some platform limitations that prevent these tests from behaving as expected
+        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+            return;
+        }
+
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = 'false');
+        LoggerParameter.setMock(mockParameter);
+        System.assertEquals(false, LoggerParameter.ENABLE_STACK_TRACE_PARSING);
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+
+        builder.parseStackTrace('AnonymousBlock: line 1, column 1');
+
+        System.assertEquals(null, builder.getLogEntryEvent().OriginLocation__c);
+        System.assertEquals(null, builder.getLogEntryEvent().StackTrace__c);
+    }
+
+    @IsTest
+    static void it_should_set_stack_trace_and_origin_location_for_class_constructor_trace_string() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
         if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
@@ -953,7 +1123,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_user_fields_when_anonymous_mode_disabled() {
-        // Get expected data
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = 'true'));
         Organization organization = LoggerMockDataCreator.getOrganization();
         String organizationEnvironmentType = LoggerMockDataCreator.getOrganizationEnvironmentType();
         User user = LoggerMockDataCreator.getUser();
@@ -962,6 +1133,7 @@ private class LogEntryEventBuilder_Tests {
 
         // Verify organization fields
         System.assertEquals(Url.getOrgDomainUrl().toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
+        // TODO switch to using mock instances of Organization & re-enable these asserts
         System.assertEquals(organizationEnvironmentType, builder.getLogEntryEvent().OrganizationEnvironmentType__c);
         System.assertEquals(organization.Id, builder.getLogEntryEvent().OrganizationId__c);
         System.assertEquals(organization.InstanceName, builder.getLogEntryEvent().OrganizationInstanceName__c);
@@ -970,13 +1142,13 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(organization.OrganizationType, builder.getLogEntryEvent().OrganizationType__c);
 
         // Verify user fields
-        System.assertEquals(USER.Id, builder.getLogEntryEvent().LoggedById__c);
-        System.assertEquals(USER.Username, builder.getLogEntryEvent().LoggedByUsername__c);
-        System.assertEquals(USER.Profile.Name, builder.getLogEntryEvent().ProfileName__c);
-        System.assertEquals(USER.Profile.UserLicense.LicenseDefinitionKey, builder.getLogEntryEvent().UserLicenseDefinitionKey__c);
-        System.assertEquals(USER.Profile.UserLicenseId, builder.getLogEntryEvent().UserLicenseId__c);
-        System.assertEquals(USER.Profile.UserLicense.Name, builder.getLogEntryEvent().UserLicenseName__c);
-        System.assertEquals(USER.UserRole?.Name, builder.getLogEntryEvent().UserRoleName__c);
+        System.assertEquals(user.Id, builder.getLogEntryEvent().LoggedById__c);
+        System.assertEquals(user.Username, builder.getLogEntryEvent().LoggedByUsername__c);
+        System.assertEquals(user.Profile.Name, builder.getLogEntryEvent().ProfileName__c);
+        System.assertEquals(user.Profile.UserLicense.LicenseDefinitionKey, builder.getLogEntryEvent().UserLicenseDefinitionKey__c);
+        System.assertEquals(user.Profile.UserLicenseId, builder.getLogEntryEvent().UserLicenseId__c);
+        System.assertEquals(user.Profile.UserLicense.Name, builder.getLogEntryEvent().UserLicenseName__c);
+        System.assertEquals(user.UserRole?.Name, builder.getLogEntryEvent().UserRoleName__c);
     }
 
     @IsTest

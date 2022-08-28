@@ -13,6 +13,7 @@
 )
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
+    private static final USER CURRENT_USER = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
 
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
@@ -45,6 +46,7 @@ global with sharing class LogEntryEventBuilder {
         }
         set;
     }
+
     private static final LogEntryEvent__e LOG_ENTRY_EVENT_TEMPLATE {
         get {
             if (LOG_ENTRY_EVENT_TEMPLATE == null) {
@@ -569,7 +571,7 @@ global with sharing class LogEntryEventBuilder {
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     global LogEntryEventBuilder parseStackTrace(String stackTraceString) {
-        if (this.shouldSave() == false || isValidStackTrace(stackTraceString) == false) {
+        if (LoggerParameter.ENABLE_STACK_TRACE_PARSING == false || this.shouldSave() == false || isValidStackTrace(stackTraceString) == false) {
             return this;
         }
 
@@ -640,15 +642,6 @@ global with sharing class LogEntryEventBuilder {
             for (String fieldName : LOG_ENTRY_EVENT_TEMPLATE.getPopulatedFieldsAsMap().keySet()) {
                 this.logEntryEvent.put(fieldName, LOG_ENTRY_EVENT_TEMPLATE.get(fieldName));
             }
-
-            // if (Logger.getUserSettings().IsAnonymousModeEnabled__c == false) {
-            //     // this.setUserInfoDetails();
-            //     this.setQueriedAuthSessionDetails();
-            //     this.setQueriedUserDetails();
-            // }
-            // this.setQueriedNetworkDetails();
-            // this.setQueriedOrganizationDetails();
-            // this.setTransactionDetails();
             this.detailsAreSet = true;
         }
 
@@ -664,9 +657,9 @@ global with sharing class LogEntryEventBuilder {
         // Salesforce does not provide precise datetimes in Apex triggers for platform events
         // Set the string value of timestamp to a second field as a workaround
         // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
-        // if (this.logEntryEvent.Timestamp__c != null) {
-        //     this.logEntryEvent.TimestampString__c = String.valueOf(this.logEntryEvent.Timestamp__c.getTime());
-        // }
+        if (this.logEntryEvent.Timestamp__c != null && this.logEntryEvent.TimestampString__c == null) {
+            this.logEntryEvent.TimestampString__c = String.valueOf(this.logEntryEvent.Timestamp__c.getTime());
+        }
 
         return this.logEntryEvent;
     }
@@ -710,87 +703,14 @@ global with sharing class LogEntryEventBuilder {
         this.parseStackTrace(stackTraceException.getStackTraceString());
     }
 
-    // FIXME move to be with other static methods
-    private static void setQueriedAuthSessionDetails(LogEntryEvent__e logEntryEvent) {
-        if (LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == false) {
-            return;
-        }
-
-        AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
-
-        logEntryEvent.LoginApplication__c = cachedAuthSession?.LoginHistory.Application;
-        logEntryEvent.LoginBrowser__c = cachedAuthSession?.LoginHistory.Browser;
-        logEntryEvent.LoginHistoryId__c = cachedAuthSession?.LoginHistoryId;
-        logEntryEvent.LoginPlatform__c = cachedAuthSession?.LoginHistory.Platform;
-        logEntryEvent.LoginType__c = cachedAuthSession?.LoginType;
-        logEntryEvent.LogoutUrl__c = cachedAuthSession?.LogoutUrl;
-        logEntryEvent.SessionId__c = cachedAuthSession?.Id;
-        logEntryEvent.SessionSecurityLevel__c = cachedAuthSession?.SessionSecurityLevel;
-        logEntryEvent.SessionType__c = cachedAuthSession?.SessionType;
-        logEntryEvent.SourceIp__c = cachedAuthSession?.SourceIp;
-    }
-
-    // FIXME move to be with other static methods
-    private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent) {
-        logEntryEvent.NetworkId__c = Network.getNetworkId();
-
-        if (LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == false) {
-            return;
-        }
-
-        SObject networkRecord = LoggerEngineDataSelector.getInstance().getCachedNetwork();
-        if (networkRecord == null) {
-            return;
-        }
-
-        logEntryEvent.NetworkName__c = (String) networkRecord.get('Name');
-        logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(networkRecord.Id);
-        logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(networkRecord.Id);
-        logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(networkRecord.Id);
-        logEntryEvent.NetworkUrlPathPrefix__c = (String) networkRecord.get('UrlPathPrefix');
-    }
-
-    // FIXME move to be with other static methods
-    private static void setQueriedOrganizationDetails(LogEntryEvent__e logEntryEvent) {
-        if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == false) {
-            return;
-        }
-
-        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-
-        logEntryEvent.OrganizationEnvironmentType__c = CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
-        logEntryEvent.OrganizationId__c = cachedOrganization?.Id;
-        logEntryEvent.OrganizationInstanceName__c = cachedOrganization?.InstanceName;
-        logEntryEvent.OrganizationName__c = cachedOrganization?.Name;
-        logEntryEvent.OrganizationNamespacePrefix__c = cachedOrganization?.NamespacePrefix;
-        logEntryEvent.OrganizationType__c = cachedOrganization?.OrganizationType;
-    }
-
-    // FIXME move to be with other static methods
-    private static void setQueriedUserDetails(LogEntryEvent__e logEntryEvent) {
-        if (LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY == false) {
-            return;
-        }
-
-        User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
-
-        logEntryEvent.LoggedById__c = cachedUser.Id;
-        logEntryEvent.LoggedByUsername__c = cachedUser.Username;
-        logEntryEvent.ProfileName__c = cachedUser.Profile.Name;
-        logEntryEvent.UserLicenseDefinitionKey__c = cachedUser.Profile.UserLicense.LicenseDefinitionKey;
-        logEntryEvent.UserLicenseId__c = cachedUser.Profile.UserLicenseId;
-        logEntryEvent.UserLicenseName__c = cachedUser.Profile.UserLicense.Name;
-        logEntryEvent.UserRoleName__c = cachedUser.UserRole?.Name;
-    }
-
     private void setTagsDetails() {
         if (this.tags.isEmpty() == true || this.tagDetailsAreSet == true) {
             return;
         }
 
-        // List<String> sortedTags = new List<String>(this.tags);
-        // sortedTags.sort();
-        this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(new List<String>(this.tags), '\n'));
+        List<String> sortedTags = new List<String>(this.tags);
+        sortedTags.sort();
+        this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(sortedTags, '\n'));
     }
 
     private void setTransactionDetails() {
@@ -814,7 +734,6 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm();
     }
 
-    // TODO move to be with other static methods
     private static LogEntryEvent__e getLogEntryEventTemplate() {
         LogEntryEvent__e templateLogEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = ORGANIZATION_API_VERSION,
@@ -834,21 +753,11 @@ global with sharing class LogEntryEventBuilder {
             LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows(),
             LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows(),
             LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries(),
-            Locale__c = UserInfo.getLocale(),
-            OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm(),
-            ProfileId__c = UserInfo.getProfileId(),
-            TimeZoneId__c = UserInfo.getTimeZone().getId(),
-            TimeZoneName__c = UserInfo.getTimeZone().getDisplayName(),
-            UserRoleId__c = UserInfo.getUserRoleId(),
-            UserType__c = UserInfo.getUserType()
+            OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm()
         );
 
-        if (templateLogEntryEvent.SessionType__c != 'Oauth2') {
-            templateLogEntryEvent.ThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
-        }
-
         if (Logger.getUserSettings().IsAnonymousModeEnabled__c == false) {
-            // this.setUserInfoDetails();
+            setUserInfoDetails(templateLogEntryEvent);
             setQueriedAuthSessionDetails(templateLogEntryEvent);
             setQueriedUserDetails(templateLogEntryEvent);
         }
@@ -858,18 +767,83 @@ global with sharing class LogEntryEventBuilder {
         return templateLogEntryEvent;
     }
 
-    // FIXME avoid recalling UserInfo
-    private void setUserInfoDetails() {
-        this.logEntryEvent.Locale__c = UserInfo.getLocale();
-        this.logEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        this.logEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
-        this.logEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
-        this.logEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
-        this.logEntryEvent.UserType__c = UserInfo.getUserType();
-
-        if (this.logEntryEvent.SessionType__c != 'Oauth2') {
-            this.logEntryEvent.ThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
+    private static void setQueriedAuthSessionDetails(LogEntryEvent__e logEntryEvent) {
+        if (LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == false) {
+            return;
         }
+
+        AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
+
+        logEntryEvent.LoginApplication__c = cachedAuthSession?.LoginHistory.Application;
+        logEntryEvent.LoginBrowser__c = cachedAuthSession?.LoginHistory.Browser;
+        logEntryEvent.LoginHistoryId__c = cachedAuthSession?.LoginHistoryId;
+        logEntryEvent.LoginPlatform__c = cachedAuthSession?.LoginHistory.Platform;
+        logEntryEvent.LoginType__c = cachedAuthSession?.LoginType;
+        logEntryEvent.LogoutUrl__c = cachedAuthSession?.LogoutUrl;
+        logEntryEvent.SessionId__c = cachedAuthSession?.Id;
+        logEntryEvent.SessionSecurityLevel__c = cachedAuthSession?.SessionSecurityLevel;
+        logEntryEvent.SessionType__c = cachedAuthSession?.SessionType;
+        logEntryEvent.SourceIp__c = cachedAuthSession?.SourceIp;
+    }
+
+    private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent) {
+        logEntryEvent.NetworkId__c = Network.getNetworkId();
+
+        if (LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == false) {
+            return;
+        }
+
+        SObject networkRecord = LoggerEngineDataSelector.getInstance().getCachedNetwork();
+        if (networkRecord == null) {
+            return;
+        }
+
+        logEntryEvent.NetworkName__c = (String) networkRecord.get('Name');
+        logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(networkRecord.Id);
+        logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(networkRecord.Id);
+        logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(networkRecord.Id);
+        logEntryEvent.NetworkUrlPathPrefix__c = (String) networkRecord.get('UrlPathPrefix');
+    }
+
+    private static void setQueriedOrganizationDetails(LogEntryEvent__e logEntryEvent) {
+        if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == false) {
+            return;
+        }
+
+        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+
+        logEntryEvent.OrganizationEnvironmentType__c = CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
+        logEntryEvent.OrganizationId__c = cachedOrganization?.Id;
+        logEntryEvent.OrganizationInstanceName__c = cachedOrganization?.InstanceName;
+        logEntryEvent.OrganizationName__c = cachedOrganization?.Name;
+        logEntryEvent.OrganizationNamespacePrefix__c = cachedOrganization?.NamespacePrefix;
+        logEntryEvent.OrganizationType__c = cachedOrganization?.OrganizationType;
+    }
+
+    private static void setQueriedUserDetails(LogEntryEvent__e logEntryEvent) {
+        if (LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY == false) {
+            return;
+        }
+
+        User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+
+        logEntryEvent.LoggedByUsername__c = cachedUser.Username;
+        logEntryEvent.ProfileName__c = cachedUser.Profile.Name;
+        logEntryEvent.UserLicenseDefinitionKey__c = cachedUser.Profile.UserLicense.LicenseDefinitionKey;
+        logEntryEvent.UserLicenseId__c = cachedUser.Profile.UserLicenseId;
+        logEntryEvent.UserLicenseName__c = cachedUser.Profile.UserLicense.Name;
+        logEntryEvent.UserRoleName__c = cachedUser.UserRole?.Name;
+    }
+
+    private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {
+        templateLogEntryEvent.Locale__c = UserInfo.getLocale();
+        templateLogEntryEvent.LoggedById__c = UserInfo.getUserId();
+        templateLogEntryEvent.ProfileId__c = UserInfo.getProfileId();
+        templateLogEntryEvent.ThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
+        templateLogEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
+        templateLogEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
+        templateLogEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
+        templateLogEntryEvent.UserType__c = UserInfo.getUserType();
     }
 
     // Private static helper methods
