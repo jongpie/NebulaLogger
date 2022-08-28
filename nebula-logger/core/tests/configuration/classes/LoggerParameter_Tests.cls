@@ -81,23 +81,23 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_tagging_is_enabled() {
+    static void it_should_return_constant_value_for_enable_tagging() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
-        Boolean returnedValue = LoggerParameter.TAGGING_IS_ENABLED;
+        Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
 
         System.assertEquals(mockValue, returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_tag_using_topics() {
+    static void it_should_return_constant_value_for_use_topics_for_tags() {
         Boolean mockValue = true;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
-        Boolean returnedValue = LoggerParameter.TAG_USING_TOPICS;
+        Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
 
         System.assertEquals(mockValue, returnedValue);
     }

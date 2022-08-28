@@ -130,15 +130,15 @@ Controller class for the lightning web component `related-log-entries`
 
 ## Test Utilities
 
-### [LoggerMockDataCreator](/Test-Utilities/LoggerMockDataCreator)
+### [LoggerMockDataCreator](Test-Utilities/LoggerMockDataCreator)
 
 Utility class used to help with generating mock data when writing Apex tests for Nebula Logger. These methods are generic, and should work in any Salesforce org. These methods can be used when writing Apex tests for plugins.
 
-### [LoggerMockDataStore](/Test-Utilities/LoggerMockDataStore)
+### [LoggerMockDataStore](Test-Utilities/LoggerMockDataStore)
 
 Utility class used to mock any data-related operations for the database, event bus, and queueable jobs. These methods are generic, and should work in any Salesforce org. These methods can be used when writing Apex tests for plugins.
 
-### [LoggerTestConfigurator](/Test-Utilities/LoggerTestConfigurator)
+### [LoggerTestConfigurator](Test-Utilities/LoggerTestConfigurator)
 
 Utility class used to help with setting up Nebula Logger&apos;s configurations within a test context. These methods are specific to metadata implemented within Nebula Logger. These methods can be used when writing Apex tests for plugins.
 

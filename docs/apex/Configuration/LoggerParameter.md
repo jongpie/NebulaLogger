@@ -12,11 +12,35 @@ Provides a centralized way to load parameters for SObject handlers &amp; plugins
 
 #### `CALL_STATUS_API` → `Boolean`
 
-Indicates if Logger will make an async callout to https://api.status.salesforce.com to get additional details about the current org, which is then stored on the Log\_\_c record. Controlled by the custom metadata record LoggerParamer.CallStatusApi, or `false` as the default
+Indicates if Nebula Logger will make an async callout to `https://api.status.salesforce.com` to get additional details about the current org, which is then stored on the Log\_\_c record. Controlled by the custom metadata record LoggerParamer.CallStatusApi, or `false` as the default
+
+#### `ENABLE_STACK_TRACE_PARSING` → `Boolean`
+
+Indicates if Nebula Logger will parse a stack trace for each log entry, which is then used to populate fields like `LogEntry__c.StackTrace__c` and `LogEntry__c.OriginLocation__c`. Controlled by the custom metadata record LoggerParamer.EnableStackTraceParsing, or `true` as the default
 
 #### `ENABLE_SYSTEM_MESSAGES` → `Boolean`
 
-Indicates if Logger will append its own log entries about the logging system. Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages, or `false` as the default
+Indicates if Nebula Logger will append its own log entries about the logging system. Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages, or `false` as the default
+
+#### `ENABLE_TAGGING` → `Boolean`
+
+Indicates if Nebula Logger&apos;s tagging system is enabled. Controlled by the custom metadata record LoggerParamer.EnableTagging, or `true` as the default
+
+#### `QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY` → `Boolean`
+
+Indicates if Nebula Logger queries `AuthSession` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `AuthSession` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record LoggerParamer.EnableTagging, or `false` as the default
+
+#### `QUERY_NETWORK_DATA_SYNCHRONOUSLY` → `Boolean`
+
+Indicates if Nebula Logger queries `Network` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Network` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record LoggerParamer.EnableTagging, or `false` as the default
+
+#### `QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY` → `Boolean`
+
+Indicates if Nebula Logger queries `Organization` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `Organization` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record LoggerParamer.EnableTagging, or `false` as the default
+
+#### `QUERY_USER_DATA_SYNCHRONOUSLY` → `Boolean`
+
+Indicates if Nebula Logger queries `User` data is queried synchronously &amp; populated on `LogEntryEvent__e` records. When set to `false`, any `User` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried asynchronously and populated on any resulting `Log__c` records. Controlled by the custom metadata record LoggerParamer.EnableTagging, or `false` as the default
 
 #### `SEND_ERROR_EMAIL_NOTIFICATIONS` → `Boolean`
 
@@ -26,13 +50,13 @@ Indicates if Logger will send an error email notification if any internal except
 
 The merge-field syntax to use when calling System.debug(). Controlled by the custom metadata record LoggerParamer.SystebugMessageFormat, or `{OriginLocation__c}\n{Message__c}` as the default
 
-#### `TAGGING_IS_ENABLED` → `Boolean`
+#### `USE_FIRST_SPECIFIED_SCENARIO` → `Boolean`
 
-Indicates if Logger&apos;s tagging system is enabled. Controlled by the custom metadata record LoggerParamer.EnableTagging, or `true` as the default
+Indicates if `Logger.setScenario(String)` uses the first specified value (when `true`), or the last specified value (when `false`) Controlled by the custom metadata record LoggerParamer.UseFirstSpecifiedScenario, or `true` as the default
 
-#### `TAG_USING_TOPICS` → `Boolean`
+#### `USE_TOPICS_FOR_TAGS` → `Boolean`
 
-Indicates if Logger&apos;s tagging will use Topic and TopicAssignment for storing tags, or `false` as the default
+Indicates if Logger&apos;s tagging will use `Topic` and `TopicAssignment` for storing tags (when `true`), or uses Nebula Logger&apos;s custom objects `LoggerTag__c` and `LogEntryTag__c` (when `false`) Controlled by the custom metadata record LoggerParamer.UseTopicsForTags, or `false` as the default
 
 ---
 

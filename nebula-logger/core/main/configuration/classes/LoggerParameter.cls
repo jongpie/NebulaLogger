@@ -16,7 +16,7 @@ public class LoggerParameter {
     private static final Set<String> PARAMETERS_TO_LOAD_DURING_TESTS = new Set<String>{ SYSTEM_DEBUG_MESSAGE_FORMAT_PARAMETER };
 
     /**
-     * @description Indicates if Logger will make an async callout to https://api.status.salesforce.com
+     * @description Indicates if Nebula Logger will make an async callout to `https://api.status.salesforce.com`
      *              to get additional details about the current org, which is then stored on the Log__c record.
      *              Controlled by the custom metadata record LoggerParamer.CallStatusApi, or `false` as the default
      */
@@ -31,7 +31,22 @@ public class LoggerParameter {
     }
 
     /**
-     * @description Indicates if Logger will append its own log entries about the logging system.
+     * @description Indicates if Nebula Logger will parse a stack trace for each log entry, which is then used to populate
+     *              fields like `LogEntry__c.StackTrace__c` and `LogEntry__c.OriginLocation__c`.
+     *              Controlled by the custom metadata record LoggerParamer.EnableStackTraceParsing, or `true` as the default
+     */
+    public static final Boolean ENABLE_STACK_TRACE_PARSING {
+        get {
+            if (ENABLE_STACK_TRACE_PARSING == null) {
+                ENABLE_STACK_TRACE_PARSING = getBoolean('EnableStackTraceParsing', true);
+            }
+            return ENABLE_STACK_TRACE_PARSING;
+        }
+        private set;
+    }
+
+    /**
+     * @description Indicates if Nebula Logger will append its own log entries about the logging system.
      *              Controlled by the custom metadata record LoggerParamer.EnableLoggerSystemMessages, or `false` as the default
      */
     public static final Boolean ENABLE_SYSTEM_MESSAGES {
@@ -40,6 +55,84 @@ public class LoggerParameter {
                 ENABLE_SYSTEM_MESSAGES = getBoolean('EnableLoggerSystemMessages', false);
             }
             return ENABLE_SYSTEM_MESSAGES;
+        }
+        private set;
+    }
+
+    /**
+     * @description Indicates if Nebula Logger's tagging system is enabled.
+     *              Controlled by the custom metadata record LoggerParamer.EnableTagging, or `true` as the default
+     */
+    public static final Boolean ENABLE_TAGGING {
+        get {
+            if (ENABLE_TAGGING == null) {
+                ENABLE_TAGGING = getBoolean('EnableTagging', true);
+            }
+            return ENABLE_TAGGING;
+        }
+        private set;
+    }
+
+    /**
+     * @description Indicates if Nebula Logger queries `AuthSession` data is queried synchronously & populated on `LogEntryEvent__e` records.
+     *              When set to `false`, any `AuthSession` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
+     *              asynchronously and populated on any resulting `Log__c` records.
+     *              Controlled by the custom metadata record LoggerParamer.EnableTagging, or `false` as the default
+     */
+    public static final Boolean QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY {
+        get {
+            if (QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == null) {
+                QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY = getBoolean('QueryAuthSessionDataSynchronously', false);
+            }
+            return QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
+        }
+        private set;
+    }
+
+    /**
+     * @description Indicates if Nebula Logger queries `Network` data is queried synchronously & populated on `LogEntryEvent__e` records.
+     *              When set to `false`, any `Network` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
+     *              asynchronously and populated on any resulting `Log__c` records.
+     *              Controlled by the custom metadata record LoggerParamer.EnableTagging, or `false` as the default
+     */
+    public static final Boolean QUERY_NETWORK_DATA_SYNCHRONOUSLY {
+        get {
+            if (QUERY_NETWORK_DATA_SYNCHRONOUSLY == null) {
+                QUERY_NETWORK_DATA_SYNCHRONOUSLY = getBoolean('QueryNetworkDataSynchronously', false);
+            }
+            return QUERY_NETWORK_DATA_SYNCHRONOUSLY;
+        }
+        private set;
+    }
+
+    /**
+     * @description Indicates if Nebula Logger queries `Organization` data is queried synchronously & populated on `LogEntryEvent__e` records.
+     *              When set to `false`, any `Organization` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
+     *              asynchronously and populated on any resulting `Log__c` records.
+     *              Controlled by the custom metadata record LoggerParamer.EnableTagging, or `false` as the default
+     */
+    public static final Boolean QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY {
+        get {
+            if (QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == null) {
+                QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY = getBoolean('QueryOrganizationDataSynchronously', false);
+            }
+            return QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
+        }
+        private set;
+    }
+
+    /**
+     * @description Indicates if Nebula Logger queries `User` data is queried synchronously & populated on `LogEntryEvent__e` records.
+     *              When set to `false`, any `User` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
+     *              asynchronously and populated on any resulting `Log__c` records.
+     *              Controlled by the custom metadata record LoggerParamer.EnableTagging, or `false` as the default
+     */
+    public static final Boolean QUERY_USER_DATA_SYNCHRONOUSLY {
+        get {
+            if (QUERY_USER_DATA_SYNCHRONOUSLY == null) {
+                QUERY_USER_DATA_SYNCHRONOUSLY = getBoolean('QueryUserDataSynchronously', false);
+            }
+            return QUERY_USER_DATA_SYNCHRONOUSLY;
         }
         private set;
     }
@@ -72,29 +165,31 @@ public class LoggerParameter {
         private set;
     }
 
-    /**
-     * @description Indicates if Logger's tagging system is enabled.
-     *              Controlled by the custom metadata record LoggerParamer.EnableTagging, or `true` as the default
+     /**
+     * @description Indicates if `Logger.setScenario(String)` uses the first specified value (when `true`), or the last specified value (when `false`)
+     *              Controlled by the custom metadata record LoggerParamer.UseFirstSpecifiedScenario, or `true` as the default
      */
-    public static final Boolean TAGGING_IS_ENABLED {
+    public static final Boolean USE_FIRST_SPECIFIED_SCENARIO {
         get {
-            if (TAGGING_IS_ENABLED == null) {
-                TAGGING_IS_ENABLED = getBoolean('EnableTagging', true);
+            if (USE_FIRST_SPECIFIED_SCENARIO == null) {
+                USE_FIRST_SPECIFIED_SCENARIO = getBoolean('UseFirstSpecifiedScenario', true);
             }
-            return TAGGING_IS_ENABLED;
+            return USE_FIRST_SPECIFIED_SCENARIO;
         }
         private set;
     }
 
     /**
-     * @description Indicates if Logger's tagging will use Topic and TopicAssignment for storing tags, or `false` as the default
+     * @description Indicates if Logger's tagging will use `Topic` and `TopicAssignment` for storing tags (when `true`),
+     *              or uses Nebula Logger's custom objects `LoggerTag__c` and `LogEntryTag__c` (when `false`)
+     *              Controlled by the custom metadata record LoggerParamer.UseTopicsForTags, or `false` as the default
      */
-    public static final Boolean TAG_USING_TOPICS {
+    public static final Boolean USE_TOPICS_FOR_TAGS {
         get {
-            if (TAG_USING_TOPICS == null) {
-                TAG_USING_TOPICS = getBoolean('UseTopicsForTags', false);
+            if (USE_TOPICS_FOR_TAGS == null) {
+                USE_TOPICS_FOR_TAGS = getBoolean('UseTopicsForTags', false);
             }
-            return TAG_USING_TOPICS;
+            return USE_TOPICS_FOR_TAGS;
         }
         private set;
     }

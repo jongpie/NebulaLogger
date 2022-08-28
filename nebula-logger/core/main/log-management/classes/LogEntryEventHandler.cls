@@ -274,7 +274,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void appendRuleBasedTags() {
-        if (LoggerParameter.TAGGING_IS_ENABLED == false || TAG_ASSIGNMENT_RULES.isEmpty() == true) {
+        if (LoggerParameter.ENABLE_TAGGING == false || TAG_ASSIGNMENT_RULES.isEmpty() == true) {
             return;
         }
 
@@ -299,12 +299,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void upsertLogEntryTags() {
-        if (LoggerParameter.TAGGING_IS_ENABLED == false || this.tagNames.isEmpty()) {
+        if (LoggerParameter.ENABLE_TAGGING == false || this.tagNames.isEmpty()) {
             return;
         }
 
         // Orgs can be configured to either use LoggerTag__c & LogEntryTag__c (default), or use Topic & TopicAssignment
-        Schema.SObjectType tagSObjectType = LoggerParameter.TAG_USING_TOPICS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
+        Schema.SObjectType tagSObjectType = LoggerParameter.USE_TOPICS_FOR_TAGS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
         Map<String, Id> tagNameToId = getTagNameToId(tagSObjectType);
         this.tagNames.addAll(tagNameToId.keySet());
 
@@ -322,7 +322,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             for (String tagName : logEntryTagNames) {
-                if (LoggerParameter.TAG_USING_TOPICS == true) {
+                if (LoggerParameter.USE_TOPICS_FOR_TAGS == true) {
                     // Add TopicAssignment records for both the LogEntry__c & the parent Log__c
                     tagAssignmentSObjectType = Schema.TopicAssignment.SObjectType;
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));

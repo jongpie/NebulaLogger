@@ -19,9 +19,6 @@ global with sharing class Logger {
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
-    private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
-    private static final Boolean USE_FIRST_SPECIFIED_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
-    private static final String USER_SESSION_ID = UserInfo.getSessionId();
 
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
@@ -32,6 +29,29 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
     private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
     private static LoggerSettings__c userSettings;
+
+    private static final Quiddity TRANSACTION_QUIDDITY {
+        get {
+            if (TRANSACTION_QUIDDITY == null) {
+                TRANSACTION_QUIDDITY = getTransactionQuiddity();
+            }
+            return TRANSACTION_QUIDDITY;
+        }
+        set;
+    }
+
+    private static final String USER_SESSION_ID {
+        get {
+            if (USER_SESSION_ID == null) {
+                USER_SESSION_ID = UserInfo.getSessionId();
+                // If UserInfo.getSessionId() returns null, set to an empty string to
+                // avoid calling UserInfo.getSessionId() again
+                USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
+            }
+            return USER_SESSION_ID;
+        }
+        set;
+    }
 
     private static String transactionSaveMethodName {
         get {
@@ -2696,7 +2716,7 @@ global with sharing class Logger {
      * @param  scenario The name to use for the current transaction's scenario
      */
     global static void setScenario(String scenario) {
-        if (USE_FIRST_SPECIFIED_SCENARIO == true && String.isNotBlank(transactionScenario) == true) {
+        if (LoggerParameter.USE_FIRST_SPECIFIED_SCENARIO == true && String.isNotBlank(transactionScenario) == true) {
             return;
         }
 
@@ -2922,12 +2942,12 @@ global with sharing class Logger {
         return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
     }
 
-    private static Quiddity setTransactionQuiddity() {
+    private static Quiddity getTransactionQuiddity() {
         // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
         // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
         // skip calling System.Request.getCurrent() if there is no user session.
         // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
-        if (String.isNotBlank(USER_SESSION_ID)) {
+        if (String.isNotBlank(USER_SESSION_ID) == true) {
             return System.Request.getCurrent().getQuiddity();
         } else {
             return null;

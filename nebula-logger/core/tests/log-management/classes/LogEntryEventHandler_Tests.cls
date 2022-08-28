@@ -242,8 +242,8 @@ private class LogEntryEventHandler_Tests {
     //     );
 
     //     System.Test.startTest();
-    //     LogEntryEventHandler.TAGGING_IS_ENABLED = true;
-    //     LogEntryEventHandler.TAG_USING_TOPICS = true;
+    //     LogEntryEventHandler.ENABLE_TAGGING = true;
+    //     LogEntryEventHandler.USE_TOPICS_FOR_TAGS = true;
     //     Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
     //     System.Test.stopTest();
 
@@ -270,7 +270,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         System.assertNotEquals(null, logEntryEvent.EventUuid);
@@ -305,7 +305,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         String testTagName = 'Some tag!';
         LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
         insert tag;
@@ -341,7 +341,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = 'my message';
         logEntryEvent.Tags__c = null;
@@ -382,7 +382,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Tags__c = null;
         String configuredTagName = 'CMDT Tag';
@@ -422,7 +422,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         String zipCodeRegEx = '(^[0-9]{4}?[0-9]$|^[0-9]{4}?[0-9]-[0-9]{4}$)';
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = '94541';
@@ -464,7 +464,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.TAGGING_IS_ENABLED, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = 'my message';
         logEntryEvent.Tags__c = null;
