@@ -12,13 +12,13 @@
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <label>Logger Console</label>
     <navType>Console</navType>
+    <tabs>LoggerSettings</tabs>
+    <tabs>LogEntryEventStream</tabs>
+    <tabs>LogScenario__c</tabs>
     <tabs>Log__c</tabs>
     <tabs>LogEntry__c</tabs>
-    <tabs>LogScenario__c</tabs>
     <tabs>LogEntryTag__c</tabs>
     <tabs>LoggerTag__c</tabs>
-    <tabs>LogEntryEventStream</tabs>
-    <tabs>LoggerSettings</tabs>
     <tabs>LogBatchPurge</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
