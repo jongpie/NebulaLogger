@@ -15,6 +15,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final String GUEST_USER_TYPE = 'Guest';
+    private static final Map<String, LogScenario__c> SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO = new Map<String, LogScenario__c>();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @TestVisible
@@ -53,6 +54,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
         if (this.logEntryEvents.isEmpty() == false) {
+            this.upsertLogScenarios();
             this.upsertLogs();
             this.upsertLogEntries();
             this.appendRuleBasedTags();
@@ -70,6 +72,23 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
         }
         return logEntryEventsToSave;
+    }
+
+    private void upsertLogScenarios() {
+        for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
+            if (String.isBlank(logEntryEvent.Scenario__c) == true || SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.containsKey(logEntryEvent.Scenario__c)) {
+                continue;
+            }
+
+            LogScenario__c logScenario = new LogScenario__c(Name = logEntryEvent.Scenario__c);
+            logScenario.UniqueId__c = LogScenarioHandler.generateUniqueId(logScenario);
+
+            SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.put(logScenario.UniqueId__c, logScenario);
+        }
+
+        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
+            .upsertRecords(SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.values(), Schema.LogScenario__c.UniqueId__c, System.Test.isRunningTest());
+        LoggerEmailSender.sendErrorEmail(Schema.LogScenario__c.SObjectType, upsertResults);
     }
 
     private void upsertLogs() {
@@ -123,7 +142,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
                 ProfileId__c = logEntryEvent.ProfileId__c,
                 ProfileName__c = logEntryEvent.ProfileName__c,
-                Scenario__c = logEntryEvent.Scenario__c,
                 SessionId__c = logEntryEvent.SessionId__c,
                 SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c,
                 SessionType__c = logEntryEvent.SessionType__c,
@@ -142,6 +160,10 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 UserRoleName__c = logEntryEvent.UserRoleName__c,
                 UserType__c = logEntryEvent.UserType__c
             );
+
+            if (String.isNotBlank(logEntryEvent.Scenario__c) == true && SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.containsKey(logEntryEvent.Scenario__c) == true) {
+                log.LogScenario__c = SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.get(logEntryEvent.Scenario__c).Id;
+            }
 
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
