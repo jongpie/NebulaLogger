@@ -14,6 +14,7 @@
     <navType>Console</navType>
     <tabs>Log__c</tabs>
     <tabs>LogEntry__c</tabs>
+    <tabs>LogScenario__c</tabs>
     <tabs>LogEntryTag__c</tabs>
     <tabs>LoggerTag__c</tabs>
     <tabs>LogEntryEventStream</tabs>
@@ -37,6 +38,9 @@
         <mappings>
             <fieldName>Log__c</fieldName>
             <tab>LogEntry__c</tab>
+        </mappings>
+        <mappings>
+            <tab>LogScenario__c</tab>
         </mappings>
         <mappings>
             <tab>Log__c</tab>

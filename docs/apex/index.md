@@ -100,6 +100,10 @@ Selector class used for all queries that are specific to the log management laye
 
 Manages mass deleting `Log__c` records that have been selected by a user on a `Log__c` list view
 
+### [LogScenarioHandler](Log-Management/LogScenarioHandler)
+
+Handles trigger events for the `LogScenario__c` object
+
 ### [LogViewerController](Log-Management/LogViewerController)
 
 Controller class for the LWC `logViewer`, used to provided different views on a `Log__c` record

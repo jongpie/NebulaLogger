@@ -5,8 +5,8 @@
     <testClassName>FlowLogEntry_Tests</testClassName>
     <testClassName>FlowLogger_Tests</testClassName>
     <testClassName>FlowRecordLogEntry_Tests</testClassName>
-    <testClassName>LogBatchPurger_Tests</testClassName>
     <testClassName>LogBatchPurgeController_Tests</testClassName>
+    <testClassName>LogBatchPurger_Tests</testClassName>
     <testClassName>LogBatchPurgeScheduler_Tests</testClassName>
     <testClassName>LogEntryEventBuilder_Tests</testClassName>
     <testClassName>LogEntryEventHandler_Tests</testClassName>
@@ -30,6 +30,7 @@
     <testClassName>LogManagementDataSelector_Tests</testClassName>
     <testClassName>LogMassDeleteExtension_Tests</testClassName>
     <testClassName>LogMessage_Tests</testClassName>
+    <testClassName>LogScenarioHandler_Tests</testClassName>
     <testClassName>LogViewerController_Tests</testClassName>
     <testClassName>RelatedLogEntriesController_Tests</testClassName>
 </ApexTestSuite>

@@ -246,8 +246,8 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Scenario__c</fieldItem>
-                <identifier>RecordScenario__cField</identifier>
+                <fieldItem>Record.LogScenario__c</fieldItem>
+                <identifier>RecordLogScenario__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>

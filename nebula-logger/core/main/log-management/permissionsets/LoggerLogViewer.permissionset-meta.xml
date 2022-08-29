@@ -666,6 +666,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogScenario__c.UniqueId__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Log__c.ApiReleaseNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1104,6 +1109,15 @@
         <allowEdit>false</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
+        <object>LogScenario__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
         <object>Log__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
@@ -1126,6 +1140,10 @@
     </tabSettings>
     <tabSettings>
         <tab>LogEntry__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LogScenario__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

@@ -68,7 +68,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>Scenario__c</field>
+                <field>LogScenario__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
