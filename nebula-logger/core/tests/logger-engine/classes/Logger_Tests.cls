@@ -228,7 +228,7 @@ private class Logger_Tests {
     static void it_should_apply_scenario_rule_logging_level_when_scenario_is_set() {
         String mockScenario = 'some test scenario for this transaction';
         LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = mockScenario, UserLoggingLevel__c = LoggingLevel.FINER.name());
-        Logger.setMockScenarioRule(scenarioRule);
+        LogScenarioRule.setMock(scenarioRule);
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
         System.assertNotEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
 

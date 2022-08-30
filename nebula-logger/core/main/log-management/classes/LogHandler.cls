@@ -10,7 +10,6 @@
 @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class LogHandler extends LoggerSObjectHandler {
     private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_TO_STATUS = new Map<String, LogStatus__mdt>();
-    private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
 
     @TestVisible
     private List<Log__c> logs;
@@ -89,7 +88,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (logsToUpdate.isEmpty()) {
+        if (logsToUpdate.isEmpty() == true) {
             return;
         }
 
@@ -131,7 +130,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setLogRetentionDetails() {
-        Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = queryScenarioRules(this.logs);
         for (Log__c log : this.logs) {
             // If the retention date has already been populated, leave it as-is
             if (log.LogRetentionDate__c != null) {
@@ -142,7 +140,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             LoggerSettings__c loggingUserSettings = getLoggingUserSettings(log);
 
             // Load the configured scenario rule (if one exists)
-            LogScenarioRule__mdt matchingScenarioRule = scenarioToScenarioRule.get(log.Scenario__c);
+            LogScenarioRule__mdt matchingScenarioRule = LogScenarioRule.getInstance(log.Scenario__c);
 
             Integer daysToRetainLog = Integer.valueOf(
                 matchingScenarioRule != null ? matchingScenarioRule.NumberOfDaysToRetainLogs__c : loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c
@@ -242,36 +240,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return usersByUsername;
     }
 
-    private static Map<String, LogScenarioRule__mdt> queryScenarioRules(List<Log__c> logs) {
-        Set<String> scenarios = new Set<String>();
-        for (Log__c log : logs) {
-            if (log.Scenario__c != null) {
-                scenarios.add(log.Scenario__c);
-            }
-        }
-
-        Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = new Map<String, LogScenarioRule__mdt>();
-        for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
-            if (scenarioRule.IsEnabled__c == true && scenarios.contains(scenarioRule.Scenario__c) == true) {
-                scenarioToScenarioRule.put(scenarioRule.Scenario__c, scenarioRule);
-            }
-        }
-
-        if (System.Test.isRunningTest() == true) {
-            scenarioToScenarioRule.clear();
-            scenarioToScenarioRule.putAll(MOCK_SCENARIO_TO_SCENARIO_RULE);
-        }
-
-        return scenarioToScenarioRule;
-    }
-
     @TestVisible
     private static void setMockLogStatus(LogStatus__mdt logStatus) {
         MOCK_LOG_STATUS_TO_STATUS.put(logStatus.MasterLabel, logStatus);
-    }
-
-    @TestVisible
-    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 }

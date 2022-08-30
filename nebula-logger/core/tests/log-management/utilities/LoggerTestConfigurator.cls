@@ -101,8 +101,7 @@ public without sharing class LoggerTestConfigurator {
      * @param  mock The mock instance of `LogScenarioRule__mdt` to load
      */
     public static void setMock(LogScenarioRule__mdt mock) {
-        Logger.setMockScenarioRule(mock);
-        LogHandler.setMockScenarioRule(mock);
+        LogScenarioRule.setMock(mock);
     }
 
     /**

@@ -17,7 +17,6 @@ global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = getIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
-    private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
     private static final Boolean USE_FIRST_SPECIFIED_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
@@ -2701,20 +2700,12 @@ global with sharing class Logger {
 
         transactionScenario = scenario;
 
-        LogScenarioRule__mdt matchingScenarioRule;
-        for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
-            if (scenarioRule.IsEnabled__c == true && scenarioRule.Scenario__c == scenario) {
-                matchingScenarioRule = scenarioRule;
-                break;
-            }
-        }
-
-        if (System.Test.isRunningTest() == true) {
-            matchingScenarioRule = MOCK_SCENARIO_TO_SCENARIO_RULE.get(scenario);
-        }
-
+        LogScenarioRule__mdt matchingScenarioRule = LogScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
-            getUserSettings().LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
+            LoggerSettings__c userSettings = getUserSettings();
+            if (String.isNotBlank(matchingScenarioRule.UserLoggingLevel__c) == true) {
+                userSettings.LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
+            }
         }
     }
 
@@ -2742,7 +2733,7 @@ global with sharing class Logger {
      * @param  saveMethod The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
     global static void setSaveMethod(SaveMethod saveMethod) {
-        transactionSaveMethodName = saveMethod.name();
+        setSaveMethod(saveMethod.name());
     }
 
     /**
@@ -2933,25 +2924,16 @@ global with sharing class Logger {
         }
     }
 
-    @TestVisible
-    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        // TODO Add validation for DeveloperName and Scenario__c fields != null
-        // if (String.isBlank(scenarioRule.DeveloperName) == true) {
-        //     throw new IllegalArgumentException('DeveloperName is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
-        // }
-        // if (String.isBlank(scenarioRule.Scenario__c) == true) {
-        //     throw new IllegalArgumentException('Scenario__c is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
-        // }
-
-        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
-    }
-
     private static SaveMethod getSaveMethod(String saveMethodName) {
         try {
             return SaveMethod.valueOf(saveMethodName);
         } catch (NoSuchElementException ex) {
             return null;
         }
+    }
+
+    private static void setSaveMethod(String saveMethodName) {
+        transactionSaveMethodName = saveMethodName;
     }
 
     private static String getSuspendSavingLogSystemMessage() {
