@@ -11,8 +11,8 @@
     <relationshipName>Logs</relationshipName>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
-    <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>false</trackHistory>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>
