@@ -12,16 +12,6 @@ private class LogScenarioHandler_Tests {
     }
 
     @IsTest
-    static void it_generates_a_unique_id() {
-        LogScenario__c logScenario = new LogScenario__c(Name = 'Some scenario name');
-        String expectedUniqueId = logScenario.Name.trim();
-
-        String generatedUniqueId = LogScenarioHandler.generateUniqueId(logScenario);
-
-        System.assertEquals(expectedUniqueId, generatedUniqueId);
-    }
-
-    @IsTest
     static void it_should_not_run_when_disabled_via_configuration() {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogScenario__c.SObjectType).IsEnabled__c = false;
@@ -39,11 +29,8 @@ private class LogScenarioHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_unique_id_on_insert() {
-        LogScenario__c logScenario = (LogScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LogScenario__c.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
-        logScenario.Name = 'Some log scenario name';
+    static void it_should_set_name_on_insert_when_null() {
+        LogScenario__c logScenario = new LogScenario__c(UniqueId__c = 'Some scenario');
         LoggerDataStore.getDatabase().insertRecord(logScenario);
 
         System.assertEquals(
@@ -56,11 +43,10 @@ private class LogScenarioHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_unique_id_on_update() {
-        LogScenario__c logScenario = (LogScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LogScenario__c.SObjectType)
-            .populateRequiredFields()
-            .getRecord();
-        logScenario.Name = 'Some log scenario name';
+    static void it_should_truncate_name_on_insert_when_name_value_exceeds_name_field_length() {
+        Integer nameFieldMaxLength = Schema.LogScenario__c.Name.getDescribe().getLength();
+        LogScenario__c logScenario = new LogScenario__c(Name = '0'.repeat(nameFieldMaxLength + 1), UniqueId__c = 'Some scenario');
+        System.assertEquals(true, logScenario.Name.length() > nameFieldMaxLength);
         LoggerDataStore.getDatabase().insertRecord(logScenario);
 
         System.assertEquals(
@@ -68,24 +54,25 @@ private class LogScenarioHandler_Tests {
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogScenario__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
+        String expectedTruncatedValue = logScenario.Name.left(nameFieldMaxLength);
         logScenario = [SELECT Id, Name, UniqueId__c FROM LogScenario__c WHERE Id = :logScenario.Id];
-        System.assertEquals(logScenario.Name, logScenario.UniqueId__c);
+        System.assertEquals(expectedTruncatedValue, logScenario.Name);
     }
 
     @IsTest
-    static void it_should_not_insert_duplicate_tag() {
+    static void it_should_not_allow_duplicate_scenario_to_be_inserted() {
         LogScenario__c logScenario = (LogScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LogScenario__c.SObjectType)
             .populateRequiredFields()
             .getRecord();
         logScenario.Name = 'Some log scenario name';
         LoggerDataStore.getDatabase().insertRecord(logScenario);
-        LogScenario__c duplicateTag = (LogScenario__c) LoggerMockDataCreator.createDataBuilder(new LogScenario__c(Name = logScenario.Name))
+        LogScenario__c duplicateScenario = (LogScenario__c) LoggerMockDataCreator.createDataBuilder(new LogScenario__c(Name = logScenario.Name))
             .populateRequiredFields()
             .getRecord();
         Exception thrownException;
 
         try {
-            insert duplicateTag;
+            insert duplicateScenario;
             System.assert(false, 'Exception expected on previous line');
         } catch (Exception ex) {
             thrownException = ex;

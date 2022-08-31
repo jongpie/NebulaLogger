@@ -80,9 +80,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            LogScenario__c logScenario = new LogScenario__c(Name = logEntryEvent.Scenario__c);
-            logScenario.UniqueId__c = LogScenarioHandler.generateUniqueId(logScenario);
-
+            LogScenario__c logScenario = new LogScenario__c(UniqueId__c = logEntryEvent.Scenario__c);
             SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.put(logScenario.UniqueId__c, logScenario);
         }
 

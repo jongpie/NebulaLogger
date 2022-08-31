@@ -161,7 +161,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
-        logEntryEvent.Scenario__c = 'some scenario';
+        logEntryEvent.Scenario__c = '0'.repeat(Schema.LogEntryEvent__e.Scenario__c.getDescribe().getLength());
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -187,7 +187,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        LogScenario__c existingLogScenario = new LogScenario__c(Name = 'hello, world');
+        LogScenario__c existingLogScenario = new LogScenario__c(UniqueId__c = 'hello, world');
         insert existingLogScenario;
         System.assertEquals(1, [SELECT COUNT() FROM LogScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
