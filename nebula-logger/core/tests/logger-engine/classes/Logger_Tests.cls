@@ -225,14 +225,150 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_apply_scenario_rule_logging_level_when_scenario_is_set() {
-        String mockScenario = 'some test scenario for this transaction';
-        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = mockScenario, UserLoggingLevel__c = LoggingLevel.FINER.name());
+    static void it_should_override_logger_is_enabled_setting_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsLoggerEnabled__c = String.valueOf(!Logger.getUserSettings().IsEnabled__c),
+            Scenario__c = 'Some scenario'
+        );
+        LogScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LogScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsLoggerEnabled__c), Logger.getUserSettings().IsEnabled__c);
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsLoggerEnabled__c), Logger.isEnabled());
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsLoggerEnabled__c), Logger.getUserSettings().IsEnabled__c);
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsLoggerEnabled__c), Logger.isEnabled());
+    }
+
+    @IsTest
+    static void it_should_override_anonymous_mode_setting_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsAnonymousModeEnabled__c = String.valueOf(!Logger.getUserSettings().IsAnonymousModeEnabled__c),
+            IsEnabled__c = true,
+            Scenario__c = 'Some scenario'
+        );
+        LogScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LogScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsAnonymousModeEnabled__c), Logger.getUserSettings().IsAnonymousModeEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsAnonymousModeEnabled__c), Logger.getUserSettings().IsAnonymousModeEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_apex_system_debugging_setting_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsApexSystemDebugLoggingEnabled__c = String.valueOf(!Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c),
+            IsEnabled__c = true,
+            Scenario__c = 'Some scenario'
+        );
+        LogScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LogScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsApexSystemDebugLoggingEnabled__c), Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsApexSystemDebugLoggingEnabled__c), Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_data_masking_setting_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsDataMaskingEnabled__c = String.valueOf(!Logger.getUserSettings().IsDataMaskingEnabled__c),
+            IsEnabled__c = true,
+            Scenario__c = 'Some scenario'
+        );
+        LogScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LogScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsDataMaskingEnabled__c), Logger.getUserSettings().IsDataMaskingEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsDataMaskingEnabled__c), Logger.getUserSettings().IsDataMaskingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_javascript_console_logging_setting_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsJavaScriptConsoleLoggingEnabled__c = String.valueOf(!Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c),
+            Scenario__c = 'Some scenario'
+        );
+        LogScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LogScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(
+            Boolean.valueOf(scenarioRule.IsJavaScriptConsoleLoggingEnabled__c),
+            Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c
+        );
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsJavaScriptConsoleLoggingEnabled__c), Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_record_field_stripping_setting_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsRecordFieldStrippingEnabled__c = String.valueOf(!Logger.getUserSettings().IsRecordFieldStrippingEnabled__c),
+            Scenario__c = 'Some scenario'
+        );
+        LogScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LogScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsRecordFieldStrippingEnabled__c), Logger.getUserSettings().IsRecordFieldStrippingEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsRecordFieldStrippingEnabled__c), Logger.getUserSettings().IsRecordFieldStrippingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_saving_enabled_setting_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsSavingEnabled__c = String.valueOf(!Logger.getUserSettings().IsSavingEnabled__c),
+            Scenario__c = 'Some scenario'
+        );
+        LogScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LogScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsSavingEnabled__c), Logger.getUserSettings().IsSavingEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsSavingEnabled__c), Logger.getUserSettings().IsSavingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_save_method_setting_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsEnabled__c = true,
+            SaveMethod__c = Logger.SaveMethod.QUEUEABLE.name(),
+            Scenario__c = 'Some scenario'
+        );
+        LogScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LogScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(scenarioRule.SaveMethod__c, Logger.getSaveMethod().name());
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(scenarioRule.SaveMethod__c, Logger.getSaveMethod().name());
+    }
+
+    @IsTest
+    static void it_should_override_user_logging_level_when_matching_log_scenario_rule_is_configured() {
+        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(
+            IsEnabled__c = true,
+            Scenario__c = 'Some scenario',
+            UserLoggingLevel__c = LoggingLevel.FINER.name()
+        );
         LogScenarioRule.setMock(scenarioRule);
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
         System.assertNotEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
 
-        Logger.setScenario(mockScenario);
+        Logger.setScenario(scenarioRule.Scenario__c);
 
         System.assertEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
     }

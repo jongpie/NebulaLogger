@@ -2703,6 +2703,30 @@ global with sharing class Logger {
         LogScenarioRule__mdt matchingScenarioRule = LogScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
             LoggerSettings__c userSettings = getUserSettings();
+            if (String.isNotBlank(matchingScenarioRule.IsLoggerEnabled__c) == true) {
+                userSettings.IsEnabled__c = Boolean.valueOf(matchingScenarioRule.IsLoggerEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsAnonymousModeEnabled__c) == true) {
+                userSettings.IsAnonymousModeEnabled__c = Boolean.valueOf(matchingScenarioRule.IsAnonymousModeEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsApexSystemDebugLoggingEnabled__c) == true) {
+                userSettings.IsApexSystemDebugLoggingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsApexSystemDebugLoggingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsDataMaskingEnabled__c) == true) {
+                userSettings.IsDataMaskingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsDataMaskingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c) == true) {
+                userSettings.IsJavaScriptConsoleLoggingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsRecordFieldStrippingEnabled__c) == true) {
+                userSettings.IsRecordFieldStrippingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsRecordFieldStrippingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsSavingEnabled__c) == true) {
+                userSettings.IsSavingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsSavingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.SaveMethod__c) == true) {
+                setSaveMethod(matchingScenarioRule.SaveMethod__c);
+            }
             if (String.isNotBlank(matchingScenarioRule.UserLoggingLevel__c) == true) {
                 userSettings.LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
             }

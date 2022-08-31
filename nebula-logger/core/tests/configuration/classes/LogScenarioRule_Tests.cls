@@ -24,11 +24,7 @@ private class LogScenarioRule_Tests {
     static void it_should_load_all_mock_records() {
         List<LogScenarioRule__mdt> mockRules = new List<LogScenarioRule__mdt>();
         for (Integer i = 0; i < 10; i++) {
-            LogScenarioRule__mdt mockRule = new LogScenarioRule__mdt(
-                IsEnabled__c = true,
-                Scenario__c = 'Some Scenario #' + i,
-                UserLoggingLevel__c = LoggingLevel.FINER.name()
-            );
+            LogScenarioRule__mdt mockRule = new LogScenarioRule__mdt(IsEnabled__c = true, Scenario__c = 'Some Scenario #' + i);
             LogScenarioRule.setMock(mockRule);
             mockRules.add(mockRule);
         }
@@ -93,7 +89,7 @@ private class LogScenarioRule_Tests {
     }
 
     @IsTest
-    static void it_should_not_load_mock_record_when_start_time_is_in_the_future() {
+    static void it_should_not_load_configured_rule_when_start_time_is_in_the_future() {
         LogScenarioRule__mdt mockRule = new LogScenarioRule__mdt(
             EndTime__c = null,
             IsEnabled__c = true,
@@ -108,7 +104,7 @@ private class LogScenarioRule_Tests {
     }
 
     @IsTest
-    static void it_should_not_load_mock_record_when_end_time_is_in_the_past() {
+    static void it_should_not_load_configured_rule_when_end_time_is_in_the_past() {
         LogScenarioRule__mdt mockRule = new LogScenarioRule__mdt(EndTime__c = System.now().addMinutes(-1), IsEnabled__c = true, Scenario__c = 'Some Scenario');
         LogScenarioRule.setMock(mockRule);
 
