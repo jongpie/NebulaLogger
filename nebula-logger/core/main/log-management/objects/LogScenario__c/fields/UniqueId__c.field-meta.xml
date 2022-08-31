@@ -6,8 +6,9 @@
     <inlineHelpText>An automatically generated external ID, used to ensure that Log Scenario records are unique</inlineHelpText>
     <label>Unique ID</label>
     <length>255</length>
-    <required>false</required>
-    <trackHistory>false</trackHistory>
+    <required>true</required>
+    <trackFeedHistory>true</trackFeedHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>true</unique>

@@ -585,11 +585,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogScenario__c.UniqueId__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Log__c.ApiReleaseNumber__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -626,6 +621,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.LogRetentionDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Log__c.LogScenario__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -676,11 +676,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.LoginType__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Log__c.LogScenario__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
