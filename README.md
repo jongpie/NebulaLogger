@@ -5,7 +5,7 @@
 
 Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
 
-## Unlocked Package - v4.8.0
+## Unlocked Package - v4.8.2
 
 [![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lslQAA)
 [![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lslQAA)
@@ -21,6 +21,8 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Features
 
+TODO update/rewrite
+
 1. Easily add log entries via Apex, Lightning Components (lwc & aura), Flow & Process Builder to generate 1 consolidated, unified log
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
@@ -34,7 +36,14 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 Learn more about the design and history of the project on [Joys Of Apex blog post](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
 
----
+## TODO Architecture
+
+TODO summary
+[View Architecture Overview](https://raw.githubusercontent.com/wiki/jongpie/NebulaLogger/images/nebula-logger-architecture-overview.png)
+
+<a href="https://github.com/jongpie/NebulaLogger/wiki/Architecture" target="_blank">
+    <img src="https://raw.githubusercontent.com/wiki/jongpie/NebulaLogger/images/nebula-logger-architecture-overview.png" width="300">
+</a>
 
 ## Installing
 

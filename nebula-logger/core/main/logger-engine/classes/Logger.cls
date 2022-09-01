@@ -9,11 +9,13 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
-@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
+@SuppressWarnings(
+    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength, PMD.StdCyclomaticComplexity'
+)
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.8.0';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.8.2';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = getIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
@@ -2693,6 +2695,7 @@ global with sharing class Logger {
      *              and `Log__c.Scenario__c`, and can be used to filter & group logs
      * @param  scenario The name to use for the current transaction's scenario
      */
+    @SuppressWarnings('PMD.NcssMethodCount')
     global static void setScenario(String scenario) {
         if (USE_FIRST_SPECIFIED_SCENARIO == true && String.isNotBlank(transactionScenario) == true) {
             return;

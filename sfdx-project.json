@@ -12,9 +12,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.8.0.NEXT",
-            "versionName": "Ignore Origin Method",
-            "versionDescription": "Added new method Logger.ignoreOrigin() to ignore specified Apex types when parsing a log entry's origin",
+            "versionNumber": "4.8.2.NEXT",
+            "versionName": "More Fields on Log Scenario Rule Object",
+            "versionDescription": "Added more fields to LogScenarioRule__mdt to provide more control for scenario-based logging",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },
