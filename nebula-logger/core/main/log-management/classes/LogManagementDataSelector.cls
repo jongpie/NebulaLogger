@@ -175,8 +175,17 @@ public without sharing class LogManagementDataSelector {
      * @param  transactionIds The list of `String` transaction IDs of the `Log__c` records to query
      * @return                The list of matching `Log__c` records
      */
-    public List<Log__c> getLogsByTransactionId(Set<String> transactionIds) {
+    public List<Log__c> getLogsByTransactionId(List<String> transactionIds) {
         return [SELECT Id, TransactionId__c FROM Log__c WHERE TransactionId__c IN :transactionIds];
+    }
+
+    /**
+     * @description Returns a `List<LogScenario__c>` of records with the specified unique IDs
+     * @param  logScenarioIds The list of `ID` of the `Log__c` records to query
+     * @return                The list of matching `LogScenario__c` records
+     */
+    public List<LogScenario__c> getLogScenariosById(List<Id> logScenarioIds) {
+        return [SELECT Id, OwnerId, UniqueId__c FROM LogScenario__c WHERE Id IN :logScenarioIds];
     }
 
     /**

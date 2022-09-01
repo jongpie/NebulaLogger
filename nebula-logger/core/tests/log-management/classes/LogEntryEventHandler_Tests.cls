@@ -191,9 +191,9 @@ private class LogEntryEventHandler_Tests {
         insert existingLogScenario;
         System.assertEquals(1, [SELECT COUNT() FROM LogScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
-        firstLogEntryEvent.Scenario__c = existingLogScenario.Name;
+        firstLogEntryEvent.Scenario__c = existingLogScenario.UniqueId__c;
         LogEntryEvent__e secondLogEntryEvent = createLogEntryEvent();
-        secondLogEntryEvent.Scenario__c = existingLogScenario.Name;
+        secondLogEntryEvent.Scenario__c = existingLogScenario.UniqueId__c;
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ firstLogEntryEvent, secondLogEntryEvent };
 
         List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
@@ -765,6 +765,7 @@ private class LogEntryEventHandler_Tests {
                 LoginType__c,
                 LogScenario__c,
                 LogScenario__r.Name,
+                LogScenario__r.UniqueId__c,
                 LogoutUrl__c,
                 NetworkId__c,
                 OrganizationDomainUrl__c,
@@ -907,8 +908,12 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
-        System.assertEquals(logEntryEvent.Scenario__c, log.Scenario__c, 'log.Scenario__c was not properly set');
-        System.assertEquals(logEntryEvent.Scenario__c, log.LogScenario__r.Name, 'log.LogScenario__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.Scenario__c?.left(Schema.LogScenario__c.Name.getDescribe().getLength()),
+            log.LogScenario__r?.Name,
+            'log.LogScenario__c was not properly set'
+        );
+        System.assertEquals(logEntryEvent.Scenario__c, log.LogScenario__r.UniqueId__c, 'log.LogScenario__r.UniqueId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');

@@ -29,8 +29,13 @@ private class LogScenarioHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_name_on_insert_when_null() {
-        LogScenario__c logScenario = new LogScenario__c(UniqueId__c = 'Some scenario');
+    static void it_should_run_when_enabled_via_configuration() {
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogScenario__c.SObjectType).IsEnabled__c = true;
+        LogScenario__c logScenario = (LogScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LogScenario__c.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
+
         LoggerDataStore.getDatabase().insertRecord(logScenario);
 
         System.assertEquals(
@@ -38,25 +43,6 @@ private class LogScenarioHandler_Tests {
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogScenario__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
-        logScenario = [SELECT Id, Name, UniqueId__c FROM LogScenario__c WHERE Id = :logScenario.Id];
-        System.assertEquals(logScenario.Name, logScenario.UniqueId__c);
-    }
-
-    @IsTest
-    static void it_should_truncate_name_on_insert_when_name_value_exceeds_name_field_length() {
-        Integer nameFieldMaxLength = Schema.LogScenario__c.Name.getDescribe().getLength();
-        LogScenario__c logScenario = new LogScenario__c(Name = '0'.repeat(nameFieldMaxLength + 1), UniqueId__c = 'Some scenario');
-        System.assertEquals(true, logScenario.Name.length() > nameFieldMaxLength);
-        LoggerDataStore.getDatabase().insertRecord(logScenario);
-
-        System.assertEquals(
-            2,
-            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogScenario__c.SObjectType).size(),
-            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
-        );
-        String expectedTruncatedValue = logScenario.Name.left(nameFieldMaxLength);
-        logScenario = [SELECT Id, Name, UniqueId__c FROM LogScenario__c WHERE Id = :logScenario.Id];
-        System.assertEquals(expectedTruncatedValue, logScenario.Name);
     }
 
     @IsTest

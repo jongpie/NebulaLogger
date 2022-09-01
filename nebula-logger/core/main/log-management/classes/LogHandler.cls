@@ -16,6 +16,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     private List<Log__c> logs;
     @TestVisible
     private Map<Id, Log__c> oldLogsById;
+    private Map<Id, LogScenario__c> logScenariosById;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -27,6 +28,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logs = (List<Log__c>) triggerNew;
+        this.logScenariosById = this.queryLogScenarios();
 
         this.setClosedStatusFields();
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
@@ -49,6 +51,23 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         this.logs = (List<Log__c>) triggerNewMap.values();
 
         this.shareLogsWithLoggingUsers();
+    }
+
+    private Map<Id, LogScenario__c> queryLogScenarios() {
+        Map<Id, LogScenario__c> logScenariosById = new Map<Id, LogScenario__c>();
+        List<Id> logScenarioIds = new List<Id>();
+        for (Log__c log : this.logs) {
+            if (log.LogScenario__c != null) {
+                logScenarioIds.add(log.LogScenario__c);
+            }
+        }
+
+        List<LogScenario__c> matchingLogScenarios = LogManagementDataSelector.getInstance().getLogScenariosById(logScenarioIds);
+        if (matchingLogScenarios != null && matchingLogScenarios.isEmpty() == false) {
+            logScenariosById = new Map<Id, LogScenario__c>(matchingLogScenarios);
+        }
+
+        return logScenariosById;
     }
 
     private void setClosedStatusFields() {
@@ -107,7 +126,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setParentLog() {
-        Set<String> parentLogTransactionIds = new Set<String>();
+        List<String> parentLogTransactionIds = new List<String>();
         for (Log__c log : this.logs) {
             if (String.isNotBlank(log.ParentLogTransactionId__c) == true) {
                 parentLogTransactionIds.add(log.ParentLogTransactionId__c);
@@ -131,7 +150,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setLogRetentionDetails() {
-        Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = queryScenarioRules(this.logs);
+        Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = queryLogScenarioRules(this.logs, this.logScenariosById);
         for (Log__c log : this.logs) {
             // If the retention date has already been populated, leave it as-is
             if (log.LogRetentionDate__c != null) {
@@ -142,7 +161,12 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             LoggerSettings__c loggingUserSettings = getLoggingUserSettings(log);
 
             // Load the configured scenario rule (if one exists)
-            LogScenarioRule__mdt matchingScenarioRule = scenarioToScenarioRule.get(log.Scenario__c);
+            LogScenarioRule__mdt matchingScenarioRule;
+            if (log.LogScenario__c != null) {
+                LogScenario__c logScenario = this.logScenariosById.get(log.LogScenario__c);
+
+                matchingScenarioRule = scenarioToScenarioRule.get(logScenario.UniqueId__c);
+            }
 
             Integer daysToRetainLog = Integer.valueOf(
                 matchingScenarioRule != null ? matchingScenarioRule.NumberOfDaysToRetainLogs__c : loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c
@@ -242,13 +266,14 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return usersByUsername;
     }
 
-    private static Map<String, LogScenarioRule__mdt> queryScenarioRules(List<Log__c> logs) {
+    private static Map<String, LogScenarioRule__mdt> queryLogScenarioRules(List<Log__c> logs, Map<Id, LogScenario__c> logScenariosById) {
         Set<String> scenarios = new Set<String>();
         for (Log__c log : logs) {
-            if (log.Scenario__c != null) {
-                scenarios.add(log.Scenario__c);
+            if (log.LogScenario__c != null && logScenariosById.containsKey(log.LogScenario__c) == true) {
+                scenarios.add(logScenariosById.get(log.LogScenario__c).UniqueId__c);
             }
         }
+        // System.assert(false, 'queried rule scenarios: ' + json.serialize(scenarios) + '\nalso the logScenariosById: ' + json.serialize(logScenariosById));
 
         Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = new Map<String, LogScenarioRule__mdt>();
         for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {

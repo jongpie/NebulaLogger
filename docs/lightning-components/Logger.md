@@ -6,7 +6,7 @@
 </dd>
 <dt><a href="#setScenario">setScenario(scenario)</a></dt>
 <dd><p>Sets the scenario name for the current transaction - this is stored in <code>LogEntryEvent__e.Scenario__c</code>
-             and <code>Log__c.Scenario__c</code>, and can be used to filter &amp; group logs</p>
+             and <code>Log__c.LogScenario__c</code>, and can be used to filter &amp; group logs</p>
 </dd>
 <dt><a href="#error">error(message)</a> <code>LogEntryBuilder</code></dt>
 <dd><p>Creates a new log entry with logging level == <code>LoggingLevel.ERROR</code></p>

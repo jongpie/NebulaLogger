@@ -10,7 +10,7 @@
         <field>Description__c</field>
         <value
             xsi:type="xsd:string"
-        >When enabled (default), the first value provided when calling Logger.setScenario(String) is used to set the field Log__c.Scenario__c, and any subsequent calls to Logger.setScenario(String) are ignored in the current transaction. When disabled, the last value provided when calling Logger.setScenario(String) is instead used.</value>
+        >When enabled (default), the first value provided when calling Logger.setScenario(String) is used to set the field Log__c.LogScenario__c, and any subsequent calls to Logger.setScenario(String) are ignored in the current transaction. When disabled, the last value provided when calling Logger.setScenario(String) is instead used.</value>
     </values>
     <values>
         <field>Value__c</field>
