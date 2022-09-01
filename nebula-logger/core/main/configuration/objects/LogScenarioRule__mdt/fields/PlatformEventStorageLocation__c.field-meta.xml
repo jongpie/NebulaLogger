@@ -7,7 +7,7 @@
     <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText
     >This controls the default location where LogEntryEvent__e records are stored - when null, LogEntryEvent__e records will not be stored.</inlineHelpText>
-    <label>Platform Event Storage Location Name</label>
+    <label>Platform Event Storage Location</label>
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

@@ -12,7 +12,7 @@
     <columns>NumberOfDaysToRetainLogs__c</columns>
     <columns>IsSavingEnabled__c</columns>
     <columns>SaveMethod__c</columns>
-    <columns>LogOwner__c</columns>
+    <columns>IsLogAssignmentEnabled__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

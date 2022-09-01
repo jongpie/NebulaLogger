@@ -6,7 +6,7 @@
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText>This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.</inlineHelpText>
-    <label>Save Method Name</label>
+    <label>Save Method</label>
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>
