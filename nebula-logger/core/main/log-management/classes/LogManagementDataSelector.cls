@@ -180,7 +180,7 @@ public without sharing class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `List<LogScenario__c>` of records with the specified unique IDs
+     * @description Returns a `List<LogScenario__c>` of records with the specified log scenario IDs
      * @param  logScenarioIds The list of `ID` of the `Log__c` records to query
      * @return                The list of matching `LogScenario__c` records
      */
