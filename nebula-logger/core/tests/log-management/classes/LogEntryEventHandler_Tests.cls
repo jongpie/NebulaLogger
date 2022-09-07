@@ -155,7 +155,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_normalize_event_data_into_log_scenario_and_log_and_log_entry_when_scenario_specified() {
+    static void it_should_normalize_event_data_into_logger_scenario_and_log_and_log_entry_when_scenario_specified() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
@@ -182,7 +182,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_upsert_log_scenarios_when_scenario_specified() {
+    static void it_should_upsert_logger_scenarios_when_scenario_specified() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>MyAssignedLogScenarios</fullName>
+    <fullName>MyAssignedLoggerScenarios</fullName>
     <columns>NAME</columns>
     <columns>UniqueId__c</columns>
     <columns>OWNER.ALIAS</columns>
@@ -9,5 +9,5 @@
     <columns>UPDATEDBY_USER</columns>
     <columns>LAST_UPDATE</columns>
     <filterScope>Mine</filterScope>
-    <label>My Assigned Log Scenarios</label>
+    <label>My Assigned Logger Scenarios</label>
 </ListView>

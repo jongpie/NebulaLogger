@@ -1,7 +1,7 @@
-// Prior to v4.8.2 (?), a log's scenario was stored in the text field Log__c.Scenario__c.
-// In v4.8.2, a new LoggerScenario__c object was introduced, and replaces Log__c.Scenario__c.
-// This script handles migrating the text field's data into the new LoggerScenario__c object,
-// and relates each Log__c record to the corresponding LoggerScenario__c record
+// Prior to v4.8.1, a log's scenario was stored in the text field Log__c.Scenario__c.
+// In v4.8.1, a new LoggerScenario__c object was introduced, and the new lookup field Log__c.TransactionScenario__c
+// replaces the text field Log__c.Scenario__c. This script handles migrating the text field's data into the new
+// LoggerScenario__c object, and relates each Log__c record to the corresponding LoggerScenario__c record
 Integer countOfRecordsToUpdate = [SELECT COUNT() FROM Log__c WHERE TransactionScenario__c = null AND Scenario__c != null];
 if (countOfRecordsToUpdate == 0) {
     System.debug('No Log__c records to update! All data has been successfully migrated from Log__c.Scenario__c to the new lookup Log__c.TransactionScenario__c');

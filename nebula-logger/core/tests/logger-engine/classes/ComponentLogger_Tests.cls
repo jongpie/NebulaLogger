@@ -186,7 +186,7 @@ private class ComponentLogger_Tests {
     }
 
     @IsTest
-    static void it_should_set_log_scenario() {
+    static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();

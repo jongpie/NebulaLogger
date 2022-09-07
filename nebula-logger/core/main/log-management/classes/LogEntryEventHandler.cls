@@ -15,7 +15,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final String GUEST_USER_TYPE = 'Guest';
-    private static final Map<String, LoggerScenario__c> SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO = new Map<String, LoggerScenario__c>();
+    private static final Map<String, LoggerScenario__c> SCENARIO_UNIQUE_ID_TO_SCENARIO = new Map<String, LoggerScenario__c>();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @TestVisible
@@ -54,7 +54,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
         if (this.logEntryEvents.isEmpty() == false) {
-            this.upsertLogScenarios();
+            this.upsertLoggerScenarios();
             this.upsertLogs();
             this.upsertLogEntries();
             this.appendRuleBasedTags();
@@ -74,19 +74,19 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return logEntryEventsToSave;
     }
 
-    private void upsertLogScenarios() {
+    private void upsertLoggerScenarios() {
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
-            if (String.isBlank(logEntryEvent.Scenario__c) == true || SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.containsKey(logEntryEvent.Scenario__c)) {
+            if (String.isBlank(logEntryEvent.Scenario__c) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.Scenario__c)) {
                 continue;
             }
 
-            LoggerScenario__c logScenario = new LoggerScenario__c(Name = logEntryEvent.Scenario__c, UniqueId__c = logEntryEvent.Scenario__c);
-            logScenario.setOptions(DML_OPTIONS);
-            SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.put(logScenario.UniqueId__c, logScenario);
+            LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = logEntryEvent.Scenario__c, UniqueId__c = logEntryEvent.Scenario__c);
+            loggerScenario.setOptions(DML_OPTIONS);
+            SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
         }
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
-            .upsertRecords(SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.values(), Schema.LoggerScenario__c.UniqueId__c, System.Test.isRunningTest());
+            .upsertRecords(SCENARIO_UNIQUE_ID_TO_SCENARIO.values(), Schema.LoggerScenario__c.UniqueId__c, System.Test.isRunningTest());
         LoggerEmailSender.sendErrorEmail(Schema.LoggerScenario__c.SObjectType, upsertResults);
     }
 
@@ -161,8 +161,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 UserType__c = logEntryEvent.UserType__c
             );
 
-            if (String.isNotBlank(logEntryEvent.Scenario__c) == true && SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.containsKey(logEntryEvent.Scenario__c) == true) {
-                log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.get(logEntryEvent.Scenario__c).Id;
+            if (String.isNotBlank(logEntryEvent.Scenario__c) == true && SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.Scenario__c) == true) {
+                log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.Scenario__c).Id;
             }
 
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);

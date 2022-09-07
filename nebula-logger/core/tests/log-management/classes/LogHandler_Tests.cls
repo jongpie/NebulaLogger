@@ -276,7 +276,7 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_retention_details_when_configured_via_log_scenario_rules() {
+    static void it_should_set_retention_details_when_configured_via_logger_scenario_rules() {
         setupConfigurations();
         Integer defaultDaysToRetainLog = 1;
         Integer daysToRetainLog = 90;
