@@ -108,7 +108,7 @@ private class LogEntryEventHandler_Tests {
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(null, log.LogScenario__c);
+        System.assertEquals(null, log.TransactionScenario__c);
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
@@ -173,7 +173,7 @@ private class LogEntryEventHandler_Tests {
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertNotEquals(null, log.LogScenario__c);
+        System.assertNotEquals(null, log.TransactionScenario__c);
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
@@ -187,9 +187,9 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        LogScenario__c existingLogScenario = new LogScenario__c(UniqueId__c = 'hello, world');
+        LoggerScenario__c existingLogScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
         insert existingLogScenario;
-        System.assertEquals(1, [SELECT COUNT() FROM LogScenario__c]);
+        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
         firstLogEntryEvent.Scenario__c = existingLogScenario.UniqueId__c;
         LogEntryEvent__e secondLogEntryEvent = createLogEntryEvent();
@@ -208,9 +208,9 @@ private class LogEntryEventHandler_Tests {
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(1, [SELECT COUNT() FROM LogScenario__c]);
+        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
         Log__c log = getLog();
-        System.assertEquals(existingLogScenario.Id, log.LogScenario__c);
+        System.assertEquals(existingLogScenario.Id, log.TransactionScenario__c);
         System.assertEquals(logEntryEvents.size(), log.LogEntries__r.size());
         for (Integer i = 0; i < logEntryEvents.size(); i++) {
             LogEntryEvent__e logEntryEvent = logEntryEvents.get(i);
@@ -763,9 +763,6 @@ private class LogEntryEventHandler_Tests {
                 LoginDomain__c,
                 LoginHistoryId__c,
                 LoginType__c,
-                LogScenario__c,
-                LogScenario__r.Name,
-                LogScenario__r.UniqueId__c,
                 LogoutUrl__c,
                 NetworkId__c,
                 OrganizationDomainUrl__c,
@@ -790,6 +787,9 @@ private class LogEntryEventHandler_Tests {
                 TimeZoneId__c,
                 TimeZoneName__c,
                 TransactionId__c,
+                TransactionScenario__c,
+                TransactionScenario__r.Name,
+                TransactionScenario__r.UniqueId__c,
                 UserLicenseDefinitionKey__c,
                 UserLicenseId__c,
                 UserLicenseName__c,
@@ -909,11 +909,11 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
         System.assertEquals(
-            logEntryEvent.Scenario__c?.left(Schema.LogScenario__c.Name.getDescribe().getLength()),
-            log.LogScenario__r?.Name,
-            'log.LogScenario__c was not properly set'
+            logEntryEvent.Scenario__c?.left(Schema.LoggerScenario__c.Name.getDescribe().getLength()),
+            log.TransactionScenario__r?.Name,
+            'log.TransactionScenario__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.Scenario__c, log.LogScenario__r.UniqueId__c, 'log.LogScenario__r.UniqueId__c was not properly set');
+        System.assertEquals(logEntryEvent.Scenario__c, log.TransactionScenario__r.UniqueId__c, 'log.TransactionScenario__r.UniqueId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');

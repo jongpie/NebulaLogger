@@ -223,6 +223,26 @@ Log\_\_c
 
 The matching `Log__c` record
 
+#### `getLoggerScenariosById(List<Id> logScenarioIds)` → `List<LoggerScenario__c>`
+
+Returns a `List&lt;LoggerScenario__c&gt;` of records with the specified log scenario IDs
+
+##### Parameters
+
+| Param            | Description                                       |
+| ---------------- | ------------------------------------------------- |
+| `logScenarioIds` | The list of `ID` of the `Log__c` records to query |
+
+##### Return
+
+**Type**
+
+List&lt;LoggerScenario\_\_c&gt;
+
+**Description**
+
+The list of matching `LoggerScenario__c` records
+
 #### `getLogsById(List<Id> logIds)` → `List<Log__c>`
 
 Returns a `Log__c` record and its related `LogEntry__c` records
@@ -243,7 +263,7 @@ List&lt;Log\_\_c&gt;
 
 The list of matching `Log__c` records
 
-#### `getLogsByTransactionId(Set<String> transactionIds)` → `List<Log__c>`
+#### `getLogsByTransactionId(List<String> transactionIds)` → `List<Log__c>`
 
 Returns a `List&lt;Log__c&gt;` of records with the specified transaction IDs
 

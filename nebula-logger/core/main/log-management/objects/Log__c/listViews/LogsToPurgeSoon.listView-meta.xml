@@ -7,7 +7,7 @@
     <columns>OWNER.ALIAS</columns>
     <columns>Priority__c</columns>
     <columns>Status__c</columns>
-    <columns>LogScenario__c</columns>
+    <columns>TransactionScenario__c</columns>
     <columns>StartTime__c</columns>
     <columns>LogPurgeAction__c</columns>
     <columns>LogRetentionDate__c</columns>

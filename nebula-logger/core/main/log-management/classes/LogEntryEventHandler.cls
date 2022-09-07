@@ -15,7 +15,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final String GUEST_USER_TYPE = 'Guest';
-    private static final Map<String, LogScenario__c> SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO = new Map<String, LogScenario__c>();
+    private static final Map<String, LoggerScenario__c> SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO = new Map<String, LoggerScenario__c>();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @TestVisible
@@ -80,14 +80,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            LogScenario__c logScenario = new LogScenario__c(Name = logEntryEvent.Scenario__c, UniqueId__c = logEntryEvent.Scenario__c);
+            LoggerScenario__c logScenario = new LoggerScenario__c(Name = logEntryEvent.Scenario__c, UniqueId__c = logEntryEvent.Scenario__c);
             logScenario.setOptions(DML_OPTIONS);
             SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.put(logScenario.UniqueId__c, logScenario);
         }
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
-            .upsertRecords(SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.values(), Schema.LogScenario__c.UniqueId__c, System.Test.isRunningTest());
-        LoggerEmailSender.sendErrorEmail(Schema.LogScenario__c.SObjectType, upsertResults);
+            .upsertRecords(SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.values(), Schema.LoggerScenario__c.UniqueId__c, System.Test.isRunningTest());
+        LoggerEmailSender.sendErrorEmail(Schema.LoggerScenario__c.SObjectType, upsertResults);
     }
 
     private void upsertLogs() {
@@ -162,7 +162,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             );
 
             if (String.isNotBlank(logEntryEvent.Scenario__c) == true && SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.containsKey(logEntryEvent.Scenario__c) == true) {
-                log.LogScenario__c = SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.get(logEntryEvent.Scenario__c).Id;
+                log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_LOG_SCENARIO.get(logEntryEvent.Scenario__c).Id;
             }
 
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);

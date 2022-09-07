@@ -16,7 +16,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     private List<Log__c> logs;
     @TestVisible
     private Map<Id, Log__c> oldLogsById;
-    private Map<Id, LogScenario__c> logScenariosById;
+    private Map<Id, LoggerScenario__c> logScenariosById;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -145,8 +145,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
             // Load the configured scenario rule (if one exists)
             LogScenarioRule__mdt matchingScenarioRule;
-            if (log.LogScenario__c != null) {
-                LogScenario__c logScenario = this.logScenariosById.get(log.LogScenario__c);
+            if (log.TransactionScenario__c != null) {
+                LoggerScenario__c logScenario = this.logScenariosById.get(log.TransactionScenario__c);
                 matchingScenarioRule = scenarioToScenarioRule.get(logScenario.UniqueId__c);
             }
 
@@ -232,23 +232,23 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return logStatusNameToStatus;
     }
 
-    private Map<Id, LogScenario__c> queryLogScenarios(List<Log__c> logs) {
+    private Map<Id, LoggerScenario__c> queryLogScenarios(List<Log__c> logs) {
         List<Id> logScenarioIds = new List<Id>();
         for (Log__c log : logs) {
-            if (log.LogScenario__c != null) {
-                logScenarioIds.add(log.LogScenario__c);
+            if (log.TransactionScenario__c != null) {
+                logScenarioIds.add(log.TransactionScenario__c);
             }
         }
 
-        Map<Id, LogScenario__c> logScenariosById = new Map<Id, LogScenario__c>();
+        Map<Id, LoggerScenario__c> logScenariosById = new Map<Id, LoggerScenario__c>();
 
         if (logScenarioIds.isEmpty() == true) {
             return logScenariosById;
         }
 
-        List<LogScenario__c> matchingLogScenarios = LogManagementDataSelector.getInstance().getLogScenariosById(logScenarioIds);
+        List<LoggerScenario__c> matchingLogScenarios = LogManagementDataSelector.getInstance().getLoggerScenariosById(logScenarioIds);
         if (matchingLogScenarios != null && matchingLogScenarios.isEmpty() == false) {
-            logScenariosById = new Map<Id, LogScenario__c>(matchingLogScenarios);
+            logScenariosById = new Map<Id, LoggerScenario__c>(matchingLogScenarios);
         }
         return logScenariosById;
     }
@@ -269,11 +269,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return usersByUsername;
     }
 
-    private static Map<String, LogScenarioRule__mdt> queryLogScenarioRules(List<Log__c> logs, Map<Id, LogScenario__c> logScenariosById) {
+    private static Map<String, LogScenarioRule__mdt> queryLogScenarioRules(List<Log__c> logs, Map<Id, LoggerScenario__c> logScenariosById) {
         Set<String> scenarios = new Set<String>();
         for (Log__c log : logs) {
-            if (log.LogScenario__c != null && logScenariosById.containsKey(log.LogScenario__c) == true) {
-                scenarios.add(logScenariosById.get(log.LogScenario__c).UniqueId__c);
+            if (log.TransactionScenario__c != null && logScenariosById.containsKey(log.TransactionScenario__c) == true) {
+                scenarios.add(logScenariosById.get(log.TransactionScenario__c).UniqueId__c);
             }
         }
 

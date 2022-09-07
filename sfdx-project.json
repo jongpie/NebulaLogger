@@ -12,9 +12,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.8.2.NEXT",
-            "versionName": "New Log Scenario Custom Object",
-            "versionDescription": "Added new custom object LogScenario__c to provide a more robust way to manage data related to scenario-based logging",
+            "versionNumber": "4.8.1.NEXT",
+            "versionName": "New Logger Scenario Custom Object",
+            "versionDescription": "Added new custom object LoggerScenario__c to provide a more robust way to manage data related to scenario-based logging",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },

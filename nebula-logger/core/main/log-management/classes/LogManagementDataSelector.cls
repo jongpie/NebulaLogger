@@ -180,12 +180,12 @@ public without sharing class LogManagementDataSelector {
     }
 
     /**
-     * @description Returns a `List<LogScenario__c>` of records with the specified log scenario IDs
+     * @description Returns a `List<LoggerScenario__c>` of records with the specified log scenario IDs
      * @param  logScenarioIds The list of `ID` of the `Log__c` records to query
-     * @return                The list of matching `LogScenario__c` records
+     * @return                The list of matching `LoggerScenario__c` records
      */
-    public List<LogScenario__c> getLogScenariosById(List<Id> logScenarioIds) {
-        return [SELECT Id, OwnerId, UniqueId__c FROM LogScenario__c WHERE Id IN :logScenarioIds];
+    public List<LoggerScenario__c> getLoggerScenariosById(List<Id> logScenarioIds) {
+        return [SELECT Id, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :logScenarioIds];
     }
 
     /**

@@ -23,7 +23,7 @@ private class LoggerEngineDataSelector_Tests {
             FROM AuthSession
             WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL // TODO this won't work in an async context (when running as Automated Process)
         ];
-        AuthSession expctedAuthSession = sessions.isEmpty() ? null : sessions.get(0);
+        AuthSession expectedAuthSession = sessions.isEmpty() ? null : sessions.get(0);
         System.assertEquals(1, Limits.getQueries());
 
         AuthSession returnedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();

@@ -2,9 +2,9 @@
 layout: default
 ---
 
-## LogScenarioHandler class
+## LoggerScenarioHandler class
 
-Handles trigger events for the `LogScenario__c` object
+Handles trigger events for the `LoggerScenario__c` object
 
 ---
 

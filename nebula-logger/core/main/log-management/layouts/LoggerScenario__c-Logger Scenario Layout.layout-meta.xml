@@ -99,7 +99,7 @@
         <fields>TotalLogEntries__c</fields>
         <fields>TotalERRORLogEntries__c</fields>
         <fields>TotalWARNLogEntries__c</fields>
-        <relatedList>Log__c.LogScenario__c</relatedList>
+        <relatedList>Log__c.TransactionScenario__c</relatedList>
         <sortField>StartTime__c</sortField>
         <sortOrder>Desc</sortOrder>
     </relatedLists>

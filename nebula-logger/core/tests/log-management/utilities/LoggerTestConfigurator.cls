@@ -132,8 +132,8 @@ public without sharing class LoggerTestConfigurator {
             Schema.LogEntry__c.SObjectType => LogEntryHandler.class,
             Schema.LogEntryEvent__e.SObjectType => LogEntryEventHandler.class,
             Schema.LogEntryTag__c.SObjectType => LogEntryTagHandler.class,
-            Schema.LoggerTag__c.SObjectType => LoggerTagHandler.class,
-            Schema.LogScenario__c.SObjectType => LogScenarioHandler.class
+            Schema.LoggerScenario__c.SObjectType => LoggerScenarioHandler.class,
+            Schema.LoggerTag__c.SObjectType => LoggerTagHandler.class
         };
         for (Schema.SObjectType sobjectType : sobjectTypeToDefaultHandlerApexClass.keySet()) {
             setMock(

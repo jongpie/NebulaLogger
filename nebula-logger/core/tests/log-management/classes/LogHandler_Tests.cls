@@ -285,13 +285,13 @@ private class LogHandler_Tests {
         upsert Logger.getUserSettings();
         LogScenarioRule__mdt logScenarioRule = new LogScenarioRule__mdt(Scenario__c = 'some scenario', NumberOfDaysToRetainLogs__c = daysToRetainLog);
         LoggerTestConfigurator.setMock(logScenarioRule);
-        LogScenario__c logScenario = (LogScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LogScenario__c.SObjectType)
+        LoggerScenario__c logScenario = (LoggerScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerScenario__c.SObjectType)
             .populateRequiredFields()
             .getRecord();
         logScenario.UniqueId__c = logScenarioRule.Scenario__c;
         LoggerDataStore.getDatabase().insertRecord(logScenario);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-        log.LogScenario__c = logScenario.Id;
+        log.TransactionScenario__c = logScenario.Id;
 
         LoggerDataStore.getDatabase().insertRecord(log);
 

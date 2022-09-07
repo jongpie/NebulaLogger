@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>LogScenarioHandler config</label>
+    <label>LoggerScenarioHandler config</label>
     <protected>false</protected>
     <values>
         <field>IsEnabled__c</field>
@@ -12,7 +12,7 @@
     </values>
     <values>
         <field>SObjectHandlerApexClass__c</field>
-        <value xsi:type="xsd:string">LogScenarioHandler</value>
+        <value xsi:type="xsd:string">LoggerScenarioHandler</value>
     </values>
     <values>
         <field>SObjectTypeOverride__c</field>
@@ -20,6 +20,6 @@
     </values>
     <values>
         <field>SObjectType__c</field>
-        <value xsi:type="xsd:string">LogScenario__c</value>
+        <value xsi:type="xsd:string">LoggerScenario__c</value>
     </values>
 </CustomMetadata>

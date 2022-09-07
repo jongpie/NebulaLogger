@@ -35,7 +35,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>parentFieldApiName</name>
-                    <value>LogScenario__c.Id</value>
+                    <value>LoggerScenario__c.Id</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListApiName</name>
@@ -65,7 +65,7 @@
             <componentInstance>
                 <componentInstanceProperties>
                     <name>parentFieldApiName</name>
-                    <value>LogScenario__c.Id</value>
+                    <value>LoggerScenario__c.Id</value>
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>relatedListApiName</name>
@@ -169,7 +169,7 @@
         <type>Region</type>
     </flexiPageRegions>
     <masterLabel>Log Scenario Record Page</masterLabel>
-    <sobjectType>LogScenario__c</sobjectType>
+    <sobjectType>LoggerScenario__c</sobjectType>
     <template>
         <name>flexipage:recordHomeSingleColTemplateDesktop</name>
     </template>
