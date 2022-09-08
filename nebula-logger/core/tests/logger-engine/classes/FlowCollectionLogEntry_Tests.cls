@@ -229,7 +229,7 @@ private class FlowCollectionLogEntry_Tests {
     }
 
     @IsTest
-    static void it_should_set_log_scenario() {
+    static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();

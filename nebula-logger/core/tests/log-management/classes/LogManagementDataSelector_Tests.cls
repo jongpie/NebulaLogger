@@ -139,7 +139,7 @@ private class LogManagementDataSelector_Tests {
     static void it_returns_logs_for_specified_log_transaction_ids() {
         LoggerSObjectHandler.shouldExecute(false);
         List<Log__c> logs = new List<Log__c>();
-        Set<String> logTransactionIds = new Set<String>();
+        List<String> logTransactionIds = new List<String>();
         for (Integer i = 0; i < 5; i++) {
             Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
             log.TransactionId__c = 'some_fake_transaction_id_' + i;

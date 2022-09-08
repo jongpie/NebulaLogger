@@ -8,15 +8,29 @@
 private class LoggerEngineDataSelector_Tests {
     @IsTest
     static void it_returns_cached_auth_session() {
-        // AuthSession is always null in a test context, which makes this object/method more difficult to test
-        AuthSession expectedAuthSession = null;
-        System.assertEquals(0, Limits.getQueries());
+        List<AuthSession> sessions = [
+            SELECT
+                Id,
+                LoginType,
+                LoginHistoryId,
+                LoginHistory.Application,
+                LoginHistory.Browser,
+                LoginHistory.Platform,
+                LogoutUrl,
+                SessionSecurityLevel,
+                SessionType,
+                SourceIp
+            FROM AuthSession
+            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
+        ];
+        AuthSession expectedAuthSession = sessions.isEmpty() ? null : sessions.get(0);
+        System.assertEquals(1, Limits.getQueries());
 
         AuthSession returnedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
 
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(2, Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedAuthSession();
-        System.assertEquals(1, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedAuthSession, returnedAuthSession);
     }
 
