@@ -12,12 +12,13 @@
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <label>Logger Console</label>
     <navType>Console</navType>
+    <tabs>LoggerSettings</tabs>
+    <tabs>LogEntryEventStream</tabs>
+    <tabs>LoggerScenario__c</tabs>
     <tabs>Log__c</tabs>
     <tabs>LogEntry__c</tabs>
     <tabs>LogEntryTag__c</tabs>
     <tabs>LoggerTag__c</tabs>
-    <tabs>LogEntryEventStream</tabs>
-    <tabs>LoggerSettings</tabs>
     <tabs>LogBatchPurge</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
@@ -37,6 +38,9 @@
         <mappings>
             <fieldName>Log__c</fieldName>
             <tab>LogEntry__c</tab>
+        </mappings>
+        <mappings>
+            <tab>LoggerScenario__c</tab>
         </mappings>
         <mappings>
             <tab>Log__c</tab>

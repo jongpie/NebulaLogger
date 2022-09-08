@@ -15,6 +15,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     private List<Log__c> logs;
     @TestVisible
     private Map<Id, Log__c> oldLogsById;
+    private Map<Id, LoggerScenario__c> loggerScenariosById;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -26,6 +27,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logs = (List<Log__c>) triggerNew;
+        this.loggerScenariosById = queryLoggerScenarios(this.logs);
 
         this.setClosedStatusFields();
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
@@ -106,7 +108,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setParentLog() {
-        Set<String> parentLogTransactionIds = new Set<String>();
+        List<String> parentLogTransactionIds = new List<String>();
         for (Log__c log : this.logs) {
             if (String.isNotBlank(log.ParentLogTransactionId__c) == true) {
                 parentLogTransactionIds.add(log.ParentLogTransactionId__c);
@@ -140,7 +142,11 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             LoggerSettings__c loggingUserSettings = getLoggingUserSettings(log);
 
             // Load the configured scenario rule (if one exists)
-            LogScenarioRule__mdt matchingScenarioRule = LogScenarioRule.getInstance(log.Scenario__c);
+            LogScenarioRule__mdt matchingScenarioRule;
+            if (log.TransactionScenario__c != null) {
+                LoggerScenario__c loggerScenario = this.loggerScenariosById.get(log.TransactionScenario__c);
+                matchingScenarioRule = LogScenarioRule.getInstance(loggerScenario.UniqueId__c);
+            }
 
             Integer daysToRetainLog = Integer.valueOf(
                 matchingScenarioRule != null ? matchingScenarioRule.NumberOfDaysToRetainLogs__c : loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c
@@ -222,6 +228,27 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         }
 
         return logStatusNameToStatus;
+    }
+
+    private static Map<Id, LoggerScenario__c> queryLoggerScenarios(List<Log__c> logs) {
+        List<Id> loggerScenarioIds = new List<Id>();
+        for (Log__c log : logs) {
+            if (log.TransactionScenario__c != null) {
+                loggerScenarioIds.add(log.TransactionScenario__c);
+            }
+        }
+
+        Map<Id, LoggerScenario__c> loggerScenariosById = new Map<Id, LoggerScenario__c>();
+
+        if (loggerScenarioIds.isEmpty() == true) {
+            return loggerScenariosById;
+        }
+
+        List<LoggerScenario__c> matchingLoggerScenarios = LogManagementDataSelector.getInstance().getLoggerScenariosById(loggerScenarioIds);
+        if (matchingLoggerScenarios != null && matchingLoggerScenarios.isEmpty() == false) {
+            loggerScenariosById = new Map<Id, LoggerScenario__c>(matchingLoggerScenarios);
+        }
+        return loggerScenariosById;
     }
 
     private static Map<String, Id> queryQueues(List<String> possibleQueueNames) {

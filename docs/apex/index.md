@@ -116,6 +116,10 @@ Builds and sends email notifications when internal exceptions occur within the l
 
 Provides details to LWCs about Logger&apos;s `SObjects`, using `@AuraEnabled` properties
 
+### [LoggerScenarioHandler](Log-Management/LoggerScenarioHandler)
+
+Handles trigger events for the `LoggerScenario__c` object
+
 ### [LoggerSettingsController](Log-Management/LoggerSettingsController)
 
 Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`

@@ -276,19 +276,22 @@ private class LogHandler_Tests {
     }
 
     @IsTest
-    static void it_should_set_retention_details_when_configured_via_log_scenario_rules() {
+    static void it_should_set_retention_details_when_configured_via_logger_scenario_rules() {
         setupConfigurations();
         Integer defaultDaysToRetainLog = 1;
         Integer daysToRetainLog = 90;
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
         upsert Logger.getUserSettings();
-        String transactionScenarioName = 'some scenario';
-        LoggerTestConfigurator.setMock(
-            new LogScenarioRule__mdt(IsEnabled__c = true, Scenario__c = transactionScenarioName, NumberOfDaysToRetainLogs__c = daysToRetainLog)
-        );
+        LogScenarioRule__mdt logScenarioRule = new LogScenarioRule__mdt(Scenario__c = 'some scenario', NumberOfDaysToRetainLogs__c = daysToRetainLog);
+        LoggerTestConfigurator.setMock(logScenarioRule);
+        LoggerScenario__c logScenario = (LoggerScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerScenario__c.SObjectType)
+            .populateRequiredFields()
+            .getRecord();
+        logScenario.UniqueId__c = logScenarioRule.Scenario__c;
+        LoggerDataStore.getDatabase().insertRecord(logScenario);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-        log.Scenario__c = transactionScenarioName;
+        log.TransactionScenario__c = logScenario.Id;
 
         LoggerDataStore.getDatabase().insertRecord(log);
 

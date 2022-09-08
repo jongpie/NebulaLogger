@@ -53,7 +53,8 @@ function Get-Formatted-Package-Version-Number {
     # In sfdx-project.json, the packageDirectories section uses version number format W.X.Y.Z (all dots "." as delimiters)
     # but in packageAliases, it uses the format W.X.Y-Z (last delimiter is a dash "-")
     [int]$lastDotIndex = $packageVersionNumber.LastIndexOf('.')
-    $cleanedPackageVersionNumber = $packageVersionNumber.remove($lastDotIndex, 1).insert($lastDotIndex, "-")
+    $cleanedPackageVersionNumber = $packageVersionNumber.SubString(0, $lastDotIndex)
+    Write-Debug "Formatted Package Version Number $cleanedPackageVersionNumber"
     return $cleanedPackageVersionNumber
 }
 
