@@ -2703,7 +2703,7 @@ global with sharing class Logger {
 
         transactionScenario = scenario;
 
-        LogScenarioRule__mdt matchingScenarioRule = LogScenarioRule.getInstance(scenario);
+        LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
             LoggerSettings__c userSettings = getUserSettings();
             if (String.isNotBlank(matchingScenarioRule.IsLoggerEnabled__c) == true) {

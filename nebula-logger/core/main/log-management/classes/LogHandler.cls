@@ -142,16 +142,16 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             LoggerSettings__c loggingUserSettings = getLoggingUserSettings(log);
 
             // Load the configured scenario rule (if one exists)
-            LogScenarioRule__mdt matchingScenarioRule;
+            LoggerScenarioRule__mdt matchingScenarioRule;
             if (log.TransactionScenario__c != null) {
                 LoggerScenario__c loggerScenario = this.loggerScenariosById.get(log.TransactionScenario__c);
-                matchingScenarioRule = LogScenarioRule.getInstance(loggerScenario.UniqueId__c);
+                matchingScenarioRule = LoggerScenarioRule.getInstance(loggerScenario.UniqueId__c);
             }
 
             Integer daysToRetainLog = Integer.valueOf(
                 matchingScenarioRule != null ? matchingScenarioRule.NumberOfDaysToRetainLogs__c : loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c
             );
-            // TODO Add new field to LogScenarioRule__mdt for setting the default log purge action (same concept as matchingScenarioRule.NumberOfDaysToRetainLogs__c above)
+            // TODO Add new field to LoggerScenarioRule__mdt for setting the default log purge action (same concept as matchingScenarioRule.NumberOfDaysToRetainLogs__c above)
 
             // When daysToRetainLog is null, assume that the log should be kept forever,
             // and set the retention date to null so that LogBatchPurger filters out/ignores the record

@@ -8,33 +8,33 @@
  * @description Provides a centralized way to load scenario rules that override behavior
  *              within Nebula Logger
  */
-public without sharing class LogScenarioRule {
-    private static final Map<String, LogScenarioRule__mdt> SCENARIO_NAME_TO_SCENARIO_RULE = loadLogScenarioRules();
+public without sharing class LoggerScenarioRule {
+    private static final Map<String, LoggerScenarioRule__mdt> SCENARIO_NAME_TO_SCENARIO_RULE = loadLogScenarioRules();
 
     /**
-     * @description Returns a map containing any enabled `LogScenarioRule__mdt` records with
+     * @description Returns a map containing any enabled `LoggerScenarioRule__mdt` records with
      *              valid `StartTime__c` and `EndTime__c` values (null is considered valid)
-     * @return   The current transaction's cached `Map<String, LogScenarioRule__mdt>`, where the key
-     *           is the log scenario (configured in `LogScenarioRule__mdt.Scenario__c`)
+     * @return   The current transaction's cached `Map<String, LoggerScenarioRule__mdt>`, where the key
+     *           is the log scenario (configured in `LoggerScenarioRule__mdt.Scenario__c`)
      */
-    public static Map<String, LogScenarioRule__mdt> getAll() {
+    public static Map<String, LoggerScenarioRule__mdt> getAll() {
         return SCENARIO_NAME_TO_SCENARIO_RULE;
     }
 
     /**
-     * @description Returns the `LogScenarioRule__mdt` with the matching scenario,
-     *              based on the field `LogScenarioRule__mdt.Scenario__c`
+     * @description Returns the `LoggerScenarioRule__mdt` with the matching scenario,
+     *              based on the field `LoggerScenarioRule__mdt.Scenario__c`
      * @param  scenario The name of the scenario
-     * @return          The matching `LogScenarioRule__mdt` if one is found, or `null`
+     * @return          The matching `LoggerScenarioRule__mdt` if one is found, or `null`
      */
-    public static LogScenarioRule__mdt getInstance(String scenario) {
+    public static LoggerScenarioRule__mdt getInstance(String scenario) {
         return SCENARIO_NAME_TO_SCENARIO_RULE.get(scenario);
     }
 
     @TestVisible
-    private static void setMock(LogScenarioRule__mdt scenarioRule) {
+    private static void setMock(LoggerScenarioRule__mdt scenarioRule) {
         if (String.isBlank(scenarioRule.Scenario__c) == true) {
-            throw new IllegalArgumentException('Scenario__c is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
+            throw new IllegalArgumentException('Scenario__c is required on `LoggerScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
         }
 
         if (isValid(scenarioRule) == true) {
@@ -42,9 +42,9 @@ public without sharing class LogScenarioRule {
         }
     }
 
-    private static Map<String, LogScenarioRule__mdt> loadLogScenarioRules() {
-        Map<String, LogScenarioRule__mdt> scenarioRules = new Map<String, LogScenarioRule__mdt>();
-        for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
+    private static Map<String, LoggerScenarioRule__mdt> loadLogScenarioRules() {
+        Map<String, LoggerScenarioRule__mdt> scenarioRules = new Map<String, LoggerScenarioRule__mdt>();
+        for (LoggerScenarioRule__mdt scenarioRule : LoggerScenarioRule__mdt.getAll().values()) {
             if (isValid(scenarioRule) == true) {
                 scenarioRules.put(scenarioRule.Scenario__c, scenarioRule);
             }
@@ -57,7 +57,7 @@ public without sharing class LogScenarioRule {
         return scenarioRules;
     }
 
-    private static Boolean isValid(LogScenarioRule__mdt scenarioRule) {
+    private static Boolean isValid(LoggerScenarioRule__mdt scenarioRule) {
         Boolean isValid = false;
         if (scenarioRule.IsEnabled__c == true) {
             Datetime currentTime = System.now();

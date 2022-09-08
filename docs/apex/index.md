@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Nebula Logger for Apex
+# Classes
 
 ## Logger Engine
 
@@ -132,20 +132,6 @@ Handles trigger events for the `LoggerTag__c` object
 
 Controller class for the lightning web component `related-log-entries`
 
-## Configuration
-
-### [LogScenarioRule](Configuration/LogScenarioRule)
-
-Provides a centralized way to load scenario rules that override behavior within Nebula Logger
-
-### [LoggerParameter](Configuration/LoggerParameter)
-
-Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
-
-### [LoggerPlugin](Configuration/LoggerPlugin)
-
-The core of the plugin framework, used to create custom Apex &amp; Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger` based on configurations stored in the custom metadata type `LoggerPlugin_t`
-
 ## Test Utilities
 
 ### [LoggerMockDataCreator](/Test-Utilities/LoggerMockDataCreator)
@@ -159,3 +145,17 @@ Utility class used to mock any data-related operations for the database, event b
 ### [LoggerTestConfigurator](/Test-Utilities/LoggerTestConfigurator)
 
 Utility class used to help with setting up Nebula Logger&apos;s configurations within a test context. These methods are specific to metadata implemented within Nebula Logger. These methods can be used when writing Apex tests for plugins.
+
+## Configuration
+
+### [LoggerParameter](Configuration/LoggerParameter)
+
+Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
+
+### [LoggerPlugin](Configuration/LoggerPlugin)
+
+The core of the plugin framework, used to create custom Apex &amp; Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger` based on configurations stored in the custom metadata type `LoggerPlugin_t`
+
+### [LoggerScenarioRule](Configuration/LoggerScenarioRule)
+
+Provides a centralized way to load scenario rules that override behavior within Nebula Logger

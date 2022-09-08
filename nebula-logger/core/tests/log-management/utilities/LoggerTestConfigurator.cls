@@ -97,11 +97,11 @@ public without sharing class LoggerTestConfigurator {
     }
 
     /**
-     * @description Loads the mock `LogScenarioRule__mdt` during test execution
-     * @param  mock The mock instance of `LogScenarioRule__mdt` to load
+     * @description Loads the mock `LoggerScenarioRule__mdt` during test execution
+     * @param  mock The mock instance of `LoggerScenarioRule__mdt` to load
      */
-    public static void setMock(LogScenarioRule__mdt mock) {
-        LogScenarioRule.setMock(mock);
+    public static void setMock(LoggerScenarioRule__mdt mock) {
+        LoggerScenarioRule.setMock(mock);
     }
 
     /**
