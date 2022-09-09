@@ -40,10 +40,10 @@
             <tab>LogEntry__c</tab>
         </mappings>
         <mappings>
-            <tab>LoggerScenario__c</tab>
+            <tab>Log__c</tab>
         </mappings>
         <mappings>
-            <tab>Log__c</tab>
+            <tab>LoggerScenario__c</tab>
         </mappings>
         <mappings>
             <tab>LoggerSettings</tab>

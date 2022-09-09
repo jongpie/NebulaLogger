@@ -21,8 +21,9 @@ global with sharing class Logger {
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
-    private static final Boolean USE_FIRST_SPECIFIED_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
+    private static final Boolean USE_FIRST_SPECIFIED_SCENARIO_AS_TRANSACTION_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
 
+    private static String currentEntryScenario = getUserSettings().DefaultLogScenario__c;
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
     private static String lastSaveMethodNameUsed;
@@ -2687,7 +2688,7 @@ global with sharing class Logger {
      * @return   The value currently set as the current transaction's scenario
      */
     global static String getScenario() {
-        return transactionScenario;
+        return currentEntryScenario;
     }
 
     /**
@@ -2697,12 +2698,15 @@ global with sharing class Logger {
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     global static void setScenario(String scenario) {
-        if (USE_FIRST_SPECIFIED_SCENARIO == true && String.isNotBlank(transactionScenario) == true) {
+        if (USE_FIRST_SPECIFIED_SCENARIO_AS_TRANSACTION_SCENARIO == false || String.isBlank(transactionScenario) == true) {
+            transactionScenario = scenario;
+        }
+
+        if (String.isNotBlank(scenario) == true && scenario == currentEntryScenario) {
             return;
         }
 
-        transactionScenario = scenario;
-
+        currentEntryScenario = scenario;
         LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
             LoggerSettings__c userSettings = getUserSettings();
@@ -2810,7 +2814,7 @@ global with sharing class Logger {
             if (logEntryEventBuilder.shouldSave() == true) {
                 LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
                 logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
-                logEntryEvent.Scenario__c = transactionScenario;
+                logEntryEvent.TransactionScenario__c = transactionScenario;
 
                 logEntryEvents.add(logEntryEvent);
             }
@@ -2923,12 +2927,14 @@ global with sharing class Logger {
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
         LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave, IGNORED_APEX_CLASSES);
         if (logEntryEventBuilder.shouldSave() == true) {
-            logEntryEventBuilder.getLogEntryEvent().LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
-            logEntryEventBuilder.getLogEntryEvent().SystemMode__c = getCurrentQuiddity()?.name();
-            logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
-            logEntryEventBuilder.getLogEntryEvent().TransactionId__c = getTransactionId();
-            logEntryEventBuilder.getLogEntryEvent().UserLoggingLevel__c = userLoggingLevel.name();
-            logEntryEventBuilder.getLogEntryEvent().UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
+            LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+            logEntryEvent.EntryScenario__c = currentEntryScenario;
+            logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
+            logEntryEvent.TransactionEntryNumber__c = currentTransactionEntryNumber++;
+            logEntryEvent.TransactionId__c = getTransactionId();
+            logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
+            logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 

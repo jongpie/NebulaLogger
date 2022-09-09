@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Scenario__c</fullName>
-    <businessStatus>DeprecateCandidate</businessStatus>
+    <fullName>EntryScenario__c</fullName>
+    <businessStatus>Active</businessStatus>
     <complianceGroup>CCPA;GDPR;PII</complianceGroup>
     <externalId>false</externalId>
     <isFilteringDisabled>false</isFilteringDisabled>
     <isNameField>false</isNameField>
     <isSortingDisabled>false</isSortingDisabled>
-    <label>DEPRECATED: Scenario</label>
+    <label>Entry Scenario</label>
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

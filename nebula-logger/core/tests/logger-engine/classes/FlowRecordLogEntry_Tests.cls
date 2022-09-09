@@ -247,7 +247,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowRecordEntry.scenario, publishedLogEntryEvent.Scenario__c);
+        System.assertEquals(flowRecordEntry.scenario, publishedLogEntryEvent.TransactionScenario__c);
     }
 
     @IsTest

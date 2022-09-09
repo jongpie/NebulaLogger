@@ -201,6 +201,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntry__c.EntryScenario__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.EpochTimestamp__c</field>
         <readable>true</readable>

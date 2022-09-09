@@ -146,6 +146,13 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             if (log.TransactionScenario__c != null) {
                 LoggerScenario__c loggerScenario = this.loggerScenariosById.get(log.TransactionScenario__c);
                 matchingScenarioRule = LoggerScenarioRule.getInstance(loggerScenario.UniqueId__c);
+                if (
+                    matchingScenarioRule != null &&
+                    (matchingScenarioRule.IsLogRetentionOverrideEnabled__c == null ||
+                    Boolean.valueOf(matchingScenarioRule.IsLogRetentionOverrideEnabled__c) != true)
+                ) {
+                    matchingScenarioRule = null;
+                }
             }
 
             Integer daysToRetainLog = Integer.valueOf(

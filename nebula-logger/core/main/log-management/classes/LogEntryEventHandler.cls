@@ -75,14 +75,22 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void upsertLoggerScenarios() {
+        List<Schema.SObjectField> scenarioFields = new List<Schema.SObjectField>{
+            Schema.LogEntryEvent__e.EntryScenario__c,
+            Schema.LogEntryEvent__e.TransactionScenario__c
+        };
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
-            if (String.isBlank(logEntryEvent.Scenario__c) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.Scenario__c)) {
-                continue;
-            }
+            for (Schema.SObjectField scenarioField : scenarioFields) {
+                String scenario = (String) logEntryEvent.get(scenarioField);
 
-            LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = logEntryEvent.Scenario__c, UniqueId__c = logEntryEvent.Scenario__c);
-            loggerScenario.setOptions(DML_OPTIONS);
-            SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
+                if (String.isBlank(scenario) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(scenario)) {
+                    continue;
+                }
+
+                LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
+                loggerScenario.setOptions(DML_OPTIONS);
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
+            }
         }
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
@@ -141,7 +149,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
                 ProfileId__c = logEntryEvent.ProfileId__c,
                 ProfileName__c = logEntryEvent.ProfileName__c,
-                Scenario__c = logEntryEvent.Scenario__c,
+                Scenario__c = logEntryEvent.TransactionScenario__c,
                 SessionId__c = logEntryEvent.SessionId__c,
                 SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c,
                 SessionType__c = logEntryEvent.SessionType__c,
@@ -161,8 +169,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 UserType__c = logEntryEvent.UserType__c
             );
 
-            if (String.isNotBlank(logEntryEvent.Scenario__c) == true && SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.Scenario__c) == true) {
-                log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.Scenario__c).Id;
+            if (
+                String.isNotBlank(logEntryEvent.TransactionScenario__c) == true &&
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c) == true
+            ) {
+                log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.TransactionScenario__c).Id;
             }
 
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
@@ -274,6 +285,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,
                 TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
             );
+
+            if (
+                String.isNotBlank(logEntryEvent.EntryScenario__c) == true &&
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c) == true
+            ) {
+                logEntry.EntryScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.EntryScenario__c).Id;
+            }
+
             logEntry.setOptions(DML_OPTIONS);
 
             this.logEntries.add(logEntry);

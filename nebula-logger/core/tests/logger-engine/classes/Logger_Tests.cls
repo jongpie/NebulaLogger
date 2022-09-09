@@ -166,27 +166,63 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_use_the_first_specified_scenario_when_parameter_is_true() {
+    static void it_should_use_the_first_specified_scenario_as_transaction_scenario_when_parameter_is_true() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));
         String firstMockScenario = 'the first test scenario specified for this transaction';
         String secondMockScenario = 'the second test scenario specified for this transaction';
 
         Logger.setScenario(firstMockScenario);
+        Logger.info('hello');
         Logger.setScenario(secondMockScenario);
+        Logger.info('world');
+        Logger.saveLog();
 
-        System.assertEquals(firstMockScenario, Logger.getScenario(), 'The first specified scenario should have been used');
+        System.assertEquals(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents()) {
+            System.assertEquals(firstMockScenario, logEntryEvent.TransactionScenario__c);
+        }
     }
 
     @IsTest
-    static void it_should_use_the_last_specified_scenario_when_parameter_is_false() {
+    static void it_should_use_the_last_specified_scenario_as_transaction_scenario_when_parameter_is_false() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(false)));
         String firstMockScenario = 'the first test scenario specified for this transaction';
         String secondMockScenario = 'the second test scenario specified for this transaction';
 
         Logger.setScenario(firstMockScenario);
+        Logger.info('hello');
         Logger.setScenario(secondMockScenario);
+        Logger.info('world');
+        Logger.saveLog();
 
-        System.assertEquals(secondMockScenario, Logger.getScenario(), 'The last specified scenario should have been used');
+        System.assertEquals(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents()) {
+            System.assertEquals(secondMockScenario, logEntryEvent.TransactionScenario__c, 'The last specified scenario should have been used');
+        }
+    }
+
+    @IsTest
+    static void it_should_set_transaction_scenario_and_entry_scenario_for_published_log_entry_events() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String firstMockScenario = 'the first test scenario specified for this transaction';
+        String secondMockScenario = 'the second test scenario specified for this transaction';
+
+        Logger.setScenario(firstMockScenario);
+        Logger.info('hello');
+        Logger.setScenario(secondMockScenario);
+        Logger.info('world');
+        Logger.saveLog();
+
+        System.assertEquals(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        List<LogEntryEvent__e> publishedLogEntryEvents = (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents();
+        LogEntryEvent__e firstLogEntryEvent = publishedLogEntryEvents.get(0);
+        System.assertEquals(firstMockScenario, firstLogEntryEvent.EntryScenario__c);
+        System.assertEquals(firstMockScenario, firstLogEntryEvent.TransactionScenario__c);
+        LogEntryEvent__e secondLogEntryEvent = publishedLogEntryEvents.get(1);
+        System.assertEquals(secondMockScenario, secondLogEntryEvent.EntryScenario__c);
+        System.assertEquals(firstMockScenario, secondLogEntryEvent.TransactionScenario__c);
     }
 
     @IsTest
@@ -225,7 +261,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_logger_is_enabled_setting_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_logger_is_enabled_setting_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             IsLoggerEnabled__c = String.valueOf(!Logger.getUserSettings().IsEnabled__c),
@@ -243,7 +279,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_anonymous_mode_setting_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_anonymous_mode_setting_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsAnonymousModeEnabled__c = String.valueOf(!Logger.getUserSettings().IsAnonymousModeEnabled__c),
             IsEnabled__c = true,
@@ -259,7 +295,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_apex_system_debugging_setting_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_apex_system_debugging_setting_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsApexSystemDebugLoggingEnabled__c = String.valueOf(!Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c),
             IsEnabled__c = true,
@@ -275,7 +311,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_data_masking_setting_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_data_masking_setting_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsDataMaskingEnabled__c = String.valueOf(!Logger.getUserSettings().IsDataMaskingEnabled__c),
             IsEnabled__c = true,
@@ -291,7 +327,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_javascript_console_logging_setting_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_javascript_console_logging_setting_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             IsJavaScriptConsoleLoggingEnabled__c = String.valueOf(!Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c),
@@ -310,7 +346,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_record_field_stripping_setting_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_record_field_stripping_setting_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             IsRecordFieldStrippingEnabled__c = String.valueOf(!Logger.getUserSettings().IsRecordFieldStrippingEnabled__c),
@@ -326,7 +362,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_saving_enabled_setting_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_saving_enabled_setting_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             IsSavingEnabled__c = String.valueOf(!Logger.getUserSettings().IsSavingEnabled__c),
@@ -342,7 +378,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_save_method_setting_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_save_method_setting_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             SaveMethod__c = Logger.SaveMethod.QUEUEABLE.name(),
@@ -358,7 +394,7 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_override_user_logging_level_when_matching_log_scenario_rule_is_configured() {
+    static void it_should_override_user_logging_level_when_matching_logger_scenario_rule_is_configured() {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             Scenario__c = 'Some scenario',
@@ -371,22 +407,6 @@ private class Logger_Tests {
         Logger.setScenario(scenarioRule.Scenario__c);
 
         System.assertEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
-    }
-
-    @IsTest
-    static void it_should_set_scenario_when_platform_events_are_published() {
-        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        String mockScenario = 'some test scenario for this transaction';
-
-        Logger.info('hello');
-        Logger.setScenario(mockScenario);
-        Logger.info('world');
-        Logger.saveLog();
-
-        System.assertEquals(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
-        for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents()) {
-            System.assertEquals(mockScenario, logEntryEvent.Scenario__c);
-        }
     }
 
     @IsTest
