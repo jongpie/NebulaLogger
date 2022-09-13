@@ -90,6 +90,10 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>IsPlatformEventStorageLocationEnabled__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>PlatformEventStorageLocation__c</field>
             </layoutItems>
             <layoutItems>

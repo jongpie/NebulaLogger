@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
-@IsTest(IsParallel=true)
+@IsTest(IsParallel=false)
 private class LogEntryEventHandler_Tests {
     private static final String MOCK_RELEASE_NUMBER = '230.12.2';
     private static final String MOCK_RELEASE_VERSION = 'Spring \'21 Patch 12.2';
@@ -58,7 +58,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_is_disabled() {
+    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_location_is_null_in_logger_settings() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
@@ -73,6 +73,47 @@ private class LogEntryEventHandler_Tests {
         settings.DefaultPlatformEventStorageLocation__c = null;
         upsert settings;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+    }
+
+    @IsTest
+    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_location_is_null_in_logger_scenario_rule() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+        LoggerSettings__c settings = Logger.getUserSettings();
+        settings.IsEnabled__c = true;
+        settings.IsSavingEnabled__c = true;
+        settings.DefaultPlatformEventStorageLocation__c = LogEntryEventHandler.DEFAULT_STORAGE_LOCATION_NAME;
+        upsert settings;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.TransactionScenario__c = 'some scenario with a configured rule';
+        LoggerScenarioRule.setMock(
+            new LoggerScenarioRule__mdt(
+                IsEnabled__c = true,
+                IsPlatformEventStorageLocationEnabled__c = String.valueOf(true),
+                PlatformEventStorageLocation__c = null,
+                Scenario__c = logEntryEvent.TransactionScenario__c
+            )
+        );
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -381,6 +422,34 @@ private class LogEntryEventHandler_Tests {
 
         Log__c log = getLog();
         System.assertEquals(automatedProcessUser.Id, log.OwnerId);
+    }
+
+    @IsTest
+    static void it_should_set_logger_scenario_owner_as_log_owner_when_log_assignment_enabled_via_logger_scenario_rule() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        User loggerScenarioOwner = LoggerMockDataCreator.createUser();
+        insert loggerScenarioOwner;
+        LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = 'Some Scenario', OwnerId = loggerScenarioOwner.Id, UniqueId__c = 'Some Scenario');
+        insert loggerScenario;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.TransactionScenario__c = loggerScenario.UniqueId__c;
+        LoggerScenarioRule.setMock(
+            new LoggerScenarioRule__mdt(
+                IsEnabled__c = true,
+                IsLogAssignmentEnabled__c = String.valueOf(true),
+                Scenario__c = logEntryEvent.TransactionScenario__c
+            )
+        );
+
+        LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        Log__c log = getLog();
+        System.assertEquals(loggerScenario.OwnerId, log.OwnerId);
     }
 
     // TODO - testing topics is tricky. Within the unlocked package, we can test it,
