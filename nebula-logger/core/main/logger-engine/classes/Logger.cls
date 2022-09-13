@@ -2442,11 +2442,7 @@ global with sharing class Logger {
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults);
     }
 
     /**
@@ -2457,10 +2453,6 @@ global with sharing class Logger {
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.DeleteResult> resultsToLog = new List<Database.DeleteResult>();
         for (Database.DeleteResult deleteResult : deleteResults) {
             if (deleteResult.isSuccess() == false) {
@@ -2468,11 +2460,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2483,11 +2472,7 @@ global with sharing class Logger {
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults);
     }
 
     /**
@@ -2498,10 +2483,6 @@ global with sharing class Logger {
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.MergeResult> resultsToLog = new List<Database.MergeResult>();
         for (Database.MergeResult mergeResult : mergeResults) {
             if (mergeResult.isSuccess() == false) {
@@ -2509,11 +2490,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2524,11 +2502,7 @@ global with sharing class Logger {
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults);
     }
 
     /**
@@ -2539,10 +2513,6 @@ global with sharing class Logger {
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.SaveResult> resultsToLog = new List<Database.SaveResult>();
         for (Database.SaveResult saveResult : saveResults) {
             if (saveResult.isSuccess() == false) {
@@ -2550,11 +2520,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2565,11 +2532,7 @@ global with sharing class Logger {
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults);
     }
 
     /**
@@ -2580,10 +2543,6 @@ global with sharing class Logger {
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.UpsertResult> resultsToLog = new List<Database.UpsertResult>();
         for (Database.UpsertResult upsertResult : upsertResults) {
             if (upsertResult.isSuccess() == false) {
@@ -2591,11 +2550,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2606,11 +2562,7 @@ global with sharing class Logger {
      * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults);
     }
 
     /**
@@ -2621,10 +2573,6 @@ global with sharing class Logger {
      * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.UndeleteResult> resultsToLog = new List<Database.UndeleteResult>();
         for (Database.UndeleteResult undeleteResult : undeleteResults) {
             if (undeleteResult.isSuccess() == false) {
@@ -2632,11 +2580,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**

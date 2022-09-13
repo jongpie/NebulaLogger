@@ -6116,7 +6116,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6134,7 +6134,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6151,7 +6151,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
@@ -6173,7 +6173,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6191,7 +6191,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6208,7 +6208,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
@@ -6230,7 +6230,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6248,7 +6248,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6265,7 +6265,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
@@ -6287,7 +6287,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6305,7 +6305,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6322,7 +6322,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
@@ -6344,7 +6344,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6362,7 +6362,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6379,7 +6379,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
@@ -6401,7 +6401,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6419,7 +6419,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6436,7 +6436,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
@@ -6458,7 +6458,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6476,7 +6476,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6493,7 +6493,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
@@ -6515,7 +6515,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6533,7 +6533,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6550,7 +6550,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
@@ -6572,7 +6572,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6590,7 +6590,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6607,7 +6607,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
@@ -6629,7 +6629,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6647,7 +6647,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6664,7 +6664,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
