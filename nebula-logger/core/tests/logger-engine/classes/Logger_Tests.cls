@@ -144,7 +144,7 @@ private class Logger_Tests {
     static void it_should_set_scenario_when_default_scenario_configured() {
         String mockScenario = 'some test scenario for this transaction';
         LoggerSettings__c userSettings = LoggerSettings__c.getInstance();
-        userSettings.DefaultLogScenario__c = mockScenario;
+        userSettings.DefaultScenario__c = mockScenario;
         upsert userSettings;
 
         String currentScenario = Logger.getScenario();
@@ -152,7 +152,7 @@ private class Logger_Tests {
         System.assertEquals(
             mockScenario,
             currentScenario,
-            'The value of LoggerSettings__c.DefaultLogScenario__c should have been used as the current transaction scenario'
+            'The value of LoggerSettings__c.DefaultScenario__c should have been used as the current transaction scenario'
         );
     }
 

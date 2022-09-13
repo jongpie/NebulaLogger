@@ -145,11 +145,11 @@
             "localApiName": "LoggingLevel__c",
             "type": "String"
         },
-        "DefaultLogScenario__c": {
-            "apiName": "DefaultLogScenario__c",
+        "DefaultScenario__c": {
+            "apiName": "DefaultScenario__c",
             "inlineHelpText": "Sets a default scenario for the transaction",
             "label": "Log Scenario",
-            "localApiName": "DefaultLogScenario__c",
+            "localApiName": "DefaultScenario__c",
             "type": "String"
         }
     },

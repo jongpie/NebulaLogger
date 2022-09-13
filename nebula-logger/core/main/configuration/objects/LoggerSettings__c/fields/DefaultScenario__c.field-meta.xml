@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>DefaultLogScenario__c</fullName>
+    <fullName>DefaultScenario__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>CCPA;GDPR;PII</complianceGroup>
     <description>Sets a default scenario for the transaction</description>
     <externalId>false</externalId>
     <inlineHelpText>Sets a default scenario for the transaction</inlineHelpText>
-    <label>Log Scenario</label>
+    <label>Scenario</label>
     <length>255</length>
     <required>false</required>
     <securityClassification>Confidential</securityClassification>

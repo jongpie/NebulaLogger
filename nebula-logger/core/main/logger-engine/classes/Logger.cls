@@ -23,7 +23,7 @@ global with sharing class Logger {
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
     private static final Boolean USE_FIRST_SPECIFIED_SCENARIO_AS_TRANSACTION_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
 
-    private static String currentEntryScenario = getUserSettings().DefaultLogScenario__c;
+    private static String currentEntryScenario = getUserSettings().DefaultScenario__c;
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
     private static String lastSaveMethodNameUsed;
@@ -31,7 +31,7 @@ global with sharing class Logger {
     @TestVisible
     private static Integer saveLogCallCount = 0;
     private static Boolean suspendSaving = false;
-    private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
+    private static String transactionScenario = getUserSettings().DefaultScenario__c;
     private static LoggerSettings__c userSettings;
 
     private static String transactionSaveMethodName {
