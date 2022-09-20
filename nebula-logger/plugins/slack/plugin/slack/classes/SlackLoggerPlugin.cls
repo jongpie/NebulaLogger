@@ -202,14 +202,14 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
             FieldDto exceptionStackTraceField = new FieldDto();
             exceptionStackTraceField.isShort = false;
             exceptionStackTraceField.title = Schema.LogEntry__c.ExceptionStackTrace__c.getDescribe().getLabel();
-            exceptionStackTraceField.value = '`' + lastLogEntry.ExceptionStackTrace__c + '`';
+            exceptionStackTraceField.value = '```\n' + lastLogEntry.ExceptionStackTrace__c + '\n```';
             notification.fields.add(exceptionStackTraceField);
         }
 
         FieldDto stackTraceField = new FieldDto();
         stackTraceField.isShort = false;
         stackTraceField.title = Schema.LogEntry__c.StackTrace__c.getDescribe().getLabel();
-        stackTraceField.value = '`' + lastLogEntry.StackTrace__c + '`';
+        stackTraceField.value = '```\n' + lastLogEntry.StackTrace__c + '\n```';
         notification.fields.add(stackTraceField);
 
         // TODO: switch to dynamically creating Slack DTO fields based on a new `Log__c` field set parameter

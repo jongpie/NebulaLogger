@@ -3,7 +3,7 @@
 [![Build](https://github.com/jongpie/NebulaLogger/actions/workflows/build.yml/badge.svg)](https://github.com/jongpie/NebulaLogger/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/jongpie/NebulaLogger/branch/main/graph/badge.svg?token=1DJPDRM3N4)](https://codecov.io/gh/jongpie/NebulaLogger)
 
-Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
+The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
 ## Unlocked Package - v4.8.2
 
@@ -21,8 +21,6 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 ## Features
 
-TODO update/rewrite
-
 1. Easily add log entries via Apex, Lightning Components (lwc & aura), Flow & Process Builder to generate 1 consolidated, unified log
 2. Manage & report on logging data using the `Log__c` and `LogEntry__c` objects
 3. Leverage `LogEntryEvent__e` platform events for real-time monitoring & integrations
@@ -36,10 +34,10 @@ TODO update/rewrite
 
 Learn more about the design and history of the project on [Joys Of Apex blog post](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
 
-## TODO Architecture
+## Architecture Overview
 
-TODO summary
-[View Architecture Overview](https://raw.githubusercontent.com/wiki/jongpie/NebulaLogger/images/nebula-logger-architecture-overview.png)
+Nebula Logger is built natively on Salesforce - everything is built using Apex, lightning components and various types of objects, and there are no external dependencies. To learn more about the architecture, check out the
+[architecture overview in the wiki](https://raw.githubusercontent.com/wiki/jongpie/NebulaLogger/images/nebula-logger-architecture-overview.png).
 
 <a href="https://github.com/jongpie/NebulaLogger/wiki/Architecture" target="_blank">
     <img src="https://raw.githubusercontent.com/wiki/jongpie/NebulaLogger/images/nebula-logger-architecture-overview.png" width="300">
