@@ -23,15 +23,16 @@ global with sharing class Logger {
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
     private static final Boolean USE_FIRST_SPECIFIED_SCENARIO_AS_TRANSACTION_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
 
-    private static String currentEntryScenario = getUserSettings().DefaultScenario__c;
+    private static String currentEntryScenario;
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
     private static String lastSaveMethodNameUsed;
+    private static List<String> orderedScenarios = new List<String>();
     private static String parentLogTransactionId;
     @TestVisible
     private static Integer saveLogCallCount = 0;
     private static Boolean suspendSaving = false;
-    private static String transactionScenario = getUserSettings().DefaultScenario__c;
+    private static String transactionScenario;
     private static LoggerSettings__c userSettings;
 
     private static String transactionSaveMethodName {
@@ -59,6 +60,7 @@ global with sharing class Logger {
         // The rest of the codebase should use a method in Logger.cls
         System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
         System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
+        setScenario(getUserSettings().DefaultScenario__c);
     }
 
     /**
@@ -2637,8 +2639,7 @@ global with sharing class Logger {
     }
 
     /**
-     * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
-     *              and `Log__c.Scenario__c`, and can be used to filter & group logs
+     * @description Sets the current scenario, which can be used to identify modules or groupings of  for the current transaction
      * @param  scenario The name to use for the current transaction's scenario
      */
     @SuppressWarnings('PMD.NcssMethodCount')
@@ -2652,6 +2653,7 @@ global with sharing class Logger {
         }
 
         currentEntryScenario = scenario;
+        orderedScenarios.add(scenario);
         LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
         if (matchingScenarioRule != null) {
             LoggerSettings__c userSettings = getUserSettings();
@@ -2683,6 +2685,30 @@ global with sharing class Logger {
                 userSettings.LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
             }
         }
+    }
+
+    /**
+     * @description End the specified scenario, if it's the currently active scenario,
+     *              and rolls back to the previous scenario (if a previous scenario was specified in the current transaction)
+     * @param  scenario The name of the scenario to end
+     */
+    public static void endScenario(String scenario) {
+        if (String.isBlank(scenario) == true || scenario != currentEntryScenario || orderedScenarios.isEmpty() == true) {
+            return;
+        }
+
+        Integer lastScenarioIndex = orderedScenarios.size() - 1;
+        orderedScenarios.remove(lastScenarioIndex);
+        String previousScenario;
+        if (orderedScenarios.isEmpty() == false) {
+            Integer previousScenarioIndex = orderedScenarios.size() - 1;
+            previousScenario = orderedScenarios.remove(previousScenarioIndex);
+        }
+        if (String.isBlank(previousScenario) == true) {
+            currentEntryScenario = null;
+        }
+
+        setScenario(previousScenario);
     }
 
     /**

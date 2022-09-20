@@ -226,6 +226,76 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_end_scenario_when_no_scenario_was_previously_set() {
+        System.assertEquals(null, Logger.getScenario());
+
+        Logger.endScenario('some scenario that was never set');
+
+        System.assertEquals(null, Logger.getScenario());
+    }
+
+    @IsTest
+    static void it_should_end_scenario_when_specified_scenario_matches() {
+        System.assertEquals(null, Logger.getScenario());
+        String mockScenario = 'some test scenario for this transaction';
+        Logger.setScenario(mockScenario);
+        System.assertEquals(mockScenario, Logger.getScenario(), 'The mock scenario should have been set as the current scenario');
+
+        Logger.endScenario(mockScenario);
+
+        System.assertEquals(null, Logger.getScenario(), 'The mock scenario should have been cleared');
+    }
+
+    @IsTest
+    static void it_should_revert_to_previous_scenario_when_current_scenario_is_ended() {
+        System.assertEquals(null, Logger.getScenario());
+        String firstMockScenario = 'some test scenario ';
+        Logger.setScenario(firstMockScenario);
+        System.assertEquals(firstMockScenario, Logger.getScenario());
+        String secondMockScenario = 'another test scenario ';
+        Logger.setScenario(secondMockScenario);
+        System.assertEquals(secondMockScenario, Logger.getScenario());
+
+        Logger.endScenario(secondMockScenario);
+
+        System.assertEquals(firstMockScenario, Logger.getScenario(), 'The scenario should have reverted to the first scenario');
+    }
+
+    @IsTest
+    static void it_should_revert_to_previous_scenario_rule_when_current_scenario_is_ended() {
+        LoggingLevel originalLoggingLevel = Logger.getUserLoggingLevel();
+        System.assertEquals(null, Logger.getScenario());
+        String firstMockScenario = 'some test scenario ';
+        LoggerScenarioRule__mdt firstMockScenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            Scenario__c = firstMockScenario,
+            UserLoggingLevel__c = LoggingLevel.ERROR.name()
+        );
+        LoggerScenarioRule.setMock(firstMockScenarioRule);
+        System.assertNotEquals(originalLoggingLevel.name(), firstMockScenarioRule.UserLoggingLevel__c);
+        Logger.setScenario(firstMockScenario);
+        System.assertEquals(firstMockScenario, Logger.getScenario());
+        String secondMockScenario = 'another test scenario ';
+        LoggerScenarioRule__mdt secondMockScenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            Scenario__c = secondMockScenario,
+            UserLoggingLevel__c = LoggingLevel.WARN.name()
+        );
+        LoggerScenarioRule.setMock(secondMockScenarioRule);
+        System.assertNotEquals(firstMockScenarioRule.UserLoggingLevel__c, secondMockScenarioRule.UserLoggingLevel__c);
+        Logger.setScenario(secondMockScenario);
+        System.assertEquals(secondMockScenario, Logger.getScenario());
+        System.assertEquals(secondMockScenarioRule.UserLoggingLevel__c, Logger.getUserLoggingLevel().name());
+
+        Logger.endScenario(secondMockScenario);
+
+        System.assertEquals(firstMockScenario, Logger.getScenario(), 'The scenario should have reverted to the first scenario');
+        System.assertEquals(firstMockScenarioRule, LoggerScenarioRule.getInstance(firstMockScenario));
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(secondMockScenario));
+        System.assertEquals(firstMockScenarioRule.UserLoggingLevel__c, Logger.getUserLoggingLevel().name());
+    }
+
+    @IsTest
     static void it_should_not_ignore_origin_when_apex_class_type_not_specified() {
         // Don't bother testing stack trace logic when using a namespace prefix - there are
         // some platform limitations that prevent these tests from behaving as expected
