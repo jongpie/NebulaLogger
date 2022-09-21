@@ -89,9 +89,11 @@
         "ejs": ">=3.1.7",
         "follow-redirects": ">=1.14.8",
         "glob-parent": ">=5.1.2",
+        "got": ">=11.8.5",
         "json-schema": ">=0.4.0",
         "markdown-it": ">=12.3.2",
         "marked": ">=4.0.10",
+        "moment": ">=2.29.4",
         "nanoid": ">=3.1.31",
         "shelljs": ">=0.8.5",
         "simple-get": ">=4.0.1"

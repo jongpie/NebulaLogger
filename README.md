@@ -36,7 +36,7 @@ Learn more about the design and history of the project on [Joys Of Apex blog pos
 
 ## Architecture Overview
 
-Nebula Logger is built natively on Salesforce - everything is built using Apex, lightning components and various types of objects, and there are no external dependencies. To learn more about the architecture, check out the
+Nebula Logger is built natively on Salesforce, using Apex, lightning components and various types of objects. There are no required external dependencies. To learn more about the architecture, check out the
 [architecture overview in the wiki](https://raw.githubusercontent.com/wiki/jongpie/NebulaLogger/images/nebula-logger-architecture-overview.png).
 
 <a href="https://github.com/jongpie/NebulaLogger/wiki/Architecture" target="_blank">
