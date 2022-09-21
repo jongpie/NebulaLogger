@@ -18,12 +18,13 @@ private class LoggerScenarioRule_Tests {
         }
 
         System.assertNotEquals(null, thrownIllegalArgumentException);
+        System.assertEquals(true, thrownIllegalArgumentException.getMessage().startsWith('Scenario__c is required on `LoggerScenarioRule__mdt'));
     }
 
     @IsTest
     static void it_should_load_all_mock_records() {
         List<LoggerScenarioRule__mdt> mockRules = new List<LoggerScenarioRule__mdt>();
-        for (Integer i = 0; i < 10; i++) {
+        for (Integer i = 0; i < 5; i++) {
             LoggerScenarioRule__mdt mockRule = new LoggerScenarioRule__mdt(IsEnabled__c = true, Scenario__c = 'Some Scenario #' + i);
             LoggerScenarioRule.setMock(mockRule);
             mockRules.add(mockRule);

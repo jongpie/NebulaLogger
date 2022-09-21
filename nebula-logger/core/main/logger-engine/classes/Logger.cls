@@ -2462,7 +2462,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2492,7 +2492,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2522,7 +2522,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2552,7 +2552,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
@@ -2582,7 +2582,7 @@ global with sharing class Logger {
             }
         }
 
-        Boolean shouldSave = isEnabled(loggingLevel) == true && resultsToLog.isEmpty() == false;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
         return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 

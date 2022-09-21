@@ -206,6 +206,7 @@ private class ComponentLogger_Tests {
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.assertEquals('Component', publishedLogEntryEvent.OriginType__c);
         System.assertEquals(componentLogEntry.scenario, publishedLogEntryEvent.TransactionScenario__c);
+        System.assertEquals(componentLogEntry.scenario, publishedLogEntryEvent.EntryScenario__c);
     }
 
     @IsTest
