@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------//
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount, PMD.NcssTypeCount')
-@IsTest(IsParallel=true)
+@IsTest(IsParallel=false)
 private class LogEntryEventHandler_Tests {
     private static final String MOCK_RELEASE_NUMBER = '230.12.2';
     private static final String MOCK_RELEASE_VERSION = 'Spring \'21 Patch 12.2';
@@ -58,7 +58,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_is_disabled() {
+    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_location_is_null_in_logger_settings() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
@@ -90,13 +90,54 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
+    static void it_should_not_create_log_or_log_entry_data_when_platform_event_storage_location_is_null_in_logger_scenario_rule() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        Integer countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+        Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+        LoggerSettings__c settings = Logger.getUserSettings();
+        settings.IsEnabled__c = true;
+        settings.IsSavingEnabled__c = true;
+        settings.DefaultPlatformEventStorageLocation__c = LogEntryEventHandler.DEFAULT_STORAGE_LOCATION_NAME;
+        upsert settings;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.TransactionScenario__c = 'some scenario with a configured rule';
+        LoggerScenarioRule.setMock(
+            new LoggerScenarioRule__mdt(
+                IsEnabled__c = true,
+                IsPlatformEventStorageLocationEnabled__c = String.valueOf(true),
+                PlatformEventStorageLocation__c = null,
+                Scenario__c = logEntryEvent.TransactionScenario__c
+            )
+        );
+
+        Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        countOfLogs = [SELECT COUNT() FROM Log__c];
+        System.assertEquals(0, countOfLogs);
+        countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
+        System.assertEquals(0, countOfLogEntries);
+    }
+
+    @IsTest
     static void it_should_normalize_event_data_into_log_and_log_entry_when_no_scenario_specified() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
-        logEntryEvent.Scenario__c = null;
+        logEntryEvent.TransactionScenario__c = null;
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -161,7 +202,8 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
-        logEntryEvent.Scenario__c = '0'.repeat(Schema.LogEntryEvent__e.Scenario__c.getDescribe().getLength());
+        logEntryEvent.EntryScenario__c = null;
+        logEntryEvent.TransactionScenario__c = '0'.repeat(Schema.LogEntryEvent__e.Scenario__c.getDescribe().getLength());
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
@@ -172,6 +214,7 @@ private class LogEntryEventHandler_Tests {
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
+        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
         Log__c log = getLog();
         System.assertNotEquals(null, log.TransactionScenario__c);
         System.assertEquals(1, log.LogEntries__r.size());
@@ -182,7 +225,7 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_upsert_logger_scenarios_when_scenario_specified() {
+    static void it_should_upsert_logger_scenarios_when_transaction_scenario_specified() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
@@ -191,9 +234,11 @@ private class LogEntryEventHandler_Tests {
         insert existingLogScenario;
         System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
-        firstLogEntryEvent.Scenario__c = existingLogScenario.UniqueId__c;
+        firstLogEntryEvent.EntryScenario__c = null;
+        firstLogEntryEvent.TransactionScenario__c = existingLogScenario.UniqueId__c;
         LogEntryEvent__e secondLogEntryEvent = createLogEntryEvent();
-        secondLogEntryEvent.Scenario__c = existingLogScenario.UniqueId__c;
+        secondLogEntryEvent.EntryScenario__c = null;
+        secondLogEntryEvent.TransactionScenario__c = existingLogScenario.UniqueId__c;
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ firstLogEntryEvent, secondLogEntryEvent };
 
         List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
@@ -215,7 +260,93 @@ private class LogEntryEventHandler_Tests {
         for (Integer i = 0; i < logEntryEvents.size(); i++) {
             LogEntryEvent__e logEntryEvent = logEntryEvents.get(i);
             LogEntry__c logEntry = log.LogEntries__r.get(i);
-            System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+            System.assertEquals(logEntryEvent.TransactionScenario__c, log.TransactionScenario__r.UniqueId__c);
+            validateLogFields(logEntryEvent, log);
+            validateLogEntryFields(logEntryEvent, logEntry);
+        }
+    }
+
+    @IsTest
+    static void it_should_upsert_logger_scenarios_when_entry_scenario_specified() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LoggerScenario__c existingLoggerScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
+        insert existingLoggerScenario;
+        String newScenario = 'some new value';
+        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
+        LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
+        firstLogEntryEvent.EntryScenario__c = existingLoggerScenario.UniqueId__c;
+        firstLogEntryEvent.TransactionScenario__c = null;
+        LogEntryEvent__e secondLogEntryEvent = createLogEntryEvent();
+        secondLogEntryEvent.EntryScenario__c = newScenario;
+        secondLogEntryEvent.TransactionScenario__c = null;
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ firstLogEntryEvent, secondLogEntryEvent };
+
+        List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.assertEquals(logEntryEvents.size(), saveResults.size());
+        for (Database.SaveResult saveResult : saveResults) {
+            System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        }
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        System.assertEquals(2, [SELECT COUNT() FROM LoggerScenario__c]);
+        Log__c log = getLog();
+        System.assertEquals(logEntryEvents.size(), log.LogEntries__r.size());
+        for (Integer i = 0; i < logEntryEvents.size(); i++) {
+            LogEntryEvent__e logEntryEvent = logEntryEvents.get(i);
+            LogEntry__c logEntry = log.LogEntries__r.get(i);
+            System.assertEquals(logEntryEvent.EntryScenario__c, logEntry.EntryScenario__r.UniqueId__c);
+            validateLogFields(logEntryEvent, log);
+            validateLogEntryFields(logEntryEvent, logEntry);
+        }
+    }
+
+    @IsTest
+    static void it_should_upsert_logger_scenarios_when_transaction_and_entry_scenarios_specified() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LoggerScenario__c existingLoggerScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
+        insert existingLoggerScenario;
+        String newTransactionScenario = 'some new value';
+        String newEntryScenario = 'some OTHER new value';
+        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
+        LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
+        firstLogEntryEvent.EntryScenario__c = existingLoggerScenario.UniqueId__c;
+        firstLogEntryEvent.TransactionScenario__c = newTransactionScenario;
+        LogEntryEvent__e secondLogEntryEvent = createLogEntryEvent();
+        secondLogEntryEvent.EntryScenario__c = newEntryScenario;
+        secondLogEntryEvent.TransactionScenario__c = newTransactionScenario;
+        List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>{ firstLogEntryEvent, secondLogEntryEvent };
+
+        List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        System.assertEquals(logEntryEvents.size(), saveResults.size());
+        for (Database.SaveResult saveResult : saveResults) {
+            System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+        }
+        System.assertEquals(
+            1,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
+            'Handler class should have executed one time for AFTER_INSERT'
+        );
+        System.assertEquals(3, [SELECT COUNT() FROM LoggerScenario__c]);
+        Log__c log = getLog();
+        System.assertEquals(logEntryEvents.size(), log.LogEntries__r.size());
+        for (Integer i = 0; i < logEntryEvents.size(); i++) {
+            LogEntryEvent__e logEntryEvent = logEntryEvents.get(i);
+            LogEntry__c logEntry = log.LogEntries__r.get(i);
+            System.assertEquals(logEntryEvent.TransactionScenario__c, log.TransactionScenario__r.UniqueId__c);
+            System.assertEquals(logEntryEvent.EntryScenario__c, logEntry.EntryScenario__r.UniqueId__c);
             validateLogFields(logEntryEvent, log);
             validateLogEntryFields(logEntryEvent, logEntry);
         }
@@ -291,6 +422,34 @@ private class LogEntryEventHandler_Tests {
 
         Log__c log = getLog();
         System.assertEquals(automatedProcessUser.Id, log.OwnerId);
+    }
+
+    @IsTest
+    static void it_should_set_logger_scenario_owner_as_log_owner_when_log_assignment_enabled_via_logger_scenario_rule() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        User loggerScenarioOwner = LoggerMockDataCreator.createUser();
+        insert loggerScenarioOwner;
+        LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = 'Some Scenario', OwnerId = loggerScenarioOwner.Id, UniqueId__c = 'Some Scenario');
+        insert loggerScenario;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        logEntryEvent.TransactionScenario__c = loggerScenario.UniqueId__c;
+        LoggerScenarioRule.setMock(
+            new LoggerScenarioRule__mdt(
+                IsEnabled__c = true,
+                IsLogAssignmentEnabled__c = String.valueOf(true),
+                Scenario__c = logEntryEvent.TransactionScenario__c
+            )
+        );
+
+        LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        Log__c log = getLog();
+        System.assertEquals(loggerScenario.OwnerId, log.OwnerId);
     }
 
     // TODO - testing topics is tricky. Within the unlocked package, we can test it,
@@ -805,6 +964,9 @@ private class LogEntryEventHandler_Tests {
                         DatabaseResultCollectionType__c,
                         DatabaseResultJson__c,
                         DatabaseResultType__c,
+                        EntryScenario__c,
+                        EntryScenario__r.Name,
+                        EntryScenario__r.UniqueId__c,
                         EpochTimestamp__c,
                         ExceptionStackTrace__c,
                         ExceptionType__c,
@@ -908,12 +1070,6 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
-        System.assertEquals(
-            logEntryEvent.Scenario__c?.left(Schema.LoggerScenario__c.Name.getDescribe().getLength()),
-            log.TransactionScenario__r?.Name,
-            'log.TransactionScenario__c was not properly set'
-        );
-        System.assertEquals(logEntryEvent.Scenario__c, log.TransactionScenario__r.UniqueId__c, 'log.TransactionScenario__r.UniqueId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');
@@ -924,6 +1080,16 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.TimeZoneId__c, log.TimeZoneId__c, 'log.TimeZoneId__c was not properly set');
         System.assertEquals(logEntryEvent.TimeZoneName__c, log.TimeZoneName__c, 'log.TimeZoneName__c was not properly set');
         System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c, 'log.TransactionId__c was not properly set');
+        System.assertEquals(
+            logEntryEvent.TransactionScenario__c?.left(Schema.LoggerScenario__c.Name.getDescribe().getLength()),
+            log.TransactionScenario__r?.Name,
+            'log.TransactionScenario__c was not properly set'
+        );
+        System.assertEquals(
+            logEntryEvent.TransactionScenario__c,
+            log.TransactionScenario__r.UniqueId__c,
+            'log.TransactionScenario__r.UniqueId__c was not properly set'
+        );
         System.assertEquals(logEntryEvent.UserLoggingLevel__c, log.UserLoggingLevel__c, 'log.UserLoggingLevel__c was not properly set');
         System.assertEquals(logEntryEvent.UserLoggingLevelOrdinal__c, log.UserLoggingLevelOrdinal__c, 'log.UserLoggingLevelOrdinal__c was not properly set');
         // System.assertEquals(currentUser.UserRoleId, log.UserRoleId__c, 'log.UserRoleId__c was not properly set');

@@ -3,12 +3,12 @@
 [![Build](https://github.com/jongpie/NebulaLogger/actions/workflows/build.yml/badge.svg)](https://github.com/jongpie/NebulaLogger/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/jongpie/NebulaLogger/branch/main/graph/badge.svg?token=1DJPDRM3N4)](https://codecov.io/gh/jongpie/NebulaLogger)
 
-Designed for Salesforce admins, developers & architects. A robust logger for Apex, Lightning Components, Flow, Process Builder & Integrations.
+The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.
 
-## Unlocked Package - v4.8.1
+## Unlocked Package - v4.8.2
 
-[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015luIQAQ)
-[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015luIQAQ)
+[![Install Unlocked Package in a Sandbox](./images/btn-install-unlocked-package-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lvuQAA)
+[![Install Unlocked Package in Production](./images/btn-install-unlocked-package-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lvuQAA)
 [![View Documentation](./images/btn-view-documentation.png)](https://jongpie.github.io/NebulaLogger/)
 
 ## Managed Package - v4.8.0
@@ -34,7 +34,14 @@ Designed for Salesforce admins, developers & architects. A robust logger for Ape
 
 Learn more about the design and history of the project on [Joys Of Apex blog post](https://www.joysofapex.com/advanced-logging-using-nebula-logger/)
 
----
+## Architecture Overview
+
+Nebula Logger is built natively on Salesforce, using Apex, lightning components and various types of objects. There are no required external dependencies. To learn more about the architecture, check out the
+[architecture overview in the wiki](https://raw.githubusercontent.com/wiki/jongpie/NebulaLogger/images/nebula-logger-architecture-overview.png).
+
+<a href="https://github.com/jongpie/NebulaLogger/wiki/Architecture" target="_blank">
+    <img src="https://raw.githubusercontent.com/wiki/jongpie/NebulaLogger/images/nebula-logger-architecture-overview.png" width="300">
+</a>
 
 ## Installing
 

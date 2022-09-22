@@ -10,13 +10,13 @@ if (countOfRecordsToUpdate == 0) {
 
 System.debug(countOfRecordsToUpdate + ' Log__c records have legacy field Scenario__c set but not LoggerScenario__c');
 
-Map<String, LoggerScenario__c> scenarioNameToLogScenario = new Map<String, LoggerScenario__c>();
+Map<String, LoggerScenario__c> scenarioNameToLoggerScenario = new Map<String, LoggerScenario__c>();
 List<Log__c> logsToUpdate = [SELECT Id, TransactionScenario__c, Scenario__c FROM Log__c WHERE TransactionScenario__c = null AND Scenario__c != null LIMIT :Limits.getLimitDmlRows()];
 for (Log__c log : logsToUpdate) {
-    scenarioNameToLogScenario.put(log.TransactionScenario__r.UniqueId__c, log.TransactionScenario__r.clone());
     log.TransactionScenario__r = new LoggerScenario__c(UniqueId__c = log.Scenario__c);
+    scenarioNameToLoggerScenario.put(log.Scenario__c, log.TransactionScenario__r.clone());
 }
-upsert scenarioNameToLogScenario.values() UniqueId__c;
+upsert scenarioNameToLoggerScenario.values() UniqueId__c;
 update logsToUpdate;
 
 countOfRecordsToUpdate = [SELECT COUNT() FROM Log__c WHERE TransactionScenario__c = null AND Scenario__c != null];

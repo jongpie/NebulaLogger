@@ -40,7 +40,6 @@ export default class RelatedLogEntries extends LightningElement {
     wiredLogEntries(result) {
         if (result.data) {
             let queryResult = this.processResult(result.data);
-
             this.queryResult = queryResult;
             this.showComponent = queryResult.isAccessible;
             this.title = queryResult.labelPlural + ' (' + queryResult.totalLogEntriesCount + ' Total)';

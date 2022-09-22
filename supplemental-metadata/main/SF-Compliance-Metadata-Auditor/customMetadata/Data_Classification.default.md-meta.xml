@@ -16,6 +16,6 @@
         <field>reportable_entity_json__c</field>
         <value
             xsi:type="xsd:string"
-        >[&quot;LogEntryArchive__b&quot;,&quot;LogEntryDataMaskRule__mdt&quot;,&quot;LogEntryEvent__e&quot;,&quot;LogEntryTagRule__mdt&quot;,&quot;LogEntryTag__c&quot;,&quot;LogEntry__c&quot;,&quot;LogScenarioRule__mdt&quot;,&quot;LogStatus__mdt&quot;,&quot;Log__c&quot;,&quot;LoggerParameter__mdt&quot;,&quot;LoggerPlugin__mdt&quot;,&quot;LogRetentionRule__mdt&quot;,&quot;LogRetentionRuleCondition__mdt&quot;,&quot;LoggerSObjectHandler__mdt&quot;,&quot;LoggerSObjectHandlerParameter__mdt&quot;,&quot;LoggerSObjectHandlerPlugin__mdt&quot;,&quot;LoggerSObjectHandlerPluginParameter__mdt&quot;,&quot;LoggerSettings__c&quot;,&quot;LoggerTag__c&quot;]</value>
+        >[&quot;LogEntryArchive__b&quot;,&quot;LogEntryDataMaskRule__mdt&quot;,&quot;LogEntryEvent__e&quot;,&quot;LogEntryTagRule__mdt&quot;,&quot;LogEntryTag__c&quot;,&quot;LogEntry__c&quot;,&quot;LoggerScenarioRule__mdt&quot;,&quot;LogStatus__mdt&quot;,&quot;Log__c&quot;,&quot;LoggerParameter__mdt&quot;,&quot;LoggerPlugin__mdt&quot;,&quot;LogRetentionRule__mdt&quot;,&quot;LogRetentionRuleCondition__mdt&quot;,&quot;LoggerSObjectHandler__mdt&quot;,&quot;LoggerSObjectHandlerParameter__mdt&quot;,&quot;LoggerSObjectHandlerPlugin__mdt&quot;,&quot;LoggerSObjectHandlerPluginParameter__mdt&quot;,&quot;LoggerSettings__c&quot;,&quot;LoggerTag__c&quot;]</value>
     </values>
 </CustomMetadata>

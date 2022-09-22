@@ -155,3 +155,7 @@ Provides a centralized way to load parameters for SObject handlers &amp; plugins
 ### [LoggerPlugin](Configuration/LoggerPlugin)
 
 The core of the plugin framework, used to create custom Apex &amp; Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger` based on configurations stored in the custom metadata type `LoggerPlugin_t`
+
+### [LoggerScenarioRule](Configuration/LoggerScenarioRule)
+
+Provides a centralized way to load scenario rules that override behavior within Nebula Logger

@@ -626,6 +626,16 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `endScenario(String scenario)` → `void`
+
+End the specified scenario, if it&apos;s the currently active scenario, and rolls back to the previous scenario (if a previous scenario was specified in the current transaction)
+
+##### Parameters
+
+| Param      | Description                     |
+| ---------- | ------------------------------- |
+| `scenario` | The name of the scenario to end |
+
 #### `error(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -4470,7 +4480,7 @@ Sets the default save method used when calling saveLog() - any subsequent calls 
 
 #### `setScenario(String scenario)` → `void`
 
-Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c` and `Log__c.Scenario__c`, and can be used to filter &amp; group logs
+Sets the current scenario, which can be used to identify modules or groupings of for the current transaction
 
 ##### Parameters
 

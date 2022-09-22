@@ -283,15 +283,20 @@ private class LogHandler_Tests {
         Date expectedRetentionDate = System.today().addDays(daysToRetainLog);
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = defaultDaysToRetainLog;
         upsert Logger.getUserSettings();
-        LogScenarioRule__mdt logScenarioRule = new LogScenarioRule__mdt(Scenario__c = 'some scenario', NumberOfDaysToRetainLogs__c = daysToRetainLog);
-        LoggerTestConfigurator.setMock(logScenarioRule);
-        LoggerScenario__c logScenario = (LoggerScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerScenario__c.SObjectType)
+        LoggerScenarioRule__mdt mockScenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsLogRetentionOverrideEnabled__c = String.valueOf(true),
+            Scenario__c = 'some scenario',
+            NumberOfDaysToRetainLogs__c = daysToRetainLog
+        );
+        LoggerTestConfigurator.setMock(mockScenarioRule);
+        LoggerScenario__c loggerScenario = (LoggerScenario__c) LoggerMockDataCreator.createDataBuilder(Schema.LoggerScenario__c.SObjectType)
             .populateRequiredFields()
             .getRecord();
-        logScenario.UniqueId__c = logScenarioRule.Scenario__c;
-        LoggerDataStore.getDatabase().insertRecord(logScenario);
+        loggerScenario.UniqueId__c = mockScenarioRule.Scenario__c;
+        LoggerDataStore.getDatabase().insertRecord(loggerScenario);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-        log.TransactionScenario__c = logScenario.Id;
+        log.TransactionScenario__c = loggerScenario.Id;
 
         LoggerDataStore.getDatabase().insertRecord(log);
 

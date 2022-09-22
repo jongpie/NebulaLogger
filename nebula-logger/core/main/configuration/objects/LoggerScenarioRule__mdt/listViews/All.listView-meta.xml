@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>MasterLabel</columns>
+    <columns>DeveloperName</columns>
+    <columns>Scenario__c</columns>
+    <columns>IsEnabled__c</columns>
+    <columns>StartTime__c</columns>
+    <columns>EndTime__c</columns>
+    <columns>IsLoggerEnabled__c</columns>
+    <columns>UserLoggingLevel__c</columns>
+    <columns>NumberOfDaysToRetainLogs__c</columns>
+    <columns>IsSavingEnabled__c</columns>
+    <columns>SaveMethod__c</columns>
+    <columns>IsLogAssignmentEnabled__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

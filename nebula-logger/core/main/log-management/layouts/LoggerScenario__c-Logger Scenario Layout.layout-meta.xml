@@ -103,13 +103,27 @@
         <sortField>StartTime__c</sortField>
         <sortOrder>Desc</sortOrder>
     </relatedLists>
+    <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>NAME</fields>
+        <fields>LoggedByUsernameLink__c</fields>
+        <fields>LoggingLevelWithImage__c</fields>
+        <fields>Log__c</fields>
+        <fields>LogTransactionId__c</fields>
+        <fields>OriginType__c</fields>
+        <fields>OriginLocation__c</fields>
+        <fields>Timestamp__c</fields>
+        <relatedList>LogEntry__c.EntryScenario__c</relatedList>
+        <sortField>Timestamp__c</sortField>
+        <sortOrder>Desc</sortOrder>
+    </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h63000007c9rO</masterLabel>
+        <masterLabel>00h63000007ebDj</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

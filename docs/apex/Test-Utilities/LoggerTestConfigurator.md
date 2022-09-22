@@ -126,15 +126,15 @@ Loads the mock `LoggerSObjectHandler_t` during test execution
 | ------ | ----------------------------------------------------- |
 | `mock` | The mock instance of `LoggerSObjectHandler_t` to load |
 
-#### `setMock(LogScenarioRule_t mock)` → `void`
+#### `setMock(LoggerScenarioRule_t mock)` → `void`
 
-Loads the mock `LogScenarioRule_t` during test execution
+Loads the mock `LoggerScenarioRule_t` during test execution
 
 ##### Parameters
 
-| Param  | Description                                      |
-| ------ | ------------------------------------------------ |
-| `mock` | The mock instance of `LogScenarioRule_t` to load |
+| Param  | Description                                         |
+| ------ | --------------------------------------------------- |
+| `mock` | The mock instance of `LoggerScenarioRule_t` to load |
 
 #### `setMock(LogStatus_t mock)` → `void`
 

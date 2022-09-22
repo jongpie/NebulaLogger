@@ -365,6 +365,7 @@
         <fields>Origin__c</fields>
         <fields>Message__c</fields>
         <fields>RecordDetailedLink__c</fields>
+        <fields>EntryScenario__c</fields>
         <fields>LoggingLevelWithImage__c</fields>
         <fields>TransactionEntryNumber__c</fields>
         <relatedList>LogEntry__c.Log__c</relatedList>
