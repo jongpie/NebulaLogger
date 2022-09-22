@@ -19,6 +19,7 @@ global with sharing class Logger {
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = getIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
+    private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
     private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
     private static final Boolean USE_FIRST_SPECIFIED_SCENARIO_AS_TRANSACTION_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
@@ -2929,11 +2930,13 @@ global with sharing class Logger {
     }
 
     private static SaveMethod getSaveMethod(String saveMethodName) {
-        try {
-            return SaveMethod.valueOf(saveMethodName);
-        } catch (NoSuchElementException ex) {
-            return null;
+        if (SAVE_METHOD_NAME_TO_SAVE_METHOD.isEmpty() == true) {
+            for (SaveMethod method : SaveMethod.values()) {
+                SAVE_METHOD_NAME_TO_SAVE_METHOD.put(method.name(), method);
+            }
         }
+
+        return SAVE_METHOD_NAME_TO_SAVE_METHOD.get(saveMethodName);
     }
 
     private static void setSaveMethod(String saveMethodName) {

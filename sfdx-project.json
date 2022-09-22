@@ -13,8 +13,8 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "versionNumber": "4.8.2.NEXT",
-            "versionName": "Revamped Logger Scenario Rule Object",
-            "versionDescription": "Replaced LogScenarioRule__mdt with an enhanced object LoggerScenarioRule__mdt to provide more control for scenario-based logging",
+            "versionName": "More Controls for Scenario-Based Logging",
+            "versionDescription": "Replaced LogScenarioRule__mdt with an enhanced object LoggerScenarioRule__mdt & added new method Logger.endScenario() to provide more control for scenario-based logging",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },

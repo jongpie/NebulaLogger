@@ -63,13 +63,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private List<LogEntryEvent__e> filterLogEntryEventsToSave(List<LogEntryEvent__e> newLogEntryEvents) {
+        final String trueString = String.valueOf(true);
         List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
         for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
             User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
             String platformEventStorageLocation = Logger.getUserSettings(loggingUser).DefaultPlatformEventStorageLocation__c;
             if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
                 LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
-                if (scenarioRule.IsPlatformEventStorageLocationEnabled__c == String.valueOf(true)) {
+                if (scenarioRule.IsPlatformEventStorageLocationEnabled__c == trueString) {
                     platformEventStorageLocation = scenarioRule.PlatformEventStorageLocation__c;
                 }
             }
