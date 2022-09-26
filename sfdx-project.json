@@ -12,9 +12,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.8.2.NEXT",
-            "versionName": "More Controls for Scenario-Based Logging",
-            "versionDescription": "Replaced LogScenarioRule__mdt with an enhanced object LoggerScenarioRule__mdt & added new method Logger.endScenario() to provide more control for scenario-based logging",
+            "versionNumber": "4.8.3.NEXT",
+            "versionName": "Improved LogEntry__c Formula Fields for Limits",
+            "versionDescription": "Updated formula fields on LogEntry__c for limits to include the percentage of each limit used & to include a flag indicator (>= 90% displays a red flag, < 90 && >= 80: displays a yellow flag, otherwise a green flag is displayed)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },
