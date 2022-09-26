@@ -4,7 +4,28 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
     <externalId>false</externalId>
-    <formula>TEXT(LimitsMobilePushApexCallsUsed__c) + &apos; / &apos; + TEXT(LimitsMobilePushApexCallsMax__c)</formula>
+    <formula>IMAGE(
+        CASE(
+            IF(
+                (LimitsMobilePushApexCallsUsed__c / LimitsMobilePushApexCallsMax__c * 100) &gt;= 90,
+                &quot;red&quot;,
+                IF(
+                (LimitsMobilePushApexCallsUsed__c / LimitsMobilePushApexCallsMax__c * 100) &lt; 90 &amp;&amp; (LimitsMobilePushApexCallsUsed__c / LimitsMobilePushApexCallsMax__c * 100) &gt;= 80,
+                &quot;yellow&quot;,
+                &quot;green&quot;
+                )
+            ),
+            &quot;green&quot;, &quot;/img/samples/flag_green.gif&quot;,
+            &quot;yellow&quot;, &quot;/img/samples/flag_yellow.gif&quot;,
+            &quot;red&quot;, &quot;/img/samples/flag_red.gif&quot;,
+            &quot;/s.gif&quot;
+        ),
+        &apos;&apos;, 16, 16
+    )
+
+    + &apos; &apos; +
+
+    TEXT(LimitsMobilePushApexCallsUsed__c) + &apos; / &apos; + TEXT(LimitsMobilePushApexCallsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsMobilePushApexCallsUsed__c / LimitsMobilePushApexCallsMax__c * 100, 2)) + &apos;%)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Mobile Push Apex Calls</label>
     <required>false</required>
