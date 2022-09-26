@@ -935,6 +935,7 @@ private class LogEntryEventHandler_Tests {
                 ParentLogTransactionId__c,
                 ProfileId__c,
                 ProfileName__c,
+                RequestId__c,
                 Scenario__c,
                 SessionId__c,
                 SessionSecurityLevel__c,
@@ -1070,6 +1071,7 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
         System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
+        System.assertEquals(logEntryEvent.RequestId__c, log.RequestId__c, 'log.RequestId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
         System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');

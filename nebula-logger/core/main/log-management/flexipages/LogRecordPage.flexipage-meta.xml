@@ -114,6 +114,22 @@
                     <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.RequestId__c</fieldItem>
+                <identifier>RecordRequestId_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.RequestId__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.StartTime__c</fieldItem>
                 <identifier>RecordStartTime__cField</identifier>
             </fieldInstance>

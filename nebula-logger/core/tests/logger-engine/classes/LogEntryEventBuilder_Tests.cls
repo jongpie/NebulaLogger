@@ -49,10 +49,10 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_not_run_queries_when_logging_disabled() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = 'true'));
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = 'true'));
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = 'true'));
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = String.valueOf(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));
         Logger.getUserSettings().IsEnabled__c = false;
         System.assertEquals(false, Logger.isEnabled());
         System.assertEquals(0, Limits.getQueries());
@@ -65,7 +65,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_not_run_authSession_query_when_disabled_via_logger_parameter() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = 'false'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(false)));
         System.assertEquals(false, LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
         System.assertEquals(0, Limits.getQueries());
 
@@ -88,7 +88,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_run_authSession_query_when_enabled_via_logger_parameter() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(true)));
         System.assertEquals(true, LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
         System.assertEquals(0, Limits.getQueries());
 
@@ -116,7 +116,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_not_run_organization_query_when_disabled_via_logger_parameter() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = 'false'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
         System.assertEquals(false, LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
         System.assertEquals(0, Limits.getQueries());
 
@@ -134,7 +134,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_run_organization_query_when_enabled_via_logger_parameter() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
         System.assertEquals(true, LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
         System.assertEquals(0, Limits.getQueries());
 
@@ -153,7 +153,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_not_run_user_query_when_disabled_via_logger_parameter() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = 'false'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(false)));
         System.assertEquals(false, LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY);
         System.assertEquals(0, Limits.getQueries());
 
@@ -172,7 +172,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_run_user_query_when_enabled_via_logger_parameter() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));
         System.assertEquals(true, LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY);
         System.assertEquals(0, Limits.getQueries());
 
@@ -741,6 +741,27 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_record_fields_for_record_when_platform_event() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        // To avoid creating a new platform event just for testing purposes, Nebula Logger's LogEntryEvent__e is reused
+        LogEntryEvent__e platformEvent = new LogEntryEvent__e();
+        builder.setRecordId(platformEvent);
+
+        System.assertEquals(1, builder.getLogEntryEvent().RecordCollectionSize__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(JSON.serializePretty(platformEvent), builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals('Platform Event Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(LogEntryEvent__e.SObjectType.getDescribe().getName(), builder.getLogEntryEvent().RecordSObjectType__c);
+    }
+
+    @IsTest
     static void it_should_skip_stripping_inaccessible_fields_for_aggregate_result() {
         User standardUser = LoggerMockDataCreator.createUser();
         AggregateResult mockAggregateResult = LoggerMockDataCreator.createAggregateResult();
@@ -956,7 +977,7 @@ private class LogEntryEventBuilder_Tests {
             return;
         }
 
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = 'false');
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = String.valueOf(false));
         LoggerParameter.setMock(mockParameter);
         System.assertEquals(false, LoggerParameter.ENABLE_STACK_TRACE_PARSING);
 
@@ -974,7 +995,7 @@ private class LogEntryEventBuilder_Tests {
             return;
         }
 
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = 'false');
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = String.valueOf(false));
         LoggerParameter.setMock(mockParameter);
         System.assertEquals(false, LoggerParameter.ENABLE_STACK_TRACE_PARSING);
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
@@ -1123,8 +1144,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_user_fields_when_anonymous_mode_disabled() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = 'true'));
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = 'true'));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));
         Organization organization = LoggerMockDataCreator.getOrganization();
         String organizationEnvironmentType = LoggerMockDataCreator.getOrganizationEnvironmentType();
         User user = LoggerMockDataCreator.getUser();

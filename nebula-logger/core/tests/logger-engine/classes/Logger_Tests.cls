@@ -141,6 +141,16 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_set_request_id() {
+        String expectedRequestId = System.Request.getCurrent().getRequestId();
+        for (Integer i = 0; i < 5; i++) {
+            LogEntryEventBuilder builder = Logger.info('my log entry');
+
+            System.assertEquals(expectedRequestId, builder.getLogEntryEvent().RequestId__c);
+        }
+    }
+
+    @IsTest
     static void it_should_set_scenario_when_default_scenario_configured() {
         String mockScenario = 'some test scenario for this transaction';
         LoggerSettings__c userSettings = LoggerSettings__c.getInstance();
