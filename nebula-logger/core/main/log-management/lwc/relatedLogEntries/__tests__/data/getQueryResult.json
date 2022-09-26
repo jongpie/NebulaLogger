@@ -1,6 +1,5 @@
 {
     "totalLogEntriesCount": 4,
-    "tabIcon": "custom:custom83",
     "records": [
         {
             "attributes": { "type": "LogEntry__c", "url": "/services/data/v53.0/sobjects/LogEntry__c/a0054000004OazXAAS" },

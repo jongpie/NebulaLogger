@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SaveMethod__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>PII;GDPR;CCPA</complianceGroup>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>This controls the default save method used by Logger when calling saveLog(). In most situations, EVENT_BUS should be used.</inlineHelpText>
+    <label>Save Method</label>
+    <length>255</length>
+    <required>false</required>
+    <securityClassification>Confidential</securityClassification>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

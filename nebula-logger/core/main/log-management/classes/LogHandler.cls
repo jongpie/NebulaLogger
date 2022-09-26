@@ -10,12 +10,12 @@
 @SuppressWarnings('PMD.CognitiveComplexity, PMD.CyclomaticComplexity')
 public without sharing class LogHandler extends LoggerSObjectHandler {
     private static final Map<String, LogStatus__mdt> MOCK_LOG_STATUS_TO_STATUS = new Map<String, LogStatus__mdt>();
-    private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
 
     @TestVisible
     private List<Log__c> logs;
     @TestVisible
     private Map<Id, Log__c> oldLogsById;
+    private Map<Id, LoggerScenario__c> loggerScenariosById;
 
     /**
      * @description Returns SObject Type that the handler is responsible for processing
@@ -27,6 +27,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
 
     protected override void executeBeforeInsert(List<SObject> triggerNew) {
         this.logs = (List<Log__c>) triggerNew;
+        this.loggerScenariosById = queryLoggerScenarios(this.logs);
 
         this.setClosedStatusFields();
         // The log OwnerId field should support being manually changed, so only auto-set it on insert
@@ -89,7 +90,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             }
         }
 
-        if (logsToUpdate.isEmpty()) {
+        if (logsToUpdate.isEmpty() == true) {
             return;
         }
 
@@ -107,7 +108,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setParentLog() {
-        Set<String> parentLogTransactionIds = new Set<String>();
+        List<String> parentLogTransactionIds = new List<String>();
         for (Log__c log : this.logs) {
             if (String.isNotBlank(log.ParentLogTransactionId__c) == true) {
                 parentLogTransactionIds.add(log.ParentLogTransactionId__c);
@@ -131,7 +132,6 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
     }
 
     private void setLogRetentionDetails() {
-        Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = queryScenarioRules(this.logs);
         for (Log__c log : this.logs) {
             // If the retention date has already been populated, leave it as-is
             if (log.LogRetentionDate__c != null) {
@@ -142,12 +142,23 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
             LoggerSettings__c loggingUserSettings = getLoggingUserSettings(log);
 
             // Load the configured scenario rule (if one exists)
-            LogScenarioRule__mdt matchingScenarioRule = scenarioToScenarioRule.get(log.Scenario__c);
+            LoggerScenarioRule__mdt matchingScenarioRule;
+            if (log.TransactionScenario__c != null) {
+                LoggerScenario__c loggerScenario = this.loggerScenariosById.get(log.TransactionScenario__c);
+                matchingScenarioRule = LoggerScenarioRule.getInstance(loggerScenario.UniqueId__c);
+                if (
+                    matchingScenarioRule != null &&
+                    (matchingScenarioRule.IsLogRetentionOverrideEnabled__c == null ||
+                    Boolean.valueOf(matchingScenarioRule.IsLogRetentionOverrideEnabled__c) != true)
+                ) {
+                    matchingScenarioRule = null;
+                }
+            }
 
             Integer daysToRetainLog = Integer.valueOf(
                 matchingScenarioRule != null ? matchingScenarioRule.NumberOfDaysToRetainLogs__c : loggingUserSettings.DefaultNumberOfDaysToRetainLogs__c
             );
-            // TODO Add new field to LogScenarioRule__mdt for setting the default log purge action (same concept as matchingScenarioRule.NumberOfDaysToRetainLogs__c above)
+            // TODO Add new field to LoggerScenarioRule__mdt for setting the default log purge action (same concept as matchingScenarioRule.NumberOfDaysToRetainLogs__c above)
 
             // When daysToRetainLog is null, assume that the log should be kept forever,
             // and set the retention date to null so that LogBatchPurger filters out/ignores the record
@@ -226,6 +237,27 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return logStatusNameToStatus;
     }
 
+    private static Map<Id, LoggerScenario__c> queryLoggerScenarios(List<Log__c> logs) {
+        List<Id> loggerScenarioIds = new List<Id>();
+        for (Log__c log : logs) {
+            if (log.TransactionScenario__c != null) {
+                loggerScenarioIds.add(log.TransactionScenario__c);
+            }
+        }
+
+        Map<Id, LoggerScenario__c> loggerScenariosById = new Map<Id, LoggerScenario__c>();
+
+        if (loggerScenarioIds.isEmpty() == true) {
+            return loggerScenariosById;
+        }
+
+        List<LoggerScenario__c> matchingLoggerScenarios = LogManagementDataSelector.getInstance().getLoggerScenariosById(loggerScenarioIds);
+        if (matchingLoggerScenarios != null && matchingLoggerScenarios.isEmpty() == false) {
+            loggerScenariosById = new Map<Id, LoggerScenario__c>(matchingLoggerScenarios);
+        }
+        return loggerScenariosById;
+    }
+
     private static Map<String, Id> queryQueues(List<String> possibleQueueNames) {
         Map<String, Id> queuesByDeveloperName = new Map<String, Id>();
         for (Group queue : LogManagementDataSelector.getInstance().getQueuesByDeveloperName(possibleQueueNames)) {
@@ -242,36 +274,8 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
         return usersByUsername;
     }
 
-    private static Map<String, LogScenarioRule__mdt> queryScenarioRules(List<Log__c> logs) {
-        Set<String> scenarios = new Set<String>();
-        for (Log__c log : logs) {
-            if (log.Scenario__c != null) {
-                scenarios.add(log.Scenario__c);
-            }
-        }
-
-        Map<String, LogScenarioRule__mdt> scenarioToScenarioRule = new Map<String, LogScenarioRule__mdt>();
-        for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
-            if (scenarioRule.IsEnabled__c == true && scenarios.contains(scenarioRule.Scenario__c) == true) {
-                scenarioToScenarioRule.put(scenarioRule.Scenario__c, scenarioRule);
-            }
-        }
-
-        if (System.Test.isRunningTest() == true) {
-            scenarioToScenarioRule.clear();
-            scenarioToScenarioRule.putAll(MOCK_SCENARIO_TO_SCENARIO_RULE);
-        }
-
-        return scenarioToScenarioRule;
-    }
-
     @TestVisible
     private static void setMockLogStatus(LogStatus__mdt logStatus) {
         MOCK_LOG_STATUS_TO_STATUS.put(logStatus.MasterLabel, logStatus);
-    }
-
-    @TestVisible
-    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
     }
 }

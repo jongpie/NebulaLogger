@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions,PMD.CognitiveComplexity')
-@IsTest
+@IsTest(IsParallel=false)
 private class LogBatchPurgeController_Tests {
     static final String CUSTOM_PURGE_ACTION = 'Custom';
     static final String DEFAULT_PURGE_ACTION = 'Delete';

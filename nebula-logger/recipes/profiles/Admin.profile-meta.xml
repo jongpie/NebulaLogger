@@ -1835,6 +1835,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>LogEntry__c.EntryScenario__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>LogEntry__c.EpochTimestamp__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -2410,12 +2415,12 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogScenarioRule__mdt.IsEnabled__c</field>
+        <field>LoggerScenarioRule__mdt.IsEnabled__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>LogScenarioRule__mdt.NumberOfDaysToRetainLogs__c</field>
+        <field>LoggerScenarioRule__mdt.NumberOfDaysToRetainLogs__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2967,7 +2972,7 @@
         <layout>LogRetentionRule__mdt-Log Retention Rule Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>LogScenarioRule__mdt-Log Scenario Rule Layout</layout>
+        <layout>LoggerScenarioRule__mdt-Logger Scenario Rule Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>LogStatus__mdt-Log Status Layout</layout>

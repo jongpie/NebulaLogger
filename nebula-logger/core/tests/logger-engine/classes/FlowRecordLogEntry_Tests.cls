@@ -226,7 +226,7 @@ private class FlowRecordLogEntry_Tests {
     }
 
     @IsTest
-    static void it_should_set_log_scenario() {
+    static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
@@ -247,7 +247,8 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowRecordEntry.scenario, publishedLogEntryEvent.Scenario__c);
+        System.assertEquals(flowRecordEntry.scenario, publishedLogEntryEvent.TransactionScenario__c);
+        System.assertEquals(flowRecordEntry.scenario, publishedLogEntryEvent.EntryScenario__c);
     }
 
     @IsTest

@@ -15,6 +15,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final String GUEST_USER_TYPE = 'Guest';
+    private static final Map<String, LoggerScenario__c> SCENARIO_UNIQUE_ID_TO_SCENARIO = new Map<String, LoggerScenario__c>();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @TestVisible
@@ -53,6 +54,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
         if (this.logEntryEvents.isEmpty() == false) {
+            this.upsertLoggerScenarios();
             this.upsertLogs();
             this.upsertLogEntries();
             this.appendRuleBasedTags();
@@ -61,15 +63,55 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private List<LogEntryEvent__e> filterLogEntryEventsToSave(List<LogEntryEvent__e> newLogEntryEvents) {
+        final String trueString = String.valueOf(true);
         List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
         for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
             User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
-            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
-            if (loggingUserSettings.DefaultPlatformEventStorageLocation__c == DEFAULT_STORAGE_LOCATION_NAME) {
+            String platformEventStorageLocation = Logger.getUserSettings(loggingUser).DefaultPlatformEventStorageLocation__c;
+            if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
+                LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
+                if (scenarioRule.IsPlatformEventStorageLocationEnabled__c == trueString) {
+                    platformEventStorageLocation = scenarioRule.PlatformEventStorageLocation__c;
+                }
+            }
+            if (platformEventStorageLocation == DEFAULT_STORAGE_LOCATION_NAME) {
                 logEntryEventsToSave.add(logEntryEvent);
             }
         }
         return logEntryEventsToSave;
+    }
+
+    private void upsertLoggerScenarios() {
+        List<Schema.SObjectField> scenarioFields = new List<Schema.SObjectField>{
+            Schema.LogEntryEvent__e.EntryScenario__c,
+            Schema.LogEntryEvent__e.TransactionScenario__c
+        };
+        for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
+            for (Schema.SObjectField scenarioField : scenarioFields) {
+                String scenario = (String) logEntryEvent.get(scenarioField);
+
+                if (String.isBlank(scenario) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(scenario)) {
+                    continue;
+                }
+
+                LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
+                loggerScenario.setOptions(DML_OPTIONS);
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
+            }
+        }
+
+        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
+            .upsertRecords(SCENARIO_UNIQUE_ID_TO_SCENARIO.values(), Schema.LoggerScenario__c.UniqueId__c, System.Test.isRunningTest());
+        LoggerEmailSender.sendErrorEmail(Schema.LoggerScenario__c.SObjectType, upsertResults);
+
+        // Requery to get the OwnerId field as well
+        for (LoggerScenario__c loggerScenario : [
+            SELECT Id, Name, OwnerId, UniqueId__c
+            FROM LoggerScenario__c
+            WHERE Id IN :SCENARIO_UNIQUE_ID_TO_SCENARIO.values()
+        ]) {
+            SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
+        }
     }
 
     private void upsertLogs() {
@@ -84,12 +126,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
-            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
-            Id logOwnerId = loggingUser.Id;
-            if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
-                logOwnerId = UserInfo.getUserId();
-            }
+            Id logOwnerId = this.determineLogOwnerId(logEntryEvent);
 
             Log__c log = new Log__c(
                 ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
@@ -123,7 +160,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
                 ProfileId__c = logEntryEvent.ProfileId__c,
                 ProfileName__c = logEntryEvent.ProfileName__c,
-                Scenario__c = logEntryEvent.Scenario__c,
+                Scenario__c = logEntryEvent.TransactionScenario__c,
                 SessionId__c = logEntryEvent.SessionId__c,
                 SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c,
                 SessionType__c = logEntryEvent.SessionType__c,
@@ -142,6 +179,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 UserRoleName__c = logEntryEvent.UserRoleName__c,
                 UserType__c = logEntryEvent.UserType__c
             );
+
+            if (
+                String.isNotBlank(logEntryEvent.TransactionScenario__c) == true &&
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c) == true
+            ) {
+                log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.TransactionScenario__c).Id;
+            }
 
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
@@ -252,6 +296,14 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 TriggerOperationType__c = logEntryEvent.TriggerOperationType__c,
                 TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
             );
+
+            if (
+                String.isNotBlank(logEntryEvent.EntryScenario__c) == true &&
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c) == true
+            ) {
+                logEntry.EntryScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.EntryScenario__c).Id;
+            }
+
             logEntry.setOptions(DML_OPTIONS);
 
             this.logEntries.add(logEntry);
@@ -352,6 +404,27 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, saveResults);
             }
         }
+    }
+
+    private Id determineLogOwnerId(LogEntryEvent__e logEntryEvent) {
+        Id logOwnerId = logEntryEvent.LoggedById__c;
+
+        LoggerSettings__c loggingUserSettings = Logger.getUserSettings(new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c));
+        if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
+            logOwnerId = UserInfo.getUserId();
+        }
+
+        if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
+            LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
+            if (
+                scenarioRule.IsLogAssignmentEnabled__c == String.valueOf(true) &&
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c) == true
+            ) {
+                logOwnerId = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.TransactionScenario__c).OwnerId;
+            }
+        }
+
+        return logOwnerId;
     }
 
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {

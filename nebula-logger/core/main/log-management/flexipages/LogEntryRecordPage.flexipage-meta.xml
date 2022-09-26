@@ -74,6 +74,16 @@
                 <identifier>RecordTimestamp__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.EntryScenario__c</fieldItem>
+                <identifier>RecordEntryScenario__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-cb40f95d-9915-4ba5-815c-f3e53bcc4001</name>
         <type>Facet</type>
     </flexiPageRegions>

@@ -201,6 +201,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>LogEntry__c.EntryScenario__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>LogEntry__c.EpochTimestamp__c</field>
         <readable>true</readable>
@@ -976,7 +981,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>Log__c.Scenario__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1086,6 +1091,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Log__c.TransactionScenario__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Log__c.UserLicenseDefinitionKey__c</field>
         <readable>true</readable>
@@ -1189,6 +1199,15 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
+        <object>LoggerScenario__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>LoggerTag__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
@@ -1210,6 +1229,10 @@
     </tabSettings>
     <tabSettings>
         <tab>Log__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>LoggerScenario__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
