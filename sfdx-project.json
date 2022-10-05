@@ -12,9 +12,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.8.3.NEXT",
-            "versionName": "Improved LogEntry__c Formula Fields for Limits",
-            "versionDescription": "Updated formula fields on LogEntry__c for limits to include the percentage of each limit used & to include a flag indicator (>= 90% displays a red flag, < 90 && >= 80: displays a yellow flag, otherwise a green flag is displayed)",
+            "versionNumber": "4.8.4.NEXT",
+            "versionName": "Optimized Synchronous Context",
+            "versionDescription": "Added new LoggerParameter__mdt records to control synchronous queries & stack trace parsing, incorporated Platform Cache into LoggerCache class",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": true
         },

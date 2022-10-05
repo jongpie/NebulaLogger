@@ -12,6 +12,6 @@
     </values>
     <values>
         <field>Value__c</field>
-        <value xsi:type="xsd:string">true</value>
+        <value xsi:type="xsd:string">false</value>
     </values>
 </CustomMetadata>

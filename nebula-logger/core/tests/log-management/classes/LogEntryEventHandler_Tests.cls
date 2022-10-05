@@ -452,6 +452,85 @@ private class LogEntryEventHandler_Tests {
         System.assertEquals(loggerScenario.OwnerId, log.OwnerId);
     }
 
+    @IsTest
+    static void it_should_query_and_set_auth_session_data_when_synchronous_querying_is_disabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(false)));
+
+        LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
+        AuthSession expectedAuthSession = LoggerEngineDataSelector.getInstance().getAuthSessions(userIds).get(logEntryEvent.LoggedById__c);
+        Log__c log = getLog();
+        System.assertEquals(expectedAuthSession?.LoginHistory.Application, log.LoginApplication__c);
+        System.assertEquals(expectedAuthSession?.LoginHistory.Browser, log.LoginBrowser__c);
+        System.assertEquals(expectedAuthSession?.LoginHistoryId, log.LoginHistoryId__c);
+        System.assertEquals(expectedAuthSession?.LoginHistory.Platform, log.LoginPlatform__c);
+        System.assertEquals(expectedAuthSession?.LoginType, log.LoginType__c);
+        System.assertEquals(expectedAuthSession?.LogoutUrl, log.LogoutUrl__c);
+        System.assertEquals(expectedAuthSession?.Id, log.SessionId__c);
+        System.assertEquals(expectedAuthSession?.SessionSecurityLevel, log.SessionSecurityLevel__c);
+        System.assertEquals(expectedAuthSession?.SessionType, log.SessionType__c);
+        System.assertEquals(expectedAuthSession?.SourceIp, log.SourceIp__c);
+    }
+
+    @IsTest
+    static void it_should_query_and_set_network_data_when_synchronous_querying_is_disabled() {
+        System.assert(false, 'TODO - move to integration test?');
+    }
+
+    @IsTest
+    static void it_should_query_and_set_organization_data_when_synchronous_querying_is_disabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
+
+        LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        Organization expectedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        Log__c log = getLog();
+        System.assertEquals(String.valueOf(expectedOrganization.Id), log.OrganizationId__c);
+        System.assertEquals(expectedOrganization.InstanceName, log.OrganizationInstanceName__c);
+        System.assertEquals(expectedOrganization.Name, log.OrganizationName__c);
+        System.assertEquals(expectedOrganization.NamespacePrefix, log.OrganizationNamespacePrefix__c);
+        System.assertEquals(expectedOrganization.OrganizationType, log.OrganizationType__c);
+    }
+
+    @IsTest
+    static void it_should_query_and_set_user_data_when_synchronous_querying_is_disabled() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LoggerScenario__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
+        LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(false)));
+
+        LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
+        LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
+
+        List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
+        User expectedUser = LoggerEngineDataSelector.getInstance().getUsers(userIds).get(logEntryEvent.LoggedById__c);
+        Log__c log = getLog();
+        System.assertEquals(expectedUser.Username, log.LoggedByUsername__c);
+        System.assertEquals(expectedUser.Profile.Name, log.ProfileName__c);
+        System.assertEquals(expectedUser.Profile.UserLicense.LicenseDefinitionKey, log.UserLicenseDefinitionKey__c);
+        System.assertEquals(expectedUser.Profile.UserLicenseId, log.UserLicenseId__c);
+        System.assertEquals(expectedUser.Profile.UserLicense.Name, log.UserLicenseName__c);
+        System.assertEquals(expectedUser.UserRole?.Name, log.UserRoleName__c);
+    }
+
     // TODO - testing topics is tricky. Within the unlocked package, we can test it,
     // but for people that prefer using the unpackaged metadata + don't use topics,
     // the tests would fail. Need to further investigate ways to handle this
@@ -919,8 +998,11 @@ private class LogEntryEventHandler_Tests {
                 LoggedBy__c,
                 LoggedByUsername__c,
                 LoggerVersionNumber__c,
+                LoginApplication__c,
+                LoginBrowser__c,
                 LoginDomain__c,
                 LoginHistoryId__c,
+                LoginPlatform__c,
                 LoginType__c,
                 LogoutUrl__c,
                 NetworkId__c,

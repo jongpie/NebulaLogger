@@ -14,6 +14,7 @@
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
     private static final USER CURRENT_USER = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+    private static final String NEW_LINE_DELIMITER = '\n';
 
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
@@ -52,7 +53,7 @@ global with sharing class LogEntryEventBuilder {
             if (LOG_ENTRY_EVENT_TEMPLATE == null) {
                 LOG_ENTRY_EVENT_TEMPLATE = getLogEntryEventTemplate();
             }
-            return LOG_ENTRY_EVENT_TEMPLATE;
+            return LOG_ENTRY_EVENT_TEMPLATE.clone();
         }
         set;
     }
@@ -517,7 +518,7 @@ global with sharing class LogEntryEventBuilder {
 
         this.logEntryEvent.HttpResponseBody__c = cleanedResponseBody;
         this.logEntryEvent.HttpResponseBodyMasked__c = responseBodyMasked;
-        this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), '\n');
+        this.logEntryEvent.HttpResponseHeaderKeys__c = String.join(response.getHeaderKeys(), NEW_LINE_DELIMITER);
         this.logEntryEvent.HttpResponseStatus__c = response.getStatus();
         this.logEntryEvent.HttpResponseStatusCode__c = response.getStatusCode();
         return this;
@@ -577,7 +578,7 @@ global with sharing class LogEntryEventBuilder {
 
         List<String> stackTraceLines = new List<String>();
         String previousStackTraceLine;
-        for (String currentStackTraceLine : stackTraceString.split('\n')) {
+        for (String currentStackTraceLine : stackTraceString.split(NEW_LINE_DELIMITER)) {
             // Duplicate lines are sometimes introduced, so skip the current line if it's the same as the previous line
             if (currentStackTraceLine == previousStackTraceLine) {
                 continue;
@@ -603,7 +604,7 @@ global with sharing class LogEntryEventBuilder {
         }
 
         // In a managed package, we can end up with an invalid (unhelpful) stack trace, so only store when valid
-        stackTraceString = String.join(stackTraceLines, '\n');
+        stackTraceString = String.join(stackTraceLines, NEW_LINE_DELIMITER);
         if (isValidStackTrace(stackTraceString)) {
             String originLocation = stackTraceLines.get(0);
             if (originLocation.contains(':')) {
@@ -710,7 +711,7 @@ global with sharing class LogEntryEventBuilder {
 
         List<String> sortedTags = new List<String>(this.tags);
         sortedTags.sort();
-        this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(sortedTags, '\n'));
+        this.logEntryEvent.Tags__c = String.escapeSingleQuotes(String.join(sortedTags, NEW_LINE_DELIMITER));
     }
 
     private void setTransactionDetails() {

@@ -15,7 +15,7 @@
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.8.3';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.8.4';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = getIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
