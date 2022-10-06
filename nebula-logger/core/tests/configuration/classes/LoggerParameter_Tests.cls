@@ -58,6 +58,61 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_enable_tagging() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_auth_session_data_synchronously() {
+        Boolean mockValue = true;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_network_data_synchronously() {
+        Boolean mockValue = true;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_organization_data_synchronously() {
+        Boolean mockValue = true;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data_synchronously() {
+        Boolean mockValue = true;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_send_error_email_notifications() {
         Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = JSON.serialize(mockValue));
@@ -81,12 +136,12 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_enable_tagging() {
+    static void it_should_return_constant_value_for_use_platform_cache() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
-        Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
+        Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
 
         System.assertEquals(mockValue, returnedValue);
     }

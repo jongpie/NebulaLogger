@@ -118,7 +118,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private void upsertLogs() {
         // To avoid making a callout for every log for details retrieved from api.status.salesforce.com,
         // try to query recent logs first to see if there is a recent log with the details already populated
-        Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
+        Log__c recentLogWithApiReleaseDetails = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
 
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
@@ -126,8 +126,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             if (TRANSACTION_ID_TO_LOG.containsKey(logEntryEvent.TransactionId__c) == true) {
                 continue;
             }
-
-            Id logOwnerId = this.determineLogOwnerId(logEntryEvent);
 
             Log__c log = new Log__c(
                 ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
@@ -157,7 +155,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 OrganizationName__c = logEntryEvent.OrganizationName__c,
                 OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c,
                 OrganizationType__c = logEntryEvent.OrganizationType__c,
-                OwnerId = logOwnerId,
+                OwnerId = this.determineLogOwnerId(logEntryEvent),
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
                 ProfileId__c = logEntryEvent.ProfileId__c,
                 ProfileName__c = logEntryEvent.ProfileName__c,
@@ -222,7 +220,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         List<LogEntry__c> logEntriesWithUuid = new List<LogEntry__c>();
         List<LogEntry__c> logEntriesWithoutUuid = new List<LogEntry__c>();
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
-            // Workaround field for platform issue w/ accurate datetimes
+            // Salesforce does not provide precise datetimes in Apex triggers for platform events
+            // Use the string value of timestamp to set the actual datetime field as a workaround
+            // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
             Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
                 ? Datetime.valueOf(Long.valueOf(logEntryEvent.TimestampString__c))
                 : logEntryEvent.Timestamp__c;
@@ -508,23 +508,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return ruleCriteriaMet;
     }
 
-    private static Log__c getRecentLogWithApiReleaseDetails() {
-        // Query for recent logs created only today - the status API should be called
-        // at least once per day to make sure that status details are still accurate.
-        // This query should make a callout approximately every 4 hours.
-        Datetime fourHoursAgo = System.now().addMinutes(-4 * 60);
-
-        List<Log__c> logs = [
-            SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
-            FROM Log__c
-            WHERE CreatedDate >= :fourHoursAgo AND CreatedDate = TODAY AND ApiReleaseNumber__c != NULL
-            ORDER BY StartTime__c DESC
-            LIMIT 1
-        ];
-
-        return logs.isEmpty() == true ? null : logs.get(0);
-    }
-
     private static List<String> getTagNames(String tagsString) {
         List<String> cleanedTagNames = new List<String>();
 
@@ -538,14 +521,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
-        if (LogEntryTagRule__mdt.getAll().isEmpty() == true) {
-            return new List<LogEntryTagRule__mdt>();
-        }
-
         List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-        for (LogEntryTagRule__mdt rule : tagAssignmentRules) {
-            rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
-        }
         if (System.Test.isRunningTest() == true) {
             // During tests, only use mock records - tests can add mock records using LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add()
             tagAssignmentRules.clear();

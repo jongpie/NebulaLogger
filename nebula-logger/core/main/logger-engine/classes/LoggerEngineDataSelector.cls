@@ -71,8 +71,8 @@ public without sharing class LoggerEngineDataSelector {
      */
     public List<LoggerSObjectHandler__mdt> getCachedLoggerSObjectHandlers() {
         String cacheKey = 'EnabledLoggerSObjectHandlers';
-        if (LoggerCache.getTransactionCache().contains(cacheKey) == true) {
-            return (List<LoggerSObjectHandler__mdt>) LoggerCache.getTransactionCache().get(cacheKey);
+        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+            return (List<LoggerSObjectHandler__mdt>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
         List<LoggerSObjectHandler__mdt> enabledSObjectHandlers = [
@@ -80,7 +80,7 @@ public without sharing class LoggerEngineDataSelector {
             FROM LoggerSObjectHandler__mdt
             WHERE IsEnabled__c = TRUE
         ];
-        LoggerCache.getTransactionCache().put(cacheKey, enabledSObjectHandlers);
+        LoggerCache.getOrganizationCache().put(cacheKey, enabledSObjectHandlers);
         return enabledSObjectHandlers;
     }
 
@@ -133,11 +133,14 @@ public without sharing class LoggerEngineDataSelector {
 
         List<LogEntryTagRule__mdt> tagAssignmentRules = new List<LogEntryTagRule__mdt>();
         if (LogEntryTagRule__mdt.getAll().isEmpty() == false || System.Test.isRunningTest() == true) {
-            tagAssignmentRules = [
+            for (LogEntryTagRule__mdt rule : [
                 SELECT Id, SObjectField__r.QualifiedApiName, ComparisonType__c, ComparisonValue__c, Tags__c
                 FROM LogEntryTagRule__mdt
                 WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
-            ];
+            ]) {
+                rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
+                tagAssignmentRules.add(rule);
+            }
         }
         LoggerCache.getOrganizationCache().put(cacheKey, tagAssignmentRules);
         return tagAssignmentRules;

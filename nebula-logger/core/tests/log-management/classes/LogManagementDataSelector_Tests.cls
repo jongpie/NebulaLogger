@@ -84,6 +84,39 @@ private class LogManagementDataSelector_Tests {
     // }
 
     @IsTest
+    static void it_returns_cached_recent_log_with_api_release_details() {
+        LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
+        LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
+        Log__c olderLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'ABC');
+        Log__c expectedLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'XYZ');
+        insert new List<Log__c>{ olderLog, expectedLog };
+        System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));
+        System.assertEquals(1, Limits.getQueries());
+
+        for (Integer i = 0; i < 5; i++) {
+            Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
+
+            System.assertEquals(expectedLog.Id, returnedLog.Id);
+        }
+
+        System.assertEquals(2, Limits.getQueries());
+    }
+
+    @IsTest
+    static void it_returns_null_when_no_recent_log_with_api_release_details_is_found() {
+        System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
+        System.assertEquals(1, Limits.getQueries());
+
+        for (Integer i = 0; i < 5; i++) {
+            Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
+
+            System.assertEquals(null, returnedLog);
+        }
+
+        System.assertEquals(2, Limits.getQueries());
+    }
+
+    @IsTest
     static void it_returns_count_of_related_record_log_entries() {
         Id targetRecordId = UserInfo.getUserId();
         LoggerSObjectHandler.shouldExecute(false);

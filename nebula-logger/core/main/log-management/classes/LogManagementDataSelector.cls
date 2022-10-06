@@ -69,14 +69,37 @@ public without sharing class LogManagementDataSelector {
      * @return   The cached `List<ApexEmailNotification>` records
      */
     public List<ApexEmailNotification> getCachedApexEmailNotifications() {
-        String cacheKeyName = 'ApexEmailNotifications';
-        if (LoggerCache.getTransactionCache().contains(cacheKeyName) == true) {
-            return (List<ApexEmailNotification>) LoggerCache.getTransactionCache().get(cacheKeyName);
+        String cacheKey = 'ApexEmailNotifications';
+        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+            return (List<ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
         List<ApexEmailNotification> apexEmailNotifications = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
-        LoggerCache.getTransactionCache().put(cacheKeyName, apexEmailNotifications);
+        LoggerCache.getOrganizationCache().put(cacheKey, apexEmailNotifications);
         return apexEmailNotifications;
+    }
+
+    public Log__c getCachedRecentLogWithApiReleaseDetails() {
+        String cacheKey = 'RecentLogWithApiReleaseDetails';
+        if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
+            return (Log__c) LoggerCache.getOrganizationCache().get(cacheKey);
+        }
+
+        // Query for recent logs created only today - the status API should be called
+        // at least once per day to make sure that status details are still accurate.
+        // This query should make a callout approximately every 4 hours.
+        Datetime fourHoursAgo = System.now().addMinutes(-4 * 60);
+
+        List<Log__c> logs = [
+            SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
+            FROM Log__c
+            WHERE CreatedDate >= :fourHoursAgo AND CreatedDate = TODAY AND ApiReleaseNumber__c != NULL
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        Log__c log = logs.isEmpty() == true ? null : logs.get(0);
+        LoggerCache.getOrganizationCache().put(cacheKey, log);
+        return log;
     }
 
     /**
