@@ -7,6 +7,10 @@
 
 ## What's Included
 
+### Flow Error Event Logging
+
+Salesforce includes a platform event, [FlowExecutionErrorEvent](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/sforce_api_objects_flowexecutionerrorevent.htm)that can only be subscribed to via Flow. Once subscribed, unhandled errors from Screen Flows can be automatically logged using Nebula Logger. In order to enable this functionality, navigate to the `Logger Parameter` Custom Metadata Type and flip the `Value` field on the `Is FlowExecutionErrorEvent Handled?` record from `0` to `1`.
+
 ### Unexpected Batch Error Logging
 
 By default, this plugin adds support for logging unexpected Batch class failures in Apex. All a batch class needs to do is implement the marker `Database.RaisesPlatformEvents` interface _and_ create a `LoggerParameter__mdt` record where the `Value` field matches the name of the batch class you are looking to add logging for, and the DeveloperName (the "Name" field) starts with `BatchError`:
