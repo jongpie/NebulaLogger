@@ -27,9 +27,9 @@
                     "package": "Nebula Logger - Core@4.7.2-parent-log-transaction-id-bugfix"
                 }
             ],
-            "versionName": "Added missing CMDT file LoggerSObjectHandler.BatchApexErrorEvent",
-            "versionNumber": "1.0.1.NEXT",
-            "versionDescription": "Fixed an issue where batchable logging did not work out-of-the-box due to a missing custom metadata record"
+            "versionName": "Added logging for Screen Flow failures",
+            "versionNumber": "1.0.2.NEXT",
+            "versionDescription": "Allows unhandled exceptions within screen flows to be automatically logged (toggleable, default off)"
         },
         {
             "package": "Nebula Logger - Plugin - Big Object Archiving",
