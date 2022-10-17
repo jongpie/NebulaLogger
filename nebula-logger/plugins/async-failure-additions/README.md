@@ -9,7 +9,7 @@
 
 ### Flow Error Event Logging
 
-Salesforce includes a platform event, [FlowExecutionErrorEvent](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/sforce_api_objects_flowexecutionerrorevent.htm)that can only be subscribed to via Flow. Once subscribed, unhandled errors from Screen Flows can be automatically logged using Nebula Logger. In order to enable this functionality, navigate to the `Logger Parameter` Custom Metadata Type and flip the `Value` field on the `Is FlowExecutionErrorEvent Handled?` record from `0` to `1`.
+Salesforce includes a platform event, [FlowExecutionErrorEvent](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/sforce_api_objects_flowexecutionerrorevent.htm)that can only be subscribed to via Flow. Once subscribed, unhandled errors from Screen Flows can be automatically logged using Nebula Logger. In order to enable this functionality, navigate to the `Logger Parameter` Custom Metadata Type and flip the `Value` field on the `Is FlowExecutionErrorEvent Handled?` record from `false` to `true`.
 
 ### Unexpected Batch Error Logging
 

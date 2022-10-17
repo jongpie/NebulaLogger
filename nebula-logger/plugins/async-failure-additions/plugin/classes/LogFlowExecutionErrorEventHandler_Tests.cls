@@ -114,7 +114,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
     static void setLoggerParamEnabled(Boolean value) {
         LoggerParameter__mdt mockParam = new LoggerParameter__mdt(
             DeveloperName = LogFlowExecutionErrorEventHandler.PARAMETER_DEV_NAME,
-            Value__c = value ? '1' : '0'
+            Value__c = String.valueOf(value)
         );
         LoggerParameter.setMock(mockParam);
     }
