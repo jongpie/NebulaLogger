@@ -3,7 +3,7 @@
     <fullName>OriginLocation__c</fullName>
     <businessStatus>Active</businessStatus>
     <complianceGroup>None</complianceGroup>
-    <externalId>false</externalId>
+    <externalId>true</externalId>
     <label>Origin Location</label>
     <length>255</length>
     <required>false</required>
