@@ -10,7 +10,7 @@ Selector class used for all queries that are specific to the logger engine layer
 
 ### Methods
 
-#### `getCachedAuthSession()` → `AuthSession`
+#### `getAuthSessions(List<Id> userIds)` → `Map<Id, AuthSession>`
 
 Returns a cached copy of `AuthSession` for the current user&apos;s current session, or `null` if there is not a current session
 
@@ -18,11 +18,13 @@ Returns a cached copy of `AuthSession` for the current user&apos;s current sessi
 
 **Type**
 
-AuthSession
+Map&lt;Id, AuthSession&gt;
 
 **Description**
 
 The cached `AuthSession` record
+
+#### `getCachedAuthSession()` → `AuthSession`
 
 #### `getCachedLoggerSObjectHandlers()` → `List<LoggerSObjectHandler_t>`
 
@@ -38,9 +40,15 @@ List&lt;LoggerSObjectHandler_t&gt;
 
 The cached `List&lt;LoggerSObjectHandler_t&gt;` records
 
-#### `getCachedNetwork()` → `SObject`
+#### `getCachedNetwork(Id networkId)` → `SObject`
 
 Returns a cached copy of the current user&apos;s `Network` site, or `null` if the current user is not associated with a `Network` site
+
+##### Parameters
+
+| Param       | Description                             |
+| ----------- | --------------------------------------- |
+| `networkId` | The record ID of the `Network` to query |
 
 ##### Return
 
@@ -107,5 +115,9 @@ LoggerEngineDataSelector
 **Description**
 
 The singleton instance of `LoggerEngineDataSelector`
+
+#### `getNetworks(List<Id> networkIds)` → `Map<Id, SObject>`
+
+#### `getUsers(List<Id> userIds)` → `Map<Id, User>`
 
 ---

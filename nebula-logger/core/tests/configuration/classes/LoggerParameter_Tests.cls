@@ -69,12 +69,59 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_query_apex_class_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_auth_session_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_query_auth_session_data_synchronously() {
         Boolean mockValue = true;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryAuthSessionDataSynchronously',
+            Value__c = JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_flow_definition_view_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_network_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA;
 
         System.assertEquals(mockValue, returnedValue);
     }
@@ -91,12 +138,48 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
+    static void it_should_return_constant_value_for_query_organization_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
     static void it_should_return_constant_value_for_query_organization_data_synchronously() {
         Boolean mockValue = true;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryOrganizationDataSynchronously',
+            Value__c = JSON.serialize(mockValue)
+        );
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_related_record_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_RELATED_RECORD_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA;
 
         System.assertEquals(mockValue, returnedValue);
     }

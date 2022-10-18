@@ -67,13 +67,15 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_run_authSession_query_when_disabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(false)));
         System.assertEquals(false, LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
-        System.assertEquals(0, Limits.getQueries());
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
 
         LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
         System.assertEquals(null, logEntryEvent.LoginApplication__c);
         System.assertEquals(null, logEntryEvent.LoginBrowser__c);
         System.assertEquals(null, logEntryEvent.LoginHistoryId__c);
@@ -90,13 +92,15 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_run_authSession_query_when_enabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(true)));
         System.assertEquals(true, LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
-        System.assertEquals(0, Limits.getQueries());
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
 
         LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, mockSelector.getCachedAuthSessionQueryCount());
         AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
         System.assertEquals(cachedAuthSession?.LoginHistory.Application, logEntryEvent.LoginApplication__c);
         System.assertEquals(cachedAuthSession?.LoginHistory.Browser, logEntryEvent.LoginBrowser__c);
@@ -118,13 +122,15 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_run_organization_query_when_disabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
         System.assertEquals(false, LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
-        System.assertEquals(0, Limits.getQueries());
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
 
         LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
         System.assertEquals(null, logEntryEvent.OrganizationId__c);
         System.assertEquals(null, logEntryEvent.OrganizationInstanceName__c);
         System.assertEquals(null, logEntryEvent.OrganizationName__c);
@@ -136,13 +142,15 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_run_organization_query_when_enabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(true)));
         System.assertEquals(true, LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
-        System.assertEquals(0, Limits.getQueries());
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
 
         LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
-        System.assertEquals(1, Limits.getQueries());
+        System.assertNotEquals(0, mockSelector.getCachedOrganizationQueryCount());
         Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         System.assertEquals(cachedOrganization.Id, logEntryEvent.OrganizationId__c);
         System.assertEquals(cachedOrganization.InstanceName, logEntryEvent.OrganizationInstanceName__c);
@@ -155,13 +163,15 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_run_user_query_when_disabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(false)));
         System.assertEquals(false, LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY);
-        System.assertEquals(0, Limits.getQueries());
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(0, mockSelector.getCachedUserQueryCount());
 
         LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, mockSelector.getCachedUserQueryCount());
         System.assertEquals(null, logEntryEvent.LoggedByUsername__c);
         System.assertEquals(null, logEntryEvent.ProfileName__c);
         System.assertEquals(null, logEntryEvent.UserLicenseDefinitionKey__c);
@@ -174,13 +184,15 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_run_user_query_when_enabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));
         System.assertEquals(true, LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY);
-        System.assertEquals(0, Limits.getQueries());
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(0, mockSelector.getCachedUserQueryCount());
 
         LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
-        System.assertEquals(1, Limits.getQueries());
+        System.assertNotEquals(0, mockSelector.getCachedUserQueryCount());
         User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
         System.assertEquals(cachedUser.Username, logEntryEvent.LoggedByUsername__c);
         System.assertEquals(cachedUser.Profile.Name, logEntryEvent.ProfileName__c);
@@ -1275,6 +1287,39 @@ private class LogEntryEventBuilder_Tests {
 
         public LogEntryEventBuilder myMethod() {
             return Logger.debug(loggingString);
+        }
+    }
+
+    private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {
+        private Integer cachedAuthSessionQueryCount = 0;
+        private Integer cachedOrganizationQueryCount = 0;
+        private Integer cachedUserQueryCount = 0;
+
+        public override AuthSession getCachedAuthSession() {
+            this.cachedAuthSessionQueryCount++;
+            return super.getCachedAuthSession();
+        }
+
+        public Integer getCachedAuthSessionQueryCount() {
+            return cachedAuthSessionQueryCount;
+        }
+
+        public override Organization getCachedOrganization() {
+            this.cachedOrganizationQueryCount++;
+            return super.getCachedOrganization();
+        }
+
+        public Integer getCachedOrganizationQueryCount() {
+            return cachedOrganizationQueryCount;
+        }
+
+        public override User getCachedUser() {
+            this.cachedUserQueryCount++;
+            return super.getCachedUser();
+        }
+
+        public Integer getCachedUserQueryCount() {
+            return cachedUserQueryCount;
         }
     }
 }

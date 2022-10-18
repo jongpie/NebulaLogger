@@ -51,6 +51,25 @@ private class LogManagementDataSelector_Tests {
     }
 
     @IsTest
+    static void it_does_not_query_apex_classes_when_disabled_via_logger_parameter() {
+        List<String> targetApexClassNames = new List<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
+        List<ApexClass> queriedTargetApexClasses = [
+            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
+            FROM ApexClass
+            WHERE Name IN :targetApexClassNames
+            ORDER BY NamespacePrefix NULLS LAST
+        ];
+        System.assertEquals(targetApexClassNames.size(), queriedTargetApexClasses.size());
+        Integer originalQueryCount = Limits.getQueries();
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
+
+        List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
+
+        System.assertEquals(originalQueryCount, Limits.getQueries());
+        System.assertEquals(0, returnedResults.size());
+    }
+
+    @IsTest
     static void it_returns_cached_apex_email_notifications() {
         List<ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
         System.assertEquals(1, Limits.getQueries());
@@ -137,8 +156,19 @@ private class LogManagementDataSelector_Tests {
         System.assertEquals(1, returnedCount);
     }
 
-    // TODO add integration test for LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(List<Id> recordIds);
-    // TODO add integration test for LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(List<String> durableIds);
+    @IsTest
+    static void it_returns_deleteable_user_record_access() {
+        LoggerSObjectHandler.shouldExecute(false);
+        Log__c deleteableRecord = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
+        insert deleteableRecord;
+        User undeleteableRecord = new User(Id = UserInfo.getUserId());
+        List<Id> recordIds = new List<Id>{ deleteableRecord.Id, undeleteableRecord.Id };
+
+        List<UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
+
+        System.assertEquals(1, returnedResults.size());
+        System.assertEquals(deleteableRecord.Id, returnedResults.get(0).RecordId);
+    }
 
     @IsTest
     static void it_returns_log_for_specified_log_id() {
@@ -326,9 +356,22 @@ private class LogManagementDataSelector_Tests {
         System.assertEquals(expectedResults, returnedResults);
     }
 
+    @IsTest
+    static void it_loads_mock_instance() {
+        MockLogManagementDataSelector mockSelector = new MockLogManagementDataSelector();
+        System.assertNotEquals(mockSelector, LogManagementDataSelector.getInstance());
+
+        LogManagementDataSelector.setMock(mockSelector);
+
+        System.assertEquals(mockSelector, LogManagementDataSelector.getInstance());
+    }
+
     @SuppressWarnings('PMD.EmptyStatementBlock')
     @future
     private static void executeSomeFutureMethod() {
         // This method intentionally does nothing - it\'s only used to help test queries on AsynxApexJob
+    }
+
+    private class MockLogManagementDataSelector extends LogManagementDataSelector {
     }
 }

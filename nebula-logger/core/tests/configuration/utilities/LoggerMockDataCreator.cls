@@ -338,7 +338,7 @@ public class LoggerMockDataCreator {
      * @return   The matching `Network` record
      */
     public static SObject getNetwork() {
-        if (Network.getNetworkId() == null || Type.forName('Network') == null) {
+        if (Network.getNetworkId() == null || Type.forName('System.Network') == null) {
             return null;
         }
 

@@ -74,17 +74,77 @@ public class LoggerParameter {
     }
 
     /**
+     * @description Controls if Nebula Logger queries `ApexClass` data.
+     *              When set to `false`, any `ApexClass` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     *              Controlled by the custom metadata record `LoggerParameter.QueryApexClassData`, or `true` as the default
+     */
+    public static final Boolean QUERY_APEX_CLASS_DATA {
+        get {
+            if (QUERY_APEX_CLASS_DATA == null) {
+                QUERY_APEX_CLASS_DATA = getBoolean('QueryApexClassData', true);
+            }
+            return QUERY_APEX_CLASS_DATA;
+        }
+        private set;
+    }
+
+    /**
+     * @description Controls if Nebula Logger queries `AuthSession` data.
+     *              When set to `false`, any `AuthSession` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     *              Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionData`, or `true` as the default
+     */
+    public static final Boolean QUERY_AUTH_SESSION_DATA {
+        get {
+            if (QUERY_AUTH_SESSION_DATA == null) {
+                QUERY_AUTH_SESSION_DATA = getBoolean('QueryAuthSessionData', true);
+            }
+            return QUERY_AUTH_SESSION_DATA;
+        }
+        private set;
+    }
+
+    /**
      * @description Controls if Nebula Logger queries `AuthSession` data synchronously & populated on `LogEntryEvent__e` records.
      *              When set to `false`, any `AuthSession` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
      *              asynchronously and populated on any resulting `Log__c` records.
-     *              Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionDataSynchronously`, or `false` as the default
+     *              Controlled by the custom metadata record `LoggerParameter.QueryAuthSessionDataSynchronously`, or `true` as the default
      */
     public static final Boolean QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY {
         get {
             if (QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == null) {
-                QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY = getBoolean('QueryAuthSessionDataSynchronously', false);
+                QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY = getBoolean('QueryAuthSessionDataSynchronously', true);
             }
             return QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
+        }
+        private set;
+    }
+
+    /**
+     * @description Controls if Nebula Logger queries `FlowDefinitionView` data.
+     *              When set to `false`, any `FlowDefinitionView` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     *              Controlled by the custom metadata record `LoggerParameter.QueryFlowDefinitionViewData`, or `true` as the default
+     */
+    public static final Boolean QUERY_FLOW_DEFINITION_VIEW_DATA {
+        get {
+            if (QUERY_FLOW_DEFINITION_VIEW_DATA == null) {
+                QUERY_FLOW_DEFINITION_VIEW_DATA = getBoolean('QueryFlowDefinitionViewData', true);
+            }
+            return QUERY_FLOW_DEFINITION_VIEW_DATA;
+        }
+        private set;
+    }
+
+    /**
+     * @description Controls if Nebula Logger queries `Network` data.
+     *              When set to `false`, any `Network` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     *              Controlled by the custom metadata record `LoggerParameter.QueryNetworkData`, or `true` as the default
+     */
+    public static final Boolean QUERY_NETWORK_DATA {
+        get {
+            if (QUERY_NETWORK_DATA == null) {
+                QUERY_NETWORK_DATA = getBoolean('QueryNetworkData', true);
+            }
+            return QUERY_NETWORK_DATA;
         }
         private set;
     }
@@ -93,14 +153,29 @@ public class LoggerParameter {
      * @description Controls if Nebula Logger queries `Network` data is queried synchronously & populated on `LogEntryEvent__e` records.
      *              When set to `false`, any `Network` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
      *              asynchronously and populated on any resulting `Log__c` records.
-     *              Controlled by the custom metadata record `LoggerParameter.QueryNetworkDataSynchronously`, or `false` as the default
+     *              Controlled by the custom metadata record `LoggerParameter.QueryNetworkDataSynchronously`, or `true` as the default
      */
     public static final Boolean QUERY_NETWORK_DATA_SYNCHRONOUSLY {
         get {
             if (QUERY_NETWORK_DATA_SYNCHRONOUSLY == null) {
-                QUERY_NETWORK_DATA_SYNCHRONOUSLY = getBoolean('QueryNetworkDataSynchronously', false);
+                QUERY_NETWORK_DATA_SYNCHRONOUSLY = getBoolean('QueryNetworkDataSynchronously', true);
             }
             return QUERY_NETWORK_DATA_SYNCHRONOUSLY;
+        }
+        private set;
+    }
+
+    /**
+     * @description Controls if Nebula Logger queries `Organization` data.
+     *              When set to `false`, any `Organization` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     *              Controlled by the custom metadata record `LoggerParameter.QueryOrganizationData`, or `true` as the default
+     */
+    public static final Boolean QUERY_ORGANIZATION_DATA {
+        get {
+            if (QUERY_ORGANIZATION_DATA == null) {
+                QUERY_ORGANIZATION_DATA = getBoolean('QueryOrganizationData', true);
+            }
+            return QUERY_ORGANIZATION_DATA;
         }
         private set;
     }
@@ -109,14 +184,44 @@ public class LoggerParameter {
      * @description Indicates if Nebula Logger queries `Organization` data is queried synchronously & populated on `LogEntryEvent__e` records.
      *              When set to `false`, any `Organization` fields on `LogEntryEvent__e` will not be populated - the data will instead be queried
      *              asynchronously and populated on any resulting `Log__c` records.
-     *              Controlled by the custom metadata record `LoggerParameter.QueryOrganizationDataSynchronously`, or `false` as the default
+     *              Controlled by the custom metadata record `LoggerParameter.QueryOrganizationDataSynchronously`, or `true` as the default
      */
     public static final Boolean QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY {
         get {
             if (QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == null) {
-                QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY = getBoolean('QueryOrganizationDataSynchronously', false);
+                QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY = getBoolean('QueryOrganizationDataSynchronously', true);
             }
             return QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
+        }
+        private set;
+    }
+
+    /**
+     * @description Controls if Nebula Logger queries data for records synthetically related to a `LogEntry__c` via `LogEntry__c.RecordId__c`.
+     *              When set to `false`, any fields on `LogEntry__c` related to `LogEntry__c.RecordId__c` not be populated
+     *              Controlled by the custom metadata record `LoggerParameter.QueryRelatedRecordData`, or `true` as the default
+     */
+    public static final Boolean QUERY_RELATED_RECORD_DATA {
+        get {
+            if (QUERY_RELATED_RECORD_DATA == null) {
+                QUERY_RELATED_RECORD_DATA = getBoolean('QueryRelatedRecordData', true);
+            }
+            return QUERY_RELATED_RECORD_DATA;
+        }
+        private set;
+    }
+
+    /**
+     * @description Controls if Nebula Logger queries `User` data.
+     *              When set to `false`, any `User` fields on `LogEntryEvent__e` and `Log__c` will not be populated
+     *              Controlled by the custom metadata record `LoggerParameter.QueryUserData`, or `true` as the default
+     */
+    public static final Boolean QUERY_USER_DATA {
+        get {
+            if (QUERY_USER_DATA == null) {
+                QUERY_USER_DATA = getBoolean('QueryUserData', true);
+            }
+            return QUERY_USER_DATA;
         }
         private set;
     }
@@ -125,12 +230,12 @@ public class LoggerParameter {
      * @description Indicates if Nebula Logger queries `User` data is queried synchronously & populated on `LogEntryEvent__e` records.
      *              When set to `false`, any `User` fields on `LogEntryEvent__e` that rely on querying will not be populated - the data
      *              will instead be queried asynchronously and populated on any resulting `Log__c` records.
-     *              Controlled by the custom metadata record `LoggerParameter.QueryUserDataSynchronously`, or `false` as the default
+     *              Controlled by the custom metadata record `LoggerParameter.QueryUserDataSynchronously`, or `true` as the default
      */
     public static final Boolean QUERY_USER_DATA_SYNCHRONOUSLY {
         get {
             if (QUERY_USER_DATA_SYNCHRONOUSLY == null) {
-                QUERY_USER_DATA_SYNCHRONOUSLY = getBoolean('QueryUserDataSynchronously', false);
+                QUERY_USER_DATA_SYNCHRONOUSLY = getBoolean('QueryUserDataSynchronously', true);
             }
             return QUERY_USER_DATA_SYNCHRONOUSLY;
         }
@@ -167,14 +272,14 @@ public class LoggerParameter {
 
     /**
      * @description Indicates if `Logger.setScenario(String)` uses the first specified value (when `true`), or the last specified value (when `false`)
-     *              Controlled by the custom metadata record `LoggerParameter.UseFirstSpecifiedScenario`, or `true` as the default
+     *              Controlled by the custom metadata record `LoggerParameter.UseFirstScenarioForTransaction`, or `true` as the default
      */
-    public static final Boolean USE_FIRST_SPECIFIED_SCENARIO {
+    public static final Boolean USE_FIRST_SCENARIO_FOR_TRANSACTION {
         get {
-            if (USE_FIRST_SPECIFIED_SCENARIO == null) {
-                USE_FIRST_SPECIFIED_SCENARIO = getBoolean('UseFirstSpecifiedScenario', true);
+            if (USE_FIRST_SCENARIO_FOR_TRANSACTION == null) {
+                USE_FIRST_SCENARIO_FOR_TRANSACTION = getBoolean('UseFirstScenarioForTransaction', true);
             }
-            return USE_FIRST_SPECIFIED_SCENARIO;
+            return USE_FIRST_SCENARIO_FOR_TRANSACTION;
         }
         private set;
     }

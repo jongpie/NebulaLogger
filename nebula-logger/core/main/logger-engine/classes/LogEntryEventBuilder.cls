@@ -13,8 +13,11 @@
 )
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
-    private static final USER CURRENT_USER = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+    private static final User CURRENT_USER = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
     private static final String NEW_LINE_DELIMITER = '\n';
+
+    @TestVisible
+    private static Id networkId = System.Network.getNetworkId();
 
     private final LogEntryEvent__e logEntryEvent;
     private final LoggingLevel entryLoggingLevel;
@@ -429,7 +432,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordCollectionSize__c = 1;
         this.logEntryEvent.RecordCollectionType__c = 'Single';
 
-        String recordJson = getJson(record);
+        String recordJson = getJson(record, userSettings.IsRecordFieldStrippingEnabled__c);
         if (record == null) {
             this.logEntryEvent.RecordJson__c = recordJson;
             this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
@@ -463,7 +466,7 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordCollectionType__c = 'List';
 
         Schema.SObjectType sobjectType = records?.getSObjectType();
-        String recordJson = getJson(records);
+        String recordJson = getJson(records, userSettings.IsRecordFieldStrippingEnabled__c);
         if (sobjectType == null) {
             this.logEntryEvent.RecordJson__c = recordJson;
             this.logEntryEvent.RecordSObjectClassification__c = 'Unknown';
@@ -788,21 +791,20 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent) {
-        logEntryEvent.NetworkId__c = Network.getNetworkId();
-
-        if (LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == false) {
+        if (LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == false || String.isBlank(networkId) == true) {
             return;
         }
 
-        SObject networkRecord = LoggerEngineDataSelector.getInstance().getCachedNetwork();
+        logEntryEvent.NetworkId__c = networkId;
+        SObject networkRecord = LoggerEngineDataSelector.getInstance().getCachedNetwork(networkId);
         if (networkRecord == null) {
             return;
         }
 
+        logEntryEvent.NetworkLoginUrl__c = System.Network.getLoginUrl(networkRecord.Id);
+        logEntryEvent.NetworkLogoutUrl__c = System.Network.getLogoutUrl(networkRecord.Id);
         logEntryEvent.NetworkName__c = (String) networkRecord.get('Name');
-        logEntryEvent.NetworkLoginUrl__c = Network.getLoginUrl(networkRecord.Id);
-        logEntryEvent.NetworkLogoutUrl__c = Network.getLogoutUrl(networkRecord.Id);
-        logEntryEvent.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(networkRecord.Id);
+        logEntryEvent.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(networkRecord.Id);
         logEntryEvent.NetworkUrlPathPrefix__c = (String) networkRecord.get('UrlPathPrefix');
     }
 
@@ -827,6 +829,10 @@ global with sharing class LogEntryEventBuilder {
         }
 
         User cachedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
+
+        if (cachedUser == null) {
+            return;
+        }
 
         logEntryEvent.LoggedByUsername__c = cachedUser.Username;
         logEntryEvent.ProfileName__c = cachedUser.Profile.Name;
@@ -866,20 +872,21 @@ global with sharing class LogEntryEventBuilder {
         return dataInput;
     }
 
-    private static String getJson(SObject record) {
-        List<SObject> strippedRecords = stripInaccessible(new List<SObject>{ record });
+    private static String getJson(SObject record, Boolean isRecordFieldStrippingEnabled) {
+        List<SObject> records = new List<SObject>{ record };
+        records = isRecordFieldStrippingEnabled == false ? records : stripInaccessible(records);
 
-        if (strippedRecords == null) {
+        if (records == null) {
             return null;
         }
 
-        SObject strippedRecord = strippedRecords.get(0);
+        SObject strippedRecord = records.get(0);
         return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecord));
     }
 
-    private static String getJson(List<SObject> records) {
-        List<SObject> strippedRecords = stripInaccessible(records);
-        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(strippedRecords));
+    private static String getJson(List<SObject> records, Boolean isRecordFieldStrippingEnabled) {
+        records = isRecordFieldStrippingEnabled == false ? records : stripInaccessible(records);
+        return truncateFieldValue(Schema.LogEntryEvent__e.RecordJson__c, JSON.serializePretty(records));
     }
 
     private static String getOrganizationApiVersion() {
@@ -895,7 +902,9 @@ global with sharing class LogEntryEventBuilder {
     private static String getOrganizationEnvironmentType() {
         Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String orgEnvironmentType;
-        if (cachedOrganization.IsSandbox == true && cachedOrganization.TrialExpirationDate != null) {
+        if (cachedOrganization == null) {
+            return null;
+        } else if (cachedOrganization.IsSandbox == true && cachedOrganization.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';
         } else if (cachedOrganization.IsSandbox == true) {
             orgEnvironmentType = 'Sandbox';
@@ -1018,12 +1027,7 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static List<SObject> stripInaccessible(List<SObject> records) {
-        if (
-            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c == false ||
-            records == null ||
-            records.isEmpty() == true ||
-            records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType
-        ) {
+        if (records == null || records.isEmpty() == true || records.get(0).getSObjectType() == Schema.AggregateResult.SObjectType) {
             return records;
         }
 

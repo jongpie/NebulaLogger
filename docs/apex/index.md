@@ -38,10 +38,6 @@ Provides the ability to generate string messages on demand, using String.format(
 
 The core class for logging
 
-### [LoggerCache](Logger-Engine/LoggerCache)
-
-Class used to cache query results returned by the selector classes
-
 ### [LoggerDataStore](Logger-Engine/LoggerDataStore)
 
 Class used to manage any data-related operations, including database DML statements, publishing platform events via the event bus, and enqueueing queueable jobs
@@ -132,21 +128,11 @@ Handles trigger events for the `LoggerTag__c` object
 
 Controller class for the lightning web component `related-log-entries`
 
-## Test Utilities
-
-### [LoggerMockDataCreator](Test-Utilities/LoggerMockDataCreator)
-
-Utility class used to help with generating mock data when writing Apex tests for Nebula Logger. These methods are generic, and should work in any Salesforce org. These methods can be used when writing Apex tests for plugins.
-
-### [LoggerMockDataStore](Test-Utilities/LoggerMockDataStore)
-
-Utility class used to mock any data-related operations for the database, event bus, and queueable jobs. These methods are generic, and should work in any Salesforce org. These methods can be used when writing Apex tests for plugins.
-
-### [LoggerTestConfigurator](Test-Utilities/LoggerTestConfigurator)
-
-Utility class used to help with setting up Nebula Logger&apos;s configurations within a test context. These methods are specific to metadata implemented within Nebula Logger. These methods can be used when writing Apex tests for plugins.
-
 ## Configuration
+
+### [LoggerCache](Configuration/LoggerCache)
+
+Class used to cache query results returned by the selector classes
 
 ### [LoggerParameter](Configuration/LoggerParameter)
 
@@ -159,3 +145,17 @@ The core of the plugin framework, used to create custom Apex &amp; Flow plugins 
 ### [LoggerScenarioRule](Configuration/LoggerScenarioRule)
 
 Provides a centralized way to load scenario rules that override behavior within Nebula Logger
+
+## Test Utilities
+
+### [LoggerMockDataCreator](/Test-Utilities/LoggerMockDataCreator)
+
+Utility class used to help with generating mock data when writing Apex tests for Nebula Logger. These methods are generic, and should work in any Salesforce org. These methods can be used when writing Apex tests for plugins.
+
+### [LoggerMockDataStore](/Test-Utilities/LoggerMockDataStore)
+
+Utility class used to mock any data-related operations for the database, event bus, and queueable jobs. These methods are generic, and should work in any Salesforce org. These methods can be used when writing Apex tests for plugins.
+
+### [LoggerTestConfigurator](/Test-Utilities/LoggerTestConfigurator)
+
+Utility class used to help with setting up Nebula Logger&apos;s configurations within a test context. These methods are specific to metadata implemented within Nebula Logger. These methods can be used when writing Apex tests for plugins.

@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Query Auth Session Data Synchronously</label>
+    <label>Query Related Record Data</label>
     <protected>false</protected>
     <values>
         <field>Description__c</field>

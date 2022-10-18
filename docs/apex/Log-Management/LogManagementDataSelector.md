@@ -87,6 +87,8 @@ List&lt;ApexEmailNotification&gt;
 
 The cached `List&lt;ApexEmailNotification&gt;` records
 
+#### `getCachedRecentLogWithApiReleaseDetails()` → `Log__c`
+
 #### `getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses)` → `Integer`
 
 Returns the count of `AsyncApexJob` records with the specified Apex class name, method name &amp; job status

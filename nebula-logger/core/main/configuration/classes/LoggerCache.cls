@@ -4,22 +4,22 @@
 //------------------------------------------------------------------------------------------------//
 
 /**
- * @group Logger Engine
+ * @group Configuration
  * @description Class used to cache query results returned by the selector classes
  */
 public without sharing class LoggerCache {
     private static final Boolean CACHE_IS_IMMUTABLE = false;
     @TestVisible
-    private static final String CACHE_PARTITION_NAME = getNamespacePrefix('.') + 'LoggerCache';
-    private static final Cache.Visibility CACHE_VISIBILITY = Cache.Visibility.ALL;
+    private static final String CACHE_PARTITION_NAME = getQualifiedParitionName('LoggerCache');
+    private static final Cache.Visibility CACHE_VISIBILITY = Cache.Visibility.NAMESPACE;
     private static final Cache.OrgPartition ORGANIZATION_CACHE_PARTITION = Cache.Org.getPartition(CACHE_PARTITION_NAME);
     private static final Integer ORGANIZATION_CACHE_TTL_SECONDS = 86400; // 86,400 seconds == 24 hours, max allowd for org cache
     private static final Cache.SessionPartition SESSION_CACHE_PARTITION = Cache.Session.getPartition(CACHE_PARTITION_NAME);
     private static final Integer SESSION_CACHE_TTL_SECONDS = 28800; // 28,800 seconds == 8 hours, max allowd for session cache
 
-    private static OrganizationCache organizationCacheInstance = new OrganizationCache();
-    private static SessionCache sessionCacheInstance = new SessionCache();
-    private static TransactionCache transactionCacheInstance = new TransactionCache();
+    private static final OrganizationCache ORGANIZATION_CACHE_INSTANCE = new OrganizationCache();
+    private static final SessionCache SESSION_CACHE_INSTANCE = new SessionCache();
+    private static final TransactionCache TRANSACTION_CACHE_INSTANCE = new TransactionCache();
 
     @SuppressWarnings('PMD.ApexDoc')
     private interface Cacheable {
@@ -35,7 +35,7 @@ public without sharing class LoggerCache {
      * @return      The singleton instance of `OrganizationCache`
      */
     public static OrganizationCache getOrganizationCache() {
-        return organizationCacheInstance;
+        return ORGANIZATION_CACHE_INSTANCE;
     }
 
     /**
@@ -44,7 +44,7 @@ public without sharing class LoggerCache {
      * @return      The singleton instance of `SessionCache`
      */
     public static SessionCache getSessionCache() {
-        return sessionCacheInstance;
+        return SESSION_CACHE_INSTANCE;
     }
 
     /**
@@ -53,20 +53,20 @@ public without sharing class LoggerCache {
      * @return      The singleton instance of `TransactionCache`
      */
     public static TransactionCache getTransactionCache() {
-        return transactionCacheInstance;
+        return TRANSACTION_CACHE_INSTANCE;
     }
 
     /**
-     * @description Manages any organization-specific caching
+     * @description Manages any organization-specific caching, using org platform cache & transaction cache
      */
-    public virtual class OrganizationCache implements Cacheable {
+    public class OrganizationCache implements Cacheable {
         /**
          * @description Indicates if the specified key has already been added to the cache
          * @param  key The `String` key to check for within the transaction cache
          * @return     The `Boolean` result
          */
-        public virtual Boolean contains(String key) {
-            if (getTransactionCache().contains(key) || LoggerParameter.USE_PLATFORM_CACHE == false) {
+        public Boolean contains(String key) {
+            if (LoggerParameter.USE_PLATFORM_CACHE == false || getTransactionCache().contains(key)) {
                 return getTransactionCache().contains(key);
             } else {
                 return ORGANIZATION_CACHE_PARTITION.contains(key);
@@ -79,8 +79,8 @@ public without sharing class LoggerCache {
          * @param  key  The `String` key to check for within the transaction cache
          * @return      The cached value, or null if no cached value is found for the specified key
          */
-        public virtual Object get(String key) {
-            if (getTransactionCache().contains(key) || LoggerParameter.USE_PLATFORM_CACHE == false) {
+        public Object get(String key) {
+            if (LoggerParameter.USE_PLATFORM_CACHE == false || getTransactionCache().contains(key)) {
                 return getTransactionCache().get(key);
             } else {
                 Object value = ORGANIZATION_CACHE_PARTITION.get(key);
@@ -95,7 +95,7 @@ public without sharing class LoggerCache {
          * @param  key   The `String` key to add to the organization cache
          * @param  value The `Object` value to cache for the specified key
          */
-        public virtual void put(String key, Object value) {
+        public void put(String key, Object value) {
             getTransactionCache().put(key, value);
 
             // Platform cache does not support storing null values
@@ -108,7 +108,7 @@ public without sharing class LoggerCache {
          * @description Removes the specified `String` key from the organization cache
          * @param  key  The `String` key to remove from the organization cache
          */
-        public virtual void remove(String key) {
+        public void remove(String key) {
             getTransactionCache().remove(key);
 
             if (LoggerParameter.USE_PLATFORM_CACHE == true) {
@@ -118,16 +118,16 @@ public without sharing class LoggerCache {
     }
 
     /**
-     * @description Manages any session-specific caching
+     * @description Manages any session-specific caching, using session platform cache & transaction cache
      */
-    public virtual class SessionCache implements Cacheable {
+    public class SessionCache implements Cacheable {
         /**
          * @description Indicates if the specified key has already been added to the cache
          * @param  key The `String` key to check for within the session cache
          * @return     The `Boolean` result
          */
-        public virtual Boolean contains(String key) {
-            if (getTransactionCache().contains(key) || LoggerParameter.USE_PLATFORM_CACHE == false || SESSION_CACHE_PARTITION.isAvailable() == false) {
+        public Boolean contains(String key) {
+            if (LoggerParameter.USE_PLATFORM_CACHE == false || getTransactionCache().contains(key) || SESSION_CACHE_PARTITION.isAvailable() == false) {
                 return getTransactionCache().contains(key);
             } else {
                 return SESSION_CACHE_PARTITION.contains(key);
@@ -140,8 +140,8 @@ public without sharing class LoggerCache {
          * @param  key  The `String` key to check for within the session cache
          * @return      The cached value, or null if no cached value is found for the specified key
          */
-        public virtual Object get(String key) {
-            if (getTransactionCache().contains(key) || LoggerParameter.USE_PLATFORM_CACHE == false || SESSION_CACHE_PARTITION.isAvailable() == false) {
+        public Object get(String key) {
+            if (LoggerParameter.USE_PLATFORM_CACHE == false || getTransactionCache().contains(key) || SESSION_CACHE_PARTITION.isAvailable() == false) {
                 return getTransactionCache().get(key);
             } else {
                 Object value = SESSION_CACHE_PARTITION.get(key);
@@ -156,7 +156,7 @@ public without sharing class LoggerCache {
          * @param  key   The `String` key to add to the session cache
          * @param  value The `Object` value to cache for the specified key
          */
-        public virtual void put(String key, Object value) {
+        public void put(String key, Object value) {
             getTransactionCache().put(key, value);
 
             // Platform cache does not support storing null values
@@ -169,7 +169,7 @@ public without sharing class LoggerCache {
          * @description Removes the specified `String` key from the session cache
          * @param  key  The `String` key to remove from the session cache
          */
-        public virtual void remove(String key) {
+        public void remove(String key) {
             getTransactionCache().remove(key);
 
             if (LoggerParameter.USE_PLATFORM_CACHE == true && SESSION_CACHE_PARTITION.isAvailable() == true) {
@@ -179,18 +179,18 @@ public without sharing class LoggerCache {
     }
 
     /**
-     * @description Manages any transaction-specific caching
+     * @description Manages any transaction-specific caching, using static final `Map<String, Object>`
      */
-    public virtual class TransactionCache implements Cacheable {
-        private final Map<String, Object> cachedValues = new Map<String, Object>();
+    public class TransactionCache implements Cacheable {
+        private final Map<String, Object> keyToValue = new Map<String, Object>();
 
         /**
          * @description Indicates if the specified key has already been added to the cache
          * @param  key The `String` key to check for within the transaction cache
          * @return     The `Boolean` result
          */
-        public virtual Boolean contains(String key) {
-            return this.cachedValues.containsKey(key);
+        public Boolean contains(String key) {
+            return this.keyToValue.containsKey(key);
         }
 
         /**
@@ -199,8 +199,8 @@ public without sharing class LoggerCache {
          * @param  key  The `String` key to check for within the transaction cache
          * @return      The cached value, or null if no cached value is found for the specified key
          */
-        public virtual Object get(String key) {
-            return this.cachedValues.get(key);
+        public Object get(String key) {
+            return this.keyToValue.get(key);
         }
 
         /**
@@ -209,36 +209,22 @@ public without sharing class LoggerCache {
          * @param  key   The `String` key to add to the transaction cache
          * @param  value The `Object` value to cache for the specified key
          */
-        public virtual void put(String key, Object value) {
-            this.cachedValues.put(key, value);
+        public void put(String key, Object value) {
+            this.keyToValue.put(key, value);
         }
 
         /**
          * @description Removes the specified `String` key from the transaction cache
          * @param  key  The `String` key to remove from the transaction cache
          */
-        public virtual void remove(String key) {
-            this.cachedValues.remove(key);
+        public void remove(String key) {
+            this.keyToValue.remove(key);
         }
     }
 
-    @TestVisible
-    private static void setMock(OrganizationCache organizationCache) {
-        organizationCacheInstance = organizationCache;
-    }
-
-    @TestVisible
-    private static void setMock(SessionCache sessionCache) {
-        sessionCacheInstance = sessionCache;
-    }
-
-    @TestVisible
-    private static void setMock(TransactionCache transactionCache) {
-        transactionCacheInstance = transactionCache;
-    }
-
-    private static String getNamespacePrefix(String delimiter) {
+    private static String getQualifiedParitionName(String unqualifiedPartitionName) {
         String className = LoggerCache.class.getName();
-        return className.contains('.') ? className.substringBefore('.') + delimiter : '';
+        String namespacePrefix = className.contains('.') ? className.substringBefore('.') + '.' : '';
+        return namespacePrefix + unqualifiedPartitionName;
     }
 }

@@ -8,10 +8,11 @@
  * @description Selector class used for all queries that are specific to the log management layer
  */
 @SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
-public without sharing class LogManagementDataSelector {
-    private static final LogManagementDataSelector INSTANCE = new LogManagementDataSelector();
+public without sharing virtual class LogManagementDataSelector {
+    private static LogManagementDataSelector instance = new LogManagementDataSelector();
 
     @SuppressWarnings('PMD.EmptyStatementBlock')
+    @TestVisible
     private LogManagementDataSelector() {
     }
 
@@ -20,7 +21,7 @@ public without sharing class LogManagementDataSelector {
      * @return   The singleton instance of `LogManagementDataSelector`
      */
     public static LogManagementDataSelector getInstance() {
-        return INSTANCE;
+        return instance;
     }
 
     /**
@@ -29,7 +30,7 @@ public without sharing class LogManagementDataSelector {
      * @param  fieldNames  `Set<String>` API names of any fields to include in the query
      * @return             `List<SObject>` containing any records in the specified `SObjectType`
      */
-    public List<SObject> getAll(Schema.SObjectType sobjectType, Set<String> fieldNames) {
+    public virtual List<SObject> getAll(Schema.SObjectType sobjectType, Set<String> fieldNames) {
         String query = String.format('SELECT {0} FROM {1}', new List<Object>{ String.join(new List<String>(fieldNames), ', '), sobjectType });
         return Database.query(String.escapeSingleQuotes(query));
     }
@@ -42,7 +43,7 @@ public without sharing class LogManagementDataSelector {
      * @param  recordIds   `List<Id>` of record IDs to include in the query results
      * @return             `List<SObject>` containing any matching records in the specified `SObjectType`
      */
-    public List<SObject> getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds) {
+    public virtual List<SObject> getById(Schema.SObjectType sobjectType, Set<String> fieldNames, List<Id> recordIds) {
         String query = String.format(
             'SELECT {0} FROM {1} WHERE Id IN :recordIds',
             new List<Object>{ String.join(new List<String>(fieldNames), ', '), sobjectType }
@@ -55,7 +56,11 @@ public without sharing class LogManagementDataSelector {
      * @param  apexClassNames The names of the Apex classes to query
      * @return                `List<ApexClass>` containing any matching records
      */
-    public List<ApexClass> getApexClasses(List<String> apexClassNames) {
+    public virtual List<ApexClass> getApexClasses(List<String> apexClassNames) {
+        if (LoggerParameter.QUERY_APEX_CLASS_DATA == false) {
+            return new List<ApexClass>();
+        }
+
         return [
             SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
             FROM ApexClass
@@ -68,7 +73,7 @@ public without sharing class LogManagementDataSelector {
      * @description Returns a cached copy of the `ApexEmailNotification` records in the org
      * @return   The cached `List<ApexEmailNotification>` records
      */
-    public List<ApexEmailNotification> getCachedApexEmailNotifications() {
+    public virtual List<ApexEmailNotification> getCachedApexEmailNotifications() {
         String cacheKey = 'ApexEmailNotifications';
         if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
             return (List<ApexEmailNotification>) LoggerCache.getOrganizationCache().get(cacheKey);
@@ -109,7 +114,7 @@ public without sharing class LogManagementDataSelector {
      * @param  jobStatuses    The list of job statuses that should be used to filter `AsynxApexJob` records
      * @return                The `Integer` count of matching `AsynxApexJob` records
      */
-    public Integer getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses) {
+    public virtual Integer getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses) {
         return [SELECT COUNT() FROM AsyncApexJob WHERE ApexClass.Name = :apexClassName AND MethodName = :apexMethodName AND Status IN :jobStatuses];
     }
 
@@ -118,7 +123,7 @@ public without sharing class LogManagementDataSelector {
      * @param  recordId The `ID` to use for filtering `LogEntry__c` records
      * @return          The `Integer` count of matching `LogEntry__c` records
      */
-    public Integer getCountOfRelatedRecordLogEntries(Id recordId) {
+    public virtual Integer getCountOfRelatedRecordLogEntries(Id recordId) {
         return [SELECT COUNT() FROM LogEntry__c WHERE RecordId__c = :recordId];
     }
 
@@ -127,7 +132,7 @@ public without sharing class LogManagementDataSelector {
      * @param  recordIds The list of `ID` for records to be deleted
      * @return           The matching `List<UserRecordAccess>` records
      */
-    public List<UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
+    public virtual List<UserRecordAccess> getDeleteableUserRecordAccess(List<Id> recordIds) {
         return [SELECT RecordId FROM UserRecordAccess WHERE UserId = :UserInfo.getUserId() AND RecordId IN :recordIds AND HasDeleteAccess = TRUE];
     }
 
@@ -136,7 +141,11 @@ public without sharing class LogManagementDataSelector {
      * @param  flowApiNames The names of the Apex classes to query
      * @return              `List<FlowDefinitionView>` containing any matching records
      */
-    public List<FlowDefinitionView> getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames) {
+    public virtual List<FlowDefinitionView> getFlowDefinitionViewsByFlowApiName(List<String> flowApiNames) {
+        if (LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA == false) {
+            return new List<FlowDefinitionView>();
+        }
+
         return [
             SELECT
                 ActiveVersionId,
@@ -159,7 +168,7 @@ public without sharing class LogManagementDataSelector {
      * @param  durableIds The durable IDs of the Flows to query
      * @return            `List<FlowDefinitionView>` containing any matching records
      */
-    public List<FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
+    public virtual List<FlowVersionView> getFlowVersionViewsByDurableId(List<String> durableIds) {
         return [SELECT ApiVersionRuntime, FlowDefinitionViewId, RunInMode, Status, VersionNumber FROM FlowVersionView WHERE DurableId IN :durableIds];
     }
 
@@ -168,7 +177,7 @@ public without sharing class LogManagementDataSelector {
      * @param  logId The `ID` of the `Log__c` record to query
      * @return       The matching `Log__c` record
      */
-    public Log__c getLogById(Id logId) {
+    public virtual Log__c getLogById(Id logId) {
         List<String> logFieldNames = new List<String>(Schema.Log__c.SObjectType.getDescribe().fields.getMap().keySet());
         logFieldNames.addAll(new List<String>{ 'Owner.Name', 'Owner.Type' });
         List<String> logEntryFieldNames = new List<String>(Schema.LogEntry__c.SObjectType.getDescribe().fields.getMap().keySet());
@@ -189,7 +198,7 @@ public without sharing class LogManagementDataSelector {
      * @param  logIds The list of `ID` of the `Log__c` records to query
      * @return        The list of matching `Log__c` records
      */
-    public List<Log__c> getLogsById(List<Id> logIds) {
+    public virtual List<Log__c> getLogsById(List<Id> logIds) {
         return [SELECT Id, Name, LoggedBy__c, LoggedBy__r.Name, StartTime__c, TotalLogEntries__c, TransactionId__c FROM Log__c WHERE Id IN :logIds];
     }
 
@@ -198,7 +207,7 @@ public without sharing class LogManagementDataSelector {
      * @param  transactionIds The list of `String` transaction IDs of the `Log__c` records to query
      * @return                The list of matching `Log__c` records
      */
-    public List<Log__c> getLogsByTransactionId(List<String> transactionIds) {
+    public virtual List<Log__c> getLogsByTransactionId(List<String> transactionIds) {
         return [SELECT Id, TransactionId__c FROM Log__c WHERE TransactionId__c IN :transactionIds];
     }
 
@@ -207,7 +216,7 @@ public without sharing class LogManagementDataSelector {
      * @param  logScenarioIds The list of `ID` of the `Log__c` records to query
      * @return                The list of matching `LoggerScenario__c` records
      */
-    public List<LoggerScenario__c> getLoggerScenariosById(List<Id> logScenarioIds) {
+    public virtual List<LoggerScenario__c> getLoggerScenariosById(List<Id> logScenarioIds) {
         return [SELECT Id, OwnerId, UniqueId__c FROM LoggerScenario__c WHERE Id IN :logScenarioIds];
     }
 
@@ -216,7 +225,7 @@ public without sharing class LogManagementDataSelector {
      * @param  profileIds The list of `ID` of the `Profile` records to query
      * @return            The list of matching `Profile` records
      */
-    public List<Profile> getProfilesById(List<Id> profileIds) {
+    public virtual List<Profile> getProfilesById(List<Id> profileIds) {
         return [SELECT Id, Name FROM Profile WHERE Id IN :profileIds ORDER BY Name];
     }
 
@@ -225,7 +234,7 @@ public without sharing class LogManagementDataSelector {
      * @param  searchTerm The `String` search term to use for searching `Profile` records
      * @return            The list of matching `Profile` records
      */
-    public List<Profile> getProfilesByNameSearch(String searchTerm) {
+    public virtual List<Profile> getProfilesByNameSearch(String searchTerm) {
         return [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name];
     }
 
@@ -234,7 +243,7 @@ public without sharing class LogManagementDataSelector {
      * @param  queueDeveloperNames The list of `String` queue developer names to query
      * @return                     The list of matching `Group` records
      */
-    public List<Group> getQueuesByDeveloperName(List<String> queueDeveloperNames) {
+    public virtual List<Group> getQueuesByDeveloperName(List<String> queueDeveloperNames) {
         return [SELECT Id, DeveloperName FROM Group WHERE Type = 'Queue' AND DeveloperName IN :queueDeveloperNames];
     }
 
@@ -266,7 +275,7 @@ public without sharing class LogManagementDataSelector {
      * @param  tagNames The set of `String` tag names to query
      * @return          The list of matching `LoggerTag__c` records
      */
-    public List<LoggerTag__c> getTagsByName(Set<String> tagNames) {
+    public virtual List<LoggerTag__c> getTagsByName(Set<String> tagNames) {
         return [SELECT Id, Name FROM LoggerTag__c WHERE Name IN :tagNames];
     }
 
@@ -275,7 +284,7 @@ public without sharing class LogManagementDataSelector {
      * @param  topicNames The set of `String` topic names to query
      * @return            The list of matching `Topic` records
      */
-    public List<Topic> getTopicsByName(Set<String> topicNames) {
+    public virtual List<Topic> getTopicsByName(Set<String> topicNames) {
         return [SELECT Id, Name FROM Topic WHERE Name IN :topicNames];
     }
 
@@ -284,7 +293,7 @@ public without sharing class LogManagementDataSelector {
      * @param  userIds The list of `ID` of the `User` records to query
      * @return         The list of matching `User` records
      */
-    public List<User> getUsersById(List<Id> userIds) {
+    public virtual List<User> getUsersById(List<Id> userIds) {
         return [SELECT Id, Username FROM User WHERE Id IN :userIds ORDER BY Username];
     }
 
@@ -293,7 +302,7 @@ public without sharing class LogManagementDataSelector {
      * @param  searchTerm The `String` search term to use for searching `User` records
      * @return            The list of matching `User` records
      */
-    public List<User> getUsersByNameSearch(String searchTerm) {
+    public virtual List<User> getUsersByNameSearch(String searchTerm) {
         return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username];
     }
 
@@ -302,7 +311,12 @@ public without sharing class LogManagementDataSelector {
      * @param  usernames The list of `String` user usernames to query
      * @return           Tje list of matching `User` records
      */
-    public List<User> getUsersByUsername(List<String> usernames) {
+    public virtual List<User> getUsersByUsername(List<String> usernames) {
         return [SELECT Id, Username FROM User WHERE Username IN :userNames ORDER BY Username];
+    }
+
+    @TestVisible
+    private static void setMock(LogManagementDataSelector mockSelectorInstance) {
+        instance = mockSelectorInstance;
     }
 }

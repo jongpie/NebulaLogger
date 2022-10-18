@@ -481,11 +481,6 @@ private class LogEntryEventHandler_Tests {
     }
 
     @IsTest
-    static void it_should_query_and_set_network_data_when_synchronous_querying_is_disabled() {
-        System.assert(false, 'TODO - move to integration test?');
-    }
-
-    @IsTest
     static void it_should_query_and_set_organization_data_when_synchronous_querying_is_disabled() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();

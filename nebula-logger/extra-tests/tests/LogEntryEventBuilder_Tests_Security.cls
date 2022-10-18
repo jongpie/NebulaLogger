@@ -3,13 +3,17 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/**
+ * @group Extra Tests
+ * @description Additional integration tests for security checks & orgs with Experience Sites (Communities) enabled
+ */
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=false)
-private class LogEntryEventBuilder_Tests_Integration {
+private class LogEntryEventBuilder_Tests_Security {
     private static final Profile STANDARD_USER_PROFILE = [SELECT Id FROM Profile WHERE Name IN ('Standard User', 'Usuario estándar')];
 
     @IsTest
-    static void stripInaccessibleFieldsForRecordWhenEnabled() {
+    static void it_should_strip_inaccessible_fields_for_record_when_enabled() {
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         AccountBrand mockAccountBrand = (AccountBrand) LoggerMockDataCreator.createDataBuilder(Schema.AccountBrand.SObjectType)
             .populateMockId()
@@ -31,8 +35,9 @@ private class LogEntryEventBuilder_Tests_Integration {
             System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible(), 'AccountBrand Name was accessible, and should not have been.');
             System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
 
-            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAccountBrand);
+            LoggerSettings__c userSettings = getUserSettings();
+            userSettings.IsRecordFieldStrippingEnabled__c = true;
+            builder = new LogEntryEventBuilder(userSettings, LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAccountBrand);
         }
 
         System.assertNotEquals(JSON.serializePretty(mockAccountBrand), builder.getLogEntryEvent().RecordJson__c, 'Log entry event record JSON was incorrect.');
@@ -40,7 +45,7 @@ private class LogEntryEventBuilder_Tests_Integration {
     }
 
     @IsTest
-    static void stripInaccessibleFieldsForRecordsWhenEnabled() {
+    static void it_should_strip_inaccessible_fields_for_records_when_enabled() {
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         List<AccountBrand> mockAccountBrands = new List<AccountBrand>();
         List<AccountBrand> strippedAccountBrands = new List<AccountBrand>();
@@ -69,8 +74,9 @@ private class LogEntryEventBuilder_Tests_Integration {
             System.assertEquals(false, Schema.AccountBrand.Name.getDescribe().isAccessible(), 'AccountBrand Name was accessible, and should not have been.');
             System.assertEquals(false, Schema.AccountBrand.Phone.getDescribe().isAccessible(), 'AccountBrand Phone was accessible, and should not have been.');
 
-            Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAccountBrands);
+            LoggerSettings__c userSettings = getUserSettings();
+            userSettings.IsRecordFieldStrippingEnabled__c = true;
+            builder = new LogEntryEventBuilder(userSettings, LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAccountBrands);
         }
 
         System.assertNotEquals(JSON.serializePretty(mockAccountBrands), builder.getLogEntryEvent().RecordJson__c, 'Record JSON is incorrect.');
