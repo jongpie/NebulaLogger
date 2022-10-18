@@ -3,10 +3,6 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-/**
- * @group Extra Tests
- * @description Additional integration tests for security checks & orgs with Experience Sites (Communities) enabled
- */
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests_Network {

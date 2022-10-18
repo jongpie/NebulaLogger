@@ -89,6 +89,18 @@ The cached `List&lt;ApexEmailNotification&gt;` records
 
 #### `getCachedRecentLogWithApiReleaseDetails()` → `Log__c`
 
+Returns a cached `Log__c` record that has been created within the last 4 hours that has API details populated from calling https://api.status.salesforce.com
+
+##### Return
+
+**Type**
+
+Log\_\_c
+
+**Description**
+
+The cached `Log__c` record, or `null` if no match is found
+
 #### `getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses)` → `Integer`
 
 Returns the count of `AsyncApexJob` records with the specified Apex class name, method name &amp; job status

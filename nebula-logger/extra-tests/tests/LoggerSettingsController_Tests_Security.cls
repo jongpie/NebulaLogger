@@ -3,12 +3,6 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-/**
- * @group Extra Tests
- * @description Additional integration tests for testing security checks in `LoggerSettingsController`.
- *              If an org installs Nebula Logger for all users, these tests will start failing since it relies on an existing Profile
- *              ...from within the normal tests, and each org might have additional required fields, VR, etc on the std objects
- */
 @SuppressWarnings('PMD.ApexDoc, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LoggerSettingsController_Tests_Security {

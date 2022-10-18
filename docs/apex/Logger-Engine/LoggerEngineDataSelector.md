@@ -12,7 +12,13 @@ Selector class used for all queries that are specific to the logger engine layer
 
 #### `getAuthSessions(List<Id> userIds)` → `Map<Id, AuthSession>`
 
-Returns a cached copy of `AuthSession` for the current user&apos;s current session, or `null` if there is not a current session
+Returns a `Map&lt;Id, AuthSession&gt;` for the specified user IDs &amp; their matching active sessions, or `null` if there is not a current session
+
+##### Parameters
+
+| Param     | Description         |
+| --------- | ------------------- |
+| `userIds` | userIds description |
 
 ##### Return
 
@@ -22,9 +28,21 @@ Map&lt;Id, AuthSession&gt;
 
 **Description**
 
-The cached `AuthSession` record
+The instance of `Map&lt;Id, AuthSession&gt;` containing any matching `AuthSession` records
 
 #### `getCachedAuthSession()` → `AuthSession`
+
+Returns a cached copy of `AuthSession` for the current user&apos;s current session, or `null` if there is not a current session
+
+##### Return
+
+**Type**
+
+AuthSession
+
+**Description**
+
+The cached `AuthSession` record
 
 #### `getCachedLoggerSObjectHandlers()` → `List<LoggerSObjectHandler_t>`
 
@@ -118,6 +136,42 @@ The singleton instance of `LoggerEngineDataSelector`
 
 #### `getNetworks(List<Id> networkIds)` → `Map<Id, SObject>`
 
+Returns a list of matching `Network` records based on the provided list of network IDs
+
+##### Parameters
+
+| Param        | Description                        |
+| ------------ | ---------------------------------- |
+| `networkIds` | The list of `Network` IDs to query |
+
+##### Return
+
+**Type**
+
+Map&lt;Id, SObject&gt;
+
+**Description**
+
+The instance of `Map&lt;Id, SObject&gt;` containing any matching `Network` records
+
 #### `getUsers(List<Id> userIds)` → `Map<Id, User>`
+
+Returns a list of matching `User` records based on the provided list of user IDs
+
+##### Parameters
+
+| Param     | Description                     |
+| --------- | ------------------------------- |
+| `userIds` | The list of `User` IDs to query |
+
+##### Return
+
+**Type**
+
+Map&lt;Id, User&gt;
+
+**Description**
+
+The instance of `Map&lt;Id, User&gt;` containing any matching `User` records
 
 ---

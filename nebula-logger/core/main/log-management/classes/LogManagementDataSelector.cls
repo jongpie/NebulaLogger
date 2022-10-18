@@ -84,6 +84,11 @@ public without sharing virtual class LogManagementDataSelector {
         return apexEmailNotifications;
     }
 
+    /**
+     * @description Returns a cached `Log__c` record that has been created within the last 4 hours
+     *              that has API details populated from calling https://api.status.salesforce.com
+     * @return   The cached `Log__c` record, or `null` if no match is found
+     */
     public Log__c getCachedRecentLogWithApiReleaseDetails() {
         String cacheKey = 'RecentLogWithApiReleaseDetails';
         if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {

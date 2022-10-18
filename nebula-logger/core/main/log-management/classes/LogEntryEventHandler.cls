@@ -546,17 +546,17 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            AuthSession matchignSession = userIdToAuthSession.get(log.LoggedBy__c);
-            log.LoginApplication__c = matchignSession?.LoginHistory.Application;
-            log.LoginBrowser__c = matchignSession?.LoginHistory.Browser;
-            log.LoginHistoryId__c = matchignSession?.LoginHistoryId;
-            log.LoginPlatform__c = matchignSession?.LoginHistory.Platform;
-            log.LoginType__c = matchignSession?.LoginType;
-            log.LogoutUrl__c = matchignSession?.LogoutUrl;
-            log.SessionId__c = matchignSession?.Id;
-            log.SessionSecurityLevel__c = matchignSession?.SessionSecurityLevel;
-            log.SessionType__c = matchignSession?.SessionType;
-            log.SourceIp__c = matchignSession?.SourceIp;
+            AuthSession matchingSession = userIdToAuthSession.get(log.LoggedBy__c);
+            log.LoginApplication__c = matchingSession?.LoginHistory.Application;
+            log.LoginBrowser__c = matchingSession?.LoginHistory.Browser;
+            log.LoginHistoryId__c = matchingSession?.LoginHistoryId;
+            log.LoginPlatform__c = matchingSession?.LoginHistory.Platform;
+            log.LoginType__c = matchingSession?.LoginType;
+            log.LogoutUrl__c = matchingSession?.LogoutUrl;
+            log.SessionId__c = matchingSession?.Id;
+            log.SessionSecurityLevel__c = matchingSession?.SessionSecurityLevel;
+            log.SessionType__c = matchingSession?.SessionType;
+            log.SourceIp__c = matchingSession?.SourceIp;
         }
     }
 

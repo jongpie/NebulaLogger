@@ -5,7 +5,7 @@
     <caseSensitive>false</caseSensitive>
     <complianceGroup>None</complianceGroup>
     <externalId>true</externalId>
-    <inlineHelpText>The unique value returned when calling System.Request.getCurrent().getRequestId()</inlineHelpText>
+    <inlineHelpText>The value returned when calling System.Request.getCurrent().getRequestId()</inlineHelpText>
     <label>Request ID</label>
     <length>36</length>
     <required>false</required>

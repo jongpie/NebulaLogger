@@ -25,9 +25,10 @@ public without sharing virtual class LoggerEngineDataSelector {
     }
 
     /**
-     * @description Returns a cached copy of `AuthSession` for the current user's current session,
+     * @description Returns a `Map<Id, AuthSession>` for the specified user IDs & their matching active sessions,
      *              or `null` if there is not a current session
-     * @return   The cached `AuthSession` record
+     * @param  userIds userIds description
+     * @return The instance of `Map<Id, AuthSession>` containing any matching `AuthSession` records
      */
     public virtual Map<Id, AuthSession> getAuthSessions(List<Id> userIds) {
         Map<Id, AuthSession> userIdToAuthSession = new Map<Id, AuthSession>();
@@ -57,6 +58,11 @@ public without sharing virtual class LoggerEngineDataSelector {
         return userIdToAuthSession;
     }
 
+    /**
+     * @description Returns a cached copy of `AuthSession` for the current user's current session,
+     *              or `null` if there is not a current session
+     * @return   The cached `AuthSession` record
+     */
     public virtual AuthSession getCachedAuthSession() {
         if (LoggerParameter.QUERY_AUTH_SESSION_DATA == false) {
             return null;
@@ -183,6 +189,11 @@ public without sharing virtual class LoggerEngineDataSelector {
         return user;
     }
 
+    /**
+     * @description Returns a list of matching `Network` records based on the provided list of network IDs
+     * @param  networkIds The list of `Network` IDs to query
+     * @return            The instance of `Map<Id, SObject>` containing any matching `Network` records
+     */
     public Map<Id, SObject> getNetworks(List<Id> networkIds) {
         // TODO add caching in a future release
         if (LoggerParameter.QUERY_NETWORK_DATA == false) {
@@ -195,6 +206,11 @@ public without sharing virtual class LoggerEngineDataSelector {
         return new Map<Id, SObject>(Database.query(String.escapeSingleQuotes(query)));
     }
 
+    /**
+     * @description Returns a list of matching `User` records based on the provided list of user IDs
+     * @param  userIds The list of `User` IDs to query
+     * @return         The instance of `Map<Id, User>` containing any matching `User` records
+     */
     public Map<Id, User> getUsers(List<Id> userIds) {
         if (LoggerParameter.QUERY_USER_DATA == false) {
             return new Map<Id, User>();
