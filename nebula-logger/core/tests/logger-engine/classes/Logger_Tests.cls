@@ -179,6 +179,7 @@ private class Logger_Tests {
     static void it_should_use_the_first_specified_scenario_as_transaction_scenario_when_parameter_is_true() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));
+        System.assertEquals(true, LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION);
         String firstMockScenario = 'the first test scenario specified for this transaction';
         String secondMockScenario = 'the second test scenario specified for this transaction';
 
@@ -197,7 +198,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_use_the_last_specified_scenario_as_transaction_scenario_when_parameter_is_false() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(false)));
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstScenarioForTransaction', Value__c = String.valueOf(false)));
+        System.assertEquals(false, LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION);
         String firstMockScenario = 'the first test scenario specified for this transaction';
         String secondMockScenario = 'the second test scenario specified for this transaction';
 
