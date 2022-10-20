@@ -6,14 +6,13 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=false)
 private class LogEntryEventBuilder_Tests_Network {
-    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Type.forName('System.Network') != null;
     private static final String EXPERIENCE_CLOUD_NETWORK_NAME = 'Logger Test Site';
     private static final String EXPERIENCE_CLOUD_USER_PROFILE_NAME = 'Logger Test Site User Profile';
 
     @IsTest
     static void it_should_set_network_fields_for_experience_site_user() {
         // No need to fail the test if it's running in an org that does not have Experience Cloud enabled
-        if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
+        if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return;
         }
 
@@ -39,7 +38,7 @@ private class LogEntryEventBuilder_Tests_Network {
     @IsTest
     static void it_should_not_set_network_fields_for_experience_site_user_when_disabled_via_logger_parameter() {
         // No need to fail the test if it's running in an org that does not have Experience Cloud enabled
-        if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
+        if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return;
         }
 

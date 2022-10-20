@@ -12,7 +12,7 @@ Class used to cache query results returned by the selector classes
 
 #### `getOrganizationCache()` → `OrganizationCache`
 
-The instance of `OrganizationCache` used for any organization-specific caching. When Platform Cache is disabled, the transaction cache is instead used.
+The instance of `OrganizationCache` used for any organization-specific caching. When Platform Cache is disabled or not available, the transaction cache is instead used.
 
 ##### Return
 
@@ -26,7 +26,7 @@ The singleton instance of `OrganizationCache`
 
 #### `getSessionCache()` → `SessionCache`
 
-The instance of `SessionCache` used for any session-specific caching. When Platform Cache is disabled, the transaction cache is instead used.
+The instance of `SessionCache` used for any session-specific caching. When Platform Cache is disabled or not available, the transaction cache is instead used.
 
 ##### Return
 
@@ -82,7 +82,7 @@ Boolean
 
 **Description**
 
-The `Boolean` result
+The `Boolean` result that indicates if the specified key is contained in the cache
 
 ###### `get(String key)` → `Object`
 
@@ -153,7 +153,7 @@ Boolean
 
 **Description**
 
-The `Boolean` result
+The `Boolean` result that indicates if the specified key is contained in the cache
 
 ###### `get(String key)` → `Object`
 
@@ -224,7 +224,7 @@ Boolean
 
 **Description**
 
-The `Boolean` result
+The `Boolean` result that indicates if the specified key is contained in the cache
 
 ###### `get(String key)` → `Object`
 

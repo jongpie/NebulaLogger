@@ -31,7 +31,7 @@ public without sharing class LoggerCache {
 
     /**
      * @description The instance of `OrganizationCache` used for any organization-specific caching.
-     *              When Platform Cache is disabled, the transaction cache is instead used.
+     *              When Platform Cache is disabled or not available, the transaction cache is instead used.
      * @return      The singleton instance of `OrganizationCache`
      */
     public static OrganizationCache getOrganizationCache() {
@@ -40,7 +40,7 @@ public without sharing class LoggerCache {
 
     /**
      * @description The instance of `SessionCache` used for any session-specific caching.
-     *              When Platform Cache is disabled, the transaction cache is instead used.
+     *              When Platform Cache is disabled or not available, the transaction cache is instead used.
      * @return      The singleton instance of `SessionCache`
      */
     public static SessionCache getSessionCache() {
@@ -63,7 +63,7 @@ public without sharing class LoggerCache {
         /**
          * @description Indicates if the specified key has already been added to the cache
          * @param  key The `String` key to check for within the transaction cache
-         * @return     The `Boolean` result
+         * @return     The `Boolean` result that indicates if the specified key is contained in the cache
          */
         public Boolean contains(String key) {
             if (LoggerParameter.USE_PLATFORM_CACHE == false || getTransactionCache().contains(key)) {
@@ -124,7 +124,7 @@ public without sharing class LoggerCache {
         /**
          * @description Indicates if the specified key has already been added to the cache
          * @param  key The `String` key to check for within the session cache
-         * @return     The `Boolean` result
+         * @return     The `Boolean` result that indicates if the specified key is contained in the cache
          */
         public Boolean contains(String key) {
             if (LoggerParameter.USE_PLATFORM_CACHE == false || getTransactionCache().contains(key) || SESSION_CACHE_PARTITION.isAvailable() == false) {
@@ -187,7 +187,7 @@ public without sharing class LoggerCache {
         /**
          * @description Indicates if the specified key has already been added to the cache
          * @param  key The `String` key to check for within the transaction cache
-         * @return     The `Boolean` result
+         * @return     The `Boolean` result that indicates if the specified key is contained in the cache
          */
         public Boolean contains(String key) {
             return this.keyToValue.containsKey(key);

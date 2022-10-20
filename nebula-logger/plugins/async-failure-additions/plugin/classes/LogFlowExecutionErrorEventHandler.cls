@@ -34,8 +34,8 @@ public without sharing class LogFlowExecutionErrorEventHandler {
             flowLogEntry.timestamp = flowExecutionErrorEvent.EventDate;
             LogEntryEventBuilder builder = flowLogEntry.addToLoggerBuffer()?.setRecord(flowExecutionErrorEvent.FlowVersionId);
             if (builder.shouldSave() == true) {
-                // TODO remove this in a future release, this is a temporary fix until orgs have upgraded to v4.8.3.
-                // Prior to v4.8.3, there was a bug in core package where the TimestampString__c field would be out of
+                // TODO remove this in a future release, this is a temporary fix until orgs have upgraded to v4.8.4.
+                // Prior to v4.8.4, there was a bug in core package where the TimestampString__c field would be out of
                 // sync with the Timestamp__c field, resulting in inaccurate data being used.
                 // builder.getLogEntryEvent().Timestamp__c = flowLogEntry.timestamp.getTime());
                 builder.getLogEntryEvent().TimestampString__c = String.valueOf(flowLogEntry.timestamp.getTime());

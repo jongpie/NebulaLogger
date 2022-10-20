@@ -37,7 +37,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_call_status_api() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
@@ -48,7 +48,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_enable_system_messages() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
@@ -92,7 +92,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_query_auth_session_data_synchronously() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
             DeveloperName = 'QueryAuthSessionDataSynchronously',
             Value__c = JSON.serialize(mockValue)
@@ -128,7 +128,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_query_network_data_synchronously() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
@@ -150,7 +150,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_query_organization_data_synchronously() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
             DeveloperName = 'QueryOrganizationDataSynchronously',
             Value__c = JSON.serialize(mockValue)
@@ -186,7 +186,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_query_user_data_synchronously() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 

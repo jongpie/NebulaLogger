@@ -356,7 +356,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     }
 
     private void upsertLogEntryTags() {
-        if (LoggerParameter.ENABLE_TAGGING == false || this.tagNames.isEmpty()) {
+        if (LoggerParameter.ENABLE_TAGGING == false || this.tagNames.isEmpty() == true) {
             return;
         }
 
