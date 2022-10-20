@@ -114,10 +114,6 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(cachedAuthSession?.SourceIp, logEntryEvent.SourceIp__c);
     }
 
-    // TODO Add integration tests when running as an experience cloud user
-    // @IsTest
-    // static void it_should_not_run_network_query_when_disabled_via_logger_parameter() {}
-
     @IsTest
     static void it_should_not_run_organization_query_when_disabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
@@ -200,6 +196,21 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(cachedUser.Profile.UserLicenseId, logEntryEvent.UserLicenseId__c);
         System.assertEquals(cachedUser.Profile.UserLicense.Name, logEntryEvent.UserLicenseName__c);
         System.assertEquals(cachedUser.UserRole?.Name, logEntryEvent.UserRoleName__c);
+    }
+
+    @IsTest
+    static void it_should_keep_timestamp_string_in_sync_with_timestamp() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).setMessage('some message');
+
+        for (Integer i = 0; i < 5; i++) {
+            builder.getLogEntryEvent().Timestamp__c = builder.getLogEntryEvent().Timestamp__c.addSeconds(i);
+
+            System.assertEquals(
+                String.valueOf(builder.getLogEntryEvent().Timestamp__c.getTime()),
+                builder.getLogEntryEvent().TimestampString__c,
+                'Timestamp string was inaccurate when i ==' + i
+            );
+        }
     }
 
     @IsTest

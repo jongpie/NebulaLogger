@@ -25,6 +25,7 @@ private class FlowLogEntry_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
+        flowEntry.timestamp = System.now().addSeconds(-20);
         System.assertEquals(0, Logger.saveLogCallCount);
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -40,6 +41,7 @@ private class FlowLogEntry_Tests {
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
         System.assertEquals(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
         System.assertEquals(flowEntry.message, publishedLogEntryEvent.Message__c);
+        System.assertEquals(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
         System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
     }
 

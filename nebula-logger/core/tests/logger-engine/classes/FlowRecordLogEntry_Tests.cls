@@ -33,6 +33,7 @@ private class FlowRecordLogEntry_Tests {
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
         flowRecordEntry.record = currentUser;
+        flowRecordEntry.timestamp = System.now().addSeconds(-20);
         System.assertEquals(0, Logger.saveLogCallCount);
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -52,6 +53,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
         System.assertEquals(currentUser.Id, publishedLogEntryEvent.RecordId__c);
         System.assertEquals(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
+        System.assertEquals(flowRecordEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
     @IsTest
