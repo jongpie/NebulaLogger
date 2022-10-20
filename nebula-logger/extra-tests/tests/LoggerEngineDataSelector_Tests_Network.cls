@@ -6,7 +6,6 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerEngineDataSelector_Tests_Network {
-    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Type.forName('System.Network') != null;
     private static final String EXPERIENCE_CLOUD_GUEST_PROFILE_NAME = 'Logger Test Site Guest Profile';
     private static final String EXPERIENCE_CLOUD_NETWORK_NAME = 'Logger Test Site';
     private static final String GUEST_USER_TYPE = 'Guest';
@@ -14,7 +13,7 @@ private class LoggerEngineDataSelector_Tests_Network {
 
     @IsTest
     static void it_returns_cached_network() {
-        if (IS_EXPERIENCE_CLOUD_ENABLED == false) {
+        if (LoggerEngineDataSelector.IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return;
         }
 

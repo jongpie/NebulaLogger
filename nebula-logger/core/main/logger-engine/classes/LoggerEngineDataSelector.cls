@@ -9,6 +9,9 @@
  */
 @SuppressWarnings('PMD.ApexCrudViolation, PMD.ExcessivePublicCount')
 public without sharing virtual class LoggerEngineDataSelector {
+    @TestVisible
+    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Type.forName('NetworkMember') != null;
+
     private static LoggerEngineDataSelector instance = new LoggerEngineDataSelector();
 
     @SuppressWarnings('PMD.EmptyStatementBlock')
@@ -110,7 +113,7 @@ public without sharing virtual class LoggerEngineDataSelector {
             return null;
         }
 
-        if (networkId == null || Type.forName('System.Network') == null) {
+        if (networkId == null || IS_EXPERIENCE_CLOUD_ENABLED == false) {
             return null;
         }
 
