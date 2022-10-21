@@ -52,14 +52,8 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_does_not_query_apex_classes_when_disabled_via_logger_parameter() {
-        List<String> targetApexClassNames = new List<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
-        List<ApexClass> queriedTargetApexClasses = [
-            SELECT ApiVersion, CreatedById, CreatedDate, Id, LastModifiedById, LastModifiedDate, Name
-            FROM ApexClass
-            WHERE Name IN :targetApexClassNames
-            ORDER BY NamespacePrefix NULLS LAST
-        ];
-        System.assertEquals(targetApexClassNames.size(), queriedTargetApexClasses.size());
+        // The class names used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
+        List<String> targetApexClassNames = new List<String>{ 'SomeClass', 'AnotherClass' };
         Integer originalQueryCount = Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
 

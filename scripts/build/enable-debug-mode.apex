@@ -1,0 +1,1 @@
+update new User(Id = UserInfo.getUserId(), UserPreferencesUserDebugModePref = false);

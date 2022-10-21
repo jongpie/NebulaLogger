@@ -78,9 +78,9 @@
                     "package": "Nebula Logger - Core@4.7.1-plugin-framework-overhaul"
                 }
             ],
-            "versionName": "Improved formatting for stack traces",
-            "versionNumber": "1.5.0.NEXT",
-            "versionDescription": "Cleaned up formatting of stack trace fields to handle line breaks",
+            "versionName": "Improved formatting for log entry message",
+            "versionNumber": "1.5.1.NEXT",
+            "versionDescription": "Updated formatting of the log entry message to handle line breaks",
             "default": false
         },
         {
@@ -148,6 +148,7 @@
         "Nebula Logger - Plugin - Slack@0.9.1-beta-release-round-2": "04t5e00000065xiAAA",
         "Nebula Logger - Plugin - Slack@0.9.2-beta-release-round-3": "04t5Y0000015l2WQAQ",
         "Nebula Logger - Plugin - Slack@0.10.0": "04t5Y0000015lgQQAQ",
-        "Nebula Logger - Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ"
+        "Nebula Logger - Plugin - Slack@1.5.0": "04t5Y0000015lvVQAQ",
+        "Nebula Logger - Plugin - Slack@1.5.1": "04t5Y0000023Qu8QAE"
     }
 }

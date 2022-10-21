@@ -548,7 +548,7 @@ global with sharing class LogEntryEventBuilder {
      * @return The same instance of `LogEntryEventBuilder`, useful for chaining methods
      */
     global LogEntryEventBuilder addTags(List<String> tags) {
-        if (tags == null || tags.isEmpty()) {
+        if (tags == null || tags.isEmpty() == true) {
             return this;
         }
 
