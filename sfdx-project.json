@@ -1,12 +1,13 @@
 {
+    "name": "Nebula Logger",
     "namespace": "",
-    "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "55.0",
     "plugins": {
         "sfdx-plugin-prettier": {
             "enabled": true
         }
     },
+    "pushPackageDirectoriesSequentially": true,
     "packageDirectories": [
         {
             "package": "Nebula Logger - Core",
@@ -16,7 +17,7 @@
             "versionName": "Optimized Synchronous Context",
             "versionDescription": "Added new LoggerParameter__mdt records to control synchronous queries & stack trace parsing, incorporated Platform Cache into LoggerCache class",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
-            "default": true
+            "default": false
         },
         {
             "default": false,
@@ -90,6 +91,10 @@
         {
             "path": "./nebula-logger/recipes",
             "default": false
+        },
+        {
+            "path": "./nebula-logger/unsorted",
+            "default": true
         }
     ],
     "packageAliases": {

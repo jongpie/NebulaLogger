@@ -4,14 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
-    <label>Use Platform Cache</label>
+    <label>DEPRECATED: Use First Specified Scenario</label>
     <protected>false</protected>
     <values>
         <field>Description__c</field>
-        <value
-            xsi:type="xsd:string"
-        >When set to &apos;true&apos; (default), Nebula Logger will used Platform Cache to cache organization and session data in the cache partition LoggerCache.
-When set to &apos;false&apos;, any cached data is only cached within a single transaction.</value>
+        <value xsi:type="xsd:string">This parameter has been replaced by 'UseFirstScenarioForTransaction'.</value>
     </values>
     <values>
         <field>Value__c</field>

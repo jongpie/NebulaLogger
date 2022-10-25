@@ -334,19 +334,6 @@ public class LoggerMockDataCreator {
     }
 
     /**
-     * @description Returns the current user's `Network` (Experience Cloud site)
-     * @return   The matching `Network` record
-     */
-    public static SObject getNetwork() {
-        if (Network.getNetworkId() == null || Type.forName('System.Network') == null) {
-            return null;
-        }
-
-        String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id = :Network.getNetworkId()';
-        return Database.query(String.escapeSingleQuotes(query));
-    }
-
-    /**
      * @description Returns the current user
      * @return   The matching `User` record
      */
