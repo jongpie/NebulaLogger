@@ -7,6 +7,7 @@
  * @group Configuration
  * @description Class used to cache query results returned by the selector classes
  */
+@SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class LoggerCache {
     private static final Boolean PLATFORM_CACHE_IS_IMMUTABLE = false;
     @TestVisible
@@ -14,6 +15,12 @@ public without sharing class LoggerCache {
     private static final Cache.Visibility PLATFORM_CACHE_VISIBILITY = Cache.Visibility.NAMESPACE;
     private static final TransactionCache TRANSACTION_CACHE_INSTANCE = new TransactionCache();
 
+    private static PlatformCachePartitionDelegate organizationPartitionDelegate = new PlatformCachePartitionDelegate(
+        Cache.Org.getPartition(PLATFORM_CACHE_PARTITION_NAME)
+    );
+    private static PlatformCachePartitionDelegate sessionPartitionDelegate = new PlatformCachePartitionDelegate(
+        Cache.Session.getPartition(PLATFORM_CACHE_PARTITION_NAME)
+    );
     private static PlatformCache organizationCacheInstance;
     private static PlatformCache sessionCacheInstance;
 
@@ -58,9 +65,8 @@ public without sharing class LoggerCache {
      */
     public static Cacheable getOrganizationCache() {
         if (organizationCacheInstance == null) {
-            Cache.Partition organizationPartition = Cache.Org.getPartition(PLATFORM_CACHE_PARTITION_NAME);
             Integer organizationCacheTtlSeconds = 86400; // 86,400 seconds == 24 hours, the max time-to-live (TTL) allowed for org cache
-            organizationCacheInstance = new PlatformCache(getTransactionCache(), organizationPartition, organizationCacheTtlSeconds);
+            organizationCacheInstance = new PlatformCache(getTransactionCache(), organizationPartitionDelegate, organizationCacheTtlSeconds);
         }
         return organizationCacheInstance;
     }
@@ -72,9 +78,8 @@ public without sharing class LoggerCache {
      */
     public static Cacheable getSessionCache() {
         if (sessionCacheInstance == null) {
-            Cache.Partition sessionPartition = Cache.Session.getPartition(PLATFORM_CACHE_PARTITION_NAME);
             Integer sessionCacheTtlSeconds = 28800; // 28,800 seconds == 8 hours, the max time-to-live (TTL) allowed for session cache
-            sessionCacheInstance = new PlatformCache(getTransactionCache(), sessionPartition, sessionCacheTtlSeconds);
+            sessionCacheInstance = new PlatformCache(getTransactionCache(), sessionPartitionDelegate, sessionCacheTtlSeconds);
         }
         return sessionCacheInstance;
     }
@@ -94,36 +99,81 @@ public without sharing class LoggerCache {
         return namespacePrefix + unqualifiedPartitionName;
     }
 
+    @TestVisible
+    private static void setMockOrganizationPartitionDelegate(PlatformCachePartitionDelegate mockOrganizationPartitionDelegate) {
+        organizationPartitionDelegate = mockOrganizationPartitionDelegate;
+    }
+
+    @TestVisible
+    private static void setMockSessionPartitionDelegate(PlatformCachePartitionDelegate mockSessionPartitionDelegate) {
+        sessionPartitionDelegate = mockSessionPartitionDelegate;
+    }
+
     /**
-     * @description Manages interacting with platform cache partitions.
-     *              The provided transaction cache instance is used internally as the primary caching method,
-     *              and is further augmented by using Platform Cache to provide caching that spans multiple transactions.
+     * @description Manages interacting with platform cache partitions, and can be mocked during unit tests
+     *              so that tests don't have to rely on the actual platform cache partitions configured in the org.
+     */
+    @SuppressWarnings('PMD.ApexDoc')
+    @TestVisible
+    private virtual class PlatformCachePartitionDelegate {
+        private final Cache.Partition platformCachePartition;
+
+        protected PlatformCachePartitionDelegate(Cache.Partition platformCachePartition) {
+            this.platformCachePartition = platformCachePartition;
+        }
+
+        public virtual Boolean contains(String key) {
+            return this.platformCachePartition.contains(key);
+        }
+
+        public virtual Object get(String key) {
+            return this.platformCachePartition.get(key);
+        }
+
+        public virtual Boolean isAvailable() {
+            return this.platformCachePartition.isAvailable();
+        }
+
+        @SuppressWarnings('PMD.ExcessiveParameterList')
+        public virtual void put(String key, Object value, Integer cacheTtlSeconds, Cache.Visibility cacheVisiblity, Boolean isCacheImmutable) {
+            this.platformCachePartition.put(key, value, cacheTtlSeconds, PLATFORM_CACHE_VISIBILITY, PLATFORM_CACHE_IS_IMMUTABLE);
+        }
+
+        public virtual void remove(String key) {
+            this.platformCachePartition.remove(key);
+        }
+    }
+
+    /**
+     * @description Manages interacting with platform cache. The provided transaction cache instance is used internally as the primary
+     *              caching method, and is further augmented by using Platform Cache to provide caching that spans multiple transactions.
      */
     @SuppressWarnings('PMD.ApexDoc')
     private class PlatformCache implements Cacheable {
         private final Cache.Partition cachePartition;
+        private final PlatformCachePartitionDelegate cachePartitionDelegate;
         private final Integer cacheTtlSeconds;
         private final Cacheable transactionCache;
 
-        private PlatformCache(Cacheable transactionCache, Cache.Partition cachePartition, Integer cacheTtlSeconds) {
+        private PlatformCache(Cacheable transactionCache, PlatformCachePartitionDelegate cachePartitionDelegate, Integer cacheTtlSeconds) {
             this.transactionCache = transactionCache;
-            this.cachePartition = cachePartition;
+            this.cachePartitionDelegate = cachePartitionDelegate;
             this.cacheTtlSeconds = cacheTtlSeconds;
         }
 
         public Boolean contains(String key) {
-            if (LoggerParameter.USE_PLATFORM_CACHE == false || this.transactionCache.contains(key) || this.cachePartition.isAvailable() == false) {
+            if (LoggerParameter.USE_PLATFORM_CACHE == false || this.transactionCache.contains(key) || this.cachePartitionDelegate.isAvailable() == false) {
                 return this.transactionCache.contains(key);
             } else {
-                return this.cachePartition.contains(key);
+                return this.cachePartitionDelegate.contains(key);
             }
         }
 
         public Object get(String key) {
-            if (LoggerParameter.USE_PLATFORM_CACHE == false || this.transactionCache.contains(key) || this.cachePartition.isAvailable() == false) {
+            if (LoggerParameter.USE_PLATFORM_CACHE == false || this.transactionCache.contains(key) || this.cachePartitionDelegate.isAvailable() == false) {
                 return this.transactionCache.get(key);
             } else {
-                Object value = this.cachePartition.get(key);
+                Object value = this.cachePartitionDelegate.get(key);
                 this.transactionCache.put(key, value);
                 return value;
             }
@@ -133,16 +183,16 @@ public without sharing class LoggerCache {
             this.transactionCache.put(key, value);
 
             // Platform cache does not support storing null values
-            if (LoggerParameter.USE_PLATFORM_CACHE == true && value != null && this.cachePartition.isAvailable() == true) {
-                this.cachePartition.put(key, value, this.cacheTtlSeconds, PLATFORM_CACHE_VISIBILITY, PLATFORM_CACHE_IS_IMMUTABLE);
+            if (LoggerParameter.USE_PLATFORM_CACHE == true && value != null && this.cachePartitionDelegate.isAvailable() == true) {
+                this.cachePartitionDelegate.put(key, value, this.cacheTtlSeconds, PLATFORM_CACHE_VISIBILITY, PLATFORM_CACHE_IS_IMMUTABLE);
             }
         }
 
         public void remove(String key) {
             this.transactionCache.remove(key);
 
-            if (LoggerParameter.USE_PLATFORM_CACHE == true && this.cachePartition.isAvailable() == true) {
-                this.cachePartition.remove(key);
+            if (LoggerParameter.USE_PLATFORM_CACHE == true && this.cachePartitionDelegate.isAvailable() == true) {
+                this.cachePartitionDelegate.remove(key);
             }
         }
     }

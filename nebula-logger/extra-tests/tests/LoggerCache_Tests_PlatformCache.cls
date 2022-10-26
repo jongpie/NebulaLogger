@@ -3,6 +3,13 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
+/**
+ * @description When testing Platform Cache partitions, there is no way to directly mock the partitions. Furthermore, the partitions
+ *              configured in the org are actually used in test contexts, so if a partition exists but does not have storage space
+ *              allocated in the org, then any tests that try to assert that data is cached in the partitions will fail.
+ *              To help overcome this platform limitation, this test class only runs in Nebula Logger's pipeline - this ensures that the tests
+ *              are running in an org that has a platform cache partition with space allocated.
+ */
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.CyclomaticComplexity, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
 private class LoggerCache_Tests_PlatformCache {
