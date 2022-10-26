@@ -9,7 +9,6 @@ private class LogManagementDataSelector_Tests_Flow {
     private static final String TEST_FLOW_NAME = 'MockLogBatchPurgerPlugin';
 
     @IsTest
-    // static void it_returns_matching_apex_classes_for_specified_class_names() {
     static void it_returns_matching_flow_definition_view_for_specified_flow_api_name() {
         List<String> targetFlowApiNames = new List<String>{ TEST_FLOW_NAME };
         List<FlowDefinitionView> expectedResults = [

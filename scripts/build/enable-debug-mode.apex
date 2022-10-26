@@ -1,1 +1,1 @@
-update new User(Id = UserInfo.getUserId(), UserPreferencesUserDebugModePref = false);
+update new User(Id = UserInfo.getUserId(), UserPreferencesUserDebugModePref = true);

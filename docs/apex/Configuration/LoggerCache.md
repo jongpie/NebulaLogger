@@ -10,55 +10,75 @@ Class used to cache query results returned by the selector classes
 
 ### Methods
 
-#### `getOrganizationCache()` → `OrganizationCache`
+#### `contains(String key)` → `Boolean`
 
-The instance of `OrganizationCache` used for any organization-specific caching. When Platform Cache is disabled or not available, the transaction cache is instead used.
+Manages interacting with platform cache partitions. The provided transaction cache instance is used internally as the primary caching method, and is further augmented by using Platform Cache to provide caching that spans multiple transactions.
 
-##### Return
+#### `contains(String key)` → `Boolean`
 
-**Type**
+Manages any transaction-specific caching, using `Map&lt;String, Object&gt;`
 
-OrganizationCache
+#### `get(String key)` → `Object`
 
-**Description**
+#### `get(String key)` → `Object`
 
-The singleton instance of `OrganizationCache`
+#### `getOrganizationCache()` → `Cacheable`
 
-#### `getSessionCache()` → `SessionCache`
-
-The instance of `SessionCache` used for any session-specific caching. When Platform Cache is disabled or not available, the transaction cache is instead used.
+The instance of `Cacheable` used for any organization-specific caching via Platform Cache. When Platform Cache is disabled or not available, the transaction cache is instead used.
 
 ##### Return
 
 **Type**
 
-SessionCache
+Cacheable
 
 **Description**
 
-The singleton instance of `SessionCache`
+The singleton instance of `Cacheable`
 
-#### `getTransactionCache()` → `TransactionCache`
+#### `getSessionCache()` → `Cacheable`
 
-The instance of `TransactionCache` used for any transaction-specific caching. Cached data is stored internally in-memory for the duration of the transaction.
+The instance of `Cacheable` used for any session-specific caching via Platform Cache. When Platform Cache is disabled or not available, the transaction cache is instead used.
 
 ##### Return
 
 **Type**
 
-TransactionCache
+Cacheable
 
 **Description**
 
-The singleton instance of `TransactionCache`
+The singleton instance of `Cacheable`
+
+#### `getTransactionCache()` → `Cacheable`
+
+The instance of `Cacheable` used for any transaction-specific caching. Cached data is stored internally in-memory for the duration of the transaction.
+
+##### Return
+
+**Type**
+
+Cacheable
+
+**Description**
+
+The singleton instance of `Cacheable`
+
+#### `put(String key, Object value)` → `void`
+
+#### `put(String key, Object value)` → `void`
+
+#### `remove(String key)` → `void`
+
+#### `remove(String key)` → `void`
 
 ---
 
 ### Inner Classes
 
-#### LoggerCache.OrganizationCache class
+#### LoggerCache.Cacheable interface
 
-Manages any organization-specific caching, using org platform cache &amp; transaction cache
+Interface used to define caches that can be used to store values via different mechanisms
 
 ---
 
@@ -70,9 +90,9 @@ Indicates if the specified key has already been added to the cache
 
 ####### Parameters
 
-| Param | Description                                                |
-| ----- | ---------------------------------------------------------- |
-| `key` | The `String` key to check for within the transaction cache |
+| Param | Description                                    |
+| ----- | ---------------------------------------------- |
+| `key` | The `String` key to check for within the cache |
 
 ####### Return
 
@@ -86,13 +106,13 @@ The `Boolean` result that indicates if the specified key is contained in the cac
 
 ###### `get(String key)` → `Object`
 
-Returns the cached value for the specified key, or `null` if the specified key does not exist in the transaction cache
+Returns the cached value for the specified key, or `null` if the specified key does not exist in the cache
 
 ####### Parameters
 
-| Param | Description                                                |
-| ----- | ---------------------------------------------------------- |
-| `key` | The `String` key to check for within the transaction cache |
+| Param | Description                                    |
+| ----- | ---------------------------------------------- |
+| `key` | The `String` key to check for within the cache |
 
 ####### Return
 
@@ -106,84 +126,13 @@ The cached value, or null if no cached value is found for the specified key
 
 ###### `put(String key, Object value)` → `void`
 
-Adds the provided `Object` value to the current organization&apos;s cache, using the specified `String` key
+Adds the provided `Object` value to the cache, using the specified `String` key
 
 ####### Parameters
 
 | Param   | Description                                       |
 | ------- | ------------------------------------------------- |
 | `key`   | The `String` key to add to the organization cache |
-| `value` | The `Object` value to cache for the specified key |
-
-###### `remove(String key)` → `void`
-
-Removes the specified `String` key from the organization cache
-
-####### Parameters
-
-| Param | Description                                            |
-| ----- | ------------------------------------------------------ |
-| `key` | The `String` key to remove from the organization cache |
-
----
-
-#### LoggerCache.SessionCache class
-
-Manages any session-specific caching, using session platform cache &amp; transaction cache
-
----
-
-##### Methods
-
-###### `contains(String key)` → `Boolean`
-
-Indicates if the specified key has already been added to the cache
-
-####### Parameters
-
-| Param | Description                                            |
-| ----- | ------------------------------------------------------ |
-| `key` | The `String` key to check for within the session cache |
-
-####### Return
-
-**Type**
-
-Boolean
-
-**Description**
-
-The `Boolean` result that indicates if the specified key is contained in the cache
-
-###### `get(String key)` → `Object`
-
-Returns the cached value for the specified key, or `null` if the specified key does not exist in the session cache
-
-####### Parameters
-
-| Param | Description                                            |
-| ----- | ------------------------------------------------------ |
-| `key` | The `String` key to check for within the session cache |
-
-####### Return
-
-**Type**
-
-Object
-
-**Description**
-
-The cached value, or null if no cached value is found for the specified key
-
-###### `put(String key, Object value)` → `void`
-
-Adds the provided `Object` value to the current session&apos;s cache, using the specified `String` key
-
-####### Parameters
-
-| Param   | Description                                       |
-| ------- | ------------------------------------------------- |
-| `key`   | The `String` key to add to the session cache      |
 | `value` | The `Object` value to cache for the specified key |
 
 ###### `remove(String key)` → `void`
@@ -195,76 +144,5 @@ Removes the specified `String` key from the session cache
 | Param | Description                                       |
 | ----- | ------------------------------------------------- |
 | `key` | The `String` key to remove from the session cache |
-
----
-
-#### LoggerCache.TransactionCache class
-
-Manages any transaction-specific caching, using static final `Map&lt;String, Object&gt;`
-
----
-
-##### Methods
-
-###### `contains(String key)` → `Boolean`
-
-Indicates if the specified key has already been added to the cache
-
-####### Parameters
-
-| Param | Description                                                |
-| ----- | ---------------------------------------------------------- |
-| `key` | The `String` key to check for within the transaction cache |
-
-####### Return
-
-**Type**
-
-Boolean
-
-**Description**
-
-The `Boolean` result that indicates if the specified key is contained in the cache
-
-###### `get(String key)` → `Object`
-
-Returns the cached value for the specified key, or `null` if the specified key does not exist in the transaction cache
-
-####### Parameters
-
-| Param | Description                                                |
-| ----- | ---------------------------------------------------------- |
-| `key` | The `String` key to check for within the transaction cache |
-
-####### Return
-
-**Type**
-
-Object
-
-**Description**
-
-The cached value, or null if no cached value is found for the specified key
-
-###### `put(String key, Object value)` → `void`
-
-Adds the provided `Object` value to the current transaction&apos;s cache, using the specified `String` key
-
-####### Parameters
-
-| Param   | Description                                       |
-| ------- | ------------------------------------------------- |
-| `key`   | The `String` key to add to the transaction cache  |
-| `value` | The `Object` value to cache for the specified key |
-
-###### `remove(String key)` → `void`
-
-Removes the specified `String` key from the transaction cache
-
-####### Parameters
-
-| Param | Description                                           |
-| ----- | ----------------------------------------------------- |
-| `key` | The `String` key to remove from the transaction cache |
 
 ---

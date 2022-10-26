@@ -5,48 +5,7 @@
 
 @SuppressWarnings('PMD.ApexDoc, PMD.ApexAssertionsShouldIncludeMessage, PMD.CyclomaticComplexity, PMD.MethodNamingConventions')
 @IsTest(IsParallel=true)
-private class LoggerCache_Tests {
-    @IsTest
-    static void it_adds_new_key_to_transaction_cache() {
-        String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-
-        LoggerCache.getTransactionCache().put(mockKey, mockValue);
-
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
-    }
-
-    @IsTest
-    static void it_updates_value_for_existing_key_in_transaction_cache() {
-        String mockKey = 'SomeKey';
-        User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        LoggerCache.getTransactionCache().put(mockKey, oldMockValue);
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
-        Account newMockValue = new Account(Name = 'Some fake account');
-
-        LoggerCache.getTransactionCache().put(mockKey, newMockValue);
-
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
-    }
-
-    @IsTest
-    static void it_removes_value_for_existing_key_in_transaction_cache() {
-        String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-        LoggerCache.getTransactionCache().put(mockKey, mockValue);
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
-
-        LoggerCache.getTransactionCache().remove(mockKey);
-
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-    }
-
+private class LoggerCache_Tests_PlatformCache {
     @IsTest
     static void it_adds_new_key_to_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
@@ -58,10 +17,8 @@ private class LoggerCache_Tests {
 
         System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        // TODO revisit these asserts - they fail during package creation & in orgs where no space is allocated for platform cache
-        // These are currently duplicated in LoggerCache_Tests_PlatformCache, used by the pipeline to ensure Platform Cache works
-        // System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        // System.assertEquals(mockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.assertEquals(mockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
@@ -81,10 +38,8 @@ private class LoggerCache_Tests {
 
         System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
         System.assertEquals(newMockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        // TODO revisit these asserts - they fail during package creation & in orgs where no space is allocated for platform cache
-        // These are currently duplicated in LoggerCache_Tests_PlatformCache, used by the pipeline to ensure Platform Cache works
-        // System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        // System.assertEquals(newMockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.assertEquals(newMockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
         System.assertEquals(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
@@ -98,10 +53,8 @@ private class LoggerCache_Tests {
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
         System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        // TODO revisit these asserts - they fail during package creation & in orgs where no space is allocated for platform cache
-        // These are currently duplicated in LoggerCache_Tests_PlatformCache, used by the pipeline to ensure Platform Cache works
-        // System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
-        // System.assertEquals(mockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.assertEquals(mockValue, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
 

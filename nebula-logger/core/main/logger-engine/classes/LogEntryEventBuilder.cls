@@ -777,17 +777,20 @@ global with sharing class LogEntryEventBuilder {
         }
 
         AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
+        if (cachedAuthSession == null) {
+            return;
+        }
 
-        logEntryEvent.LoginApplication__c = cachedAuthSession?.LoginHistory.Application;
-        logEntryEvent.LoginBrowser__c = cachedAuthSession?.LoginHistory.Browser;
-        logEntryEvent.LoginHistoryId__c = cachedAuthSession?.LoginHistoryId;
-        logEntryEvent.LoginPlatform__c = cachedAuthSession?.LoginHistory.Platform;
-        logEntryEvent.LoginType__c = cachedAuthSession?.LoginType;
-        logEntryEvent.LogoutUrl__c = cachedAuthSession?.LogoutUrl;
-        logEntryEvent.SessionId__c = cachedAuthSession?.Id;
-        logEntryEvent.SessionSecurityLevel__c = cachedAuthSession?.SessionSecurityLevel;
-        logEntryEvent.SessionType__c = cachedAuthSession?.SessionType;
-        logEntryEvent.SourceIp__c = cachedAuthSession?.SourceIp;
+        logEntryEvent.LoginApplication__c = cachedAuthSession.LoginHistory.Application;
+        logEntryEvent.LoginBrowser__c = cachedAuthSession.LoginHistory.Browser;
+        logEntryEvent.LoginHistoryId__c = cachedAuthSession.LoginHistoryId;
+        logEntryEvent.LoginPlatform__c = cachedAuthSession.LoginHistory.Platform;
+        logEntryEvent.LoginType__c = cachedAuthSession.LoginType;
+        logEntryEvent.LogoutUrl__c = cachedAuthSession.LogoutUrl;
+        logEntryEvent.SessionId__c = cachedAuthSession.Id;
+        logEntryEvent.SessionSecurityLevel__c = cachedAuthSession.SessionSecurityLevel;
+        logEntryEvent.SessionType__c = cachedAuthSession.SessionType;
+        logEntryEvent.SourceIp__c = cachedAuthSession.SourceIp;
     }
 
     private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent) {
@@ -814,6 +817,9 @@ global with sharing class LogEntryEventBuilder {
         }
 
         Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        if (cachedOrganization == null) {
+            return;
+        }
 
         logEntryEvent.OrganizationEnvironmentType__c = CACHED_ORGANIZATION_ENVIRONMENT_TYPE;
         logEntryEvent.OrganizationId__c = cachedOrganization?.Id;
@@ -903,7 +909,7 @@ global with sharing class LogEntryEventBuilder {
         Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String orgEnvironmentType;
         if (cachedOrganization == null) {
-            return null;
+            return '';
         } else if (cachedOrganization.IsSandbox == true && cachedOrganization.TrialExpirationDate != null) {
             orgEnvironmentType = 'Scratch Org';
         } else if (cachedOrganization.IsSandbox == true) {

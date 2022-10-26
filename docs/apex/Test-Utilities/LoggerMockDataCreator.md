@@ -393,20 +393,6 @@ User
 
 The generated `User` record - it is not automatically inserted into the database.
 
-#### `getNetwork()` → `SObject`
-
-Returns the current user&apos;s `Network` (Experience Cloud site)
-
-##### Return
-
-**Type**
-
-SObject
-
-**Description**
-
-The matching `Network` record
-
 #### `getOrganization()` → `Organization`
 
 Queries for the `Organization` record for the current environment.

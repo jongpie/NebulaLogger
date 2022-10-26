@@ -6,6 +6,7 @@
     <testClassName>LogEntryEventBuilder_Tests_Security</testClassName>
     <testClassName>LogEntryHandler_Tests_EmailMessage</testClassName>
     <testClassName>LogEntryHandler_Tests_Flow</testClassName>
+    <testClassName>LoggerCache_Tests_PlatformCache</testClassName>
     <testClassName>LoggerEngineDataSelector_Tests_Network</testClassName>
     <testClassName>LoggerSettingsController_Tests_Security</testClassName>
     <testClassName>LoggerSObjectHandler_Tests_Flow</testClassName>
