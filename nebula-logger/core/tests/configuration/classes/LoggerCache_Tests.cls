@@ -109,7 +109,7 @@ private class LoggerCache_Tests {
 
         System.assertEquals(1, mockOrganizationPartitionDelegate.putMethodCallCount);
         System.assertEquals(true, mockOrganizationPartitionDelegate.contains(mockKey));
-        System.assertEquals(mockValue, mockOrganizationPartitionDelegate.get(mockKey));
+        System.assertEquals(LoggerCache.PLATFORM_CACHE_NULL_VALUE, mockOrganizationPartitionDelegate.get(mockKey));
         System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
         System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
@@ -252,7 +252,7 @@ private class LoggerCache_Tests {
 
         System.assertEquals(1, mockSessionPartitionDelegate.putMethodCallCount);
         System.assertEquals(true, mockSessionPartitionDelegate.contains(mockKey));
-        System.assertEquals(mockValue, mockSessionPartitionDelegate.get(mockKey));
+        System.assertEquals(LoggerCache.PLATFORM_CACHE_NULL_VALUE, mockSessionPartitionDelegate.get(mockKey));
         System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
         System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));

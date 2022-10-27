@@ -213,7 +213,6 @@ private class LogManagementDataSelector_Tests {
     @IsTest
     static void it_returns_profiles_for_specified_profile_ids() {
         List<Profile> expectedResults = [SELECT Id, Name FROM Profile ORDER BY Name LIMIT 3];
-        expectedResults.sort();
         List<Id> targetProfileIds = new List<Id>(new Map<Id, Profile>(expectedResults).keySet());
 
         List<Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesById(targetProfileIds);
