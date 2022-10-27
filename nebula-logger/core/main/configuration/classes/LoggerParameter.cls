@@ -272,12 +272,12 @@ public class LoggerParameter {
 
     /**
      * @description Indicates if `Logger.setScenario(String)` uses the first specified value (when `true`), or the last specified value (when `false`)
-     *              Controlled by the custom metadata record `LoggerParameter.UseFirstScenarioForTransaction`, or `true` as the default
+     *              Controlled by the custom metadata record `LoggerParameter.UseFirstSpecifiedScenario`, or `true` as the default
      */
     public static final Boolean USE_FIRST_SCENARIO_FOR_TRANSACTION {
         get {
             if (USE_FIRST_SCENARIO_FOR_TRANSACTION == null) {
-                USE_FIRST_SCENARIO_FOR_TRANSACTION = getBoolean('UseFirstScenarioForTransaction', true);
+                USE_FIRST_SCENARIO_FOR_TRANSACTION = getBoolean('UseFirstSpecifiedScenario', true);
             }
             return USE_FIRST_SCENARIO_FOR_TRANSACTION;
         }

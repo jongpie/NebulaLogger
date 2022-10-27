@@ -12,11 +12,17 @@ Class used to cache query results returned by the selector classes
 
 #### `contains(String key)` → `Boolean`
 
-Manages interacting with platform cache partitions. The provided transaction cache instance is used internally as the primary caching method, and is further augmented by using Platform Cache to provide caching that spans multiple transactions.
+Manages interacting with platform cache partitions, and can be mocked during unit tests so that tests don&apos;t have to rely on the actual platform cache partitions configured in the org.
+
+#### `contains(String key)` → `Boolean`
+
+Manages interacting with platform cache. The provided transaction cache instance is used internally as the primary caching method, and is further augmented by using Platform Cache to provide caching that spans multiple transactions.
 
 #### `contains(String key)` → `Boolean`
 
 Manages any transaction-specific caching, using `Map&lt;String, Object&gt;`
+
+#### `get(String key)` → `Object`
 
 #### `get(String key)` → `Object`
 
@@ -64,9 +70,15 @@ Cacheable
 
 The singleton instance of `Cacheable`
 
+#### `isAvailable()` → `Boolean`
+
+#### `put(String key, Object value, Integer cacheTtlSeconds, Cache.Visibility cacheVisiblity, Boolean isCacheImmutable)` → `void`
+
 #### `put(String key, Object value)` → `void`
 
 #### `put(String key, Object value)` → `void`
+
+#### `remove(String key)` → `void`
 
 #### `remove(String key)` → `void`
 
@@ -132,17 +144,17 @@ Adds the provided `Object` value to the cache, using the specified `String` key
 
 | Param   | Description                                       |
 | ------- | ------------------------------------------------- |
-| `key`   | The `String` key to add to the organization cache |
+| `key`   | The `String` key to add to the cache              |
 | `value` | The `Object` value to cache for the specified key |
 
 ###### `remove(String key)` → `void`
 
-Removes the specified `String` key from the session cache
+Removes the specified `String` key from the cache
 
 ####### Parameters
 
-| Param | Description                                       |
-| ----- | ------------------------------------------------- |
-| `key` | The `String` key to remove from the session cache |
+| Param | Description                               |
+| ----- | ----------------------------------------- |
+| `key` | The `String` key to remove from the cache |
 
 ---

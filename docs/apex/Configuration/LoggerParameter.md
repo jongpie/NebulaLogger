@@ -80,7 +80,7 @@ The merge-field syntax to use when calling System.debug(). Controlled by the cus
 
 #### `USE_FIRST_SCENARIO_FOR_TRANSACTION` → `Boolean`
 
-Indicates if `Logger.setScenario(String)` uses the first specified value (when `true`), or the last specified value (when `false`) Controlled by the custom metadata record `LoggerParameter.UseFirstScenarioForTransaction`, or `true` as the default
+Indicates if `Logger.setScenario(String)` uses the first specified value (when `true`), or the last specified value (when `false`) Controlled by the custom metadata record `LoggerParameter.UseFirstSpecifiedScenario`, or `true` as the default
 
 #### `USE_PLATFORM_CACHE` → `Boolean`
 

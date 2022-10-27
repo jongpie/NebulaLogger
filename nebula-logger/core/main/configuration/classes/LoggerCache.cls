@@ -46,14 +46,14 @@ public without sharing class LoggerCache {
         /**
          * @description Adds the provided `Object` value to the cache,
          *              using the specified `String` key
-         * @param  key   The `String` key to add to the organization cache
+         * @param  key   The `String` key to add to the cache
          * @param  value The `Object` value to cache for the specified key
          */
         void put(String key, Object value);
 
         /**
-         * @description Removes the specified `String` key from the session cache
-         * @param  key  The `String` key to remove from the session cache
+         * @description Removes the specified `String` key from the cache
+         * @param  key  The `String` key to remove from the cache
          */
         void remove(String key);
     }
@@ -136,7 +136,7 @@ public without sharing class LoggerCache {
 
         @SuppressWarnings('PMD.ExcessiveParameterList')
         public virtual void put(String key, Object value, Integer cacheTtlSeconds, Cache.Visibility cacheVisiblity, Boolean isCacheImmutable) {
-            this.platformCachePartition.put(key, value, cacheTtlSeconds, PLATFORM_CACHE_VISIBILITY, PLATFORM_CACHE_IS_IMMUTABLE);
+            this.platformCachePartition.put(key, value, cacheTtlSeconds, cacheVisiblity, isCacheImmutable);
         }
 
         public virtual void remove(String key) {
