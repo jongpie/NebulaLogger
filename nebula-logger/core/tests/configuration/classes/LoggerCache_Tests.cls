@@ -28,6 +28,18 @@ private class LoggerCache_Tests {
     }
 
     @IsTest
+    static void it_adds_new_key_with_null_value_to_transaction_cache() {
+        String mockKey = 'SomeKey';
+        User mockValue = null;
+        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+
+        LoggerCache.getTransactionCache().put(mockKey, mockValue);
+
+        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+    }
+
+    @IsTest
     static void it_updates_value_for_existing_key_in_transaction_cache() {
         String mockKey = 'SomeKey';
         User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
@@ -60,6 +72,30 @@ private class LoggerCache_Tests {
     static void it_adds_new_key_to_organization_and_transaction_cache_when_platform_cache_is_available() {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
+        System.assertEquals(true, mockOrganizationPartitionDelegate.isAvailable());
+        LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
+        System.assertEquals(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
+        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
+        System.assertEquals(1, mockOrganizationPartitionDelegate.containsMethodCallCount);
+        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.assertEquals(0, mockOrganizationPartitionDelegate.putMethodCallCount);
+
+        LoggerCache.getOrganizationCache().put(mockKey, mockValue);
+
+        System.assertEquals(1, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.assertEquals(true, mockOrganizationPartitionDelegate.contains(mockKey));
+        System.assertEquals(mockValue, mockOrganizationPartitionDelegate.get(mockKey));
+        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+    }
+
+    @IsTest
+    static void it_adds_new_key_with_null_value_to_organization_and_transaction_cache_when_platform_cache_is_available() {
+        String mockKey = 'SomeKey';
+        User mockValue = null;
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.assertEquals(true, mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
@@ -179,6 +215,30 @@ private class LoggerCache_Tests {
     static void it_adds_new_key_to_session_and_transaction_cache_when_platform_cache_is_available() {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
+        System.assertEquals(true, mockSessionPartitionDelegate.isAvailable());
+        LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
+        System.assertEquals(0, mockSessionPartitionDelegate.containsMethodCallCount);
+        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
+        System.assertEquals(1, mockSessionPartitionDelegate.containsMethodCallCount);
+        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.assertEquals(0, mockSessionPartitionDelegate.putMethodCallCount);
+
+        LoggerCache.getSessionCache().put(mockKey, mockValue);
+
+        System.assertEquals(1, mockSessionPartitionDelegate.putMethodCallCount);
+        System.assertEquals(true, mockSessionPartitionDelegate.contains(mockKey));
+        System.assertEquals(mockValue, mockSessionPartitionDelegate.get(mockKey));
+        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+    }
+
+    @IsTest
+    static void it_adds_new_key_with_null_value_to_session_and_transaction_cache_when_platform_cache_is_available() {
+        String mockKey = 'SomeKey';
+        User mockValue = null;
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.assertEquals(true, mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);

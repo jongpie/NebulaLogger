@@ -31,6 +31,23 @@ private class LoggerCache_Tests_PlatformCache {
     }
 
     @IsTest
+    static void it_adds_new_key_with_null_value_to_organization_and_transaction_cache() {
+        String mockKey = 'SomeKey';
+        User mockValue = null;
+        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
+        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+
+        LoggerCache.getOrganizationCache().put(mockKey, mockValue);
+
+        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.assertEquals(true, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+        System.assertEquals(LoggerCache.PLATFORM_CACHE_NULL_VALUE, Cache.Org.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+    }
+
+    @IsTest
     static void it_updates_value_for_existing_key_in_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
         User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
@@ -83,9 +100,32 @@ private class LoggerCache_Tests_PlatformCache {
 
         System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        // Depending on how you start Apex tests, you may or may not have an active session
+        // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
         if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
             System.assertEquals(true, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
             System.assertEquals(mockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
+        }
+        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+    }
+
+    @IsTest
+    static void it_adds_new_key_with_null_value_to_session_and_transaction_cache() {
+        String mockKey = 'SomeKey';
+        User mockValue = null;
+        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
+        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+
+        LoggerCache.getSessionCache().put(mockKey, mockValue);
+
+        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
+        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        // Depending on how you start Apex tests, you may or may not have an active session
+        // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
+        if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
+            System.assertEquals(true, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
+            System.assertEquals(LoggerCache.PLATFORM_CACHE_NULL_VALUE, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
         }
         System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
@@ -106,6 +146,8 @@ private class LoggerCache_Tests_PlatformCache {
 
         System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
         System.assertEquals(newMockValue, LoggerCache.getSessionCache().get(mockKey));
+        // Depending on how you start Apex tests, you may or may not have an active session
+        // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
         if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
             System.assertEquals(true, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
             System.assertEquals(newMockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));
@@ -123,6 +165,8 @@ private class LoggerCache_Tests_PlatformCache {
         LoggerCache.getSessionCache().put(mockKey, mockValue);
         System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
         System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        // Depending on how you start Apex tests, you may or may not have an active session
+        // during the test execution, so session cache may or may not be available (╯°□°)╯︵ ┻━┻
         if (Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).isAvailable() == true) {
             System.assertEquals(true, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).contains(mockKey));
             System.assertEquals(mockValue, Cache.Session.getPartition(LoggerCache.PLATFORM_CACHE_PARTITION_NAME).get(mockKey));

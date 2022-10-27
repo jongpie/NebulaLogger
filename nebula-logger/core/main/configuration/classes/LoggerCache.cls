@@ -11,6 +11,8 @@
 public without sharing class LoggerCache {
     private static final Boolean PLATFORM_CACHE_IS_IMMUTABLE = false;
     @TestVisible
+    private static final String PLATFORM_CACHE_NULL_VALUE = '<{(CACHE_VALUE_IS_NULL)}>'; // Presumably, no one will ever use this as an actual value
+    @TestVisible
     private static final String PLATFORM_CACHE_PARTITION_NAME = getQualifiedParitionName('LoggerCache');
     private static final Cache.Visibility PLATFORM_CACHE_VISIBILITY = Cache.Visibility.NAMESPACE;
     private static final TransactionCache TRANSACTION_CACHE_INSTANCE = new TransactionCache();
@@ -174,6 +176,10 @@ public without sharing class LoggerCache {
                 return this.transactionCache.get(key);
             } else {
                 Object value = this.cachePartitionDelegate.get(key);
+                // Platform cache does not support storing null values, so a predefined value is used as a substitute
+                if (value == PLATFORM_CACHE_NULL_VALUE) {
+                    value = null;
+                }
                 this.transactionCache.put(key, value);
                 return value;
             }
@@ -182,8 +188,11 @@ public without sharing class LoggerCache {
         public void put(String key, Object value) {
             this.transactionCache.put(key, value);
 
-            // Platform cache does not support storing null values
-            if (LoggerParameter.USE_PLATFORM_CACHE == true && value != null && this.cachePartitionDelegate.isAvailable() == true) {
+            if (LoggerParameter.USE_PLATFORM_CACHE == true && this.cachePartitionDelegate.isAvailable() == true) {
+                // Platform cache does not support storing null values, so a predefined value is used as a substitute
+                if (value == null) {
+                    value = PLATFORM_CACHE_NULL_VALUE;
+                }
                 this.cachePartitionDelegate.put(key, value, this.cacheTtlSeconds, PLATFORM_CACHE_VISIBILITY, PLATFORM_CACHE_IS_IMMUTABLE);
             }
         }
