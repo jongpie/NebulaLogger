@@ -231,7 +231,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return            The list of matching `Profile` records
      */
     public virtual List<Profile> getProfilesById(List<Id> profileIds) {
-        return [SELECT Id, Name FROM Profile WHERE Id IN :profileIds ORDER BY Name];
+        return [SELECT Id, Name FROM Profile WHERE Id IN :profileIds];
     }
 
     /**
@@ -240,7 +240,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return            The list of matching `Profile` records
      */
     public virtual List<Profile> getProfilesByNameSearch(String searchTerm) {
-        return [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name];
+        return [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
     }
 
     /**
@@ -299,7 +299,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return         The list of matching `User` records
      */
     public virtual List<User> getUsersById(List<Id> userIds) {
-        return [SELECT Id, Username FROM User WHERE Id IN :userIds ORDER BY Username];
+        return [SELECT Id, Username FROM User WHERE Id IN :userIds];
     }
 
     /**
@@ -308,7 +308,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return            The list of matching `User` records
      */
     public virtual List<User> getUsersByNameSearch(String searchTerm) {
-        return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm ORDER BY Username];
+        return [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm];
     }
 
     /**
@@ -317,7 +317,7 @@ public without sharing virtual class LogManagementDataSelector {
      * @return           Tje list of matching `User` records
      */
     public virtual List<User> getUsersByUsername(List<String> usernames) {
-        return [SELECT Id, Username FROM User WHERE Username IN :userNames ORDER BY Username];
+        return [SELECT Id, Username FROM User WHERE Username IN :userNames];
     }
 
     @TestVisible

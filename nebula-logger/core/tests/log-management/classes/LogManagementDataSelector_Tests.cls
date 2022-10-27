@@ -3,7 +3,7 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions')
+@SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.MethodNamingConventions')
 @IsTest(IsParallel=false)
 private class LogManagementDataSelector_Tests {
     @IsTest
@@ -212,21 +212,25 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_profiles_for_specified_profile_ids() {
-        List<Profile> expectedResults = [SELECT Id, Name FROM Profile ORDER BY Name LIMIT 3];
+        List<Profile> expectedResults = [SELECT Id, Name FROM Profile LIMIT 10];
         List<Id> targetProfileIds = new List<Id>(new Map<Id, Profile>(expectedResults).keySet());
 
         List<Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesById(targetProfileIds);
 
+        expectedResults.sort();
+        returnedResults.sort();
         System.assertEquals(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_returns_profiles_for_specified_search_term() {
         String searchTerm = 'Admin';
-        List<Profile> expectedResults = [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm ORDER BY Name];
+        List<Profile> expectedResults = [SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm];
 
         List<Profile> returnedResults = LogManagementDataSelector.getInstance().getProfilesByNameSearch(searchTerm);
 
+        expectedResults.sort();
+        returnedResults.sort();
         System.assertEquals(expectedResults, returnedResults);
     }
 
@@ -313,32 +317,31 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_users_for_user_ids() {
-        List<User> expectedResults = [SELECT Id, Username FROM User ORDER BY Username LIMIT 3];
+        List<User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
         List<Id> targetUserIds = new List<Id>(new Map<Id, User>(expectedResults).keySet());
 
         List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersById(targetUserIds);
 
+        expectedResults.sort();
+        returnedResults.sort();
         System.assertEquals(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_returns_user_for_specified_search_term() {
         String searchTerm = UserInfo.getLastName();
-        List<User> expectedResults = [
-            SELECT Id, Name, Username, SmallPhotoUrl
-            FROM User
-            WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm
-            ORDER BY Username
-        ];
+        List<User> expectedResults = [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm];
 
         List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm);
 
+        expectedResults.sort();
+        returnedResults.sort();
         System.assertEquals(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_returns_users_for_user_usernames() {
-        List<User> expectedResults = [SELECT Id, Username FROM User ORDER BY Username LIMIT 3];
+        List<User> expectedResults = [SELECT Id, Username FROM User LIMIT 3];
         List<String> targetUserUsernames = new List<String>();
         for (User user : expectedResults) {
             targetUserUsernames.add(user.Username);
@@ -346,6 +349,8 @@ private class LogManagementDataSelector_Tests {
 
         List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByUsername(targetUserUsernames);
 
+        expectedResults.sort();
+        returnedResults.sort();
         System.assertEquals(expectedResults, returnedResults);
     }
 
