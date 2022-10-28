@@ -6,8 +6,6 @@
 -->
 
 <template>
-    <c-logger></c-logger>
-
     <lightning-card title="Nebula Logger for Lightning Components" icon-name="custom:custom19">
         <div class="slds-var-m-around_medium">
             <lightning-input label="Example Log Message" value={message} onchange={messageChange}></lightning-input>
@@ -24,7 +22,7 @@
             <div class="slds-button-group" role="group">
                 <lightning-button label="Log FINE" onclick={logFineExample}></lightning-button>
                 <lightning-button label="Log FINER" onclick={logFinerExample}></lightning-button>
-                <lightning-button label="Log FINER" onclick={logFinerExample}></lightning-button>
+                <lightning-button label="Log FINEST" onclick={logFinestExample}></lightning-button>
                 <lightning-button label="Save Log" variant="brand" onclick={saveLogExample}></lightning-button>
             </div>
         </div>
