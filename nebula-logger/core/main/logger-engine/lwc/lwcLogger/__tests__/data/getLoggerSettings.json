@@ -1,0 +1,7 @@
+{
+    "defaultSaveMethod": "EVENT_BUS",
+    "isEnabled": true,
+    "isConsoleLoggingEnabled": true,
+    "supportedLoggingLevels": { "FINEST": 2, "FINER": 3, "FINE": 4, "DEBUG": 5, "INFO": 6, "WARN": 7, "ERROR": 8 },
+    "userLoggingLevel": { "ordinal": 2, "name": "FINEST" }
+}
