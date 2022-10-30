@@ -4,7 +4,8 @@
 .sf/
 .sfdx/
 .vscode/
-nebula-logger/**/main/default/
+# nebula-logger/**/main/default/
+tests/
 test-coverage/
 temp/
 

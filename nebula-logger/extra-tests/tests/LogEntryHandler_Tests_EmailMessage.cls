@@ -5,7 +5,7 @@
 
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
-private class LogEntryHandler_Tests_Integration {
+private class LogEntryHandler_Tests_EmailMessage {
     @IsTest
     static void it_should_populate_related_record_name_field_on_log_entry_with_email_message_subject() {
         System.assertEquals(

@@ -3,15 +3,11 @@
 // See LICENSE file or go to https://github.com/jongpie/NebulaLogger for full license details.    //
 //------------------------------------------------------------------------------------------------//
 
-/**
- * @group Extra Tests
- * @description Additional integration tests for orgs with Experience Sites (Communities) enabled
- */
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=false)
-private class Logger_Tests_ExperienceSite {
-    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Schema.getGlobalDescribe().containsKey('Network');
-    private static final String GUEST_USER_PROFILE_NAME = 'Logger Test Site Profile';
+private class Logger_Tests_Network {
+    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Type.forName('NetworkMember') != null;
+    private static final String EXPERIENCE_CLOUD_GUEST_PROFILE_NAME = 'Logger Test Site Guest Profile';
     private static final String GUEST_USER_TYPE = 'Guest';
     private static final String LOG_CREATOR_PERMISSION_SET_NAME = 'LoggerLogCreator';
 
@@ -21,7 +17,7 @@ private class Logger_Tests_ExperienceSite {
             return;
         }
 
-        List<Profile> matchingProfiles = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :GUEST_USER_PROFILE_NAME];
+        List<Profile> matchingProfiles = [SELECT Id, UserLicense.Name FROM Profile WHERE Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME];
 
         if (matchingProfiles.isEmpty() == true) {
             return;
@@ -31,7 +27,7 @@ private class Logger_Tests_ExperienceSite {
         System.assertEquals('Guest User License', loggerSiteProfile.UserLicense.Name, 'User license did not match Guest User License.');
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :GUEST_USER_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
+        List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
         if (guestUsers.isEmpty() == true) {
             return;
         }
@@ -53,7 +49,7 @@ private class Logger_Tests_ExperienceSite {
         System.Test.startTest();
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :GUEST_USER_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
+        List<User> guestUsers = [SELECT Id FROM User WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
         if (guestUsers.isEmpty() == true) {
             return;
         }
@@ -78,7 +74,11 @@ private class Logger_Tests_ExperienceSite {
         }
 
         // Even if Experience Cloud is enabled, the expected test site might not exist, so exit early if the guest user cannot be found
-        List<User> guestUsers = [SELECT Id, Profile.UserType FROM User WHERE Profile.Name = :GUEST_USER_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE];
+        List<User> guestUsers = [
+            SELECT Id, Profile.UserType
+            FROM User
+            WHERE Profile.Name = :EXPERIENCE_CLOUD_GUEST_PROFILE_NAME AND Profile.UserType = :GUEST_USER_TYPE
+        ];
         if (guestUsers.isEmpty() == true) {
             return;
         }

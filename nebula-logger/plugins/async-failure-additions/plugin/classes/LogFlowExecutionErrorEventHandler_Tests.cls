@@ -9,9 +9,9 @@ private class LogFlowExecutionErrorEventHandler_Tests {
     static void it_does_not_log_when_plugin_parameter_disabled() {
         setLoggerParamEnabled(false);
 
-        Test.startTest();
+        System.Test.startTest();
         LogFlowExecutionErrorEventHandler.logErrors(new List<FlowExecutionErrorEvent>{ new FlowExecutionErrorEvent() });
-        Test.stopTest();
+        System.Test.stopTest();
 
         System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
     }
@@ -27,9 +27,9 @@ private class LogFlowExecutionErrorEventHandler_Tests {
         flowExecutionErrorEvent.Username = UserInfo.getUserName();
 
         System.runAs(new User(Id = [SELECT Id FROM User WHERE Alias = 'autoproc'].Id)) {
-            Test.startTest();
+            System.Test.startTest();
             LogFlowExecutionErrorEventHandler.logErrors(new List<FlowExecutionErrorEvent>{ flowExecutionErrorEvent });
-            Test.stopTest();
+            System.Test.stopTest();
         }
 
         LogEntry__c entry = [

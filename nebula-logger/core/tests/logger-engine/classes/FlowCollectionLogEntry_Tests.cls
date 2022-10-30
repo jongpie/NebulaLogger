@@ -32,6 +32,7 @@ private class FlowCollectionLogEntry_Tests {
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.loggingLevelName = flowCollectionEntryLoggingLevel.name();
         flowCollectionEntry.records = new List<SObject>{ currentUser };
+        flowCollectionEntry.timestamp = System.now().addSeconds(-20);
         System.assertEquals(0, Logger.saveLogCallCount);
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -52,6 +53,7 @@ private class FlowCollectionLogEntry_Tests {
         System.assertEquals('List', publishedLogEntryEvent.RecordCollectionType__c);
         System.assertEquals('User', publishedLogEntryEvent.RecordSObjectType__c);
         System.assertEquals(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
+        System.assertEquals(flowCollectionEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
     @IsTest

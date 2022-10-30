@@ -7,6 +7,16 @@
 @IsTest(IsParallel=true)
 private class LoggerEngineDataSelector_Tests {
     @IsTest
+    static void it_loads_mock_instance() {
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        System.assertNotEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+
+        LoggerEngineDataSelector.setMock(mockSelector);
+
+        System.assertEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+    }
+
+    @IsTest
     static void it_returns_cached_auth_session() {
         List<AuthSession> sessions = [
             SELECT
@@ -35,6 +45,20 @@ private class LoggerEngineDataSelector_Tests {
     }
 
     @IsTest
+    static void it_does_not_query_auth_session_when_disabled_via_logger_parameter() {
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+        System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = String.valueOf(false)));
+
+        AuthSession returnedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
+
+        System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
+        System.assertEquals(null, returnedAuthSession);
+    }
+
+    @IsTest
     static void it_returns_cached_sobject_handlers() {
         List<LoggerSObjectHandler__mdt> expectedSObjectHandlers = [
             SELECT IsEnabled__c, SObjectHandlerApexClass__c, SObjectType__r.QualifiedApiName, SObjectTypeOverride__c
@@ -54,35 +78,35 @@ private class LoggerEngineDataSelector_Tests {
     }
 
     @IsTest
-    static void it_returns_cached_network() {
-        // By default, the current user (in the pipeline's scratch org) will not have a Network ID
-        // TODO create an integration test class that verifies the actual Network is returned when the user is associated with the site
-        Id expectedNetworkId = Network.getNetworkId();
-        System.assertEquals(0, Limits.getQueries());
-        Integer expectedQueryCount = expectedNetworkId == null ? 0 : 1;
-
-        SObject returnedNetworkSite = LoggerEngineDataSelector.getInstance().getCachedNetwork();
-
-        System.assertEquals(expectedQueryCount, Limits.getQueries());
-        LoggerEngineDataSelector.getInstance().getCachedNetwork();
-        System.assertEquals(expectedQueryCount, Limits.getQueries(), 'Query results should have been cached');
-        System.assertEquals(expectedNetworkId, returnedNetworkSite?.Id);
-    }
-
-    @IsTest
     static void it_returns_cached_organization() {
         Organization expectedOrganization = [
             SELECT Id, InstanceName, IsSandbox, Name, NamespacePrefix, OrganizationType, TrialExpirationDate
             FROM Organization
         ];
-        System.assertEquals(1, Limits.getQueries());
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
 
         Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(1, mockSelector.getCachedOrganizationQueryCount());
         LoggerEngineDataSelector.getInstance().getCachedOrganization();
-        System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(1, mockSelector.getCachedOrganizationQueryCount(), 'Query results should have been cached');
         System.assertEquals(expectedOrganization, returnedOrganization);
+    }
+
+    @IsTest
+    static void it_does_not_query_organization_when_disabled_via_logger_parameter() {
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        System.assertNotEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = String.valueOf(false)));
+
+        Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
+        System.assertEquals(null, returnedOrganization);
     }
 
     @IsTest
@@ -117,5 +141,36 @@ private class LoggerEngineDataSelector_Tests {
         LoggerEngineDataSelector.getInstance().getCachedUser();
         System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedUser, returnedUser);
+    }
+
+    private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {
+        private Integer authSessionQueryCount = 0;
+        private Integer organizationQueryCount = 0;
+
+        public override AuthSession getCachedAuthSession() {
+            Integer originalQueryCount = Limits.getQueries();
+            AuthSession result = super.getCachedAuthSession();
+            if (Limits.getQueries() != originalQueryCount) {
+                authSessionQueryCount = Limits.getQueries() - originalQueryCount;
+            }
+            return result;
+        }
+
+        public Integer getCachedAuthSessionQueryCount() {
+            return authSessionQueryCount;
+        }
+
+        public override Organization getCachedOrganization() {
+            Integer originalQueryCount = Limits.getQueries();
+            Organization result = super.getCachedOrganization();
+            if (Limits.getQueries() != originalQueryCount) {
+                organizationQueryCount = Limits.getQueries() - originalQueryCount;
+            }
+            return result;
+        }
+
+        public Integer getCachedOrganizationQueryCount() {
+            return organizationQueryCount;
+        }
     }
 }

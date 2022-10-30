@@ -76,6 +76,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             classNameToApexClass.put(apexClass.Name, apexClass);
         }
 
+        if (classNameToApexClass.isEmpty() == true) {
+            return;
+        }
+
         for (LogEntry__c logEntry : apexLogEntries) {
             String topLevelApexClassName = logEntry.OriginLocation__c?.substringBefore('.');
             ApexClass topLevelApexClass = classNameToApexClass.get(topLevelApexClassName);
@@ -129,6 +133,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
         }
 
+        if (flowApiNameToDefinition.isEmpty() == true) {
+            return;
+        }
+
         for (LogEntry__c logEntry : flowLogEntries) {
             FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginLocation__c);
             if (flowDefinition == null) {
@@ -160,16 +168,20 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<String, FlowVersionView> flowDurableId = new Map<String, FlowVersionView>();
+        Map<String, FlowVersionView> flowDurableIdToFlowVersionView = new Map<String, FlowVersionView>();
         for (FlowVersionView flowVersionView : LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(flowActiveVersionIds)) {
             // Filtering on Status in SOQL seems to always return 0 results, so filter in code instead
             if (flowVersionView.Status == 'Active') {
-                flowDurableId.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
+                flowDurableIdToFlowVersionView.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
             }
         }
 
+        if (flowDurableIdToFlowVersionView.isEmpty() == true) {
+            return;
+        }
+
         for (LogEntry__c logEntry : flowLogEntries) {
-            FlowVersionView flowVersionView = flowDurableId.get(logEntry.FlowDurableId__c);
+            FlowVersionView flowVersionView = flowDurableIdToFlowVersionView.get(logEntry.FlowDurableId__c);
             if (flowVersionView == null) {
                 continue;
             }
@@ -182,6 +194,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
     @SuppressWarnings('PMD.OperationWithLimitsInLoop')
     private void setRecordNames() {
+        if (LoggerParameter.QUERY_RELATED_RECORD_DATA == false) {
+            return;
+        }
+
         // Assumption - only valid record IDs will be populated in LogEntry__c.RecordId__c
         // If that changes, then extra checks may be needed before casting to Id, using getSObjectType(), etc.
         // TODO: This method is pretty long & it's doing multiple things - consider breaking it up into separate methods or an inner class

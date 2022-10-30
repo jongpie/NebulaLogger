@@ -10,19 +10,18 @@
  * @see LogMessage
  */
 @SuppressWarnings(
-    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength, PMD.StdCyclomaticComplexity'
+    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
 )
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.8.3';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.8.4';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
     private static final Set<String> IGNORED_APEX_CLASSES = getIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
+    private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
-    private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
-    private static final Boolean USE_FIRST_SPECIFIED_SCENARIO_AS_TRANSACTION_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
 
     private static String currentEntryScenario;
     private static Integer currentTransactionEntryNumber = 1;
@@ -35,6 +34,29 @@ global with sharing class Logger {
     private static Boolean suspendSaving = false;
     private static String transactionScenario;
     private static LoggerSettings__c userSettings;
+
+    private static final Quiddity TRANSACTION_QUIDDITY {
+        get {
+            if (TRANSACTION_QUIDDITY == null) {
+                TRANSACTION_QUIDDITY = getTransactionQuiddity();
+            }
+            return TRANSACTION_QUIDDITY;
+        }
+        set;
+    }
+
+    private static final String USER_SESSION_ID {
+        get {
+            if (USER_SESSION_ID == null) {
+                USER_SESSION_ID = UserInfo.getSessionId();
+                // If UserInfo.getSessionId() returns null, set to an empty string to
+                // avoid calling UserInfo.getSessionId() again
+                USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
+            }
+            return USER_SESSION_ID;
+        }
+        set;
+    }
 
     private static String transactionSaveMethodName {
         get {
@@ -2645,7 +2667,7 @@ global with sharing class Logger {
      */
     @SuppressWarnings('PMD.NcssMethodCount')
     global static void setScenario(String scenario) {
-        if (USE_FIRST_SPECIFIED_SCENARIO_AS_TRANSACTION_SCENARIO == false || String.isBlank(transactionScenario) == true) {
+        if (LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION == false || String.isBlank(transactionScenario) == true) {
             transactionScenario = scenario;
         }
 
@@ -2821,7 +2843,7 @@ global with sharing class Logger {
             when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
                 // To avoid that, use the EventBus instead (even though REST was specified)
-                if (String.isBlank(UserInfo.getSessionId())) {
+                if (String.isBlank(USER_SESSION_ID) == true) {
                     saveLog(Logger.SaveMethod.EVENT_BUS);
                 } else {
                     new RestApiSaver().insertRecords(logEntryEvents);
@@ -2902,6 +2924,7 @@ global with sharing class Logger {
             LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
             logEntryEvent.EntryScenario__c = currentEntryScenario;
             logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            logEntryEvent.RequestId__c = REQUEST_ID;
             logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
             logEntryEvent.TransactionEntryNumber__c = currentTransactionEntryNumber++;
             logEntryEvent.TransactionId__c = getTransactionId();
@@ -2917,12 +2940,12 @@ global with sharing class Logger {
         return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
     }
 
-    private static Quiddity setTransactionQuiddity() {
+    private static Quiddity getTransactionQuiddity() {
         // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
         // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
         // skip calling System.Request.getCurrent() if there is no user session.
         // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
-        if (String.isNotBlank(UserInfo.getSessionId())) {
+        if (String.isNotBlank(USER_SESSION_ID) == true) {
             return System.Request.getCurrent().getQuiddity();
         } else {
             return null;
@@ -3024,7 +3047,7 @@ global with sharing class Logger {
         public void insertRecords(List<SObject> records) {
             HttpRequest request = new HttpRequest();
             request.setEndpoint(baseURL + compositeEndpoint);
-            request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
+            request.setHeader('Authorization', 'Bearer ' + USER_SESSION_ID);
             request.setHeader('Content-Type', 'application/json; charset=utf-8');
             request.setMethod('POST');
 

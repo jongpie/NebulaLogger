@@ -9,7 +9,7 @@ private class LogEntryHandler_Tests_Flow {
     private static final String EXAMPLE_FLOW_API_NAME = 'LogEntryHandler_Tests_Flow';
 
     @IsTest
-    static void setSkipSettingFlowDetailsWhenOriginLocationIsNull() {
+    static void it_should_set_skip_setting_flow_details_when_origin_location_is_null() {
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -34,26 +34,27 @@ private class LogEntryHandler_Tests_Flow {
     }
 
     @IsTest
-    static void setFlowDetails() {
-        FlowDefinitionView flowDefinition = getFlowDefinition();
-        FlowVersionView flowVersion = getFlowVersion(flowDefinition.ActiveVersionId);
+    static void it_should_set_flow_details_when_origin_location_is_a_flow() {
+        FlowDefinitionView flowDefinitionView = getFlowDefinitionView();
+        FlowVersionView flowVersion = getFlowVersion(flowDefinitionView.ActiveVersionId);
         Log__c log = new Log__c(TransactionId__c = '1234');
         insert log;
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = flowDefinition.ApiName, OriginType__c = 'Flow');
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, OriginLocation__c = flowDefinitionView.ApiName, OriginType__c = 'Flow');
 
         insert logEntry;
 
         logEntry = getLogEntry();
+        System.assertEquals(EXAMPLE_FLOW_API_NAME, logEntry.OriginLocation__c, 'Origin Location was not null.');
         System.assertEquals('Flow', logEntry.OriginType__c, 'OriginType was not flow.');
-        System.assertEquals(flowDefinition.ActiveVersionId, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was incorrect.');
-        System.assertEquals(flowDefinition.Description, logEntry.FlowDescription__c, 'FlowDescription was incorrect.');
-        System.assertEquals(flowDefinition.DurableId, logEntry.FlowDurableId__c, 'FlowDurableId was incorrect.');
-        System.assertEquals(flowDefinition.Label, logEntry.FlowLabel__c, 'FlowLabel was incorrect');
-        System.assertEquals(flowDefinition.LastModifiedBy, logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was incorrect.');
-        System.assertEquals(flowDefinition.LastModifiedDate, logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was incorrect.');
-        System.assertEquals(flowDefinition.ProcessType, logEntry.FlowProcessType__c, 'FlowProcessType was incorrect.');
-        System.assertEquals(flowDefinition.TriggerType, logEntry.FlowTriggerType__c, 'FlowTriggerType was incorrect.');
+        System.assertEquals(flowDefinitionView.ActiveVersionId, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was incorrect.');
+        System.assertEquals(flowDefinitionView.Description, logEntry.FlowDescription__c, 'FlowDescription was incorrect.');
+        System.assertEquals(flowDefinitionView.DurableId, logEntry.FlowDurableId__c, 'FlowDurableId was incorrect.');
+        System.assertEquals(flowDefinitionView.Label, logEntry.FlowLabel__c, 'FlowLabel was incorrect');
+        System.assertEquals(flowDefinitionView.LastModifiedBy, logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was incorrect.');
+        System.assertEquals(flowDefinitionView.LastModifiedDate, logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was incorrect.');
+        System.assertEquals(flowDefinitionView.ProcessType, logEntry.FlowProcessType__c, 'FlowProcessType was incorrect.');
+        System.assertEquals(flowDefinitionView.TriggerType, logEntry.FlowTriggerType__c, 'FlowTriggerType was incorrect.');
         System.assertEquals(
             'v' +
             flowVersion.ApiVersionRuntime +
@@ -88,7 +89,7 @@ private class LogEntryHandler_Tests_Flow {
         ];
     }
 
-    private static FlowDefinitionView getFlowDefinition() {
+    private static FlowDefinitionView getFlowDefinitionView() {
         return [
             SELECT ActiveVersionId, ApiName, Description, DurableId, Label, LastModifiedBy, LastModifiedDate, ManageableState, ProcessType, TriggerType
             FROM FlowDefinitionView
