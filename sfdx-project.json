@@ -1,7 +1,7 @@
 {
     "name": "Nebula Logger",
     "namespace": "",
-    "sourceApiVersion": "55.0",
+    "sourceApiVersion": "56.0",
     "sfdcLoginUrl": "https://login.salesforce.com",
     "plugins": {
         "sfdx-plugin-prettier": {
@@ -14,9 +14,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.8.4.NEXT",
-            "versionName": "Optimized Synchronous Context",
-            "versionDescription": "Added new LoggerParameter__mdt records to control synchronous queries & stack trace parsing, incorporated Platform Cache into LoggerCache class",
+            "versionNumber": "4.9.0.NEXT",
+            "versionName": "LogBatchPurger & LogBatchPurgeScheduler Batch Size Increased",
+            "versionDescription": "Increased the default batch size for LogBatchPurger from 200 to 2000, upgraded all metadata to use API version to 56.0 (Winter '23 release)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "default": false
         },
