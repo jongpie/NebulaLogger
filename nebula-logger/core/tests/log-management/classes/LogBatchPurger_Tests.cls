@@ -67,10 +67,10 @@ private class LogBatchPurger_Tests {
     }
 
     @IsTest
-    static void it_should_default_chained_job_batch_size_to_200() {
+    static void it_should_default_chained_job_batch_size_to_2000() {
         LogBatchPurger batchJobInstance = new LogBatchPurger();
 
-        System.assertEquals(200, batchJobInstance.chainedBatchSize);
+        System.assertEquals(2000, batchJobInstance.chainedBatchSize);
     }
 
     @IsTest

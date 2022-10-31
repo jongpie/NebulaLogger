@@ -10,13 +10,17 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
-    private final Integer batchSize;
+    @TestVisible
+    private static final Integer DEFAULT_BATCH_SIZE = 2000;
+
+    @TestVisible
+    private Integer batchSize;
 
     /**
      * @description Default constructor.  Sets initial batch size to 200.
      */
     global LogBatchPurgeScheduler() {
-        this(200);
+        this(DEFAULT_BATCH_SIZE);
     }
 
     /**
@@ -37,6 +41,10 @@ global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
             LogMessage logMessage = new LogMessage('Logger - Scheduling LogBatchPurgeScheduler job, schedulableContext=={0}', schedulableContext);
             Logger.info(logMessage);
             Logger.saveLog();
+        }
+
+        if (this.batchSize == null) {
+            this.batchSize = DEFAULT_BATCH_SIZE;
         }
 
         Database.executebatch(new LogBatchPurger().setChainedBatchSize(this.batchSize), this.batchSize);
