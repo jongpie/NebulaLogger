@@ -48,6 +48,7 @@ public without sharing virtual class LoggerEngineDataSelector {
                 LoginHistory.Application,
                 LoginHistory.Browser,
                 LoginHistory.Platform,
+                LoginHistory.UserId,
                 LogoutUrl,
                 SessionSecurityLevel,
                 SessionType,

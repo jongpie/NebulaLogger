@@ -791,6 +791,10 @@ global with sharing class LogEntryEventBuilder {
         logEntryEvent.SessionSecurityLevel__c = cachedAuthSession.SessionSecurityLevel;
         logEntryEvent.SessionType__c = cachedAuthSession.SessionType;
         logEntryEvent.SourceIp__c = cachedAuthSession.SourceIp;
+
+        if (cachedAuthSession.LoginHistory.UserId != CURRENT_USER.Id) {
+            logEntryEvent.ImpersonatedById__c = cachedAuthSession.LoginHistory.UserId;
+        }
     }
 
     private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent) {

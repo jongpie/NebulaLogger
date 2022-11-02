@@ -131,6 +131,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
                 ApiReleaseVersion__c = recentLogWithApiReleaseDetails?.ApiReleaseVersion__c,
                 ApiVersion__c = logEntryEvent.ApiVersion__c,
+                ImpersonatedBy__c = logEntryEvent.ImpersonatedById__c,
                 Locale__c = logEntryEvent.Locale__c,
                 LoggedBy__c = logEntryEvent.LoggedById__c,
                 LoggedByUsername__c = logEntryEvent.LoggedByUsername__c,
