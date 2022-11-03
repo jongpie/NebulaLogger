@@ -588,9 +588,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             }
 
             log.NetworkName__c = (String) matchingNetwork.get('Name');
-            log.NetworkLoginUrl__c = Network.getLoginUrl(matchingNetwork.Id);
-            log.NetworkLogoutUrl__c = Network.getLogoutUrl(matchingNetwork.Id);
-            log.NetworkSelfRegistrationUrl__c = Network.getSelfRegUrl(matchingNetwork.Id);
+            log.NetworkLoginUrl__c = System.Network.getLoginUrl(matchingNetwork.Id);
+            log.NetworkLogoutUrl__c = System.Network.getLogoutUrl(matchingNetwork.Id);
+            log.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(matchingNetwork.Id);
             log.NetworkUrlPathPrefix__c = (String) matchingNetwork.get('UrlPathPrefix');
         }
     }
@@ -680,7 +680,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             FROM Log__c
             WHERE CreatedDate = TODAY AND ApiReleaseNumber__c = NULL
             ORDER BY CreatedDate
-            LIMIT :Limits.getLimitDmlRows()
+            LIMIT :System.Limits.getLimitDmlRows()
         ]) {
             log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
             log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
