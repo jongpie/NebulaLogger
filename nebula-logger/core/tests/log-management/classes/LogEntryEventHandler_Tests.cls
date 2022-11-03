@@ -466,18 +466,20 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
-        AuthSession expectedAuthSession = LoggerEngineDataSelector.getInstance().getAuthSessions(userIds).get(logEntryEvent.LoggedById__c);
+        LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = LoggerEngineDataSelector.getInstance()
+            .getAuthSessionsProxy(userIds)
+            .get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
-        System.assertEquals(expectedAuthSession?.LoginHistory.Application, log.LoginApplication__c);
-        System.assertEquals(expectedAuthSession?.LoginHistory.Browser, log.LoginBrowser__c);
-        System.assertEquals(expectedAuthSession?.LoginHistoryId, log.LoginHistoryId__c);
-        System.assertEquals(expectedAuthSession?.LoginHistory.Platform, log.LoginPlatform__c);
-        System.assertEquals(expectedAuthSession?.LoginType, log.LoginType__c);
-        System.assertEquals(expectedAuthSession?.LogoutUrl, log.LogoutUrl__c);
-        System.assertEquals(expectedAuthSession?.Id, log.SessionId__c);
-        System.assertEquals(expectedAuthSession?.SessionSecurityLevel, log.SessionSecurityLevel__c);
-        System.assertEquals(expectedAuthSession?.SessionType, log.SessionType__c);
-        System.assertEquals(expectedAuthSession?.SourceIp, log.SourceIp__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Application, log.LoginApplication__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Browser, log.LoginBrowser__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginHistoryId, log.LoginHistoryId__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Platform, log.LoginPlatform__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginType, log.LoginType__c);
+        System.assertEquals(expectedAuthSessionProxy?.LogoutUrl, log.LogoutUrl__c);
+        System.assertEquals(expectedAuthSessionProxy?.Id, log.SessionId__c);
+        System.assertEquals(expectedAuthSessionProxy?.SessionSecurityLevel, log.SessionSecurityLevel__c);
+        System.assertEquals(expectedAuthSessionProxy?.SessionType, log.SessionType__c);
+        System.assertEquals(expectedAuthSessionProxy?.SourceIp, log.SourceIp__c);
     }
 
     @IsTest
