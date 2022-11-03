@@ -102,7 +102,7 @@ global with sharing class Logger {
      * @description Returns the current version number of Nebula Logger
      * @return The current version number, in the format `v0.0.0`
      */
-    public static String getVersionNumber() {
+    global static String getVersionNumber() {
         return CURRENT_VERSION_NUMBER;
     }
 
@@ -246,8 +246,7 @@ global with sharing class Logger {
      * @description Returns the current user's instance of `LoggerSettings__c`
      * @return LoggerSettings__c - The current user's instance of the custom settings
      */
-    // TODO make this method `global` in a future release
-    public static LoggerSettings__c getUserSettings() {
+    global static LoggerSettings__c getUserSettings() {
         // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
         if (userSettings == null) {
             User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
@@ -261,8 +260,7 @@ global with sharing class Logger {
      * @param loggingUser The user record - at a minimum, this record should have the user Id and Profile fields populated
      * @return LoggerSettings__c - The specified user's instance of the custom settings
      */
-    // TODO make this method `global` in a future release
-    public static LoggerSettings__c getUserSettings(User loggingUser) {
+    global static LoggerSettings__c getUserSettings(User loggingUser) {
         // Typically, using LoggerSettings__c.getInstance() would be easier
         // However, some settings fields are expected to have null values, which conflicts with how `getInstance()` behaves
         // So, instead use LoggerSettings__c.getValues(Id userOrProfileId) to load exactly what's been configured (including nulls)
@@ -2715,7 +2713,7 @@ global with sharing class Logger {
      *              and rolls back to the previous scenario (if a previous scenario was specified in the current transaction)
      * @param  scenario The name of the scenario to end
      */
-    public static void endScenario(String scenario) {
+    global static void endScenario(String scenario) {
         if (String.isBlank(scenario) == true || scenario != currentEntryScenario || orderedScenarios.isEmpty() == true) {
             return;
         }
@@ -2740,8 +2738,7 @@ global with sharing class Logger {
      *              the log entry's origin location
      * @param  apexType The Apex type of the class to ignore
      */
-    // TODO promote to global before v4.9.0 (Winter '23 release)'
-    public static void ignoreOrigin(Type apexType) {
+    global static void ignoreOrigin(Type apexType) {
         IGNORED_APEX_CLASSES.add(apexType.getName());
     }
 

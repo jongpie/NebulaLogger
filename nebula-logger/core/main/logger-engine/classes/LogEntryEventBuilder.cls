@@ -636,7 +636,7 @@ global with sharing class LogEntryEventBuilder {
      * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
      * @return The `LogEntryEvent__e` record
      */
-    public LogEntryEvent__e getLogEntryEvent() {
+    global LogEntryEvent__e getLogEntryEvent() {
         if (this.shouldSave() == false) {
             return null;
         }
