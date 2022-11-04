@@ -601,7 +601,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-
         if (cachedOrganization == null) {
             return;
         }
