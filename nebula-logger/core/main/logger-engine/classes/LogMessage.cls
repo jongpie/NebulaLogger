@@ -75,8 +75,9 @@ global inherited sharing virtual class LogMessage {
         this.messageInputs = messageInputs;
     }
 
+    @SuppressWarnings('PMD.EmptyStatementBlock')
     protected LogMessage() {
-        Logger.ignoreOrigin(LogMessage.class);
+        // No-op
     }
 
     /**

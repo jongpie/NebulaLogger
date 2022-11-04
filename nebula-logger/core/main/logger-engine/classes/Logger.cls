@@ -17,7 +17,7 @@ global with sharing class Logger {
     @TestVisible
     private static final String CURRENT_VERSION_NUMBER = 'v4.9.0';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
-    private static final Set<String> IGNORED_APEX_CLASSES = getIgnoredApexClasses();
+    private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
     private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
     private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
@@ -2738,7 +2738,7 @@ global with sharing class Logger {
      *              the log entry's origin location
      * @param  apexType The Apex type of the class to ignore
      */
-    global static void ignoreOrigin(Type apexType) {
+    global static void ignoreOrigin(System.Type apexType) {
         IGNORED_APEX_CLASSES.add(apexType.getName());
     }
 
@@ -2933,8 +2933,8 @@ global with sharing class Logger {
         return logEntryEventBuilder;
     }
 
-    private static Set<String> getIgnoredApexClasses() {
-        return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName() };
+    private static Set<String> initializeIgnoredApexClasses() {
+        return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName(), LogMessage.class.getName() };
     }
 
     private static Quiddity getTransactionQuiddity() {

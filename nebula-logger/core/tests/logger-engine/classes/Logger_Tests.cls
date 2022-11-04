@@ -315,7 +315,7 @@ private class Logger_Tests {
             return;
         }
 
-        Type nonIgnoredApexClassType = MockClassWithLogging.class;
+        System.Type nonIgnoredApexClassType = MockClassWithLogging.class;
         String qualifiedNonIgnoredClassName = nonIgnoredApexClassType.getName();
         String expectedOriginLocation = qualifiedNonIgnoredClassName + '.logSomething';
 
@@ -332,7 +332,7 @@ private class Logger_Tests {
             return;
         }
 
-        Type ignoredApexClassType = MockClassWithLogging.class;
+        System.Type ignoredApexClassType = MockClassWithLogging.class;
         String qualifiedTopLevelClassName = Logger_Tests.class.getName();
         String expectedOriginLocation = qualifiedTopLevelClassName + '.it_should_ignore_origin_when_apex_class_type_specified';
 

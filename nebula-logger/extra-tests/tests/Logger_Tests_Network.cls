@@ -6,7 +6,7 @@
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=false)
 private class Logger_Tests_Network {
-    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = Type.forName('NetworkMember') != null;
+    private static final Boolean IS_EXPERIENCE_CLOUD_ENABLED = System.Type.forName('NetworkMember') != null;
     private static final String EXPERIENCE_CLOUD_GUEST_PROFILE_NAME = 'Logger Test Site Guest Profile';
     private static final String GUEST_USER_TYPE = 'Guest';
     private static final String LOG_CREATOR_PERMISSION_SET_NAME = 'LoggerLogCreator';
