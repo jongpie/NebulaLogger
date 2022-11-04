@@ -66,7 +66,7 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
         List<Log__c> sentLogs = new List<Log__c>();
         List<Log__c> unsentLogs = new List<Log__c>();
         for (Log__c log : this.logs) {
-            if (Limits.getCallouts() == Limits.getLimitCallouts()) {
+            if (System.Limits.getCallouts() == System.Limits.getLimitCallouts()) {
                 // If there are too many logs to send in the same transaction
                 // add them to the unsentLogs list, which will be queued as a separate job
                 unsentLogs.add(log);

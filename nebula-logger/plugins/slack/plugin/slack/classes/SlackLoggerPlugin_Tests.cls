@@ -43,7 +43,7 @@ private class SlackLoggerPlugin_Tests {
         update log;
 
         // Verify that the internal queueable job has been enqueued
-        System.assertEquals(0, Limits.getAsyncCalls(), 'The queueable job should not have been enqueued');
+        System.assertEquals(0, System.Limits.getAsyncCalls(), 'The queueable job should not have been enqueued');
         // Stop the test so the internal queueable job runs
         System.Test.stopTest();
         log = queryLogs(logEntryLoggingLevel).get(0);
@@ -91,7 +91,7 @@ private class SlackLoggerPlugin_Tests {
         update log;
 
         // Verify that the internal queueable job has been enqueued
-        System.assertEquals(1, Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
+        System.assertEquals(1, System.Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
         // Stop the test so the internal queueable job runs
         System.Test.stopTest();
         log = [SELECT Id, MaxLogEntryLoggingLevelOrdinal__c, SendSlackNotification__c, SlackNotificationDate__c FROM Log__c];
@@ -139,7 +139,7 @@ private class SlackLoggerPlugin_Tests {
         update log;
 
         // Verify that the internal queueable job has been enqueued
-        System.assertEquals(1, Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
+        System.assertEquals(1, System.Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
         // Stop the test so the internal queueable job runs
         System.Test.stopTest();
         log = [SELECT Id, MaxLogEntryLoggingLevelOrdinal__c, SendSlackNotification__c, SlackNotificationDate__c FROM Log__c];
@@ -187,7 +187,7 @@ private class SlackLoggerPlugin_Tests {
         update log;
 
         // Verify that the internal queueable job has been enqueued
-        System.assertEquals(1, Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
+        System.assertEquals(1, System.Limits.getAsyncCalls(), 'The queueable job should have been enqueued');
         // Stop the test so the internal queueable job runs
         System.Test.stopTest();
         log = [SELECT Id, MaxLogEntryLoggingLevelOrdinal__c, SendSlackNotification__c, SlackNotificationDate__c FROM Log__c];

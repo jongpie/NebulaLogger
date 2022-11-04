@@ -27,11 +27,11 @@ private class LogManagementDataSelector_Tests_Flow {
         List<String> targetFlowApiNames = new List<String>{ TEST_FLOW_NAME };
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = String.valueOf(false)));
         System.assertEquals(false, LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA);
-        Integer originalQueryCount = Limits.getQueries();
+        Integer originalQueryCount = System.Limits.getQueries();
 
         List<FlowDefinitionView> returnedResults = LogManagementDataSelector.getInstance().getFlowDefinitionViewsByFlowApiName(targetFlowApiNames);
 
-        System.assertEquals(originalQueryCount, Limits.getQueries());
+        System.assertEquals(originalQueryCount, System.Limits.getQueries());
         System.assertEquals(0, returnedResults.size());
     }
 }

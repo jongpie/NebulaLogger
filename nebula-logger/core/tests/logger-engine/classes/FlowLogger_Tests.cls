@@ -76,7 +76,7 @@ private class FlowLogger_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
         LoggingLevel entryLoggingLevel = LoggingLevel.DEBUG;
-        System.assertEquals(0, Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
+        System.assertEquals(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
         Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         System.assertEquals(0, Logger.getBufferSize());

@@ -81,7 +81,7 @@ private class ComponentLogger_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
         User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(0, Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
+        System.assertEquals(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
