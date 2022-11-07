@@ -24,7 +24,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
     // Instance variables for top-level class
     @TestVisible
-    private Integer chainedBatchSize = DEFAULT_BATCH_SIZE;
+    private Integer chainedBatchSize = getDefaultBatchSize();
     @TestVisible
     private Schema.SObjectType currentSObjectType;
     private List<LoggerPlugin__mdt> pluginConfigurations;
@@ -33,6 +33,14 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
 
     private String originalTransactionId;
     private Integer totalProcessedRecords;
+
+    /**
+     * @description Returns the default batch size used when running `LogBatchPurger`
+     * @return   The default `Integer` value of `2000`
+     */
+    public static Integer getDefaultBatchSize() {
+        return DEFAULT_BATCH_SIZE;
+    }
 
     /**
      * @description Default constructor, sets up instance of LogBatchPurger class.
@@ -162,7 +170,7 @@ global with sharing class LogBatchPurger implements Database.Batchable<SObject>,
         if (chainedBatchSize != null) {
             this.chainedBatchSize = chainedBatchSize;
         } else {
-            this.chainedBatchSize = DEFAULT_BATCH_SIZE;
+            this.chainedBatchSize = getDefaultBatchSize();
         }
         return this;
     }

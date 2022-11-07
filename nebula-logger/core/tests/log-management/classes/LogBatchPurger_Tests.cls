@@ -49,6 +49,11 @@ private class LogBatchPurger_Tests {
     }
 
     @IsTest
+    static void it_returns_2000_for_the_default_batch_size() {
+        System.assertEquals(2000, LogBatchPurger.getDefaultBatchSize());
+    }
+
+    @IsTest
     static void it_should_throw_an_exception_when_data_cannot_be_purged() {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
         LogBatchPurger batchJobInstance = new LogBatchPurger();
@@ -67,10 +72,10 @@ private class LogBatchPurger_Tests {
     }
 
     @IsTest
-    static void it_should_default_chained_job_batch_size_to_2000() {
+    static void it_should_default_batch_size_for_chained_job_batch_size() {
         LogBatchPurger batchJobInstance = new LogBatchPurger();
 
-        System.assertEquals(2000, batchJobInstance.chainedBatchSize);
+        System.assertEquals(LogBatchPurger.getDefaultBatchSize(), batchJobInstance.chainedBatchSize);
     }
 
     @IsTest

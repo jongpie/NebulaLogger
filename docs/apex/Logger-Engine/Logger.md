@@ -3352,7 +3352,7 @@ String
 
 The current version number, in the format `v0.0.0`
 
-#### `ignoreOrigin(Type apexType)` → `void`
+#### `ignoreOrigin(System.Type apexType)` → `void`
 
 Adds the specified Apex type to the list of ignored origin locations for the current transaction. Any ignored types will be removed from the StackTrace\_\_c field, and will be skipped when determining the log entry&apos;s origin location
 
