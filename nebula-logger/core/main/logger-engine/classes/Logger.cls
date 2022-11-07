@@ -246,7 +246,8 @@ global with sharing class Logger {
      * @description Returns the current user's instance of `LoggerSettings__c`
      * @return LoggerSettings__c - The current user's instance of the custom settings
      */
-    global static LoggerSettings__c getUserSettings() {
+    // TODO make this method `global` in a future release
+    public static LoggerSettings__c getUserSettings() {
         // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
         if (userSettings == null) {
             User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
@@ -260,7 +261,8 @@ global with sharing class Logger {
      * @param loggingUser The user record - at a minimum, this record should have the user Id and Profile fields populated
      * @return LoggerSettings__c - The specified user's instance of the custom settings
      */
-    global static LoggerSettings__c getUserSettings(User loggingUser) {
+    // TODO make this method `global` in a future release
+    public static LoggerSettings__c getUserSettings(User loggingUser) {
         // Typically, using LoggerSettings__c.getInstance() would be easier
         // However, some settings fields are expected to have null values, which conflicts with how `getInstance()` behaves
         // So, instead use LoggerSettings__c.getValues(Id userOrProfileId) to load exactly what's been configured (including nulls)
