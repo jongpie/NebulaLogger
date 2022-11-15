@@ -4,7 +4,7 @@
     <businessStatus>Active</businessStatus>
     <complianceGroup>PII;GDPR;CCPA</complianceGroup>
     <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>a
+    <fieldManageability>DeveloperControlled</fieldManageability>
     <inlineHelpText
     >Controls if new Log__c records associated with the scenario (based on Log__c.TransactionScenario__c) are automatically assigned to the owner of the LoggerScenario__c record.</inlineHelpText>
     <label>Assign Logs To Log Scenario Owner</label>

@@ -10,7 +10,7 @@
         <field>Description__c</field>
         <value
             xsi:type="xsd:string"
-        >When set to &apos;true&apos; (default), the Apex or JavaScript stack trace will be parsed on each log entry &amp; used to set the fields OriginLocation__c tags will be saved in your org. Depending on how your org&apos;s configuration, tags are either stored in LoggerTag__c and LogEntryTag__c objects (default), or using the standard objects Topic and TopicAssignment.
+        >When set to &apos;true&apos; (default), the Apex or JavaScript stack trace will be parsed on each log entry &amp; used to set the fields LogEntryEvent__e.OriginLocation__c, LogEntry__c.OriginLocation__c &amp; LogEntry__c.StackTrace__c will be saved in your org.
 
 When set to &apos;false&apos;, stack traces will not be parsed - this can conserve CPU usage, at the expense of losing some data about log entries.</value>
     </values>

@@ -12,7 +12,7 @@
             xsi:type="xsd:string"
         >When set to &apos;true&apos; (default), the AuthSession object will be queried synchronously so that the related fields on LogEntryEvent__e will be populated.
 
-When set to &apos;false&apos;, the AuthSession object will only be queried asynchronously, and the related fields will be null on LogEntryEvent__e but populated on Log__c. This is useful if you want to reduce the syncronous queries used by Nebula Logger and do not care if the LogEntryEvent__e fields are null.</value>
+When set to &apos;false&apos;, the AuthSession object will only be queried asynchronously, and the related fields will be null on LogEntryEvent__e but populated on Log__c. This is useful if you want to reduce the syncronous queries used by Nebula Logger you do not rely on the related LogEntryEvent__e fields being populated.</value>
     </values>
     <values>
         <field>Value__c</field>
