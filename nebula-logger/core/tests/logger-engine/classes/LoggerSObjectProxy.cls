@@ -9,14 +9,13 @@
  *              Each inner class maps to a corresponding `SObjectType` that is difficult to work with Apex for some reason or another,
  *              such as not being mockable or creatable, or not existing in all orgs.
  */
-@SuppressWarnings('PMD.VariableNamingConventions')
 public without sharing class LoggerSObjectProxy {
     /**
      * @description All `Schema.AuthSession` SObjects are read-only in Apex, which makes them more difficult to work with, and impossible
      *              to mock field values directly during unit tests - even using tricks like JSON.deserialize() do not work. The `LoggerSObjectProxy.AuthSession`
      *              class acts as a substitute for a `Schema.AuthSession` record to provide the abilility to mock the data during unit & integration tests.
      */
-    @SuppressWarnings('PMD.VariableNamingConventions')
+    @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
     public class AuthSession {
         public Id Id;
         public String LoginType;
@@ -28,11 +27,12 @@ public without sharing class LoggerSObjectProxy {
         public String SourceIp;
         public Id UsersId;
 
+        @SuppressWarnings('PMD.ApexDoc')
         public AuthSession(Schema.AuthSession authSessionRecord) {
             this.Id = authSessionRecord.Id;
-            this.LoginType = authSessionRecord.LoginType;
-            this.LoginHistoryId = authSessionRecord.LoginHistoryId;
             this.LoginHistory = new LoginHistory(authSessionRecord.LoginHistory);
+            this.LoginHistoryId = authSessionRecord.LoginHistoryId;
+            this.LoginType = authSessionRecord.LoginType;
             this.LogoutUrl = authSessionRecord.LogoutUrl;
             this.SessionSecurityLevel = authSessionRecord.SessionSecurityLevel;
             this.SessionType = authSessionRecord.SessionType;
@@ -46,12 +46,14 @@ public without sharing class LoggerSObjectProxy {
      *              to mock field values directly during unit tests - even using tricks like JSON.deserialize() do not work. The `LoggerSObjectProxy.LoginHistory`
      *              class acts as a substitute for a `Schema.LoginHistory` record to provide the abilility to mock the data during unit & integration tests.
      */
+    @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
     public class LoginHistory {
         public String Application;
         public String Browser;
         public String Platform;
         public Id UserId;
 
+        @SuppressWarnings('PMD.ApexDoc')
         public LoginHistory(Schema.LoginHistory loginHistoryRecord) {
             this.Application = loginHistoryRecord.Application;
             this.Browser = loginHistoryRecord.Browser;
@@ -66,11 +68,13 @@ public without sharing class LoggerSObjectProxy {
      *              `LoggerSObjectProxy.Network` class acts as a substitute for a `Schema.Network` record so that the rest of the codebase can rely on
      *              strongly-typed references to fields (properties).
      */
+    @SuppressWarnings('PMD.FieldNamingConventions, PMD.VariableNamingConventions')
     public class Network {
         public String Id;
         public String Name;
         public String UrlPathPrefix;
 
+        @SuppressWarnings('PMD.ApexDoc')
         public Network(SObject networkRecord) {
             this.Id = (String) networkRecord.get('Id');
             this.Name = (String) networkRecord.get('Name');

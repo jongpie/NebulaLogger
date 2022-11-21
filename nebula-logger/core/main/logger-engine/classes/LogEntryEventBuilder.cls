@@ -803,16 +803,16 @@ global with sharing class LogEntryEventBuilder {
         }
 
         logEntryEvent.NetworkId__c = networkId;
-        LoggerSObjectProxy.Network cachedProxyNetwork = LoggerEngineDataSelector.getInstance().getCacheProxyNetwork(networkId);
-        if (cachedProxyNetwork == null) {
+        LoggerSObjectProxy.Network cachedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(networkId);
+        if (cachedNetworkProxy == null) {
             return;
         }
 
-        logEntryEvent.NetworkLoginUrl__c = System.Network.getLoginUrl(cachedProxyNetwork.Id);
-        logEntryEvent.NetworkLogoutUrl__c = System.Network.getLogoutUrl(cachedProxyNetwork.Id);
-        logEntryEvent.NetworkName__c = cachedProxyNetwork.Name;
-        logEntryEvent.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(cachedProxyNetwork.Id);
-        logEntryEvent.NetworkUrlPathPrefix__c = cachedProxyNetwork.UrlPathPrefix;
+        logEntryEvent.NetworkLoginUrl__c = System.Network.getLoginUrl(cachedNetworkProxy.Id);
+        logEntryEvent.NetworkLogoutUrl__c = System.Network.getLogoutUrl(cachedNetworkProxy.Id);
+        logEntryEvent.NetworkName__c = cachedNetworkProxy.Name;
+        logEntryEvent.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(cachedNetworkProxy.Id);
+        logEntryEvent.NetworkUrlPathPrefix__c = cachedNetworkProxy.UrlPathPrefix;
     }
 
     private static void setQueriedOrganizationDetails(LogEntryEvent__e logEntryEvent) {

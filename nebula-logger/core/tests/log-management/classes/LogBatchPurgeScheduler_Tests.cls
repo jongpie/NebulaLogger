@@ -7,6 +7,13 @@
 @IsTest(IsParallel=true)
 private class LogBatchPurgeScheduler_Tests {
     @IsTest
+    static void it_implements_system_schedulable_interface() {
+        Object scheduler = new LogBatchPurgeScheduler();
+
+        System.assertEquals(true, scheduler instanceof System.Schedulable);
+    }
+
+    @IsTest
     static void it_should_use_specified_batch_size_when_specified_batch_size_is_not_null() {
         Integer specifiedBatchSize = 123;
 

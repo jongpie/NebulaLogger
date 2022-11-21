@@ -110,7 +110,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @param  networkId The record ID of the `Network` to query
      * @return           The cached `Network` record
      */
-    public virtual LoggerSObjectProxy.Network getCacheProxyNetwork(Id networkId) {
+    public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
         if (LoggerParameter.QUERY_NETWORK_DATA == false) {
             return null;
         }

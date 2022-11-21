@@ -460,6 +460,18 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        // The createLogEntryEvent() method sets all fields on LogEntryEvent__e, so clear the relevant fields to ensure
+        // that the values are only set based on the queried AuthSession record
+        logEntryEvent.LoginApplication__c = null;
+        logEntryEvent.LoginBrowser__c = null;
+        logEntryEvent.LoginHistoryId__c = null;
+        logEntryEvent.LoginPlatform__c = null;
+        logEntryEvent.LoginType__c = null;
+        logEntryEvent.LogoutUrl__c = null;
+        logEntryEvent.SessionId__c = null;
+        logEntryEvent.SessionSecurityLevel__c = null;
+        logEntryEvent.SessionType__c = null;
+        logEntryEvent.SourceIp__c = null;
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(false)));
 
         LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
@@ -958,6 +970,7 @@ private class LogEntryEventHandler_Tests {
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateAllFields()
             .getRecord();
+        logEntryEvent.ImpersonatedById__c = null;
         logEntryEvent.LoggedById__c = UserInfo.getUserId();
         logEntryEvent.LoggingLevel__c = LoggingLevel.INFO.name();
         logEntryEvent.LoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
