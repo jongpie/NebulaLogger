@@ -32,14 +32,14 @@ Construct that accepts the batch size as a parameter.
 
 ### Methods
 
-#### `execute(SchedulableContext schedulableContext)` → `void`
+#### `execute(System.SchedulableContext schedulableContext)` → `void`
 
 Required by the Database.Schedulable interface, this method kicks off the LogBatchPurger batch class on a scheduled basis.
 
 ##### Parameters
 
-| Param                | Description                                                                                                                    |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `schedulableContext` | Required for the Schedulable interface, this method contains contextual information about when this instance is/was scheduled. |
+| Param                | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `schedulableContext` | The instance of `System.SchedulableContext` provided by the platform at runtime |
 
 ---

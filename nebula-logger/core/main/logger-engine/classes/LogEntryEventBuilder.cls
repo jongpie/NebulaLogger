@@ -114,22 +114,22 @@ global with sharing class LogEntryEventBuilder {
         Datetime timestamp = System.now();
         this.logEntryEvent = new LogEntryEvent__e(
             EpochTimestamp__c = timestamp.getTime(),
-            LimitsAggregateQueriesUsed__c = Limits.getAggregateQueries(),
-            LimitsAsyncCallsUsed__c = Limits.getAsyncCalls(),
-            LimitsCalloutsUsed__c = Limits.getCallouts(),
-            LimitsCpuTimeUsed__c = Limits.getCpuTime(),
-            LimitsDmlRowsUsed__c = Limits.getDmlRows(),
-            LimitsDmlStatementsUsed__c = Limits.getDmlStatements(),
-            LimitsEmailInvocationsUsed__c = Limits.getEmailInvocations(),
-            LimitsFutureCallsUsed__c = Limits.getFutureCalls(),
-            LimitsHeapSizeUsed__c = Limits.getHeapSize(),
-            LimitsMobilePushApexCallsUsed__c = Limits.getMobilePushApexCalls(),
-            LimitsQueueableJobsUsed__c = Limits.getQueueableJobs(),
-            LimitsPublishImmediateDmlStatementsUsed__c = Limits.getPublishImmediateDML(),
-            LimitsSoqlQueriesUsed__c = Limits.getQueries(),
-            LimitsSoqlQueryLocatorRowsUsed__c = Limits.getQueryLocatorRows(),
-            LimitsSoqlQueryRowsUsed__c = Limits.getQueryRows(),
-            LimitsSoslSearchesUsed__c = Limits.getSoslQueries(),
+            LimitsAggregateQueriesUsed__c = System.Limits.getAggregateQueries(),
+            LimitsAsyncCallsUsed__c = System.Limits.getAsyncCalls(),
+            LimitsCalloutsUsed__c = System.Limits.getCallouts(),
+            LimitsCpuTimeUsed__c = System.Limits.getCpuTime(),
+            LimitsDmlRowsUsed__c = System.Limits.getDmlRows(),
+            LimitsDmlStatementsUsed__c = System.Limits.getDmlStatements(),
+            LimitsEmailInvocationsUsed__c = System.Limits.getEmailInvocations(),
+            LimitsFutureCallsUsed__c = System.Limits.getFutureCalls(),
+            LimitsHeapSizeUsed__c = System.Limits.getHeapSize(),
+            LimitsMobilePushApexCallsUsed__c = System.Limits.getMobilePushApexCalls(),
+            LimitsQueueableJobsUsed__c = System.Limits.getQueueableJobs(),
+            LimitsPublishImmediateDmlStatementsUsed__c = System.Limits.getPublishImmediateDML(),
+            LimitsSoqlQueriesUsed__c = System.Limits.getQueries(),
+            LimitsSoqlQueryLocatorRowsUsed__c = System.Limits.getQueryLocatorRows(),
+            LimitsSoqlQueryRowsUsed__c = System.Limits.getQueryRows(),
+            LimitsSoslSearchesUsed__c = System.Limits.getSoslQueries(),
             LoggingLevel__c = entryLoggingLevel.NAME(),
             LoggingLevelOrdinal__c = entryLoggingLevel.ORDINAL(),
             OriginType__c = 'Apex',
@@ -636,7 +636,7 @@ global with sharing class LogEntryEventBuilder {
      * @description Returns the `LogEntryEvent__e` record for this instance of LogEntryEventBuilder
      * @return The `LogEntryEvent__e` record
      */
-    public LogEntryEvent__e getLogEntryEvent() {
+    global LogEntryEvent__e getLogEntryEvent() {
         if (this.shouldSave() == false) {
             return null;
         }
@@ -719,44 +719,44 @@ global with sharing class LogEntryEventBuilder {
 
     private void setTransactionDetails() {
         this.logEntryEvent.ApiVersion__c = ORGANIZATION_API_VERSION;
-        this.logEntryEvent.LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries();
-        this.logEntryEvent.LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls();
-        this.logEntryEvent.LimitsCalloutsMax__c = Limits.getLimitCallouts();
-        this.logEntryEvent.LimitsCpuTimeMax__c = Limits.getLimitCpuTime();
-        this.logEntryEvent.LimitsDmlRowsMax__c = Limits.getLimitDmlRows();
-        this.logEntryEvent.LimitsDmlStatementsMax__c = Limits.getLimitDmlStatements();
-        this.logEntryEvent.LimitsEmailInvocationsMax__c = Limits.getLimitEmailInvocations();
-        this.logEntryEvent.LimitsFutureCallsMax__c = Limits.getLimitFutureCalls();
-        this.logEntryEvent.LimitsHeapSizeMax__c = Limits.getLimitHeapSize();
-        this.logEntryEvent.LimitsMobilePushApexCallsMax__c = Limits.getLimitMobilePushApexCalls();
-        this.logEntryEvent.LimitsQueueableJobsMax__c = Limits.getLimitQueueableJobs();
-        this.logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c = Limits.getLimitPublishImmediateDML();
-        this.logEntryEvent.LimitsSoqlQueriesMax__c = Limits.getLimitQueries();
-        this.logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows();
-        this.logEntryEvent.LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows();
-        this.logEntryEvent.LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries();
+        this.logEntryEvent.LimitsAggregateQueriesMax__c = System.Limits.getLimitAggregateQueries();
+        this.logEntryEvent.LimitsAsyncCallsMax__c = System.Limits.getLimitAsyncCalls();
+        this.logEntryEvent.LimitsCalloutsMax__c = System.Limits.getLimitCallouts();
+        this.logEntryEvent.LimitsCpuTimeMax__c = System.Limits.getLimitCpuTime();
+        this.logEntryEvent.LimitsDmlRowsMax__c = System.Limits.getLimitDmlRows();
+        this.logEntryEvent.LimitsDmlStatementsMax__c = System.Limits.getLimitDmlStatements();
+        this.logEntryEvent.LimitsEmailInvocationsMax__c = System.Limits.getLimitEmailInvocations();
+        this.logEntryEvent.LimitsFutureCallsMax__c = System.Limits.getLimitFutureCalls();
+        this.logEntryEvent.LimitsHeapSizeMax__c = System.Limits.getLimitHeapSize();
+        this.logEntryEvent.LimitsMobilePushApexCallsMax__c = System.Limits.getLimitMobilePushApexCalls();
+        this.logEntryEvent.LimitsQueueableJobsMax__c = System.Limits.getLimitQueueableJobs();
+        this.logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c = System.Limits.getLimitPublishImmediateDML();
+        this.logEntryEvent.LimitsSoqlQueriesMax__c = System.Limits.getLimitQueries();
+        this.logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c = System.Limits.getLimitQueryLocatorRows();
+        this.logEntryEvent.LimitsSoqlQueryRowsMax__c = System.Limits.getLimitQueryRows();
+        this.logEntryEvent.LimitsSoslSearchesMax__c = System.Limits.getLimitSoslQueries();
         this.logEntryEvent.OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm();
     }
 
     private static LogEntryEvent__e getLogEntryEventTemplate() {
         LogEntryEvent__e templateLogEntryEvent = new LogEntryEvent__e(
             ApiVersion__c = ORGANIZATION_API_VERSION,
-            LimitsAggregateQueriesMax__c = Limits.getLimitAggregateQueries(),
-            LimitsAsyncCallsMax__c = Limits.getLimitAsyncCalls(),
-            LimitsCalloutsMax__c = Limits.getLimitCallouts(),
-            LimitsCpuTimeMax__c = Limits.getLimitCpuTime(),
-            LimitsDmlRowsMax__c = Limits.getLimitDmlRows(),
-            LimitsDmlStatementsMax__c = Limits.getLimitDmlStatements(),
-            LimitsEmailInvocationsMax__c = Limits.getLimitEmailInvocations(),
-            LimitsFutureCallsMax__c = Limits.getLimitFutureCalls(),
-            LimitsHeapSizeMax__c = Limits.getLimitHeapSize(),
-            LimitsMobilePushApexCallsMax__c = Limits.getLimitMobilePushApexCalls(),
-            LimitsPublishImmediateDmlStatementsMax__c = Limits.getLimitPublishImmediateDML(),
-            LimitsQueueableJobsMax__c = Limits.getLimitQueueableJobs(),
-            LimitsSoqlQueriesMax__c = Limits.getLimitQueries(),
-            LimitsSoqlQueryLocatorRowsMax__c = Limits.getLimitQueryLocatorRows(),
-            LimitsSoqlQueryRowsMax__c = Limits.getLimitQueryRows(),
-            LimitsSoslSearchesMax__c = Limits.getLimitSoslQueries(),
+            LimitsAggregateQueriesMax__c = System.Limits.getLimitAggregateQueries(),
+            LimitsAsyncCallsMax__c = System.Limits.getLimitAsyncCalls(),
+            LimitsCalloutsMax__c = System.Limits.getLimitCallouts(),
+            LimitsCpuTimeMax__c = System.Limits.getLimitCpuTime(),
+            LimitsDmlRowsMax__c = System.Limits.getLimitDmlRows(),
+            LimitsDmlStatementsMax__c = System.Limits.getLimitDmlStatements(),
+            LimitsEmailInvocationsMax__c = System.Limits.getLimitEmailInvocations(),
+            LimitsFutureCallsMax__c = System.Limits.getLimitFutureCalls(),
+            LimitsHeapSizeMax__c = System.Limits.getLimitHeapSize(),
+            LimitsMobilePushApexCallsMax__c = System.Limits.getLimitMobilePushApexCalls(),
+            LimitsPublishImmediateDmlStatementsMax__c = System.Limits.getLimitPublishImmediateDML(),
+            LimitsQueueableJobsMax__c = System.Limits.getLimitQueueableJobs(),
+            LimitsSoqlQueriesMax__c = System.Limits.getLimitQueries(),
+            LimitsSoqlQueryLocatorRowsMax__c = System.Limits.getLimitQueryLocatorRows(),
+            LimitsSoqlQueryRowsMax__c = System.Limits.getLimitQueryRows(),
+            LimitsSoslSearchesMax__c = System.Limits.getLimitSoslQueries(),
             OrganizationDomainUrl__c = Url.getOrgDomainUrl()?.toExternalForm()
         );
 
@@ -1037,7 +1037,7 @@ global with sharing class LogEntryEventBuilder {
             return records;
         }
 
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records, false);
+        SObjectAccessDecision securityDecision = System.Security.stripInaccessible(AccessType.READABLE, records, false);
         return securityDecision.getRecords();
     }
 

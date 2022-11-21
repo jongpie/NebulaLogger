@@ -1,6 +1,6 @@
 {
     "name": "nebula-logger",
-    "version": "4.8.4",
+    "version": "4.9.0",
     "description": "The most robust logger for Salesforce. Works with Apex, Lightning Components, Flow, Process Builder & Integrations. Designed for Salesforce admins, developers & architects.",
     "author": "Jonathan Gillespie",
     "license": "MIT",
@@ -93,10 +93,12 @@
         "json-schema": ">=0.4.0",
         "markdown-it": ">=12.3.2",
         "marked": ">=4.0.10",
+        "minimatch": ">=3.0.5",
         "moment": ">=2.29.4",
         "nanoid": ">=3.1.31",
         "shelljs": ">=0.8.5",
-        "simple-get": ">=4.0.1"
+        "simple-get": ">=4.0.1",
+        "vm2": ">=3.9.11"
     },
     "devDependencies": {
         "@babel/core": "latest",

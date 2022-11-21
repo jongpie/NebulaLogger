@@ -102,9 +102,9 @@ private class LogEntryArchivePlugin_Tests {
 
         Database.executeBatch(batchPurger);
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
         System.Test.stopTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
         System.assertEquals(logToArchive.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
         for (LogEntryArchive__b logEntryArchive : LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE) {
             System.assertEquals(tag.Name, logEntryArchive.Tags__c);
@@ -178,7 +178,7 @@ private class LogEntryArchivePlugin_Tests {
 
         System.assertEquals(
             0,
-            Limits.getPublishImmediateDml(),
+            System.Limits.getPublishImmediateDml(),
             'Should not have actually used any DML statements in tests because big objects actually get inserted, yikes'
         );
         System.assertEquals(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
@@ -199,14 +199,14 @@ private class LogEntryArchivePlugin_Tests {
         createPluginConfiguration();
         Logger.info('Testing big object creation').getLogEntryEvent();
         System.Test.startTest();
-        System.assertEquals(0, Limits.getAsyncCalls(), 'Should not have executed any queueable jobs');
+        System.assertEquals(0, System.Limits.getAsyncCalls(), 'Should not have executed any queueable jobs');
 
         Logger.saveLog();
 
-        System.assertEquals(1, Limits.getAsyncCalls(), 'Should have executed queueable saver job');
+        System.assertEquals(1, System.Limits.getAsyncCalls(), 'Should have executed queueable saver job');
         System.assertEquals(
             0,
-            Limits.getPublishImmediateDml(),
+            System.Limits.getPublishImmediateDml(),
             'Should not have actually used any DML statements in tests because big objects actually get inserted, yikes'
         );
         System.assertEquals(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');

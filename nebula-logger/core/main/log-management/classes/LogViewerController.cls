@@ -15,7 +15,7 @@ public with sharing class LogViewerController {
      */
     @AuraEnabled(cacheable=true)
     public static Log__c getLog(Id logId) {
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(
+        SObjectAccessDecision securityDecision = System.Security.stripInaccessible(
             AccessType.READABLE,
             new List<Log__c>{ LogManagementDataSelector.getInstance().getLogById(logId) }
         );

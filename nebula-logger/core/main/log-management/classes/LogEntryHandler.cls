@@ -226,7 +226,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         Map<Id, SObject> recordIdToRecord = new Map<Id, SObject>();
         for (Schema.SObjectType sobjectType : sobjectTypeToRecords.keySet()) {
             // Stop if we've used up all the queries
-            if (Limits.getQueries() == Limits.getLimitQueries()) {
+            if (System.Limits.getQueries() == System.Limits.getLimitQueries()) {
                 break;
             }
 

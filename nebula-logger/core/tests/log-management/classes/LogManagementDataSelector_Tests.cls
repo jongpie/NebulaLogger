@@ -54,25 +54,25 @@ private class LogManagementDataSelector_Tests {
     static void it_does_not_query_apex_classes_when_disabled_via_logger_parameter() {
         // The class names used in the query don't particularly matter here - the main concern is checking that the query does not execute at all
         List<String> targetApexClassNames = new List<String>{ 'SomeClass', 'AnotherClass' };
-        Integer originalQueryCount = Limits.getQueries();
+        Integer originalQueryCount = System.Limits.getQueries();
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = String.valueOf(false)));
 
         List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
-        System.assertEquals(originalQueryCount, Limits.getQueries());
+        System.assertEquals(originalQueryCount, System.Limits.getQueries());
         System.assertEquals(0, returnedResults.size());
     }
 
     @IsTest
     static void it_returns_cached_apex_email_notifications() {
         List<ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, System.Limits.getQueries());
 
         List<ApexEmailNotification> returnedResults = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
         LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
         System.assertEquals(expectedResults, returnedResults);
     }
 
@@ -104,7 +104,7 @@ private class LogManagementDataSelector_Tests {
         Log__c expectedLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'XYZ');
         insert new List<Log__c>{ olderLog, expectedLog };
         System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, System.Limits.getQueries());
 
         for (Integer i = 0; i < 5; i++) {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
@@ -112,13 +112,13 @@ private class LogManagementDataSelector_Tests {
             System.assertEquals(expectedLog.Id, returnedLog.Id);
         }
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
     }
 
     @IsTest
     static void it_returns_null_when_no_recent_log_with_api_release_details_is_found() {
         System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, System.Limits.getQueries());
 
         for (Integer i = 0; i < 5; i++) {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
@@ -126,7 +126,7 @@ private class LogManagementDataSelector_Tests {
             System.assertEquals(null, returnedLog);
         }
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
     }
 
     @IsTest

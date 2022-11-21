@@ -8,7 +8,11 @@
     <protected>false</protected>
     <values>
         <field>Description__c</field>
-        <value xsi:nil="true" />
+        <value
+            xsi:type="xsd:string"
+        >When set to &apos;true&apos; (default), the AuthSession object will be queried to track additional details about the AuthSession for users that logged data - the queried data is stored in fields on LogEntryEvent__e and Log__c.
+
+When set to &apos;false&apos;, the AuthSession object will not be queried, and the related fields will be null.</value>
     </values>
     <values>
         <field>Value__c</field>

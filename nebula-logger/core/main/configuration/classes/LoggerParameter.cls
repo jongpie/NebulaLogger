@@ -603,7 +603,7 @@ public class LoggerParameter {
         DEVELOPER_NAME_TO_RECORD.put(parameter.DeveloperName, parameter);
     }
 
-    private static Object castParameterValue(String parameterDeveloperName, Type dataType) {
+    private static Object castParameterValue(String parameterDeveloperName, System.Type dataType) {
         String parameterValue = loadParameterValue(parameterDeveloperName);
         if (parameterValue == null) {
             return null;

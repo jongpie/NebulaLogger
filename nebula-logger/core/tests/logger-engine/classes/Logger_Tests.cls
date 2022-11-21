@@ -315,7 +315,7 @@ private class Logger_Tests {
             return;
         }
 
-        Type nonIgnoredApexClassType = MockClassWithLogging.class;
+        System.Type nonIgnoredApexClassType = MockClassWithLogging.class;
         String qualifiedNonIgnoredClassName = nonIgnoredApexClassType.getName();
         String expectedOriginLocation = qualifiedNonIgnoredClassName + '.logSomething';
 
@@ -332,7 +332,7 @@ private class Logger_Tests {
             return;
         }
 
-        Type ignoredApexClassType = MockClassWithLogging.class;
+        System.Type ignoredApexClassType = MockClassWithLogging.class;
         String qualifiedTopLevelClassName = Logger_Tests.class.getName();
         String expectedOriginLocation = qualifiedTopLevelClassName + '.it_should_ignore_origin_when_apex_class_type_specified';
 
@@ -759,15 +759,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         System.Test.startTest();
 
         Logger.saveLog();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -790,15 +790,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         System.Test.startTest();
 
         Logger.saveLog();
-        System.assertEquals(1, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -817,15 +817,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         System.Test.startTest();
 
         Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
-        System.assertEquals(1, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -844,7 +844,7 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         System.Test.startTest();
 
@@ -852,10 +852,10 @@ private class Logger_Tests {
         Logger.setSaveMethod(expectedSaveMethod);
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
-        System.assertEquals(1, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -881,14 +881,14 @@ private class Logger_Tests {
         Logger.debug('another test log entry');
 
         System.assertEquals(2, Logger.getBufferSize());
-        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
 
         Logger.saveLog();
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(1, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(1, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -907,15 +907,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
 
         System.Test.startTest();
 
         Logger.saveLog(Logger.SaveMethod.QUEUEABLE);
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(1, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(1, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.getEventBus().deliver();
 
@@ -936,7 +936,7 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
 
         System.Test.startTest();
 
@@ -944,10 +944,10 @@ private class Logger_Tests {
         Logger.setSaveMethod(expectedSaveMethod);
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(1, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(1, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.getEventBus().deliver();
 
@@ -974,15 +974,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
 
         System.Test.startTest();
 
         Logger.saveLog();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(1, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
     }
@@ -1000,15 +1000,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
 
         System.Test.startTest();
 
         Logger.saveLog(Logger.SaveMethod.REST);
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(1, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
     }
@@ -1026,7 +1026,7 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
 
         System.Test.startTest();
 
@@ -1034,10 +1034,10 @@ private class Logger_Tests {
         Logger.setSaveMethod(expectedSaveMethod);
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(1, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
     }
@@ -1055,7 +1055,7 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
 
         System.Test.startTest();
 
@@ -1064,10 +1064,10 @@ private class Logger_Tests {
         } catch (Exception ex) {
             System.assertEquals(CalloutException.class.getName(), ex.getTypeName());
         }
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(1, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
     }
@@ -1091,17 +1091,17 @@ private class Logger_Tests {
         logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
         logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         System.Test.startTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
         Logger.saveLog();
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
@@ -1141,9 +1141,9 @@ private class Logger_Tests {
         logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
         logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         System.Test.startTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
         Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.SYNCHRONOUS_DML.name();
@@ -1151,9 +1151,9 @@ private class Logger_Tests {
         Logger.saveLog();
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
@@ -1193,9 +1193,9 @@ private class Logger_Tests {
         logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
         logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         System.Test.startTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
         Logger.SaveMethod expectedSaveMethod = Logger.SaveMethod.SYNCHRONOUS_DML;
@@ -1203,9 +1203,9 @@ private class Logger_Tests {
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
