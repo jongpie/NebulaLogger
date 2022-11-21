@@ -55,12 +55,12 @@ private class LogEntryEventBuilder_Tests {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = String.valueOf(true)));
         Logger.getUserSettings().IsEnabled__c = false;
         System.assertEquals(false, Logger.isEnabled());
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, System.Limits.getQueries());
 
         new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, Logger.getUserSettings().IsEnabled__c, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, System.Limits.getQueries());
     }
 
     @IsTest

@@ -14,13 +14,13 @@ private class LoggerDataStore_Tests {
     static void it_should_delete_record() {
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
 
         Database.DeleteResult result = LoggerDataStore.getDatabase().deleteRecord(log);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
         System.assertEquals(true, result.isSuccess());
         Log__c persistedLog = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id ALL ROWS];
         System.assertEquals(true, persistedLog.IsDeleted);
@@ -32,13 +32,13 @@ private class LoggerDataStore_Tests {
         logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
         logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
         insert logsToDelete;
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
 
         List<Database.DeleteResult> results = LoggerDataStore.getDatabase().deleteRecords(logsToDelete);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(4, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(4, System.Limits.getDmlRows());
         System.assertEquals(logsToDelete.size(), results.size());
         for (Database.DeleteResult result : results) {
             System.assertEquals(true, result.isSuccess());
@@ -58,13 +58,13 @@ private class LoggerDataStore_Tests {
         insert logsToDelete;
         // Delete one of the logs first to cause a failure in the delete DML statement
         delete logsToDelete.get(0);
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(3, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(3, System.Limits.getDmlRows());
 
         List<Database.DeleteResult> results = LoggerDataStore.getDatabase().deleteRecords(logsToDelete, false);
 
-        System.assertEquals(3, Limits.getDmlStatements());
-        System.assertEquals(5, Limits.getDmlRows());
+        System.assertEquals(3, System.Limits.getDmlStatements());
+        System.assertEquals(5, System.Limits.getDmlRows());
         System.assertEquals(logsToDelete.size(), results.size());
         System.assertEquals(false, results.get(0).isSuccess());
         System.assertEquals(true, results.get(1).isSuccess());
@@ -80,13 +80,13 @@ private class LoggerDataStore_Tests {
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         log.TransactionId__c = '999';
         insert log;
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
 
         Database.DeleteResult result = LoggerDataStore.getDatabase().hardDeleteRecord(log);
 
-        System.assertEquals(3, Limits.getDmlStatements());
-        System.assertEquals(3, Limits.getDmlRows());
+        System.assertEquals(3, System.Limits.getDmlStatements());
+        System.assertEquals(3, System.Limits.getDmlRows());
         System.assertEquals(true, result.isSuccess());
         // Frustratingly, there's not a way to ensure that Database.emptyRecycleBin() was called and
         // the supposedly-hard-deleted records are still returned in SOQL, so at least verify that the
@@ -101,13 +101,13 @@ private class LoggerDataStore_Tests {
         logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
         logsToDelete.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
         insert logsToDelete;
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
 
         List<Database.DeleteResult> results = LoggerDataStore.getDatabase().hardDeleteRecords(logsToDelete);
 
-        System.assertEquals(3, Limits.getDmlStatements());
-        System.assertEquals(6, Limits.getDmlRows());
+        System.assertEquals(3, System.Limits.getDmlStatements());
+        System.assertEquals(6, System.Limits.getDmlRows());
         System.assertEquals(logsToDelete.size(), results.size());
         for (Database.DeleteResult result : results) {
             System.assertEquals(true, result.isSuccess());
@@ -126,13 +126,13 @@ private class LoggerDataStore_Tests {
     static void it_should_insert_record() {
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         log.TransactionId__c = '1234';
-        System.assertEquals(0, Limits.getDmlStatements());
-        System.assertEquals(0, Limits.getDmlRows());
+        System.assertEquals(0, System.Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getDmlRows());
 
         Database.SaveResult result = LoggerDataStore.getDatabase().insertRecord(log);
 
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
         System.assertNotEquals(null, log.Id);
         System.assertEquals(true, result.isSuccess());
         Log__c persistedLog = [SELECT Id, TransactionId__c FROM Log__c WHERE Id = :log.Id];
@@ -144,13 +144,13 @@ private class LoggerDataStore_Tests {
         List<Log__c> logsToInsert = new List<Log__c>();
         logsToInsert.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
         logsToInsert.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
-        System.assertEquals(0, Limits.getDmlStatements());
-        System.assertEquals(0, Limits.getDmlRows());
+        System.assertEquals(0, System.Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getDmlRows());
 
         List<Database.SaveResult> results = LoggerDataStore.getDatabase().insertRecords(logsToInsert);
 
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
         System.assertEquals(logsToInsert.size(), results.size());
         for (Database.SaveResult result : results) {
             System.assertEquals(true, result.isSuccess());
@@ -166,13 +166,13 @@ private class LoggerDataStore_Tests {
         List<Log__c> logsToInsert = new List<Log__c>();
         logsToInsert.add((Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord());
         logsToInsert.add(existingRecord);
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
 
         List<Database.SaveResult> results = LoggerDataStore.getDatabase().insertRecords(logsToInsert, false);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(3, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(3, System.Limits.getDmlRows());
         System.assertEquals(logsToInsert.size(), results.size());
         System.assertEquals(true, results.get(0).isSuccess());
         System.assertEquals(false, results.get(1).isSuccess());
@@ -189,13 +189,13 @@ private class LoggerDataStore_Tests {
         logsToInsert.add(existingRecord);
         Database.DmlOptions dmlOptions = new Database.DmlOptions();
         dmlOptions.OptAllOrNone = false;
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
 
         List<Database.SaveResult> results = LoggerDataStore.getDatabase().insertRecords(logsToInsert, dmlOptions);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(3, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(3, System.Limits.getDmlRows());
         System.assertEquals(logsToInsert.size(), results.size());
         System.assertEquals(true, results.get(0).isSuccess());
         System.assertEquals(false, results.get(1).isSuccess());
@@ -210,13 +210,13 @@ private class LoggerDataStore_Tests {
         delete log;
         log = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id ALL ROWS];
         System.assertEquals(true, log.IsDeleted);
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
 
         Database.UndeleteResult result = LoggerDataStore.getDatabase().undeleteRecord(log);
 
-        System.assertEquals(3, Limits.getDmlStatements());
-        System.assertEquals(3, Limits.getDmlRows());
+        System.assertEquals(3, System.Limits.getDmlStatements());
+        System.assertEquals(3, System.Limits.getDmlRows());
         System.assertEquals(true, result.isSuccess());
         Log__c persistedLog = [SELECT Id, IsDeleted FROM Log__c WHERE Id = :log.Id ALL ROWS];
         System.assertEquals(false, persistedLog.IsDeleted);
@@ -233,13 +233,13 @@ private class LoggerDataStore_Tests {
         for (Log__c deletedLog : logsToUndelete) {
             System.assertEquals(true, deletedLog.IsDeleted);
         }
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(4, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(4, System.Limits.getDmlRows());
 
         List<Database.UndeleteResult> results = LoggerDataStore.getDatabase().undeleteRecords(logsToUndelete);
 
-        System.assertEquals(3, Limits.getDmlStatements());
-        System.assertEquals(6, Limits.getDmlRows());
+        System.assertEquals(3, System.Limits.getDmlStatements());
+        System.assertEquals(6, System.Limits.getDmlRows());
         System.assertEquals(logsToUndelete.size(), results.size());
         for (Database.UndeleteResult result : results) {
             System.assertEquals(true, result.isSuccess());
@@ -261,13 +261,13 @@ private class LoggerDataStore_Tests {
         logsToUndelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToUndelete ALL ROWS];
         System.assertEquals(true, logsToUndelete.get(0).IsDeleted);
         System.assertEquals(false, logsToUndelete.get(1).IsDeleted);
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(3, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(3, System.Limits.getDmlRows());
 
         List<Database.UndeleteResult> results = LoggerDataStore.getDatabase().undeleteRecords(logsToUndelete, false);
 
-        System.assertEquals(3, Limits.getDmlStatements());
-        System.assertEquals(5, Limits.getDmlRows());
+        System.assertEquals(3, System.Limits.getDmlStatements());
+        System.assertEquals(5, System.Limits.getDmlRows());
         System.assertEquals(logsToUndelete.size(), results.size());
         System.assertEquals(true, results.get(0).isSuccess());
         System.assertEquals(false, results.get(1).isSuccess());
@@ -291,13 +291,13 @@ private class LoggerDataStore_Tests {
             System.assertEquals(originalScenario, logToUpdate.Scenario__c);
             logToUpdate.Scenario__c = updatedScenario;
         }
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
 
         List<Database.SaveResult> results = LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(4, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(4, System.Limits.getDmlRows());
         System.assertEquals(logsToUpdate.size(), results.size());
         for (Database.SaveResult result : results) {
             System.assertEquals(true, result.isSuccess());
@@ -319,13 +319,13 @@ private class LoggerDataStore_Tests {
         log = [SELECT Id, Scenario__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(originalScenario, log.Scenario__c);
         log.Scenario__c = updatedScenario;
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
 
         Database.SaveResult result = LoggerDataStore.getDatabase().updateRecord(log);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
         System.assertEquals(true, result.isSuccess());
         Log__c persistedLog = [SELECT Id, Scenario__c FROM Log__c WHERE Id = :log.Id];
         System.assertEquals(updatedScenario, persistedLog.Scenario__c);
@@ -342,13 +342,13 @@ private class LoggerDataStore_Tests {
         for (Log__c log : logsToUpdate) {
             log.Scenario__c = updatedScenario;
         }
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
 
         List<Database.SaveResult> results = LoggerDataStore.getDatabase().updateRecords(logsToUpdate, false);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(3, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(3, System.Limits.getDmlRows());
         System.assertEquals(logsToUpdate.size(), results.size());
         System.assertEquals(true, results.get(0).isSuccess());
         System.assertEquals(false, results.get(1).isSuccess());
@@ -370,13 +370,13 @@ private class LoggerDataStore_Tests {
         }
         Database.DmlOptions dmlOptions = new Database.DmlOptions();
         dmlOptions.OptAllOrNone = false;
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
 
         List<Database.SaveResult> results = LoggerDataStore.getDatabase().updateRecords(logsToUpdate, dmlOptions);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(3, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(3, System.Limits.getDmlRows());
         System.assertEquals(logsToUpdate.size(), results.size());
         System.assertEquals(true, results.get(0).isSuccess());
         System.assertEquals(false, results.get(1).isSuccess());
@@ -400,13 +400,13 @@ private class LoggerDataStore_Tests {
         log.Id = null;
         System.assertEquals(null, log.Id);
         System.assertNotEquals(null, log.TransactionId__c);
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(1, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getDmlRows());
 
         Database.UpsertResult result = LoggerDataStore.getDatabase().upsertRecord(log, Schema.Log__c.TransactionId__c);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
         System.assertEquals(false, result.isCreated());
         System.assertEquals(true, result.isSuccess());
         Log__c persistedLog = [SELECT Id, Scenario__c, TransactionId__c FROM Log__c WHERE TransactionId__c = :log.TransactionId__c];
@@ -435,13 +435,13 @@ private class LoggerDataStore_Tests {
             System.assertEquals(originalScenario, logToUpdate.Scenario__c);
             logToUpdate.Scenario__c = updatedScenario;
         }
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
 
         List<Database.UpsertResult> results = LoggerDataStore.getDatabase().upsertRecords(logsToUpsert, Schema.Log__c.TransactionId__c);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(4, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(4, System.Limits.getDmlRows());
         System.assertEquals(logsToUpsert.size(), results.size());
         for (Database.UpsertResult result : results) {
             System.assertEquals(true, result.isSuccess());
@@ -475,13 +475,13 @@ private class LoggerDataStore_Tests {
             logToUpdate.Scenario__c = updatedScenario;
         }
         logsToUpsert.get(1).TransactionId__c = null; // This will cause an error since the upsert is on TransactionId__c
-        System.assertEquals(1, Limits.getDmlStatements());
-        System.assertEquals(2, Limits.getDmlRows());
+        System.assertEquals(1, System.Limits.getDmlStatements());
+        System.assertEquals(2, System.Limits.getDmlRows());
 
         List<Database.UpsertResult> results = LoggerDataStore.getDatabase().upsertRecords(logsToUpsert, Schema.Log__c.TransactionId__c, false);
 
-        System.assertEquals(2, Limits.getDmlStatements());
-        System.assertEquals(4, Limits.getDmlRows());
+        System.assertEquals(2, System.Limits.getDmlStatements());
+        System.assertEquals(4, System.Limits.getDmlRows());
         System.assertEquals(logsToUpsert.size(), results.size());
         System.assertEquals(true, results.get(0).isSuccess());
         System.assertEquals(false, results.get(1).isSuccess());
@@ -497,11 +497,11 @@ private class LoggerDataStore_Tests {
         LogEntryEvent__e logEntryEvent = (LOgEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateRequiredFields()
             .getRecord();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         Database.SaveResult result = LoggerDataStore.getEventBus().publishRecord(logEntryEvent);
 
-        System.assertEquals(1, Limits.getPublishImmediateDml(), result);
+        System.assertEquals(1, System.Limits.getPublishImmediateDml(), result);
         System.assertEquals(true, result.isSuccess());
     }
 
@@ -514,11 +514,11 @@ private class LoggerDataStore_Tests {
         logEntryEventsToPublish.add(
             (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType).populateRequiredFields().getRecord()
         );
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         List<Database.SaveResult> results = LoggerDataStore.getEventBus().publishRecords(logEntryEventsToPublish);
 
-        System.assertEquals(1, Limits.getPublishImmediateDml(), results);
+        System.assertEquals(1, System.Limits.getPublishImmediateDml(), results);
         System.assertEquals(logEntryEventsToPublish.size(), results.size());
         for (Database.SaveResult result : results) {
             System.assertEquals(true, result.isSuccess());
@@ -528,11 +528,11 @@ private class LoggerDataStore_Tests {
     // Queueable tests
     @IsTest
     static void it_should_enqueue_job() {
-        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
 
         LoggerDataStore.getJobQueue().enqueueJob(new MockQueueable());
 
-        System.assertEquals(1, Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getQueueableJobs());
     }
 
     // Mocking tests

@@ -34,13 +34,13 @@ private class LoggerEngineDataSelector_Tests {
             WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
         ];
         LoggerSObjectProxy.AuthSession expectedAuthSession = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, System.Limits.getQueries());
 
         LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
-        System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(2, System.Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedAuthSession, returnedAuthSessionProxy);
     }
 
@@ -65,15 +65,15 @@ private class LoggerEngineDataSelector_Tests {
             FROM LoggerSObjectHandler__mdt
             WHERE IsEnabled__c = TRUE
         ];
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, System.Limits.getQueries());
 
         List<LoggerSObjectHandler__mdt> returnedSObjectHandlers = LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
 
         // The specific query used for LoggerSObjectHandler__mdt shouldn't count towards the SOQL query limits,
         // so 0 queries are expected here
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
-        System.assertEquals(0, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(0, System.Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedSObjectHandlers, returnedSObjectHandlers);
     }
 
@@ -116,13 +116,13 @@ private class LoggerEngineDataSelector_Tests {
             FROM LogEntryTagRule__mdt
             WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
         ];
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, System.Limits.getQueries());
 
         List<LogEntryTagRule__mdt> returnedTagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-        System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(2, System.Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedTagAssignmentRules, returnedTagAssignmentRules);
     }
 
@@ -133,13 +133,13 @@ private class LoggerEngineDataSelector_Tests {
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, System.Limits.getQueries());
 
         User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedUser();
-        System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(2, System.Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedUser, returnedUser);
     }
 
@@ -148,10 +148,10 @@ private class LoggerEngineDataSelector_Tests {
         private Integer organizationQueryCount = 0;
 
         public override LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
-            Integer originalQueryCount = Limits.getQueries();
+            Integer originalQueryCount = System.Limits.getQueries();
             LoggerSObjectProxy.AuthSession result = super.getCachedAuthSessionProxy();
-            if (Limits.getQueries() != originalQueryCount) {
-                authSessionQueryCount = Limits.getQueries() - originalQueryCount;
+            if (System.Limits.getQueries() != originalQueryCount) {
+                authSessionQueryCount = System.Limits.getQueries() - originalQueryCount;
             }
             return result;
         }
@@ -161,10 +161,10 @@ private class LoggerEngineDataSelector_Tests {
         }
 
         public override Organization getCachedOrganization() {
-            Integer originalQueryCount = Limits.getQueries();
+            Integer originalQueryCount = System.Limits.getQueries();
             Organization result = super.getCachedOrganization();
-            if (Limits.getQueries() != originalQueryCount) {
-                organizationQueryCount = Limits.getQueries() - originalQueryCount;
+            if (System.Limits.getQueries() != originalQueryCount) {
+                organizationQueryCount = System.Limits.getQueries() - originalQueryCount;
             }
             return result;
         }

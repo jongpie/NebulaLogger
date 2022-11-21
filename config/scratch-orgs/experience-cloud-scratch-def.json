@@ -4,7 +4,7 @@
     "hasSampleData": true,
     "country": "ES",
     "language": "es",
-    "features": ["Communities"],
+    "features": ["Communities", "PlatformCache"],
     "settings": {
         "chatterSettings": {
             "enableChatter": true

@@ -27,11 +27,6 @@
                 <default>false</default>
                 <label>v56.0 - Winter &apos;23 Release</label>
             </value>
-            <value>
-                <fullName>v55.0</fullName>
-                <default>false</default>
-                <label>v55.0 - Summer &apos;22 Release</label>
-            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

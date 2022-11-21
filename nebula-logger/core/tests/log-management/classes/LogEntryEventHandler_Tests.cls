@@ -863,7 +863,7 @@ private class LogEntryEventHandler_Tests {
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
         Log__c log = getLog();
         System.assertNotEquals(recentLog.Id, log.Id, log.StartTime__c);
         System.assertEquals(1, log.LogEntries__r.size());
@@ -898,7 +898,7 @@ private class LogEntryEventHandler_Tests {
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
         Log__c log = getLog();
         System.assertEquals(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);

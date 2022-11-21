@@ -15,9 +15,12 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "versionNumber": "4.9.0.NEXT",
-            "versionName": "LogBatchPurger & LogBatchPurgeScheduler Batch Size Increased",
+            "versionName": "LogBatchPurger Batch Size Increased",
             "versionDescription": "Increased the default batch size for LogBatchPurger from 200 to 2000, upgraded all metadata to use API version to 56.0 (Winter '23 release)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
+            "unpackagedMetadata": {
+                "path": "./nebula-logger/extra-tests"
+            },
             "default": false
         },
         {
@@ -140,6 +143,7 @@
         "Nebula Logger - Core@4.8.2-more-controls-for-scenario-based-logging": "04t5Y0000015lvuQAA",
         "Nebula Logger - Core@4.8.3-improved-logentry__c-formula-fields-for-limits": "04t5Y0000015lw9QAA",
         "Nebula Logger - Core@4.8.4-optimized-synchronous-context": "04t5Y0000023R02QAE",
+        "Nebula Logger - Core@4.9.0-logbatchpurger-batch-size-increased": "04t5Y0000023R2DQAU",
         "Nebula Logger - Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",

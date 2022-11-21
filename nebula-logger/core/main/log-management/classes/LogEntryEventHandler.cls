@@ -606,7 +606,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
-
         if (cachedOrganization == null) {
             return;
         }
@@ -685,7 +684,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             FROM Log__c
             WHERE CreatedDate = TODAY AND ApiReleaseNumber__c = NULL
             ORDER BY CreatedDate
-            LIMIT :Limits.getLimitDmlRows()
+            LIMIT :System.Limits.getLimitDmlRows()
         ]) {
             log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
             log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;
