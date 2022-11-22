@@ -649,10 +649,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
     @future(callout=true)
     private static void setStatusApiDetails() {
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            Logger.debug('Logger - Calling Status API for org details');
-        }
-
         Organization organization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         String statusApiEndpoint = 'https://api.status.salesforce.com/v1/instances/' + organization.InstanceName + '/status';
 
@@ -661,7 +657,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         request.setMethod('GET');
 
         HttpResponse response = new Http().send(request);
-
         if (response.getStatusCode() >= 400) {
             String errorMessage =
                 'Callout failed for ' +
@@ -674,10 +669,6 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
 
         StatusApiResponse statusApiResponse = (StatusApiResponse) JSON.deserialize(response.getBody(), StatusApiResponse.class);
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            Logger.debug('Logger - Status API response: ' + statusApiResponse);
-        }
-
         List<Log__c> logsToUpdate = new List<Log__c>();
         for (Log__c log : [
             SELECT Id
@@ -691,13 +682,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
             logsToUpdate.add(log);
         }
-
-        if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            Logger.debug('Logger - logs to update: ' + logsToUpdate);
-        }
-
         LoggerDataStore.getDatabase().updateRecords(logsToUpdate);
-        Logger.saveLog();
     }
 
     // Private class for handling the response from api.status.salesforce.com

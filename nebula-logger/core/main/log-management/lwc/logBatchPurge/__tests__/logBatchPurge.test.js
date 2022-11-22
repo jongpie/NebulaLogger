@@ -156,9 +156,9 @@ describe('logBatchPurge lwc tests', () => {
         const runPurgeBatch = logBatchPurgeElement.shadowRoot.querySelector('lightning-button[data-id="run-purge-button"]');
         expect(runPurgeBatch).toBeTruthy();
 
-        const purgeBatchJobsDataTable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
-        expect(purgeBatchJobsDataTable).toBeTruthy();
-        expect(purgeBatchJobsDataTable.data).toEqual(mockGetPurgeBatchJobRecords);
+        const purgeBatchJobsDatatable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
+        expect(purgeBatchJobsDatatable).toBeTruthy();
+        expect(purgeBatchJobsDatatable.data).toEqual(mockGetPurgeBatchJobRecords);
     });
 
     it('displays log metrics for today by default', async () => {
@@ -331,9 +331,9 @@ describe('logBatchPurge lwc tests', () => {
     it('displays the purge job records in datatable.', async () => {
         const logBatchPurgeElement = await initializeElement(true);
 
-        const purgeBatchJobsDataTable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
-        expect(purgeBatchJobsDataTable).toBeTruthy();
-        expect(purgeBatchJobsDataTable.data).toEqual(mockGetPurgeBatchJobRecords);
+        const purgeBatchJobsDatatable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
+        expect(purgeBatchJobsDatatable).toBeTruthy();
+        expect(purgeBatchJobsDatatable.data).toEqual(mockGetPurgeBatchJobRecords);
     });
 
     it('it show success toast when user click on run batch button.', async () => {
@@ -357,10 +357,10 @@ describe('logBatchPurge lwc tests', () => {
         await Promise.resolve('resolves loadpurgeBatchJobRecords()');
         await Promise.resolve('resolves canUserRunLogBatchPurger()');
 
-        const purgeBatchJobsDataTable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
-        expect(purgeBatchJobsDataTable).toBeTruthy();
+        const purgeBatchJobsDatatable = logBatchPurgeElement.shadowRoot.querySelector('lightning-datatable[data-id="purge-batch-jobs"');
+        expect(purgeBatchJobsDatatable).toBeTruthy();
 
-        expect(purgeBatchJobsDataTable.data).toEqual(mockGetPurgeBatchJobRecords);
+        expect(purgeBatchJobsDatatable.data).toEqual(mockGetPurgeBatchJobRecords);
     });
 
     it('it refresh the purge batch records for every 10 sec.', async () => {

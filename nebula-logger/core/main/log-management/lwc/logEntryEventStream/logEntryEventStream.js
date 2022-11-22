@@ -4,14 +4,40 @@
  ************************************************************************************************/
 
 import { LightningElement } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
-
+import getDatatableDisplayFields from '@salesforce/apex/LogEntryEventStreamController.getDatatableDisplayFields';
 export default class LogEntryEventStream extends LightningElement {
     unfilteredEvents = [];
+
     logEntryEvents = [];
     isExpanded = false;
     isStreamEnabled = true;
+    isStreamSettingExpanded = true;
+    isConsoleViewEnabled = true;
+    selectViewMenuIcon = 'utility:apex'; //default console view
+    selectViewMenuOptions = [
+        {
+            id: 'console-view',
+            iconName: 'utility:apex',
+            label: 'Console',
+            value: 'console',
+            checked: true //default console view enabled.
+        },
+        {
+            id: 'table-view',
+            iconName: 'utility:table',
+            label: 'Table',
+            value: 'table',
+            checked: false
+        }
+    ];
+
+    //data table
+    tableViewDisplayFields = [];
+    DEFAULT_DATATABLE_COLUMNS = ['Timestamp__c', 'LoggedByUsername__c', 'OriginLocation__c', 'LoggingLevel__c', 'Message__c'];
+    datatableColumns = [];
 
     // Filters
     loggedByFilter;
@@ -29,12 +55,32 @@ export default class LogEntryEventStream extends LightningElement {
     async connectedCallback() {
         document.title = 'Log Entry Event Stream';
 
-        getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }).then(result => {
-            this._logEntryEventSchema = result;
-            this._channel = '/event/' + this._logEntryEventSchema.apiName;
+        Promise.all([getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }), getDatatableDisplayFields()])
+            .then(([getSchemaForNameResult, getTableViewFieldsResult]) => {
+                this._logEntryEventSchema = getSchemaForNameResult;
+                this.tableViewDisplayFields = getTableViewFieldsResult;
+                this._channel = '/event/' + this._logEntryEventSchema.apiName;
+                this.createSubscription();
+                this.loadDatatableColumns();
+            })
+            .catch(this._handleError);
+    }
 
-            this.createSubscription();
-        });
+    loadDatatableColumns() {
+        this.datatableColumns = [];
+        if (this.tableViewDisplayFields) {
+            this.tableViewDisplayFields.forEach(column => {
+                const aField = this._logEntryEventSchema.fields[column];
+                if (aField) {
+                    const formattedColumn = {
+                        label: aField.label,
+                        fieldName: aField.apiName,
+                        type: aField.type
+                    };
+                    this.datatableColumns.push(formattedColumn);
+                }
+            });
+        }
     }
 
     disconnectedCallback() {
@@ -76,10 +122,13 @@ export default class LogEntryEventStream extends LightningElement {
         ];
     }
 
+    get splitViewLabel() {
+        return this.isStreamSettingExpanded ? 'Close Split View' : 'Open Split View';
+    }
+
     async createSubscription() {
         this._subscription = await subscribe(this._channel, -2, event => {
             const logEntryEvent = JSON.parse(JSON.stringify(event.data.payload));
-
             let cleanedLogEntryEvent;
             if (!this._logEntryEventSchema.namespacePrefix) {
                 cleanedLogEntryEvent = logEntryEvent;
@@ -121,11 +170,35 @@ export default class LogEntryEventStream extends LightningElement {
         this.unfilteredEvents = [];
     }
 
-    // onToggleExpand() {
-    //     let consoleBlock = this.template.querySelector('[data-id="event-stream-console"]');
-    //     consoleBlock.className = this.isExpanded ? '' : 'expanded';
-    //     this.isExpanded = !this.isExpanded;
-    // }
+    onToggleExpand() {
+        let consoleBlock = this.template.querySelector('[data-id="event-stream-console"]');
+        consoleBlock.className = this.isExpanded ? 'slds-card ' : 'slds-card expanded';
+        this.isExpanded = !this.isExpanded;
+    }
+
+    onSelectView(event) {
+        const selectedView = event.detail.value;
+        let selectedViewOption = this.selectViewMenuOptions.filter(action => action.value === selectedView);
+        this.selectViewMenuOptions = this.selectViewMenuOptions.map(action => {
+            action.checked = action.value === selectedView ? true : false;
+            return action;
+        });
+        this.selectViewMenuIcon = selectedViewOption[0].iconName;
+        this.isConsoleViewEnabled = selectedView === 'console' ? true : false;
+    }
+
+    onToggleSplitView() {
+        const splitViewContainerElement = this.template.querySelector('[data-id="split-view-container"');
+        const splitViewToggleButtonElement = this.template.querySelector('[data-id="split-view-button"');
+        this.isStreamSettingExpanded = !this.isStreamSettingExpanded;
+        if (this.isStreamSettingExpanded) {
+            splitViewContainerElement.classList.replace('slds-is-closed', 'slds-is-open');
+            splitViewToggleButtonElement.classList.replace('slds-is-closed', 'slds-is-open');
+        } else {
+            splitViewContainerElement.classList.replace('slds-is-open', 'slds-is-closed');
+            splitViewToggleButtonElement.classList.replace('slds-is-open', 'slds-is-closed');
+        }
+    }
 
     onToggleStream() {
         this.isStreamEnabled = !this.isStreamEnabled;
@@ -185,4 +258,16 @@ export default class LogEntryEventStream extends LightningElement {
         }
         return matches;
     }
+    _handleError = error => {
+        const errorMessage = error.body ? error.body.message : error.message;
+        /* eslint-disable-next-line no-console */
+        console.error(errorMessage, error);
+        this.dispatchEvent(
+            new ShowToastEvent({
+                mode: 'sticky',
+                title: errorMessage,
+                variant: 'error'
+            })
+        );
+    };
 }
