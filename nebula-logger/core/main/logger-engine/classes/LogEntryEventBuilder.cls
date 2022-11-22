@@ -1050,7 +1050,7 @@ global with sharing class LogEntryEventBuilder {
             return records;
         }
 
-        SObjectAccessDecision securityDecision = System.Security.stripInaccessible(AccessType.READABLE, records, false);
+        System.SObjectAccessDecision securityDecision = System.Security.stripInaccessible(System.AccessType.READABLE, records, false);
         return securityDecision.getRecords();
     }
 
