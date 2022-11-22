@@ -281,7 +281,7 @@ public class LoggerMockDataCreator {
      * @return   The generated `User` record - it is not automatically inserted into the database.
      */
     public static User createUser() {
-        return createUser(UserInfo.getProfileId());
+        return createUser(System.UserInfo.getProfileId());
     }
 
     /**
@@ -338,7 +338,7 @@ public class LoggerMockDataCreator {
      * @return   The matching `User` record
      */
     public static User getUser() {
-        return getUser(UserInfo.getUserId());
+        return getUser(System.UserInfo.getUserId());
     }
 
     /**
@@ -365,7 +365,7 @@ public class LoggerMockDataCreator {
         insert queue;
 
         // To avoid a MIXED_DML_OPERATION exception, use System.runs() for inserting the QueueSObject record
-        System.runAs(new User(Id = UserInfo.getUserId())) {
+        System.runAs(new User(Id = System.UserInfo.getUserId())) {
             QueueSObject queueSObject = new QueueSObject(QueueId = queue.Id, SObjectType = sobjectType.getDescribe().getName());
             insert queueSObject;
         }

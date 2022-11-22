@@ -18,7 +18,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_adds_new_key_to_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
         LoggerCache.getTransactionCache().put(mockKey, mockValue);
@@ -42,7 +42,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_updates_value_for_existing_key_in_transaction_cache() {
         String mockKey = 'SomeKey';
-        User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User oldMockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerCache.getTransactionCache().put(mockKey, oldMockValue);
         System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
         System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
@@ -57,7 +57,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_removes_value_for_existing_key_in_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
         LoggerCache.getTransactionCache().put(mockKey, mockValue);
         System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
@@ -71,7 +71,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_adds_new_key_to_organization_and_transaction_cache_when_platform_cache_is_available() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
@@ -119,7 +119,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_adds_new_key_to_only_transaction_cache_when_organization_platform_cache_is_not_available() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(false);
         System.Assert.isFalse(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
@@ -143,7 +143,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_updates_value_for_existing_key_in_organization_and_transaction_cache_when_platform_cache_is_available() {
         String mockKey = 'SomeKey';
-        User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User oldMockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
@@ -170,7 +170,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_returns_value_in_transaction_cache_when_organization_and_transaction_cache_both_contain_key() {
         String mockKey = 'SomeKey';
-        User transactionCacheValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User transactionCacheValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         Account organizationCacheValue = new Account(Name = 'Some fake account');
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
@@ -188,7 +188,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_removes_value_for_existing_key_in_organization_and_transaction_cache_when_platform_cache_is_available() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
@@ -214,7 +214,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_adds_new_key_to_session_and_transaction_cache_when_platform_cache_is_available() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
@@ -262,7 +262,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_adds_new_key_to_only_transaction_cache_when_session_platform_cache_is_not_available() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(false);
         System.Assert.isFalse(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
@@ -286,7 +286,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_updates_value_for_existing_key_in_session_and_transaction_cache_when_platform_cache_is_available() {
         String mockKey = 'SomeKey';
-        User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User oldMockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
@@ -313,7 +313,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_returns_value_in_transaction_cache_when_session_and_transaction_cache_both_contain_key() {
         String mockKey = 'SomeKey';
-        User transactionCacheValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User transactionCacheValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         Account sessionCacheValue = new Account(Name = 'Some fake account');
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
@@ -331,7 +331,7 @@ private class LoggerCache_Tests {
     @IsTest
     static void it_removes_value_for_existing_key_in_session_and_transaction_cache_when_platform_cache_is_available() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
         System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);

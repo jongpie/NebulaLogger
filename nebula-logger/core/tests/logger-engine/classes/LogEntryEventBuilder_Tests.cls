@@ -26,11 +26,11 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.setDatabaseResult(new List<Database.SaveResult>()).getLogEntryEvent());
         System.Assert.isNull(builder.setDatabaseResult(new List<Database.UpsertResult>()).getLogEntryEvent());
         System.Assert.isNull(builder.setDatabaseResult(new List<Database.UndeleteResult>()).getLogEntryEvent());
-        System.Assert.isNull(builder.setRecordId(UserInfo.getUserId()).getLogEntryEvent());
-        System.Assert.isNull(builder.setRecordId(new User(Id = UserInfo.getUserId())).getLogEntryEvent());
-        System.Assert.isNull(builder.setRecord(UserInfo.getUserId()).getLogEntryEvent());
-        System.Assert.isNull(builder.setRecord(new User(Id = UserInfo.getUserId())).getLogEntryEvent());
-        System.Assert.isNull(builder.setRecord(new List<User>{ new User(Id = UserInfo.getUserId()) }).getLogEntryEvent());
+        System.Assert.isNull(builder.setRecordId(System.UserInfo.getUserId()).getLogEntryEvent());
+        System.Assert.isNull(builder.setRecordId(new User(Id = System.UserInfo.getUserId())).getLogEntryEvent());
+        System.Assert.isNull(builder.setRecord(System.UserInfo.getUserId()).getLogEntryEvent());
+        System.Assert.isNull(builder.setRecord(new User(Id = System.UserInfo.getUserId())).getLogEntryEvent());
+        System.Assert.isNull(builder.setRecord(new List<User>{ new User(Id = System.UserInfo.getUserId()) }).getLogEntryEvent());
         System.Assert.isNull(builder.addTags(new List<String>{ 'tag-1', 'tag-2' }).getLogEntryEvent());
         System.Assert.isNull(builder.parseStackTrace(new DmlException().getStackTraceString()).getLogEntryEvent());
     }
@@ -628,7 +628,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        Id currentUserId = UserInfo.getUserId();
+        Id currentUserId = System.UserInfo.getUserId();
         builder.setRecordId(currentUserId);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().RecordCollectionSize__c);
@@ -732,7 +732,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectType__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
 
-        User currentUser = [SELECT Id, Name, ProfileId, Profile.Name, IsActive FROM User WHERE Id = :UserInfo.getUserId()];
+        User currentUser = [SELECT Id, Name, ProfileId, Profile.Name, IsActive FROM User WHERE Id = :System.UserInfo.getUserId()];
         builder.setRecordId(currentUser);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().RecordCollectionSize__c);
@@ -885,7 +885,7 @@ private class LogEntryEventBuilder_Tests {
         List<SObject> users = new List<SObject>();
         User nullUser;
         users.add(nullUser);
-        users.add(new User(Id = UserInfo.getUserId()));
+        users.add(new User(Id = System.UserInfo.getUserId()));
         builder.setRecord(users);
 
         System.Assert.areEqual('List', builder.getLogEntryEvent().RecordCollectionType__c);
@@ -1300,7 +1300,7 @@ private class LogEntryEventBuilder_Tests {
 
     static LoggerSettings__c getUserSettings() {
         LoggerSettings__c userSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
-        userSettings.SetupOwnerId = UserInfo.getUserId();
+        userSettings.SetupOwnerId = System.UserInfo.getUserId();
         return userSettings;
     }
 

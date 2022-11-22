@@ -9,7 +9,7 @@ private class SlackLoggerPlugin_Tests {
     @IsTest
     static void it_should_not_push_log_when_logging_level_is_not_met() {
         verifyLogEntryCountEquals(0);
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
+        Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
         insert log;
         LoggingLevel logEntryLoggingLevel = LoggingLevel.WARN;
         LogEntry__c logEntry = new LogEntry__c(
@@ -59,7 +59,7 @@ private class SlackLoggerPlugin_Tests {
     static void it_should_push_log_when_logging_level_is_met_for_error() {
         verifyLogEntryCountEquals(0);
         LoggerSObjectHandler.shouldExecute(false);
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
+        Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
         insert log;
         LoggingLevel logEntryLoggingLevel = LoggingLevel.ERROR;
         LogEntry__c logEntry = new LogEntry__c(
@@ -107,7 +107,7 @@ private class SlackLoggerPlugin_Tests {
     static void it_should_push_log_when_logging_level_is_met_for_warn() {
         verifyLogEntryCountEquals(0);
         LoggerSObjectHandler.shouldExecute(false);
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
+        Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
         insert log;
         LoggingLevel logEntryLoggingLevel = LoggingLevel.WARN;
         LogEntry__c logEntry = new LogEntry__c(
@@ -155,7 +155,7 @@ private class SlackLoggerPlugin_Tests {
     static void it_should_push_log_when_logging_level_is_met_for_info() {
         verifyLogEntryCountEquals(0);
         LoggerSObjectHandler.shouldExecute(false);
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
+        Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
         insert log;
         LoggingLevel logEntryLoggingLevel = LoggingLevel.INFO;
         LogEntry__c logEntry = new LogEntry__c(

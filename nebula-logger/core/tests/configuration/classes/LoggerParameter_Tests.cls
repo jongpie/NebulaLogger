@@ -7,7 +7,7 @@
 @IsTest(IsParallel=true)
 private class LoggerParameter_Tests {
     private static User getUserRecord() {
-        return new User(Id = UserInfo.getUserId(), Username = UserInfo.getUserName());
+        return new User(Id = System.UserInfo.getUserId(), Username = System.UserInfo.getUsername());
     }
 
     @IsTest
@@ -366,7 +366,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_id_parameter() {
-        Id parameterValue = UserInfo.getUserId();
+        Id parameterValue = System.UserInfo.getUserId();
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyId', Value__c = JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 
@@ -377,7 +377,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_id_list_parameter() {
-        List<Id> parameterValue = new List<Id>{ UserInfo.getUserId() };
+        List<Id> parameterValue = new List<Id>{ System.UserInfo.getUserId() };
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'MyIdList', Value__c = JSON.serialize(parameterValue));
         LoggerParameter.setMock(mockParameter);
 

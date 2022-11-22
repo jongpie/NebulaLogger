@@ -28,7 +28,7 @@ private class RelatedLogEntriesController_Tests {
         for (Integer i = 0; i < TOTAL_LOG_ENTRIES; i++) {
             LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, Message__c = 'test ' + i);
             if (i <= TOTAL_RELATED_LOG_ENTRIES) {
-                logEntry.RecordId__c = UserInfo.getUserId();
+                logEntry.RecordId__c = System.UserInfo.getUserId();
             }
             LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
 
@@ -39,7 +39,7 @@ private class RelatedLogEntriesController_Tests {
 
     @IsTest
     static void it_should_return_matching_logEntryQueryResult() {
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         String fieldSetName = getFieldSetName();
         Integer rowLimit = 10;
         Integer rowOffset = 0;
@@ -71,7 +71,7 @@ private class RelatedLogEntriesController_Tests {
 
     @IsTest
     static void it_should_return_matching_logEntryQueryResult_when_search_provided() {
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         String fieldSetName = getFieldSetName();
         Integer rowLimit = 10;
         Integer rowOffset = 0;

@@ -28,7 +28,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_use_in_memory_default_settings_when_not_configured() {
         LoggerSettings__c expectedSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
-        expectedSettings.SetupOwnerId = UserInfo.getUserId();
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -45,7 +45,7 @@ private class Logger_Tests {
         insert expectedSettings;
         expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
-        expectedSettings.SetupOwnerId = UserInfo.getUserId();
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -61,11 +61,11 @@ private class Logger_Tests {
         LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
         expectedSettings.LoggingLevel__c = LoggingLevel.FINEST.name();
-        expectedSettings.SetupOwnerId = UserInfo.getProfileId();
+        expectedSettings.SetupOwnerId = System.UserInfo.getProfileId();
         insert expectedSettings;
-        expectedSettings = LoggerSettings__c.getValues(UserInfo.getProfileId());
+        expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getProfileId());
         expectedSettings.Id = null;
-        expectedSettings.SetupOwnerId = UserInfo.getUserId();
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -81,14 +81,14 @@ private class Logger_Tests {
         LoggerSettings__c profileSettings = LoggerSettings__c.getOrgDefaults();
         profileSettings.Id = null;
         profileSettings.LoggingLevel__c = LoggingLevel.DEBUG.name();
-        profileSettings.SetupOwnerId = UserInfo.getProfileId();
+        profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
         insert profileSettings;
         LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
         expectedSettings.LoggingLevel__c = LoggingLevel.FINEST.name();
-        expectedSettings.SetupOwnerId = UserInfo.getUserId();
+        expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
         insert expectedSettings;
-        expectedSettings = LoggerSettings__c.getValues(UserInfo.getUserId());
+        expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getUserId());
 
         LoggerSettings__c returnedSettings = Logger.getUserSettings();
 
@@ -708,7 +708,7 @@ private class Logger_Tests {
     static void it_should_save_accurate_timestamp_when_logging_user_has_different_time_zone() {
         // TODO Move this test to LogEntryEventBuilder_Tests
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
-        User currentUser = new User(Id = UserInfo.getUserId());
+        User currentUser = new User(Id = System.UserInfo.getUserId());
         // Make sure that the test user has a different time zone from the automated process user
         if (automatedProcessUser.TimeZoneSidKey == currentUser.TimeZoneSidKey) {
             switch on automatedProcessUser.TimeZoneSidKey {
@@ -6192,8 +6192,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_deleteResult_for_logMessage_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
         Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
         List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
@@ -6210,8 +6210,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_deleteResult_for_logMessage_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
         Database.DeleteResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
         List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, anotherSuccessfulResult };
@@ -6228,8 +6228,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_log_database_deleteResult_for_logMessage_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
         Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
         List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
@@ -6250,7 +6250,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_deleteResult_for_string_message_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
         Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
         List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
@@ -6268,7 +6268,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_deleteResult_for_string_message_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
         Database.DeleteResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
         List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, anotherSuccessfulResult };
@@ -6286,7 +6286,7 @@ private class Logger_Tests {
     static void it_should_log_database_deleteResult_for_string_message_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
         Database.DeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(false, recordId);
         List<Database.DeleteResult> deleteResults = new List<Database.DeleteResult>{ successfulResult, unsuccessfulResult };
@@ -6306,8 +6306,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_mergeResult_for_logMessage_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
         Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
         List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
@@ -6324,8 +6324,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_mergeResult_for_logMessage_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
         Database.MergeResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
         List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, anotherSuccessfulResult };
@@ -6342,8 +6342,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_log_database_mergeResult_for_logMessage_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
         Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
         List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
@@ -6364,7 +6364,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_mergeResult_for_string_message_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
         Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
         List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
@@ -6382,7 +6382,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_mergeResult_for_string_message_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
         Database.MergeResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
         List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, anotherSuccessfulResult };
@@ -6400,7 +6400,7 @@ private class Logger_Tests {
     static void it_should_log_database_mergeResult_for_string_message_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
         Database.MergeResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseMergeResult(false, recordId);
         List<Database.MergeResult> mergeResults = new List<Database.MergeResult>{ successfulResult, unsuccessfulResult };
@@ -6420,8 +6420,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_saveResult_for_logMessage_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
         Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
@@ -6438,8 +6438,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_saveResult_for_logMessage_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
         Database.SaveResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, anotherSuccessfulResult };
@@ -6456,8 +6456,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_log_database_saveResult_for_logMessage_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
         Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
@@ -6478,7 +6478,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_saveResult_for_string_message_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
         Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
@@ -6496,7 +6496,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_saveResult_for_string_message_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
         Database.SaveResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, anotherSuccessfulResult };
@@ -6514,7 +6514,7 @@ private class Logger_Tests {
     static void it_should_log_database_saveResult_for_string_message_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
         Database.SaveResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseSaveResult(false, recordId);
         List<Database.SaveResult> saveResults = new List<Database.SaveResult>{ successfulResult, unsuccessfulResult };
@@ -6534,8 +6534,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_upsertResult_for_logMessage_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
         Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
         List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
@@ -6552,8 +6552,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_upsertResult_for_logMessage_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
         Database.UpsertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
         List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, anotherSuccessfulResult };
@@ -6570,8 +6570,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_log_database_upsertResult_for_logMessage_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
         Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
         List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
@@ -6592,7 +6592,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_upsertResult_for_string_message_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
         Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
         List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
@@ -6610,7 +6610,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_upsertResult_for_string_message_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
         Database.UpsertResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
         List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, anotherSuccessfulResult };
@@ -6628,7 +6628,7 @@ private class Logger_Tests {
     static void it_should_log_database_upsertResult_for_string_message_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
         Database.UpsertResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(false, true, recordId);
         List<Database.UpsertResult> upsertResults = new List<Database.UpsertResult>{ successfulResult, unsuccessfulResult };
@@ -6648,8 +6648,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_undeleteResult_for_logMessage_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
         Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
         List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
@@ -6666,8 +6666,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_skip_logging_database_undeleteResult_for_logMessage_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
         Database.UndeleteResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
         List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, anotherSuccessfulResult };
@@ -6684,8 +6684,8 @@ private class Logger_Tests {
     @IsTest
     static void it_should_log_database_undeleteResult_for_logMessage_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
-        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', UserInfo.getUserId());
-        Id recordId = UserInfo.getUserId();
+        LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
+        Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
         Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
         List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
@@ -6706,7 +6706,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_undeleteResult_for_string_message_when_logging_level_is_disabled() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
         Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
         List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
@@ -6724,7 +6724,7 @@ private class Logger_Tests {
     static void it_should_skip_logging_database_undeleteResult_for_string_message_when_no_errors_found() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
         Database.UndeleteResult anotherSuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
         List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, anotherSuccessfulResult };
@@ -6742,7 +6742,7 @@ private class Logger_Tests {
     static void it_should_log_database_undeleteResult_for_string_message_when_isSuccess_is_false() {
         LoggingLevel logEntryLevel = LoggingLevel.WARN;
         String message = 'Some message';
-        Id recordId = UserInfo.getUserId();
+        Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
         Database.UndeleteResult unsuccessfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(false, recordId);
         List<Database.UndeleteResult> undeleteResults = new List<Database.UndeleteResult>{ successfulResult, unsuccessfulResult };
@@ -6932,10 +6932,10 @@ private class Logger_Tests {
 
     static SObject getRecord() {
         return new User(
-            Id = UserInfo.getUserId(),
-            ProfileId = UserInfo.getProfileId(),
-            Username = UserInfo.getUserName(),
-            UserRoleId = UserInfo.getUserRoleId()
+            Id = System.UserInfo.getUserId(),
+            ProfileId = System.UserInfo.getProfileId(),
+            Username = System.UserInfo.getUsername(),
+            UserRoleId = System.UserInfo.getUserRoleId()
         );
     }
 

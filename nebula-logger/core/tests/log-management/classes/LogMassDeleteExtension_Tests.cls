@@ -30,7 +30,7 @@ private class LogMassDeleteExtension_Tests {
         for (UserRecordAccess recordAccess : [
             SELECT RecordId
             FROM UserRecordAccess
-            WHERE UserId = :UserInfo.getUserId() AND RecordId IN :logIds AND HasDeleteAccess = TRUE
+            WHERE UserId = :System.UserInfo.getUserId() AND RecordId IN :logIds AND HasDeleteAccess = TRUE
         ]) {
             expectedDeletableLogs.add(new Log__c(Id = recordAccess.RecordId));
         }

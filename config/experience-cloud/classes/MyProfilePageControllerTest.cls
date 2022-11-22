@@ -13,7 +13,7 @@ public with sharing class MyProfilePageControllerTest {
             User currentUser = [
                 SELECT id, title, firstname, lastname, email, phone, mobilephone, fax, street, city, state, postalcode, country
                 FROM User
-                WHERE id = :UserInfo.getUserId()
+                WHERE id = :System.UserInfo.getUserId()
             ];
             MyProfilePageController controller = new MyProfilePageController();
             System.Assert.areEqual(currentUser.Id, controller.getUser().Id, 'Did not successfully load the current user');

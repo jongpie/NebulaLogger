@@ -387,7 +387,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
-        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.IsAnonymousModeEnabled__c = false;
         insert currentUserSettings;
@@ -409,7 +409,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         User automatedProcessUser = [SELECT Id, TimeZoneSidKey FROM User WHERE Name = 'Automated Process' AND Profile.Name = NULL];
-        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.IsAnonymousModeEnabled__c = true;
         insert currentUserSettings;
@@ -971,13 +971,13 @@ private class LogEntryEventHandler_Tests {
             .populateAllFields()
             .getRecord();
         logEntryEvent.ImpersonatedById__c = null;
-        logEntryEvent.LoggedById__c = UserInfo.getUserId();
+        logEntryEvent.LoggedById__c = System.UserInfo.getUserId();
         logEntryEvent.LoggingLevel__c = LoggingLevel.INFO.name();
         logEntryEvent.LoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
-        logEntryEvent.ProfileId__c = UserInfo.getProfileId();
+        logEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
         logEntryEvent.RecordCollectionSize__c = 1;
         logEntryEvent.RecordCollectionType__c = 'Single';
-        logEntryEvent.RecordId__c = UserInfo.getUserId();
+        logEntryEvent.RecordId__c = System.UserInfo.getUserId();
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
         logEntryEvent.UserLoggingLevel__c = LoggingLevel.INFO.name();
         logEntryEvent.UserLoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
@@ -1147,7 +1147,7 @@ private class LogEntryEventHandler_Tests {
             orgEnvironmentType = 'Production';
         }
 
-        Id logOwnerId = logEntryEvent.LoggedById__c == null ? UserInfo.getUserId() : logEntryEvent.LoggedById__c;
+        Id logOwnerId = logEntryEvent.LoggedById__c == null ? System.UserInfo.getUserId() : logEntryEvent.LoggedById__c;
 
         System.Assert.areEqual(logEntryEvent.ApiVersion__c, log.ApiVersion__c, 'log.ApiVersion__c was not properly set');
         System.Assert.areEqual(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');

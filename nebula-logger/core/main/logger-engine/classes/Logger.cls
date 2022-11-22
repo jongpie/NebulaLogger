@@ -48,9 +48,9 @@ global with sharing class Logger {
     private static final String USER_SESSION_ID {
         get {
             if (USER_SESSION_ID == null) {
-                USER_SESSION_ID = UserInfo.getSessionId();
-                // If UserInfo.getSessionId() returns null, set to an empty string to
-                // avoid calling UserInfo.getSessionId() again
+                USER_SESSION_ID = System.UserInfo.getSessionId();
+                // If System.UserInfo.getSessionId() returns null, set to an empty string to
+                // avoid calling System.UserInfo.getSessionId() again
                 USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
             }
             return USER_SESSION_ID;
@@ -250,7 +250,7 @@ global with sharing class Logger {
     public static LoggerSettings__c getUserSettings() {
         // Only load the current user's settings once - this allows the instance to be modified in memory (as well as upserted if any changes should be persisted)
         if (userSettings == null) {
-            User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+            User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
             userSettings = getUserSettings(currentUser);
         }
         return userSettings;

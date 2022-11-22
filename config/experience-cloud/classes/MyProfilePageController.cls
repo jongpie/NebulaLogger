@@ -35,7 +35,7 @@ public with sharing class MyProfilePageController {
                 fax,
                 contact.email
             FROM User
-            WHERE id = :UserInfo.getUserId()
+            WHERE id = :System.UserInfo.getUserId()
         ];
         // guest users should never be able to access this page
         if (user.usertype == 'GUEST') {
@@ -89,7 +89,7 @@ public with sharing class MyProfilePageController {
                 fax,
                 contact.email
             FROM User
-            WHERE id = :UserInfo.getUserId()
+            WHERE id = :System.UserInfo.getUserId()
         ];
     }
 }

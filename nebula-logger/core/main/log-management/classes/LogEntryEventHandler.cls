@@ -417,7 +417,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
 
         LoggerSettings__c loggingUserSettings = Logger.getUserSettings(new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c));
         if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
-            logOwnerId = UserInfo.getUserId();
+            logOwnerId = System.UserInfo.getUserId();
         }
 
         if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {

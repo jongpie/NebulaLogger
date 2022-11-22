@@ -67,14 +67,14 @@ private class LogEntryEventBuilder_Tests_Network {
 
     static LoggerSettings__c getUserSettings() {
         LoggerSettings__c userSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
-        userSettings.SetupOwnerId = UserInfo.getUserId();
+        userSettings.SetupOwnerId = System.UserInfo.getUserId();
         return userSettings;
     }
 
     static User setupExperienceSiteUser() {
         UserRole userRole = new UserRole(DeveloperName = 'LoggerTestRole', Name = 'Logger Test Role');
         insert userRole;
-        User currentUser = new User(Id = UserInfo.getUserId(), UserRoleId = userRole.Id);
+        User currentUser = new User(Id = System.UserInfo.getUserId(), UserRoleId = userRole.Id);
         update currentUser;
         User experienceSiteUser;
         System.runAs(currentUser) {

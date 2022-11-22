@@ -74,7 +74,7 @@ private class LoggerSObjectHandler_Tests {
         LoggerTriggerableContext customContext = new LoggerTriggerableContext(
             Schema.User.SObjectType,
             TriggerOperation.BEFORE_INSERT,
-            new List<User>{ new User(Id = UserInfo.getUserId(), Email = UserInfo.getUserEmail()) }
+            new List<User>{ new User(Id = System.UserInfo.getUserId(), Email = System.UserInfo.getUserEmail()) }
         );
         System.Assert.areNotEqual(originalContext, customContext);
 

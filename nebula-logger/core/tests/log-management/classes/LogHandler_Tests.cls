@@ -23,7 +23,7 @@ private class LogHandler_Tests {
         setupConfigurations();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations(false);
         Log__c log = new Log__c(
-            ClosedBy__c = UserInfo.getUserId(),
+            ClosedBy__c = System.UserInfo.getUserId(),
             ClosedDate__c = System.now(),
             IsClosed__c = true,
             IsResolved__c = true,
@@ -40,7 +40,7 @@ private class LogHandler_Tests {
     static void it_should_clear_closed_status_fields_when_open() {
         setupConfigurations();
         Log__c log = new Log__c(
-            ClosedBy__c = UserInfo.getUserId(),
+            ClosedBy__c = System.UserInfo.getUserId(),
             ClosedDate__c = System.now(),
             IsClosed__c = true,
             IsResolved__c = true,
@@ -82,7 +82,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         log = [SELECT Id, ClosedBy__c, ClosedDate__c, IsClosed__c, IsResolved__c, Status__c FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(UserInfo.getUserId(), log.ClosedBy__c);
+        System.Assert.areEqual(System.UserInfo.getUserId(), log.ClosedBy__c);
         System.Assert.areEqual(System.today(), log.ClosedDate__c.date());
         System.Assert.isTrue(log.IsClosed__c);
     }
@@ -90,7 +90,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_user_id() {
         setupConfigurations();
-        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
@@ -112,7 +112,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_username() {
         setupConfigurations();
-        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         User expectedLogOwnerUser = LoggerMockDataCreator.createUser();
         insert expectedLogOwnerUser;
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
@@ -134,7 +134,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_queue_id() {
         setupConfigurations();
-        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.Id;
@@ -155,7 +155,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_set_owner_when_default_configured_with_queue_developer_name() {
         setupConfigurations();
-        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         Group expectedLogOwnerQueue = LoggerMockDataCreator.insertQueue('Some_Log_Queue', Schema.Log__c.SObjectType);
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = expectedLogOwnerQueue.DeveloperName;
@@ -176,7 +176,7 @@ private class LogHandler_Tests {
     @IsTest
     static void it_should_use_current_user_as_owner_when_no_default_configured() {
         setupConfigurations();
-        User currentUser = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerSettings__c currentUserSettings = Logger.getUserSettings(currentUser);
         currentUserSettings.DefaultLogOwner__c = null;
         insert currentUserSettings;
@@ -190,7 +190,7 @@ private class LogHandler_Tests {
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         log = [SELECT Id, OwnerId FROM Log__c WHERE Id = :log.Id];
-        System.Assert.areEqual(UserInfo.getUserId(), log.OwnerId, JSON.serializePretty(log));
+        System.Assert.areEqual(System.UserInfo.getUserId(), log.OwnerId, JSON.serializePretty(log));
     }
 
     @IsTest
@@ -232,7 +232,7 @@ private class LogHandler_Tests {
         Date retentionDate = System.today().addDays(specifiedDaysToRetainLog);
         String specifiedLogPurgeAction = 'A Different Action';
         Log__c log = new Log__c(
-            LoggedBy__c = UserInfo.getUserId(),
+            LoggedBy__c = System.UserInfo.getUserId(),
             LogPurgeAction__c = specifiedLogPurgeAction,
             LogRetentionDate__c = retentionDate,
             TransactionId__c = '1234'
@@ -261,7 +261,7 @@ private class LogHandler_Tests {
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
         Logger.getUserSettings().DefaultLogPurgeAction__c = expectedLogPurgeAction;
         upsert Logger.getUserSettings();
-        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(LoggedBy__c = UserInfo.getUserId())).populateRequiredFields().getRecord();
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(LoggedBy__c = System.UserInfo.getUserId())).populateRequiredFields().getRecord();
 
         LoggerDataStore.getDatabase().insertRecord(log);
 
@@ -320,8 +320,8 @@ private class LogHandler_Tests {
         settings = [SELECT Id, DefaultLogPurgeAction__c FROM LoggerSettings__c WHERE Id = :settings.Id];
         System.Assert.isNull(settings.DefaultLogPurgeAction__c);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
-        log.LoggedBy__c = UserInfo.getUserId();
-        log.ProfileId__c = UserInfo.getProfileId();
+        log.LoggedBy__c = System.UserInfo.getUserId();
+        log.ProfileId__c = System.UserInfo.getProfileId();
 
         LoggerDataStore.getDatabase().insertRecord(log);
 
@@ -385,7 +385,7 @@ private class LogHandler_Tests {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'Read';
         upsert settings;
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), TransactionId__c = '1234');
 
         LoggerDataStore.getDatabase().insertRecord(log);
 
@@ -408,7 +408,7 @@ private class LogHandler_Tests {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'Edit';
         upsert settings;
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), TransactionId__c = '1234');
 
         LoggerDataStore.getDatabase().insertRecord(log);
 
@@ -431,7 +431,7 @@ private class LogHandler_Tests {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = null;
         upsert settings;
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), TransactionId__c = '1234');
 
         LoggerDataStore.getDatabase().insertRecord(log);
 
@@ -450,7 +450,7 @@ private class LogHandler_Tests {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.DefaultLogShareAccessLevel__c = 'FAKE LEVEL';
         upsert settings;
-        Log__c log = new Log__c(LoggedBy__c = UserInfo.getUserId(), TransactionId__c = '1234');
+        Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), TransactionId__c = '1234');
 
         LoggerDataStore.getDatabase().insertRecord(log);
 

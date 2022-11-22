@@ -171,8 +171,8 @@ private class LoggerSettingsController_Tests {
     static void it_should_return_settings_records_when_configured() {
         System.Assert.areEqual(0, [SELECT COUNT() FROM LoggerSettings__c]);
         LoggerSettings__c orgDefaultSettingsRecord = LoggerSettings__c.getOrgDefaults();
-        LoggerSettings__c profileSettingsRecord = LoggerSettings__c.getInstance(UserInfo.getProfileId());
-        LoggerSettings__c userSettingsRecord = LoggerSettings__c.getInstance(UserInfo.getUserId());
+        LoggerSettings__c profileSettingsRecord = LoggerSettings__c.getInstance(System.UserInfo.getProfileId());
+        LoggerSettings__c userSettingsRecord = LoggerSettings__c.getInstance(System.UserInfo.getUserId());
         List<LoggerSettings__c> testSettingsRecords = new List<LoggerSettings__c>{ orgDefaultSettingsRecord, profileSettingsRecord, userSettingsRecord };
         insert testSettingsRecords;
         Map<Id, LoggerSettings__c> testSettingsRecordsById = queryLoggerSettingsRecords(testSettingsRecords);
@@ -201,7 +201,7 @@ private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_save_new_record() {
         LoggerSettings__c newRecord = LoggerSettingsController.createRecord();
-        newRecord.SetupOwnerId = UserInfo.getUserId();
+        newRecord.SetupOwnerId = System.UserInfo.getUserId();
         System.Assert.isNull(newRecord.Id);
 
         LoggerSettingsController.saveRecord(newRecord);
@@ -287,7 +287,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_profile_search_results_list_when_matches_found() {
-        Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :UserInfo.getProfileId()];
+        Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :System.UserInfo.getProfileId()];
         String searchTerm = '%' + currentProfile.Name.left(4) + '%';
         Map<Id, Profile> expectedResultsById = new Map<Id, Profile>([SELECT Id, Name, UserLicense.Name FROM Profile WHERE Name LIKE :searchTerm]);
         List<LoggerSettingsController.SetupOwnerSearchResult> results = LoggerSettingsController.searchForSetupOwner('Profile', searchTerm);
@@ -313,7 +313,7 @@ private class LoggerSettingsController_Tests {
 
     @IsTest
     static void it_should_return_user_search_results_list_when_matches_found() {
-        String searchTerm = '%' + UserInfo.getFirstName() + '%';
+        String searchTerm = '%' + System.UserInfo.getFirstName() + '%';
         Map<Id, User> expectedResultsById = new Map<Id, User>(
             [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm]
         );

@@ -13,7 +13,7 @@
 )
 global with sharing class LogEntryEventBuilder {
     private static final Map<String, String> CACHED_SOBJECT_NAME_TO_CLASSIFICATION = new Map<String, String>();
-    private static final User CURRENT_USER = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+    private static final User CURRENT_USER = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
     private static final String NEW_LINE_DELIMITER = '\n';
 
     @TestVisible
@@ -862,14 +862,14 @@ global with sharing class LogEntryEventBuilder {
     }
 
     private static void setUserInfoDetails(LogEntryEvent__e templateLogEntryEvent) {
-        templateLogEntryEvent.Locale__c = UserInfo.getLocale();
-        templateLogEntryEvent.LoggedById__c = UserInfo.getUserId();
-        templateLogEntryEvent.ProfileId__c = UserInfo.getProfileId();
-        templateLogEntryEvent.ThemeDisplayed__c = UserInfo.getUiThemeDisplayed();
-        templateLogEntryEvent.TimeZoneId__c = UserInfo.getTimeZone().getId();
-        templateLogEntryEvent.TimeZoneName__c = UserInfo.getTimeZone().getDisplayName();
-        templateLogEntryEvent.UserRoleId__c = UserInfo.getUserRoleId();
-        templateLogEntryEvent.UserType__c = UserInfo.getUserType();
+        templateLogEntryEvent.Locale__c = System.UserInfo.getLocale();
+        templateLogEntryEvent.LoggedById__c = System.UserInfo.getUserId();
+        templateLogEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
+        templateLogEntryEvent.ThemeDisplayed__c = System.UserInfo.getUiThemeDisplayed();
+        templateLogEntryEvent.TimeZoneId__c = System.UserInfo.getTimeZone().getId();
+        templateLogEntryEvent.TimeZoneName__c = System.UserInfo.getTimeZone().getDisplayName();
+        templateLogEntryEvent.UserRoleId__c = System.UserInfo.getUserRoleId();
+        templateLogEntryEvent.UserType__c = System.UserInfo.getUserType();
     }
 
     // Private static helper methods
@@ -911,10 +911,10 @@ global with sharing class LogEntryEventBuilder {
     private static String getOrganizationApiVersion() {
         // Small hack to determine the org's current API version (since Apex doesn't natively provide it)
         // Serializing any SObject w/ an ID will include the API version
-        // So, use UserInfo.getUserId() to create the current user's record without querying
+        // So, use System.UserInfo.getUserId() to create the current user's record without querying
         // Then parse the JSON to get the API version
         // Expected JSON: {"attributes":{"type":"User","url":"/services/data/v53.0/sobjects/User/005J000000AugnYIAR"}
-        String userJson = JSON.serialize(new User(Id = UserInfo.getUserId()));
+        String userJson = JSON.serialize(new User(Id = System.UserInfo.getUserId()));
         return userJson.substringAfter('/data/').substringBefore('/sobjects/User');
     }
 

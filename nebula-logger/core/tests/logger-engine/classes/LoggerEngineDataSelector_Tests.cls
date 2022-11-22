@@ -31,7 +31,7 @@ private class LoggerEngineDataSelector_Tests {
                 SessionType,
                 SourceIp
             FROM AuthSession
-            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
+            WHERE UsersId = :System.UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
         ];
         LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
         System.assertEquals(1, System.Limits.getQueries());
@@ -131,7 +131,7 @@ private class LoggerEngineDataSelector_Tests {
         User expectedUser = [
             SELECT Id, Profile.Name, Profile.UserLicenseId, Profile.UserLicense.LicenseDefinitionKey, Profile.UserLicense.Name, Username, UserRole.Name
             FROM User
-            WHERE Id = :UserInfo.getUserId()
+            WHERE Id = :System.UserInfo.getUserId()
         ];
         System.Assert.areEqual(1, System.Limits.getQueries());
 

@@ -89,7 +89,7 @@ private class LogEntryEventBuilder_Tests_Security {
 
     static LoggerSettings__c getUserSettings() {
         LoggerSettings__c userSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
-        userSettings.SetupOwnerId = UserInfo.getUserId();
+        userSettings.SetupOwnerId = System.UserInfo.getUserId();
         return userSettings;
     }
 }

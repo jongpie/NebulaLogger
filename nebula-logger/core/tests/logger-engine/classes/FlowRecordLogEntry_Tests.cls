@@ -19,10 +19,10 @@ private class FlowRecordLogEntry_Tests {
     static void it_should_save_entry_when_logging_level_met() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         User currentUser = new User(
-            Id = UserInfo.getUserId(),
-            FirstName = UserInfo.getFirstName(),
-            LastName = UserInfo.getLastName(),
-            Username = UserInfo.getUserName()
+            Id = System.UserInfo.getUserId(),
+            FirstName = System.UserInfo.getFirstName(),
+            LastName = System.UserInfo.getLastName(),
+            Username = System.UserInfo.getUsername()
         );
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
@@ -61,10 +61,10 @@ private class FlowRecordLogEntry_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
         User currentUser = new User(
-            Id = UserInfo.getUserId(),
-            FirstName = UserInfo.getFirstName(),
-            LastName = UserInfo.getLastName(),
-            Username = UserInfo.getUserName()
+            Id = System.UserInfo.getUserId(),
+            FirstName = System.UserInfo.getFirstName(),
+            LastName = System.UserInfo.getLastName(),
+            Username = System.UserInfo.getUsername()
         );
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
@@ -105,10 +105,10 @@ private class FlowRecordLogEntry_Tests {
     static void it_should_auto_save_entry_when_saveLog_is_true() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         User currentUser = new User(
-            Id = UserInfo.getUserId(),
-            FirstName = UserInfo.getFirstName(),
-            LastName = UserInfo.getLastName(),
-            Username = UserInfo.getUserName()
+            Id = System.UserInfo.getUserId(),
+            FirstName = System.UserInfo.getFirstName(),
+            LastName = System.UserInfo.getLastName(),
+            Username = System.UserInfo.getUsername()
         );
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
@@ -142,10 +142,10 @@ private class FlowRecordLogEntry_Tests {
     static void it_should_not_save_entry_when_logging_level_not_met() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         User currentUser = new User(
-            Id = UserInfo.getUserId(),
-            FirstName = UserInfo.getFirstName(),
-            LastName = UserInfo.getLastName(),
-            Username = UserInfo.getUserName()
+            Id = System.UserInfo.getUserId(),
+            FirstName = System.UserInfo.getFirstName(),
+            LastName = System.UserInfo.getLastName(),
+            Username = System.UserInfo.getUsername()
         );
         LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;

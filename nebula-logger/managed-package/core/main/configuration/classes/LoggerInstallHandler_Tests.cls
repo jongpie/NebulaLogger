@@ -43,8 +43,8 @@ private class LoggerInstallHandler_Tests {
 
         List<LoggerSettings__c> mockSettings = new List<LoggerSettings__c>{
             LoggerSettings__c.getOrgDefaults(),
-            LoggerSettings__c.getInstance(UserInfo.getProfileId()),
-            LoggerSettings__c.getInstance(UserInfo.getUserId())
+            LoggerSettings__c.getInstance(System.UserInfo.getProfileId()),
+            LoggerSettings__c.getInstance(System.UserInfo.getUserId())
         };
         for (LoggerSettings__c setting : mockSettings) {
             setting.DefaultSaveMethod__c = null;

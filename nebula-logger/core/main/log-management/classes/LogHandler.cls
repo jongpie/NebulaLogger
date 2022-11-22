@@ -67,7 +67,7 @@ public without sharing class LogHandler extends LoggerSObjectHandler {
                 log.ClosedBy__c = null;
                 log.ClosedDate__c = null;
             } else {
-                log.ClosedBy__c = log.ClosedBy__c == null ? UserInfo.getUserId() : log.ClosedBy__c;
+                log.ClosedBy__c = log.ClosedBy__c == null ? System.UserInfo.getUserId() : log.ClosedBy__c;
                 log.ClosedDate__c = log.ClosedDate__c == null ? System.now() : log.ClosedDate__c;
             }
         }

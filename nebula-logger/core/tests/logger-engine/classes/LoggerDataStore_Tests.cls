@@ -543,7 +543,7 @@ private class LoggerDataStore_Tests {
         LoggerDataStore.setMock(mockDatabaseInstance);
         System.Assert.areEqual(mockDatabaseInstance, LoggerDataStore.getDatabase());
 
-        LoggerDataStore.getDatabase().updateRecord(new User(Id = UserInfo.getUserId()));
+        LoggerDataStore.getDatabase().updateRecord(new User(Id = System.UserInfo.getUserId()));
 
         System.Assert.areEqual(1, mockDatabaseInstance.callCount);
     }

@@ -49,7 +49,7 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_save_component_log_entry() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
@@ -80,7 +80,7 @@ private class ComponentLogger_Tests {
     static void it_should_save_component_log_entry_with_queueable_job() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
-        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
@@ -117,7 +117,7 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_save_component_log_entry_with_javascript_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = 'some JavaScript error message';
         mockComponentError.stack = 'some \nstack \ntrace \nstring';
@@ -152,7 +152,7 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_save_component_log_entry_with_apex_controller_error() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        User currentUser = new User(FirstName = UserInfo.getFirstName(), Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         Exception mockApexException = new DmlException('It is with much sadness that I must inform you that this DML statement was most unsuccessful');
         ComponentLogger.ComponentError mockComponentError = new ComponentLogger.ComponentError();
         mockComponentError.message = mockApexException.getMessage();

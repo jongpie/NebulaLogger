@@ -16,7 +16,7 @@ private class LoggerCache_Tests_PlatformCache {
     @IsTest
     static void it_adds_new_key_to_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
         System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
@@ -50,7 +50,7 @@ private class LoggerCache_Tests_PlatformCache {
     @IsTest
     static void it_updates_value_for_existing_key_in_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User oldMockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerCache.getOrganizationCache().put(mockKey, oldMockValue);
         System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
         System.Assert.areEqual(oldMockValue, LoggerCache.getOrganizationCache().get(mockKey));
@@ -71,7 +71,7 @@ private class LoggerCache_Tests_PlatformCache {
     @IsTest
     static void it_removes_value_for_existing_key_in_organization_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
         System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
@@ -92,7 +92,7 @@ private class LoggerCache_Tests_PlatformCache {
     @IsTest
     static void it_adds_new_key_to_session_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
         System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
@@ -134,7 +134,7 @@ private class LoggerCache_Tests_PlatformCache {
     @IsTest
     static void it_updates_value_for_existing_key_in_session_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User oldMockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         LoggerCache.getSessionCache().put(mockKey, oldMockValue);
         System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
         System.Assert.areEqual(oldMockValue, LoggerCache.getSessionCache().get(mockKey));
@@ -159,7 +159,7 @@ private class LoggerCache_Tests_PlatformCache {
     @IsTest
     static void it_removes_value_for_existing_key_in_session_and_transaction_cache() {
         String mockKey = 'SomeKey';
-        User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
+        User mockValue = new User(Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
         System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
         LoggerCache.getSessionCache().put(mockKey, mockValue);

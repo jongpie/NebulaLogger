@@ -24,7 +24,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
         flowExecutionErrorEvent.ElementApiName = 'test_exception_element';
         flowExecutionErrorEvent.FlowApiName = 'Testing_FlowExecutionErrorEvent';
         flowExecutionErrorEvent.FlowVersionNumber = 1;
-        flowExecutionErrorEvent.Username = UserInfo.getUserName();
+        flowExecutionErrorEvent.Username = System.UserInfo.getUserName();
 
         System.runAs(new User(Id = [SELECT Id FROM User WHERE Alias = 'autoproc'].Id)) {
             System.Test.startTest();
@@ -89,7 +89,7 @@ private class LogFlowExecutionErrorEventHandler_Tests {
                 UserRole.Name,
                 UserType
             FROM User
-            WHERE Id = :UserInfo.getUserId()
+            WHERE Id = :System.UserInfo.getUserId()
         ];
         Log__c log = entry.Log__r;
         System.Assert.areEqual(currentUser.Id, log.LoggedBy__c, 'Should not use autoproc user Id');
@@ -107,8 +107,8 @@ private class LogFlowExecutionErrorEventHandler_Tests {
         System.Assert.isNull(log.SessionSecurityLevel__c, 'SessionSecurityLevel__c should have been cleared');
         System.Assert.isNull(log.SessionType__c, 'SessionType__c should have been cleared');
         System.Assert.isNull(log.SourceIp__c, 'SourceIp__c should have been cleared');
-        System.Assert.areEqual(UserInfo.getTimeZone().getId(), log.TimeZoneId__c, 'Timezone Id should be set correctly');
-        System.Assert.areEqual(UserInfo.getTimeZone().getDisplayName(), log.TimeZoneName__c, 'Timezone name should be set correctly');
+        System.Assert.areEqual(System.UserInfo.getTimeZone().getId(), log.TimeZoneId__c, 'Timezone Id should be set correctly');
+        System.Assert.areEqual(System.UserInfo.getTimeZone().getDisplayName(), log.TimeZoneName__c, 'Timezone name should be set correctly');
     }
 
     static void setLoggerParamEnabled(Boolean value) {

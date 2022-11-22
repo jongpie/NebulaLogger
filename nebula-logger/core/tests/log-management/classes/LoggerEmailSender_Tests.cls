@@ -9,7 +9,7 @@ private class LoggerEmailSender_Tests {
     @IsTest
     static void it_should_filter_apex_error_recipients() {
         ApexEmailNotification emailListNotification = new ApexEmailNotification(Email = 'hello@test.com;fake.person@not.real.com.biz', UserId = null);
-        ApexEmailNotification userNotification = new ApexEmailNotification(Email = null, UserId = UserInfo.getUserId());
+        ApexEmailNotification userNotification = new ApexEmailNotification(Email = null, UserId = System.UserInfo.getUserId());
         ApexEmailNotification invalidNotification = new ApexEmailNotification(Email = null, UserId = null);
         LoggerEmailSender.MOCK_NOTIFICATIONS.addAll(new List<ApexEmailNotification>{ emailListNotification, userNotification, invalidNotification });
 
@@ -32,7 +32,7 @@ private class LoggerEmailSender_Tests {
 
     @IsTest
     static void it_should_send_email_notification_for_saveResult_errors_when_enabled() {
-        LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
+        LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(System.UserInfo.getUserId());
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
@@ -70,7 +70,7 @@ private class LoggerEmailSender_Tests {
     static void it_should_not_send_email_notification_for_saveResult_errors_when_disabled() {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
         System.Assert.isFalse(LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
-        LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
+        LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(System.UserInfo.getUserId());
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
@@ -83,7 +83,7 @@ private class LoggerEmailSender_Tests {
 
     @IsTest
     static void it_should_send_email_notification_for_upsertResult_errors_when_enabled() {
-        LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
+        LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(System.UserInfo.getUserId());
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
@@ -121,7 +121,7 @@ private class LoggerEmailSender_Tests {
     static void it_should_not_send_email_notification_for_upsertResult_errors_when_disabled() {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
         System.Assert.isFalse(LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
-        LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
+        LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(System.UserInfo.getUserId());
         System.Assert.areEqual(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail

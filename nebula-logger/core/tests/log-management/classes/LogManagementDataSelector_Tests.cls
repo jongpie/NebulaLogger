@@ -131,7 +131,7 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_count_of_related_record_log_entries() {
-        Id targetRecordId = UserInfo.getUserId();
+        Id targetRecordId = System.UserInfo.getUserId();
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
@@ -155,7 +155,7 @@ private class LogManagementDataSelector_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c deleteableRecord = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert deleteableRecord;
-        User undeleteableRecord = new User(Id = UserInfo.getUserId());
+        User undeleteableRecord = new User(Id = System.UserInfo.getUserId());
         List<Id> recordIds = new List<Id>{ deleteableRecord.Id, undeleteableRecord.Id };
 
         List<UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
@@ -255,7 +255,7 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_related_log_entries_for_specified_record_id() {
-        Id targetRecordId = UserInfo.getUserId();
+        Id targetRecordId = System.UserInfo.getUserId();
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateRequiredFields().getRecord();
         insert log;
@@ -329,7 +329,7 @@ private class LogManagementDataSelector_Tests {
 
     @IsTest
     static void it_returns_user_for_specified_search_term() {
-        String searchTerm = UserInfo.getLastName();
+        String searchTerm = System.UserInfo.getLastName();
         List<User> expectedResults = [SELECT Id, Name, Username, SmallPhotoUrl FROM User WHERE Name LIKE :searchTerm OR Username LIKE :searchTerm];
 
         List<User> returnedResults = LogManagementDataSelector.getInstance().getUsersByNameSearch(searchTerm);
