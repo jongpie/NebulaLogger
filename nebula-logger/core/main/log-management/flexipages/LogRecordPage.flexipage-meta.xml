@@ -392,6 +392,22 @@
             <fieldInstance>
                 <fieldInstanceProperties>
                     <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.ImpersonatedByUsernameLink__c</fieldItem>
+                <identifier>RecordImpersonatedByUsernameLink_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.ImpersonatedByUsernameLink__c}</leftValue>
+                        <operator>NE</operator>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
                     <value>readonly</value>
                 </fieldInstanceProperties>
                 <fieldItem>Record.UserLoggingLevel__c</fieldItem>

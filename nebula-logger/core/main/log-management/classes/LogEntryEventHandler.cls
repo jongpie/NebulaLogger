@@ -131,6 +131,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
                 ApiReleaseVersion__c = recentLogWithApiReleaseDetails?.ApiReleaseVersion__c,
                 ApiVersion__c = logEntryEvent.ApiVersion__c,
+                ImpersonatedBy__c = logEntryEvent.ImpersonatedById__c,
                 Locale__c = logEntryEvent.Locale__c,
                 LoggedBy__c = logEntryEvent.LoggedById__c,
                 LoggedByUsername__c = logEntryEvent.LoggedByUsername__c,
@@ -540,23 +541,27 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 userIds.add(log.LoggedBy__c);
             }
         }
-        Map<Id, AuthSession> userIdToAuthSession = LoggerEngineDataSelector.getInstance().getAuthSessions(userIds);
+        Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = LoggerEngineDataSelector.getInstance().getAuthSessionProxies(userIds);
         for (Log__c log : logs) {
             if (log.LoggedBy__c == null) {
                 continue;
             }
 
-            AuthSession matchingSession = userIdToAuthSession.get(log.LoggedBy__c);
-            log.LoginApplication__c = matchingSession?.LoginHistory.Application;
-            log.LoginBrowser__c = matchingSession?.LoginHistory.Browser;
-            log.LoginHistoryId__c = matchingSession?.LoginHistoryId;
-            log.LoginPlatform__c = matchingSession?.LoginHistory.Platform;
-            log.LoginType__c = matchingSession?.LoginType;
-            log.LogoutUrl__c = matchingSession?.LogoutUrl;
-            log.SessionId__c = matchingSession?.Id;
-            log.SessionSecurityLevel__c = matchingSession?.SessionSecurityLevel;
-            log.SessionType__c = matchingSession?.SessionType;
-            log.SourceIp__c = matchingSession?.SourceIp;
+            LoggerSObjectProxy.AuthSession matchingAuthSessionProxy = userIdToAuthSessionProxy.get(log.LoggedBy__c);
+            if (matchingAuthSessionProxy == null) {
+                continue;
+            }
+
+            log.LoginApplication__c = matchingAuthSessionProxy.LoginHistory.Application;
+            log.LoginBrowser__c = matchingAuthSessionProxy.LoginHistory.Browser;
+            log.LoginHistoryId__c = matchingAuthSessionProxy.LoginHistoryId;
+            log.LoginPlatform__c = matchingAuthSessionProxy.LoginHistory.Platform;
+            log.LoginType__c = matchingAuthSessionProxy.LoginType;
+            log.LogoutUrl__c = matchingAuthSessionProxy.LogoutUrl;
+            log.SessionId__c = matchingAuthSessionProxy.Id;
+            log.SessionSecurityLevel__c = matchingAuthSessionProxy.SessionSecurityLevel;
+            log.SessionType__c = matchingAuthSessionProxy.SessionType;
+            log.SourceIp__c = matchingAuthSessionProxy.SourceIp;
         }
     }
 
@@ -576,22 +581,22 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<Id, SObject> networkIdToNetwork = LoggerEngineDataSelector.getInstance().getNetworks(networkIds);
+        Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = LoggerEngineDataSelector.getInstance().getNetworkProxies(networkIds);
         for (Log__c log : logs) {
             if (log.NetworkId__c == null) {
                 continue;
             }
 
-            SObject matchingNetwork = networkIdToNetwork.get(log.NetworkId__c);
-            if (matchingNetwork == null) {
+            LoggerSObjectProxy.Network matchingNetworkProxy = networkIdToNetworkProxy.get(log.NetworkId__c);
+            if (matchingNetworkProxy == null) {
                 continue;
             }
 
-            log.NetworkName__c = (String) matchingNetwork.get('Name');
-            log.NetworkLoginUrl__c = System.Network.getLoginUrl(matchingNetwork.Id);
-            log.NetworkLogoutUrl__c = System.Network.getLogoutUrl(matchingNetwork.Id);
-            log.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(matchingNetwork.Id);
-            log.NetworkUrlPathPrefix__c = (String) matchingNetwork.get('UrlPathPrefix');
+            log.NetworkLoginUrl__c = System.Network.getLoginUrl(matchingNetworkProxy.Id);
+            log.NetworkLogoutUrl__c = System.Network.getLogoutUrl(matchingNetworkProxy.Id);
+            log.NetworkName__c = matchingNetworkProxy.Name;
+            log.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(matchingNetworkProxy.Id);
+            log.NetworkUrlPathPrefix__c = matchingNetworkProxy.UrlPathPrefix;
         }
     }
 

@@ -210,9 +210,11 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            // Based on the related record ID, get the SObject Type
             Id recordId = (Id) logEntry.RecordId__c;
-            Schema.SObjectType sobjectType = recordId.getSObjectType();
+            Schema.SObjectType sobjectType = getSObjectType(recordId);
+            if (sobjectType == null) {
+                continue;
+            }
 
             List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
             if (sobjectTypeRecordIds == null) {
@@ -250,7 +252,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
 
             Id recordId = (Id) logEntry.RecordId__c;
-            Schema.SObjectType sobjectType = recordId.getSObjectType();
+            Schema.SObjectType sobjectType = getSObjectType(recordId);
+            if (sobjectType == null) {
+                continue;
+            }
 
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
             if (sobjectDisplayFieldName != null) {
@@ -325,5 +330,19 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
         SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.put(sobjectType, displayFieldApiName);
         return displayFieldApiName;
+    }
+
+    private static Schema.SObjectType getSObjectType(Id recordId) {
+        Schema.SObjectType sobjectType;
+        try {
+            sobjectType = recordId?.getSObjectType();
+        } catch (System.SObjectException sobjectException) {
+            // Some SObject Types are considered template objects, such as CaseComment, AccountHistory,
+            // ContactHistory, etc, so calling Id.getSObjectType() does not work for some types of record IDs
+            if (sobjectException.getMessage().contains('Cannot locate Apex Type') == false) {
+                throw sobjectException;
+            }
+        }
+        return sobjectType;
     }
 }

@@ -17,7 +17,7 @@ private class LoggerEngineDataSelector_Tests {
     }
 
     @IsTest
-    static void it_returns_cached_auth_session() {
+    static void it_returns_cached_auth_session_proxy() {
         List<AuthSession> sessions = [
             SELECT
                 Id,
@@ -33,15 +33,15 @@ private class LoggerEngineDataSelector_Tests {
             FROM AuthSession
             WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
         ];
-        AuthSession expectedAuthSession = sessions.isEmpty() ? null : sessions.get(0);
+        LoggerSObjectProxy.AuthSession expectedAuthSession = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
         System.assertEquals(1, System.Limits.getQueries());
 
-        AuthSession returnedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
+        LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
 
         System.assertEquals(2, System.Limits.getQueries());
-        LoggerEngineDataSelector.getInstance().getCachedAuthSession();
+        LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
         System.assertEquals(2, System.Limits.getQueries(), 'Query results should have been cached');
-        System.assertEquals(expectedAuthSession, returnedAuthSession);
+        System.assertEquals(expectedAuthSession, returnedAuthSessionProxy);
     }
 
     @IsTest
@@ -52,10 +52,10 @@ private class LoggerEngineDataSelector_Tests {
         System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = String.valueOf(false)));
 
-        AuthSession returnedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
+        LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
 
         System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
-        System.assertEquals(null, returnedAuthSession);
+        System.assertEquals(null, returnedAuthSessionProxy);
     }
 
     @IsTest
@@ -147,9 +147,9 @@ private class LoggerEngineDataSelector_Tests {
         private Integer authSessionQueryCount = 0;
         private Integer organizationQueryCount = 0;
 
-        public override AuthSession getCachedAuthSession() {
+        public override LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
             Integer originalQueryCount = System.Limits.getQueries();
-            AuthSession result = super.getCachedAuthSession();
+            LoggerSObjectProxy.AuthSession result = super.getCachedAuthSessionProxy();
             if (System.Limits.getQueries() != originalQueryCount) {
                 authSessionQueryCount = System.Limits.getQueries() - originalQueryCount;
             }

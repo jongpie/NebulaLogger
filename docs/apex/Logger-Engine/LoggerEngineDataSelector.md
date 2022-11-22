@@ -10,7 +10,7 @@ Selector class used for all queries that are specific to the logger engine layer
 
 ### Methods
 
-#### `getAuthSessions(List<Id> userIds)` → `Map<Id, AuthSession>`
+#### `getAuthSessionProxies(List<Id> userIds)` → `Map<Id, LoggerSObjectProxy.AuthSession>`
 
 Returns a `Map&lt;Id, AuthSession&gt;` for the specified user IDs &amp; their matching active sessions, or `null` if there is not a current session
 
@@ -24,13 +24,13 @@ Returns a `Map&lt;Id, AuthSession&gt;` for the specified user IDs &amp; their ma
 
 **Type**
 
-Map&lt;Id, AuthSession&gt;
+Map&lt;Id, LoggerSObjectProxy.AuthSession&gt;
 
 **Description**
 
 The instance of `Map&lt;Id, AuthSession&gt;` containing any matching `AuthSession` records
 
-#### `getCachedAuthSession()` → `AuthSession`
+#### `getCachedAuthSessionProxy()` → `LoggerSObjectProxy.AuthSession`
 
 Returns a cached copy of `AuthSession` for the current user&apos;s current session, or `null` if there is not a current session
 
@@ -38,7 +38,7 @@ Returns a cached copy of `AuthSession` for the current user&apos;s current sessi
 
 **Type**
 
-AuthSession
+LoggerSObjectProxy.AuthSession
 
 **Description**
 
@@ -58,7 +58,7 @@ List&lt;LoggerSObjectHandler_t&gt;
 
 The cached `List&lt;LoggerSObjectHandler_t&gt;` records
 
-#### `getCachedNetwork(Id networkId)` → `SObject`
+#### `getCachedNetworkProxy(Id networkId)` → `LoggerSObjectProxy.Network`
 
 Returns a cached copy of the current user&apos;s `Network` site, or `null` if the current user is not associated with a `Network` site
 
@@ -72,7 +72,7 @@ Returns a cached copy of the current user&apos;s `Network` site, or `null` if th
 
 **Type**
 
-SObject
+LoggerSObjectProxy.Network
 
 **Description**
 
@@ -134,7 +134,7 @@ LoggerEngineDataSelector
 
 The singleton instance of `LoggerEngineDataSelector`
 
-#### `getNetworks(List<Id> networkIds)` → `Map<Id, SObject>`
+#### `getNetworkProxies(List<Id> networkIds)` → `Map<Id, LoggerSObjectProxy.Network>`
 
 Returns a list of matching `Network` records based on the provided list of network IDs
 
@@ -148,7 +148,7 @@ Returns a list of matching `Network` records based on the provided list of netwo
 
 **Type**
 
-Map&lt;Id, SObject&gt;
+Map&lt;Id, LoggerSObjectProxy.Network&gt;
 
 **Description**
 

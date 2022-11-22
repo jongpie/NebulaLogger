@@ -414,8 +414,17 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordCollectionSize__c = 1;
         this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = recordId;
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
+        try {
+            Schema.SObjectType sobjectType = recordId?.getSObjectType();
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+            this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+        } catch (System.SObjectException sobjectException) {
+            // Some SObject Types are considered template objects, such as CaseComment, AccountHistory,
+            // ContactHistory, etc, so calling Id.getSObjectType() does not work for some types of record IDs
+            if (sobjectException.getMessage().contains('Cannot locate Apex Type') == false) {
+                throw sobjectException;
+            }
+        }
         return this;
     }
 
@@ -776,21 +785,25 @@ global with sharing class LogEntryEventBuilder {
             return;
         }
 
-        AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
-        if (cachedAuthSession == null) {
+        LoggerSObjectProxy.AuthSession cachedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+        if (cachedAuthSessionProxy == null) {
             return;
         }
 
-        logEntryEvent.LoginApplication__c = cachedAuthSession.LoginHistory.Application;
-        logEntryEvent.LoginBrowser__c = cachedAuthSession.LoginHistory.Browser;
-        logEntryEvent.LoginHistoryId__c = cachedAuthSession.LoginHistoryId;
-        logEntryEvent.LoginPlatform__c = cachedAuthSession.LoginHistory.Platform;
-        logEntryEvent.LoginType__c = cachedAuthSession.LoginType;
-        logEntryEvent.LogoutUrl__c = cachedAuthSession.LogoutUrl;
-        logEntryEvent.SessionId__c = cachedAuthSession.Id;
-        logEntryEvent.SessionSecurityLevel__c = cachedAuthSession.SessionSecurityLevel;
-        logEntryEvent.SessionType__c = cachedAuthSession.SessionType;
-        logEntryEvent.SourceIp__c = cachedAuthSession.SourceIp;
+        logEntryEvent.LoginApplication__c = cachedAuthSessionProxy.LoginHistory.Application;
+        logEntryEvent.LoginBrowser__c = cachedAuthSessionProxy.LoginHistory.Browser;
+        logEntryEvent.LoginHistoryId__c = cachedAuthSessionProxy.LoginHistoryId;
+        logEntryEvent.LoginPlatform__c = cachedAuthSessionProxy.LoginHistory.Platform;
+        logEntryEvent.LoginType__c = cachedAuthSessionProxy.LoginType;
+        logEntryEvent.LogoutUrl__c = cachedAuthSessionProxy.LogoutUrl;
+        logEntryEvent.SessionId__c = cachedAuthSessionProxy.Id;
+        logEntryEvent.SessionSecurityLevel__c = cachedAuthSessionProxy.SessionSecurityLevel;
+        logEntryEvent.SessionType__c = cachedAuthSessionProxy.SessionType;
+        logEntryEvent.SourceIp__c = cachedAuthSessionProxy.SourceIp;
+
+        if (cachedAuthSessionProxy.LoginHistory.UserId != CURRENT_USER.Id) {
+            logEntryEvent.ImpersonatedById__c = cachedAuthSessionProxy.LoginHistory.UserId;
+        }
     }
 
     private static void setQueriedNetworkDetails(LogEntryEvent__e logEntryEvent) {
@@ -799,16 +812,16 @@ global with sharing class LogEntryEventBuilder {
         }
 
         logEntryEvent.NetworkId__c = networkId;
-        SObject networkRecord = LoggerEngineDataSelector.getInstance().getCachedNetwork(networkId);
-        if (networkRecord == null) {
+        LoggerSObjectProxy.Network cachedNetworkProxy = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(networkId);
+        if (cachedNetworkProxy == null) {
             return;
         }
 
-        logEntryEvent.NetworkLoginUrl__c = System.Network.getLoginUrl(networkRecord.Id);
-        logEntryEvent.NetworkLogoutUrl__c = System.Network.getLogoutUrl(networkRecord.Id);
-        logEntryEvent.NetworkName__c = (String) networkRecord.get('Name');
-        logEntryEvent.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(networkRecord.Id);
-        logEntryEvent.NetworkUrlPathPrefix__c = (String) networkRecord.get('UrlPathPrefix');
+        logEntryEvent.NetworkLoginUrl__c = System.Network.getLoginUrl(cachedNetworkProxy.Id);
+        logEntryEvent.NetworkLogoutUrl__c = System.Network.getLogoutUrl(cachedNetworkProxy.Id);
+        logEntryEvent.NetworkName__c = cachedNetworkProxy.Name;
+        logEntryEvent.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(cachedNetworkProxy.Id);
+        logEntryEvent.NetworkUrlPathPrefix__c = cachedNetworkProxy.UrlPathPrefix;
     }
 
     private static void setQueriedOrganizationDetails(LogEntryEvent__e logEntryEvent) {

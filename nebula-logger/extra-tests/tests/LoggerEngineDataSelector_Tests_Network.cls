@@ -21,12 +21,12 @@ private class LoggerEngineDataSelector_Tests_Network {
         System.assertEquals(1, System.Limits.getQueries());
         Integer expectedQueryCount = System.Limits.getQueries() + 1;
 
-        SObject returnedNetworkSite = LoggerEngineDataSelector.getInstance().getCachedNetwork(expectedNetworkId);
+        LoggerSObjectProxy.Network returnedProxyNetwork = LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(expectedNetworkId);
 
         System.assertEquals(expectedQueryCount, System.Limits.getQueries());
-        LoggerEngineDataSelector.getInstance().getCachedNetwork(expectedNetworkId);
+        LoggerEngineDataSelector.getInstance().getCachedNetworkProxy(expectedNetworkId);
         System.assertEquals(expectedQueryCount, System.Limits.getQueries(), 'Query results should have been cached');
-        System.assertEquals(expectedNetworkId, returnedNetworkSite?.Id);
+        System.assertEquals(expectedNetworkId, returnedProxyNetwork?.Id);
     }
 
     static SObject getExperienceCloudNetwork() {

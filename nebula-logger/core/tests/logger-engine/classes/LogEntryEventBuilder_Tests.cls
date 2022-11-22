@@ -101,17 +101,40 @@ private class LogEntryEventBuilder_Tests {
             .getLogEntryEvent();
 
         System.assertEquals(1, mockSelector.getCachedAuthSessionQueryCount());
-        AuthSession cachedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
-        System.assertEquals(cachedAuthSession?.LoginHistory.Application, logEntryEvent.LoginApplication__c);
-        System.assertEquals(cachedAuthSession?.LoginHistory.Browser, logEntryEvent.LoginBrowser__c);
-        System.assertEquals(cachedAuthSession?.LoginHistoryId, logEntryEvent.LoginHistoryId__c);
-        System.assertEquals(cachedAuthSession?.LoginHistory.Platform, logEntryEvent.LoginPlatform__c);
-        System.assertEquals(cachedAuthSession?.LoginType, logEntryEvent.LoginType__c);
-        System.assertEquals(cachedAuthSession?.LogoutUrl, logEntryEvent.LogoutUrl__c);
-        System.assertEquals(cachedAuthSession?.Id, logEntryEvent.SessionId__c);
-        System.assertEquals(cachedAuthSession?.SessionSecurityLevel, logEntryEvent.SessionSecurityLevel__c);
-        System.assertEquals(cachedAuthSession?.SessionType, logEntryEvent.SessionType__c);
-        System.assertEquals(cachedAuthSession?.SourceIp, logEntryEvent.SourceIp__c);
+        LoggerSObjectProxy.AuthSession cachedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+        System.assertEquals(cachedAuthSessionProxy?.LoginHistory.Application, logEntryEvent.LoginApplication__c);
+        System.assertEquals(cachedAuthSessionProxy?.LoginHistory.Browser, logEntryEvent.LoginBrowser__c);
+        System.assertEquals(cachedAuthSessionProxy?.LoginHistoryId, logEntryEvent.LoginHistoryId__c);
+        System.assertEquals(cachedAuthSessionProxy?.LoginHistory.Platform, logEntryEvent.LoginPlatform__c);
+        System.assertEquals(cachedAuthSessionProxy?.LoginType, logEntryEvent.LoginType__c);
+        System.assertEquals(cachedAuthSessionProxy?.LogoutUrl, logEntryEvent.LogoutUrl__c);
+        System.assertEquals(cachedAuthSessionProxy?.Id, logEntryEvent.SessionId__c);
+        System.assertEquals(cachedAuthSessionProxy?.SessionSecurityLevel, logEntryEvent.SessionSecurityLevel__c);
+        System.assertEquals(cachedAuthSessionProxy?.SessionType, logEntryEvent.SessionType__c);
+        System.assertEquals(cachedAuthSessionProxy?.SourceIp, logEntryEvent.SourceIp__c);
+    }
+
+    @IsTest
+    static void it_should_set_impersonatedById_when_authSession_userId_is_not_current_user() {
+        Id currentUserId = System.UserInfo.getUserId();
+        Id anotherUserId = [SELECT Id FROM User WHERE Id != :System.UserInfo.getUserId() LIMIT 1].Id;
+        System.assertEquals(true, LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory(null);
+        mockLoginHistoryProxy.UserId = anotherUserId;
+        LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession(null);
+        mockAuthSessionProxy.LoginHistory = mockLoginHistoryProxy;
+        mockAuthSessionProxy.UsersId = currentUserId;
+        mockSelector.setCachedAuthSessionProxy(mockAuthSessionProxy);
+        LoggerEngineDataSelector.setMock(mockSelector);
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+
+        System.assertNotEquals(logEntryEvent.LoggedById__c, logEntryEvent.ImpersonatedById__c);
+        System.assertEquals(currentUserId, logEntryEvent.LoggedById__c);
+        System.assertEquals(anotherUserId, logEntryEvent.ImpersonatedById__c);
     }
 
     @IsTest
@@ -637,6 +660,27 @@ private class LogEntryEventBuilder_Tests {
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals('Standard Object', builder.getLogEntryEvent().RecordSObjectClassification__c);
         System.assertEquals('User', builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+    }
+
+    @IsTest
+    static void it_should_set_record_fields_for_recordId_when_template_standard_object() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Id templateSObjectRecordId = LoggerMockDataCreator.createId(Schema.CaseComment.SObjectType);
+        builder.setRecordId(templateSObjectRecordId);
+
+        System.assertEquals(1, builder.getLogEntryEvent().RecordCollectionSize__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(templateSObjectRecordId, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
     }
 
@@ -1305,10 +1349,18 @@ private class LogEntryEventBuilder_Tests {
         private Integer cachedAuthSessionQueryCount = 0;
         private Integer cachedOrganizationQueryCount = 0;
         private Integer cachedUserQueryCount = 0;
+        private LoggerSObjectProxy.AuthSession mockAuthSessionProxy;
 
-        public override AuthSession getCachedAuthSession() {
+        public override LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
             this.cachedAuthSessionQueryCount++;
-            return super.getCachedAuthSession();
+            if (this.mockAuthSessionProxy != null) {
+                return mockAuthSessionProxy;
+            }
+            return super.getCachedAuthSessionProxy();
+        }
+
+        public void setCachedAuthSessionProxy(LoggerSObjectProxy.AuthSession mockAuthSessionProxy) {
+            this.mockAuthSessionProxy = mockAuthSessionProxy;
         }
 
         public Integer getCachedAuthSessionQueryCount() {

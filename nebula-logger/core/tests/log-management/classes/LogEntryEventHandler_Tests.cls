@@ -460,24 +460,38 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
+        // The createLogEntryEvent() method sets all fields on LogEntryEvent__e, so clear the relevant fields to ensure
+        // that the values are only set based on the queried AuthSession record
+        logEntryEvent.LoginApplication__c = null;
+        logEntryEvent.LoginBrowser__c = null;
+        logEntryEvent.LoginHistoryId__c = null;
+        logEntryEvent.LoginPlatform__c = null;
+        logEntryEvent.LoginType__c = null;
+        logEntryEvent.LogoutUrl__c = null;
+        logEntryEvent.SessionId__c = null;
+        logEntryEvent.SessionSecurityLevel__c = null;
+        logEntryEvent.SessionType__c = null;
+        logEntryEvent.SourceIp__c = null;
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionDataSynchronously', Value__c = String.valueOf(false)));
 
         LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
-        AuthSession expectedAuthSession = LoggerEngineDataSelector.getInstance().getAuthSessions(userIds).get(logEntryEvent.LoggedById__c);
+        LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = LoggerEngineDataSelector.getInstance()
+            .getAuthSessionProxies(userIds)
+            .get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
-        System.assertEquals(expectedAuthSession?.LoginHistory.Application, log.LoginApplication__c);
-        System.assertEquals(expectedAuthSession?.LoginHistory.Browser, log.LoginBrowser__c);
-        System.assertEquals(expectedAuthSession?.LoginHistoryId, log.LoginHistoryId__c);
-        System.assertEquals(expectedAuthSession?.LoginHistory.Platform, log.LoginPlatform__c);
-        System.assertEquals(expectedAuthSession?.LoginType, log.LoginType__c);
-        System.assertEquals(expectedAuthSession?.LogoutUrl, log.LogoutUrl__c);
-        System.assertEquals(expectedAuthSession?.Id, log.SessionId__c);
-        System.assertEquals(expectedAuthSession?.SessionSecurityLevel, log.SessionSecurityLevel__c);
-        System.assertEquals(expectedAuthSession?.SessionType, log.SessionType__c);
-        System.assertEquals(expectedAuthSession?.SourceIp, log.SourceIp__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Application, log.LoginApplication__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Browser, log.LoginBrowser__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginHistoryId, log.LoginHistoryId__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Platform, log.LoginPlatform__c);
+        System.assertEquals(expectedAuthSessionProxy?.LoginType, log.LoginType__c);
+        System.assertEquals(expectedAuthSessionProxy?.LogoutUrl, log.LogoutUrl__c);
+        System.assertEquals(expectedAuthSessionProxy?.Id, log.SessionId__c);
+        System.assertEquals(expectedAuthSessionProxy?.SessionSecurityLevel, log.SessionSecurityLevel__c);
+        System.assertEquals(expectedAuthSessionProxy?.SessionType, log.SessionType__c);
+        System.assertEquals(expectedAuthSessionProxy?.SourceIp, log.SourceIp__c);
     }
 
     @IsTest
@@ -956,6 +970,7 @@ private class LogEntryEventHandler_Tests {
         LogEntryEvent__e logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.createDataBuilder(Schema.LogEntryEvent__e.SObjectType)
             .populateAllFields()
             .getRecord();
+        logEntryEvent.ImpersonatedById__c = null;
         logEntryEvent.LoggedById__c = UserInfo.getUserId();
         logEntryEvent.LoggingLevel__c = LoggingLevel.INFO.name();
         logEntryEvent.LoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();

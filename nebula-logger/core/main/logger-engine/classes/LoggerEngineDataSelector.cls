@@ -33,14 +33,14 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @param  userIds userIds description
      * @return The instance of `Map<Id, AuthSession>` containing any matching `AuthSession` records
      */
-    public virtual Map<Id, AuthSession> getAuthSessions(List<Id> userIds) {
-        Map<Id, AuthSession> userIdToAuthSession = new Map<Id, AuthSession>();
+    public virtual Map<Id, LoggerSObjectProxy.AuthSession> getAuthSessionProxies(List<Id> userIds) {
+        Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = new Map<Id, LoggerSObjectProxy.AuthSession>();
 
         if (LoggerParameter.QUERY_AUTH_SESSION_DATA == false) {
-            return userIdToAuthSession;
+            return userIdToAuthSessionProxy;
         }
 
-        for (AuthSession session : [
+        for (AuthSession authSession : [
             SELECT
                 Id,
                 LoginType,
@@ -48,6 +48,7 @@ public without sharing virtual class LoggerEngineDataSelector {
                 LoginHistory.Application,
                 LoginHistory.Browser,
                 LoginHistory.Platform,
+                LoginHistory.UserId,
                 LogoutUrl,
                 SessionSecurityLevel,
                 SessionType,
@@ -56,9 +57,10 @@ public without sharing virtual class LoggerEngineDataSelector {
             FROM AuthSession
             WHERE UsersId IN :userIds AND IsCurrent = TRUE AND ParentId = NULL
         ]) {
-            userIdToAuthSession.put(session.UsersId, session);
+            LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSession);
+            userIdToAuthSessionProxy.put(authSessionProxy.UsersId, authSessionProxy);
         }
-        return userIdToAuthSession;
+        return userIdToAuthSessionProxy;
     }
 
     /**
@@ -66,7 +68,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      *              or `null` if there is not a current session
      * @return   The cached `AuthSession` record
      */
-    public virtual AuthSession getCachedAuthSession() {
+    public virtual LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
         if (LoggerParameter.QUERY_AUTH_SESSION_DATA == false) {
             return null;
         }
@@ -74,12 +76,12 @@ public without sharing virtual class LoggerEngineDataSelector {
         Id userId = UserInfo.getUserId();
         String cacheKey = 'AuthSession' + userId;
         if (LoggerCache.getSessionCache().contains(cacheKey) == true) {
-            return (AuthSession) LoggerCache.getSessionCache().get(cacheKey);
+            return (LoggerSObjectProxy.AuthSession) LoggerCache.getSessionCache().get(cacheKey);
         }
 
-        AuthSession session = getAuthSessions(new List<Id>{ userId }).get(userId);
-        LoggerCache.getSessionCache().put(cacheKey, session);
-        return session;
+        LoggerSObjectProxy.AuthSession authSession = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
+        LoggerCache.getSessionCache().put(cacheKey, authSession);
+        return authSession;
     }
 
     /**
@@ -108,7 +110,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @param  networkId The record ID of the `Network` to query
      * @return           The cached `Network` record
      */
-    public virtual SObject getCachedNetwork(Id networkId) {
+    public virtual LoggerSObjectProxy.Network getCachedNetworkProxy(Id networkId) {
         if (LoggerParameter.QUERY_NETWORK_DATA == false) {
             return null;
         }
@@ -119,12 +121,12 @@ public without sharing virtual class LoggerEngineDataSelector {
 
         String cacheKey = 'Network' + networkId;
         if (LoggerCache.getOrganizationCache().contains(cacheKey) == true) {
-            return (SObject) LoggerCache.getOrganizationCache().get(cacheKey);
+            return (LoggerSObjectProxy.Network) LoggerCache.getOrganizationCache().get(cacheKey);
         }
 
-        SObject networkSite = getNetworks(new List<Id>{ networkId }).get(networkId);
-        LoggerCache.getOrganizationCache().put(cacheKey, networkSite);
-        return networkSite;
+        LoggerSObjectProxy.Network networkProxy = getNetworkProxies(new List<Id>{ networkId }).get(networkId);
+        LoggerCache.getOrganizationCache().put(cacheKey, networkProxy);
+        return networkProxy;
     }
 
     /**
@@ -197,7 +199,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @param  networkIds The list of `Network` IDs to query
      * @return            The instance of `Map<Id, SObject>` containing any matching `Network` records
      */
-    public Map<Id, SObject> getNetworks(List<Id> networkIds) {
+    public Map<Id, LoggerSObjectProxy.Network> getNetworkProxies(List<Id> networkIds) {
         // TODO add caching in a future release
         if (LoggerParameter.QUERY_NETWORK_DATA == false) {
             return null;
@@ -205,8 +207,14 @@ public without sharing virtual class LoggerEngineDataSelector {
 
         // Networks (aka experience sites aka community sites aka portal sites ò_ô)
         // may not be enabled in the org (no Network object), so run everything dynamically
+        // return new Map<Id, SObject>(Database.query(String.escapeSingleQuotes(query)));
+        Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = new Map<Id, LoggerSObjectProxy.Network>();
         String query = 'SELECT Id, Name, UrlPathPrefix FROM Network WHERE Id IN :networkIds';
-        return new Map<Id, SObject>(Database.query(String.escapeSingleQuotes(query)));
+        for (SObject networkRecord : Database.query(String.escapeSingleQuotes(query))) {
+            LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(networkRecord);
+            networkIdToNetworkProxy.put(networkProxy.Id, networkProxy);
+        }
+        return networkIdToNetworkProxy;
     }
 
     /**
