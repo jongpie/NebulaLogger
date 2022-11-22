@@ -42,7 +42,7 @@ private class LogMassDeleteExtension_Tests {
         LogMassDeleteExtension extension = new LogMassDeleteExtension(controller);
         List<Log__c> returnedDeletableLogs = extension.getDeletableLogs();
 
-        System.assertEquals(expectedDeletableLogs.size(), returnedDeletableLogs.size());
+        System.Assert.areEqual(expectedDeletableLogs.size(), returnedDeletableLogs.size());
     }
 
     @IsTest
@@ -68,11 +68,11 @@ private class LogMassDeleteExtension_Tests {
 
         logsToDelete = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToDelete ALL ROWS];
         for (Log__c log : logsToDelete) {
-            System.assertEquals(true, log.IsDeleted, log);
+            System.Assert.isTrue(log.IsDeleted, JSON.serializePretty(log));
         }
         logsToKeep = [SELECT Id, IsDeleted FROM Log__c WHERE Id IN :logsToKeep ALL ROWS];
         for (Log__c log : logsToKeep) {
-            System.assertEquals(false, log.IsDeleted, log);
+            System.Assert.isFalse(log.IsDeleted, JSON.serializePretty(log));
         }
     }
 }

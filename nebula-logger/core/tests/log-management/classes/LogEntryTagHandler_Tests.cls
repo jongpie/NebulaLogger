@@ -33,12 +33,12 @@ private class LogEntryTagHandler_Tests {
 
         String generatedUniqueId = LogEntryTagHandler.generateUniqueId(logEntryTag);
 
-        System.assertEquals(expectedUniqueId, generatedUniqueId);
+        System.Assert.areEqual(expectedUniqueId, generatedUniqueId);
     }
 
     @IsTest
     static void it_should_return_the_logEntryTag_sobjectType() {
-        System.assertEquals(Schema.LogEntryTag__c.SObjectType, new LogEntryTagHandler().getSObjectType());
+        System.Assert.areEqual(Schema.LogEntryTag__c.SObjectType, new LogEntryTagHandler().getSObjectType());
     }
 
     @IsTest
@@ -52,7 +52,7 @@ private class LogEntryTagHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntryTag);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryTag__c.SObjectType).size(),
             'Handler class should not have executed'
@@ -67,13 +67,13 @@ private class LogEntryTagHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntryTag);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryTag__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
-        System.assertEquals(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
+        System.Assert.areEqual(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
     }
 
     @IsTest
@@ -83,18 +83,18 @@ private class LogEntryTagHandler_Tests {
         LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tag.Id);
         LoggerDataStore.getDatabase().insertRecord(logEntryTag);
         logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
-        System.assertEquals(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
+        System.Assert.areEqual(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
         logEntryTag.UniqueId__c = 'something else';
 
         update logEntryTag;
 
-        System.assertEquals(
+        System.Assert.areEqual(
             4,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryTag__c.SObjectType).size(),
             'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
         );
         logEntryTag = [SELECT Id, LogEntry__c, Tag__c, UniqueId__c FROM LogEntryTag__c WHERE Id = :logEntryTag.Id];
-        System.assertEquals(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
+        System.Assert.areEqual(logEntry.Id + '' + tag.Id, logEntryTag.UniqueId__c);
     }
 
     @IsTest
@@ -108,19 +108,19 @@ private class LogEntryTagHandler_Tests {
 
         try {
             insert duplicateLogEntryTag;
-            System.assert(false, 'Exception expected on previous line');
+            System.Assert.fail('Exception expected on previous line');
         } catch (Exception ex) {
             thrownException = ex;
         }
 
-        System.assertEquals(
+        System.Assert.areEqual(
             3,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryTag__c.SObjectType).size(),
             'Handler class should have executed three times - once for BEFORE_INSERT and once for AFTER_INSERT for the first record,' +
             ' and once for BEFORE_INSERT on the errored duplicate'
         );
-        System.assertNotEquals(null, thrownException, 'An exception should have been thrown');
+        System.Assert.isNotNull(thrownException, 'An exception should have been thrown');
         String expectedDuplicateError = 'DUPLICATE_VALUE';
-        System.assert(thrownException.getMessage().contains(expectedDuplicateError), thrownException.getMessage());
+        System.Assert.isTrue(thrownException.getMessage().contains(expectedDuplicateError), thrownException.getMessage());
     }
 }

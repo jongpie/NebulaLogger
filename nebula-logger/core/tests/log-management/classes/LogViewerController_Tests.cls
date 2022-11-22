@@ -24,6 +24,6 @@ private class LogViewerController_Tests {
 
         Log__c returnedLog = LogViewerController.getLog(log.Id);
 
-        System.assertEquals(log.Id, returnedLog.Id);
+        System.Assert.areEqual(log.Id, returnedLog.Id);
     }
 }

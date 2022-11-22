@@ -14,7 +14,7 @@ private class LogManagementDataSelector_Tests {
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getAll(targetSObjectType, targetFieldNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -32,7 +32,7 @@ private class LogManagementDataSelector_Tests {
 
         List<SObject> returnedResults = LogManagementDataSelector.getInstance().getById(targetSObjectType, targetFieldNames, targetIds);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -47,7 +47,7 @@ private class LogManagementDataSelector_Tests {
 
         List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -59,21 +59,21 @@ private class LogManagementDataSelector_Tests {
 
         List<ApexClass> returnedResults = LogManagementDataSelector.getInstance().getApexClasses(targetApexClassNames);
 
-        System.assertEquals(originalQueryCount, System.Limits.getQueries());
-        System.assertEquals(0, returnedResults.size());
+        System.Assert.areEqual(originalQueryCount, System.Limits.getQueries());
+        System.Assert.areEqual(0, returnedResults.size());
     }
 
     @IsTest
     static void it_returns_cached_apex_email_notifications() {
         List<ApexEmailNotification> expectedResults = [SELECT Email, UserId FROM ApexEmailNotification WHERE Email != NULL OR User.IsActive = TRUE];
-        System.assertEquals(1, System.Limits.getQueries());
+        System.Assert.areEqual(1, System.Limits.getQueries());
 
         List<ApexEmailNotification> returnedResults = LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
 
-        System.assertEquals(2, System.Limits.getQueries());
+        System.Assert.areEqual(2, System.Limits.getQueries());
         LogManagementDataSelector.getInstance().getCachedApexEmailNotifications();
-        System.assertEquals(2, System.Limits.getQueries());
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(2, System.Limits.getQueries());
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     // FIXME Querying AsyncApexJob in a test context doesn't seem to return results for @future methods,
@@ -84,16 +84,16 @@ private class LogManagementDataSelector_Tests {
     //     String apexClassName = LogManagementDataSelector_Tests.class.getName();
     //     String apexMethodName = 'executeSomeFutureMethod';
     //     List<String> jobStatuses = new List<String>{ 'Holding', 'Queued', 'Preparing', 'Processing' };
-    //     System.assertEquals(0, LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses));
+    //     System.Assert.areEqual(0, LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses));
 
     //     System.Test.startTest();
     //     executeSomeFutureMethod();
     //     System.Test.stopTest();
 
-    //     System.assert(false, [SELECT status FROM asyncapexjob]);
+    //     System.Assert.fail([SELECT status FROM asyncapexjob]);
     //     Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfAsyncApexJobs(apexClassName, apexMethodName, jobStatuses);
 
-    //     System.assertEquals(1, returnedCount);
+    //     System.Assert.areEqual(1, returnedCount);
     // }
 
     @IsTest
@@ -104,29 +104,29 @@ private class LogManagementDataSelector_Tests {
         Log__c expectedLog = new Log__c(ApiReleaseNumber__c = 'QWERTY', ApiReleaseVersion__c = 'ASDF', TransactionId__c = 'XYZ');
         insert new List<Log__c>{ olderLog, expectedLog };
         System.Test.setCreatedDate(olderLog.Id, System.now().addMinutes(-5));
-        System.assertEquals(1, System.Limits.getQueries());
+        System.Assert.areEqual(1, System.Limits.getQueries());
 
         for (Integer i = 0; i < 5; i++) {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
 
-            System.assertEquals(expectedLog.Id, returnedLog.Id);
+            System.Assert.areEqual(expectedLog.Id, returnedLog.Id);
         }
 
-        System.assertEquals(2, System.Limits.getQueries());
+        System.Assert.areEqual(2, System.Limits.getQueries());
     }
 
     @IsTest
     static void it_returns_null_when_no_recent_log_with_api_release_details_is_found() {
-        System.assertEquals(0, [SELECT COUNT() FROM Log__c]);
-        System.assertEquals(1, System.Limits.getQueries());
+        System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c]);
+        System.Assert.areEqual(1, System.Limits.getQueries());
 
         for (Integer i = 0; i < 5; i++) {
             Log__c returnedLog = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
 
-            System.assertEquals(null, returnedLog);
+            System.Assert.isNull(returnedLog);
         }
 
-        System.assertEquals(2, System.Limits.getQueries());
+        System.Assert.areEqual(2, System.Limits.getQueries());
     }
 
     @IsTest
@@ -147,7 +147,7 @@ private class LogManagementDataSelector_Tests {
 
         Integer returnedCount = LogManagementDataSelector.getInstance().getCountOfRelatedRecordLogEntries(targetRecordId);
 
-        System.assertEquals(1, returnedCount);
+        System.Assert.areEqual(1, returnedCount);
     }
 
     @IsTest
@@ -160,8 +160,8 @@ private class LogManagementDataSelector_Tests {
 
         List<UserRecordAccess> returnedResults = LogManagementDataSelector.getInstance().getDeleteableUserRecordAccess(recordIds);
 
-        System.assertEquals(1, returnedResults.size());
-        System.assertEquals(deleteableRecord.Id, returnedResults.get(0).RecordId);
+        System.Assert.areEqual(1, returnedResults.size());
+        System.Assert.areEqual(deleteableRecord.Id, returnedResults.get(0).RecordId);
     }
 
     @IsTest
@@ -172,7 +172,7 @@ private class LogManagementDataSelector_Tests {
 
         Log__c returnedLog = LogManagementDataSelector.getInstance().getLogById(log.Id);
 
-        System.assertEquals(log.Id, returnedLog.Id);
+        System.Assert.areEqual(log.Id, returnedLog.Id);
     }
 
     @IsTest
@@ -189,7 +189,7 @@ private class LogManagementDataSelector_Tests {
 
         List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsById(logIds);
 
-        System.assertEquals(logs.size(), returnedResults.size());
+        System.Assert.areEqual(logs.size(), returnedResults.size());
     }
 
     @IsTest
@@ -207,7 +207,7 @@ private class LogManagementDataSelector_Tests {
 
         List<Log__c> returnedResults = LogManagementDataSelector.getInstance().getLogsByTransactionId(logTransactionIds);
 
-        System.assertEquals(logs.size(), returnedResults.size());
+        System.Assert.areEqual(logs.size(), returnedResults.size());
     }
 
     @IsTest
@@ -219,7 +219,7 @@ private class LogManagementDataSelector_Tests {
 
         expectedResults.sort();
         returnedResults.sort();
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -231,7 +231,7 @@ private class LogManagementDataSelector_Tests {
 
         expectedResults.sort();
         returnedResults.sort();
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -250,7 +250,7 @@ private class LogManagementDataSelector_Tests {
 
         List<Group> returnedResults = LogManagementDataSelector.getInstance().getQueuesByDeveloperName(targetQueueNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -277,8 +277,8 @@ private class LogManagementDataSelector_Tests {
 
         List<LogEntry__c> returnedResults = LogManagementDataSelector.getInstance().getRecordLogEntries(targetRecordId, fieldsClause, orderByClause, rowLimit);
 
-        System.assertEquals(1, returnedResults.size());
-        System.assertEquals(matchingLogEntry.Id, returnedResults.get(0).Id);
+        System.Assert.areEqual(1, returnedResults.size());
+        System.Assert.areEqual(matchingLogEntry.Id, returnedResults.get(0).Id);
     }
 
     @IsTest
@@ -291,11 +291,11 @@ private class LogManagementDataSelector_Tests {
         insert tags;
         Set<String> targetTagNames = new Set<String>{ matchingTag.Name };
         List<LoggerTag__c> expectedResults = [SELECT Id, Name FROM LoggerTag__c WHERE Name IN :targetTagNames];
-        System.assertEquals(1, expectedResults.size());
+        System.Assert.areEqual(1, expectedResults.size());
 
         List<LoggerTag__c> returnedResults = LogManagementDataSelector.getInstance().getTagsByName(targetTagNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -308,11 +308,11 @@ private class LogManagementDataSelector_Tests {
         insert topics;
         Set<String> targetTopicNames = new Set<String>{ matchingTopic.Name };
         List<Topic> expectedResults = [SELECT Id, Name FROM Topic WHERE Name IN :targetTopicNames];
-        System.assertEquals(1, expectedResults.size());
+        System.Assert.areEqual(1, expectedResults.size());
 
         List<Topic> returnedResults = LogManagementDataSelector.getInstance().getTopicsByName(targetTopicNames);
 
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -324,7 +324,7 @@ private class LogManagementDataSelector_Tests {
 
         expectedResults.sort();
         returnedResults.sort();
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -336,7 +336,7 @@ private class LogManagementDataSelector_Tests {
 
         expectedResults.sort();
         returnedResults.sort();
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
@@ -351,17 +351,17 @@ private class LogManagementDataSelector_Tests {
 
         expectedResults.sort();
         returnedResults.sort();
-        System.assertEquals(expectedResults, returnedResults);
+        System.Assert.areEqual(expectedResults, returnedResults);
     }
 
     @IsTest
     static void it_loads_mock_instance() {
         MockLogManagementDataSelector mockSelector = new MockLogManagementDataSelector();
-        System.assertNotEquals(mockSelector, LogManagementDataSelector.getInstance());
+        System.Assert.areNotEqual(mockSelector, LogManagementDataSelector.getInstance());
 
         LogManagementDataSelector.setMock(mockSelector);
 
-        System.assertEquals(mockSelector, LogManagementDataSelector.getInstance());
+        System.Assert.areEqual(mockSelector, LogManagementDataSelector.getInstance());
     }
 
     @SuppressWarnings('PMD.EmptyStatementBlock')

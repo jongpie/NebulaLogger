@@ -39,9 +39,9 @@ private class LogEntryArchivePlugin_Tests {
         Database.executeBatch(batchPurger);
 
         System.Test.stopTest();
-        System.assertEquals(log.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
+        System.Assert.areEqual(log.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
         List<Log__c> existingLogs = [SELECT Id FROM Log__c WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION];
-        System.assertEquals(0, existingLogs.size());
+        System.Assert.areEqual(0, existingLogs.size());
     }
 
     @IsTest
@@ -55,13 +55,13 @@ private class LogEntryArchivePlugin_Tests {
             FROM Log__c
             WHERE LogPurgeAction__c = :LogEntryArchivePlugin.BIG_OBJECT_LOG_PURGE_ACTION
         ];
-        System.assertNotEquals(
+        System.Assert.areNotEqual(
             true,
             logToArchive.LogEntries__r.isEmpty(),
             'Test has started under the wrong condiations - log record should have some related log entries'
         );
         Log__c logToSkip = [SELECT Id, (SELECT Id FROM LogEntries__r) FROM Log__c WHERE LogPurgeAction__c = 'Delete'];
-        System.assertNotEquals(
+        System.Assert.areNotEqual(
             true,
             logToSkip.LogEntries__r.isEmpty(),
             'Test has started under the wrong condiations - log record should have some related log entries'
@@ -71,13 +71,13 @@ private class LogEntryArchivePlugin_Tests {
         Database.executeBatch(batchPurger);
 
         System.Test.stopTest();
-        System.assertEquals(
+        System.Assert.areEqual(
             logToArchive.LogEntries__r.size(),
             LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(),
             'Only the log entries for logToArchive should have been archived'
         );
         List<Log__c> existingLogs = [SELECT Id FROM Log__c];
-        System.assertEquals(0, existingLogs.size(), 'All logs should havve been deleted');
+        System.Assert.areEqual(0, existingLogs.size(), 'All logs should havve been deleted');
     }
 
     @IsTest
@@ -102,15 +102,15 @@ private class LogEntryArchivePlugin_Tests {
 
         Database.executeBatch(batchPurger);
 
-        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
         System.Test.stopTest();
-        System.assertEquals(0, System.Limits.getPublishImmediateDml());
-        System.assertEquals(logToArchive.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
+        System.Assert.areEqual(0, System.Limits.getPublishImmediateDml());
+        System.Assert.areEqual(logToArchive.LogEntries__r.size(), LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size());
         for (LogEntryArchive__b logEntryArchive : LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE) {
-            System.assertEquals(tag.Name, logEntryArchive.Tags__c);
+            System.Assert.areEqual(tag.Name, logEntryArchive.Tags__c);
         }
         List<Log__c> existingLogs = [SELECT Id FROM Log__c];
-        System.assertEquals(0, existingLogs.size());
+        System.Assert.areEqual(0, existingLogs.size());
     }
 
     @IsTest
@@ -133,7 +133,7 @@ private class LogEntryArchivePlugin_Tests {
 
         new LogEntryArchivePlugin().execute(pluginConfiguration, pluginInput);
 
-        System.assertEquals(0, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should not have tried to create big object');
+        System.Assert.areEqual(0, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should not have tried to create big object');
     }
 
     @IsTest
@@ -147,22 +147,22 @@ private class LogEntryArchivePlugin_Tests {
         System.Test.startTest();
         String transactionId = Logger.getTransactionId();
         Logger.info('Testing big object creation');
-        System.assertEquals(1, Logger.getBufferSize(), 'Should have one record in Logger\'s platform event buffer');
+        System.Assert.areEqual(1, Logger.getBufferSize(), 'Should have one record in Logger\'s platform event buffer');
 
         Logger.saveLog();
         System.Test.getEventBus().deliver();
 
-        System.assertEquals(0, Logger.getBufferSize(), 'Should have been cleared from Logger\'s platform event buffer');
-        System.assertEquals(
+        System.Assert.areEqual(0, Logger.getBufferSize(), 'Should have been cleared from Logger\'s platform event buffer');
+        System.Assert.areEqual(
             'BIG_OBJECT_QUEUEABLE',
             LogEntryArchivePlugin.lastSaveMethodUsed,
             'Last save method used should have been set to BIG_OBJECT_EVENT_BUS'
         );
         System.Test.stopTest();
-        System.assertEquals(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
-        System.assertNotEquals(null, transactionId, 'Should have a value for transaction ID');
-        System.assertEquals(transactionId, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.get(0).TransactionId__c, 'Transaction ID should match');
-        System.assertEquals(0, [SELECT COUNT() FROM Log__c WHERE TransactionId__c = :transactionId], 'No custom object data should have been created');
+        System.Assert.areEqual(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
+        System.Assert.isNotNull(transactionId, 'Should have a value for transaction ID');
+        System.Assert.areEqual(transactionId, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.get(0).TransactionId__c, 'Transaction ID should match');
+        System.Assert.areEqual(0, [SELECT COUNT() FROM Log__c WHERE TransactionId__c = :transactionId], 'No custom object data should have been created');
     }
 
     @IsTest
@@ -176,14 +176,14 @@ private class LogEntryArchivePlugin_Tests {
 
         Logger.saveLog();
 
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             System.Limits.getPublishImmediateDml(),
             'Should not have actually used any DML statements in tests because big objects actually get inserted, yikes'
         );
-        System.assertEquals(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
-        System.assertEquals(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
-        System.assertEquals(
+        System.Assert.areEqual(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
+        System.Assert.areEqual(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
+        System.Assert.areEqual(
             'BIG_OBJECT_IMMEDIATE',
             LogEntryArchivePlugin.lastSaveMethodUsed,
             'Last save method used should have been set to BIG_OBJECT_IMMEDIATE'
@@ -199,19 +199,19 @@ private class LogEntryArchivePlugin_Tests {
         createPluginConfiguration();
         Logger.info('Testing big object creation').getLogEntryEvent();
         System.Test.startTest();
-        System.assertEquals(0, System.Limits.getAsyncCalls(), 'Should not have executed any queueable jobs');
+        System.Assert.areEqual(0, System.Limits.getAsyncCalls(), 'Should not have executed any queueable jobs');
 
         Logger.saveLog();
 
-        System.assertEquals(1, System.Limits.getAsyncCalls(), 'Should have executed queueable saver job');
-        System.assertEquals(
+        System.Assert.areEqual(1, System.Limits.getAsyncCalls(), 'Should have executed queueable saver job');
+        System.Assert.areEqual(
             0,
             System.Limits.getPublishImmediateDml(),
             'Should not have actually used any DML statements in tests because big objects actually get inserted, yikes'
         );
-        System.assertEquals(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
-        System.assertEquals(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
-        System.assertEquals(
+        System.Assert.areEqual(0, Logger.getBufferSize(), 'Should not have been put into Logger\'s platform event buffer');
+        System.Assert.areEqual(1, LogEntryArchivePlugin.LOG_ENTRY_ARCHIVES_TO_SAVE.size(), 'Should have been put into big object buffer');
+        System.Assert.areEqual(
             'BIG_OBJECT_QUEUEABLE',
             LogEntryArchivePlugin.lastSaveMethodUsed,
             'Last save method used should have been set to BIG_OBJECT_QUEUEABLE'

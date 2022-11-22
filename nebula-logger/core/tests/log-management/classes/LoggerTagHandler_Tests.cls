@@ -8,7 +8,7 @@
 private class LoggerTagHandler_Tests {
     @IsTest
     static void it_should_return_the_loggerTag_sobjectType() {
-        System.assertEquals(Schema.LoggerTag__c.SObjectType, new LoggerTagHandler().getSObjectType());
+        System.Assert.areEqual(Schema.LoggerTag__c.SObjectType, new LoggerTagHandler().getSObjectType());
     }
 
     @IsTest
@@ -19,7 +19,7 @@ private class LoggerTagHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(tag);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
             'Handler class should not have executed'
@@ -32,13 +32,13 @@ private class LoggerTagHandler_Tests {
         tag.Name = 'Some tag name';
         LoggerDataStore.getDatabase().insertRecord(tag);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id];
-        System.assertEquals(tag.Name, tag.UniqueId__c);
+        System.Assert.areEqual(tag.Name, tag.UniqueId__c);
     }
 
     @IsTest
@@ -47,13 +47,13 @@ private class LoggerTagHandler_Tests {
         tag.Name = 'Some tag name';
         LoggerDataStore.getDatabase().insertRecord(tag);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         tag = [SELECT Id, Name, UniqueId__c FROM LoggerTag__c WHERE Id = :tag.Id];
-        System.assertEquals(tag.Name, tag.UniqueId__c);
+        System.Assert.areEqual(tag.Name, tag.UniqueId__c);
     }
 
     @IsTest
@@ -68,19 +68,19 @@ private class LoggerTagHandler_Tests {
 
         try {
             insert duplicateTag;
-            System.assert(false, 'Exception expected on previous line');
+            System.Assert.fail('Exception expected on previous line');
         } catch (Exception ex) {
             thrownException = ex;
         }
 
-        System.assertEquals(
+        System.Assert.areEqual(
             3,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LoggerTag__c.SObjectType).size(),
             'Handler class should have executed three times - once for BEFORE_INSERT and once for AFTER_INSERT for the first record,' +
             ' and once for BEFORE_INSERT on the errored duplicate'
         );
-        System.assertNotEquals(null, thrownException, 'An exception should have been thrown');
+        System.Assert.isNotNull(thrownException, 'An exception should have been thrown');
         String expectedDuplicateError = 'DUPLICATE_VALUE';
-        System.assert(thrownException.getMessage().contains(expectedDuplicateError), thrownException.getMessage());
+        System.Assert.isTrue(thrownException.getMessage().contains(expectedDuplicateError), thrownException.getMessage());
     }
 }

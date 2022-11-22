@@ -19,24 +19,24 @@ private class LoggerCache_Tests {
     static void it_adds_new_key_to_transaction_cache() {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
         LoggerCache.getTransactionCache().put(mockKey, mockValue);
 
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
     static void it_adds_new_key_with_null_value_to_transaction_cache() {
         String mockKey = 'SomeKey';
         User mockValue = null;
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
 
         LoggerCache.getTransactionCache().put(mockKey, mockValue);
 
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -44,28 +44,28 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         LoggerCache.getTransactionCache().put(mockKey, oldMockValue);
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
         Account newMockValue = new Account(Name = 'Some fake account');
 
         LoggerCache.getTransactionCache().put(mockKey, newMockValue);
 
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
     static void it_removes_value_for_existing_key_in_transaction_cache() {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
         LoggerCache.getTransactionCache().put(mockKey, mockValue);
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
 
         LoggerCache.getTransactionCache().remove(mockKey);
 
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
     }
 
     @IsTest
@@ -73,23 +73,23 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
-        System.assertEquals(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(1, mockOrganizationPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(0, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(1, mockOrganizationPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
 
-        System.assertEquals(1, mockOrganizationPartitionDelegate.putMethodCallCount);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.contains(mockKey));
-        System.assertEquals(mockValue, mockOrganizationPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(1, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.contains(mockKey));
+        System.Assert.areEqual(mockValue, mockOrganizationPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -97,23 +97,23 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User mockValue = null;
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
-        System.assertEquals(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(1, mockOrganizationPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(0, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(1, mockOrganizationPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
 
-        System.assertEquals(1, mockOrganizationPartitionDelegate.putMethodCallCount);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.contains(mockKey));
-        System.assertEquals(LoggerCache.PLATFORM_CACHE_NULL_VALUE, mockOrganizationPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(1, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.contains(mockKey));
+        System.Assert.areEqual(LoggerCache.PLATFORM_CACHE_NULL_VALUE, mockOrganizationPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -121,23 +121,23 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(false);
-        System.assertEquals(false, mockOrganizationPartitionDelegate.isAvailable());
+        System.Assert.isFalse(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
-        System.assertEquals(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(0, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
 
-        System.assertEquals(0, mockOrganizationPartitionDelegate.putMethodCallCount);
-        System.assertEquals(false, mockOrganizationPartitionDelegate.contains(mockKey));
-        System.assertEquals(null, mockOrganizationPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.isFalse(mockOrganizationPartitionDelegate.contains(mockKey));
+        System.Assert.isNull(mockOrganizationPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -145,26 +145,26 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
-        System.assertEquals(0, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.putMethodCallCount);
         LoggerCache.getOrganizationCache().put(mockKey, oldMockValue);
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
         Account newMockValue = new Account(Name = 'Some fake account');
-        System.assertEquals(1, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(1, mockOrganizationPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getOrganizationCache().put(mockKey, newMockValue);
 
-        System.assertEquals(2, mockOrganizationPartitionDelegate.putMethodCallCount);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.contains(mockKey));
-        System.assertEquals(newMockValue, mockOrganizationPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(2, mockOrganizationPartitionDelegate.putMethodCallCount);
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.contains(mockKey));
+        System.Assert.areEqual(newMockValue, mockOrganizationPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -173,16 +173,16 @@ private class LoggerCache_Tests {
         User transactionCacheValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         Account organizationCacheValue = new Account(Name = 'Some fake account');
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
         mockOrganizationPartitionDelegate.put(mockKey, organizationCacheValue, 5, Cache.Visibility.NAMESPACE, false);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.contains(mockKey));
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.contains(mockKey));
         LoggerCache.getTransactionCache().put(mockKey, transactionCacheValue);
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
 
         Object returnedValue = LoggerCache.getOrganizationCache().get(mockKey);
 
-        System.assertEquals(transactionCacheValue, returnedValue);
+        System.Assert.areEqual(transactionCacheValue, returnedValue);
     }
 
     @IsTest
@@ -190,25 +190,25 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockOrganizationPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.isAvailable());
         LoggerCache.setMockOrganizationPartitionDelegate(mockOrganizationPartitionDelegate);
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
         LoggerCache.getOrganizationCache().put(mockKey, mockValue);
-        System.assertEquals(true, mockOrganizationPartitionDelegate.contains(mockKey));
-        System.assertEquals(mockValue, mockOrganizationPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
-        System.assertEquals(0, mockOrganizationPartitionDelegate.removeMethodCallCount);
+        System.Assert.isTrue(mockOrganizationPartitionDelegate.contains(mockKey));
+        System.Assert.areEqual(mockValue, mockOrganizationPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getOrganizationCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(0, mockOrganizationPartitionDelegate.removeMethodCallCount);
 
         LoggerCache.getOrganizationCache().remove(mockKey);
 
-        System.assertEquals(1, mockOrganizationPartitionDelegate.removeMethodCallCount);
-        System.assertEquals(false, mockOrganizationPartitionDelegate.contains(mockKey));
-        System.assertEquals(false, LoggerCache.getOrganizationCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(1, mockOrganizationPartitionDelegate.removeMethodCallCount);
+        System.Assert.isFalse(mockOrganizationPartitionDelegate.contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getOrganizationCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
     }
 
     @IsTest
@@ -216,23 +216,23 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockSessionPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
-        System.assertEquals(0, mockSessionPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(1, mockSessionPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(0, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(1, mockSessionPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getSessionCache().put(mockKey, mockValue);
 
-        System.assertEquals(1, mockSessionPartitionDelegate.putMethodCallCount);
-        System.assertEquals(true, mockSessionPartitionDelegate.contains(mockKey));
-        System.assertEquals(mockValue, mockSessionPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(1, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.isTrue(mockSessionPartitionDelegate.contains(mockKey));
+        System.Assert.areEqual(mockValue, mockSessionPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -240,23 +240,23 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User mockValue = null;
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockSessionPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
-        System.assertEquals(0, mockSessionPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(1, mockSessionPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(0, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(1, mockSessionPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getSessionCache().put(mockKey, mockValue);
 
-        System.assertEquals(1, mockSessionPartitionDelegate.putMethodCallCount);
-        System.assertEquals(true, mockSessionPartitionDelegate.contains(mockKey));
-        System.assertEquals(LoggerCache.PLATFORM_CACHE_NULL_VALUE, mockSessionPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(1, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.isTrue(mockSessionPartitionDelegate.contains(mockKey));
+        System.Assert.areEqual(LoggerCache.PLATFORM_CACHE_NULL_VALUE, mockSessionPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -264,23 +264,23 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(false);
-        System.assertEquals(false, mockSessionPartitionDelegate.isAvailable());
+        System.Assert.isFalse(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
-        System.assertEquals(0, mockSessionPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(0, mockSessionPartitionDelegate.containsMethodCallCount);
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(0, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.containsMethodCallCount);
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getSessionCache().put(mockKey, mockValue);
 
-        System.assertEquals(0, mockSessionPartitionDelegate.putMethodCallCount);
-        System.assertEquals(false, mockSessionPartitionDelegate.contains(mockKey));
-        System.assertEquals(null, mockSessionPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.isFalse(mockSessionPartitionDelegate.contains(mockKey));
+        System.Assert.isNull(mockSessionPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -288,26 +288,26 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User oldMockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockSessionPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
-        System.assertEquals(0, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.putMethodCallCount);
         LoggerCache.getSessionCache().put(mockKey, oldMockValue);
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getSessionCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(oldMockValue, LoggerCache.getTransactionCache().get(mockKey));
         Account newMockValue = new Account(Name = 'Some fake account');
-        System.assertEquals(1, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.areEqual(1, mockSessionPartitionDelegate.putMethodCallCount);
 
         LoggerCache.getSessionCache().put(mockKey, newMockValue);
 
-        System.assertEquals(2, mockSessionPartitionDelegate.putMethodCallCount);
-        System.assertEquals(true, mockSessionPartitionDelegate.contains(mockKey));
-        System.assertEquals(newMockValue, mockSessionPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getSessionCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(2, mockSessionPartitionDelegate.putMethodCallCount);
+        System.Assert.isTrue(mockSessionPartitionDelegate.contains(mockKey));
+        System.Assert.areEqual(newMockValue, mockSessionPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(newMockValue, LoggerCache.getTransactionCache().get(mockKey));
     }
 
     @IsTest
@@ -316,16 +316,16 @@ private class LoggerCache_Tests {
         User transactionCacheValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         Account sessionCacheValue = new Account(Name = 'Some fake account');
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockSessionPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
         mockSessionPartitionDelegate.put(mockKey, sessionCacheValue, 5, Cache.Visibility.NAMESPACE, false);
-        System.assertEquals(true, mockSessionPartitionDelegate.contains(mockKey));
+        System.Assert.isTrue(mockSessionPartitionDelegate.contains(mockKey));
         LoggerCache.getTransactionCache().put(mockKey, transactionCacheValue);
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
 
         Object returnedValue = LoggerCache.getSessionCache().get(mockKey);
 
-        System.assertEquals(transactionCacheValue, returnedValue);
+        System.Assert.areEqual(transactionCacheValue, returnedValue);
     }
 
     @IsTest
@@ -333,25 +333,25 @@ private class LoggerCache_Tests {
         String mockKey = 'SomeKey';
         User mockValue = new User(Id = UserInfo.getUserId(), ProfileId = UserInfo.getProfileId());
         MockPlatformCachePartitionDelegate mockSessionPartitionDelegate = new MockPlatformCachePartitionDelegate(true);
-        System.assertEquals(true, mockSessionPartitionDelegate.isAvailable());
+        System.Assert.isTrue(mockSessionPartitionDelegate.isAvailable());
         LoggerCache.setMockSessionPartitionDelegate(mockSessionPartitionDelegate);
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
         LoggerCache.getSessionCache().put(mockKey, mockValue);
-        System.assertEquals(true, mockSessionPartitionDelegate.contains(mockKey));
-        System.assertEquals(mockValue, mockSessionPartitionDelegate.get(mockKey));
-        System.assertEquals(true, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getSessionCache().get(mockKey));
-        System.assertEquals(true, LoggerCache.getTransactionCache().contains(mockKey));
-        System.assertEquals(mockValue, LoggerCache.getTransactionCache().get(mockKey));
-        System.assertEquals(0, mockSessionPartitionDelegate.removeMethodCallCount);
+        System.Assert.isTrue(mockSessionPartitionDelegate.contains(mockKey));
+        System.Assert.areEqual(mockValue, mockSessionPartitionDelegate.get(mockKey));
+        System.Assert.isTrue(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getSessionCache().get(mockKey));
+        System.Assert.isTrue(LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(mockValue, LoggerCache.getTransactionCache().get(mockKey));
+        System.Assert.areEqual(0, mockSessionPartitionDelegate.removeMethodCallCount);
 
         LoggerCache.getSessionCache().remove(mockKey);
 
-        System.assertEquals(1, mockSessionPartitionDelegate.removeMethodCallCount);
-        System.assertEquals(false, mockSessionPartitionDelegate.contains(mockKey));
-        System.assertEquals(false, LoggerCache.getSessionCache().contains(mockKey));
-        System.assertEquals(false, LoggerCache.getTransactionCache().contains(mockKey));
+        System.Assert.areEqual(1, mockSessionPartitionDelegate.removeMethodCallCount);
+        System.Assert.isFalse(mockSessionPartitionDelegate.contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getSessionCache().contains(mockKey));
+        System.Assert.isFalse(LoggerCache.getTransactionCache().contains(mockKey));
     }
 
     // Since the class `Cache.Partition` can't have be mocked & can't have its methods overridden,

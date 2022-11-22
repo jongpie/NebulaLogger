@@ -50,7 +50,7 @@ private class LogBatchPurger_Tests {
 
     @IsTest
     static void it_returns_2000_for_the_default_batch_size() {
-        System.assertEquals(2000, LogBatchPurger.getDefaultBatchSize());
+        System.Assert.areEqual(2000, LogBatchPurger.getDefaultBatchSize());
     }
 
     @IsTest
@@ -68,14 +68,14 @@ private class LogBatchPurger_Tests {
             thrownNullPointerException = ex;
         }
 
-        System.assertNotEquals(null, thrownNullPointerException);
+        System.Assert.isNotNull(thrownNullPointerException);
     }
 
     @IsTest
     static void it_should_default_batch_size_for_chained_job_batch_size() {
         LogBatchPurger batchJobInstance = new LogBatchPurger();
 
-        System.assertEquals(LogBatchPurger.getDefaultBatchSize(), batchJobInstance.chainedBatchSize);
+        System.Assert.areEqual(LogBatchPurger.getDefaultBatchSize(), batchJobInstance.chainedBatchSize);
     }
 
     @IsTest
@@ -85,7 +85,7 @@ private class LogBatchPurger_Tests {
 
         batchJobInstance.setChainedBatchSize(specifiedBatchSize);
 
-        System.assertEquals(specifiedBatchSize, batchJobInstance.chainedBatchSize);
+        System.Assert.areEqual(specifiedBatchSize, batchJobInstance.chainedBatchSize);
     }
 
     @IsTest
@@ -95,17 +95,17 @@ private class LogBatchPurger_Tests {
         settings.LoggingLevel__c = LoggingLevel.FINEST.name();
         upsert settings;
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
-        System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
-        System.assertEquals(true, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
-        System.assertEquals(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
+        System.Assert.isTrue(Logger.getUserSettings().IsEnabled__c);
+        System.Assert.isTrue(LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
+        System.Assert.areEqual(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
-        System.assertEquals(1, logs.size());
-        System.assertEquals(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
+        System.Assert.areEqual(1, logs.size());
+        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
         // Verify assumption that the log in the database has a deletion date in the past
         Log__c log = logs.get(0);
-        System.assertNotEquals(null, log.LogRetentionDate__c);
-        System.assert(log.LogRetentionDate__c < System.today());
+        System.Assert.isNotNull(log.LogRetentionDate__c);
+        System.Assert.isTrue(log.LogRetentionDate__c < System.today());
         System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(true);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -115,8 +115,8 @@ private class LogBatchPurger_Tests {
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
-        System.assertEquals(0, logs.size(), logs);
-        System.assertEquals(0, logEntries.size(), logEntries);
+        System.Assert.areEqual(0, logs.size(), JSON.serializePretty(logs));
+        System.Assert.areEqual(0, logEntries.size(), JSON.serializePretty(logEntries));
     }
 
     @IsTest
@@ -125,17 +125,17 @@ private class LogBatchPurger_Tests {
         settings.IsEnabled__c = true;
         upsert settings;
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(false)));
-        System.assertEquals(true, Logger.getUserSettings().IsEnabled__c);
-        System.assertEquals(false, LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
-        System.assertEquals(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
+        System.Assert.isTrue(Logger.getUserSettings().IsEnabled__c);
+        System.Assert.isFalse(LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
+        System.Assert.areEqual(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
-        System.assertEquals(1, logs.size());
-        System.assertEquals(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
+        System.Assert.areEqual(1, logs.size());
+        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
         // Verify assumption that the log in the database has a deletion date in the past
         Log__c log = logs.get(0);
-        System.assertNotEquals(null, log.LogRetentionDate__c);
-        System.assert(log.LogRetentionDate__c < System.today());
+        System.Assert.isNotNull(log.LogRetentionDate__c);
+        System.Assert.isTrue(log.LogRetentionDate__c < System.today());
         System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -145,8 +145,8 @@ private class LogBatchPurger_Tests {
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
-        System.assertEquals(0, logs.size(), logs);
-        System.assertEquals(0, logEntries.size(), logEntries);
+        System.Assert.areEqual(0, logs.size(), JSON.serializePretty(logs));
+        System.Assert.areEqual(0, logEntries.size(), JSON.serializePretty(logEntries));
     }
 
     @IsTest
@@ -154,14 +154,14 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
-        System.assertEquals(1, logs.size());
-        System.assertEquals(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
+        System.Assert.areEqual(1, logs.size());
+        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
         // Set the log's deletion date to be in the future
         Log__c log = logs.get(0);
         log.LogRetentionDate__c = System.today().addDays(7);
         update log;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c];
-        System.assert(log.LogRetentionDate__c > System.today());
+        System.Assert.isTrue(log.LogRetentionDate__c > System.today());
         System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -171,8 +171,8 @@ private class LogBatchPurger_Tests {
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
-        System.assertEquals(1, logs.size());
-        System.assertEquals(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
+        System.Assert.areEqual(1, logs.size());
+        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
     }
 
     @IsTest
@@ -180,15 +180,15 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         List<Log__c> logs = [SELECT Id, TotalLogEntries__c, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
-        System.assertEquals(1, logs.size());
-        System.assertEquals(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logs.get(0).TotalLogEntries__c);
-        System.assertEquals(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
+        System.Assert.areEqual(1, logs.size());
+        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logs.get(0).TotalLogEntries__c);
+        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size());
         // Set the log's deletion date to be null
         Log__c log = logs.get(0);
         log.LogRetentionDate__c = null;
         update log;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c];
-        System.assertEquals(null, log.LogRetentionDate__c);
+        System.Assert.isNull(log.LogRetentionDate__c);
         System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -198,8 +198,8 @@ private class LogBatchPurger_Tests {
         System.Test.stopTest();
         logs = [SELECT Id FROM Log__c WHERE Id IN :logs];
         logEntries = [SELECT Id FROM LogEntry__c WHERE Id IN :logEntries];
-        System.assertEquals(1, logs.size(), logs);
-        System.assertEquals(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size(), logEntries);
+        System.Assert.areEqual(1, logs.size(), JSON.serializePretty(logs));
+        System.Assert.areEqual(NUMBER_OF_LOG_ENTRIES_TO_CREATE, logEntries.size(), JSON.serializePretty(logEntries));
     }
 
     @IsTest
@@ -211,8 +211,8 @@ private class LogBatchPurger_Tests {
         log.LogRetentionDate__c = retentionDate;
         update log;
         log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(retentionDate, log.LogRetentionDate__c, 'Log should not have a retention date');
-        System.assertEquals(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
+        System.Assert.areEqual(retentionDate, log.LogRetentionDate__c, 'Log should not have a retention date');
+        System.Assert.areEqual(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
         System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -221,7 +221,7 @@ private class LogBatchPurger_Tests {
 
         System.Test.stopTest();
         List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(0, matchingLogs.size(), 'Test log should have been deleted');
+        System.Assert.areEqual(0, matchingLogs.size(), 'Test log should have been deleted');
     }
 
     @IsTest
@@ -232,8 +232,8 @@ private class LogBatchPurger_Tests {
         log.LogRetentionDate__c = null;
         update log;
         log = [SELECT Id, LogRetentionDate__c, TotalLogEntries__c FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(null, log.LogRetentionDate__c, 'Log should not have a retention date');
-        System.assertEquals(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
+        System.Assert.isNull(log.LogRetentionDate__c, 'Log should not have a retention date');
+        System.Assert.areEqual(0, log.TotalLogEntries__c, 'Log should not have any related log entries');
         System.Test.startTest();
         LoggerSObjectHandler.shouldExecute(false);
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -242,7 +242,7 @@ private class LogBatchPurger_Tests {
 
         System.Test.stopTest();
         List<Log__c> matchingLogs = [SELECT Id FROM Log__c WHERE Id = :log.Id];
-        System.assertEquals(0, matchingLogs.size(), 'Test log should have been deleted');
+        System.Assert.areEqual(0, matchingLogs.size(), 'Test log should have been deleted');
     }
 
     @IsTest
@@ -257,44 +257,44 @@ private class LogBatchPurger_Tests {
         LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         batchJobInstance.currentSObjectType = Schema.LogEntry__c.SObjectType;
-        System.assertEquals(false, ranPluginStart);
-        System.assertEquals(false, ranPluginExecute);
-        System.assertEquals(false, ranPluginFinish);
-        System.assertEquals(null, pluginConfiguration);
-        System.assertEquals(null, batchInput);
+        System.Assert.isFalse(ranPluginStart);
+        System.Assert.isFalse(ranPluginExecute);
+        System.Assert.isFalse(ranPluginFinish);
+        System.Assert.isNull(pluginConfiguration);
+        System.Assert.isNull(batchInput);
         Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
 
         batchJobInstance.start(mockBatchableContext);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(
+        System.Assert.areEqual(
             3,
             batchJobInstance.getExecutedApexPlugins().size(),
             'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             1,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
             'One Apex plugin should have run in the batch job\'s start method'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
             'No Apex plugins should have run in the batch job\'s execute method'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
             'No Apex plugins should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexStartPlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).get(0);
-        System.assertEquals(true, apexStartPlugin instanceof MockBatchPurgerPlugin, apexStartPlugin);
-        System.assertEquals(true, ranPluginStart);
-        System.assertEquals(false, ranPluginExecute);
-        System.assertEquals(false, ranPluginFinish);
-        System.assertEquals(mockPluginConfiguration, pluginConfiguration);
-        System.assertEquals(expectedInput.batchableContext, batchInput.batchableContext);
-        System.assertEquals(expectedInput.sobjectType, batchInput.sobjectType);
+        System.Assert.isInstanceOfType(apexStartPlugin, MockBatchPurgerPlugin.class, JSON.serializePretty(apexStartPlugin));
+        System.Assert.isTrue(ranPluginStart);
+        System.Assert.isFalse(ranPluginExecute);
+        System.Assert.isFalse(ranPluginFinish);
+        System.Assert.areEqual(mockPluginConfiguration, pluginConfiguration);
+        System.Assert.areEqual(expectedInput.batchableContext, batchInput.batchableContext);
+        System.Assert.areEqual(expectedInput.sobjectType, batchInput.sobjectType);
     }
 
     @IsTest
@@ -308,47 +308,47 @@ private class LogBatchPurger_Tests {
         LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         batchJobInstance.currentSObjectType = Schema.LogEntry__c.SObjectType;
-        System.assertEquals(false, ranPluginStart);
-        System.assertEquals(false, ranPluginExecute);
-        System.assertEquals(false, ranPluginFinish);
-        System.assertEquals(null, pluginConfiguration);
-        System.assertEquals(null, batchInput);
+        System.Assert.isFalse(ranPluginStart);
+        System.Assert.isFalse(ranPluginExecute);
+        System.Assert.isFalse(ranPluginFinish);
+        System.Assert.isNull(pluginConfiguration);
+        System.Assert.isNull(batchInput);
         List<Log__c> logsToDelete = [SELECT Id FROM Log__c];
-        System.assertNotEquals(0, logsToDelete.size());
+        System.Assert.areNotEqual(0, logsToDelete.size());
         Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
 
         batchJobInstance.execute(mockBatchableContext, logsToDelete);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(
+        System.Assert.areEqual(
             3,
             batchJobInstance.getExecutedApexPlugins().size(),
             'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
             'No Apex plugins should have run in the batch job\'s start method'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             1,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
             'One Apex plugin should have run in the batch job\'s execute method'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
             'No Apex plugins should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexExecutePlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).get(0);
-        System.assertEquals(true, apexExecutePlugin instanceof MockBatchPurgerPlugin, apexExecutePlugin);
-        System.assertEquals(false, ranPluginStart);
-        System.assertEquals(true, ranPluginExecute);
-        System.assertEquals(false, ranPluginFinish);
-        System.assertEquals(mockPluginConfiguration, pluginConfiguration);
-        System.assertEquals(expectedInput.batchableContext, batchInput.batchableContext);
+        System.Assert.isInstanceOfType(apexExecutePlugin, MockBatchPurgerPlugin.class, JSON.serializePretty(apexExecutePlugin));
+        System.Assert.isFalse(ranPluginStart);
+        System.Assert.isTrue(ranPluginExecute);
+        System.Assert.isFalse(ranPluginFinish);
+        System.Assert.areEqual(mockPluginConfiguration, pluginConfiguration);
+        System.Assert.areEqual(expectedInput.batchableContext, batchInput.batchableContext);
         logsToDelete = [SELECT Id FROM Log__c WHERE Id IN :logsToDelete];
-        System.assertEquals(0, logsToDelete.size(), 'All logs should have still been deleted by LogBatchPurger after running plugins: ' + logsToDelete);
+        System.Assert.areEqual(0, logsToDelete.size(), 'All logs should have still been deleted by LogBatchPurger after running plugins: ' + logsToDelete);
     }
 
     @IsTest
@@ -362,43 +362,43 @@ private class LogBatchPurger_Tests {
         LoggerTestConfigurator.setMock(mockPluginConfiguration);
         LogBatchPurger batchJobInstance = new LogBatchPurger();
         batchJobInstance.currentSObjectType = Schema.LogEntry__c.SObjectType;
-        System.assertEquals(false, ranPluginStart);
-        System.assertEquals(false, ranPluginExecute);
-        System.assertEquals(false, ranPluginFinish);
-        System.assertEquals(null, pluginConfiguration);
-        System.assertEquals(null, batchInput);
+        System.Assert.isFalse(ranPluginStart);
+        System.Assert.isFalse(ranPluginExecute);
+        System.Assert.isFalse(ranPluginFinish);
+        System.Assert.isNull(pluginConfiguration);
+        System.Assert.isNull(batchInput);
         Database.BatchableContext mockBatchableContext = LoggerMockDataCreator.createBatchableContext('some_fake_job_id');
 
         batchJobInstance.finish(mockBatchableContext);
 
         LoggerBatchableContext expectedInput = new LoggerBatchableContext(mockBatchableContext, batchJobInstance.currentSObjectType);
-        System.assertEquals(
+        System.Assert.areEqual(
             3,
             batchJobInstance.getExecutedApexPlugins().size(),
             'The map of executed Apex plugins should have 3 keys - one for each enum value in LogBatchPurger.BatchableMethod (START, EXECUTE, and FINISH)'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.START).size(),
             'No Apex plugins should have run in the batch job\'s start method'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.EXECUTE).size(),
             'No Apex plugins should have run in the batch job\'s execute method'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             1,
             batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).size(),
             'One Apex plugin should have run in the batch job\'s finish method'
         );
         LoggerPlugin.Batchable apexFinishPlugin = batchJobInstance.getExecutedApexPlugins().get(LogBatchPurger.BatchableMethod.FINISH).get(0);
-        System.assertEquals(true, apexFinishPlugin instanceof MockBatchPurgerPlugin, apexFinishPlugin);
-        System.assertEquals(false, ranPluginStart);
-        System.assertEquals(false, ranPluginExecute);
-        System.assertEquals(true, ranPluginFinish);
-        System.assertEquals(mockPluginConfiguration, pluginConfiguration);
-        System.assertEquals(expectedInput.sobjectType, batchInput.sobjectType);
+        System.Assert.isInstanceOfType(apexFinishPlugin, MockBatchPurgerPlugin.class, JSON.serializePretty(apexFinishPlugin));
+        System.Assert.isFalse(ranPluginStart);
+        System.Assert.isFalse(ranPluginExecute);
+        System.Assert.isTrue(ranPluginFinish);
+        System.Assert.areEqual(mockPluginConfiguration, pluginConfiguration);
+        System.Assert.areEqual(expectedInput.sobjectType, batchInput.sobjectType);
     }
 
     public class MockBatchPurgerPlugin implements LoggerPlugin.Batchable {

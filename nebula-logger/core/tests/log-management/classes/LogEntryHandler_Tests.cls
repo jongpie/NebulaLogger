@@ -16,7 +16,7 @@ private class LogEntryHandler_Tests {
 
     @IsTest
     static void it_should_return_the_logEntry_sobjectType() {
-        System.assertEquals(Schema.LogEntry__c.SObjectType, new LogEntryHandler().getSObjectType());
+        System.Assert.areEqual(Schema.LogEntry__c.SObjectType, new LogEntryHandler().getSObjectType());
     }
 
     @IsTest
@@ -29,7 +29,11 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(0, LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(), 'Handler class should not have executed');
+        System.Assert.areEqual(
+            0,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+            'Handler class should not have executed'
+        );
     }
 
     @IsTest
@@ -39,13 +43,13 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, RecordId__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(null, logEntry.RecordId__c);
+        System.Assert.isNull(logEntry.RecordId__c);
     }
 
     @IsTest
@@ -56,14 +60,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-        System.assertEquals(currentUser.Username, logEntry.RecordName__c);
+        System.Assert.areEqual(currentUser.Id, logEntry.RecordId__c);
+        System.Assert.areEqual(currentUser.Username, logEntry.RecordName__c);
     }
 
     @IsTest
@@ -74,14 +78,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(currentProfile.Id, logEntry.RecordId__c);
-        System.assertEquals(currentProfile.Name, logEntry.RecordName__c);
+        System.Assert.areEqual(currentProfile.Id, logEntry.RecordId__c);
+        System.Assert.areEqual(currentProfile.Name, logEntry.RecordName__c);
     }
 
     @IsTest
@@ -111,14 +115,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(currentUser.Id, logEntry.RecordId__c);
-        System.assertEquals(null, logEntry.RecordName__c);
+        System.Assert.areEqual(currentUser.Id, logEntry.RecordId__c);
+        System.Assert.isNull(logEntry.RecordName__c);
     }
 
     @IsTest
@@ -130,14 +134,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(true, logEntry.HasRecordJson__c);
-        System.assertEquals(recordJson, logEntry.RecordJson__c);
+        System.Assert.areEqual(true, logEntry.HasRecordJson__c);
+        System.Assert.areEqual(recordJson, logEntry.RecordJson__c);
     }
 
     @IsTest
@@ -149,14 +153,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(false, logEntry.HasRecordJson__c);
-        System.assertEquals(null, logEntry.RecordJson__c);
+        System.Assert.areEqual(false, logEntry.HasRecordJson__c);
+        System.Assert.isNull(logEntry.RecordJson__c);
     }
 
     @IsTest
@@ -166,20 +170,20 @@ private class LogEntryHandler_Tests {
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
         LoggerDataStore.getDatabase().insertRecord(logEntry);
         logEntry = [SELECT Id, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(null, logEntry.RecordJson__c);
+        System.Assert.isNull(logEntry.RecordJson__c);
         String recordJson = '{}';
         logEntry.RecordJson__c = recordJson;
 
         update logEntry;
 
-        System.assertEquals(
+        System.Assert.areEqual(
             4,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
         );
         logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(true, logEntry.HasRecordJson__c);
-        System.assertEquals(recordJson, logEntry.RecordJson__c);
+        System.Assert.areEqual(true, logEntry.HasRecordJson__c);
+        System.Assert.areEqual(recordJson, logEntry.RecordJson__c);
     }
 
     @IsTest
@@ -190,19 +194,19 @@ private class LogEntryHandler_Tests {
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
         LoggerDataStore.getDatabase().insertRecord(logEntry);
         logEntry = [SELECT Id, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertNotEquals(null, logEntry.RecordJson__c);
+        System.Assert.isNotNull(logEntry.RecordJson__c);
         logEntry.RecordJson__c = null;
 
         update logEntry;
 
-        System.assertEquals(
+        System.Assert.areEqual(
             4,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
         );
         logEntry = [SELECT Id, HasRecordJson__c, RecordJson__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(false, logEntry.HasRecordJson__c);
-        System.assertEquals(null, logEntry.RecordJson__c);
+        System.Assert.areEqual(false, logEntry.HasRecordJson__c);
+        System.Assert.isNull(logEntry.RecordJson__c);
     }
 
     @IsTest
@@ -213,14 +217,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, HasExceptionStackTrace__c, ExceptionStackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assert(!logEntry.HasExceptionStackTrace__c);
-        System.assertEquals(null, logEntry.ExceptionStackTrace__c);
+        System.Assert.isTrue(!logEntry.HasExceptionStackTrace__c);
+        System.Assert.isNull(logEntry.ExceptionStackTrace__c);
     }
 
     @IsTest
@@ -232,14 +236,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, HasExceptionStackTrace__c, ExceptionStackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assert(logEntry.HasExceptionStackTrace__c);
-        System.assertEquals(stackTrace, logEntry.ExceptionStackTrace__c);
+        System.Assert.isTrue(logEntry.HasExceptionStackTrace__c);
+        System.Assert.areEqual(stackTrace, logEntry.ExceptionStackTrace__c);
     }
 
     @IsTest
@@ -249,20 +253,20 @@ private class LogEntryHandler_Tests {
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
         LoggerDataStore.getDatabase().insertRecord(logEntry);
         logEntry = [SELECT Id, ExceptionStackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(null, logEntry.ExceptionStackTrace__c);
+        System.Assert.isNull(logEntry.ExceptionStackTrace__c);
 
         String stackTrace = 'something';
         logEntry.ExceptionStackTrace__c = stackTrace;
         update logEntry;
 
-        System.assertEquals(
+        System.Assert.areEqual(
             4,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
         );
         logEntry = [SELECT Id, HasExceptionStackTrace__c, ExceptionStackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assert(logEntry.HasExceptionStackTrace__c);
-        System.assertEquals(stackTrace, logEntry.ExceptionStackTrace__c);
+        System.Assert.isTrue(logEntry.HasExceptionStackTrace__c);
+        System.Assert.areEqual(stackTrace, logEntry.ExceptionStackTrace__c);
     }
 
     @IsTest
@@ -273,14 +277,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assert(!logEntry.HasStackTrace__c);
-        System.assertEquals(null, logEntry.StackTrace__c);
+        System.Assert.isTrue(!logEntry.HasStackTrace__c);
+        System.Assert.isNull(logEntry.StackTrace__c);
     }
 
     @IsTest
@@ -292,14 +296,14 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
         );
         logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assert(logEntry.HasStackTrace__c);
-        System.assertEquals(stackTrace, logEntry.StackTrace__c);
+        System.Assert.isTrue(logEntry.HasStackTrace__c);
+        System.Assert.areEqual(stackTrace, logEntry.StackTrace__c);
     }
 
     @IsTest
@@ -309,20 +313,20 @@ private class LogEntryHandler_Tests {
         LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
         LoggerDataStore.getDatabase().insertRecord(logEntry);
         logEntry = [SELECT Id, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(null, logEntry.StackTrace__c);
+        System.Assert.isNull(logEntry.StackTrace__c);
 
         String stackTrace = 'something';
         logEntry.StackTrace__c = stackTrace;
         update logEntry;
 
-        System.assertEquals(
+        System.Assert.areEqual(
             4,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed four times - two times for BEFORE_INSERT/AFTER_INSERT' + ' and two more times for BEFORE_UPDATE/AFTER_UPDATE'
         );
         logEntry = [SELECT Id, HasStackTrace__c, StackTrace__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assert(logEntry.HasStackTrace__c);
-        System.assertEquals(stackTrace, logEntry.StackTrace__c);
+        System.Assert.isTrue(logEntry.HasStackTrace__c);
+        System.Assert.areEqual(stackTrace, logEntry.StackTrace__c);
     }
 
     @IsTest
@@ -333,7 +337,7 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
@@ -353,15 +357,15 @@ private class LogEntryHandler_Tests {
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
-        System.assertEquals('Apex', logEntry.OriginType__c);
-        System.assertEquals(null, logEntry.OriginLocation__c);
-        System.assertEquals(null, logEntry.ApexClassApiVersion__c);
-        System.assertEquals(null, logEntry.ApexClassCreatedDate__c);
-        System.assertEquals(null, logEntry.ApexClassId__c);
-        System.assertEquals(null, logEntry.ApexClassLastModifiedDate__c);
-        System.assertEquals(null, logEntry.ApexClassName__c);
-        System.assertEquals(null, logEntry.ApexInnerClassName__c);
-        System.assertEquals(null, logEntry.ApexMethodName__c);
+        System.Assert.areEqual('Apex', logEntry.OriginType__c);
+        System.Assert.isNull(logEntry.OriginLocation__c);
+        System.Assert.isNull(logEntry.ApexClassApiVersion__c);
+        System.Assert.isNull(logEntry.ApexClassCreatedDate__c);
+        System.Assert.isNull(logEntry.ApexClassId__c);
+        System.Assert.isNull(logEntry.ApexClassLastModifiedDate__c);
+        System.Assert.isNull(logEntry.ApexClassName__c);
+        System.Assert.isNull(logEntry.ApexInnerClassName__c);
+        System.Assert.isNull(logEntry.ApexMethodName__c);
     }
 
     @IsTest
@@ -387,7 +391,7 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
@@ -406,14 +410,14 @@ private class LogEntryHandler_Tests {
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
-        System.assertEquals(exampleTopLevelClassMethodName, logEntry.OriginLocation__c);
-        System.assertEquals('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
-        System.assertEquals(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
-        System.assertEquals(apexClass.Id, logEntry.ApexClassId__c);
-        System.assertEquals(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
-        System.assertEquals(exampleTopLevelClassName, logEntry.ApexClassName__c);
-        System.assertEquals(null, logEntry.ApexInnerClassName__c);
-        System.assertEquals(methodName, logEntry.ApexMethodName__c);
+        System.Assert.areEqual(exampleTopLevelClassMethodName, logEntry.OriginLocation__c);
+        System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
+        System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
+        System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
+        System.Assert.areEqual(exampleTopLevelClassName, logEntry.ApexClassName__c);
+        System.Assert.isNull(logEntry.ApexInnerClassName__c);
+        System.Assert.areEqual(methodName, logEntry.ApexMethodName__c);
     }
 
     @IsTest
@@ -440,7 +444,7 @@ private class LogEntryHandler_Tests {
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
 
-        System.assertEquals(
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
             'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
@@ -459,14 +463,14 @@ private class LogEntryHandler_Tests {
             FROM LogEntry__c
             WHERE Id = :logEntry.Id
         ];
-        System.assertEquals(exampleInnerClassMethodName, logEntry.OriginLocation__c);
-        System.assertEquals('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
-        System.assertEquals(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
-        System.assertEquals(apexClass.Id, logEntry.ApexClassId__c);
-        System.assertEquals(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
-        System.assertEquals(exampleTopLevelClassName, logEntry.ApexClassName__c);
-        System.assertEquals(exampleInnerClassName, logEntry.ApexInnerClassName__c);
-        System.assertEquals(methodName, logEntry.ApexMethodName__c);
+        System.Assert.areEqual(exampleInnerClassMethodName, logEntry.OriginLocation__c);
+        System.Assert.areEqual('v' + apexClass.ApiVersion, logEntry.ApexClassApiVersion__c);
+        System.Assert.areEqual(apexClass.CreatedDate, logEntry.ApexClassCreatedDate__c);
+        System.Assert.areEqual(apexClass.Id, logEntry.ApexClassId__c);
+        System.Assert.areEqual(apexClass.LastModifiedDate, logEntry.ApexClassLastModifiedDate__c);
+        System.Assert.areEqual(exampleTopLevelClassName, logEntry.ApexClassName__c);
+        System.Assert.areEqual(exampleInnerClassName, logEntry.ApexInnerClassName__c);
+        System.Assert.areEqual(methodName, logEntry.ApexMethodName__c);
     }
 
     private static String getNamespacePrefix() {

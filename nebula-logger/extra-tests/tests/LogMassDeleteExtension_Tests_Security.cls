@@ -39,13 +39,13 @@ private class LogMassDeleteExtension_Tests_Security {
         System.Test.setCurrentPage(pageReference);
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
-            System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
+            System.Assert.isFalse(Schema.Log__c.SObjectType.getDescribe().isDeletable());
 
             new LogMassDeleteExtension(controller);
 
             String deleteAccessError = 'You do not have access to delete logs records';
-            System.assertEquals(true, ApexPages.hasMessages(ApexPages.SEVERITY.ERROR));
-            System.assertEquals(deleteAccessError, ApexPages.getMessages().get(0).getSummary());
+            System.Assert.isTrue(ApexPages.hasMessages(ApexPages.SEVERITY.ERROR));
+            System.Assert.areEqual(deleteAccessError, ApexPages.getMessages().get(0).getSummary());
         }
     }
 }

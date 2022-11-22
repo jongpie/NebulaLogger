@@ -20,8 +20,8 @@ private class LogEntryArchiveController_Tests {
             null
         );
 
-        System.assertNotEquals(0, returnedLogEntryArchives.size(), 'Records should have been returned');
-        System.assertEquals(rowLimit, returnedLogEntryArchives.size(), 'Returned records should match the specified row limit');
+        System.Assert.areNotEqual(0, returnedLogEntryArchives.size(), 'Records should have been returned');
+        System.Assert.areEqual(rowLimit, returnedLogEntryArchives.size(), 'Returned records should match the specified row limit');
     }
 
     @IsTest
@@ -37,8 +37,8 @@ private class LogEntryArchiveController_Tests {
             null
         );
 
-        System.assertNotEquals(0, returnedLogEntryArchives.size(), 'Records should have been returned');
-        System.assertEquals(expectedLogEntryArchives.size(), returnedLogEntryArchives.size(), 'Returned records should match the expected records');
+        System.Assert.areNotEqual(0, returnedLogEntryArchives.size(), 'Records should have been returned');
+        System.Assert.areEqual(expectedLogEntryArchives.size(), returnedLogEntryArchives.size(), 'Returned records should match the expected records');
     }
 
     @IsTest
@@ -57,8 +57,8 @@ private class LogEntryArchiveController_Tests {
             null
         );
 
-        System.assertEquals(1, returnedLogEntryArchives.size(), 'Only one matching record should have been returned');
-        System.assertEquals(true, returnedLogEntryArchives.get(0).LoggingLevelOrdinal__c > minimumLoggingLevel.ordinal());
+        System.Assert.areEqual(1, returnedLogEntryArchives.size(), 'Only one matching record should have been returned');
+        System.Assert.isTrue(returnedLogEntryArchives.get(0).LoggingLevelOrdinal__c > minimumLoggingLevel.ordinal());
     }
 
     @IsTest
@@ -76,8 +76,8 @@ private class LogEntryArchiveController_Tests {
             messageSearchTerm
         );
 
-        System.assertEquals(1, returnedLogEntryArchives.size(), 'Only one matching record should have been returned');
-        System.assertEquals(true, returnedLogEntryArchives.get(0).Message__c.contains(messageSearchTerm));
+        System.Assert.areEqual(1, returnedLogEntryArchives.size(), 'Only one matching record should have been returned');
+        System.Assert.isTrue(returnedLogEntryArchives.get(0).Message__c.contains(messageSearchTerm));
     }
 
     private static List<LogEntryArchive__b> createLogEntryArchive(Integer numberOfRecordsToCreate, LoggingLevel logLevel) {

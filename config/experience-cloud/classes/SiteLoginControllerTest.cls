@@ -10,6 +10,6 @@ global with sharing class SiteLoginControllerTest {
         controller.username = 'test@salesforce.com';
         controller.password = '123456';
 
-        System.assertEquals(controller.login(), null);
+        System.Assert.areEqual(controller.login(), null);
     }
 }

@@ -251,7 +251,7 @@ public without sharing class LogRetentionFilter {
         // Example of what you can't do in Apex:
         //          Object today = System.today();
         //          Object yesterday = System.today().addDays(-1);
-        //          System.assert(today > yesterday); // This line cannot execute since it's comparing Object
+        //          System.Assert.isTrue(today > yesterday); // This line cannot execute since it's comparing Object
         private Boolean compareDatetime(Datetime recordFieldValue, Datetime comparisonValue) {
             // TODO In a future release, it'd be great to switch (ha!) these hardcoded strings to instead use
             // a (new) private enum

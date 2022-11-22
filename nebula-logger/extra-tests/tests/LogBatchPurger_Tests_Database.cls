@@ -45,17 +45,17 @@ private class LogBatchPurger_Tests_Database {
 
         User standardUser = LoggerMockDataCreator.createUser(STANDARD_USER_PROFILE.Id);
         System.runAs(standardUser) {
-            System.assertEquals(false, Schema.Log__c.SObjectType.getDescribe().isDeletable());
+            System.Assert.isFalse(Schema.Log__c.SObjectType.getDescribe().isDeletable());
 
             try {
                 System.Test.startTest();
                 Database.executeBatch(new LogBatchPurger());
                 System.Test.stopTest();
             } catch (NoAccessException ex) {
-                System.assertEquals(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
+                System.Assert.areEqual(LogBatchPurger.NO_DELETE_ACCESS_EXCEPTION_MESSAGE, ex.getMessage());
             }
         }
         Integer updatedCountOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(originalCountOfLogEntries, updatedCountOfLogEntries);
+        System.Assert.areEqual(originalCountOfLogEntries, updatedCountOfLogEntries);
     }
 }

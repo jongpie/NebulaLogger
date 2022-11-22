@@ -20,29 +20,29 @@ private class FlowLogEntry_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
+        System.Assert.isTrue(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
         flowEntry.timestamp = System.now().addSeconds(-20);
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
-        System.assertEquals(1, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.getBufferSize());
         Logger.saveLog();
 
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
-        System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual(flowEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
     }
 
     @IsTest
@@ -50,26 +50,26 @@ private class FlowLogEntry_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
+        System.Assert.isTrue(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
         flowEntry.saveLog = true;
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
 
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
     }
 
     @IsTest
@@ -78,31 +78,31 @@ private class FlowLogEntry_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
+        System.Assert.isTrue(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
         flowEntry.saveLog = true;
         flowEntry.saveMethodName = Logger.SaveMethod.QUEUEABLE.name();
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
-        System.assertEquals(0, LoggerMockDataStore.getJobQueue().getEnqueuedJobs().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, LoggerMockDataStore.getJobQueue().getEnqueuedJobs().size());
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
-        System.assertEquals(1, LoggerMockDataStore.getJobQueue().getEnqueuedJobs().size());
+        System.Assert.areEqual(1, LoggerMockDataStore.getJobQueue().getEnqueuedJobs().size());
         LoggerMockDataStore.getJobQueue().executeJobs();
 
-        System.assertEquals(Logger.SaveMethod.QUEUEABLE.name(), Logger.lastSaveMethodNameUsed);
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(Logger.SaveMethod.QUEUEABLE.name(), Logger.lastSaveMethodNameUsed);
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
     }
 
     @IsTest
@@ -110,22 +110,22 @@ private class FlowLogEntry_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() > flowEntryLoggingLevel.ordinal());
+        System.Assert.isTrue(userLoggingLevel.ordinal() > flowEntryLoggingLevel.ordinal());
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
         Logger.saveLog();
 
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
     }
 
     @IsTest
@@ -135,26 +135,26 @@ private class FlowLogEntry_Tests {
         Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowLogEntry flowEntry = createFlowLogEntry();
-        System.assertEquals(null, flowEntry.faultMessage);
-        System.assertEquals(null, flowEntry.loggingLevelName);
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.isNull(flowEntry.faultMessage);
+        System.Assert.isNull(flowEntry.loggingLevelName);
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
-        System.assertEquals(1, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.getBufferSize());
         Logger.saveLog();
 
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(null, publishedLogEntryEvent.ExceptionMessage__c);
-        System.assertEquals(null, publishedLogEntryEvent.ExceptionType__c);
-        System.assertEquals(expectedEntryLoggingLevel.name(), publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.isNull(publishedLogEntryEvent.ExceptionType__c);
+        System.Assert.areEqual(expectedEntryLoggingLevel.name(), publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
     }
 
     @IsTest
@@ -165,25 +165,25 @@ private class FlowLogEntry_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.faultMessage = 'Whoops, a Flow error has occurred.';
-        System.assertEquals(null, flowEntry.loggingLevelName);
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.isNull(flowEntry.loggingLevelName);
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
-        System.assertEquals(1, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.getBufferSize());
         Logger.saveLog();
 
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowEntry.faultMessage, publishedLogEntryEvent.ExceptionMessage__c);
-        System.assertEquals('Flow.FaultError', publishedLogEntryEvent.ExceptionType__c);
-        System.assertEquals(expectedEntryLoggingLevel.name(), publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.faultMessage, publishedLogEntryEvent.ExceptionMessage__c);
+        System.Assert.areEqual('Flow.FaultError', publishedLogEntryEvent.ExceptionType__c);
+        System.Assert.areEqual(expectedEntryLoggingLevel.name(), publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
     }
 
     @IsTest
@@ -196,21 +196,21 @@ private class FlowLogEntry_Tests {
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = userLoggingLevel.name();
         flowEntry.scenario = 'Some scenario';
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
-        System.assertEquals(1, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.getBufferSize());
         Logger.saveLog();
 
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowEntry.scenario, publishedLogEntryEvent.TransactionScenario__c);
-        System.assertEquals(flowEntry.scenario, publishedLogEntryEvent.EntryScenario__c);
+        System.Assert.areEqual(flowEntry.scenario, publishedLogEntryEvent.TransactionScenario__c);
+        System.Assert.areEqual(flowEntry.scenario, publishedLogEntryEvent.EntryScenario__c);
     }
 
     @IsTest
@@ -218,7 +218,7 @@ private class FlowLogEntry_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowEntryLoggingLevel = LoggingLevel.DEBUG;
-        System.assert(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
+        System.Assert.isTrue(userLoggingLevel.ordinal() < flowEntryLoggingLevel.ordinal());
         System.Test.startTest();
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -226,28 +226,28 @@ private class FlowLogEntry_Tests {
         FlowLogEntry flowEntry = createFlowLogEntry();
         flowEntry.loggingLevelName = flowEntryLoggingLevel.name();
         flowEntry.tagsString = String.join(tags, ', ');
-        System.assertEquals(0, Logger.saveLogCallCount);
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.saveLogCallCount);
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
 
         FlowLogEntry.addFlowEntries(new List<FlowLogEntry>{ flowEntry });
-        System.assertEquals(1, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.getBufferSize());
         Logger.saveLog();
 
-        System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(1, Logger.saveLogCallCount);
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
-        System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        System.Assert.areEqual(0, Logger.getBufferSize());
+        System.Assert.areEqual(1, Logger.saveLogCallCount);
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
+        System.Assert.areEqual(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
-        System.assertEquals(flowEntry.message, publishedLogEntryEvent.Message__c);
-        System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
+        System.Assert.areEqual(flowEntry.loggingLevelName, publishedLogEntryEvent.LoggingLevel__c);
+        System.Assert.areEqual(flowEntry.message, publishedLogEntryEvent.Message__c);
+        System.Assert.areEqual('Flow', publishedLogEntryEvent.OriginType__c);
         List<String> publishedLogEntryEventTags = publishedLogEntryEvent.Tags__c.split('\n');
-        System.assertEquals(tags.size(), publishedLogEntryEventTags.size(), publishedLogEntryEventTags);
+        System.Assert.areEqual(tags.size(), publishedLogEntryEventTags.size(), JSON.serializePretty(publishedLogEntryEventTags));
         Set<String> tagsSet = new Set<String>(tags);
         for (String publishedTag : publishedLogEntryEventTags) {
             publishedTag = publishedTag.trim();
-            System.assert(tagsSet.contains(publishedTag), publishedTag + ' not found in expected tags set: ' + tagsSet);
+            System.Assert.isTrue(tagsSet.contains(publishedTag), publishedTag + ' not found in expected tags set: ' + tagsSet);
         }
     }
 }

@@ -8,7 +8,7 @@
 private class LogEntryHandler_Tests_EmailMessage {
     @IsTest
     static void it_should_populate_related_record_name_field_on_log_entry_with_email_message_subject() {
-        System.assertEquals(
+        System.Assert.areEqual(
             false,
             Schema.EmailMessage.Subject.getDescribe().isNameField(),
             'This test assumes that EmailMessage does not use Subject as the object\'s display-name field'
@@ -27,7 +27,7 @@ private class LogEntryHandler_Tests_EmailMessage {
         insert logEntry;
 
         logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
-        System.assertEquals(emailMessage.Id, logEntry.RecordId__c);
-        System.assertEquals(emailMessage.Subject, logEntry.RecordName__c);
+        System.Assert.areEqual(emailMessage.Id, logEntry.RecordId__c);
+        System.Assert.areEqual(emailMessage.Subject, logEntry.RecordName__c);
     }
 }

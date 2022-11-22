@@ -17,7 +17,7 @@ private class LogMessage_Tests {
 
         String returnedMessage = new CustomLogMessageWithoutImplementation().getMessage();
 
-        System.assertEquals(expectedMessage, returnedMessage);
+        System.Assert.areEqual(expectedMessage, returnedMessage);
     }
 
     @IsTest
@@ -27,7 +27,7 @@ private class LogMessage_Tests {
 
         String returnedMessage = new CustomLogMessageWithMessageOverride(originalMessage).getMessage();
 
-        System.assertEquals(expectedMessage, returnedMessage);
+        System.Assert.areEqual(expectedMessage, returnedMessage);
     }
 
     @IsTest
@@ -38,7 +38,7 @@ private class LogMessage_Tests {
 
         String returnedMessage = new LogMessage(unformattedMessage, arguments).getMessage();
 
-        System.assertEquals(expectedMessage, returnedMessage);
+        System.Assert.areEqual(expectedMessage, returnedMessage);
     }
 
     @IsTest
@@ -49,7 +49,7 @@ private class LogMessage_Tests {
 
         String returnedMessage = new LogMessage(unformattedMessage, argument1).getMessage();
 
-        System.assertEquals(expectedMessage, returnedMessage);
+        System.Assert.areEqual(expectedMessage, returnedMessage);
     }
 
     @IsTest
@@ -61,7 +61,7 @@ private class LogMessage_Tests {
 
         String returnedMessage = new LogMessage(unformattedMessage, argument1, argument2).getMessage();
 
-        System.assertEquals(expectedMessage, returnedMessage);
+        System.Assert.areEqual(expectedMessage, returnedMessage);
     }
 
     @IsTest
@@ -74,7 +74,7 @@ private class LogMessage_Tests {
 
         String returnedMessage = new LogMessage(unformattedMessage, argument1, argument2, argument3).getMessage();
 
-        System.assertEquals(expectedMessage, returnedMessage);
+        System.Assert.areEqual(expectedMessage, returnedMessage);
     }
 
     private class CustomLogMessageWithoutImplementation extends LogMessage {

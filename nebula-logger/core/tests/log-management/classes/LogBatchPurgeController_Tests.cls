@@ -27,10 +27,10 @@ private class LogBatchPurgeController_Tests {
         Set<String> expectedLogPurgeActions = new Set<String>{ LogBatchPurgeController.DELETE_LOG_PURGE_ACTION };
         expectedLogPurgeActions.addAll(fakeLogPurgeActions);
         Integer expectedLogPurgeActionsSize = expectedLogPurgeActions.size();
-        System.assertEquals(expectedLogPurgeActionsSize, picklistOptions.size(), 'Purge Action size mismatch');
+        System.Assert.areEqual(expectedLogPurgeActionsSize, picklistOptions.size(), 'Purge Action size mismatch');
         for (LogBatchPurgeController.PicklistOption picklistOption : picklistOptions) {
-            System.assertEquals(picklistOption.value, picklistOption.label, 'Purge action label mismatch');
-            System.assertEquals(true, expectedLogPurgeActions.contains(picklistOption.value), 'Purge Action not found');
+            System.Assert.areEqual(picklistOption.value, picklistOption.label, 'Purge action label mismatch');
+            System.Assert.isTrue(expectedLogPurgeActions.contains(picklistOption.value), 'Purge Action not found');
         }
     }
 
@@ -44,18 +44,18 @@ private class LogBatchPurgeController_Tests {
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('TODAY');
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'Log object summary size should match');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'Log object summary size should match');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionDelete,
                     summary.get('expr0'),
                     'Log object summary should match for purge action : delete'
                 );
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionCustom,
                     summary.get('expr0'),
                     'Log object summary should match for purge action : custom'
@@ -76,14 +76,14 @@ private class LogBatchPurgeController_Tests {
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('THIS_WEEK');
 
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'log summary size mismatch');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size mismatch');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary mismatch for purge action : delete');
+                System.Assert.areEqual(expectedRecordCountWithPurgeActionDelete, summary.get('expr0'), 'log object summary mismatch for purge action : delete');
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary mismatch for purge action : custom');
+                System.Assert.areEqual(expectedRecordCountWithPurgeActionCustom, summary.get('expr0'), 'log object summary mismatch for purge action : custom');
             }
         }
     }
@@ -99,18 +99,18 @@ private class LogBatchPurgeController_Tests {
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogObjectSummary('THIS_MONTH');
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionDelete,
                     summary.get('expr0'),
                     'log object summary should match for purge action : delete'
                 );
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionCustom,
                     summary.get('expr0'),
                     'log object summary should match for purge action : custom'
@@ -129,18 +129,18 @@ private class LogBatchPurgeController_Tests {
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('TODAY');
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionDelete,
                     summary.get('expr0'),
                     'log object summary should match for purge action : delete'
                 );
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionCustom,
                     summary.get('expr0'),
                     'log object summary should match for purge action : custom'
@@ -160,18 +160,18 @@ private class LogBatchPurgeController_Tests {
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('THIS_WEEK');
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionDelete,
                     summary.get('expr0'),
                     'log object summary should match for purge action : delete'
                 );
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionCustom,
                     summary.get('expr0'),
                     'log object summary should match for purge action : custom'
@@ -191,18 +191,18 @@ private class LogBatchPurgeController_Tests {
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryObjectSummary('THIS_MONTH');
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionDelete,
                     summary.get('expr0'),
                     'log object summary should match for purge action : delete'
                 );
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionCustom,
                     summary.get('expr0'),
                     'log object summary should match for purge action : custom'
@@ -221,18 +221,18 @@ private class LogBatchPurgeController_Tests {
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('TODAY');
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionDelete,
                     summary.get('expr0'),
                     'log object summary should match for purge action : delete'
                 );
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionCustom,
                     summary.get('expr0'),
                     'log object summary should match for purge action : custom'
@@ -251,18 +251,18 @@ private class LogBatchPurgeController_Tests {
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('THIS_WEEK');
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionDelete,
                     summary.get('expr0'),
                     'log object summary should match for purge action : delete'
                 );
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionCustom,
                     summary.get('expr0'),
                     'log object summary should match for purge action : custom'
@@ -281,18 +281,18 @@ private class LogBatchPurgeController_Tests {
 
         List<AggregateResult> logObjectResult = LogBatchPurgeController.getLogEntryTagObjectSummary('THIS_MONTH');
         Integer expectedAggregateResultSize = 2;
-        System.assertEquals(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
+        System.Assert.areEqual(expectedAggregateResultSize, logObjectResult.size(), 'log summary size should match');
 
         for (AggregateResult summary : logObjectResult) {
             if (summary.get('LogPurgeAction__c') === DEFAULT_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionDelete,
                     summary.get('expr0'),
                     'log object summary should match for purge action : delete'
                 );
             }
             if (summary.get('LogPurgeAction__c') === CUSTOM_PURGE_ACTION) {
-                System.assertEquals(
+                System.Assert.areEqual(
                     expectedRecordCountWithPurgeActionCustom,
                     summary.get('expr0'),
                     'log object summary should match for purge action : custom'
@@ -313,13 +313,13 @@ private class LogBatchPurgeController_Tests {
         List<AggregateResult> logEntryObjectSummary = (List<AggregateResult>) metricsResult.get('LogEntry__c');
         List<AggregateResult> logEntryTagObjectSummary = (List<AggregateResult>) metricsResult.get('LogEntryTag__c');
 
-        System.assertNotEquals(null, metricsResult.get('Log__c'), 'it should return metrics for Log__c object');
-        System.assertNotEquals(null, metricsResult.get('LogEntry__c'), 'it should return metrics for LogEntry__c object');
-        System.assertNotEquals(null, metricsResult.get('LogEntryTag__c'), 'it should return metrics for LogEntryTag__c object');
+        System.Assert.isNotNull(metricsResult.get('Log__c'), 'it should return metrics for Log__c object');
+        System.Assert.isNotNull(metricsResult.get('LogEntry__c'), 'it should return metrics for LogEntry__c object');
+        System.Assert.isNotNull(metricsResult.get('LogEntryTag__c'), 'it should return metrics for LogEntryTag__c object');
 
-        System.assertEquals(2, logObjectSummary.size(), 'it should return Log__c object summary records');
-        System.assertEquals(2, logEntryObjectSummary.size(), 'it should return LogEntry__c object summary records');
-        System.assertEquals(2, logEntryTagObjectSummary.size(), 'it should return LogEntry__c object summary records');
+        System.Assert.areEqual(2, logObjectSummary.size(), 'it should return Log__c object summary records');
+        System.Assert.areEqual(2, logEntryObjectSummary.size(), 'it should return LogEntry__c object summary records');
+        System.Assert.areEqual(2, logEntryTagObjectSummary.size(), 'it should return LogEntry__c object summary records');
     }
 
     @IsTest
@@ -336,8 +336,8 @@ private class LogBatchPurgeController_Tests {
         insert new List<SObject>{ setupEntityAccess, permissionSetAssignment };
 
         System.runAs(standardUser) {
-            System.assertEquals(true, FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), permissionSetAssignment);
-            System.assertEquals(
+            System.Assert.isTrue(FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), JSON.serializePretty(permissionSetAssignment));
+            System.Assert.areEqual(
                 true,
                 LogBatchPurgeController.canUserRunLogBatchPurger(),
                 'it didnot allow user to execute purge batch when custom permission assigned'
@@ -351,14 +351,14 @@ private class LogBatchPurgeController_Tests {
         LogBatchPurgeController.runPurgeBatch();
         System.Test.stopTest();
         List<AsyncApexJob> purgeJobs = LogBatchPurgeController.getPurgeBatchJobRecords();
-        System.assertEquals(1, purgeJobs.size(), 'should return purge batch job records');
+        System.Assert.areEqual(1, purgeJobs.size(), 'should return purge batch job records');
         for (AsyncApexJob job : purgeJobs) {
-            System.assertNotEquals(null, job.JobType, 'it should return job type');
-            System.assertNotEquals(null, job.JobItemsProcessed, 'it should return JobItemsProcessed');
-            System.assertNotEquals(null, job.NumberOfErrors, 'it should return noOfErrors');
-            System.assertNotEquals(null, job.Status, 'it should return JobStatus');
-            System.assertNotEquals(null, job.CreatedDate, 'it should return job CreatedDate');
-            System.assertNotEquals(null, job.CreatedBy.Name, 'it should return job CreatedBy.Name');
+            System.Assert.isNotNull(job.JobType, 'it should return job type');
+            System.Assert.isNotNull(job.JobItemsProcessed, 'it should return JobItemsProcessed');
+            System.Assert.isNotNull(job.NumberOfErrors, 'it should return noOfErrors');
+            System.Assert.isNotNull(job.Status, 'it should return JobStatus');
+            System.Assert.isNotNull(job.CreatedDate, 'it should return job CreatedDate');
+            System.Assert.isNotNull(job.CreatedBy.Name, 'it should return job CreatedBy.Name');
         }
     }
 
@@ -375,8 +375,8 @@ private class LogBatchPurgeController_Tests {
         insert new List<SObject>{ setupEntityAccess };
 
         System.runAs(standardUser) {
-            System.assertEquals(false, FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), 'permission set assigned');
-            System.assertEquals(
+            System.Assert.isFalse(FeatureManagement.checkPermission(CAN_EXECUTE_LOG_BATCH_PURGER_PERMISSION), 'permission set assigned');
+            System.Assert.areEqual(
                 false,
                 LogBatchPurgeController.canUserRunLogBatchPurger(),
                 'it did allow user to execute purge batch when custom permission is not assigned'
@@ -403,7 +403,7 @@ private class LogBatchPurgeController_Tests {
                 AND ApexClass.Name = :apexClassName
                 AND Id = :jobId
         ];
-        System.assertEquals(1, purgeBatchJobs.size(), 'should execute the purge batch job');
+        System.Assert.areEqual(1, purgeBatchJobs.size(), 'should execute the purge batch job');
     }
 
     //helper methods

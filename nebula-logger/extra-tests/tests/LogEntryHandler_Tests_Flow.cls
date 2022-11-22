@@ -18,19 +18,19 @@ private class LogEntryHandler_Tests_Flow {
         insert logEntry;
 
         logEntry = getLogEntry();
-        System.assertEquals(null, logEntry.OriginLocation__c, 'Origin Location was not null.');
-        System.assertEquals('Flow', logEntry.OriginType__c, 'Origin Type was not equal to Flow.');
-        System.assertEquals(null, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was not null.');
-        System.assertEquals(null, logEntry.FlowDescription__c, 'Flow Description was not null.');
-        System.assertEquals(null, logEntry.FlowDurableId__c, 'FlowDurableId was not null.');
-        System.assertEquals(null, logEntry.FlowLabel__c, 'Flow Label was not null.');
-        System.assertEquals(null, logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was not null.');
-        System.assertEquals(null, logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was not null.');
-        System.assertEquals(null, logEntry.FlowProcessType__c, 'FlowProcessType was not null.');
-        System.assertEquals(null, logEntry.FlowTriggerType__c, 'FlowTriggerType was not null.');
-        System.assertEquals(null, logEntry.FlowVersionApiVersionRuntime__c, 'FlowVersionApiVersionRuntime was not null.');
-        System.assertEquals(null, logEntry.FlowVersionNumber__c, 'FlowVersionNumber was not null.');
-        System.assertEquals(null, logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was not null.');
+        System.Assert.isNull(logEntry.OriginLocation__c, 'Origin Location was not null.');
+        System.Assert.areEqual('Flow', logEntry.OriginType__c, 'Origin Type was not equal to Flow.');
+        System.Assert.isNull(logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was not null.');
+        System.Assert.isNull(logEntry.FlowDescription__c, 'Flow Description was not null.');
+        System.Assert.isNull(logEntry.FlowDurableId__c, 'FlowDurableId was not null.');
+        System.Assert.isNull(logEntry.FlowLabel__c, 'Flow Label was not null.');
+        System.Assert.isNull(logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was not null.');
+        System.Assert.isNull(logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was not null.');
+        System.Assert.isNull(logEntry.FlowProcessType__c, 'FlowProcessType was not null.');
+        System.Assert.isNull(logEntry.FlowTriggerType__c, 'FlowTriggerType was not null.');
+        System.Assert.isNull(logEntry.FlowVersionApiVersionRuntime__c, 'FlowVersionApiVersionRuntime was not null.');
+        System.Assert.isNull(logEntry.FlowVersionNumber__c, 'FlowVersionNumber was not null.');
+        System.Assert.isNull(logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was not null.');
     }
 
     @IsTest
@@ -45,25 +45,25 @@ private class LogEntryHandler_Tests_Flow {
         insert logEntry;
 
         logEntry = getLogEntry();
-        System.assertEquals(EXAMPLE_FLOW_API_NAME, logEntry.OriginLocation__c, 'Origin Location was not null.');
-        System.assertEquals('Flow', logEntry.OriginType__c, 'OriginType was not flow.');
-        System.assertEquals(flowDefinitionView.ActiveVersionId, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was incorrect.');
-        System.assertEquals(flowDefinitionView.Description, logEntry.FlowDescription__c, 'FlowDescription was incorrect.');
-        System.assertEquals(flowDefinitionView.DurableId, logEntry.FlowDurableId__c, 'FlowDurableId was incorrect.');
-        System.assertEquals(flowDefinitionView.Label, logEntry.FlowLabel__c, 'FlowLabel was incorrect');
-        System.assertEquals(flowDefinitionView.LastModifiedBy, logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was incorrect.');
-        System.assertEquals(flowDefinitionView.LastModifiedDate, logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was incorrect.');
-        System.assertEquals(flowDefinitionView.ProcessType, logEntry.FlowProcessType__c, 'FlowProcessType was incorrect.');
-        System.assertEquals(flowDefinitionView.TriggerType, logEntry.FlowTriggerType__c, 'FlowTriggerType was incorrect.');
-        System.assertEquals(
+        System.Assert.areEqual(EXAMPLE_FLOW_API_NAME, logEntry.OriginLocation__c, 'Origin Location was not null.');
+        System.Assert.areEqual('Flow', logEntry.OriginType__c, 'OriginType was not flow.');
+        System.Assert.areEqual(flowDefinitionView.ActiveVersionId, logEntry.FlowActiveVersionId__c, 'FlowActiveVersionId was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.Description, logEntry.FlowDescription__c, 'FlowDescription was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.DurableId, logEntry.FlowDurableId__c, 'FlowDurableId was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.Label, logEntry.FlowLabel__c, 'FlowLabel was incorrect');
+        System.Assert.areEqual(flowDefinitionView.LastModifiedBy, logEntry.FlowLastModifiedByName__c, 'FlowLastModifiedByName was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.LastModifiedDate, logEntry.FlowLastModifiedDate__c, 'FlowLastModifiedDate was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.ProcessType, logEntry.FlowProcessType__c, 'FlowProcessType was incorrect.');
+        System.Assert.areEqual(flowDefinitionView.TriggerType, logEntry.FlowTriggerType__c, 'FlowTriggerType was incorrect.');
+        System.Assert.areEqual(
             'v' +
             flowVersion.ApiVersionRuntime +
             '.0',
             logEntry.FlowVersionApiVersionRuntime__c,
             'FlowVersionApiVersionRuntime was incorrect.'
         );
-        System.assertEquals(flowVersion.RunInMode, logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was incorrect.');
-        System.assertEquals(flowVersion.VersionNumber, logEntry.FlowVersionNumber__c, 'FlowVersionNumber was incorrect.');
+        System.Assert.areEqual(flowVersion.RunInMode, logEntry.FlowVersionRunInMode__c, 'FlowVersionRunInMode was incorrect.');
+        System.Assert.areEqual(flowVersion.VersionNumber, logEntry.FlowVersionNumber__c, 'FlowVersionNumber was incorrect.');
     }
 
     private static LogEntry__c getLogEntry() {

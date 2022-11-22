@@ -13,9 +13,9 @@ private class LoggerBatchableContext_Tests {
 
         LoggerBatchableContext context = new LoggerBatchableContext(mockBatchableContext, sobjectType);
 
-        System.assertEquals(mockBatchableContext, context.batchableContext);
-        System.assertEquals(sobjectType, context.sobjectType);
-        System.assertEquals(sobjectType.getDescribe().getName(), context.sobjectTypeName);
+        System.Assert.areEqual(mockBatchableContext, context.batchableContext);
+        System.Assert.areEqual(sobjectType, context.sobjectType);
+        System.Assert.areEqual(sobjectType.getDescribe().getName(), context.sobjectTypeName);
     }
 
     @IsTest
@@ -25,8 +25,8 @@ private class LoggerBatchableContext_Tests {
 
         LoggerBatchableContext context = new LoggerBatchableContext(nullBatchableContext, nullSObjectType);
 
-        System.assertEquals(null, context.batchableContext);
-        System.assertEquals(null, context.sobjectType);
-        System.assertEquals(null, context.sobjectTypeName);
+        System.Assert.isNull(context.batchableContext);
+        System.Assert.isNull(context.sobjectType);
+        System.Assert.isNull(context.sobjectTypeName);
     }
 }

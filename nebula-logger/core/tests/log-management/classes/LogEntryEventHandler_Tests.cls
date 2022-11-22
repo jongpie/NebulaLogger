@@ -11,7 +11,7 @@ private class LogEntryEventHandler_Tests {
 
     @IsTest
     static void it_should_return_the_logEntryEvent_sobjectType() {
-        System.assertEquals(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
+        System.Assert.areEqual(Schema.LogEntryEvent__e.SObjectType, new LogEntryEventHandler().getSObjectType());
     }
 
     @IsTest
@@ -24,7 +24,7 @@ private class LogEntryEventHandler_Tests {
         LoggerDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(
+        System.Assert.areEqual(
             0,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should not have executed'
@@ -38,23 +38,23 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         Integer countOfLogs = [SELECT COUNT() FROM Log__c];
-        System.assertEquals(0, countOfLogs);
+        System.Assert.areEqual(0, countOfLogs);
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
+        System.Assert.areEqual(0, countOfLogEntries);
 
         List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(new List<LogEntryEvent__e>());
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResults.isEmpty());
-        System.assertEquals(
+        System.Assert.isTrue(saveResults.isEmpty());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         countOfLogs = [SELECT COUNT() FROM Log__c];
-        System.assertEquals(0, countOfLogs);
+        System.Assert.areEqual(0, countOfLogs);
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
+        System.Assert.areEqual(0, countOfLogEntries);
     }
 
     @IsTest
@@ -64,9 +64,9 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         Integer countOfLogs = [SELECT COUNT() FROM Log__c];
-        System.assertEquals(0, countOfLogs);
+        System.Assert.areEqual(0, countOfLogs);
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
+        System.Assert.areEqual(0, countOfLogEntries);
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
         settings.IsSavingEnabled__c = true;
@@ -77,16 +77,16 @@ private class LogEntryEventHandler_Tests {
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         countOfLogs = [SELECT COUNT() FROM Log__c];
-        System.assertEquals(0, countOfLogs);
+        System.Assert.areEqual(0, countOfLogs);
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
+        System.Assert.areEqual(0, countOfLogEntries);
     }
 
     @IsTest
@@ -96,9 +96,9 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         Integer countOfLogs = [SELECT COUNT() FROM Log__c];
-        System.assertEquals(0, countOfLogs);
+        System.Assert.areEqual(0, countOfLogs);
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
+        System.Assert.areEqual(0, countOfLogEntries);
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
         settings.IsSavingEnabled__c = true;
@@ -118,16 +118,16 @@ private class LogEntryEventHandler_Tests {
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         countOfLogs = [SELECT COUNT() FROM Log__c];
-        System.assertEquals(0, countOfLogs);
+        System.Assert.areEqual(0, countOfLogs);
         countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
-        System.assertEquals(0, countOfLogEntries);
+        System.Assert.areEqual(0, countOfLogEntries);
     }
 
     @IsTest
@@ -142,17 +142,17 @@ private class LogEntryEventHandler_Tests {
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(null, log.TransactionScenario__c);
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.isNull(log.TransactionScenario__c);
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -164,7 +164,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         List<String> transactionIds = new List<String>{ '123-456', '789-0' };
-        System.assertEquals(2, transactionIds.size());
+        System.Assert.areEqual(2, transactionIds.size());
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (Integer i = 0; i < transactionIds.size(); i++) {
             LogEntryEvent__e logEntryEvent = createLogEntryEvent();
@@ -172,26 +172,26 @@ private class LogEntryEventHandler_Tests {
             logEntryEvent.TransactionId__c = transactionIds.get(i);
             logEntryEvents.add(logEntryEvent);
         }
-        System.assertEquals(transactionIds.size(), logEntryEvents.size());
+        System.Assert.areEqual(transactionIds.size(), logEntryEvents.size());
 
         List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(transactionIds.size(), saveResults.size());
+        System.Assert.areEqual(transactionIds.size(), saveResults.size());
         for (Database.SaveResult saveResult : saveResults) {
-            System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+            System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
         }
-        System.assertEquals(
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         List<Log__c> logs = [SELECT Id, TransactionId__c, (SELECT Id FROM LogEntries__r) FROM Log__c];
-        System.assertEquals(2, logs.size(), logs);
+        System.Assert.areEqual(2, logs.size(), JSON.serializePretty(logs));
         Set<String> uniqueTransactionIds = new Set<String>(transactionIds);
         for (Log__c log : logs) {
-            System.assert(uniqueTransactionIds.contains(log.TransactionId__c), log.TransactionId__c);
-            System.assertEquals(1, log.LogEntries__r.size());
+            System.Assert.isTrue(uniqueTransactionIds.contains(log.TransactionId__c), log.TransactionId__c);
+            System.Assert.areEqual(1, log.LogEntries__r.size());
         }
     }
 
@@ -208,18 +208,18 @@ private class LogEntryEventHandler_Tests {
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
+        System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
         Log__c log = getLog();
-        System.assertNotEquals(null, log.TransactionScenario__c);
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.isNotNull(log.TransactionScenario__c);
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -232,7 +232,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LoggerScenario__c existingLogScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
         insert existingLogScenario;
-        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
+        System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
         firstLogEntryEvent.EntryScenario__c = null;
         firstLogEntryEvent.TransactionScenario__c = existingLogScenario.UniqueId__c;
@@ -244,23 +244,23 @@ private class LogEntryEventHandler_Tests {
         List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(logEntryEvents.size(), saveResults.size());
+        System.Assert.areEqual(logEntryEvents.size(), saveResults.size());
         for (Database.SaveResult saveResult : saveResults) {
-            System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+            System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
         }
-        System.assertEquals(
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
+        System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
         Log__c log = getLog();
-        System.assertEquals(existingLogScenario.Id, log.TransactionScenario__c);
-        System.assertEquals(logEntryEvents.size(), log.LogEntries__r.size());
+        System.Assert.areEqual(existingLogScenario.Id, log.TransactionScenario__c);
+        System.Assert.areEqual(logEntryEvents.size(), log.LogEntries__r.size());
         for (Integer i = 0; i < logEntryEvents.size(); i++) {
             LogEntryEvent__e logEntryEvent = logEntryEvents.get(i);
             LogEntry__c logEntry = log.LogEntries__r.get(i);
-            System.assertEquals(logEntryEvent.TransactionScenario__c, log.TransactionScenario__r.UniqueId__c);
+            System.Assert.areEqual(logEntryEvent.TransactionScenario__c, log.TransactionScenario__r.UniqueId__c);
             validateLogFields(logEntryEvent, log);
             validateLogEntryFields(logEntryEvent, logEntry);
         }
@@ -275,7 +275,7 @@ private class LogEntryEventHandler_Tests {
         LoggerScenario__c existingLoggerScenario = new LoggerScenario__c(UniqueId__c = 'hello, world');
         insert existingLoggerScenario;
         String newScenario = 'some new value';
-        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
+        System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
         firstLogEntryEvent.EntryScenario__c = existingLoggerScenario.UniqueId__c;
         firstLogEntryEvent.TransactionScenario__c = null;
@@ -287,22 +287,22 @@ private class LogEntryEventHandler_Tests {
         List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(logEntryEvents.size(), saveResults.size());
+        System.Assert.areEqual(logEntryEvents.size(), saveResults.size());
         for (Database.SaveResult saveResult : saveResults) {
-            System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+            System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
         }
-        System.assertEquals(
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(2, [SELECT COUNT() FROM LoggerScenario__c]);
+        System.Assert.areEqual(2, [SELECT COUNT() FROM LoggerScenario__c]);
         Log__c log = getLog();
-        System.assertEquals(logEntryEvents.size(), log.LogEntries__r.size());
+        System.Assert.areEqual(logEntryEvents.size(), log.LogEntries__r.size());
         for (Integer i = 0; i < logEntryEvents.size(); i++) {
             LogEntryEvent__e logEntryEvent = logEntryEvents.get(i);
             LogEntry__c logEntry = log.LogEntries__r.get(i);
-            System.assertEquals(logEntryEvent.EntryScenario__c, logEntry.EntryScenario__r.UniqueId__c);
+            System.Assert.areEqual(logEntryEvent.EntryScenario__c, logEntry.EntryScenario__r.UniqueId__c);
             validateLogFields(logEntryEvent, log);
             validateLogEntryFields(logEntryEvent, logEntry);
         }
@@ -318,7 +318,7 @@ private class LogEntryEventHandler_Tests {
         insert existingLoggerScenario;
         String newTransactionScenario = 'some new value';
         String newEntryScenario = 'some OTHER new value';
-        System.assertEquals(1, [SELECT COUNT() FROM LoggerScenario__c]);
+        System.Assert.areEqual(1, [SELECT COUNT() FROM LoggerScenario__c]);
         LogEntryEvent__e firstLogEntryEvent = createLogEntryEvent();
         firstLogEntryEvent.EntryScenario__c = existingLoggerScenario.UniqueId__c;
         firstLogEntryEvent.TransactionScenario__c = newTransactionScenario;
@@ -330,23 +330,23 @@ private class LogEntryEventHandler_Tests {
         List<Database.SaveResult> saveResults = LoggerMockDataStore.getEventBus().publishRecords(logEntryEvents);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(logEntryEvents.size(), saveResults.size());
+        System.Assert.areEqual(logEntryEvents.size(), saveResults.size());
         for (Database.SaveResult saveResult : saveResults) {
-            System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+            System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
         }
-        System.assertEquals(
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(3, [SELECT COUNT() FROM LoggerScenario__c]);
+        System.Assert.areEqual(3, [SELECT COUNT() FROM LoggerScenario__c]);
         Log__c log = getLog();
-        System.assertEquals(logEntryEvents.size(), log.LogEntries__r.size());
+        System.Assert.areEqual(logEntryEvents.size(), log.LogEntries__r.size());
         for (Integer i = 0; i < logEntryEvents.size(); i++) {
             LogEntryEvent__e logEntryEvent = logEntryEvents.get(i);
             LogEntry__c logEntry = log.LogEntries__r.get(i);
-            System.assertEquals(logEntryEvent.TransactionScenario__c, log.TransactionScenario__r.UniqueId__c);
-            System.assertEquals(logEntryEvent.EntryScenario__c, logEntry.EntryScenario__r.UniqueId__c);
+            System.Assert.areEqual(logEntryEvent.TransactionScenario__c, log.TransactionScenario__r.UniqueId__c);
+            System.Assert.areEqual(logEntryEvent.EntryScenario__c, logEntry.EntryScenario__r.UniqueId__c);
             validateLogFields(logEntryEvent, log);
             validateLogEntryFields(logEntryEvent, logEntry);
         }
@@ -359,25 +359,25 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
         LogEntryEvent__e originalLogEntryEvent = createLogEntryEvent();
-        System.assertNotEquals(null, originalLogEntryEvent.EventUuid);
+        System.Assert.isNotNull(originalLogEntryEvent.EventUuid);
         LogEntryEvent__e duplicateLogEntryEvent = originalLogEntryEvent.clone();
 
         Database.SaveResult firstSaveResult = LoggerMockDataStore.getEventBus().publishRecord(originalLogEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c WHERE EventUuid__c = :originalLogEntryEvent.EventUuid];
-        System.assertEquals(1, logEntries.size());
+        System.Assert.areEqual(1, logEntries.size());
         Database.SaveResult secondSaveResult = LoggerMockDataStore.getEventBus().publishRecord(duplicateLogEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, firstSaveResult.isSuccess(), firstSaveResult.getErrors());
-        System.assertEquals(true, secondSaveResult.isSuccess(), secondSaveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(firstSaveResult.isSuccess(), firstSaveResult.getErrors().toString());
+        System.Assert.isTrue(secondSaveResult.isSuccess(), secondSaveResult.getErrors().toString());
+        System.Assert.areEqual(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed two times for AFTER_INSERT (once for each LogEntryEvent__e record'
         );
         logEntries = [SELECT Id FROM LogEntry__c WHERE EventUuid__c = :originalLogEntryEvent.EventUuid];
-        System.assertEquals(1, logEntries.size());
+        System.Assert.areEqual(1, logEntries.size());
     }
 
     @IsTest
@@ -399,7 +399,7 @@ private class LogEntryEventHandler_Tests {
         }
 
         Log__c log = getLog();
-        System.assertEquals(currentUser.Id, log.OwnerId);
+        System.Assert.areEqual(currentUser.Id, log.OwnerId);
     }
 
     @IsTest
@@ -421,7 +421,7 @@ private class LogEntryEventHandler_Tests {
         }
 
         Log__c log = getLog();
-        System.assertEquals(automatedProcessUser.Id, log.OwnerId);
+        System.Assert.areEqual(automatedProcessUser.Id, log.OwnerId);
     }
 
     @IsTest
@@ -449,7 +449,7 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
         Log__c log = getLog();
-        System.assertEquals(loggerScenario.OwnerId, log.OwnerId);
+        System.Assert.areEqual(loggerScenario.OwnerId, log.OwnerId);
     }
 
     @IsTest
@@ -482,16 +482,16 @@ private class LogEntryEventHandler_Tests {
             .getAuthSessionProxies(userIds)
             .get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
-        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Application, log.LoginApplication__c);
-        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Browser, log.LoginBrowser__c);
-        System.assertEquals(expectedAuthSessionProxy?.LoginHistoryId, log.LoginHistoryId__c);
-        System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Platform, log.LoginPlatform__c);
-        System.assertEquals(expectedAuthSessionProxy?.LoginType, log.LoginType__c);
-        System.assertEquals(expectedAuthSessionProxy?.LogoutUrl, log.LogoutUrl__c);
-        System.assertEquals(expectedAuthSessionProxy?.Id, log.SessionId__c);
-        System.assertEquals(expectedAuthSessionProxy?.SessionSecurityLevel, log.SessionSecurityLevel__c);
-        System.assertEquals(expectedAuthSessionProxy?.SessionType, log.SessionType__c);
-        System.assertEquals(expectedAuthSessionProxy?.SourceIp, log.SourceIp__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.LoginHistory.Application, log.LoginApplication__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.LoginHistory.Browser, log.LoginBrowser__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.LoginHistoryId, log.LoginHistoryId__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.LoginHistory.Platform, log.LoginPlatform__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.LoginType, log.LoginType__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.LogoutUrl, log.LogoutUrl__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.Id, log.SessionId__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.SessionSecurityLevel, log.SessionSecurityLevel__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.SessionType, log.SessionType__c);
+        System.Assert.areEqual(expectedAuthSessionProxy?.SourceIp, log.SourceIp__c);
     }
 
     @IsTest
@@ -509,11 +509,11 @@ private class LogEntryEventHandler_Tests {
 
         Organization expectedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
         Log__c log = getLog();
-        System.assertEquals(String.valueOf(expectedOrganization.Id), log.OrganizationId__c);
-        System.assertEquals(expectedOrganization.InstanceName, log.OrganizationInstanceName__c);
-        System.assertEquals(expectedOrganization.Name, log.OrganizationName__c);
-        System.assertEquals(expectedOrganization.NamespacePrefix, log.OrganizationNamespacePrefix__c);
-        System.assertEquals(expectedOrganization.OrganizationType, log.OrganizationType__c);
+        System.Assert.areEqual(String.valueOf(expectedOrganization.Id), log.OrganizationId__c);
+        System.Assert.areEqual(expectedOrganization.InstanceName, log.OrganizationInstanceName__c);
+        System.Assert.areEqual(expectedOrganization.Name, log.OrganizationName__c);
+        System.Assert.areEqual(expectedOrganization.NamespacePrefix, log.OrganizationNamespacePrefix__c);
+        System.Assert.areEqual(expectedOrganization.OrganizationType, log.OrganizationType__c);
     }
 
     @IsTest
@@ -532,12 +532,12 @@ private class LogEntryEventHandler_Tests {
         List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
         User expectedUser = LoggerEngineDataSelector.getInstance().getUsers(userIds).get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
-        System.assertEquals(expectedUser.Username, log.LoggedByUsername__c);
-        System.assertEquals(expectedUser.Profile.Name, log.ProfileName__c);
-        System.assertEquals(expectedUser.Profile.UserLicense.LicenseDefinitionKey, log.UserLicenseDefinitionKey__c);
-        System.assertEquals(expectedUser.Profile.UserLicenseId, log.UserLicenseId__c);
-        System.assertEquals(expectedUser.Profile.UserLicense.Name, log.UserLicenseName__c);
-        System.assertEquals(expectedUser.UserRole?.Name, log.UserRoleName__c);
+        System.Assert.areEqual(expectedUser.Username, log.LoggedByUsername__c);
+        System.Assert.areEqual(expectedUser.Profile.Name, log.ProfileName__c);
+        System.Assert.areEqual(expectedUser.Profile.UserLicense.LicenseDefinitionKey, log.UserLicenseDefinitionKey__c);
+        System.Assert.areEqual(expectedUser.Profile.UserLicenseId, log.UserLicenseId__c);
+        System.Assert.areEqual(expectedUser.Profile.UserLicense.Name, log.UserLicenseName__c);
+        System.Assert.areEqual(expectedUser.UserRole?.Name, log.UserRoleName__c);
     }
 
     // TODO - testing topics is tricky. Within the unlocked package, we can test it,
@@ -563,20 +563,20 @@ private class LogEntryEventHandler_Tests {
     //     Database.SaveResult saveResult = EventBus.publish(logEntryEvent);
     //     System.Test.stopTest();
 
-    //     System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
+    //     System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
 
     //     Log__c log = getLog();
-    //     System.assertEquals(1, log.LogEntries__r.size());
+    //     System.Assert.areEqual(1, log.LogEntries__r.size());
     //     LogEntry__c logEntry = log.LogEntries__r.get(0);
 
-    //     System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+    //     System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
     //     validateLogFields(logEntryEvent, log);
     //     validateLogEntryFields(logEntryEvent, logEntry);
 
     //     Set<String> tagsSet = new Set<String>(tags);
     //     List<TopicAssignment> topicAssignments = [SELECT Id, EntityId, TopicId, Topic.Name FROM TopicAssignment WHERE EntityId = :logEntry.Id];
     //     for (TopicAssignment topicAssignment : topicAssignments) {
-    //         System.assert(tagsSet.contains(topicAssignment.Topic.Name));
+    //         System.Assert.isTrue(tagsSet.contains(topicAssignment.Topic.Name));
     //     }
     // }
 
@@ -586,32 +586,32 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.Assert.isTrue(LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         List<String> tags = new List<String>{ 'test-tag-1', 'test-tag-2' };
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
-        System.assertNotEquals(null, logEntryEvent.EventUuid);
+        System.Assert.isNotNull(logEntryEvent.EventUuid);
         logEntryEvent.Tags__c = String.join(tags, '\n');
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
         List<LogEntryTag__c> logEntryTags = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(tags.size(), logEntryTags.size());
+        System.Assert.areEqual(tags.size(), logEntryTags.size());
         Set<String> tagsSet = new Set<String>(tags);
         for (LogEntryTag__c logEntryTag : logEntryTags) {
-            System.assert(tagsSet.contains(logEntryTag.Tag__r.Name));
+            System.Assert.isTrue(tagsSet.contains(logEntryTag.Tag__r.Name));
         }
     }
 
@@ -621,34 +621,34 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.Assert.isTrue(LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         String testTagName = 'Some tag!';
         LoggerTag__c tag = new LoggerTag__c(Name = testTagName);
         insert tag;
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
-        System.assertNotEquals(null, logEntryEvent.EventUuid);
+        System.Assert.isNotNull(logEntryEvent.EventUuid);
         logEntryEvent.Tags__c = testTagName;
 
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :testTagName];
-        System.assertEquals(1, countOfTagsWithTagName);
+        System.Assert.areEqual(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(tag.Id, logEntryTag.Tag__c);
-        System.assertEquals(tag.Name, logEntryTag.Tag__r.Name);
+        System.Assert.areEqual(tag.Id, logEntryTag.Tag__c);
+        System.Assert.areEqual(tag.Name, logEntryTag.Tag__r.Name);
     }
 
     @IsTest
@@ -657,7 +657,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.Assert.isTrue(LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = 'my message';
         logEntryEvent.Tags__c = null;
@@ -674,22 +674,22 @@ private class LogEntryEventHandler_Tests {
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
-        System.assertEquals(1, countOfTagsWithTagName);
+        System.Assert.areEqual(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(configuredTagName, logEntryTag.Tag__r.Name);
+        System.Assert.areEqual(configuredTagName, logEntryTag.Tag__r.Name);
     }
 
     @IsTest
@@ -698,7 +698,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.Assert.isTrue(LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Tags__c = null;
         String configuredTagName = 'CMDT Tag';
@@ -714,22 +714,22 @@ private class LogEntryEventHandler_Tests {
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
-        System.assertEquals(1, countOfTagsWithTagName);
+        System.Assert.areEqual(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(configuredTagName, logEntryTag.Tag__r.Name);
+        System.Assert.areEqual(configuredTagName, logEntryTag.Tag__r.Name);
     }
 
     @IsTest
@@ -738,7 +738,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.Assert.isTrue(LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         String zipCodeRegEx = '(^[0-9]{4}?[0-9]$|^[0-9]{4}?[0-9]-[0-9]{4}$)';
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = '94541';
@@ -756,22 +756,22 @@ private class LogEntryEventHandler_Tests {
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
-        System.assertEquals(1, countOfTagsWithTagName);
+        System.Assert.areEqual(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(configuredTagName, logEntryTag.Tag__r.Name);
+        System.Assert.areEqual(configuredTagName, logEntryTag.Tag__r.Name);
     }
 
     @IsTest
@@ -780,7 +780,7 @@ private class LogEntryEventHandler_Tests {
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.Log__c.SObjectType).IsEnabled__c = false;
         LoggerTestConfigurator.getSObjectHandlerConfiguration(Schema.LogEntry__c.SObjectType).IsEnabled__c = false;
-        System.assertEquals(true, LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
+        System.Assert.isTrue(LoggerParameter.ENABLE_TAGGING, 'Tagging is not enabled within test context, cannot execute tagging test');
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
         logEntryEvent.Message__c = 'my message';
         logEntryEvent.Tags__c = null;
@@ -797,22 +797,22 @@ private class LogEntryEventHandler_Tests {
         Database.SaveResult saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
         Integer countOfTagsWithTagName = [SELECT COUNT() FROM LoggerTag__c WHERE Name = :configuredTagName];
-        System.assertEquals(1, countOfTagsWithTagName);
+        System.Assert.areEqual(1, countOfTagsWithTagName);
         LogEntryTag__c logEntryTag = [SELECT Id, LogEntry__c, Tag__c, Tag__r.Name FROM LogEntryTag__c WHERE LogEntry__c = :logEntry.Id];
-        System.assertEquals(configuredTagName, logEntryTag.Tag__r.Name);
+        System.Assert.areEqual(configuredTagName, logEntryTag.Tag__r.Name);
     }
 
     @IsTest
@@ -824,7 +824,7 @@ private class LogEntryEventHandler_Tests {
         System.Test.setMock(HttpCalloutMock.class, LoggerMockDataCreator.createHttpCallout().setStatusCode(200).setResponseBody(createStatusApiResponseJson()));
         LoggerParameter__mdt mockCallStatusApiParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = 'true');
         LoggerTestConfigurator.setMock(mockCallStatusApiParameter);
-        System.assertEquals(true, LoggerParameter.CALL_STATUS_API);
+        System.Assert.isTrue(LoggerParameter.CALL_STATUS_API);
         LogEntryEvent__e logEntryEvent = createLogEntryEvent();
 
         // TODO System.Test.startTest() & stopTest() are still being used so that the callout in LogEntryEventHandler executes,
@@ -834,17 +834,17 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
         System.Test.stopTest();
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(MOCK_RELEASE_NUMBER, log.ApiReleaseNumber__c);
-        System.assertEquals(MOCK_RELEASE_VERSION, log.ApiReleaseVersion__c);
+        System.Assert.areEqual(MOCK_RELEASE_NUMBER, log.ApiReleaseNumber__c);
+        System.Assert.areEqual(MOCK_RELEASE_VERSION, log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -869,19 +869,19 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
         System.Test.stopTest();
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(0, System.Limits.getCallouts());
+        System.Assert.areEqual(0, System.Limits.getCallouts());
         Log__c log = getLog();
-        System.assertNotEquals(recentLog.Id, log.Id, log.StartTime__c);
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areNotEqual(recentLog.Id, log.Id);
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(recentLog.ApiReleaseNumber__c, log.ApiReleaseNumber__c);
-        System.assertEquals(recentLog.ApiReleaseVersion__c, log.ApiReleaseVersion__c);
+        System.Assert.areEqual(recentLog.ApiReleaseNumber__c, log.ApiReleaseNumber__c);
+        System.Assert.areEqual(recentLog.ApiReleaseVersion__c, log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -904,19 +904,19 @@ private class LogEntryEventHandler_Tests {
         LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
         System.Test.stopTest();
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
-        System.assertEquals(0, System.Limits.getCallouts());
+        System.Assert.areEqual(0, System.Limits.getCallouts());
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
-        System.assertEquals(null, log.ApiReleaseNumber__c);
-        System.assertEquals(null, log.ApiReleaseVersion__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.isNull(log.ApiReleaseNumber__c);
+        System.Assert.isNull(log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -940,25 +940,25 @@ private class LogEntryEventHandler_Tests {
             saveResult = LoggerMockDataStore.getEventBus().publishRecord(logEntryEvent);
             LoggerMockDataStore.getEventBus().deliver(new LogEntryEventHandler());
             System.Test.stopTest();
-            System.assert(false, 'Exception expected, this assert should not run');
+            System.Assert.fail('Exception expected, this assert should not run');
         } catch (Exception ex) {
-            System.assertEquals(CalloutException.class.getName(), ex.getTypeName());
+            System.Assert.areEqual(CalloutException.class.getName(), ex.getTypeName());
             String expectedErrorMessage = 'Callout failed for https://api.status.salesforce.com/v1/instances/';
-            System.assert(ex.getMessage().contains(expectedErrorMessage));
+            System.Assert.isTrue(ex.getMessage().contains(expectedErrorMessage));
         }
 
-        System.assertEquals(true, saveResult.isSuccess(), saveResult.getErrors());
-        System.assertEquals(
+        System.Assert.isTrue(saveResult.isSuccess(), saveResult.getErrors().toString());
+        System.Assert.areEqual(
             1,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
             'Handler class should have executed one time for AFTER_INSERT'
         );
         Log__c log = getLog();
-        System.assertEquals(1, log.LogEntries__r.size());
+        System.Assert.areEqual(1, log.LogEntries__r.size());
         LogEntry__c logEntry = log.LogEntries__r.get(0);
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c);
-        System.assertEquals(null, log.ApiReleaseNumber__c);
-        System.assertEquals(null, log.ApiReleaseVersion__c);
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c);
+        System.Assert.isNull(log.ApiReleaseNumber__c);
+        System.Assert.isNull(log.ApiReleaseVersion__c);
         validateLogFields(logEntryEvent, log);
         validateLogEntryFields(logEntryEvent, logEntry);
     }
@@ -1149,274 +1149,306 @@ private class LogEntryEventHandler_Tests {
 
         Id logOwnerId = logEntryEvent.LoggedById__c == null ? UserInfo.getUserId() : logEntryEvent.LoggedById__c;
 
-        System.assertEquals(logEntryEvent.ApiVersion__c, log.ApiVersion__c, 'log.ApiVersion__c was not properly set');
-        System.assertEquals(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
-        System.assertEquals(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
-        System.assertEquals(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
-        System.assertEquals(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c, 'log.LoggerVersionNumber__c was not properly set');
-        System.assertEquals(logEntryEvent.LoginDomain__c, log.LoginDomain__c, 'log.LoginDomain__c was not properly set');
-        System.assertEquals(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c, 'log.LoginHistoryId__c was not properly set');
-        System.assertEquals(logEntryEvent.LoginType__c, log.LoginType__c, 'log.LoginType__c was not properly set');
-        System.assertEquals(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c, 'log.LogoutUrl__c was not properly set');
-        System.assertEquals(logEntryEvent.NetworkId__c, log.NetworkId__c, 'log.NetworkId__c was not properly set');
-        System.assertEquals(logOwnerId, log.OwnerId, 'log.OwnerId was not properly set');
-        System.assertEquals(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
-        System.assertEquals(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
-        System.assertEquals(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
-        System.assertEquals(logEntryEvent.RequestId__c, log.RequestId__c, 'log.RequestId__c was not properly set');
-        System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
-        System.assertEquals(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
-        System.assertEquals(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');
-        System.assertEquals(logEntryEvent.SessionType__c, log.SessionType__c, 'log.SessionType__c was not properly set');
-        System.assertEquals(logEntryEvent.SourceIp__c, log.SourceIp__c, 'log.SourceIp__c was not properly set');
-        System.assertEquals(logEntryEvent.SystemMode__c, log.SystemMode__c, 'log.SystemMode__c was not properly set');
-        System.assertEquals(logEntryEvent.ThemeDisplayed__c, log.ThemeDisplayed__c, 'log.ThemeDisplayed__c was not properly set');
-        System.assertEquals(logEntryEvent.TimeZoneId__c, log.TimeZoneId__c, 'log.TimeZoneId__c was not properly set');
-        System.assertEquals(logEntryEvent.TimeZoneName__c, log.TimeZoneName__c, 'log.TimeZoneName__c was not properly set');
-        System.assertEquals(logEntryEvent.TransactionId__c, log.TransactionId__c, 'log.TransactionId__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.ApiVersion__c, log.ApiVersion__c, 'log.ApiVersion__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.Locale__c, log.Locale__c, 'log.Locale__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoggedById__c, log.LoggedBy__c, 'log.LoggedBy__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoggedByUsername__c, log.LoggedByUsername__c, 'log.LoggedByUsername__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoggerVersionNumber__c, log.LoggerVersionNumber__c, 'log.LoggerVersionNumber__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoginDomain__c, log.LoginDomain__c, 'log.LoginDomain__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoginHistoryId__c, log.LoginHistoryId__c, 'log.LoginHistoryId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoginType__c, log.LoginType__c, 'log.LoginType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LogoutUrl__c, log.LogoutUrl__c, 'log.LogoutUrl__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.NetworkId__c, log.NetworkId__c, 'log.NetworkId__c was not properly set');
+        System.Assert.areEqual(logOwnerId, log.OwnerId, 'log.OwnerId was not properly set');
+        System.Assert.areEqual(logEntryEvent.ParentLogTransactionId__c, log.ParentLogTransactionId__c, 'log.ParentLogTransactionId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ProfileId__c, log.ProfileId__c, 'log.ProfileId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ProfileName__c, log.ProfileName__c, 'log.ProfileName__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.RequestId__c, log.RequestId__c, 'log.RequestId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.SessionId__c, log.SessionId__c, 'log.SessionId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.SessionSecurityLevel__c, log.SessionSecurityLevel__c, 'log.SessionSecurityLevel__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.SessionType__c, log.SessionType__c, 'log.SessionType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.SourceIp__c, log.SourceIp__c, 'log.SourceIp__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.SystemMode__c, log.SystemMode__c, 'log.SystemMode__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ThemeDisplayed__c, log.ThemeDisplayed__c, 'log.ThemeDisplayed__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.TimeZoneId__c, log.TimeZoneId__c, 'log.TimeZoneId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.TimeZoneName__c, log.TimeZoneName__c, 'log.TimeZoneName__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.TransactionId__c, log.TransactionId__c, 'log.TransactionId__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.TransactionScenario__c?.left(Schema.LoggerScenario__c.Name.getDescribe().getLength()),
             log.TransactionScenario__r?.Name,
             'log.TransactionScenario__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.TransactionScenario__c,
             log.TransactionScenario__r.UniqueId__c,
             'log.TransactionScenario__r.UniqueId__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.UserLoggingLevel__c, log.UserLoggingLevel__c, 'log.UserLoggingLevel__c was not properly set');
-        System.assertEquals(logEntryEvent.UserLoggingLevelOrdinal__c, log.UserLoggingLevelOrdinal__c, 'log.UserLoggingLevelOrdinal__c was not properly set');
-        // System.assertEquals(currentUser.UserRoleId, log.UserRoleId__c, 'log.UserRoleId__c was not properly set');
-        // System.assertEquals(currentUser.UserRoleId == null ? null : currentUser.UserRole.Name, log.UserRoleName__c, 'log.UserRoleName__c was not properly set');
-        System.assertEquals(logEntryEvent.UserType__c, log.UserType__c, 'log.UserType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.UserLoggingLevel__c, log.UserLoggingLevel__c, 'log.UserLoggingLevel__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.UserLoggingLevelOrdinal__c, log.UserLoggingLevelOrdinal__c, 'log.UserLoggingLevelOrdinal__c was not properly set');
+        // System.Assert.areEqual(currentUser.UserRoleId, log.UserRoleId__c, 'log.UserRoleId__c was not properly set');
+        // System.Assert.areEqual(currentUser.UserRoleId == null ? null : currentUser.UserRole.Name, log.UserRoleName__c, 'log.UserRoleName__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.UserType__c, log.UserType__c, 'log.UserType__c was not properly set');
 
         // Org fields
-        System.assertEquals(logEntryEvent.OrganizationDomainUrl__c, log.OrganizationDomainUrl__c, 'log.OrganizationDomainUrl__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.OrganizationDomainUrl__c, log.OrganizationDomainUrl__c, 'log.OrganizationDomainUrl__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.OrganizationEnvironmentType__c,
             log.OrganizationEnvironmentType__c,
             'log.OrganizationEnvironmentType__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.OrganizationId__c, log.OrganizationId__c, 'log.OrganizationId__c was not properly set');
-        System.assertEquals(logEntryEvent.OrganizationInstanceName__c, log.OrganizationInstanceName__c, 'log.OrganizationInstanceName__c was not properly set');
-        System.assertEquals(logEntryEvent.OrganizationName__c, log.OrganizationName__c, 'log.OrganizationName__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.OrganizationId__c, log.OrganizationId__c, 'log.OrganizationId__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.OrganizationInstanceName__c,
+            log.OrganizationInstanceName__c,
+            'log.OrganizationInstanceName__c was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.OrganizationName__c, log.OrganizationName__c, 'log.OrganizationName__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.OrganizationNamespacePrefix__c,
             log.OrganizationNamespacePrefix__c,
             'log.OrganizationNamespacePrefix__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.OrganizationType__c, log.OrganizationType__c, 'log.OrganizationType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.OrganizationType__c, log.OrganizationType__c, 'log.OrganizationType__c was not properly set');
 
         // Profile fields
-        System.assertEquals(logEntryEvent.UserLicenseDefinitionKey__c, log.UserLicenseDefinitionKey__c, 'log.UserLicenseDefinitionKey__c was not properly set');
-        System.assertEquals(logEntryEvent.UserLicenseId__c, log.UserLicenseId__c, 'log.UserLicenseId__c was not properly set');
-        System.assertEquals(logEntryEvent.UserLicenseName__c, log.UserLicenseName__c, 'log.UserLicenseName__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.UserLicenseDefinitionKey__c,
+            log.UserLicenseDefinitionKey__c,
+            'log.UserLicenseDefinitionKey__c was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.UserLicenseId__c, log.UserLicenseId__c, 'log.UserLicenseId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.UserLicenseName__c, log.UserLicenseName__c, 'log.UserLicenseName__c was not properly set');
     }
 
     private static void validateLogEntryFields(LogEntryEvent__e logEntryEvent, LogEntry__c logEntry) {
-        System.assertEquals(logEntryEvent.ComponentType__c, logEntry.ComponentType__c, 'logEntry.ComponentType__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.ComponentType__c, logEntry.ComponentType__c, 'logEntry.ComponentType__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.DatabaseResultCollectionSize__c,
             logEntry.DatabaseResultCollectionSize__c,
             'logEntry.DatabaseResultCollectionSize__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.DatabaseResultCollectionType__c,
             logEntry.DatabaseResultCollectionType__c,
             'logEntry.DatabaseResultCollectionType__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.DatabaseResultJson__c, logEntry.DatabaseResultJson__c, 'logEntry.DatabaseResultJson__c was not properly set');
-        System.assertEquals(logEntryEvent.DatabaseResultType__c, logEntry.DatabaseResultType__c, 'logEntry.DatabaseResultType__c was not properly set');
-        System.assertEquals(logEntryEvent.EpochTimestamp__c, logEntry.EpochTimestamp__c, 'logEntry.EpochTimestamp__c was not properly set');
-        System.assertEquals(logEntryEvent.ExceptionStackTrace__c, logEntry.ExceptionStackTrace__c, 'logEntry.ExceptionStackTrace__c was not properly set');
-        System.assertEquals(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c, 'logEntry.ExceptionType__c was not properly set');
-        System.assertEquals(logEntryEvent.HttpRequestBody__c, logEntry.HttpRequestBody__c, 'logEntry.HttpRequestBody__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.DatabaseResultJson__c, logEntry.DatabaseResultJson__c, 'logEntry.DatabaseResultJson__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.DatabaseResultType__c, logEntry.DatabaseResultType__c, 'logEntry.DatabaseResultType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.EpochTimestamp__c, logEntry.EpochTimestamp__c, 'logEntry.EpochTimestamp__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ExceptionStackTrace__c, logEntry.ExceptionStackTrace__c, 'logEntry.ExceptionStackTrace__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.ExceptionType__c, logEntry.ExceptionType__c, 'logEntry.ExceptionType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.HttpRequestBody__c, logEntry.HttpRequestBody__c, 'logEntry.HttpRequestBody__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.HttpRequestBodyMasked__c,
             logEntry.HttpRequestBodyMasked__c,
             'logEntry.HttpRequestBodyMasked__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.HttpRequestCompressed__c,
             logEntry.HttpRequestCompressed__c,
             'logEntry.HttpRequestCompressed__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.HttpRequestEndpoint__c, logEntry.HttpRequestEndpoint__c, 'logEntry.HttpRequestEndpoint__c was not properly set');
-        System.assertEquals(logEntryEvent.HttpRequestMethod__c, logEntry.HttpRequestMethod__c, 'logEntry.HttpRequestMethod__c was not properly set');
-        System.assertEquals(logEntryEvent.HttpResponseBody__c, logEntry.HttpResponseBody__c, 'logEntry.HttpResponseBody__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.HttpRequestEndpoint__c, logEntry.HttpRequestEndpoint__c, 'logEntry.HttpRequestEndpoint__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.HttpRequestMethod__c, logEntry.HttpRequestMethod__c, 'logEntry.HttpRequestMethod__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.HttpResponseBody__c, logEntry.HttpResponseBody__c, 'logEntry.HttpResponseBody__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.HttpResponseBodyMasked__c,
             logEntry.HttpResponseBodyMasked__c,
             'logEntry.HttpResponseBodyMasked__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.HttpResponseHeaderKeys__c,
             logEntry.HttpResponseHeaderKeys__c,
             'logEntry.HttpResponseHeaderKeys__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.HttpResponseStatus__c, logEntry.HttpResponseStatus__c, 'logEntry.HttpResponseStatus__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.HttpResponseStatus__c, logEntry.HttpResponseStatus__c, 'logEntry.HttpResponseStatus__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.HttpResponseStatusCode__c,
             logEntry.HttpResponseStatusCode__c,
             'logEntry.HttpResponseStatusCode__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsAggregateQueriesMax__c,
             logEntry.LimitsAggregateQueriesMax__c,
             'logEntry.LimitsAggregateQueriesMax__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsAggregateQueriesUsed__c,
             logEntry.LimitsAggregateQueriesUsed__c,
             'logEntry.LimitsAggregateQueriesUsed__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.LimitsAsyncCallsMax__c, logEntry.LimitsAsyncCallsMax__c, 'logEntry.LimitsAsyncCallsMax__c was not properly set');
-        System.assertEquals(logEntryEvent.LimitsAsyncCallsUsed__c, logEntry.LimitsAsyncCallsUsed__c, 'logEntry.LimitsAsyncCallsUsed__c was not properly set');
-        System.assertEquals(logEntryEvent.LimitsCalloutsMax__c, logEntry.LimitsCalloutsMax__c, 'logEntry.LimitsCalloutsMax__c was not properly set');
-        System.assertEquals(logEntryEvent.LimitsCalloutsUsed__c, logEntry.LimitsCalloutsUsed__c, 'logEntry.LimitsCalloutsUsed__c was not properly set');
-        System.assertEquals(logEntryEvent.LimitsCpuTimeMax__c, logEntry.LimitsCpuTimeMax__c, 'logEntry.LimitsCpuTimeMax__c was not properly set');
-        System.assertEquals(logEntryEvent.LimitsCpuTimeUsed__c, logEntry.LimitsCpuTimeUsed__c, 'logEntry.LimitsCpuTimeUsed__c was not properly set');
-        System.assertEquals(logEntryEvent.LimitsDmlRowsMax__c, logEntry.LimitsDmlRowsMax__c, 'logEntry.LimitsDmlRowsMax__c was not properly set');
-        System.assertEquals(logEntryEvent.LimitsDmlRowsUsed__c, logEntry.LimitsDmlRowsUsed__c, 'logEntry.LimitsDmlRowsUsed__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.LimitsAsyncCallsMax__c, logEntry.LimitsAsyncCallsMax__c, 'logEntry.LimitsAsyncCallsMax__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.LimitsAsyncCallsUsed__c,
+            logEntry.LimitsAsyncCallsUsed__c,
+            'logEntry.LimitsAsyncCallsUsed__c was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.LimitsCalloutsMax__c, logEntry.LimitsCalloutsMax__c, 'logEntry.LimitsCalloutsMax__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LimitsCalloutsUsed__c, logEntry.LimitsCalloutsUsed__c, 'logEntry.LimitsCalloutsUsed__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LimitsCpuTimeMax__c, logEntry.LimitsCpuTimeMax__c, 'logEntry.LimitsCpuTimeMax__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LimitsCpuTimeUsed__c, logEntry.LimitsCpuTimeUsed__c, 'logEntry.LimitsCpuTimeUsed__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LimitsDmlRowsMax__c, logEntry.LimitsDmlRowsMax__c, 'logEntry.LimitsDmlRowsMax__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LimitsDmlRowsUsed__c, logEntry.LimitsDmlRowsUsed__c, 'logEntry.LimitsDmlRowsUsed__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.LimitsDmlStatementsMax__c,
             logEntry.LimitsDmlStatementsMax__c,
             'logEntry.LimitsDmlStatementsMax__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsDmlStatementsUsed__c,
             logEntry.LimitsDmlStatementsUsed__c,
             'logEntry.LimitsDmlStatementsUsed__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsEmailInvocationsMax__c,
             logEntry.LimitsEmailInvocationsMax__c,
             'logEntry.LimitsEmailInvocationsMax__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsEmailInvocationsUsed__c,
             logEntry.LimitsEmailInvocationsUsed__c,
             'logEntry.LimitsEmailInvocationsUsed__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.LimitsFutureCallsMax__c, logEntry.LimitsFutureCallsMax__c, 'logEntry.LimitsFutureCallsMax__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(
+            logEntryEvent.LimitsFutureCallsMax__c,
+            logEntry.LimitsFutureCallsMax__c,
+            'logEntry.LimitsFutureCallsMax__c was not properly set'
+        );
+        System.Assert.areEqual(
             logEntryEvent.LimitsFutureCallsUsed__c,
             logEntry.LimitsFutureCallsUsed__c,
             'logEntry.LimitsFutureCallsUsed__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.LimitsHeapSizeMax__c, logEntry.LimitsHeapSizeMax__c, 'logEntry.LimitsHeapSizeMax__c was not properly set');
-        System.assertEquals(logEntryEvent.LimitsHeapSizeUsed__c, logEntry.LimitsHeapSizeUsed__c, 'logEntry.LimitsHeapSizeUsed__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.LimitsHeapSizeMax__c, logEntry.LimitsHeapSizeMax__c, 'logEntry.LimitsHeapSizeMax__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LimitsHeapSizeUsed__c, logEntry.LimitsHeapSizeUsed__c, 'logEntry.LimitsHeapSizeUsed__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.LimitsMobilePushApexCallsMax__c,
             logEntry.LimitsMobilePushApexCallsMax__c,
             'logEntry.LimitsMobilePushApexCallsMax__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsMobilePushApexCallsUsed__c,
             logEntry.LimitsMobilePushApexCallsUsed__c,
             'logEntry.LimitsMobilePushApexCallsUsed__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsPublishImmediateDmlStatementsMax__c,
             logEntry.LimitsPublishImmediateDmlStatementsMax__c,
             'logEntry.LimitsPublishImmediateDmlStatementsMax__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsPublishImmediateDmlStatementsUsed__c,
             logEntry.LimitsPublishImmediateDmlStatementsUsed__c,
             'logEntry.LimitsPublishImmediateDmlStatementsUsed__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsQueueableJobsMax__c,
             logEntry.LimitsQueueableJobsMax__c,
             'logEntry.LimitsQueueableJobsMax__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsQueueableJobsUsed__c,
             logEntry.LimitsQueueableJobsUsed__c,
             'logEntry.LimitsQueueableJobsUsed__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.LimitsSoqlQueriesMax__c, logEntry.LimitsSoqlQueriesMax__c, 'logEntry.LimitsSoqlQueriesMax__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(
+            logEntryEvent.LimitsSoqlQueriesMax__c,
+            logEntry.LimitsSoqlQueriesMax__c,
+            'logEntry.LimitsSoqlQueriesMax__c was not properly set'
+        );
+        System.Assert.areEqual(
             logEntryEvent.LimitsSoqlQueriesUsed__c,
             logEntry.LimitsSoqlQueriesUsed__c,
             'logEntry.LimitsSoqlQueriesUsed__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsSoqlQueryLocatorRowsMax__c,
             logEntry.LimitsSoqlQueryLocatorRowsMax__c,
             'logEntry.LimitsSoqlQueryLocatorRowsMax__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsSoqlQueryLocatorRowsUsed__c,
             logEntry.LimitsSoqlQueryLocatorRowsUsed__c,
             'logEntry.LimitsSoqlQueryLocatorRowsUsed__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsSoqlQueryRowsMax__c,
             logEntry.LimitsSoqlQueryRowsMax__c,
             'logEntry.LimitsSoqlQueryRowsMax__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsSoqlQueryRowsUsed__c,
             logEntry.LimitsSoqlQueryRowsUsed__c,
             'logEntry.LimitsSoqlQueryRowsUsed__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsSoslSearchesUsed__c,
             logEntry.LimitsSoslSearchesUsed__c,
             'logEntry.LimitsSoslSearchesUsed__c was not properly set'
         );
-        System.assertEquals(
+        System.Assert.areEqual(
             logEntryEvent.LimitsSoslSearchesMax__c,
             logEntry.LimitsSoslSearchesMax__c,
             'logEntry.LimitsSoslSearchesMax__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.LoggingLevel__c, logEntry.LoggingLevel__c, 'logEntry.LoggingLevel__c was not properly set');
-        System.assertEquals(logEntryEvent.LoggingLevelOrdinal__c, logEntry.LoggingLevelOrdinal__c, 'logEntry.LoggingLevelOrdinal__c was not properly set');
-        System.assertEquals(logEntryEvent.Message__c, logEntry.Message__c, 'logEntry.Message__c was not properly set');
-        System.assertEquals(logEntryEvent.MessageTruncated__c, logEntry.MessageTruncated__c, 'logEntry.MessageTruncated__c was not properly set');
-        System.assertEquals(logEntry.Id, logEntry.Name, 'logEntry.Name was not properly set');
-        System.assertEquals(logEntryEvent.OriginType__c, logEntry.OriginType__c, 'logEntry.OriginType__c was not properly set');
-        System.assertEquals(logEntryEvent.OriginLocation__c, logEntry.OriginLocation__c, 'logEntry.OriginLocation__c was not properly set');
-        System.assertEquals(logEntryEvent.RecordCollectionSize__c, logEntry.RecordCollectionSize__c, 'logEntry.RecordCollectionSize__c was not properly set');
-        System.assertEquals(logEntryEvent.RecordCollectionType__c, logEntry.RecordCollectionType__c, 'logEntry.RecordCollectionType__c was not properly set');
-        System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
-        System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
-        System.assertEquals(logEntryEvent.RecordJsonMasked__c, logEntry.RecordJsonMasked__c, 'logEntry.RecordJsonMasked__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.LoggingLevel__c, logEntry.LoggingLevel__c, 'logEntry.LoggingLevel__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.LoggingLevelOrdinal__c, logEntry.LoggingLevelOrdinal__c, 'logEntry.LoggingLevelOrdinal__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.Message__c, logEntry.Message__c, 'logEntry.Message__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.MessageTruncated__c, logEntry.MessageTruncated__c, 'logEntry.MessageTruncated__c was not properly set');
+        System.Assert.areEqual(logEntry.Id, logEntry.Name, 'logEntry.Name was not properly set');
+        System.Assert.areEqual(logEntryEvent.OriginType__c, logEntry.OriginType__c, 'logEntry.OriginType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.OriginLocation__c, logEntry.OriginLocation__c, 'logEntry.OriginLocation__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.RecordCollectionSize__c,
+            logEntry.RecordCollectionSize__c,
+            'logEntry.RecordCollectionSize__c was not properly set'
+        );
+        System.Assert.areEqual(
+            logEntryEvent.RecordCollectionType__c,
+            logEntry.RecordCollectionType__c,
+            'logEntry.RecordCollectionType__c was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.RecordJsonMasked__c, logEntry.RecordJsonMasked__c, 'logEntry.RecordJsonMasked__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.RecordSObjectClassification__c,
             logEntry.RecordSObjectClassification__c,
             'logEntry.RecordSObjectClassification__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c, 'logEntry.RecordSObjectType__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c, 'logEntry.RecordSObjectType__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.RecordSObjectTypeNamespace__c,
             logEntry.RecordSObjectTypeNamespace__c,
             'logEntry.RecordSObjectTypeNamespace__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
-        System.assertEquals(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.RecordId__c, logEntry.RecordId__c, 'logEntry.RecordId__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.RecordJson__c, logEntry.RecordJson__c, 'logEntry.RecordJson__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.RecordSObjectClassification__c,
             logEntry.RecordSObjectClassification__c,
             'logEntry.RecordSObjectClassification__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c, 'logEntry.RecordSObjectType__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.RecordSObjectType__c, logEntry.RecordSObjectType__c, 'logEntry.RecordSObjectType__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.RecordSObjectTypeNamespace__c,
             logEntry.RecordSObjectTypeNamespace__c,
             'logEntry.RecordSObjectTypeNamespace__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.StackTrace__c, logEntry.StackTrace__c, 'logEntry.StackTrace__c was not properly set');
-        System.assertEquals(logEntryEvent.Timestamp__c, logEntry.Timestamp__c, 'logEntry.Timestamp__c was not properly set');
-        System.assertEquals(
+        System.Assert.areEqual(logEntryEvent.StackTrace__c, logEntry.StackTrace__c, 'logEntry.StackTrace__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.Timestamp__c, logEntry.Timestamp__c, 'logEntry.Timestamp__c was not properly set');
+        System.Assert.areEqual(
             logEntryEvent.TransactionEntryNumber__c,
             logEntry.TransactionEntryNumber__c,
             'logEntry.TransactionEntryNumber__c was not properly set'
         );
-        System.assertEquals(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c, 'logEntry.TriggerIsExecuting__c was not properly set');
-        System.assertEquals(logEntryEvent.TriggerOperationType__c, logEntry.TriggerOperationType__c, 'logEntry.TriggerOperationType__c was not properly set');
-        System.assertEquals(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c, 'logEntry.TriggerSObjectType__c was not properly set');
+        System.Assert.areEqual(logEntryEvent.TriggerIsExecuting__c, logEntry.TriggerIsExecuting__c, 'logEntry.TriggerIsExecuting__c was not properly set');
+        System.Assert.areEqual(
+            logEntryEvent.TriggerOperationType__c,
+            logEntry.TriggerOperationType__c,
+            'logEntry.TriggerOperationType__c was not properly set'
+        );
+        System.Assert.areEqual(logEntryEvent.TriggerSObjectType__c, logEntry.TriggerSObjectType__c, 'logEntry.TriggerSObjectType__c was not properly set');
     }
 }

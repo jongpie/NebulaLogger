@@ -51,10 +51,10 @@ private class LogBatchApexErrorEventHandler_Tests implements Database.Batchable<
 
     private static void assertLogWasCreatedForPhase(Phase phase) {
         Log__c log = getLog();
-        System.assertNotEquals(null, log, 'Log should have been created!');
-        System.assertEquals(2, log.LogEntries__r.size(), 'Two log entries should have been created');
-        System.assertEquals('Batch job terminated unexpectedly', log.LogEntries__r[0].Message__c);
-        System.assertEquals(
+        System.Assert.isNotNull(log, 'Log should have been created!');
+        System.Assert.areEqual(2, log.LogEntries__r.size(), 'Two log entries should have been created');
+        System.Assert.areEqual('Batch job terminated unexpectedly', log.LogEntries__r[0].Message__c);
+        System.Assert.areEqual(
             String.format(
                     LogBatchApexErrorEventHandler.LOG_MESSAGE,
                     new List<String>{ 'someId', 'System.IllegalArgumentException', phase.name(), phase.name(), 'stacktrace' }
