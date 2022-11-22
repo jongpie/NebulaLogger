@@ -14,9 +14,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.9.1.NEXT",
-            "versionName": "Track Impersonating User",
-            "versionDescription": "Adds new fields on LogEntryEvent__e and Log__c to track when an admin user is logged in as another user",
+            "versionNumber": "4.9.2.NEXT",
+            "versionName": "Enhancements for logEntryEventStream LWC ",
+            "versionDescription": "Added split-view toggling, added fullscreen mode, and added tabular view (with fields configurable via LoggerParameter.LogEntryEventStreamDisplayFields)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"

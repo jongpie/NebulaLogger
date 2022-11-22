@@ -15,8 +15,6 @@
     font-family: 'Lucida Console', 'Courier New', monospace;
     text-indent: -32px;
     padding-left: 32px;
-    /*height: calc(100vh - 300px);
-    margin-right: 8px;*/
     height: 100%;
     overflow-x: hidden;
     overflow-y: scroll;

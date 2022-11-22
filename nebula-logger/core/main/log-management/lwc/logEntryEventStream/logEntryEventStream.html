@@ -9,7 +9,7 @@
             <button
                 data-id="split-view-button"
                 class="slds-button slds-button_icon slds-button_icon slds-split-view__toggle-button slds-is-open"
-                title="Close Split View"
+                title={splitViewLabel}
                 onclick={onToggleSplitView}
             >
                 <lightning-icon class="slds-button__icon" icon-name="utility:left" size="xx-small" alternative-text="Event" title="Event"></lightning-icon>
@@ -158,11 +158,11 @@
                         <div data-id="event-stream-console" class="slds-p-horizontal_medium event-stream">
                             <template for:each={logEntryEvents} for:item="logEntryEvent">
                                 <div key={logEntryEvent.key} class="event-stream-entry">
-                                    <span key={logEntryEvent.key} class="timestamp">{logEntryEvent.Timestamp__c}</span>
-                                    <span key={logEntryEvent.key} class="logged-by">{logEntryEvent.LoggedByUsername__c} - {logEntryEvent.key}</span>
-                                    <span key={logEntryEvent.key} class="origin">{logEntryEvent.OriginType__c}.{logEntryEvent.OriginLocation__c} </span>
-                                    <span key={logEntryEvent.key} class="logging-level">{logEntryEvent.LoggingLevel__c}</span>
-                                    <span key={logEntryEvent.key} class="message">{logEntryEvent.Message__c}</span>
+                                    <span class="timestamp">{logEntryEvent.Timestamp__c}</span>
+                                    <span class="logged-by">{logEntryEvent.LoggedByUsername__c} - {logEntryEvent.key}</span>
+                                    <span class="origin">{logEntryEvent.OriginType__c}.{logEntryEvent.OriginLocation__c} </span>
+                                    <span class="logging-level">{logEntryEvent.LoggingLevel__c}</span>
+                                    <span class="message">{logEntryEvent.Message__c}</span>
                                 </div>
                             </template>
                         </div>

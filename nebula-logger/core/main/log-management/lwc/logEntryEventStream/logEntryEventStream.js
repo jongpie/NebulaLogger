@@ -122,6 +122,10 @@ export default class LogEntryEventStream extends LightningElement {
         ];
     }
 
+    get splitViewLabel() {
+        return this.isStreamSettingExpanded ? 'Close Split View' : 'Open Split View';
+    }
+
     async createSubscription() {
         this._subscription = await subscribe(this._channel, -2, event => {
             const logEntryEvent = JSON.parse(JSON.stringify(event.data.payload));
@@ -168,7 +172,7 @@ export default class LogEntryEventStream extends LightningElement {
 
     onToggleExpand() {
         let consoleBlock = this.template.querySelector('[data-id="event-stream-console"]');
-        consoleBlock.className = this.isExpanded ? 'slds-card ' : 'slds-card  expanded';
+        consoleBlock.className = this.isExpanded ? 'slds-card ' : 'slds-card expanded';
         this.isExpanded = !this.isExpanded;
     }
 

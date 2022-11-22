@@ -5,7 +5,7 @@
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 >
     <label>Log Entry Event Stream Display Fields</label>
-    <protected>true</protected>
+    <protected>false</protected>
     <values>
         <field>Description__c</field>
         <value xsi:type="xsd:string">Contains the fields to be displayed in the Tabular view of the Log Entry Event Stream Tab under the Logger Console.</value>

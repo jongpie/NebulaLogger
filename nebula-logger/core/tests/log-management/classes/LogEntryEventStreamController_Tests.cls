@@ -15,9 +15,9 @@ private class LogEntryEventStreamController_Tests {
         List<String> mockDisplayFields = (List<String>) JSON.deserialize(fields, List<String>.class);
         List<String> displayFields = LogEntryEventStreamController.getDataTableDisplayFields();
 
-        System.assertEquals(mockDisplayFields.size(), displayFields.size(), 'fields count mismatch');
+        System.Assert.areEqual(mockDisplayFields.size(), displayFields.size(), 'fields count mismatch');
         for (String aField : mockDisplayFields) {
-            System.assertEquals(true, displayFields.contains(aField), 'field not found');
+            System.Assert.areEqual(true, displayFields.contains(aField), 'field not found');
         }
     }
     @isTest
