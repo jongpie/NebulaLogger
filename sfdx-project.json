@@ -14,9 +14,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.9.2.NEXT",
-            "versionName": "Enhancements for logEntryEventStream LWC",
-            "versionDescription": "Added split-view toggling, added fullscreen mode, and added tabular view (with fields configurable via LoggerParameter.LogEntryEventStreamDisplayFields)",
+            "versionNumber": "4.9.3.NEXT",
+            "versionName": "New Indicator Icons",
+            "versionDescription": "Updated formula fields on LogEntry__c to replace old flag icons with emojis that are more visually distinct from one another, updated format of LogEntry__c limits formula fields to display percentage first (after new indicators) with limit used & max fields displayed in parenthesis",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
