@@ -10,7 +10,7 @@ private class LoggerSObjectProxy_Tests {
 
     @IsTest
     static void it_converts_auth_session_record_to_proxy() {
-        AuthSession authSessionRecord = [
+        List<AuthSession> authSessionRecords = [
             SELECT
                 Id,
                 LoginType,
@@ -27,6 +27,12 @@ private class LoggerSObjectProxy_Tests {
             FROM AuthSession
             LIMIT 1
         ];
+        if (authSessionRecords.isEmpty() == true) {
+            // Since the AuthSession object cannot be mocked, the test can only run as an integration test
+            // No need to fail the test if there isn't a AuthSession record available via quqerying
+            return;
+        }
+        AuthSession authSessionRecord = authSessionRecords.get(0);
 
         LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSessionRecord);
 
@@ -46,11 +52,17 @@ private class LoggerSObjectProxy_Tests {
 
     @IsTest
     static void it_converts_login_history_record_to_proxy() {
-        LoginHistory loginHistoryRecord = [
+        List<LoginHistory> loginHistoryRecords = [
             SELECT Application, Browser, Platform, UserId
             FROM LoginHistory
             LIMIT 1
         ];
+        if (loginHistoryRecords.isEmpty() == true) {
+            // Since the LoginHistory object cannot be mocked, the test can only run as an integration test
+            // No need to fail the test if there isn't a LoginHistory record available via quqerying
+            return;
+        }
+        LoginHistory loginHistoryRecord = loginHistoryRecords.get(0);
 
         LoggerSObjectProxy.LoginHistory loginHistoryProxy = new LoggerSObjectProxy.LoginHistory(loginHistoryRecord);
 
