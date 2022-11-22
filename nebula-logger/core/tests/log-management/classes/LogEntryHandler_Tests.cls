@@ -69,7 +69,7 @@ private class LogEntryHandler_Tests {
     @IsTest
     static void it_should_populate_related_record_fields_on_log_entry_with_related_profile_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
-        Profile currentProfile = [SELECT Id, Name, Description FROM Profile WHERE Id = :UserInfo.getProfileId()];
+        Profile currentProfile = [SELECT Id, Name FROM Profile WHERE Id = :UserInfo.getProfileId()];
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = currentProfile.Id);
 
         LoggerDataStore.getDatabase().insertRecord(logEntry);
@@ -82,6 +82,24 @@ private class LogEntryHandler_Tests {
         logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
         System.assertEquals(currentProfile.Id, logEntry.RecordId__c);
         System.assertEquals(currentProfile.Name, logEntry.RecordName__c);
+    }
+
+    @IsTest
+    static void it_should_not_populate_related_record_fields_on_log_entry_with_related_case_comment_record_id() {
+        Log__c log = [SELECT Id FROM Log__c LIMIT 1];
+        Id templateSObjectRecordId = LoggerMockDataCreator.createId(Schema.CaseComment.SObjectType);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = templateSObjectRecordId);
+
+        LoggerDataStore.getDatabase().insertRecord(logEntry);
+
+        System.assertEquals(
+            2,
+            LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntry__c.SObjectType).size(),
+            'Handler class should have executed two times - once for BEFORE_INSERT and once for AFTER_INSERT'
+        );
+        logEntry = [SELECT Id, RecordId__c, RecordName__c FROM LogEntry__c WHERE Id = :logEntry.Id];
+        System.assertEquals(templateSObjectRecordId, logEntry.RecordId__c);
+        System.assertEquals(null, logEntry.RecordName__c);
     }
 
     @IsTest

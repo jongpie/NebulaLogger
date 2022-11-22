@@ -414,8 +414,17 @@ global with sharing class LogEntryEventBuilder {
         this.logEntryEvent.RecordCollectionSize__c = 1;
         this.logEntryEvent.RecordCollectionType__c = 'Single';
         this.logEntryEvent.RecordId__c = recordId;
-        this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(recordId.getSObjectType());
-        this.logEntryEvent.RecordSObjectType__c = recordId.getSObjectType().getDescribe().getName();
+        try {
+            Schema.SObjectType sobjectType = recordId?.getSObjectType();
+            this.logEntryEvent.RecordSObjectClassification__c = getSObjectClassification(sobjectType);
+            this.logEntryEvent.RecordSObjectType__c = sobjectType.getDescribe().getName();
+        } catch (System.SObjectException sobjectException) {
+            // Some SObject Types are considered template objects, such as CaseComment, AccountHistory,
+            // ContactHistory, etc, so calling Id.getSObjectType() does not work for some types of record IDs
+            if (sobjectException.getMessage().contains('Cannot locate Apex Type') == false) {
+                throw sobjectException;
+            }
+        }
         return this;
     }
 

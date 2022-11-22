@@ -664,6 +664,27 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_record_fields_for_recordId_when_template_standard_object() {
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+
+        Id templateSObjectRecordId = LoggerMockDataCreator.createId(Schema.CaseComment.SObjectType);
+        builder.setRecordId(templateSObjectRecordId);
+
+        System.assertEquals(1, builder.getLogEntryEvent().RecordCollectionSize__c);
+        System.assertEquals('Single', builder.getLogEntryEvent().RecordCollectionType__c);
+        System.assertEquals(templateSObjectRecordId, builder.getLogEntryEvent().RecordId__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectType__c);
+        System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectTypeNamespace__c);
+    }
+
+    @IsTest
     static void it_should_set_record_fields_for_recordId_when_custom_object() {
         LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
