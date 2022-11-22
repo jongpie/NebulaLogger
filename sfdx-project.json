@@ -13,9 +13,9 @@
             "package": "Nebula Logger - Core",
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
-            "versionNumber": "4.10.4.NEXT",
-            "versionName": "New Logger Home Page",
-            "versionDescription": "Added a new home page to the Logger Console app, deprecated some existing custom tabs",
+            "versionNumber": "4.10.5.NEXT",
+            "versionName": "New Custom Index for Origin Location Field",
+            "versionDescription": "Added a custom index on the field LogEntry__c.OriginLocation__c (using the new CustomIndex metadatatype) to improve queries & reports that filter on this field",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
                 "path": "./nebula-logger/extra-tests"
