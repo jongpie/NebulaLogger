@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsHeapSizeUsed__c) + &apos; / &apos; + TEXT(LimitsHeapSizeMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsHeapSizeUsed__c / LimitsHeapSizeMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsHeapSizeUsed__c / LimitsHeapSizeMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsHeapSizeUsed__c) + &apos; / &apos; + TEXT(LimitsHeapSizeMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Heap Size</label>
     <required>false</required>

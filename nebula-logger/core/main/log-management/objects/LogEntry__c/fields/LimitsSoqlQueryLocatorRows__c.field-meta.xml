@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsSoqlQueryLocatorRowsUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueryLocatorRowsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsSoqlQueryLocatorRowsUsed__c / LimitsSoqlQueryLocatorRowsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsSoqlQueryLocatorRowsUsed__c / LimitsSoqlQueryLocatorRowsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsSoqlQueryLocatorRowsUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueryLocatorRowsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>SOQL Query Locator Rows</label>
     <required>false</required>

@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsFutureCallsUsed__c) + &apos; / &apos; + TEXT(LimitsFutureCallsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsFutureCallsUsed__c / LimitsFutureCallsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsFutureCallsUsed__c / LimitsFutureCallsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsFutureCallsUsed__c) + &apos; / &apos; + TEXT(LimitsFutureCallsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Future Calls</label>
     <required>false</required>

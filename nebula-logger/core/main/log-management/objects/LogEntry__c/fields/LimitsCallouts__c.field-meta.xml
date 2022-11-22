@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsCalloutsUsed__c) + &apos; / &apos; + TEXT(LimitsCalloutsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsCalloutsUsed__c / LimitsCalloutsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsCalloutsUsed__c / LimitsCalloutsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsCalloutsUsed__c) + &apos; / &apos; + TEXT(LimitsCalloutsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Callouts</label>
     <required>false</required>

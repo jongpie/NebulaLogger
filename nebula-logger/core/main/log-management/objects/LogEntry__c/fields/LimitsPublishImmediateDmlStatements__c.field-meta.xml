@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsPublishImmediateDmlStatementsUsed__c) + &apos; / &apos; + TEXT(LimitsPublishImmediateDmlStatementsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsPublishImmediateDmlStatementsUsed__c / LimitsPublishImmediateDmlStatementsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsPublishImmediateDmlStatementsUsed__c) + &apos; / &apos; + TEXT(LimitsPublishImmediateDmlStatementsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Publish Immediate DML Statements</label>
     <required>false</required>

@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsEmailInvocationsUsed__c) + &apos; / &apos; + TEXT(LimitsEmailInvocationsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsEmailInvocationsUsed__c / LimitsEmailInvocationsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsEmailInvocationsUsed__c) + &apos; / &apos; + TEXT(LimitsEmailInvocationsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Email Invocations</label>
     <required>false</required>

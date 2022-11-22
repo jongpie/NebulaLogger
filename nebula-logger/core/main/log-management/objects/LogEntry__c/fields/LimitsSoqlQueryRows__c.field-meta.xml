@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsSoqlQueryRowsUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueryRowsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsSoqlQueryRowsUsed__c / LimitsSoqlQueryRowsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsSoqlQueryRowsUsed__c / LimitsSoqlQueryRowsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsSoqlQueryRowsUsed__c) + &apos; / &apos; + TEXT(LimitsSoqlQueryRowsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>SOQL Query Rows</label>
     <required>false</required>

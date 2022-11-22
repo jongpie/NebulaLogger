@@ -13,7 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; + TEXT(LimitsAggregateQueriesUsed__c ) + &apos; / &apos; + TEXT(LimitsAggregateQueriesMax__c ) + &apos; (&apos; + TEXT(ROUND(LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsAggregateQueriesUsed__c / LimitsAggregateQueriesMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsAggregateQueriesUsed__c) + &apos; / &apos; + TEXT(LimitsAggregateQueriesMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Aggregate Queries</label>
     <required>false</required>

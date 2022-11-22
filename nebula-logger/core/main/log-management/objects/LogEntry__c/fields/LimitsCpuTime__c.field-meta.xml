@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsCpuTimeUsed__c) + &apos; / &apos; + TEXT(LimitsCpuTimeMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsCpuTimeUsed__c / LimitsCpuTimeMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsCpuTimeUsed__c / LimitsCpuTimeMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsCpuTimeUsed__c) + &apos; / &apos; + TEXT(LimitsCpuTimeMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>CPU Time</label>
     <required>false</required>

@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsMobilePushApexCallsUsed__c) + &apos; / &apos; + TEXT(LimitsMobilePushApexCallsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsMobilePushApexCallsUsed__c / LimitsMobilePushApexCallsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsMobilePushApexCallsUsed__c / LimitsMobilePushApexCallsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsMobilePushApexCallsUsed__c) + &apos; / &apos; + TEXT(LimitsMobilePushApexCallsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Mobile Push Apex Calls</label>
     <required>false</required>

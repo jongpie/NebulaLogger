@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsQueueableJobsUsed__c) + &apos; / &apos; + TEXT(LimitsQueueableJobsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsQueueableJobsUsed__c / LimitsQueueableJobsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsQueueableJobsUsed__c / LimitsQueueableJobsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsQueueableJobsUsed__c) + &apos; / &apos; + TEXT(LimitsQueueableJobsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Queueable Jobs</label>
     <required>false</required>

@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsSoslSearchesUsed__c) + &apos; / &apos; + TEXT(LimitsSoslSearchesMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsSoslSearchesUsed__c / LimitsSoslSearchesMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsSoslSearchesUsed__c / LimitsSoslSearchesMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsSoslSearchesUsed__c) + &apos; / &apos; + TEXT(LimitsSoslSearchesMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>SOSL Searches</label>x
     <required>false</required>

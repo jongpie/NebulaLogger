@@ -13,9 +13,8 @@
             &quot;✅&quot;
         )
     )
-    + &apos; &apos; +
-
-    TEXT(LimitsDmlStatementsUsed__c) + &apos; / &apos; + TEXT(LimitsDmlStatementsMax__c) + &apos; (&apos; + TEXT(ROUND(LimitsDmlStatementsUsed__c / LimitsDmlStatementsMax__c * 100, 2)) + &apos;%)&apos;</formula>
+    + &apos; &apos; + TEXT(ROUND(LimitsDmlStatementsUsed__c / LimitsDmlStatementsMax__c * 100, 2)) + &apos;% (&apos;
+    + TEXT(LimitsDmlStatementsUsed__c) + &apos; / &apos; + TEXT(LimitsDmlStatementsMax__c) + &apos;)&apos;</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>DML Statements</label>
     <required>false</required>
