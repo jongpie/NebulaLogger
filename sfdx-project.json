@@ -15,7 +15,7 @@
             "path": "./nebula-logger/core",
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "versionNumber": "4.9.2.NEXT",
-            "versionName": "Enhancements for logEntryEventStream LWC ",
+            "versionName": "Enhancements for logEntryEventStream LWC",
             "versionDescription": "Added split-view toggling, added fullscreen mode, and added tabular view (with fields configurable via LoggerParameter.LogEntryEventStreamDisplayFields)",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases",
             "unpackagedMetadata": {
@@ -145,6 +145,7 @@
         "Nebula Logger - Core@4.8.4-optimized-synchronous-context": "04t5Y0000023R02QAE",
         "Nebula Logger - Core@4.9.0-logbatchpurger-batch-size-increased": "04t5Y0000023R2DQAU",
         "Nebula Logger - Core@4.9.1-track-impersonating-user": "04t5Y0000023R79QAE",
+        "Nebula Logger - Core@4.9.2-enhancements-for-logentryeventstream-lwc": "04t5Y0000023R7TQAU",
         "Nebula Logger - Plugin - Async Failure Additions": "0Ho5Y000000blO4SAI",
         "Nebula Logger - Plugin - Async Failure Additions@1.0.0": "04t5Y0000015lhiQAA",
         "Nebula Logger - Plugin - Async Failure Additions@1.0.1": "04t5Y0000015lhsQAA",
