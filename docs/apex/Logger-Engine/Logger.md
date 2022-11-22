@@ -626,6 +626,16 @@ LogEntryEventBuilder
 
 The new entry&apos;s instance of `LogEntryEventBuilder`, useful for chaining methods
 
+#### `endScenario(String scenario)` → `void`
+
+End the specified scenario, if it&apos;s the currently active scenario, and rolls back to the previous scenario (if a previous scenario was specified in the current transaction)
+
+##### Parameters
+
+| Param      | Description                     |
+| ---------- | ------------------------------- |
+| `scenario` | The name of the scenario to end |
+
 #### `error(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.ERROR`
@@ -3342,6 +3352,16 @@ String
 
 The current version number, in the format `v0.0.0`
 
+#### `ignoreOrigin(System.Type apexType)` → `void`
+
+Adds the specified Apex type to the list of ignored origin locations for the current transaction. Any ignored types will be removed from the StackTrace\_\_c field, and will be skipped when determining the log entry&apos;s origin location
+
+##### Parameters
+
+| Param      | Description                          |
+| ---------- | ------------------------------------ |
+| `apexType` | The Apex type of the class to ignore |
+
 #### `info(LogMessage logMessage, Database.DeleteResult deleteResult)` → `LogEntryEventBuilder`
 
 Creates a new log entry with logging level == `LoggingLevel.INFO`
@@ -4460,7 +4480,7 @@ Sets the default save method used when calling saveLog() - any subsequent calls 
 
 #### `setScenario(String scenario)` → `void`
 
-Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c` and `Log__c.Scenario__c`, and can be used to filter &amp; group logs
+Sets the current scenario, which can be used to identify modules or groupings of for the current transaction
 
 ##### Parameters
 

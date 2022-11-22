@@ -97,12 +97,11 @@ public without sharing class LoggerTestConfigurator {
     }
 
     /**
-     * @description Loads the mock `LogScenarioRule__mdt` during test execution
-     * @param  mock The mock instance of `LogScenarioRule__mdt` to load
+     * @description Loads the mock `LoggerScenarioRule__mdt` during test execution
+     * @param  mock The mock instance of `LoggerScenarioRule__mdt` to load
      */
-    public static void setMock(LogScenarioRule__mdt mock) {
-        Logger.setMockScenarioRule(mock);
-        LogHandler.setMockScenarioRule(mock);
+    public static void setMock(LoggerScenarioRule__mdt mock) {
+        LoggerScenarioRule.setMock(mock);
     }
 
     /**
@@ -132,6 +131,7 @@ public without sharing class LoggerTestConfigurator {
             Schema.LogEntry__c.SObjectType => LogEntryHandler.class,
             Schema.LogEntryEvent__e.SObjectType => LogEntryEventHandler.class,
             Schema.LogEntryTag__c.SObjectType => LogEntryTagHandler.class,
+            Schema.LoggerScenario__c.SObjectType => LoggerScenarioHandler.class,
             Schema.LoggerTag__c.SObjectType => LoggerTagHandler.class
         };
         for (Schema.SObjectType sobjectType : sobjectTypeToDefaultHandlerApexClass.keySet()) {

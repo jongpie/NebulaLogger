@@ -10,7 +10,7 @@
         <field>Description__c</field>
         <value
             xsi:type="xsd:string"
-        >When set to &apos;true&apos; (default), any log entry tags will be saved in your org. Depending on how your org&apos;s configuration, tags are either stored in LoggerTag__c and LogEntryTag__c objects (default), or using the standard objects Topic and TopicAssignment.
+        >When set to &apos;true&apos; (default), any log entry tags will be saved in your org. Depending on your org&apos;s configuration, tags are either stored in LoggerTag__c and LogEntryTag__c objects (default), or using the standard objects Topic and TopicAssignment (not supported in the managed package).
 
 When set to &apos;false&apos;, tags are not stored in your org.</value>
     </values>

@@ -76,6 +76,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             classNameToApexClass.put(apexClass.Name, apexClass);
         }
 
+        if (classNameToApexClass.isEmpty() == true) {
+            return;
+        }
+
         for (LogEntry__c logEntry : apexLogEntries) {
             String topLevelApexClassName = logEntry.OriginLocation__c?.substringBefore('.');
             ApexClass topLevelApexClass = classNameToApexClass.get(topLevelApexClassName);
@@ -129,6 +133,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             flowApiNameToDefinition.put(flowDefinition.ApiName, flowDefinition);
         }
 
+        if (flowApiNameToDefinition.isEmpty() == true) {
+            return;
+        }
+
         for (LogEntry__c logEntry : flowLogEntries) {
             FlowDefinitionView flowDefinition = flowApiNameToDefinition.get(logEntry.OriginLocation__c);
             if (flowDefinition == null) {
@@ -160,16 +168,20 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             return;
         }
 
-        Map<String, FlowVersionView> flowDurableId = new Map<String, FlowVersionView>();
+        Map<String, FlowVersionView> flowDurableIdToFlowVersionView = new Map<String, FlowVersionView>();
         for (FlowVersionView flowVersionView : LogManagementDataSelector.getInstance().getFlowVersionViewsByDurableId(flowActiveVersionIds)) {
             // Filtering on Status in SOQL seems to always return 0 results, so filter in code instead
             if (flowVersionView.Status == 'Active') {
-                flowDurableId.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
+                flowDurableIdToFlowVersionView.put(flowVersionView.FlowDefinitionViewId, flowVersionView);
             }
         }
 
+        if (flowDurableIdToFlowVersionView.isEmpty() == true) {
+            return;
+        }
+
         for (LogEntry__c logEntry : flowLogEntries) {
-            FlowVersionView flowVersionView = flowDurableId.get(logEntry.FlowDurableId__c);
+            FlowVersionView flowVersionView = flowDurableIdToFlowVersionView.get(logEntry.FlowDurableId__c);
             if (flowVersionView == null) {
                 continue;
             }
@@ -182,6 +194,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
     @SuppressWarnings('PMD.OperationWithLimitsInLoop')
     private void setRecordNames() {
+        if (LoggerParameter.QUERY_RELATED_RECORD_DATA == false) {
+            return;
+        }
+
         // Assumption - only valid record IDs will be populated in LogEntry__c.RecordId__c
         // If that changes, then extra checks may be needed before casting to Id, using getSObjectType(), etc.
         // TODO: This method is pretty long & it's doing multiple things - consider breaking it up into separate methods or an inner class
@@ -194,9 +210,11 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            // Based on the related record ID, get the SObject Type
             Id recordId = (Id) logEntry.RecordId__c;
-            Schema.SObjectType sobjectType = recordId.getSObjectType();
+            Schema.SObjectType sobjectType = getSObjectType(recordId);
+            if (sobjectType == null) {
+                continue;
+            }
 
             List<Id> sobjectTypeRecordIds = sobjectTypeToRecords.get(sobjectType);
             if (sobjectTypeRecordIds == null) {
@@ -210,7 +228,7 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
         Map<Id, SObject> recordIdToRecord = new Map<Id, SObject>();
         for (Schema.SObjectType sobjectType : sobjectTypeToRecords.keySet()) {
             // Stop if we've used up all the queries
-            if (Limits.getQueries() == Limits.getLimitQueries()) {
+            if (System.Limits.getQueries() == System.Limits.getLimitQueries()) {
                 break;
             }
 
@@ -234,7 +252,10 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
             }
 
             Id recordId = (Id) logEntry.RecordId__c;
-            Schema.SObjectType sobjectType = recordId.getSObjectType();
+            Schema.SObjectType sobjectType = getSObjectType(recordId);
+            if (sobjectType == null) {
+                continue;
+            }
 
             String sobjectDisplayFieldName = this.getDisplayFieldApiName(sobjectType);
             if (sobjectDisplayFieldName != null) {
@@ -309,5 +330,19 @@ public without sharing class LogEntryHandler extends LoggerSObjectHandler {
 
         SOBJECT_TYPE_TO_DISPLAY_FIELD_NAME.put(sobjectType, displayFieldApiName);
         return displayFieldApiName;
+    }
+
+    private static Schema.SObjectType getSObjectType(Id recordId) {
+        Schema.SObjectType sobjectType;
+        try {
+            sobjectType = recordId?.getSObjectType();
+        } catch (System.SObjectException sobjectException) {
+            // Some SObject Types are considered template objects, such as CaseComment, AccountHistory,
+            // ContactHistory, etc, so calling Id.getSObjectType() does not work for some types of record IDs
+            if (sobjectException.getMessage().contains('Cannot locate Apex Type') == false) {
+                throw sobjectException;
+            }
+        }
+        return sobjectType;
     }
 }

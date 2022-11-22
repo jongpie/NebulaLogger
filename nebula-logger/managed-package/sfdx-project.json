@@ -1,7 +1,7 @@
 {
     "namespace": "Nebula",
     "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "54.0",
+    "sourceApiVersion": "56.0",
     "packageDirectories": [
         {
             "package": "Nebula Logger - Managed Package",
@@ -10,20 +10,22 @@
             "definitionFile": "./config/scratch-orgs/base-scratch-def.json",
             "postInstallScript": "LoggerInstallHandler",
             "ancestorVersion": "HIGHEST",
-            "versionNumber": "4.8.0.NEXT",
-            "versionName": "BETA - Summer '22 Release",
-            "versionDescription": "View the v4.8.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/7",
+            "versionNumber": "4.10.0.NEXT",
+            "versionName": "Spring '23 Release",
+            "versionDescription": "View the v4.9.0 milestone in GitHub for the list of changes - https://github.com/jongpie/NebulaLogger/milestone/9?closed=1",
             "releaseNotesUrl": "https://github.com/jongpie/NebulaLogger/releases"
         }
     ],
     "packageAliases": {
         "Nebula Logger - Managed Package": "0Ho5Y000000XZCDSA4",
-        "Nebula Logger - Managed Package@4.0.0-9-managed-package-release": "04t5Y000000XJZ7QAO",
-        "Nebula Logger - Managed Package@4.2.0-0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
-        "Nebula Logger - Managed Package@4.3.0-3-logger-console-app": "04t5Y000000YLDLQA4",
-        "Nebula Logger - Managed Package@4.4.0-2-configurable-default-save-method": "04t5Y0000027FFgQAM",
-        "Nebula Logger - Managed Package@4.5.0-0-logger-plugin-framework": "04t5Y0000027FMhQAM",
-        "Nebula Logger - Managed Package@4.6.0-0-tagging-system-overhaul": "04t5Y0000015keOQAQ",
-        "Nebula Logger - Managed Package@4.7.0-30-spring-22-release": "04t5Y0000015lXNQAY"
+        "Nebula Logger - Managed Package@4.0.0-managed-package-release": "04t5Y000000XJZ7QAO",
+        "Nebula Logger - Managed Package@4.2.0-more-fields-and-methods": "04t5Y000000Xg4wQAC",
+        "Nebula Logger - Managed Package@4.3.0-logger-console-app": "04t5Y000000YLDLQA4",
+        "Nebula Logger - Managed Package@4.4.0-configurable-default-save-method": "04t5Y0000027FFgQAM",
+        "Nebula Logger - Managed Package@4.5.0-logger-plugin-framework": "04t5Y0000027FMhQAM",
+        "Nebula Logger - Managed Package@4.6.0-tagging-system-overhaul": "04t5Y0000015keOQAQ",
+        "Nebula Logger - Managed Package@4.7.0-spring-22-release": "04t5Y0000015lXNQAY",
+        "Nebula Logger - Managed Package@4.8.0-summer-22-release": "04t5Y0000015lsgQAA",
+        "Nebula Logger - Managed Package@4.9.0-winter-23-release": "04t5Y0000023R28QAE"
     }
 }

@@ -10,13 +10,17 @@
  */
 @SuppressWarnings('PMD.AvoidGlobalModifier')
 global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
-    private final Integer batchSize;
+    @TestVisible
+    private static final String SCHEDULER_SYSTEM_MESSAGE_TEMPLATE = 'Logger - Scheduling LogBatchPurgeScheduler job, schedulableContext=={0}';
+
+    @TestVisible
+    private Integer batchSize;
 
     /**
      * @description Default constructor.  Sets initial batch size to 200.
      */
     global LogBatchPurgeScheduler() {
-        this(200);
+        this(LogBatchPurger.getDefaultBatchSize());
     }
 
     /**
@@ -30,13 +34,17 @@ global with sharing class LogBatchPurgeScheduler implements System.Schedulable {
     /**
      * @description Required by the Database.Schedulable interface, this method kicks off the LogBatchPurger batch class
      * on a scheduled basis.
-     * @param schedulableContext Required for the Schedulable interface, this method contains contextual information about when this instance is/was scheduled.
+     * @param schedulableContext The instance of `System.SchedulableContext` provided by the platform at runtime
      */
-    global void execute(SchedulableContext schedulableContext) {
+    global void execute(System.SchedulableContext schedulableContext) {
         if (LoggerParameter.ENABLE_SYSTEM_MESSAGES == true) {
-            LogMessage logMessage = new LogMessage('Logger - Scheduling LogBatchPurgeScheduler job, schedulableContext=={0}', schedulableContext);
+            LogMessage logMessage = new LogMessage(SCHEDULER_SYSTEM_MESSAGE_TEMPLATE, schedulableContext);
             Logger.info(logMessage);
             Logger.saveLog();
+        }
+
+        if (this.batchSize == null) {
+            this.batchSize = LogBatchPurger.getDefaultBatchSize();
         }
 
         Database.executebatch(new LogBatchPurger().setChainedBatchSize(this.batchSize), this.batchSize);

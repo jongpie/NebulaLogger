@@ -33,6 +33,7 @@ private class FlowRecordLogEntry_Tests {
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
         flowRecordEntry.loggingLevelName = flowRecordEntryLoggingLevel.name();
         flowRecordEntry.record = currentUser;
+        flowRecordEntry.timestamp = System.now().addSeconds(-20);
         System.assertEquals(0, Logger.saveLogCallCount);
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.assertEquals(0, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
@@ -52,6 +53,7 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals('Flow', publishedLogEntryEvent.OriginType__c);
         System.assertEquals(currentUser.Id, publishedLogEntryEvent.RecordId__c);
         System.assertEquals(expectedUserJson, publishedLogEntryEvent.RecordJson__c);
+        System.assertEquals(flowRecordEntry.timestamp, publishedLogEntryEvent.Timestamp__c);
     }
 
     @IsTest
@@ -67,7 +69,7 @@ private class FlowRecordLogEntry_Tests {
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         LoggingLevel flowRecordEntryLoggingLevel = LoggingLevel.DEBUG;
         System.assert(userLoggingLevel.ordinal() < flowRecordEntryLoggingLevel.ordinal());
-        System.assertEquals(0, Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
+        System.assertEquals(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowRecordLogEntry flowRecordEntry = createFlowRecordLogEntry();
@@ -226,7 +228,7 @@ private class FlowRecordLogEntry_Tests {
     }
 
     @IsTest
-    static void it_should_set_log_scenario() {
+    static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
@@ -247,7 +249,8 @@ private class FlowRecordLogEntry_Tests {
         System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishCallCount());
         System.assertEquals(1, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         LogEntryEvent__e publishedLogEntryEvent = (LogEntryEvent__e) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().get(0);
-        System.assertEquals(flowRecordEntry.scenario, publishedLogEntryEvent.Scenario__c);
+        System.assertEquals(flowRecordEntry.scenario, publishedLogEntryEvent.TransactionScenario__c);
+        System.assertEquals(flowRecordEntry.scenario, publishedLogEntryEvent.EntryScenario__c);
     }
 
     @IsTest

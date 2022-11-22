@@ -87,6 +87,20 @@ List&lt;ApexEmailNotification&gt;
 
 The cached `List&lt;ApexEmailNotification&gt;` records
 
+#### `getCachedRecentLogWithApiReleaseDetails()` → `Log__c`
+
+Returns a cached `Log__c` record that has been created within the last 4 hours that has API details populated from calling https://api.status.salesforce.com
+
+##### Return
+
+**Type**
+
+Log\_\_c
+
+**Description**
+
+The cached `Log__c` record, or `null` if no match is found
+
 #### `getCountOfAsyncApexJobs(String apexClassName, String apexMethodName, List<String> jobStatuses)` → `Integer`
 
 Returns the count of `AsyncApexJob` records with the specified Apex class name, method name &amp; job status
@@ -223,6 +237,26 @@ Log\_\_c
 
 The matching `Log__c` record
 
+#### `getLoggerScenariosById(List<Id> logScenarioIds)` → `List<LoggerScenario__c>`
+
+Returns a `List&lt;LoggerScenario__c&gt;` of records with the specified log scenario IDs
+
+##### Parameters
+
+| Param            | Description                                       |
+| ---------------- | ------------------------------------------------- |
+| `logScenarioIds` | The list of `ID` of the `Log__c` records to query |
+
+##### Return
+
+**Type**
+
+List&lt;LoggerScenario\_\_c&gt;
+
+**Description**
+
+The list of matching `LoggerScenario__c` records
+
 #### `getLogsById(List<Id> logIds)` → `List<Log__c>`
 
 Returns a `Log__c` record and its related `LogEntry__c` records
@@ -243,7 +277,7 @@ List&lt;Log\_\_c&gt;
 
 The list of matching `Log__c` records
 
-#### `getLogsByTransactionId(Set<String> transactionIds)` → `List<Log__c>`
+#### `getLogsByTransactionId(List<String> transactionIds)` → `List<Log__c>`
 
 Returns a `List&lt;Log__c&gt;` of records with the specified transaction IDs
 

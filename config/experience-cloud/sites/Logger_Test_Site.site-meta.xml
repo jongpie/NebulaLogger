@@ -22,9 +22,8 @@
     <redirectToCustomDomain>false</redirectToCustomDomain>
     <referrerPolicyOriginWhenCrossOrigin>true</referrerPolicyOriginWhenCrossOrigin>
     <selfRegPage>CommunitiesSelfReg</selfRegPage>
-    <siteAdmin>test-fd2x1e6fmccz@example.com</siteAdmin>
-    <siteGuestRecordDefaultOwner>test-fd2x1e6fmccz@example.com</siteGuestRecordDefaultOwner>
+    <siteAdmin>test-1lmkfiy4nibq@example.com</siteAdmin>
+    <siteGuestRecordDefaultOwner>test-1lmkfiy4nibq@example.com</siteGuestRecordDefaultOwner>
     <siteType>ChatterNetwork</siteType>
-    <subdomain>orion-process-5557-17ea0f6ee31</subdomain>
     <urlPathPrefix>logger</urlPathPrefix>
 </CustomSite>

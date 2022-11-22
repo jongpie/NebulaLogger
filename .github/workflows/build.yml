@@ -160,14 +160,25 @@ jobs:
             - name: 'Create Base Scratch Org'
               run: npx sfdx force:org:create --durationdays 1 --definitionfile ./config/scratch-orgs/base-scratch-def.json --wait 20 --setdefaultusername --json
 
-            - name: 'Deploy Source to Scratch Org'
-              run: npm run source:deploy
+            - name: 'Push Source to Scratch Org'
+              run: npx sfdx force:source:push --forceoverwrite
 
             - name: 'Assign Logger Admin Permission Set'
               run: npm run permset:assign:admin
 
-            - name: 'Run Apex Tests'
+            - name: 'Validate Custom Metadata Records'
+              run: npx sfdx force:apex:execute --apexcodefile ./scripts/build/validate-custom-metadata-records.apex
+
+            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+            # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+            - name: 'Run Apex Tests Asynchronously'
               run: npm run test:apex
+
+            - name: 'Run Apex Tests Synchronously'
+              run: npm run test:apex -- --synchronous
 
             - name: 'Delete Base Scratch Org'
               run: npm run org:delete:noprompt
@@ -213,14 +224,25 @@ jobs:
             - name: 'Deploy Test Experience Site Metadata'
               run: npm run experience:deploy
 
-            - name: 'Deploy Source to Scratch Org'
-              run: npm run source:deploy
+            - name: 'Push Source to Scratch Org'
+              run: npx sfdx force:source:push --forceoverwrite
 
             - name: 'Assign Logger Admin Permission Set'
               run: npm run permset:assign:admin
 
-            - name: 'Run Apex Tests'
+            - name: 'Validate Custom Metadata Records'
+              run: npx sfdx force:apex:execute --apexcodefile ./scripts/build/validate-custom-metadata-records.apex
+
+            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+            # Running the Apex tests sync & async serves as an extra level of integration testing to ensure that everything works with or without an active session.
+            - name: 'Run Apex Tests Asynchronously'
               run: npm run test:apex
+
+            - name: 'Run Apex Tests Synchronously'
+              run: npm run test:apex -- --synchronous
 
             - name: 'Delete unsupported code coverage files'
               run: rm ./test-coverage/apex/test-result-707*-codecoverage.json
@@ -323,8 +345,16 @@ jobs:
             - name: 'Create & Install Package Version'
               run: npx pwsh ./scripts/build/create-and-install-package-version.ps1 -targetpackagealias '"Nebula Logger - Core"' -targetreadme ./README.md -targetusername nebula-logger-package-demo
 
-            - name: 'Run Apex Tests'
+            # Nebula Logger has functionality that queries the AuthSession object when the current user has an active session.
+            # The code should work with or without an active session, so the pipeline runs the tests twice - asynchronously and synchronously.
+            # This is done because, based on how you execute Apex tests, the running user may have an active session (synchrously) or not (asynchronously).
+            # Utlimately, this could/should probably be better mocked during tests, but the AuthSession is read-only in Apex, so it's a bit difficult to work with.
+            # Running the Apex tests sync & async serves as an extra level of integration testing in the meantime to ensure that everything works with or without an active session.
+            - name: 'Run Apex Tests Asynchronously'
               run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo
+
+            - name: 'Run Apex Tests Synchronously'
+              run: npm run test:apex:nocoverage -- --targetusername nebula-logger-package-demo --synchronous
 
             - name: 'Commit New Package Version'
               run: |

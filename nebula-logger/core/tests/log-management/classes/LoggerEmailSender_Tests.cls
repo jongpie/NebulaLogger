@@ -33,7 +33,7 @@ private class LoggerEmailSender_Tests {
     @IsTest
     static void it_should_send_email_notification_for_saveResult_errors_when_enabled() {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
@@ -45,9 +45,9 @@ private class LoggerEmailSender_Tests {
             'Email message should contain SaveResult error message'
         );
         if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_ENABLED == true) {
-            System.assertEquals(1, Limits.getEmailInvocations(), 'Email should have been sent');
+            System.assertEquals(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
         } else {
-            System.assertEquals(0, Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
+            System.assertEquals(0, System.Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
         }
     }
 
@@ -56,14 +56,14 @@ private class LoggerEmailSender_Tests {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'true'));
         System.assertEquals(true, LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.clear();
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
         System.assertEquals(true, LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent');
     }
 
     @IsTest
@@ -71,20 +71,20 @@ private class LoggerEmailSender_Tests {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
         System.assertEquals(false, LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.SaveResult> saveResultsWithErrors = new List<Database.SaveResult>{ LoggerMockDataCreator.createDatabaseSaveResult(false) };
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResultsWithErrors);
 
         System.assertEquals(true, LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent');
     }
 
     @IsTest
     static void it_should_send_email_notification_for_upsertResult_errors_when_enabled() {
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
@@ -96,9 +96,9 @@ private class LoggerEmailSender_Tests {
             'Email message should contain UpsertResult error message'
         );
         if (LoggerEmailSender.IS_EMAIL_DELIVERABILITY_ENABLED == true) {
-            System.assertEquals(1, Limits.getEmailInvocations(), 'Email should have been sent');
+            System.assertEquals(1, System.Limits.getEmailInvocations(), 'Email should have been sent');
         } else {
-            System.assertEquals(0, Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
+            System.assertEquals(0, System.Limits.getEmailInvocations(), 'Deliverability is not currently enabled');
         }
     }
 
@@ -107,14 +107,14 @@ private class LoggerEmailSender_Tests {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'true'));
         System.assertEquals(true, LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.clear();
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
 
         System.assertEquals(true, LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent');
     }
 
     @IsTest
@@ -122,13 +122,13 @@ private class LoggerEmailSender_Tests {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'SendErrorEmailNotifications', Value__c = 'false'));
         System.assertEquals(false, LoggerParameter.SEND_ERROR_EMAIL_NOTIFICATIONS);
         LoggerEmailSender.CACHED_APEX_ERROR_RECIPIENTS.add(UserInfo.getUserId());
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent yet');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent yet');
 
         // LogEntry__c requires a Log__c parent record, so inserting a LogEntry__c with no fields set will (intentionally) fail
         List<Database.UpsertResult> upsertResultsWithErrors = Database.upsert(new List<LogEntry__c>{ new LogEntry__c() }, false);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResultsWithErrors);
 
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should have been sent');
+        System.assertEquals(0, System.Limits.getEmailInvocations(), 'No emails should have been sent');
         System.assertEquals(true, LoggerEmailSender.SENT_EMAILS.isEmpty(), 'No email messages should have been generated');
     }
 }

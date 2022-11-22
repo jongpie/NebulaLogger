@@ -5,12 +5,6 @@
 
 // TODO move these test methods back into Logger_Tests, now that mocking is possible via LoggerMockDataCreator.createDatabaseMergeResult()
 //      (and then delete this class)
-/**
- * @group Extra Tests
- * @description Additional integration tests for merging records.
- *              Since merging is only supported on some standard objects, there's not a good way to test merging
- *              from within the normal tests, and each org might have additional required fields, VR, etc on the std objects
- */
 @SuppressWarnings('PMD.ApexDoc, PMD.CyclomaticComplexity, PMD.ExcessiveParameterList, PMD.MethodNamingConventions, PMD.NcssMethodCount')
 @IsTest(IsParallel=true)
 private class Logger_Tests_MergeResult {

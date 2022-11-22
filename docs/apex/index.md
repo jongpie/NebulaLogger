@@ -38,10 +38,6 @@ Provides the ability to generate string messages on demand, using String.format(
 
 The core class for logging
 
-### [LoggerCache](Logger-Engine/LoggerCache)
-
-Class used to cache query results returned by the selector classes
-
 ### [LoggerDataStore](Logger-Engine/LoggerDataStore)
 
 Class used to manage any data-related operations, including database DML statements, publishing platform events via the event bus, and enqueueing queueable jobs
@@ -53,6 +49,10 @@ Selector class used for all queries that are specific to the logger engine layer
 ### [LoggerSObjectHandler](Logger-Engine/LoggerSObjectHandler)
 
 Abstract class used by trigger handlers for shared logic
+
+### [LoggerSObjectProxy](Logger-Engine/LoggerSObjectProxy)
+
+Proxy class used as a middle layer between some problematic SObject Types and the rest of Nebula Logger&apos;s codebase. Each inner class maps to a corresponding `SObjectType` that is difficult to work with Apex for some reason or another, such as not being mockable or creatable, or not existing in all orgs.
 
 ### [LoggerTriggerableContext](Logger-Engine/LoggerTriggerableContext)
 
@@ -116,6 +116,10 @@ Builds and sends email notifications when internal exceptions occur within the l
 
 Provides details to LWCs about Logger&apos;s `SObjects`, using `@AuraEnabled` properties
 
+### [LoggerScenarioHandler](Log-Management/LoggerScenarioHandler)
+
+Handles trigger events for the `LoggerScenario__c` object
+
 ### [LoggerSettingsController](Log-Management/LoggerSettingsController)
 
 Controller class for lwc `loggerSettings`, used to manage records in `LoggerSettings__c`
@@ -127,6 +131,24 @@ Handles trigger events for the `LoggerTag__c` object
 ### [RelatedLogEntriesController](Log-Management/RelatedLogEntriesController)
 
 Controller class for the lightning web component `related-log-entries`
+
+## Configuration
+
+### [LoggerCache](Configuration/LoggerCache)
+
+Class used to cache query results returned by the selector classes
+
+### [LoggerParameter](Configuration/LoggerParameter)
+
+Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
+
+### [LoggerPlugin](Configuration/LoggerPlugin)
+
+The core of the plugin framework, used to create custom Apex &amp; Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger` based on configurations stored in the custom metadata type `LoggerPlugin_t`
+
+### [LoggerScenarioRule](Configuration/LoggerScenarioRule)
+
+Provides a centralized way to load scenario rules that override behavior within Nebula Logger
 
 ## Test Utilities
 
@@ -141,13 +163,3 @@ Utility class used to mock any data-related operations for the database, event b
 ### [LoggerTestConfigurator](/Test-Utilities/LoggerTestConfigurator)
 
 Utility class used to help with setting up Nebula Logger&apos;s configurations within a test context. These methods are specific to metadata implemented within Nebula Logger. These methods can be used when writing Apex tests for plugins.
-
-## Configuration
-
-### [LoggerParameter](Configuration/LoggerParameter)
-
-Provides a centralized way to load parameters for SObject handlers &amp; plugins, and casts the parameters to common data types
-
-### [LoggerPlugin](Configuration/LoggerPlugin)
-
-The core of the plugin framework, used to create custom Apex &amp; Flow plugins for `LoggerSObjectHandler` and `LogBatchPurger` based on configurations stored in the custom metadata type `LoggerPlugin_t`

@@ -2,6 +2,7 @@
 find ./docs/apex/ -maxdepth 2 -type f -name "*.md" -delete
 
 npx apexdocs-generate --configPath ./config/docs/apexdocs.json --scope global public --sourceDir ./nebula-logger/core/ ./nebula-logger/plugins/ --targetDir ./docs/apex --targetGenerator jekyll
+# npx apexdocs-generate --configPath ./config/docs/apexdocs.json --group false --scope global public --sourceDir ./nebula-logger/core/ ./nebula-logger/plugins/ --targetDir ./wiki2 --targetGenerator jekyll
 
 # Make a few adjustments to the generated markdown files so that they work correctly in Github Pages
 $indexPageFile = "docs/apex/index.md"

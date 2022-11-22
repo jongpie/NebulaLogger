@@ -10,7 +10,27 @@ Selector class used for all queries that are specific to the logger engine layer
 
 ### Methods
 
-#### `getCachedAuthSession()` → `AuthSession`
+#### `getAuthSessionProxies(List<Id> userIds)` → `Map<Id, LoggerSObjectProxy.AuthSession>`
+
+Returns a `Map&lt;Id, AuthSession&gt;` for the specified user IDs &amp; their matching active sessions, or `null` if there is not a current session
+
+##### Parameters
+
+| Param     | Description         |
+| --------- | ------------------- |
+| `userIds` | userIds description |
+
+##### Return
+
+**Type**
+
+Map&lt;Id, LoggerSObjectProxy.AuthSession&gt;
+
+**Description**
+
+The instance of `Map&lt;Id, AuthSession&gt;` containing any matching `AuthSession` records
+
+#### `getCachedAuthSessionProxy()` → `LoggerSObjectProxy.AuthSession`
 
 Returns a cached copy of `AuthSession` for the current user&apos;s current session, or `null` if there is not a current session
 
@@ -18,7 +38,7 @@ Returns a cached copy of `AuthSession` for the current user&apos;s current sessi
 
 **Type**
 
-AuthSession
+LoggerSObjectProxy.AuthSession
 
 **Description**
 
@@ -38,15 +58,21 @@ List&lt;LoggerSObjectHandler_t&gt;
 
 The cached `List&lt;LoggerSObjectHandler_t&gt;` records
 
-#### `getCachedNetwork()` → `SObject`
+#### `getCachedNetworkProxy(Id networkId)` → `LoggerSObjectProxy.Network`
 
 Returns a cached copy of the current user&apos;s `Network` site, or `null` if the current user is not associated with a `Network` site
+
+##### Parameters
+
+| Param       | Description                             |
+| ----------- | --------------------------------------- |
+| `networkId` | The record ID of the `Network` to query |
 
 ##### Return
 
 **Type**
 
-SObject
+LoggerSObjectProxy.Network
 
 **Description**
 
@@ -107,5 +133,45 @@ LoggerEngineDataSelector
 **Description**
 
 The singleton instance of `LoggerEngineDataSelector`
+
+#### `getNetworkProxies(List<Id> networkIds)` → `Map<Id, LoggerSObjectProxy.Network>`
+
+Returns a list of matching `Network` records based on the provided list of network IDs
+
+##### Parameters
+
+| Param        | Description                        |
+| ------------ | ---------------------------------- |
+| `networkIds` | The list of `Network` IDs to query |
+
+##### Return
+
+**Type**
+
+Map&lt;Id, LoggerSObjectProxy.Network&gt;
+
+**Description**
+
+The instance of `Map&lt;Id, SObject&gt;` containing any matching `Network` records
+
+#### `getUsers(List<Id> userIds)` → `Map<Id, User>`
+
+Returns a list of matching `User` records based on the provided list of user IDs
+
+##### Parameters
+
+| Param     | Description                     |
+| --------- | ------------------------------- |
+| `userIds` | The list of `User` IDs to query |
+
+##### Return
+
+**Type**
+
+Map&lt;Id, User&gt;
+
+**Description**
+
+The instance of `Map&lt;Id, User&gt;` containing any matching `User` records
 
 ---

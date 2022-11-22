@@ -13,7 +13,10 @@
             "enableNetworksEnabled": false
         },
         "pathAssistantSettings": {
-            "pathAssistantEnabled": true
+            "pathAssistantEnabled": false
+        },
+        "securitySettings": {
+            "enableAdminLoginAsAnyUser": false
         },
         "userManagementSettings": {
             "enableEnhancedPermsetMgmt": true,

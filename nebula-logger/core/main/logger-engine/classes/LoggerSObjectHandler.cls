@@ -60,7 +60,7 @@ public without sharing abstract class LoggerSObjectHandler {
     public static LoggerSObjectHandler getHandler(Schema.SObjectType sobjectType, LoggerSObjectHandler defaultImplementation) {
         String handlerApexClassName = getHandlerConfiguration(sobjectType)?.SObjectHandlerApexClass__c;
         // TODO need to handle namespace prefix for Apex classes
-        return handlerApexClassName == null ? defaultImplementation : (LoggerSObjectHandler) Type.forName(handlerApexClassName)?.newInstance();
+        return handlerApexClassName == null ? defaultImplementation : (LoggerSObjectHandler) System.Type.forName(handlerApexClassName)?.newInstance();
     }
 
     /**
@@ -268,7 +268,7 @@ public without sharing abstract class LoggerSObjectHandler {
             handlerConfiguration.SObjectType__c = handlerConfiguration.SObjectTypeOverride__c;
         }
 
-        return ((SObject) Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
+        return ((SObject) System.Type.forName(handlerConfiguration.SObjectType__c).newInstance()).getSObjectType();
     }
 
     @TestVisible

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Query Network Data Synchronously</label>
+    <protected>false</protected>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Note: this parameter only applies to orgs that are using Experience Cloud (Communities).
+
+        When set to &apos;true&apos; (default), the Network object will be queried synchronously so that the related fields on LogEntryEvent__e will be populated.
+
+When set to &apos;false&apos;, the Network object will only be queried asynchronously, and the related fields will be null on LogEntryEvent__e but populated on Log__c. This is useful if you want to reduce the syncronous queries used by Nebula Logger you do not rely on the related LogEntryEvent__e fields being populated.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">true</value>
+    </values>
+</CustomMetadata>

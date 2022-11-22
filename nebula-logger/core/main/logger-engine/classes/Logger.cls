@@ -9,27 +9,54 @@
  * @see LogEntryEventBuilder
  * @see LogMessage
  */
-@SuppressWarnings('PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength')
+@SuppressWarnings(
+    'PMD.AvoidDebugStatements, PMD.AvoidGlobalModifier, PMD.CyclomaticComplexity, PMD.CognitiveComplexity, PMD.ExcessiveClassLength, PMD.PropertyNamingConventions, PMD.StdCyclomaticComplexity'
+)
 global with sharing class Logger {
     // There's no reliable way to get the version number dynamically in Apex
     @TestVisible
-    private static final String CURRENT_VERSION_NUMBER = 'v4.7.8';
+    private static final String CURRENT_VERSION_NUMBER = 'v4.9.1';
     private static final LoggingLevel DEFAULT_LOGGING_LEVEL = LoggingLevel.DEBUG;
+    private static final Set<String> IGNORED_APEX_CLASSES = initializeIgnoredApexClasses();
     private static final List<LogEntryEventBuilder> LOG_ENTRIES_BUFFER = new List<LogEntryEventBuilder>();
-    private static final Map<String, LogScenarioRule__mdt> MOCK_SCENARIO_TO_SCENARIO_RULE = new Map<String, LogScenarioRule__mdt>();
+    private static final String REQUEST_ID = System.Request.getCurrent().getRequestId();
+    private static final Map<String, SaveMethod> SAVE_METHOD_NAME_TO_SAVE_METHOD = new Map<String, SaveMethod>();
     private static final String TRANSACTION_ID = new Uuid().getValue();
-    private static final Quiddity TRANSACTION_QUIDDITY = setTransactionQuiddity();
-    private static final Boolean USE_FIRST_SPECIFIED_SCENARIO = LoggerParameter.getBoolean('UseFirstSpecifiedScenario', true);
 
+    private static String currentEntryScenario;
     private static Integer currentTransactionEntryNumber = 1;
     @TestVisible
     private static String lastSaveMethodNameUsed;
+    private static List<String> orderedScenarios = new List<String>();
     private static String parentLogTransactionId;
     @TestVisible
     private static Integer saveLogCallCount = 0;
     private static Boolean suspendSaving = false;
-    private static String transactionScenario = getUserSettings().DefaultLogScenario__c;
+    private static String transactionScenario;
     private static LoggerSettings__c userSettings;
+
+    private static final Quiddity TRANSACTION_QUIDDITY {
+        get {
+            if (TRANSACTION_QUIDDITY == null) {
+                TRANSACTION_QUIDDITY = getTransactionQuiddity();
+            }
+            return TRANSACTION_QUIDDITY;
+        }
+        set;
+    }
+
+    private static final String USER_SESSION_ID {
+        get {
+            if (USER_SESSION_ID == null) {
+                USER_SESSION_ID = UserInfo.getSessionId();
+                // If UserInfo.getSessionId() returns null, set to an empty string to
+                // avoid calling UserInfo.getSessionId() again
+                USER_SESSION_ID = USER_SESSION_ID == null ? '' : USER_SESSION_ID;
+            }
+            return USER_SESSION_ID;
+        }
+        set;
+    }
 
     private static String transactionSaveMethodName {
         get {
@@ -56,6 +83,7 @@ global with sharing class Logger {
         // The rest of the codebase should use a method in Logger.cls
         System.debug(LoggingLevel.INFO, 'Logger - Version Number: ' + getVersionNumber());
         System.debug(LoggingLevel.INFO, 'Logger - Transaction ID: ' + getTransactionId());
+        setScenario(getUserSettings().DefaultScenario__c);
     }
 
     /**
@@ -74,7 +102,7 @@ global with sharing class Logger {
      * @description Returns the current version number of Nebula Logger
      * @return The current version number, in the format `v0.0.0`
      */
-    public static String getVersionNumber() {
+    global static String getVersionNumber() {
         return CURRENT_VERSION_NUMBER;
     }
 
@@ -239,6 +267,8 @@ global with sharing class Logger {
         // However, some settings fields are expected to have null values, which conflicts with how `getInstance()` behaves
         // So, instead use LoggerSettings__c.getValues(Id userOrProfileId) to load exactly what's been configured (including nulls)
 
+        // TODO cache the generated instances of LoggerSettings__c in LoggerCache.getTransactionCache().put()
+        // (key would be 'Settings' + user ID)
         LoggerSettings__c loggingUserSettings;
         if (loggingUser.Id != null && LoggerSettings__c.getValues(loggingUser.Id) != null) {
             // Check for User-level settings
@@ -250,7 +280,7 @@ global with sharing class Logger {
             // Next, use the org defaults (if configured)
             loggingUserSettings = LoggerSettings__c.getOrgDefaults();
         } else {
-            loggingUserSettings = (LoggerSettings__c) LoggerSettings__c.SObjectType.newSObject(null, true);
+            loggingUserSettings = (LoggerSettings__c) Schema.LoggerSettings__c.SObjectType.newSObject(null, true);
         }
 
         // If the settings were loaded from the org or profile level, clear the ID and make the user the SetupOwnerId (since the method is getUserSettings)
@@ -2437,11 +2467,7 @@ global with sharing class Logger {
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.DeleteResult> deleteResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), deleteResults);
     }
 
     /**
@@ -2452,10 +2478,6 @@ global with sharing class Logger {
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.DeleteResult> deleteResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.DeleteResult> resultsToLog = new List<Database.DeleteResult>();
         for (Database.DeleteResult deleteResult : deleteResults) {
             if (deleteResult.isSuccess() == false) {
@@ -2463,11 +2485,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2478,11 +2497,7 @@ global with sharing class Logger {
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.MergeResult> mergeResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), mergeResults);
     }
 
     /**
@@ -2493,10 +2508,6 @@ global with sharing class Logger {
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.MergeResult> mergeResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.MergeResult> resultsToLog = new List<Database.MergeResult>();
         for (Database.MergeResult mergeResult : mergeResults) {
             if (mergeResult.isSuccess() == false) {
@@ -2504,11 +2515,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2519,11 +2527,7 @@ global with sharing class Logger {
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.SaveResult> saveResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), saveResults);
     }
 
     /**
@@ -2534,10 +2538,6 @@ global with sharing class Logger {
      * @return              The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.SaveResult> saveResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.SaveResult> resultsToLog = new List<Database.SaveResult>();
         for (Database.SaveResult saveResult : saveResults) {
             if (saveResult.isSuccess() == false) {
@@ -2545,11 +2545,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2560,11 +2557,7 @@ global with sharing class Logger {
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UpsertResult> upsertResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), upsertResults);
     }
 
     /**
@@ -2575,10 +2568,6 @@ global with sharing class Logger {
      * @return               The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UpsertResult> upsertResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.UpsertResult> resultsToLog = new List<Database.UpsertResult>();
         for (Database.UpsertResult upsertResult : upsertResults) {
             if (upsertResult.isSuccess() == false) {
@@ -2586,11 +2575,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2601,11 +2587,7 @@ global with sharing class Logger {
      * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, LogMessage logMessage, List<Database.UndeleteResult> undeleteResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        } else {
-            return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults);
-        }
+        return logDatabaseErrors(loggingLevel, logMessage.getMessage(), undeleteResults);
     }
 
     /**
@@ -2616,10 +2598,6 @@ global with sharing class Logger {
      * @return                 The instance of `LogEntryBuilder` was generated to log any errors, or `null` if there are no errors
      */
     global static LogEntryEventBuilder logDatabaseErrors(LoggingLevel loggingLevel, String message, List<Database.UndeleteResult> undeleteResults) {
-        if (isEnabled(loggingLevel) == false) {
-            return null;
-        }
-
         List<Database.UndeleteResult> resultsToLog = new List<Database.UndeleteResult>();
         for (Database.UndeleteResult undeleteResult : undeleteResults) {
             if (undeleteResult.isSuccess() == false) {
@@ -2627,11 +2605,8 @@ global with sharing class Logger {
             }
         }
 
-        LogEntryEventBuilder logEntryEventBuilder;
-        if (resultsToLog.isEmpty() == false) {
-            logEntryEventBuilder = newEntry(loggingLevel, message).setDatabaseResult(resultsToLog);
-        }
-        return logEntryEventBuilder;
+        Boolean shouldSave = resultsToLog.isEmpty() == false && isEnabled(loggingLevel) == true;
+        return newEntry(loggingLevel, message, shouldSave).setDatabaseResult(resultsToLog);
     }
 
     /**
@@ -2683,36 +2658,90 @@ global with sharing class Logger {
      * @return   The value currently set as the current transaction's scenario
      */
     global static String getScenario() {
-        return transactionScenario;
+        return currentEntryScenario;
     }
 
     /**
-     * @description Sets the scenario name for the current transaction - this is stored in `LogEntryEvent__e.Scenario__c`
-     *              and `Log__c.Scenario__c`, and can be used to filter & group logs
+     * @description Sets the current scenario, which can be used to identify modules or groupings of  for the current transaction
      * @param  scenario The name to use for the current transaction's scenario
      */
+    @SuppressWarnings('PMD.NcssMethodCount')
     global static void setScenario(String scenario) {
-        if (USE_FIRST_SPECIFIED_SCENARIO == true && String.isNotBlank(transactionScenario) == true) {
+        if (LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION == false || String.isBlank(transactionScenario) == true) {
+            transactionScenario = scenario;
+        }
+
+        if (String.isNotBlank(scenario) == true && scenario == currentEntryScenario) {
             return;
         }
 
-        transactionScenario = scenario;
-
-        LogScenarioRule__mdt matchingScenarioRule;
-        for (LogScenarioRule__mdt scenarioRule : LogScenarioRule__mdt.getAll().values()) {
-            if (scenarioRule.IsEnabled__c == true && scenarioRule.Scenario__c == scenario) {
-                matchingScenarioRule = scenarioRule;
-                break;
+        currentEntryScenario = scenario;
+        orderedScenarios.add(scenario);
+        LoggerScenarioRule__mdt matchingScenarioRule = LoggerScenarioRule.getInstance(scenario);
+        if (matchingScenarioRule != null) {
+            LoggerSettings__c userSettings = getUserSettings();
+            if (String.isNotBlank(matchingScenarioRule.IsLoggerEnabled__c) == true) {
+                userSettings.IsEnabled__c = Boolean.valueOf(matchingScenarioRule.IsLoggerEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsAnonymousModeEnabled__c) == true) {
+                userSettings.IsAnonymousModeEnabled__c = Boolean.valueOf(matchingScenarioRule.IsAnonymousModeEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsApexSystemDebugLoggingEnabled__c) == true) {
+                userSettings.IsApexSystemDebugLoggingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsApexSystemDebugLoggingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsDataMaskingEnabled__c) == true) {
+                userSettings.IsDataMaskingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsDataMaskingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c) == true) {
+                userSettings.IsJavaScriptConsoleLoggingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsJavaScriptConsoleLoggingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsRecordFieldStrippingEnabled__c) == true) {
+                userSettings.IsRecordFieldStrippingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsRecordFieldStrippingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.IsSavingEnabled__c) == true) {
+                userSettings.IsSavingEnabled__c = Boolean.valueOf(matchingScenarioRule.IsSavingEnabled__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.SaveMethod__c) == true) {
+                setSaveMethod(matchingScenarioRule.SaveMethod__c);
+            }
+            if (String.isNotBlank(matchingScenarioRule.UserLoggingLevel__c) == true) {
+                userSettings.LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
             }
         }
+    }
 
-        if (System.Test.isRunningTest() == true) {
-            matchingScenarioRule = MOCK_SCENARIO_TO_SCENARIO_RULE.get(scenario);
+    /**
+     * @description End the specified scenario, if it's the currently active scenario,
+     *              and rolls back to the previous scenario (if a previous scenario was specified in the current transaction)
+     * @param  scenario The name of the scenario to end
+     */
+    global static void endScenario(String scenario) {
+        if (String.isBlank(scenario) == true || scenario != currentEntryScenario || orderedScenarios.isEmpty() == true) {
+            return;
         }
 
-        if (matchingScenarioRule != null) {
-            getUserSettings().LoggingLevel__c = matchingScenarioRule.UserLoggingLevel__c;
+        Integer lastScenarioIndex = orderedScenarios.size() - 1;
+        orderedScenarios.remove(lastScenarioIndex);
+        String previousScenario;
+        if (orderedScenarios.isEmpty() == false) {
+            Integer previousScenarioIndex = orderedScenarios.size() - 1;
+            previousScenario = orderedScenarios.remove(previousScenarioIndex);
         }
+        if (String.isBlank(previousScenario) == true) {
+            currentEntryScenario = null;
+        }
+
+        setScenario(previousScenario);
+    }
+
+    /**
+     * @description Adds the specified Apex type to the list of ignored origin locations for the current transaction.
+     *              Any ignored types will be removed from the StackTrace__c field, and will be skipped when determining
+     *              the log entry's origin location
+     * @param  apexType The Apex type of the class to ignore
+     */
+    global static void ignoreOrigin(System.Type apexType) {
+        IGNORED_APEX_CLASSES.add(apexType.getName());
     }
 
     /**
@@ -2728,7 +2757,7 @@ global with sharing class Logger {
      * @param  saveMethod The enum value of Logger.SaveMethod to use for any other calls to saveLog() in the current transaction
      */
     global static void setSaveMethod(SaveMethod saveMethod) {
-        transactionSaveMethodName = saveMethod.name();
+        setSaveMethod(saveMethod.name());
     }
 
     /**
@@ -2775,12 +2804,10 @@ global with sharing class Logger {
 
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         for (LogEntryEventBuilder logEntryEventBuilder : LOG_ENTRIES_BUFFER) {
-            if (logEntryEventBuilder.shouldSave()) {
+            if (logEntryEventBuilder.shouldSave() == true) {
                 LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
                 logEntryEvent.ParentLogTransactionId__c = getParentLogTransactionId();
-                logEntryEvent.Scenario__c = transactionScenario;
-                logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
-                logEntryEvent.TransactionId__c = getTransactionId();
+                logEntryEvent.TransactionScenario__c = transactionScenario;
 
                 logEntryEvents.add(logEntryEvent);
             }
@@ -2815,7 +2842,7 @@ global with sharing class Logger {
             when REST {
                 // If the user doesn't have a session ID (e.g., site guest user), the REST API call will fail
                 // To avoid that, use the EventBus instead (even though REST was specified)
-                if (String.isBlank(UserInfo.getSessionId())) {
+                if (String.isBlank(USER_SESSION_ID) == true) {
                     saveLog(Logger.SaveMethod.EVENT_BUS);
                 } else {
                     new RestApiSaver().insertRecords(logEntryEvents);
@@ -2891,47 +2918,51 @@ global with sharing class Logger {
     }
 
     private static LogEntryEventBuilder newEntry(LoggingLevel loggingLevel, Boolean shouldSave) {
-        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(LoggingLevel, shouldSave);
+        LogEntryEventBuilder logEntryEventBuilder = new LogEntryEventBuilder(getUserSettings(), loggingLevel, shouldSave, IGNORED_APEX_CLASSES);
         if (logEntryEventBuilder.shouldSave() == true) {
-            logEntryEventBuilder.getLogEntryEvent().LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
-            logEntryEventBuilder.getLogEntryEvent().TransactionEntryNumber__c = currentTransactionEntryNumber++;
+            LogEntryEvent__e logEntryEvent = logEntryEventBuilder.getLogEntryEvent();
+            logEntryEvent.EntryScenario__c = currentEntryScenario;
+            logEntryEvent.LoggerVersionNumber__c = CURRENT_VERSION_NUMBER;
+            logEntryEvent.RequestId__c = REQUEST_ID;
+            logEntryEvent.SystemMode__c = getCurrentQuiddity()?.name();
+            logEntryEvent.TransactionEntryNumber__c = currentTransactionEntryNumber++;
+            logEntryEvent.TransactionId__c = getTransactionId();
+            logEntryEvent.UserLoggingLevel__c = userLoggingLevel.name();
+            logEntryEvent.UserLoggingLevelOrdinal__c = userLoggingLevel.ordinal();
             LOG_ENTRIES_BUFFER.add(logEntryEventBuilder);
         }
 
         return logEntryEventBuilder;
     }
 
-    private static Quiddity setTransactionQuiddity() {
+    private static Set<String> initializeIgnoredApexClasses() {
+        return new Set<String>{ Logger.class.getName(), LogEntryEventBuilder.class.getName(), LogMessage.class.getName() };
+    }
+
+    private static Quiddity getTransactionQuiddity() {
         // An error can sometimes occur when calling System.Request.getCurrent(), such as when logging
         // from an Auth Provider class (that implements Auth.RegistrationHandler). As a workaround,
         // skip calling System.Request.getCurrent() if there is no user session.
         // TODO: see if there is a better approach for this long term (or hopefully Salesforce fixes the gack error)
-        if (String.isNotBlank(UserInfo.getSessionId())) {
+        if (String.isNotBlank(USER_SESSION_ID) == true) {
             return System.Request.getCurrent().getQuiddity();
         } else {
             return null;
         }
     }
 
-    @TestVisible
-    private static void setMockScenarioRule(LogScenarioRule__mdt scenarioRule) {
-        // TODO Add validation for DeveloperName and Scenario__c fields != null
-        // if (String.isBlank(scenarioRule.DeveloperName) == true) {
-        //     throw new IllegalArgumentException('DeveloperName is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
-        // }
-        // if (String.isBlank(scenarioRule.Scenario__c) == true) {
-        //     throw new IllegalArgumentException('Scenario__c is required on `LogScenarioRule__mdt: \n' + JSON.serializePretty(scenarioRule));
-        // }
+    private static SaveMethod getSaveMethod(String saveMethodName) {
+        if (SAVE_METHOD_NAME_TO_SAVE_METHOD.isEmpty() == true) {
+            for (SaveMethod method : SaveMethod.values()) {
+                SAVE_METHOD_NAME_TO_SAVE_METHOD.put(method.name(), method);
+            }
+        }
 
-        MOCK_SCENARIO_TO_SCENARIO_RULE.put(scenarioRule.Scenario__c, scenarioRule);
+        return SAVE_METHOD_NAME_TO_SAVE_METHOD.get(saveMethodName);
     }
 
-    private static SaveMethod getSaveMethod(String saveMethodName) {
-        try {
-            return SaveMethod.valueOf(saveMethodName);
-        } catch (NoSuchElementException ex) {
-            return null;
-        }
+    private static void setSaveMethod(String saveMethodName) {
+        transactionSaveMethodName = saveMethodName;
     }
 
     private static String getSuspendSavingLogSystemMessage() {
@@ -3015,7 +3046,7 @@ global with sharing class Logger {
         public void insertRecords(List<SObject> records) {
             HttpRequest request = new HttpRequest();
             request.setEndpoint(baseURL + compositeEndpoint);
-            request.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
+            request.setHeader('Authorization', 'Bearer ' + USER_SESSION_ID);
             request.setHeader('Content-Type', 'application/json; charset=utf-8');
             request.setMethod('POST');
 

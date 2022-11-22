@@ -128,10 +128,6 @@ Contains the plural label of the log entry sObject, fetched using a describe cal
 
 contains the log entry results from the query.
 
-###### `tabIcon` → `String`
-
-contains the tab icon of the log entry, fetched using describe a call on the log entry sObject.
-
 ###### `totalLogEntriesCount` → `Integer`
 
 Contains the number of records returned via the log entries query.

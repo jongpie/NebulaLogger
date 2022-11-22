@@ -37,7 +37,7 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_call_status_api() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'CallStatusApi', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
@@ -48,11 +48,149 @@ private class LoggerParameter_Tests {
 
     @IsTest
     static void it_should_return_constant_value_for_enable_system_messages() {
-        Boolean mockValue = true;
+        Boolean mockValue = false;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
         Boolean returnedValue = LoggerParameter.ENABLE_SYSTEM_MESSAGES;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_enable_tagging() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.ENABLE_TAGGING;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_apex_class_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryApexClassData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_APEX_CLASS_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_auth_session_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_auth_session_data_synchronously() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryAuthSessionDataSynchronously',
+            Value__c = JSON.serialize(mockValue)
+        );
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_flow_definition_view_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryFlowDefinitionViewData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_FLOW_DEFINITION_VIEW_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_network_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_network_data_synchronously() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryNetworkDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_organization_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_organization_data_synchronously() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(
+            DeveloperName = 'QueryOrganizationDataSynchronously',
+            Value__c = JSON.serialize(mockValue)
+        );
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_related_record_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryRelatedRecordData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_RELATED_RECORD_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserData', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA;
+
+        System.assertEquals(mockValue, returnedValue);
+    }
+
+    @IsTest
+    static void it_should_return_constant_value_for_query_user_data_synchronously() {
+        Boolean mockValue = false;
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'QueryUserDataSynchronously', Value__c = JSON.serialize(mockValue));
+        LoggerParameter.setMock(mockParameter);
+
+        Boolean returnedValue = LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY;
 
         System.assertEquals(mockValue, returnedValue);
     }
@@ -81,23 +219,23 @@ private class LoggerParameter_Tests {
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_tagging_is_enabled() {
+    static void it_should_return_constant_value_for_use_platform_cache() {
         Boolean mockValue = false;
-        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableTagging', Value__c = JSON.serialize(mockValue));
+        LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UsePlatformCache', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
-        Boolean returnedValue = LoggerParameter.TAGGING_IS_ENABLED;
+        Boolean returnedValue = LoggerParameter.USE_PLATFORM_CACHE;
 
         System.assertEquals(mockValue, returnedValue);
     }
 
     @IsTest
-    static void it_should_return_constant_value_for_tag_using_topics() {
+    static void it_should_return_constant_value_for_use_topics_for_tags() {
         Boolean mockValue = true;
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'UseTopicsForTags', Value__c = JSON.serialize(mockValue));
         LoggerParameter.setMock(mockParameter);
 
-        Boolean returnedValue = LoggerParameter.TAG_USING_TOPICS;
+        Boolean returnedValue = LoggerParameter.USE_TOPICS_FOR_TAGS;
 
         System.assertEquals(mockValue, returnedValue);
     }

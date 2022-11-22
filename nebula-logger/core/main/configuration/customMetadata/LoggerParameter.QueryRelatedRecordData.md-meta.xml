@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomMetadata
+    xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+    <label>Query Related Record Data</label>
+    <protected>false</protected>
+    <values>
+        <field>Description__c</field>
+        <value
+            xsi:type="xsd:string"
+        >When set to &apos;true&apos; (default), SObjects are dynamically queried (based on the field LogEntry__c.RecordId__c) to retrieve record names, which is then stored in LogEntry__c.RecordName__c.
+
+When set to &apos;false&apos;, the dynamic queries will not be executed, and the field LogEntry__c.RecordName__c will be null.</value>
+    </values>
+    <values>
+        <field>Value__c</field>
+        <value xsi:type="xsd:string">true</value>
+    </values>
+</CustomMetadata>

@@ -244,7 +244,7 @@ export default class LogEntryEventStream extends LightningElement {
     }
 
     _meetsScenarioFilter(logEntryEvent) {
-        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent.Scenario__c);
+        return this._matchesTextFilter(this.scenarioFilter, logEntryEvent.TransactionScenario__c);
     }
 
     _matchesTextFilter(filterCriteria = '', text = '') {

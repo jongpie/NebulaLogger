@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Scenario__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <caseSensitive>false</caseSensitive>
+    <complianceGroup>PII;GDPR;CCPA</complianceGroup>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Scenario</label>
+    <length>255</length>
+    <required>true</required>
+    <securityClassification>Confidential</securityClassification>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

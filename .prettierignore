@@ -5,9 +5,9 @@
 # Folders to exclude
 .localdevserver/
 .settings/
+.sf/
 .sfdx/
 .vscode/
-scripts/
 test-coverage/
 
 # NPM

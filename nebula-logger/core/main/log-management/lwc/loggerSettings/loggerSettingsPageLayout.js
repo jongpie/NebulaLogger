@@ -42,7 +42,7 @@ const PAGE_LAYOUT_CONFIG = {
             showInEditMode: true,
             columns: [
                 { fieldApiNames: ['DefaultNumberOfDaysToRetainLogs__c', 'DefaultLogPurgeAction__c'], size: 6 },
-                { fieldApiNames: ['DefaultLogScenario__c', 'DefaultLogShareAccessLevel__c', 'DefaultLogOwner__c'], size: 6 }
+                { fieldApiNames: ['DefaultScenario__c', 'DefaultLogShareAccessLevel__c', 'DefaultLogOwner__c'], size: 6 }
             ]
         }
     ]

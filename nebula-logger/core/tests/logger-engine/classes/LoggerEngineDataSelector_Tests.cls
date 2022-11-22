@@ -7,17 +7,55 @@
 @IsTest(IsParallel=true)
 private class LoggerEngineDataSelector_Tests {
     @IsTest
-    static void it_returns_cached_auth_session() {
-        // AuthSession is always null in a test context, which makes this object/method more difficult to test
-        AuthSession expectedAuthSession = null;
-        System.assertEquals(0, Limits.getQueries());
+    static void it_loads_mock_instance() {
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        System.assertNotEquals(mockSelector, LoggerEngineDataSelector.getInstance());
 
-        AuthSession returnedAuthSession = LoggerEngineDataSelector.getInstance().getCachedAuthSession();
+        LoggerEngineDataSelector.setMock(mockSelector);
 
-        System.assertEquals(1, Limits.getQueries());
-        LoggerEngineDataSelector.getInstance().getCachedAuthSession();
-        System.assertEquals(1, Limits.getQueries(), 'Query results should have been cached');
-        System.assertEquals(expectedAuthSession, returnedAuthSession);
+        System.assertEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+    }
+
+    @IsTest
+    static void it_returns_cached_auth_session_proxy() {
+        List<AuthSession> sessions = [
+            SELECT
+                Id,
+                LoginType,
+                LoginHistoryId,
+                LoginHistory.Application,
+                LoginHistory.Browser,
+                LoginHistory.Platform,
+                LogoutUrl,
+                SessionSecurityLevel,
+                SessionType,
+                SourceIp
+            FROM AuthSession
+            WHERE UsersId = :UserInfo.getUserId() AND IsCurrent = TRUE AND ParentId = NULL
+        ];
+        LoggerSObjectProxy.AuthSession expectedAuthSession = sessions.isEmpty() ? null : new LoggerSObjectProxy.AuthSession(sessions.get(0));
+        System.assertEquals(1, System.Limits.getQueries());
+
+        LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+
+        System.assertEquals(2, System.Limits.getQueries());
+        LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+        System.assertEquals(2, System.Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(expectedAuthSession, returnedAuthSessionProxy);
+    }
+
+    @IsTest
+    static void it_does_not_query_auth_session_when_disabled_via_logger_parameter() {
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+        System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryAuthSessionData', Value__c = String.valueOf(false)));
+
+        LoggerSObjectProxy.AuthSession returnedAuthSessionProxy = LoggerEngineDataSelector.getInstance().getCachedAuthSessionProxy();
+
+        System.assertEquals(0, mockSelector.getCachedAuthSessionQueryCount());
+        System.assertEquals(null, returnedAuthSessionProxy);
     }
 
     @IsTest
@@ -27,32 +65,16 @@ private class LoggerEngineDataSelector_Tests {
             FROM LoggerSObjectHandler__mdt
             WHERE IsEnabled__c = TRUE
         ];
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, System.Limits.getQueries());
 
         List<LoggerSObjectHandler__mdt> returnedSObjectHandlers = LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
 
         // The specific query used for LoggerSObjectHandler__mdt shouldn't count towards the SOQL query limits,
         // so 0 queries are expected here
-        System.assertEquals(0, Limits.getQueries());
+        System.assertEquals(0, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedLoggerSObjectHandlers();
-        System.assertEquals(0, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(0, System.Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedSObjectHandlers, returnedSObjectHandlers);
-    }
-
-    @IsTest
-    static void it_returns_cached_network() {
-        // By default, the current user (in the pipeline's scratch org) will not have a Network ID
-        // TODO create an integration test class that verifies the actual Network is returned when the user is associated with the site
-        Id expectedNetworkId = Network.getNetworkId();
-        System.assertEquals(0, Limits.getQueries());
-        Integer expectedQueryCount = expectedNetworkId == null ? 0 : 1;
-
-        SObject returnedNetworkSite = LoggerEngineDataSelector.getInstance().getCachedNetwork();
-
-        System.assertEquals(expectedQueryCount, Limits.getQueries());
-        LoggerEngineDataSelector.getInstance().getCachedNetwork();
-        System.assertEquals(expectedQueryCount, Limits.getQueries(), 'Query results should have been cached');
-        System.assertEquals(expectedNetworkId, returnedNetworkSite?.Id);
     }
 
     @IsTest
@@ -61,14 +83,30 @@ private class LoggerEngineDataSelector_Tests {
             SELECT Id, InstanceName, IsSandbox, Name, NamespacePrefix, OrganizationType, TrialExpirationDate
             FROM Organization
         ];
-        System.assertEquals(1, Limits.getQueries());
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerEngineDataSelector.setMock(mockSelector);
+        System.assertEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
 
         Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(1, mockSelector.getCachedOrganizationQueryCount());
         LoggerEngineDataSelector.getInstance().getCachedOrganization();
-        System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(1, mockSelector.getCachedOrganizationQueryCount(), 'Query results should have been cached');
         System.assertEquals(expectedOrganization, returnedOrganization);
+    }
+
+    @IsTest
+    static void it_does_not_query_organization_when_disabled_via_logger_parameter() {
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        System.assertNotEquals(mockSelector, LoggerEngineDataSelector.getInstance());
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationData', Value__c = String.valueOf(false)));
+
+        Organization returnedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+
+        System.assertEquals(0, mockSelector.getCachedOrganizationQueryCount());
+        System.assertEquals(null, returnedOrganization);
     }
 
     @IsTest
@@ -78,13 +116,13 @@ private class LoggerEngineDataSelector_Tests {
             FROM LogEntryTagRule__mdt
             WHERE IsEnabled__c = TRUE AND SObjectType__r.DeveloperName = 'LogEntry'
         ];
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, System.Limits.getQueries());
 
         List<LogEntryTagRule__mdt> returnedTagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-        System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(2, System.Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedTagAssignmentRules, returnedTagAssignmentRules);
     }
 
@@ -95,13 +133,44 @@ private class LoggerEngineDataSelector_Tests {
             FROM User
             WHERE Id = :UserInfo.getUserId()
         ];
-        System.assertEquals(1, Limits.getQueries());
+        System.assertEquals(1, System.Limits.getQueries());
 
         User returnedUser = LoggerEngineDataSelector.getInstance().getCachedUser();
 
-        System.assertEquals(2, Limits.getQueries());
+        System.assertEquals(2, System.Limits.getQueries());
         LoggerEngineDataSelector.getInstance().getCachedUser();
-        System.assertEquals(2, Limits.getQueries(), 'Query results should have been cached');
+        System.assertEquals(2, System.Limits.getQueries(), 'Query results should have been cached');
         System.assertEquals(expectedUser, returnedUser);
+    }
+
+    private class MockLoggerEngineDataSelector extends LoggerEngineDataSelector {
+        private Integer authSessionQueryCount = 0;
+        private Integer organizationQueryCount = 0;
+
+        public override LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
+            Integer originalQueryCount = System.Limits.getQueries();
+            LoggerSObjectProxy.AuthSession result = super.getCachedAuthSessionProxy();
+            if (System.Limits.getQueries() != originalQueryCount) {
+                authSessionQueryCount = System.Limits.getQueries() - originalQueryCount;
+            }
+            return result;
+        }
+
+        public Integer getCachedAuthSessionQueryCount() {
+            return authSessionQueryCount;
+        }
+
+        public override Organization getCachedOrganization() {
+            Integer originalQueryCount = System.Limits.getQueries();
+            Organization result = super.getCachedOrganization();
+            if (System.Limits.getQueries() != originalQueryCount) {
+                organizationQueryCount = System.Limits.getQueries() - originalQueryCount;
+            }
+            return result;
+        }
+
+        public Integer getCachedOrganizationQueryCount() {
+            return organizationQueryCount;
+        }
     }
 }

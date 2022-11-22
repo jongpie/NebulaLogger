@@ -50,7 +50,7 @@ public with sharing class RelatedLogEntriesController {
         }
 
         // Somewhat redundant security check for FLS (but extra security > less security)
-        SObjectAccessDecision securityDecision = Security.stripInaccessible(AccessType.READABLE, records);
+        SObjectAccessDecision securityDecision = System.Security.stripInaccessible(AccessType.READABLE, records);
         records = securityDecision.getRecords();
 
         Integer totalLogEntriesCount = LogManagementDataSelector.getInstance().getCountOfRelatedRecordLogEntries(recordId);
@@ -152,36 +152,6 @@ public with sharing class RelatedLogEntriesController {
         return relationshipName + '.' + displayFieldApiName;
     }
 
-    @SuppressWarnings('PMD.CognitiveComplexity')
-    private static String getTabIcon(Schema.SObjectType sobjectType) {
-        String sobjectName = sobjectType.getDescribe().getName();
-
-        String tabIcon;
-        for (Schema.DescribeTabSetResult tabSetResult : Schema.describeTabs()) {
-            for (Schema.DescribeTabResult tabResult : tabSetResult.getTabs()) {
-                if (tabResult.getSObjectName() != sobjectName) {
-                    continue;
-                }
-
-                String iconType = tabResult.isCustom() ? 'custom' : 'standard';
-                String svgIconName;
-                for (Schema.DescribeIconResult icon : tabResult.getIcons()) {
-                    if (icon.getContentType() != 'image/svg+xml') {
-                        continue;
-                    }
-
-                    svgIconName = icon.getUrl().substringAfterLast('/').replace('.svg', '');
-                    tabIcon = iconType + ':' + svgIconName;
-                    break;
-                }
-            }
-        }
-
-        return tabIcon;
-    }
-
-    // Inner classes
-
     /**
      * @description Inner, wrapper class that contains query result information after querying related log entries.
      */
@@ -217,12 +187,6 @@ public with sharing class RelatedLogEntriesController {
         public List<LogEntry__c> records { get; set; }
 
         /**
-         * @description contains the tab icon of the log entry, fetched using describe a call on the log entry sObject.
-         */
-        @AuraEnabled
-        public String tabIcon { get; set; }
-
-        /**
          * @description Contains the number of records returned via the log entries query.
          */
         @AuraEnabled
@@ -234,7 +198,6 @@ public with sharing class RelatedLogEntriesController {
             this.label = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabel();
             this.labelPlural = LOG_ENTRY_SOBJECT_TYPE.getDescribe().getLabelPlural();
             this.records = records;
-            this.tabIcon = getTabIcon(LOG_SOBJECT_TYPE);
             this.totalLogEntriesCount = totalLogEntriesCount;
         }
     }

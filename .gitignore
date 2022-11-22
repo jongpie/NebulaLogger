@@ -1,9 +1,11 @@
 # Folders to exclude
 .localdevserver/
 .settings/
+.sf/
 .sfdx/
 .vscode/
-nebula-logger/**/main/default/
+# nebula-logger/**/main/default/
+# tests/
 test-coverage/
 temp/
 
@@ -11,7 +13,6 @@ temp/
 nebula-logger/managed-package/core/main/configuration/
 nebula-logger/managed-package/core/main/log-management/
 nebula-logger/managed-package/core/main/logger-engine/
-nebula-logger/managed-package/core/main/plugin-framework/
 nebula-logger/managed-package/core/tests/
 
 # NPM

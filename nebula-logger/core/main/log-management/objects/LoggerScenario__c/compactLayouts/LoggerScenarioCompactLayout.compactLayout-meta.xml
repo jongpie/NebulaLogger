@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LoggerScenarioCompactLayout</fullName>
+    <fields>Name</fields>
+    <fields>UniqueId__c</fields>
+    <fields>OwnerId</fields>
+    <fields>CreatedById</fields>
+    <fields>LastModifiedById</fields>
+    <label>Log Scenario Compact Layout</label>
+</CompactLayout>

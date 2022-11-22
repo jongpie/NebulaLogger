@@ -10,9 +10,35 @@
  */
 @SuppressWarnings('PMD.ExcessivePublicCount')
 public without sharing class LoggerDataStore {
-    private static Database databaseInstance = new Database();
-    private static EventBus eventBusInstance = new EventBus();
-    private static JobQueue jobQueueInstance = new JobQueue();
+    private static Database databaseInstance {
+        get {
+            if (databaseInstance == null) {
+                databaseInstance = new Database();
+            }
+            return databaseInstance;
+        }
+        set;
+    }
+
+    private static EventBus eventBusInstance {
+        get {
+            if (eventBusInstance == null) {
+                eventBusInstance = new EventBus();
+            }
+            return eventBusInstance;
+        }
+        set;
+    }
+
+    private static JobQueue jobQueueInstance {
+        get {
+            if (jobQueueInstance == null) {
+                jobQueueInstance = new JobQueue();
+            }
+            return jobQueueInstance;
+        }
+        set;
+    }
 
     /**
      * @description The instance `LoggerDataStore.Database` used for any DML

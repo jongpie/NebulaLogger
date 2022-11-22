@@ -141,10 +141,20 @@ private class Logger_Tests {
     }
 
     @IsTest
+    static void it_should_set_request_id() {
+        String expectedRequestId = System.Request.getCurrent().getRequestId();
+        for (Integer i = 0; i < 5; i++) {
+            LogEntryEventBuilder builder = Logger.info('my log entry');
+
+            System.assertEquals(expectedRequestId, builder.getLogEntryEvent().RequestId__c);
+        }
+    }
+
+    @IsTest
     static void it_should_set_scenario_when_default_scenario_configured() {
         String mockScenario = 'some test scenario for this transaction';
         LoggerSettings__c userSettings = LoggerSettings__c.getInstance();
-        userSettings.DefaultLogScenario__c = mockScenario;
+        userSettings.DefaultScenario__c = mockScenario;
         upsert userSettings;
 
         String currentScenario = Logger.getScenario();
@@ -152,7 +162,7 @@ private class Logger_Tests {
         System.assertEquals(
             mockScenario,
             currentScenario,
-            'The value of LoggerSettings__c.DefaultLogScenario__c should have been used as the current transaction scenario'
+            'The value of LoggerSettings__c.DefaultScenario__c should have been used as the current transaction scenario'
         );
     }
 
@@ -166,56 +176,319 @@ private class Logger_Tests {
     }
 
     @IsTest
-    static void it_should_use_the_first_specified_scenario_when_parameter_is_true() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));
-        String firstMockScenario = 'the first test scenario specified for this transaction';
-        String secondMockScenario = 'the second test scenario specified for this transaction';
-
-        Logger.setScenario(firstMockScenario);
-        Logger.setScenario(secondMockScenario);
-
-        System.assertEquals(firstMockScenario, Logger.getScenario(), 'The first specified scenario should have been used');
-    }
-
-    @IsTest
-    static void it_should_use_the_last_specified_scenario_when_parameter_is_false() {
-        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(false)));
-        String firstMockScenario = 'the first test scenario specified for this transaction';
-        String secondMockScenario = 'the second test scenario specified for this transaction';
-
-        Logger.setScenario(firstMockScenario);
-        Logger.setScenario(secondMockScenario);
-
-        System.assertEquals(secondMockScenario, Logger.getScenario(), 'The last specified scenario should have been used');
-    }
-
-    @IsTest
-    static void it_should_apply_scenario_rule_logging_level_when_scenario_is_set() {
-        String mockScenario = 'some test scenario for this transaction';
-        LogScenarioRule__mdt scenarioRule = new LogScenarioRule__mdt(Scenario__c = mockScenario, UserLoggingLevel__c = LoggingLevel.FINER.name());
-        Logger.setMockScenarioRule(scenarioRule);
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
-        System.assertNotEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
-
-        Logger.setScenario(mockScenario);
-
-        System.assertEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
-    }
-
-    @IsTest
-    static void it_should_set_scenario_when_platform_events_are_published() {
+    static void it_should_use_the_first_specified_scenario_as_transaction_scenario_when_parameter_is_true() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        String mockScenario = 'some test scenario for this transaction';
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(true)));
+        System.assertEquals(true, LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION);
+        String firstMockScenario = 'the first test scenario specified for this transaction';
+        String secondMockScenario = 'the second test scenario specified for this transaction';
 
+        Logger.setScenario(firstMockScenario);
         Logger.info('hello');
-        Logger.setScenario(mockScenario);
+        Logger.setScenario(secondMockScenario);
         Logger.info('world');
         Logger.saveLog();
 
         System.assertEquals(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
         for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents()) {
-            System.assertEquals(mockScenario, logEntryEvent.Scenario__c);
+            System.assertEquals(firstMockScenario, logEntryEvent.TransactionScenario__c);
         }
+    }
+
+    @IsTest
+    static void it_should_use_the_last_specified_scenario_as_transaction_scenario_when_parameter_is_false() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'UseFirstSpecifiedScenario', Value__c = String.valueOf(false)));
+        System.assertEquals(false, LoggerParameter.USE_FIRST_SCENARIO_FOR_TRANSACTION);
+        String firstMockScenario = 'the first test scenario specified for this transaction';
+        String secondMockScenario = 'the second test scenario specified for this transaction';
+
+        Logger.setScenario(firstMockScenario);
+        Logger.info('hello');
+        Logger.setScenario(secondMockScenario);
+        Logger.info('world');
+        Logger.saveLog();
+
+        System.assertEquals(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        for (LogEntryEvent__e logEntryEvent : (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents()) {
+            System.assertEquals(secondMockScenario, logEntryEvent.TransactionScenario__c, 'The last specified scenario should have been used');
+        }
+    }
+
+    @IsTest
+    static void it_should_set_transaction_scenario_and_entry_scenario_for_published_log_entry_events() {
+        LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
+        String firstMockScenario = 'the first test scenario specified for this transaction';
+        String secondMockScenario = 'the second test scenario specified for this transaction';
+
+        Logger.setScenario(firstMockScenario);
+        Logger.info('hello');
+        Logger.setScenario(secondMockScenario);
+        Logger.info('world');
+        Logger.saveLog();
+
+        System.assertEquals(2, LoggerMockDataStore.getEventBus().getPublishedPlatformEvents().size());
+        List<LogEntryEvent__e> publishedLogEntryEvents = (List<LogEntryEvent__e>) LoggerMockDataStore.getEventBus().getPublishedPlatformEvents();
+        LogEntryEvent__e firstLogEntryEvent = publishedLogEntryEvents.get(0);
+        System.assertEquals(firstMockScenario, firstLogEntryEvent.EntryScenario__c);
+        System.assertEquals(firstMockScenario, firstLogEntryEvent.TransactionScenario__c);
+        LogEntryEvent__e secondLogEntryEvent = publishedLogEntryEvents.get(1);
+        System.assertEquals(secondMockScenario, secondLogEntryEvent.EntryScenario__c);
+        System.assertEquals(firstMockScenario, secondLogEntryEvent.TransactionScenario__c);
+    }
+
+    @IsTest
+    static void it_should_end_scenario_when_no_scenario_was_previously_set() {
+        System.assertEquals(null, Logger.getScenario());
+
+        Logger.endScenario('some scenario that was never set');
+
+        System.assertEquals(null, Logger.getScenario());
+    }
+
+    @IsTest
+    static void it_should_end_scenario_when_specified_scenario_matches() {
+        System.assertEquals(null, Logger.getScenario());
+        String mockScenario = 'some test scenario for this transaction';
+        Logger.setScenario(mockScenario);
+        System.assertEquals(mockScenario, Logger.getScenario(), 'The mock scenario should have been set as the current scenario');
+
+        Logger.endScenario(mockScenario);
+
+        System.assertEquals(null, Logger.getScenario(), 'The mock scenario should have been cleared');
+    }
+
+    @IsTest
+    static void it_should_revert_to_previous_scenario_when_current_scenario_is_ended() {
+        System.assertEquals(null, Logger.getScenario());
+        String firstMockScenario = 'some test scenario ';
+        Logger.setScenario(firstMockScenario);
+        System.assertEquals(firstMockScenario, Logger.getScenario());
+        String secondMockScenario = 'another test scenario ';
+        Logger.setScenario(secondMockScenario);
+        System.assertEquals(secondMockScenario, Logger.getScenario());
+
+        Logger.endScenario(secondMockScenario);
+
+        System.assertEquals(firstMockScenario, Logger.getScenario(), 'The scenario should have reverted to the first scenario');
+    }
+
+    @IsTest
+    static void it_should_revert_to_previous_scenario_rule_when_current_scenario_is_ended() {
+        LoggingLevel originalLoggingLevel = Logger.getUserLoggingLevel();
+        System.assertEquals(null, Logger.getScenario());
+        String firstMockScenario = 'some test scenario ';
+        LoggerScenarioRule__mdt firstMockScenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            Scenario__c = firstMockScenario,
+            UserLoggingLevel__c = LoggingLevel.ERROR.name()
+        );
+        LoggerScenarioRule.setMock(firstMockScenarioRule);
+        System.assertNotEquals(originalLoggingLevel.name(), firstMockScenarioRule.UserLoggingLevel__c);
+        Logger.setScenario(firstMockScenario);
+        System.assertEquals(firstMockScenario, Logger.getScenario());
+        String secondMockScenario = 'another test scenario ';
+        LoggerScenarioRule__mdt secondMockScenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            Scenario__c = secondMockScenario,
+            UserLoggingLevel__c = LoggingLevel.WARN.name()
+        );
+        LoggerScenarioRule.setMock(secondMockScenarioRule);
+        System.assertNotEquals(firstMockScenarioRule.UserLoggingLevel__c, secondMockScenarioRule.UserLoggingLevel__c);
+        Logger.setScenario(secondMockScenario);
+        System.assertEquals(secondMockScenario, Logger.getScenario());
+        System.assertEquals(secondMockScenarioRule.UserLoggingLevel__c, Logger.getUserLoggingLevel().name());
+
+        Logger.endScenario(secondMockScenario);
+
+        System.assertEquals(firstMockScenario, Logger.getScenario(), 'The scenario should have reverted to the first scenario');
+        System.assertEquals(firstMockScenarioRule, LoggerScenarioRule.getInstance(firstMockScenario));
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(secondMockScenario));
+        System.assertEquals(firstMockScenarioRule.UserLoggingLevel__c, Logger.getUserLoggingLevel().name());
+    }
+
+    @IsTest
+    static void it_should_not_ignore_origin_when_apex_class_type_not_specified() {
+        // Don't bother testing stack trace logic when using a namespace prefix - there are
+        // some platform limitations that prevent these tests from behaving as expected
+        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+            return;
+        }
+
+        System.Type nonIgnoredApexClassType = MockClassWithLogging.class;
+        String qualifiedNonIgnoredClassName = nonIgnoredApexClassType.getName();
+        String expectedOriginLocation = qualifiedNonIgnoredClassName + '.logSomething';
+
+        LogEntryEventBuilder builder = new MockClassWithLogging().logSomething();
+
+        System.assertEquals(expectedOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
+    }
+
+    @IsTest
+    static void it_should_ignore_origin_when_apex_class_type_specified() {
+        // Don't bother testing stack trace logic when using a namespace prefix - there are
+        // some platform limitations that prevent these tests from behaving as expected
+        if (String.isNotBlank(Logger.getNamespacePrefix()) == true) {
+            return;
+        }
+
+        System.Type ignoredApexClassType = MockClassWithLogging.class;
+        String qualifiedTopLevelClassName = Logger_Tests.class.getName();
+        String expectedOriginLocation = qualifiedTopLevelClassName + '.it_should_ignore_origin_when_apex_class_type_specified';
+
+        Logger.ignoreOrigin(ignoredApexClassType);
+        LogEntryEventBuilder builder = new MockClassWithLogging().logSomething();
+
+        System.assertEquals(expectedOriginLocation, builder.getLogEntryEvent().OriginLocation__c);
+    }
+
+    @IsTest
+    static void it_should_override_logger_is_enabled_setting_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsLoggerEnabled__c = String.valueOf(!Logger.getUserSettings().IsEnabled__c),
+            Scenario__c = 'Some scenario'
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsLoggerEnabled__c), Logger.getUserSettings().IsEnabled__c);
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsLoggerEnabled__c), Logger.isEnabled());
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsLoggerEnabled__c), Logger.getUserSettings().IsEnabled__c);
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsLoggerEnabled__c), Logger.isEnabled());
+    }
+
+    @IsTest
+    static void it_should_override_anonymous_mode_setting_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsAnonymousModeEnabled__c = String.valueOf(!Logger.getUserSettings().IsAnonymousModeEnabled__c),
+            IsEnabled__c = true,
+            Scenario__c = 'Some scenario'
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsAnonymousModeEnabled__c), Logger.getUserSettings().IsAnonymousModeEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsAnonymousModeEnabled__c), Logger.getUserSettings().IsAnonymousModeEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_apex_system_debugging_setting_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsApexSystemDebugLoggingEnabled__c = String.valueOf(!Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c),
+            IsEnabled__c = true,
+            Scenario__c = 'Some scenario'
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsApexSystemDebugLoggingEnabled__c), Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsApexSystemDebugLoggingEnabled__c), Logger.getUserSettings().IsApexSystemDebugLoggingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_data_masking_setting_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsDataMaskingEnabled__c = String.valueOf(!Logger.getUserSettings().IsDataMaskingEnabled__c),
+            IsEnabled__c = true,
+            Scenario__c = 'Some scenario'
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsDataMaskingEnabled__c), Logger.getUserSettings().IsDataMaskingEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsDataMaskingEnabled__c), Logger.getUserSettings().IsDataMaskingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_javascript_console_logging_setting_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsJavaScriptConsoleLoggingEnabled__c = String.valueOf(!Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c),
+            Scenario__c = 'Some scenario'
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(
+            Boolean.valueOf(scenarioRule.IsJavaScriptConsoleLoggingEnabled__c),
+            Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c
+        );
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsJavaScriptConsoleLoggingEnabled__c), Logger.getUserSettings().IsJavaScriptConsoleLoggingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_record_field_stripping_setting_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsRecordFieldStrippingEnabled__c = String.valueOf(!Logger.getUserSettings().IsRecordFieldStrippingEnabled__c),
+            Scenario__c = 'Some scenario'
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsRecordFieldStrippingEnabled__c), Logger.getUserSettings().IsRecordFieldStrippingEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsRecordFieldStrippingEnabled__c), Logger.getUserSettings().IsRecordFieldStrippingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_saving_enabled_setting_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            IsSavingEnabled__c = String.valueOf(!Logger.getUserSettings().IsSavingEnabled__c),
+            Scenario__c = 'Some scenario'
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(Boolean.valueOf(scenarioRule.IsSavingEnabled__c), Logger.getUserSettings().IsSavingEnabled__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(Boolean.valueOf(scenarioRule.IsSavingEnabled__c), Logger.getUserSettings().IsSavingEnabled__c);
+    }
+
+    @IsTest
+    static void it_should_override_save_method_setting_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            SaveMethod__c = Logger.SaveMethod.QUEUEABLE.name(),
+            Scenario__c = 'Some scenario'
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        System.assertNotEquals(null, LoggerScenarioRule.getInstance(scenarioRule.Scenario__c));
+        System.assertNotEquals(scenarioRule.SaveMethod__c, Logger.getSaveMethod().name());
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(scenarioRule.SaveMethod__c, Logger.getSaveMethod().name());
+    }
+
+    @IsTest
+    static void it_should_override_user_logging_level_when_matching_logger_scenario_rule_is_configured() {
+        LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
+            IsEnabled__c = true,
+            Scenario__c = 'Some scenario',
+            UserLoggingLevel__c = LoggingLevel.FINER.name()
+        );
+        LoggerScenarioRule.setMock(scenarioRule);
+        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        System.assertNotEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
+
+        Logger.setScenario(scenarioRule.Scenario__c);
+
+        System.assertEquals(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
     }
 
     @IsTest
@@ -486,15 +759,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         System.Test.startTest();
 
         Logger.saveLog();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -517,15 +790,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         System.Test.startTest();
 
         Logger.saveLog();
-        System.assertEquals(1, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -544,15 +817,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         System.Test.startTest();
 
         Logger.saveLog(Logger.SaveMethod.EVENT_BUS);
-        System.assertEquals(1, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -571,7 +844,7 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
 
         System.Test.startTest();
 
@@ -579,10 +852,10 @@ private class Logger_Tests {
         Logger.setSaveMethod(expectedSaveMethod);
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
-        System.assertEquals(1, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(1, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -608,14 +881,14 @@ private class Logger_Tests {
         Logger.debug('another test log entry');
 
         System.assertEquals(2, Logger.getBufferSize());
-        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
 
         Logger.saveLog();
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(1, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(1, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
 
@@ -634,15 +907,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
 
         System.Test.startTest();
 
         Logger.saveLog(Logger.SaveMethod.QUEUEABLE);
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(1, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(1, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.getEventBus().deliver();
 
@@ -663,7 +936,7 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
 
         System.Test.startTest();
 
@@ -671,10 +944,10 @@ private class Logger_Tests {
         Logger.setSaveMethod(expectedSaveMethod);
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(1, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(1, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.getEventBus().deliver();
 
@@ -701,15 +974,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
 
         System.Test.startTest();
 
         Logger.saveLog();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(1, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
     }
@@ -727,15 +1000,15 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
 
         System.Test.startTest();
 
         Logger.saveLog(Logger.SaveMethod.REST);
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(1, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
     }
@@ -753,7 +1026,7 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
 
         System.Test.startTest();
 
@@ -761,10 +1034,10 @@ private class Logger_Tests {
         Logger.setSaveMethod(expectedSaveMethod);
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(1, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
     }
@@ -782,7 +1055,7 @@ private class Logger_Tests {
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
 
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getCallouts());
 
         System.Test.startTest();
 
@@ -791,10 +1064,10 @@ private class Logger_Tests {
         } catch (Exception ex) {
             System.assertEquals(CalloutException.class.getName(), ex.getTypeName());
         }
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(1, Limits.getCallouts());
-        System.assertEquals(0, Limits.getDmlStatements());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(1, System.Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getDmlStatements());
 
         System.Test.stopTest();
     }
@@ -818,17 +1091,17 @@ private class Logger_Tests {
         logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
         logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         System.Test.startTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
         Logger.saveLog();
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
@@ -868,9 +1141,9 @@ private class Logger_Tests {
         logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
         logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         System.Test.startTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
         Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.SYNCHRONOUS_DML.name();
@@ -878,9 +1151,9 @@ private class Logger_Tests {
         Logger.saveLog();
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
@@ -920,9 +1193,9 @@ private class Logger_Tests {
         logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
         logEntryEvents.add(Logger.debug('another test log entry').getLogEntryEvent());
         System.Test.startTest();
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(logEntryEvents.size(), Logger.getBufferSize());
 
         Logger.SaveMethod expectedSaveMethod = Logger.SaveMethod.SYNCHRONOUS_DML;
@@ -930,9 +1203,9 @@ private class Logger_Tests {
         System.assertEquals(expectedSaveMethod, Logger.getSaveMethod());
         Logger.saveLog();
 
-        System.assertEquals(0, Limits.getPublishImmediateDml());
-        System.assertEquals(0, Limits.getQueueableJobs());
-        System.assertEquals(0, Limits.getCallouts());
+        System.assertEquals(0, System.Limits.getPublishImmediateDml());
+        System.assertEquals(0, System.Limits.getQueueableJobs());
+        System.assertEquals(0, System.Limits.getCallouts());
         System.assertEquals(
             2,
             LoggerSObjectHandler.getExecutedHandlers().get(Schema.LogEntryEvent__e.SObjectType).size(),
@@ -5925,7 +6198,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -5943,7 +6216,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -5960,7 +6233,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
@@ -5982,7 +6255,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6000,7 +6273,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6017,7 +6290,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.DeleteResult>{ unsuccessfulResult });
@@ -6039,7 +6312,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6057,7 +6330,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6074,7 +6347,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
@@ -6096,7 +6369,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6114,7 +6387,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6131,7 +6404,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.MergeResult>{ unsuccessfulResult });
@@ -6153,7 +6426,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6171,7 +6444,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6188,7 +6461,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
@@ -6210,7 +6483,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6228,7 +6501,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6245,7 +6518,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.SaveResult>{ unsuccessfulResult });
@@ -6267,7 +6540,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6285,7 +6558,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6302,7 +6575,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
@@ -6324,7 +6597,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6342,7 +6615,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6359,7 +6632,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UpsertResult>{ unsuccessfulResult });
@@ -6381,7 +6654,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6399,7 +6672,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6416,7 +6689,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(logMessage.getMessage(), returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
@@ -6438,7 +6711,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6456,7 +6729,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
 
         System.assertEquals(0, Logger.getBufferSize());
-        System.assertEquals(null, returnedBuilder);
+        System.assertEquals(false, returnedBuilder.shouldSave());
     }
 
     @IsTest
@@ -6473,7 +6746,7 @@ private class Logger_Tests {
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
 
         System.assertEquals(1, Logger.getBufferSize());
-        System.assertNotEquals(null, returnedBuilder);
+        System.assertEquals(true, returnedBuilder.shouldSave());
         System.assertEquals(message, returnedBuilder.getLogEntryEvent().Message__c);
         System.assertEquals(1, returnedBuilder.getLogEntryEvent().DatabaseResultCollectionSize__c);
         String expectedDatabaseResultJson = JSON.serializePretty(new List<Database.UndeleteResult>{ unsuccessfulResult });
@@ -6716,6 +6989,12 @@ private class Logger_Tests {
         }
 
         return originLocation;
+    }
+
+    public class MockClassWithLogging {
+        public LogEntryEventBuilder logSomething() {
+            return Logger.info('Hello, world');
+        }
     }
 
     public class MockSObjectHandler extends LoggerSObjectHandler {

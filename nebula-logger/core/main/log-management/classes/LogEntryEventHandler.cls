@@ -15,6 +15,8 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
     private static final String DEFAULT_STORAGE_LOCATION_NAME = 'CUSTOM_OBJECTS';
     private static final Database.DmlOptions DML_OPTIONS = createDmlOptions();
     private static final String GUEST_USER_TYPE = 'Guest';
+    private static final String NEW_LINE_DELIMITER = '\n';
+    private static final Map<String, LoggerScenario__c> SCENARIO_UNIQUE_ID_TO_SCENARIO = new Map<String, LoggerScenario__c>();
     private static final Map<String, Log__c> TRANSACTION_ID_TO_LOG = new Map<String, Log__c>();
 
     @TestVisible
@@ -53,29 +55,70 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         this.logEntryEvents = this.filterLogEntryEventsToSave((List<LogEntryEvent__e>) triggerNew);
 
         if (this.logEntryEvents.isEmpty() == false) {
+            this.upsertLoggerScenarios();
             this.upsertLogs();
-            this.insertLogEntries();
+            this.upsertLogEntries();
             this.appendRuleBasedTags();
-            this.insertLogEntryTags();
+            this.upsertLogEntryTags();
         }
     }
 
     private List<LogEntryEvent__e> filterLogEntryEventsToSave(List<LogEntryEvent__e> newLogEntryEvents) {
+        final String trueString = String.valueOf(true);
         List<LogEntryEvent__e> logEntryEventsToSave = new List<LogEntryEvent__e>();
         for (LogEntryEvent__e logEntryEvent : newLogEntryEvents) {
             User loggingUser = new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c);
-            LoggerSettings__c loggingUserSettings = Logger.getUserSettings(loggingUser);
-            if (loggingUserSettings.DefaultPlatformEventStorageLocation__c == DEFAULT_STORAGE_LOCATION_NAME) {
+            String platformEventStorageLocation = Logger.getUserSettings(loggingUser).DefaultPlatformEventStorageLocation__c;
+            if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
+                LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
+                if (scenarioRule.IsPlatformEventStorageLocationEnabled__c == trueString) {
+                    platformEventStorageLocation = scenarioRule.PlatformEventStorageLocation__c;
+                }
+            }
+            if (platformEventStorageLocation == DEFAULT_STORAGE_LOCATION_NAME) {
                 logEntryEventsToSave.add(logEntryEvent);
             }
         }
         return logEntryEventsToSave;
     }
 
+    private void upsertLoggerScenarios() {
+        List<Schema.SObjectField> scenarioFields = new List<Schema.SObjectField>{
+            Schema.LogEntryEvent__e.EntryScenario__c,
+            Schema.LogEntryEvent__e.TransactionScenario__c
+        };
+        for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
+            for (Schema.SObjectField scenarioField : scenarioFields) {
+                String scenario = (String) logEntryEvent.get(scenarioField);
+
+                if (String.isBlank(scenario) == true || SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(scenario)) {
+                    continue;
+                }
+
+                LoggerScenario__c loggerScenario = new LoggerScenario__c(Name = scenario, UniqueId__c = scenario);
+                loggerScenario.setOptions(DML_OPTIONS);
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
+            }
+        }
+
+        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
+            .upsertRecords(SCENARIO_UNIQUE_ID_TO_SCENARIO.values(), Schema.LoggerScenario__c.UniqueId__c, System.Test.isRunningTest());
+        LoggerEmailSender.sendErrorEmail(Schema.LoggerScenario__c.SObjectType, upsertResults);
+
+        // Requery to get the OwnerId field as well
+        for (LoggerScenario__c loggerScenario : [
+            SELECT Id, Name, OwnerId, UniqueId__c
+            FROM LoggerScenario__c
+            WHERE Id IN :SCENARIO_UNIQUE_ID_TO_SCENARIO.values()
+        ]) {
+            SCENARIO_UNIQUE_ID_TO_SCENARIO.put(loggerScenario.UniqueId__c, loggerScenario);
+        }
+    }
+
     private void upsertLogs() {
         // To avoid making a callout for every log for details retrieved from api.status.salesforce.com,
         // try to query recent logs first to see if there is a recent log with the details already populated
-        Log__c recentLogWithApiReleaseDetails = getRecentLogWithApiReleaseDetails();
+        Log__c recentLogWithApiReleaseDetails = LogManagementDataSelector.getInstance().getCachedRecentLogWithApiReleaseDetails();
 
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
             // The LogEntryEvent__e object stores a denormalized version of Log__c & LogEntry__c data
@@ -84,16 +127,11 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            Id logOwnerId = logEntryEvent.CreatedById;
-            if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logEntryEvent.CreatedById)) {
-                // Guest users cannot own records, so keep the log owner as the current user (Automated Process)
-                logOwnerId = UserInfo.getUserId();
-            }
-
             Log__c log = new Log__c(
                 ApiReleaseNumber__c = recentLogWithApiReleaseDetails?.ApiReleaseNumber__c,
                 ApiReleaseVersion__c = recentLogWithApiReleaseDetails?.ApiReleaseVersion__c,
                 ApiVersion__c = logEntryEvent.ApiVersion__c,
+                ImpersonatedBy__c = logEntryEvent.ImpersonatedById__c,
                 Locale__c = logEntryEvent.Locale__c,
                 LoggedBy__c = logEntryEvent.LoggedById__c,
                 LoggedByUsername__c = logEntryEvent.LoggedByUsername__c,
@@ -118,11 +156,12 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 OrganizationName__c = logEntryEvent.OrganizationName__c,
                 OrganizationNamespacePrefix__c = logEntryEvent.OrganizationNamespacePrefix__c,
                 OrganizationType__c = logEntryEvent.OrganizationType__c,
-                OwnerId = logOwnerId,
+                OwnerId = this.determineLogOwnerId(logEntryEvent),
                 ParentLogTransactionId__c = logEntryEvent.ParentLogTransactionId__c,
                 ProfileId__c = logEntryEvent.ProfileId__c,
                 ProfileName__c = logEntryEvent.ProfileName__c,
-                Scenario__c = logEntryEvent.Scenario__c,
+                RequestId__c = logEntryEvent.RequestId__c,
+                Scenario__c = logEntryEvent.TransactionScenario__c,
                 SessionId__c = logEntryEvent.SessionId__c,
                 SessionSecurityLevel__c = logEntryEvent.SessionSecurityLevel__c,
                 SessionType__c = logEntryEvent.SessionType__c,
@@ -142,8 +181,21 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 UserType__c = logEntryEvent.UserType__c
             );
 
+            if (
+                String.isNotBlank(logEntryEvent.TransactionScenario__c) == true &&
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c) == true
+            ) {
+                log.TransactionScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.TransactionScenario__c).Id;
+            }
+
+            log.setOptions(DML_OPTIONS);
             TRANSACTION_ID_TO_LOG.put(log.TransactionId__c, log);
         }
+
+        setQueriedAuthSessionDetails(TRANSACTION_ID_TO_LOG.values());
+        setQueriedNetworkDetails(TRANSACTION_ID_TO_LOG.values());
+        setQueriedOrganizationDetails(TRANSACTION_ID_TO_LOG.values());
+        setQueriedUserDetails(TRANSACTION_ID_TO_LOG.values());
 
         List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
             .upsertRecords(TRANSACTION_ID_TO_LOG.values(), Schema.Log__c.TransactionId__c, System.Test.isRunningTest());
@@ -165,9 +217,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void insertLogEntries() {
+    private void upsertLogEntries() {
+        List<LogEntry__c> logEntriesWithUuid = new List<LogEntry__c>();
+        List<LogEntry__c> logEntriesWithoutUuid = new List<LogEntry__c>();
         for (LogEntryEvent__e logEntryEvent : this.logEntryEvents) {
-            // Workaround field for platform issue w/ accurate datetimes
+            // Salesforce does not provide precise datetimes in Apex triggers for platform events
+            // Use the string value of timestamp to set the actual datetime field as a workaround
+            // See https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/platform_events_api_considerations.htm
             Datetime timestamp = String.isNotBlank(logEntryEvent.TimestampString__c)
                 ? Datetime.valueOf(Long.valueOf(logEntryEvent.TimestampString__c))
                 : logEntryEvent.Timestamp__c;
@@ -250,29 +306,41 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 TriggerSObjectType__c = logEntryEvent.TriggerSObjectType__c
             );
 
-            this.logEntries.add(logEntry);
-            if (logEntryEvent.Tags__c != null) {
-                List<String> logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
+            if (
+                String.isNotBlank(logEntryEvent.EntryScenario__c) == true &&
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.EntryScenario__c) == true
+            ) {
+                logEntry.EntryScenario__c = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.EntryScenario__c).Id;
+            }
 
-                this.tagNames.addAll(logEntryTagNames);
-                this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
+            logEntry.setOptions(DML_OPTIONS);
+            this.logEntries.add(logEntry);
+            if (logEntry.EventUuid__c == null) {
+                logEntriesWithoutUuid.add(logEntry);
+            } else {
+                logEntriesWithUuid.add(logEntry);
+                if (logEntryEvent.Tags__c != null) {
+                    List<String> logEntryTagNames = getTagNames(logEntryEvent.Tags__c);
+
+                    this.tagNames.addAll(logEntryTagNames);
+                    this.logEntryEventUuidToTagNames.put(logEntry.EventUuid__c, logEntryTagNames);
+                }
             }
         }
-
-        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(this.logEntries, DML_OPTIONS);
+        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(logEntriesWithoutUuid);
         LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, saveResults);
+        List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase().upsertRecords(logEntriesWithUuid, Schema.LogEntry__c.EventUuid__c);
+        LoggerEmailSender.sendErrorEmail(Schema.LogEntry__c.SObjectType, upsertResults);
     }
 
     private void appendRuleBasedTags() {
-        if (LoggerParameter.TAGGING_IS_ENABLED == false || TAG_ASSIGNMENT_RULES.isEmpty() == true) {
+        if (LoggerParameter.ENABLE_TAGGING == false || TAG_ASSIGNMENT_RULES.isEmpty() == true) {
             return;
         }
 
         for (LogEntry__c logEntry : this.logEntries) {
             for (LogEntryTagRule__mdt rule : TAG_ASSIGNMENT_RULES) {
-                Boolean ruleCriteriaMet = ruleCriteriaMet(logEntry, rule);
-
-                if (ruleCriteriaMet == true) {
+                if (isRuleCriteriaMet(logEntry, rule) == true) {
                     List<String> configuredTagNames = getTagNames(rule.Tags__c);
                     this.tagNames.addAll(configuredTagNames);
                     List<String> logEntryTags = logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
@@ -288,13 +356,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         }
     }
 
-    private void insertLogEntryTags() {
-        if (LoggerParameter.TAGGING_IS_ENABLED == false || this.tagNames.isEmpty()) {
+    private void upsertLogEntryTags() {
+        if (LoggerParameter.ENABLE_TAGGING == false || this.tagNames.isEmpty() == true) {
             return;
         }
 
         // Orgs can be configured to either use LoggerTag__c & LogEntryTag__c (default), or use Topic & TopicAssignment
-        Schema.SObjectType tagSObjectType = LoggerParameter.TAG_USING_TOPICS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
+        Schema.SObjectType tagSObjectType = LoggerParameter.USE_TOPICS_FOR_TAGS == true ? Topic.SObjectType : LoggerTag__c.SObjectType;
         Map<String, Id> tagNameToId = getTagNameToId(tagSObjectType);
         this.tagNames.addAll(tagNameToId.keySet());
 
@@ -302,27 +370,67 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         Schema.SObjectType tagAssignmentSObjectType;
         Set<SObject> tagAssignments = new Set<SObject>();
         for (LogEntry__c logEntry : this.logEntries) {
+            if (logEntry.EventUuid__c == null) {
+                continue;
+            }
+
             List<String> logEntryTagNames = this.logEntryEventUuidToTagNames.get(logEntry.EventUuid__c);
-            if (logEntryTagNames == null || logEntryEventUuidToTagNames.isEmpty()) {
+            if (logEntryTagNames == null || logEntryEventUuidToTagNames.isEmpty() == true) {
                 continue;
             }
 
             for (String tagName : logEntryTagNames) {
-                if (LoggerParameter.TAG_USING_TOPICS == true) {
-                    // Add the topic for the LogEntry__c & the parent Log__c
+                if (LoggerParameter.USE_TOPICS_FOR_TAGS == true) {
+                    // Add TopicAssignment records for both the LogEntry__c & the parent Log__c
                     tagAssignmentSObjectType = Schema.TopicAssignment.SObjectType;
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Id, TopicId = tagNameToId.get(tagName)));
                     tagAssignments.add(new TopicAssignment(EntityId = logEntry.Log__c, TopicId = tagNameToId.get(tagName)));
                 } else {
-                    // Add a LogEntryTag__c record that links to the LogEntry__c - the handler class will also related it to the parent Log__c
+                    // Add a LogEntryTag__c record for only the LogEntry__c - this approach does not directly link to the Log__c record
                     tagAssignmentSObjectType = Schema.LogEntryTag__c.SObjectType;
-                    tagAssignments.add(new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tagNameToId.get(tagName)));
+                    LogEntryTag__c logEntryTag = new LogEntryTag__c(LogEntry__c = logEntry.Id, Tag__c = tagNameToId.get(tagName));
+                    logEntryTag.UniqueId__c = LogEntryTagHandler.generateUniqueId(logEntryTag);
+                    logEntryTag.setOptions(DML_OPTIONS);
+                    tagAssignments.add(logEntryTag);
                 }
             }
         }
 
-        List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(new List<SObject>(tagAssignments), DML_OPTIONS);
-        LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, saveResults);
+        switch on tagAssignmentSObjectType.newSObject() {
+            when LogEntryTag__c logEntryTag {
+                List<Database.UpsertResult> upsertResults = LoggerDataStore.getDatabase()
+                    .upsertRecords(new List<SObject>(tagAssignments), Schema.LogEntryTag__c.UniqueId__c);
+                LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, upsertResults);
+            }
+            when TopicAssignment topicAssignment {
+                Database.DmlOptions topicAssignmentDmlOptions = createDmlOptions();
+                topicAssignmentDmlOptions.OptAllOrNone = false;
+                List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase()
+                    .insertRecords(new List<SObject>(tagAssignments), topicAssignmentDmlOptions);
+                LoggerEmailSender.sendErrorEmail(tagAssignmentSObjectType, saveResults);
+            }
+        }
+    }
+
+    private Id determineLogOwnerId(LogEntryEvent__e logEntryEvent) {
+        Id logOwnerId = logEntryEvent.LoggedById__c;
+
+        LoggerSettings__c loggingUserSettings = Logger.getUserSettings(new User(Id = logEntryEvent.LoggedById__c, ProfileId = logEntryEvent.ProfileId__c));
+        if (logEntryEvent.UserType__c == GUEST_USER_TYPE || String.isBlank(logOwnerId) == true || loggingUserSettings.IsAnonymousModeEnabled__c == true) {
+            logOwnerId = UserInfo.getUserId();
+        }
+
+        if (logEntryEvent.TransactionScenario__c != null && LoggerScenarioRule.getAll().containsKey(logEntryEvent.TransactionScenario__c) == true) {
+            LoggerScenarioRule__mdt scenarioRule = LoggerScenarioRule.getInstance(logEntryEvent.TransactionScenario__c);
+            if (
+                scenarioRule.IsLogAssignmentEnabled__c == String.valueOf(true) &&
+                SCENARIO_UNIQUE_ID_TO_SCENARIO.containsKey(logEntryEvent.TransactionScenario__c) == true
+            ) {
+                logOwnerId = SCENARIO_UNIQUE_ID_TO_SCENARIO.get(logEntryEvent.TransactionScenario__c).OwnerId;
+            }
+        }
+
+        return logOwnerId;
     }
 
     private Map<String, Id> getTagNameToId(Schema.SObjectType tagSObjectType) {
@@ -354,12 +462,13 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             if (existingTagNameToId.containsKey(tagName) == false) {
                 SObject tag = tagSObjectType.newSObject();
                 tag.put('Name', tagName);
+                tag.setOptions(DML_OPTIONS);
                 missingTagsToCreate.add(tag);
             }
         }
 
-        if (!missingTagsToCreate.isEmpty()) {
-            List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(missingTagsToCreate, DML_OPTIONS);
+        if (missingTagsToCreate.isEmpty() == false) {
+            List<Database.SaveResult> saveResults = LoggerDataStore.getDatabase().insertRecords(missingTagsToCreate);
             LoggerEmailSender.sendErrorEmail(tagSObjectType, saveResults);
             for (SObject tag : missingTagsToCreate) {
                 missingTagNameToId.put((String) tag.get('Name'), (Id) tag.get('Id'));
@@ -377,35 +486,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return dmlOptions;
     }
 
-    private static List<String> getTagNames(String tagsString) {
-        List<String> cleanedTagNames = new List<String>();
-
-        for (String tagName : tagsString.split('\n')) {
-            if (String.isNotBlank(tagName) == true) {
-                cleanedTagNames.add(tagName.trim());
-            }
-        }
-
-        return cleanedTagNames;
-    }
-
-    private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
-        if (LogEntryTagRule__mdt.getAll().isEmpty() == true) {
-            return new List<LogEntryTagRule__mdt>();
-        }
-
-        List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
-        for (LogEntryTagRule__mdt rule : tagAssignmentRules) {
-            rule.SObjectField__c = rule.SObjectField__r.QualifiedApiName;
-        }
-        if (System.Test.isRunningTest() == true) {
-            // During tests, only use mock records - tests can add mock records using LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add()
-            tagAssignmentRules.clear();
-        }
-        return tagAssignmentRules;
-    }
-
-    private static Boolean ruleCriteriaMet(LogEntry__c logEntry, LogEntryTagRule__mdt rule) {
+    private static Boolean isRuleCriteriaMet(LogEntry__c logEntry, LogEntryTagRule__mdt rule) {
         Boolean ruleCriteriaMet = false;
         String logEntryFieldValue = String.valueOf(logEntry.get(rule.SObjectField__c));
         String ruleComparisonValue = rule.ComparisonValue__c;
@@ -428,21 +509,142 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
         return ruleCriteriaMet;
     }
 
-    private static Log__c getRecentLogWithApiReleaseDetails() {
-        // Query for recent logs created only today - the status API should be called
-        // at least once per day to make sure that status details are still accurate.
-        // This query should make a callout approximately every 4 hours.
-        Datetime fourHoursAgo = System.now().addMinutes(-4 * 60);
+    private static List<String> getTagNames(String tagsString) {
+        List<String> cleanedTagNames = new List<String>();
 
-        List<Log__c> logs = [
-            SELECT Id, ApiReleaseNumber__c, ApiReleaseVersion__c
-            FROM Log__c
-            WHERE CreatedDate >= :fourHoursAgo AND CreatedDate = TODAY AND ApiReleaseNumber__c != NULL
-            ORDER BY StartTime__c DESC
-            LIMIT 1
-        ];
+        for (String tagName : tagsString.split(NEW_LINE_DELIMITER)) {
+            if (String.isNotBlank(tagName) == true) {
+                cleanedTagNames.add(tagName.trim());
+            }
+        }
 
-        return logs.isEmpty() == true ? null : logs.get(0);
+        return cleanedTagNames;
+    }
+
+    private static List<LogEntryTagRule__mdt> getTagAssignmentRules() {
+        List<LogEntryTagRule__mdt> tagAssignmentRules = LoggerEngineDataSelector.getInstance().getCachedTagAssignmentRules();
+        if (System.Test.isRunningTest() == true) {
+            // During tests, only use mock records - tests can add mock records using LogEntryEventHandler.TAG_ASSIGNMENT_RULES.add()
+            tagAssignmentRules.clear();
+        }
+        return tagAssignmentRules;
+    }
+
+    private static void setQueriedAuthSessionDetails(List<Log__c> logs) {
+        if (LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY == true) {
+            return;
+        }
+
+        List<Id> userIds = new List<Id>();
+        for (Log__c log : logs) {
+            if (log.LoggedBy__c != null) {
+                userIds.add(log.LoggedBy__c);
+            }
+        }
+        Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = LoggerEngineDataSelector.getInstance().getAuthSessionProxies(userIds);
+        for (Log__c log : logs) {
+            if (log.LoggedBy__c == null) {
+                continue;
+            }
+
+            LoggerSObjectProxy.AuthSession matchingAuthSessionProxy = userIdToAuthSessionProxy.get(log.LoggedBy__c);
+            if (matchingAuthSessionProxy == null) {
+                continue;
+            }
+
+            log.LoginApplication__c = matchingAuthSessionProxy.LoginHistory.Application;
+            log.LoginBrowser__c = matchingAuthSessionProxy.LoginHistory.Browser;
+            log.LoginHistoryId__c = matchingAuthSessionProxy.LoginHistoryId;
+            log.LoginPlatform__c = matchingAuthSessionProxy.LoginHistory.Platform;
+            log.LoginType__c = matchingAuthSessionProxy.LoginType;
+            log.LogoutUrl__c = matchingAuthSessionProxy.LogoutUrl;
+            log.SessionId__c = matchingAuthSessionProxy.Id;
+            log.SessionSecurityLevel__c = matchingAuthSessionProxy.SessionSecurityLevel;
+            log.SessionType__c = matchingAuthSessionProxy.SessionType;
+            log.SourceIp__c = matchingAuthSessionProxy.SourceIp;
+        }
+    }
+
+    private static void setQueriedNetworkDetails(List<Log__c> logs) {
+        if (LoggerParameter.QUERY_NETWORK_DATA_SYNCHRONOUSLY == true) {
+            return;
+        }
+
+        List<Id> networkIds = new List<Id>();
+        for (Log__c log : logs) {
+            if (log.NetworkId__c != null && log.NetworkId__c instanceof Id) {
+                networkIds.add(log.NetworkId__c);
+            }
+        }
+
+        if (networkIds.isEmpty() == true) {
+            return;
+        }
+
+        Map<Id, LoggerSObjectProxy.Network> networkIdToNetworkProxy = LoggerEngineDataSelector.getInstance().getNetworkProxies(networkIds);
+        for (Log__c log : logs) {
+            if (log.NetworkId__c == null) {
+                continue;
+            }
+
+            LoggerSObjectProxy.Network matchingNetworkProxy = networkIdToNetworkProxy.get(log.NetworkId__c);
+            if (matchingNetworkProxy == null) {
+                continue;
+            }
+
+            log.NetworkLoginUrl__c = System.Network.getLoginUrl(matchingNetworkProxy.Id);
+            log.NetworkLogoutUrl__c = System.Network.getLogoutUrl(matchingNetworkProxy.Id);
+            log.NetworkName__c = matchingNetworkProxy.Name;
+            log.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(matchingNetworkProxy.Id);
+            log.NetworkUrlPathPrefix__c = matchingNetworkProxy.UrlPathPrefix;
+        }
+    }
+
+    private static void setQueriedOrganizationDetails(List<Log__c> logs) {
+        if (LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY == true) {
+            return;
+        }
+
+        Organization cachedOrganization = LoggerEngineDataSelector.getInstance().getCachedOrganization();
+        if (cachedOrganization == null) {
+            return;
+        }
+
+        for (Log__c log : logs) {
+            log.OrganizationId__c = cachedOrganization.Id;
+            log.OrganizationInstanceName__c = cachedOrganization.InstanceName;
+            log.OrganizationName__c = cachedOrganization.Name;
+            log.OrganizationNamespacePrefix__c = cachedOrganization.NamespacePrefix;
+            log.OrganizationType__c = cachedOrganization.OrganizationType;
+        }
+    }
+
+    private static void setQueriedUserDetails(List<Log__c> logs) {
+        if (LoggerParameter.QUERY_USER_DATA_SYNCHRONOUSLY == true) {
+            return;
+        }
+
+        List<Id> userIds = new List<Id>();
+        for (Log__c log : logs) {
+            if (log.LoggedBy__c != null) {
+                userIds.add(log.LoggedBy__c);
+            }
+        }
+
+        Map<Id, User> userIdToUser = LoggerEngineDataSelector.getInstance().getUsers(userIds);
+        for (Log__c log : logs) {
+            if (log.LoggedBy__c == null) {
+                continue;
+            }
+
+            User matchingUser = userIdToUser.get(log.LoggedBy__c);
+            log.LoggedByUsername__c = matchingUser.Username;
+            log.ProfileName__c = matchingUser.Profile.Name;
+            log.UserLicenseDefinitionKey__c = matchingUser.Profile.UserLicense.LicenseDefinitionKey;
+            log.UserLicenseId__c = matchingUser.Profile.UserLicenseId;
+            log.UserLicenseName__c = matchingUser.Profile.UserLicense.Name;
+            log.UserRoleName__c = matchingUser.UserRole?.Name;
+        }
     }
 
     @future(callout=true)
@@ -482,7 +684,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
             FROM Log__c
             WHERE CreatedDate = TODAY AND ApiReleaseNumber__c = NULL
             ORDER BY CreatedDate
-            LIMIT :Limits.getLimitDmlRows()
+            LIMIT :System.Limits.getLimitDmlRows()
         ]) {
             log.ApiReleaseNumber__c = statusApiResponse.releaseNumber;
             log.ApiReleaseVersion__c = statusApiResponse.releaseVersion;

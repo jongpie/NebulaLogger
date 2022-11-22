@@ -2,10 +2,14 @@
 
 > :information_source: This plugin requires `v4.7.2` or newer of Nebula Logger's unlocked package
 
-[![Install Unlocked Package Plugin in a Sandbox](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lhsQAA)
-[![Install Unlocked Package Plugin in Production](../.images/btn-install-unlocked-package-plugin-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000015lhsQAA)
+[![Install Unlocked Package Plugin in a Sandbox](../.images/btn-install-unlocked-package-plugin-sandbox.png)](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023QttQAE)
+[![Install Unlocked Package Plugin in Production](../.images/btn-install-unlocked-package-plugin-production.png)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t5Y0000023QttQAE)
 
 ## What's Included
+
+### Flow Error Event Logging
+
+Salesforce includes a platform event, [FlowExecutionErrorEvent](https://developer.salesforce.com/docs/atlas.en-us.platform_events.meta/platform_events/sforce_api_objects_flowexecutionerrorevent.htm)that can only be subscribed to via Flow. Once subscribed, unhandled errors from Screen Flows can be automatically logged using Nebula Logger. In order to enable this functionality, navigate to the `Logger Parameter` Custom Metadata Type and flip the `Value` field on the `Is FlowExecutionErrorEvent Handled?` record from `false` to `true`.
 
 ### Unexpected Batch Error Logging
 
