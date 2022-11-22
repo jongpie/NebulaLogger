@@ -29,15 +29,17 @@ public without sharing class LoggerSObjectProxy {
 
         @SuppressWarnings('PMD.ApexDoc')
         public AuthSession(Schema.AuthSession authSessionRecord) {
-            this.Id = authSessionRecord.Id;
-            this.LoginHistory = new LoginHistory(authSessionRecord.LoginHistory);
-            this.LoginHistoryId = authSessionRecord.LoginHistoryId;
-            this.LoginType = authSessionRecord.LoginType;
-            this.LogoutUrl = authSessionRecord.LogoutUrl;
-            this.SessionSecurityLevel = authSessionRecord.SessionSecurityLevel;
-            this.SessionType = authSessionRecord.SessionType;
-            this.SourceIp = authSessionRecord.SourceIp;
-            this.UsersId = authSessionRecord.UsersId;
+            if (authSessionRecord != null) {
+                this.Id = authSessionRecord.Id;
+                this.LoginHistory = new LoginHistory(authSessionRecord.LoginHistory);
+                this.LoginHistoryId = authSessionRecord.LoginHistoryId;
+                this.LoginType = authSessionRecord.LoginType;
+                this.LogoutUrl = authSessionRecord.LogoutUrl;
+                this.SessionSecurityLevel = authSessionRecord.SessionSecurityLevel;
+                this.SessionType = authSessionRecord.SessionType;
+                this.SourceIp = authSessionRecord.SourceIp;
+                this.UsersId = authSessionRecord.UsersId;
+            }
         }
     }
 
@@ -55,10 +57,12 @@ public without sharing class LoggerSObjectProxy {
 
         @SuppressWarnings('PMD.ApexDoc')
         public LoginHistory(Schema.LoginHistory loginHistoryRecord) {
-            this.Application = loginHistoryRecord.Application;
-            this.Browser = loginHistoryRecord.Browser;
-            this.Platform = loginHistoryRecord.Platform;
-            this.UserId = loginHistoryRecord.UserId;
+            if (loginHistoryRecord != null) {
+                this.Application = loginHistoryRecord.Application;
+                this.Browser = loginHistoryRecord.Browser;
+                this.Platform = loginHistoryRecord.Platform;
+                this.UserId = loginHistoryRecord.UserId;
+            }
         }
     }
 
@@ -76,9 +80,11 @@ public without sharing class LoggerSObjectProxy {
 
         @SuppressWarnings('PMD.ApexDoc')
         public Network(SObject networkRecord) {
-            this.Id = (String) networkRecord.get('Id');
-            this.Name = (String) networkRecord.get('Name');
-            this.UrlPathPrefix = (String) networkRecord.get('UrlPathPrefix');
+            if (networkRecord != null) {
+                this.Id = (String) networkRecord.get('Id');
+                this.Name = (String) networkRecord.get('Name');
+                this.UrlPathPrefix = (String) networkRecord.get('UrlPathPrefix');
+            }
         }
     }
 }

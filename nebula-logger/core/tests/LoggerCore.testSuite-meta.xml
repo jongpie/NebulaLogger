@@ -25,6 +25,7 @@
     <testClassName>LoggerSettingsController_Tests</testClassName>
     <testClassName>LoggerSObjectHandler_Tests</testClassName>
     <testClassName>LoggerSObjectMetadata_Tests</testClassName>
+    <testClassName>LoggerSObjectProxy_Tests</testClassName>
     <testClassName>LoggerTagHandler_Tests</testClassName>
     <testClassName>LoggerTriggerableContext_Tests</testClassName>
     <testClassName>Logger_Tests</testClassName>

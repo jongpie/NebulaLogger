@@ -18,6 +18,9 @@
         "pathAssistantSettings": {
             "pathAssistantEnabled": true
         },
+        "securitySettings": {
+            "enableAdminLoginAsAnyUser": true
+        },
         "userManagementSettings": {
             "enableEnhancedPermsetMgmt": true,
             "enableEnhancedProfileMgmt": true,

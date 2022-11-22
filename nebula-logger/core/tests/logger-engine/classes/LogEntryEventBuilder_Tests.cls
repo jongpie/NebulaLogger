@@ -115,6 +115,29 @@ private class LogEntryEventBuilder_Tests {
     }
 
     @IsTest
+    static void it_should_set_impersonatedById_when_authSession_userId_is_not_current_user() {
+        Id currentUserId = System.UserInfo.getUserId();
+        Id anotherUserId = [SELECT Id FROM User WHERE Id != :System.UserInfo.getUserId() LIMIT 1].Id;
+        System.assertEquals(true, LoggerParameter.QUERY_AUTH_SESSION_DATA_SYNCHRONOUSLY);
+        MockLoggerEngineDataSelector mockSelector = new MockLoggerEngineDataSelector();
+        LoggerSObjectProxy.LoginHistory mockLoginHistoryProxy = new LoggerSObjectProxy.LoginHistory(null);
+        mockLoginHistoryProxy.UserId = anotherUserId;
+        LoggerSObjectProxy.AuthSession mockAuthSessionProxy = new LoggerSObjectProxy.AuthSession(null);
+        mockAuthSessionProxy.LoginHistory = mockLoginHistoryProxy;
+        mockAuthSessionProxy.UsersId = currentUserId;
+        mockSelector.setCachedAuthSessionProxy(mockAuthSessionProxy);
+        LoggerEngineDataSelector.setMock(mockSelector);
+
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message')
+            .getLogEntryEvent();
+
+        System.assertNotEquals(logEntryEvent.LoggedById__c, logEntryEvent.ImpersonatedById__c);
+        System.assertEquals(currentUserId, logEntryEvent.LoggedById__c);
+        System.assertEquals(anotherUserId, logEntryEvent.ImpersonatedById__c);
+    }
+
+    @IsTest
     static void it_should_not_run_organization_query_when_disabled_via_logger_parameter() {
         LoggerParameter.setMock(new LoggerParameter__mdt(DeveloperName = 'QueryOrganizationDataSynchronously', Value__c = String.valueOf(false)));
         System.assertEquals(false, LoggerParameter.QUERY_ORGANIZATION_DATA_SYNCHRONOUSLY);
@@ -1305,10 +1328,18 @@ private class LogEntryEventBuilder_Tests {
         private Integer cachedAuthSessionQueryCount = 0;
         private Integer cachedOrganizationQueryCount = 0;
         private Integer cachedUserQueryCount = 0;
+        private LoggerSObjectProxy.AuthSession mockAuthSessionProxy;
 
         public override LoggerSObjectProxy.AuthSession getCachedAuthSessionProxy() {
             this.cachedAuthSessionQueryCount++;
+            if (this.mockAuthSessionProxy != null) {
+                return mockAuthSessionProxy;
+            }
             return super.getCachedAuthSessionProxy();
+        }
+
+        public void setCachedAuthSessionProxy(LoggerSObjectProxy.AuthSession mockAuthSessionProxy) {
+            this.mockAuthSessionProxy = mockAuthSessionProxy;
         }
 
         public Integer getCachedAuthSessionQueryCount() {
