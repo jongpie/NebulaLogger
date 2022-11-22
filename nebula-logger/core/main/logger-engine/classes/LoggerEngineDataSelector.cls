@@ -33,7 +33,7 @@ public without sharing virtual class LoggerEngineDataSelector {
      * @param  userIds userIds description
      * @return The instance of `Map<Id, AuthSession>` containing any matching `AuthSession` records
      */
-    public virtual Map<Id, LoggerSObjectProxy.AuthSession> getAuthSessionsProxy(List<Id> userIds) {
+    public virtual Map<Id, LoggerSObjectProxy.AuthSession> getAuthSessionProxies(List<Id> userIds) {
         Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = new Map<Id, LoggerSObjectProxy.AuthSession>();
 
         if (LoggerParameter.QUERY_AUTH_SESSION_DATA == false) {
@@ -79,7 +79,7 @@ public without sharing virtual class LoggerEngineDataSelector {
             return (LoggerSObjectProxy.AuthSession) LoggerCache.getSessionCache().get(cacheKey);
         }
 
-        LoggerSObjectProxy.AuthSession authSession = getAuthSessionsProxy(new List<Id>{ userId }).get(userId);
+        LoggerSObjectProxy.AuthSession authSession = getAuthSessionProxies(new List<Id>{ userId }).get(userId);
         LoggerCache.getSessionCache().put(cacheKey, authSession);
         return authSession;
     }

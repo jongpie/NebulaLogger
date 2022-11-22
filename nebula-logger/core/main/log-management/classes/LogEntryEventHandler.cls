@@ -541,7 +541,7 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 userIds.add(log.LoggedBy__c);
             }
         }
-        Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = LoggerEngineDataSelector.getInstance().getAuthSessionsProxy(userIds);
+        Map<Id, LoggerSObjectProxy.AuthSession> userIdToAuthSessionProxy = LoggerEngineDataSelector.getInstance().getAuthSessionProxies(userIds);
         for (Log__c log : logs) {
             if (log.LoggedBy__c == null) {
                 continue;
@@ -592,9 +592,9 @@ public without sharing class LogEntryEventHandler extends LoggerSObjectHandler {
                 continue;
             }
 
-            log.NetworkName__c = matchingNetworkProxy.Name;
             log.NetworkLoginUrl__c = System.Network.getLoginUrl(matchingNetworkProxy.Id);
             log.NetworkLogoutUrl__c = System.Network.getLogoutUrl(matchingNetworkProxy.Id);
+            log.NetworkName__c = matchingNetworkProxy.Name;
             log.NetworkSelfRegistrationUrl__c = System.Network.getSelfRegUrl(matchingNetworkProxy.Id);
             log.NetworkUrlPathPrefix__c = matchingNetworkProxy.UrlPathPrefix;
         }

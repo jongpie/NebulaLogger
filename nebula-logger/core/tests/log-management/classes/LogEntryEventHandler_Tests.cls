@@ -479,7 +479,7 @@ private class LogEntryEventHandler_Tests {
 
         List<Id> userIds = new List<Id>{ logEntryEvent.LoggedById__c };
         LoggerSObjectProxy.AuthSession expectedAuthSessionProxy = LoggerEngineDataSelector.getInstance()
-            .getAuthSessionsProxy(userIds)
+            .getAuthSessionProxies(userIds)
             .get(logEntryEvent.LoggedById__c);
         Log__c log = getLog();
         System.assertEquals(expectedAuthSessionProxy?.LoginHistory.Application, log.LoginApplication__c);
