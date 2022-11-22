@@ -12,7 +12,9 @@ public without sharing class SlackLoggerPlugin implements LoggerPlugin.Triggerab
     @TestVisible
     private static final String ENDPOINT = LoggerParameter.getString('SlackEndpoint', null);
     @TestVisible
-    private static final LoggingLevel NOTIFICATION_LOGGING_LEVEL = Logger.getLoggingLevel(LoggerParameter.getString('SlackNotificationLoggingLevel', null));
+    private static final System.LoggingLevel NOTIFICATION_LOGGING_LEVEL = Logger.getLoggingLevel(
+        LoggerParameter.getString('SlackNotificationLoggingLevel', null)
+    );
 
     private List<Log__c> logs;
 

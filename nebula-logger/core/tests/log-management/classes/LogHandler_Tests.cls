@@ -261,7 +261,9 @@ private class LogHandler_Tests {
         Logger.getUserSettings().DefaultNumberOfDaysToRetainLogs__c = daysToRetainLog;
         Logger.getUserSettings().DefaultLogPurgeAction__c = expectedLogPurgeAction;
         upsert Logger.getUserSettings();
-        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(LoggedBy__c = System.UserInfo.getUserId())).populateRequiredFields().getRecord();
+        Log__c log = (Log__c) LoggerMockDataCreator.createDataBuilder(new Log__c(LoggedBy__c = System.UserInfo.getUserId()))
+            .populateRequiredFields()
+            .getRecord();
 
         LoggerDataStore.getDatabase().insertRecord(log);
 
@@ -345,7 +347,7 @@ private class LogHandler_Tests {
         log = [SELECT Id, Priority__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(LOW_PRIORITY, log.Priority__c);
 
-        insert LoggerMockDataCreator.createDataBuilder(new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name()))
+        insert LoggerMockDataCreator.createDataBuilder(new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name()))
             .populateRequiredFields()
             .getRecord();
 

@@ -24,8 +24,8 @@ private class FlowCollectionLogEntry_Tests {
             LastName = System.UserInfo.getLastName(),
             Username = System.UserInfo.getUsername()
         );
-        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
+        System.LoggingLevel flowCollectionEntryLoggingLevel = System.LoggingLevel.DEBUG;
         System.Assert.isTrue(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -65,8 +65,8 @@ private class FlowCollectionLogEntry_Tests {
             LastName = System.UserInfo.getLastName(),
             Username = System.UserInfo.getUsername()
         );
-        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
+        System.LoggingLevel flowCollectionEntryLoggingLevel = System.LoggingLevel.DEBUG;
         System.Assert.isTrue(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -104,8 +104,8 @@ private class FlowCollectionLogEntry_Tests {
             LastName = System.UserInfo.getLastName(),
             Username = System.UserInfo.getUsername()
         );
-        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
+        System.LoggingLevel flowCollectionEntryLoggingLevel = System.LoggingLevel.DEBUG;
         System.Assert.isTrue(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
         System.Test.startTest();
         System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
@@ -150,8 +150,8 @@ private class FlowCollectionLogEntry_Tests {
             LastName = System.UserInfo.getLastName(),
             Username = System.UserInfo.getUsername()
         );
-        LoggingLevel userLoggingLevel = LoggingLevel.ERROR;
-        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.ERROR;
+        System.LoggingLevel flowCollectionEntryLoggingLevel = System.LoggingLevel.DEBUG;
         System.Assert.isTrue(userLoggingLevel.ordinal() > flowCollectionEntryLoggingLevel.ordinal());
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -175,7 +175,7 @@ private class FlowCollectionLogEntry_Tests {
     @IsTest
     static void it_should_use_debug_as_default_level_when_faultMessage_is_null() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        LoggingLevel expectedEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel expectedEntryLoggingLevel = System.LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = expectedEntryLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
@@ -204,8 +204,8 @@ private class FlowCollectionLogEntry_Tests {
     @IsTest
     static void it_should_use_error_as_default_level_when_faultMessage_is_not_null() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        LoggingLevel expectedEntryLoggingLevel = LoggingLevel.ERROR;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        System.LoggingLevel expectedEntryLoggingLevel = System.LoggingLevel.ERROR;
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
         flowCollectionEntry.faultMessage = 'Whoops, a Flow error has occurred.';
@@ -233,7 +233,7 @@ private class FlowCollectionLogEntry_Tests {
     @IsTest
     static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         FlowCollectionLogEntry flowCollectionEntry = createFlowCollectionLogEntry();
@@ -259,8 +259,8 @@ private class FlowCollectionLogEntry_Tests {
     @IsTest
     static void it_should_add_tags_to_log_entry() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        LoggingLevel userLoggingLevel = LoggingLevel.FINEST;
-        LoggingLevel flowCollectionEntryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.FINEST;
+        System.LoggingLevel flowCollectionEntryLoggingLevel = System.LoggingLevel.DEBUG;
         System.Assert.isTrue(userLoggingLevel.ordinal() < flowCollectionEntryLoggingLevel.ordinal());
         Logger.getUserSettings().LoggingLevel__c = userLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();

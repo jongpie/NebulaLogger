@@ -8,7 +8,8 @@
 private class LoggerSettingsController_Tests {
     @IsTest
     static void it_should_return_loggingLevel_picklist_options() {
-        Integer expectedLoggingLevelSize = LoggingLevel.values().size() - 1; // LoggingLEVEL.NONE and LoggingLevel.INTERNAL are ignored, '--NONE--' is automatically included
+        //
+        Integer expectedLoggingLevelSize = System.LoggingLevel.values().size() - 1; // LoggingLEVEL.NONE and System.LoggingLevel.INTERNAL are ignored, '--NONE--' is automatically included
         List<LoggerSettingsController.PicklistOption> picklistOptions = LoggerSettingsController.getPicklistOptions().loggingLevelOptions;
         System.Assert.areEqual(expectedLoggingLevelSize, picklistOptions.size());
         for (LoggerSettingsController.PicklistOption picklistOption : picklistOptions) {
@@ -16,7 +17,7 @@ private class LoggerSettingsController_Tests {
                 System.Assert.areEqual('--None--', picklistOption.label);
             } else {
                 System.Assert.areEqual(picklistOption.value, picklistOption.label);
-                LoggingLevel matchingLoggingLevel = LoggingLevel.valueOf(picklistOption.value);
+                System.LoggingLevel matchingLoggingLevel = System.LoggingLevel.valueOf(picklistOption.value);
                 System.Assert.areEqual(matchingLoggingLevel.name(), picklistOption.label);
             }
         }

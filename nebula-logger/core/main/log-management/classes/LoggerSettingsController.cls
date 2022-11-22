@@ -179,10 +179,10 @@ public without sharing class LoggerSettingsController {
 
     private static List<PicklistOption> getLoggingLevelOptions() {
         List<PicklistOption> picklistOptions = initializePicklistOptions();
-        for (Integer i = LoggingLevel.values().size() - 1; i > 0; i--) {
-            LoggingLevel currentLoggingLevel = LoggingLevel.values().get(i);
+        for (Integer i = System.LoggingLevel.values().size() - 1; i > 0; i--) {
+            System.LoggingLevel currentLoggingLevel = System.LoggingLevel.values().get(i);
 
-            if (currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
+            if (currentLoggingLevel == System.LoggingLevel.NONE || currentLoggingLevel == System.LoggingLevel.INTERNAL) {
                 continue;
             }
 

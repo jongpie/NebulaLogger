@@ -9,7 +9,7 @@ private class FlowLogger_Tests {
     @IsTest
     static void it_should_add_entry_to_logger_buffer() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        LoggingLevel entryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel entryLoggingLevel = System.LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -42,7 +42,7 @@ private class FlowLogger_Tests {
     @IsTest
     static void it_should_auto_save_entry_when_saveLog_is_true() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        LoggingLevel entryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel entryLoggingLevel = System.LoggingLevel.DEBUG;
         System.Test.startTest();
         Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();
@@ -75,7 +75,7 @@ private class FlowLogger_Tests {
     static void it_should_auto_save_entry_with_save_method_when_saveMethodName_specified() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         LoggerDataStore.setMock(LoggerMockDataStore.getJobQueue());
-        LoggingLevel entryLoggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel entryLoggingLevel = System.LoggingLevel.DEBUG;
         System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
         Logger.getUserSettings().LoggingLevel__c = entryLoggingLevel.name();
         LoggerTestConfigurator.setupMockSObjectHandlerConfigurations();

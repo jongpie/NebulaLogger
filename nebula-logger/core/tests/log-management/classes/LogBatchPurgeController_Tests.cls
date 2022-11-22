@@ -447,7 +447,7 @@ private class LogBatchPurgeController_Tests {
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < noOfRecords; i++) {
-            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.INFO.name());
+            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name());
             LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
             logEntries.add(logEntry);
         }

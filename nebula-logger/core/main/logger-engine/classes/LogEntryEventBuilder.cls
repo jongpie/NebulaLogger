@@ -20,7 +20,7 @@ global with sharing class LogEntryEventBuilder {
     private static Id networkId = System.Network.getNetworkId();
 
     private final LogEntryEvent__e logEntryEvent;
-    private final LoggingLevel entryLoggingLevel;
+    private final System.LoggingLevel entryLoggingLevel;
     private final LoggerSettings__c userSettings;
 
     @TestVisible
@@ -99,7 +99,7 @@ global with sharing class LogEntryEventBuilder {
      * @param  ignoredOrigins    A `Set<String>` of the names of any Apex classes that should be ignored when parsing the entry's origin
      */
     @SuppressWarnings('PMD.ExcessiveParameterList, PMD.NcssConstructorCount')
-    public LogEntryEventBuilder(LoggerSettings__c userSettings, LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins) {
+    public LogEntryEventBuilder(LoggerSettings__c userSettings, System.LoggingLevel entryLoggingLevel, Boolean shouldSave, Set<String> ignoredOrigins) {
         this.shouldSave = shouldSave;
         if (this.shouldSave() == false) {
             return;

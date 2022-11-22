@@ -972,15 +972,15 @@ private class LogEntryEventHandler_Tests {
             .getRecord();
         logEntryEvent.ImpersonatedById__c = null;
         logEntryEvent.LoggedById__c = System.UserInfo.getUserId();
-        logEntryEvent.LoggingLevel__c = LoggingLevel.INFO.name();
-        logEntryEvent.LoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
+        logEntryEvent.LoggingLevel__c = System.LoggingLevel.INFO.name();
+        logEntryEvent.LoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
         logEntryEvent.ProfileId__c = System.UserInfo.getProfileId();
         logEntryEvent.RecordCollectionSize__c = 1;
         logEntryEvent.RecordCollectionType__c = 'Single';
         logEntryEvent.RecordId__c = System.UserInfo.getUserId();
         logEntryEvent.TimestampString__c = String.valueOf(logEntryEvent.Timestamp__c.getTime());
-        logEntryEvent.UserLoggingLevel__c = LoggingLevel.INFO.name();
-        logEntryEvent.UserLoggingLevelOrdinal__c = LoggingLevel.INFO.ordinal();
+        logEntryEvent.UserLoggingLevel__c = System.LoggingLevel.INFO.name();
+        logEntryEvent.UserLoggingLevelOrdinal__c = System.LoggingLevel.INFO.ordinal();
         logEntryEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(
             logEntryEvent,
             Schema.LogEntryEvent__e.EventUuid,

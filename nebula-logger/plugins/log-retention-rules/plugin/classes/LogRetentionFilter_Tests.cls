@@ -174,7 +174,7 @@ private class LogRetentionFilter_Tests {
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_equal_to() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_equal_to');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
@@ -197,7 +197,7 @@ private class LogRetentionFilter_Tests {
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_not_equal_to() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_not_equal_to');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'NOT_EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
@@ -220,7 +220,7 @@ private class LogRetentionFilter_Tests {
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_less_than() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_less_than');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'LESS_THAN', 'Value', exampleLoggingLevelOrdinal)
@@ -243,7 +243,7 @@ private class LogRetentionFilter_Tests {
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_less_than_or_equal_to() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_less_than_or_equal_to');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'LESS_THAN_OR_EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
@@ -266,7 +266,7 @@ private class LogRetentionFilter_Tests {
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_greater_than() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_greater_than');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'GREATER_THAN', 'Value', exampleLoggingLevelOrdinal)
@@ -289,7 +289,7 @@ private class LogRetentionFilter_Tests {
 
     @IsTest
     static void it_should_match_one_condition_on_decimal_greater_than_or_equal_to() {
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_greater_than_or_equal_to');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', 'GREATER_THAN_OR_EQUAL_TO', 'Value', exampleLoggingLevelOrdinal)
@@ -307,7 +307,7 @@ private class LogRetentionFilter_Tests {
     @IsTest
     static void it_should_throw_illegal_argument_exception_on_decimal_when_invalid_operator() {
         String invalidOperator = 'THIS_IS_AN_INVALID_OPERATOR';
-        Integer exampleLoggingLevelOrdinal = LoggingLevel.INFO.ordinal();
+        Integer exampleLoggingLevelOrdinal = System.LoggingLevel.INFO.ordinal();
         LogRetentionRule__mdt rule = createMockRule('number_with_invalid_operator');
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
             createMockRuleCondition('LoggingLevelOrdinal__c', invalidOperator, 'Value', exampleLoggingLevelOrdinal)

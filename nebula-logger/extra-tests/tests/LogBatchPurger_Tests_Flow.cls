@@ -19,7 +19,7 @@ private class LogBatchPurger_Tests_Flow {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = false;
-        settings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        settings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         insert settings;
 
         Date scheduledDeletionDate = System.today().addDays(-7);
@@ -29,7 +29,7 @@ private class LogBatchPurger_Tests_Flow {
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES_TO_CREATE; i++) {
-            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.INFO.name());
+            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name());
             LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
             logEntries.add(logEntry);
         }

@@ -11,7 +11,7 @@ private class SlackLoggerPlugin_Tests {
         verifyLogEntryCountEquals(0);
         Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
         insert log;
-        LoggingLevel logEntryLoggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.WARN;
         LogEntry__c logEntry = new LogEntry__c(
             ExceptionStackTrace__c = 'Some exception stack trace',
             Log__c = log.Id,
@@ -32,7 +32,7 @@ private class SlackLoggerPlugin_Tests {
         LoggerMockDataCreator.MockHttpCallout calloutMock = LoggerMockDataCreator.createHttpCallout().setStatusCode(200);
         System.Test.setMock(HttpCalloutMock.class, calloutMock);
         // Load the mock configurations - the plugin framework won't load actual CMDT records during tests
-        LoggingLevel slackLoggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel slackLoggingLevel = System.LoggingLevel.ERROR;
         System.Assert.isTrue(logEntryLoggingLevel.ordinal() < slackLoggingLevel.ordinal(), 'Slack logging level ordinal was incorrect.');
         mockConfigurations(slackLoggingLevel);
         System.Assert.isTrue(
@@ -61,7 +61,7 @@ private class SlackLoggerPlugin_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
         insert log;
-        LoggingLevel logEntryLoggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.ERROR;
         LogEntry__c logEntry = new LogEntry__c(
             ExceptionStackTrace__c = 'Some exception stack trace',
             Log__c = log.Id,
@@ -109,7 +109,7 @@ private class SlackLoggerPlugin_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
         insert log;
-        LoggingLevel logEntryLoggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.WARN;
         LogEntry__c logEntry = new LogEntry__c(
             ExceptionStackTrace__c = 'Some exception stack trace',
             Log__c = log.Id,
@@ -157,7 +157,7 @@ private class SlackLoggerPlugin_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         Log__c log = new Log__c(LoggedBy__c = System.UserInfo.getUserId(), SendSlackNotification__c = false, TransactionId__c = '1234');
         insert log;
-        LoggingLevel logEntryLoggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.INFO;
         LogEntry__c logEntry = new LogEntry__c(
             ExceptionStackTrace__c = 'Some exception stack trace',
             Log__c = log.Id,
@@ -199,7 +199,7 @@ private class SlackLoggerPlugin_Tests {
         System.Assert.areEqual(System.today(), log.SlackNotificationDate__c.date(), 'SlackNotificationDate was not set to TODAY.');
     }
 
-    static void mockConfigurations(LoggingLevel notificationLoggingLevel) {
+    static void mockConfigurations(System.LoggingLevel notificationLoggingLevel) {
         LoggerTestConfigurator.setMock(
             new LoggerPlugin__mdt(DeveloperName = 'SlackPlugin', IsEnabled__c = true, SObjectHandlerApexClass__c = SlackLoggerPlugin.class.getName())
         );
@@ -212,7 +212,7 @@ private class SlackLoggerPlugin_Tests {
         System.Assert.areEqual(expectedCount, existingLogEntriesCount, 'Existing log entries did NOT match the expected count.');
     }
 
-    static List<Log__c> queryLogs(LoggingLevel notificationLoggingLevel) {
+    static List<Log__c> queryLogs(System.LoggingLevel notificationLoggingLevel) {
         return [
             SELECT
                 Id,

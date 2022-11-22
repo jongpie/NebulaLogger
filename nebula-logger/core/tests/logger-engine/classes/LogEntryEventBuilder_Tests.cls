@@ -10,7 +10,7 @@
 private class LogEntryEventBuilder_Tests {
     @IsTest
     static void it_should_short_circuit_when_disabled() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.DEBUG, false, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.DEBUG, false, new Set<String>());
 
         // Run all public and global methods to make sure no errors occur when not enabled (it's happened before)
         System.Assert.isNull(builder.setMessage(getLogMessage()).getLogEntryEvent());
@@ -37,13 +37,13 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_short_circuit_when_enabled_logging_level_above_called_level() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, false, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.FINE, false, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent());
     }
 
     @IsTest
     static void it_should_not_short_circuit_when_enabled() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.FINE, true, new Set<String>());
         System.Assert.isNotNull(builder.getLogEntryEvent());
     }
 
@@ -57,7 +57,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isFalse(Logger.isEnabled());
         System.Assert.areEqual(0, System.Limits.getQueries());
 
-        new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, Logger.getUserSettings().IsEnabled__c, new Set<String>())
+        new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, Logger.getUserSettings().IsEnabled__c, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
         System.Assert.areEqual(0, System.Limits.getQueries());
@@ -71,7 +71,7 @@ private class LogEntryEventBuilder_Tests {
         LoggerEngineDataSelector.setMock(mockSelector);
         System.Assert.areEqual(0, mockSelector.getCachedAuthSessionQueryCount());
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
@@ -96,7 +96,7 @@ private class LogEntryEventBuilder_Tests {
         LoggerEngineDataSelector.setMock(mockSelector);
         System.Assert.areEqual(0, mockSelector.getCachedAuthSessionQueryCount());
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
@@ -122,7 +122,7 @@ private class LogEntryEventBuilder_Tests {
         LoggerEngineDataSelector.setMock(mockSelector);
         System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
@@ -142,7 +142,7 @@ private class LogEntryEventBuilder_Tests {
         LoggerEngineDataSelector.setMock(mockSelector);
         System.Assert.areEqual(0, mockSelector.getCachedOrganizationQueryCount());
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
@@ -163,7 +163,7 @@ private class LogEntryEventBuilder_Tests {
         LoggerEngineDataSelector.setMock(mockSelector);
         System.Assert.areEqual(0, mockSelector.getCachedUserQueryCount());
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
@@ -184,7 +184,7 @@ private class LogEntryEventBuilder_Tests {
         LoggerEngineDataSelector.setMock(mockSelector);
         System.Assert.areEqual(0, mockSelector.getCachedUserQueryCount());
 
-        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>())
+        LogEntryEvent__e logEntryEvent = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>())
             .setMessage('some message')
             .getLogEntryEvent();
 
@@ -200,7 +200,8 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_keep_timestamp_string_in_sync_with_timestamp() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).setMessage('some message');
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>())
+            .setMessage('some message');
 
         for (Integer i = 0; i < 5; i++) {
             builder.getLogEntryEvent().Timestamp__c = builder.getLogEntryEvent().Timestamp__c.addSeconds(i);
@@ -215,7 +216,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_message_fields_for_logMessage() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isFalse(builder.getLogEntryEvent().MessageTruncated__c);
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
         System.Assert.isNull(builder.getLogEntryEvent().Message__c);
@@ -230,7 +231,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_message_fields_for_null_logMessage() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isFalse(builder.getLogEntryEvent().MessageTruncated__c);
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
         System.Assert.isNull(builder.getLogEntryEvent().Message__c);
@@ -245,7 +246,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_message_fields_for_string() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isFalse(builder.getLogEntryEvent().MessageTruncated__c);
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
         System.Assert.isNull(builder.getLogEntryEvent().Message__c);
@@ -260,7 +261,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_message_fields_for_null_string() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isFalse(builder.getLogEntryEvent().MessageTruncated__c);
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
         System.Assert.isNull(builder.getLogEntryEvent().Message__c);
@@ -283,7 +284,7 @@ private class LogEntryEventBuilder_Tests {
         Account account = new Account(Name = message);
         String accountJson = JSON.serializePretty(account);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setMessage(message).setRecord(account);
 
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c, builder.getLogEntryEvent().Message__c);
@@ -302,7 +303,7 @@ private class LogEntryEventBuilder_Tests {
         Account account = new Account(Name = message);
         String accountJson = JSON.serializePretty(account);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setMessage(message).setRecord(account);
 
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
@@ -320,7 +321,7 @@ private class LogEntryEventBuilder_Tests {
         String sensitiveString = 'Something, something, and my social is 400 11 9999 in case you want to steal my identity';
         String expectedSanitizedString = 'Something, something, and my social is XXX-XX-9999 in case you want to steal my identity';
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setMessage(sensitiveString);
 
         System.Assert.isTrue(builder.getLogEntryEvent().MessageMasked__c);
@@ -340,7 +341,7 @@ private class LogEntryEventBuilder_Tests {
         String accountJson = JSON.serializePretty(account);
         String expectedSanitizedAccountJson = JSON.serializePretty(new Account(Name = expectedSanitizedString));
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setRecord(account);
 
         System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonMasked__c);
@@ -360,7 +361,7 @@ private class LogEntryEventBuilder_Tests {
         List<Account> accounts = new List<Account>{ new Account(Name = sensitiveString) };
         String accountListJson = JSON.serializePretty(accounts);
         String expectedSanitizedAccountListJson = JSON.serializePretty(new List<Account>{ new Account(Name = expectedSanitizedString) });
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setRecord(accounts);
 
         System.Assert.isTrue(builder.getLogEntryEvent().RecordJsonMasked__c);
@@ -379,7 +380,7 @@ private class LogEntryEventBuilder_Tests {
         HttpRequest httpRequest = LoggerMockDataCreator.createHttpRequest();
         httpRequest.setBody(sensitiveString);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setHttpRequestDetails(httpRequest);
 
         System.Assert.isTrue(builder.getLogEntryEvent().HttpRequestBodyMasked__c);
@@ -398,7 +399,7 @@ private class LogEntryEventBuilder_Tests {
         HttpResponse httpResponse = LoggerMockDataCreator.createHttpResponse();
         httpResponse.setBody(sensitiveString);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setHttpResponseDetails(httpResponse);
 
         System.Assert.isTrue(builder.getLogEntryEvent().HttpResponseBodyMasked__c);
@@ -408,7 +409,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_truncate_message_for_long_logMessage() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isFalse(builder.getLogEntryEvent().MessageTruncated__c);
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
         System.Assert.isNull(builder.getLogEntryEvent().Message__c);
@@ -426,7 +427,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_truncate_message_for_long_string() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isFalse(builder.getLogEntryEvent().MessageTruncated__c);
         System.Assert.isFalse(builder.getLogEntryEvent().MessageMasked__c);
         System.Assert.isNull(builder.getLogEntryEvent().Message__c);
@@ -442,7 +443,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_exception_fields_for_dmlException() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().ExceptionMessage__c);
         System.Assert.isNull(builder.getLogEntryEvent().ExceptionType__c);
 
@@ -458,7 +459,7 @@ private class LogEntryEventBuilder_Tests {
         Database.DeleteResult deleteResult = LoggerMockDataCreator.createDatabaseDeleteResult(true);
         System.Assert.isNotNull(deleteResult);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(deleteResult);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -472,7 +473,7 @@ private class LogEntryEventBuilder_Tests {
         Database.MergeResult mergeResult = LoggerMockDataCreator.createDatabaseMergeResult(true);
         System.Assert.isNotNull(mergeResult);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(mergeResult);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -486,7 +487,7 @@ private class LogEntryEventBuilder_Tests {
         Database.SaveResult saveResult = LoggerMockDataCreator.createDatabaseSaveResult(true);
         System.Assert.isNotNull(saveResult);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(saveResult);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -500,7 +501,7 @@ private class LogEntryEventBuilder_Tests {
         Database.UndeleteResult undeleteResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true);
         System.Assert.isNotNull(undeleteResult);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(undeleteResult);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -515,7 +516,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNotNull(upsertResult);
         System.Assert.isTrue(upsertResult.isCreated());
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(upsertResult);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -530,7 +531,7 @@ private class LogEntryEventBuilder_Tests {
         System.Assert.isNotNull(upsertResult);
         System.Assert.isFalse(upsertResult.isCreated());
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(upsertResult);
 
         System.Assert.areEqual(1, builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -546,7 +547,7 @@ private class LogEntryEventBuilder_Tests {
             deleteResults.add(LoggerMockDataCreator.createDatabaseDeleteResult(false));
         }
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(deleteResults);
 
         System.Assert.areEqual(deleteResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -562,7 +563,7 @@ private class LogEntryEventBuilder_Tests {
             mergeResults.add(LoggerMockDataCreator.createDatabaseMergeResult(false));
         }
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(mergeResults);
 
         System.Assert.areEqual(mergeResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -578,7 +579,7 @@ private class LogEntryEventBuilder_Tests {
             saveResults.add(LoggerMockDataCreator.createDatabaseSaveResult(false));
         }
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(saveResults);
 
         System.Assert.areEqual(saveResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -594,7 +595,7 @@ private class LogEntryEventBuilder_Tests {
             undeleteResults.add(LoggerMockDataCreator.createDatabaseUndeleteResult(false));
         }
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(undeleteResults);
 
         System.Assert.areEqual(undeleteResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -610,7 +611,7 @@ private class LogEntryEventBuilder_Tests {
             upsertResults.add(LoggerMockDataCreator.createDatabaseUpsertResult(false, false));
         }
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         builder.setDatabaseResult(upsertResults);
 
         System.Assert.areEqual(upsertResults.size(), builder.getLogEntryEvent().DatabaseResultCollectionSize__c);
@@ -621,7 +622,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_recordId_when_standard_object() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -642,7 +643,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_recordId_when_template_standard_object() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.assertEquals(null, builder.getLogEntryEvent().RecordId__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordJson__c);
         System.assertEquals(null, builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -663,7 +664,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_recordId_when_custom_object() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -683,7 +684,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_recordId_when_custom_metadata_type() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -703,7 +704,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_record_when_null() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -725,7 +726,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_record_when_standard_object() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -746,7 +747,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_record_when_custom_object() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -766,7 +767,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_record_when_custom_metadata_type() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -786,7 +787,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_record_when_platform_event() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -813,7 +814,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
             Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAggregateResult);
+            builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAggregateResult);
         }
 
         System.Assert.areEqual(JSON.serializePretty(mockAggregateResult), builder.getLogEntryEvent().RecordJson__c);
@@ -827,7 +828,7 @@ private class LogEntryEventBuilder_Tests {
         LogEntryEventBuilder builder;
         System.runAs(standardUser) {
             Logger.getUserSettings().IsRecordFieldStrippingEnabled__c = true;
-            builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAggregateResults);
+            builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>()).setRecord(mockAggregateResults);
         }
 
         System.Assert.areEqual(JSON.serializePretty(mockAggregateResults), builder.getLogEntryEvent().RecordJson__c);
@@ -835,7 +836,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_list_of_records_when_list_is_null() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -855,7 +856,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_list_of_records_when_list_is_empty() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -875,7 +876,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_list_of_records_when_first_record_is_null() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -897,7 +898,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_record_fields_for_list_of_records_when_populated() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().RecordId__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordJson__c);
         System.Assert.isNull(builder.getLogEntryEvent().RecordSObjectClassification__c);
@@ -916,7 +917,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_setting_http_request_fields_when_request_is_null() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
         System.Assert.isFalse(builder.getLogEntryEvent().HttpRequestCompressed__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
@@ -933,7 +934,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_http_request_fields_when_request_is_populated() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
@@ -953,7 +954,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_skip_setting_http_response_fields_when_response_is_null() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
@@ -969,7 +970,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_http_response_fields_when_populated() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestBody__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestEndpoint__c);
         System.Assert.isNull(builder.getLogEntryEvent().HttpRequestMethod__c);
@@ -990,7 +991,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_set_tags_string_for_list_of_tags() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().Tags__c);
 
         List<String> tags = new List<String>{ 'some-tag', 'another One', 'here\'s one more!' };
@@ -1003,7 +1004,7 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_deduplicate_and_sort_tags() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isNull(builder.getLogEntryEvent().Tags__c);
 
         List<String> tags = new List<String>{ 'duplicate-tag', 'duplicate-tag', 'another One' };
@@ -1025,7 +1026,7 @@ private class LogEntryEventBuilder_Tests {
         LoggerParameter.setMock(mockParameter);
         System.Assert.isFalse(LoggerParameter.ENABLE_STACK_TRACE_PARSING);
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
 
         System.Assert.isNull(builder.getLogEntryEvent().OriginLocation__c);
         System.Assert.isNull(builder.getLogEntryEvent().StackTrace__c);
@@ -1042,7 +1043,7 @@ private class LogEntryEventBuilder_Tests {
         LoggerParameter__mdt mockParameter = new LoggerParameter__mdt(DeveloperName = 'EnableStackTraceParsing', Value__c = String.valueOf(false));
         LoggerParameter.setMock(mockParameter);
         System.Assert.isFalse(LoggerParameter.ENABLE_STACK_TRACE_PARSING);
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
 
         builder.parseStackTrace('AnonymousBlock: line 1, column 1');
 
@@ -1062,7 +1063,7 @@ private class LogEntryEventBuilder_Tests {
         String expectedOriginLocation = qualifiedClassName + '.<init>';
         DebugStringExample constructedClass = new DebugStringExample();
         String expectedStackTrace = constructedClass.getStackTraceString();
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.FINE, true, new Set<String>());
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
 
@@ -1086,7 +1087,7 @@ private class LogEntryEventBuilder_Tests {
         String qualifiedClassName = LogEntryEventBuilder_Tests.class.getName();
         String expectedOriginLocation = qualifiedClassName + '.it_should_set_stack_trace_and_origin_location_for_method_stack_trace_string';
         String expectedStackTrace = stackTraceHandler.getStackTraceString();
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.FINE, true, new Set<String>());
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
 
@@ -1112,7 +1113,7 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(
             getUserSettings(),
-            LoggingLevel.FINE,
+            System.LoggingLevel.FINE,
             true,
             new Set<String>{ LogEntryEventBuilder_Tests.class.getName() }
         );
@@ -1131,7 +1132,7 @@ private class LogEntryEventBuilder_Tests {
 
         LogEntryEventBuilder builder = new LogEntryEventBuilder(
             getUserSettings(),
-            LoggingLevel.FINE,
+            System.LoggingLevel.FINE,
             true,
             new Set<String>{ LogEntryEventBuilder_Tests.class.getName() }
         );
@@ -1149,7 +1150,7 @@ private class LogEntryEventBuilder_Tests {
         String deduplicatedStackTraceString = 'AnonymousBlock: line 9, column 1';
         String duplicatedStackTraceString = deduplicatedStackTraceString + '\n' + deduplicatedStackTraceString + '\n' + deduplicatedStackTraceString;
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.FINE, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.FINE, true, new Set<String>());
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
         builder.parseStackTrace(duplicatedStackTraceString);
@@ -1164,7 +1165,7 @@ private class LogEntryEventBuilder_Tests {
     static void it_should_not_set_stack_trace_and_origin_location_for_invalid_stack_trace_string() {
         final String invalidStackTrace = '()';
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         // Clear out any auto-set values
         builder.getLogEntryEvent().OriginLocation__c = null;
         builder.getLogEntryEvent().StackTrace__c = null;
@@ -1176,13 +1177,13 @@ private class LogEntryEventBuilder_Tests {
 
     @IsTest
     static void it_should_return_value_of_shouldSave_when_true() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
         System.Assert.isTrue(builder.shouldSave());
     }
 
     @IsTest
     static void it_should_return_value_of_shouldSave_when_false() {
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, false, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, false, new Set<String>());
         System.Assert.isFalse(builder.shouldSave());
     }
 
@@ -1194,7 +1195,7 @@ private class LogEntryEventBuilder_Tests {
         String organizationEnvironmentType = LoggerMockDataCreator.getOrganizationEnvironmentType();
         User user = LoggerMockDataCreator.getUser();
 
-        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), LoggingLevel.INFO, true, new Set<String>());
+        LogEntryEventBuilder builder = new LogEntryEventBuilder(getUserSettings(), System.LoggingLevel.INFO, true, new Set<String>());
 
         // Verify organization fields
         System.Assert.areEqual(Url.getOrgDomainUrl().toExternalForm(), builder.getLogEntryEvent().OrganizationDomainUrl__c);
@@ -1269,7 +1270,7 @@ private class LogEntryEventBuilder_Tests {
             '\n' +
             example.loggingString +
             ': ' +
-            LoggingLevel.DEBUG.name(),
+            System.LoggingLevel.DEBUG.name(),
             builder.debugMessage
         );
     }

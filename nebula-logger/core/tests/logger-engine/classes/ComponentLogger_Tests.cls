@@ -19,12 +19,12 @@ private class ComponentLogger_Tests {
 
         System.Assert.areEqual(loggerSettings.IsEnabled__c, componentLoggerSettings.isEnabled);
         System.Assert.areEqual(loggerSettings.LoggingLevel__c, componentLoggerSettings.userLoggingLevel.name);
-        LoggingLevel userLoggingLevel = Logger.getLoggingLevel(loggerSettings.LoggingLevel__c);
+        System.LoggingLevel userLoggingLevel = Logger.getLoggingLevel(loggerSettings.LoggingLevel__c);
         System.Assert.areEqual(userLoggingLevel.name(), componentLoggerSettings.userLoggingLevel.name);
         System.Assert.areEqual(userLoggingLevel.ordinal(), componentLoggerSettings.userLoggingLevel.ordinal);
-        for (LoggingLevel currentLoggingLevel : LoggingLevel.values()) {
+        for (System.LoggingLevel currentLoggingLevel : System.LoggingLevel.values()) {
             // We don't care about logging level NONE, or the secret/undocumented INTERNAL logging level
-            if (currentLoggingLevel == LoggingLevel.NONE || currentLoggingLevel == LoggingLevel.INTERNAL) {
+            if (currentLoggingLevel == System.LoggingLevel.NONE || currentLoggingLevel == System.LoggingLevel.INTERNAL) {
                 continue;
             }
             System.Assert.isTrue(
@@ -51,7 +51,7 @@ private class ComponentLogger_Tests {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
         User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
@@ -83,7 +83,7 @@ private class ComponentLogger_Tests {
         User currentUser = new User(FirstName = System.UserInfo.getFirstName(), Id = System.UserInfo.getUserId(), ProfileId = System.UserInfo.getProfileId());
         System.Assert.areEqual(0, System.Limits.getQueueableJobs(), 'Test should start with 0 queueable jobs used');
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
@@ -124,7 +124,7 @@ private class ComponentLogger_Tests {
         mockComponentError.type = 'JavaScript.ReferenceError';
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.error = mockComponentError;
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
@@ -160,7 +160,7 @@ private class ComponentLogger_Tests {
         mockComponentError.type = mockApexException.getTypeName();
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
         componentLogEntry.error = mockComponentError;
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.recordId = currentUser.Id;
         componentLogEntry.record = currentUser;
@@ -188,9 +188,9 @@ private class ComponentLogger_Tests {
     @IsTest
     static void it_should_set_logger_scenario() {
         LoggerDataStore.setMock(LoggerMockDataStore.getEventBus());
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.scenario = 'Some scenario';
         componentLogEntry.timestamp = System.now();
@@ -216,7 +216,7 @@ private class ComponentLogger_Tests {
         String expectedComponentApiName = 'c/loggerAuraDemo';
         String expectedComponentFunctionName = 'saveLogAuraExample';
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.stack = getMockAuraComponentStackTrace();
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);
@@ -249,7 +249,7 @@ private class ComponentLogger_Tests {
         String expectedComponentApiName = 'c/loggerLWCDemo';
         String expectedComponentFunctionName = 'saveLogWebExample';
         ComponentLogger.ComponentLogEntry componentLogEntry = new ComponentLogger.ComponentLogEntry();
-        componentLogEntry.loggingLevel = LoggingLevel.INFO.name();
+        componentLogEntry.loggingLevel = System.LoggingLevel.INFO.name();
         componentLogEntry.message = 'hello, world';
         componentLogEntry.stack = getMockWebComponentStackTrace();
         componentLogEntry.timestamp = System.now().addDays(-1 / 24);

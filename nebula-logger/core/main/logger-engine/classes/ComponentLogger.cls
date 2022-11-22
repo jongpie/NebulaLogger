@@ -37,7 +37,7 @@ public inherited sharing class ComponentLogger {
             Logger.SaveMethod saveMethod = Logger.getSaveMethod();
             for (ComponentLogEntry componentLogEntry : componentLogEntries) {
                 Logger.setScenario(componentLogEntry.scenario);
-                LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
+                System.LoggingLevel entryLoggingLevel = Logger.getLoggingLevel(componentLogEntry.loggingLevel);
                 LogEntryEventBuilder logEntryEventBuilder = Logger.newEntry(entryLoggingLevel, componentLogEntry.message).addTags(componentLogEntry.tags);
 
                 if (componentLogEntry.recordId != null) {
@@ -180,13 +180,13 @@ public inherited sharing class ComponentLogger {
 
         private Map<String, Integer> getSupportedLoggingLevels() {
             return new Map<String, Integer>{
-                LoggingLevel.ERROR.name() => LoggingLevel.ERROR.ordinal(),
-                LoggingLevel.WARN.name() => LoggingLevel.WARN.ordinal(),
-                LoggingLevel.INFO.name() => LoggingLevel.INFO.ordinal(),
-                LoggingLevel.DEBUG.name() => LoggingLevel.DEBUG.ordinal(),
-                LoggingLevel.FINE.name() => LoggingLevel.FINE.ordinal(),
-                LoggingLevel.FINER.name() => LoggingLevel.FINER.ordinal(),
-                LoggingLevel.FINEST.name() => LoggingLevel.FINEST.ordinal()
+                System.LoggingLevel.ERROR.name() => System.LoggingLevel.ERROR.ordinal(),
+                System.LoggingLevel.WARN.name() => System.LoggingLevel.WARN.ordinal(),
+                System.LoggingLevel.INFO.name() => System.LoggingLevel.INFO.ordinal(),
+                System.LoggingLevel.DEBUG.name() => System.LoggingLevel.DEBUG.ordinal(),
+                System.LoggingLevel.FINE.name() => System.LoggingLevel.FINE.ordinal(),
+                System.LoggingLevel.FINER.name() => System.LoggingLevel.FINER.ordinal(),
+                System.LoggingLevel.FINEST.name() => System.LoggingLevel.FINEST.ordinal()
             };
         }
 
@@ -211,7 +211,7 @@ public inherited sharing class ComponentLogger {
         @AuraEnabled
         public Integer ordinal { get; set; }
 
-        private ComponentLoggingLevel(LoggingLevel loggingLevel) {
+        private ComponentLoggingLevel(System.LoggingLevel loggingLevel) {
             this.name = loggingLevel.name();
             this.ordinal = loggingLevel.ordinal();
         }

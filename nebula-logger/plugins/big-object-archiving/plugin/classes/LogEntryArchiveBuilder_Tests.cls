@@ -13,7 +13,7 @@ private class LogEntryArchiveBuilder_Tests {
             .populateAllFields()
             .getRecord();
         mockEvent = (LogEntryEvent__e) LoggerMockDataCreator.setReadOnlyField(mockEvent, Schema.LogEntryEvent__e.EventUuid, 'abc-xyz-some-value');
-        mockEvent.LoggingLevel__c = LoggingLevel.INFO.name();
+        mockEvent.LoggingLevel__c = System.LoggingLevel.INFO.name();
         mockEvent.Timestamp__c = timestamp;
         mockEvent.TimestampString__c = String.valueOf(timestamp.getTime());
 
@@ -55,7 +55,7 @@ private class LogEntryArchiveBuilder_Tests {
     static void it_should_write_all_fields_over_from_log_entry() {
         LogEntry__c mockLogEntry = (LogEntry__c) LoggerMockDataCreator.createDataBuilder(Schema.LogEntry__c.SObjectType).populateAllFields().getRecord();
         mockLogEntry.Log__r = (Log__c) LoggerMockDataCreator.createDataBuilder(Schema.Log__c.SObjectType).populateAllFields().getRecord();
-        mockLogEntry.LoggingLevel__c = LoggingLevel.INFO.name();
+        mockLogEntry.LoggingLevel__c = System.LoggingLevel.INFO.name();
 
         LogEntryArchive__b logEntryArchive = new LogEntryArchiveBuilder(mockLogEntry).getLogEntryArchive();
 

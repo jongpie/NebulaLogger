@@ -29,7 +29,7 @@ private class LogRetentionRulesPlugin_Tests {
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
 
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
         insert logEntry;
 
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
@@ -58,7 +58,7 @@ private class LogRetentionRulesPlugin_Tests {
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
 
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
         insert logEntry;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c);
@@ -85,7 +85,7 @@ private class LogRetentionRulesPlugin_Tests {
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
 
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
         insert logEntry;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(expectedLogRetentionDate, log.LogRetentionDate__c);
@@ -99,7 +99,7 @@ private class LogRetentionRulesPlugin_Tests {
         Integer numberOfDaysToRetainLogs = 90;
         Date expectedLogRetentionDate = System.today().addDays(numberOfDaysToRetainLogs);
         String scenario = 'Some scenario';
-        Integer userLoggingLevelOrdinal = LoggingLevel.WARN.ordinal();
+        Integer userLoggingLevelOrdinal = System.LoggingLevel.WARN.ordinal();
         LogRetentionRule__mdt rule = createMockRule('rule_with_multiple_AND_conditions', 'AND', numberOfDaysToRetainLogs);
         LogRetentionRulesPlugin.setMockRetentionRule(rule);
         List<LogRetentionRuleCondition__mdt> conditions = new List<LogRetentionRuleCondition__mdt>{
@@ -112,7 +112,7 @@ private class LogRetentionRulesPlugin_Tests {
         insert log;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
         insert logEntry;
 
         log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];
@@ -140,7 +140,7 @@ private class LogRetentionRulesPlugin_Tests {
         insert log;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
         insert logEntry;
 
         log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];
@@ -156,7 +156,7 @@ private class LogRetentionRulesPlugin_Tests {
         Date expectedLogRetentionDate = System.today().addDays(numberOfDaysToRetainLogs);
         String scenario1 = 'Some scenario';
         String scenario2 = 'Another scenario';
-        Integer userLoggingLevelOrdinal = LoggingLevel.WARN.ordinal();
+        Integer userLoggingLevelOrdinal = System.LoggingLevel.WARN.ordinal();
         LogRetentionRule__mdt rule = createMockRule('rule_with_multiple_OR_conditions', 'Custom', numberOfDaysToRetainLogs);
         rule.CustomConditionLogic__c = '((1 OR 2) AND 3)';
         LogRetentionRulesPlugin.setMockRetentionRule(rule);
@@ -171,7 +171,7 @@ private class LogRetentionRulesPlugin_Tests {
         insert log;
         log = [SELECT Id, LogRetentionDate__c FROM Log__c WHERE Id = :log.Id];
         System.Assert.areEqual(originalLogRetentionDate, log.LogRetentionDate__c);
-        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
+        LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.ERROR.name(), TransactionEntryNumber__c = 1);
         insert logEntry;
 
         log = [SELECT Id, LogRetentionDate__c, Scenario__c, TotalERRORLogEntries__c FROM Log__c WHERE Id = :log.Id];

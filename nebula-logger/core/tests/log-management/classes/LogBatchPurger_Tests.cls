@@ -20,7 +20,7 @@ private class LogBatchPurger_Tests {
         LoggerSObjectHandler.shouldExecute(false);
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = false;
-        settings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        settings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         insert settings;
 
         Date scheduledDeletionDate = System.today().addDays(-7);
@@ -30,7 +30,7 @@ private class LogBatchPurger_Tests {
 
         List<LogEntry__c> logEntries = new List<LogEntry__c>();
         for (Integer i = 0; i < NUMBER_OF_LOG_ENTRIES_TO_CREATE; i++) {
-            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = LoggingLevel.INFO.name());
+            LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, LoggingLevel__c = System.LoggingLevel.INFO.name());
             LoggerMockDataCreator.createDataBuilder(logEntry).populateRequiredFields().getRecord();
             logEntries.add(logEntry);
         }
@@ -92,12 +92,12 @@ private class LogBatchPurger_Tests {
     static void it_should_delete_a_log_after_scheduled_deletion_date_when_system_messages_enabled() {
         LoggerSettings__c settings = Logger.getUserSettings();
         settings.IsEnabled__c = true;
-        settings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        settings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         upsert settings;
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = 'true'));
         System.Assert.isTrue(Logger.getUserSettings().IsEnabled__c);
         System.Assert.isTrue(LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
-        System.Assert.areEqual(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
+        System.Assert.areEqual(System.LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
         System.Assert.areEqual(1, logs.size());
@@ -127,7 +127,7 @@ private class LogBatchPurger_Tests {
         LoggerTestConfigurator.setMock(new LoggerParameter__mdt(DeveloperName = 'EnableLoggerSystemMessages', Value__c = String.valueOf(false)));
         System.Assert.isTrue(Logger.getUserSettings().IsEnabled__c);
         System.Assert.isFalse(LoggerParameter.getBoolean('EnableLoggerSystemMessages', null));
-        System.Assert.areEqual(LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
+        System.Assert.areEqual(System.LoggingLevel.FINEST.name(), Logger.getUserSettings().LoggingLevel__c);
         List<Log__c> logs = [SELECT Id, LogRetentionDate__c FROM Log__c];
         List<LogEntry__c> logEntries = [SELECT Id FROM LogEntry__c];
         System.Assert.areEqual(1, logs.size());

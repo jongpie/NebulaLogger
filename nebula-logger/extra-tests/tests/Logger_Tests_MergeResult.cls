@@ -22,7 +22,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addErrorEntryForLogMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -59,7 +59,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addErrorEntryForLogMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -91,7 +91,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addErrorEntryForStringMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -128,7 +128,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addErrorEntryForStringMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -165,7 +165,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addWarnEntryForLogMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -202,7 +202,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addWarnEntryForLogMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -234,7 +234,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addWarnEntryForStringMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -271,7 +271,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addWarnEntryForStringMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -308,7 +308,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addAnInfoEntryForLogMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -345,7 +345,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addInfoEntryForLogMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -377,7 +377,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addInfoEntryForStringMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -414,7 +414,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addAnInfoEntryForStringMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Log entry buffer size was incorrect.');
 
@@ -451,7 +451,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addDebugEntryForLogMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -488,7 +488,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addDebugEntryForLogMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -520,7 +520,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addDebugEntryForStringMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -557,7 +557,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addDebugEntryForStringMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -594,7 +594,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFineEntryForLogMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -631,7 +631,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFineEntryForLogMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -663,7 +663,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFineEntryForStringMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -700,7 +700,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFineEntryForStringMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -737,7 +737,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFinerEntryForLogMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -774,7 +774,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFinerEntryForLogMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -806,7 +806,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFinerEntryForStringMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -843,7 +843,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFinerEntryForStringMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -880,7 +880,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFinestEntryForLogMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -917,7 +917,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFinestEntryForLogMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -949,7 +949,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFinestEntryForStringMessageWithMergeResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 
@@ -986,7 +986,7 @@ private class Logger_Tests_MergeResult {
 
     @IsTest
     static void addFinestEntryForStringMessageWithMergeResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
         System.Assert.areEqual(0, Logger.getBufferSize(), 'Logger buffer size was incorrect.');
 

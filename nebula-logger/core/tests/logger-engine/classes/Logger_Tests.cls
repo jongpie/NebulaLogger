@@ -41,7 +41,7 @@ private class Logger_Tests {
     @IsTest
     static void it_should_use_org_default_settings_when_configured() {
         LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
-        expectedSettings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         insert expectedSettings;
         expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
@@ -60,7 +60,7 @@ private class Logger_Tests {
         insert LoggerSettings__c.getOrgDefaults();
         LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
-        expectedSettings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         expectedSettings.SetupOwnerId = System.UserInfo.getProfileId();
         insert expectedSettings;
         expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getProfileId());
@@ -80,12 +80,12 @@ private class Logger_Tests {
         insert LoggerSettings__c.getOrgDefaults();
         LoggerSettings__c profileSettings = LoggerSettings__c.getOrgDefaults();
         profileSettings.Id = null;
-        profileSettings.LoggingLevel__c = LoggingLevel.DEBUG.name();
+        profileSettings.LoggingLevel__c = System.LoggingLevel.DEBUG.name();
         profileSettings.SetupOwnerId = System.UserInfo.getProfileId();
         insert profileSettings;
         LoggerSettings__c expectedSettings = LoggerSettings__c.getOrgDefaults();
         expectedSettings.Id = null;
-        expectedSettings.LoggingLevel__c = LoggingLevel.FINEST.name();
+        expectedSettings.LoggingLevel__c = System.LoggingLevel.FINEST.name();
         expectedSettings.SetupOwnerId = System.UserInfo.getUserId();
         insert expectedSettings;
         expectedSettings = LoggerSettings__c.getValues(System.UserInfo.getUserId());
@@ -275,13 +275,13 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_revert_to_previous_scenario_rule_when_current_scenario_is_ended() {
-        LoggingLevel originalLoggingLevel = Logger.getUserLoggingLevel();
+        System.LoggingLevel originalLoggingLevel = Logger.getUserLoggingLevel();
         System.Assert.isNull(Logger.getScenario());
         String firstMockScenario = 'some test scenario ';
         LoggerScenarioRule__mdt firstMockScenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             Scenario__c = firstMockScenario,
-            UserLoggingLevel__c = LoggingLevel.ERROR.name()
+            UserLoggingLevel__c = System.LoggingLevel.ERROR.name()
         );
         LoggerScenarioRule.setMock(firstMockScenarioRule);
         System.Assert.areNotEqual(originalLoggingLevel.name(), firstMockScenarioRule.UserLoggingLevel__c);
@@ -291,7 +291,7 @@ private class Logger_Tests {
         LoggerScenarioRule__mdt secondMockScenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             Scenario__c = secondMockScenario,
-            UserLoggingLevel__c = LoggingLevel.WARN.name()
+            UserLoggingLevel__c = System.LoggingLevel.WARN.name()
         );
         LoggerScenarioRule.setMock(secondMockScenarioRule);
         System.Assert.areNotEqual(firstMockScenarioRule.UserLoggingLevel__c, secondMockScenarioRule.UserLoggingLevel__c);
@@ -486,10 +486,10 @@ private class Logger_Tests {
         LoggerScenarioRule__mdt scenarioRule = new LoggerScenarioRule__mdt(
             IsEnabled__c = true,
             Scenario__c = 'Some scenario',
-            UserLoggingLevel__c = LoggingLevel.FINER.name()
+            UserLoggingLevel__c = System.LoggingLevel.FINER.name()
         );
         LoggerScenarioRule.setMock(scenarioRule);
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         System.Assert.areNotEqual(scenarioRule.UserLoggingLevel__c, Logger.getUserSettings().LoggingLevel__c);
 
         Logger.setScenario(scenarioRule.Scenario__c);
@@ -527,10 +527,10 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_user_logging_level() {
-        LoggingLevel expectedLoggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel expectedLoggingLevel = System.LoggingLevel.FINE;
         Logger.getUserSettings().LoggingLevel__c = expectedLoggingLevel.name();
 
-        LoggingLevel returnedLoggingLevel = Logger.getUserLoggingLevel();
+        System.LoggingLevel returnedLoggingLevel = Logger.getUserLoggingLevel();
 
         System.Assert.areEqual(expectedLoggingLevel, returnedLoggingLevel);
     }
@@ -547,7 +547,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_return_true_when_provided_logging_level_is_enabled() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         Boolean expectedValue = true;
         Logger.getUserSettings().IsEnabled__c = expectedValue;
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
@@ -561,7 +561,7 @@ private class Logger_Tests {
     static void it_should_return_true_when_error_logging_level_is_enabled() {
         Boolean expectedValue = true;
         Logger.getUserSettings().IsEnabled__c = expectedValue;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
 
         Boolean returnedValue = Logger.isErrorEnabled();
 
@@ -572,7 +572,7 @@ private class Logger_Tests {
     static void it_should_return_true_when_warn_logging_level_is_enabled() {
         Boolean expectedValue = true;
         Logger.getUserSettings().IsEnabled__c = expectedValue;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.WARN.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.WARN.name();
 
         Boolean returnedValue = Logger.isWarnEnabled();
 
@@ -583,7 +583,7 @@ private class Logger_Tests {
     static void it_should_return_true_when_info_logging_level_is_enabled() {
         Boolean expectedValue = true;
         Logger.getUserSettings().IsEnabled__c = expectedValue;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.INFO.name();
 
         Boolean returnedValue = Logger.isInfoEnabled();
 
@@ -594,7 +594,7 @@ private class Logger_Tests {
     static void it_should_return_true_when_debug_logging_level_is_enabled() {
         Boolean expectedValue = true;
         Logger.getUserSettings().IsEnabled__c = expectedValue;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
 
         Boolean returnedValue = Logger.isDebugEnabled();
 
@@ -605,7 +605,7 @@ private class Logger_Tests {
     static void it_should_return_true_when_fine_logging_level_is_enabled() {
         Boolean expectedValue = true;
         Logger.getUserSettings().IsEnabled__c = expectedValue;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINE.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINE.name();
 
         Boolean returnedValue = Logger.isFineEnabled();
 
@@ -616,7 +616,7 @@ private class Logger_Tests {
     static void it_should_return_true_when_finer_logging_level_is_enabled() {
         Boolean expectedValue = true;
         Logger.getUserSettings().IsEnabled__c = expectedValue;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINER.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINER.name();
 
         Boolean returnedValue = Logger.isFinerEnabled();
 
@@ -627,7 +627,7 @@ private class Logger_Tests {
     static void it_should_return_true_when_finest_logging_level_is_enabled() {
         Boolean expectedValue = true;
         Logger.getUserSettings().IsEnabled__c = expectedValue;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
 
         Boolean returnedValue = Logger.isFinestEnabled();
 
@@ -652,7 +652,7 @@ private class Logger_Tests {
         System.Test.startTest();
 
         Logger.getUserSettings().IsEnabled__c = true;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
 
         Logger.suspendSaving();
 
@@ -674,7 +674,7 @@ private class Logger_Tests {
         System.Test.startTest();
 
         Logger.getUserSettings().IsEnabled__c = true;
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.FINEST.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.FINEST.name();
 
         Integer logEntriesToCreate = 4;
 
@@ -725,7 +725,7 @@ private class Logger_Tests {
         Datetime originalTimestamp;
         System.runAs(currentUser) {
             Logger.getUserSettings().IsEnabled__c = true;
-            Logger.getUserSettings().LoggingLevel__c = LoggingLevel.INFO.name();
+            Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.INFO.name();
 
             LogEntryEventBuilder builder = Logger.info('test log entry');
 
@@ -756,7 +756,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.getUserSettings().IsSavingEnabled__c = false;
 
@@ -787,7 +787,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.getUserSettings().DefaultSaveMethod__c = 'EVENT_BUS';
 
@@ -818,7 +818,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -845,7 +845,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -875,7 +875,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
         Logger.getUserSettings().DefaultSaveMethod__c = 'QUEUEABLE';
         upsert Logger.getUserSettings();
 
@@ -908,7 +908,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -937,7 +937,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -971,7 +971,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.getUserSettings().DefaultSaveMethod__c = 'REST';
 
@@ -1001,7 +1001,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -1027,7 +1027,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -1056,7 +1056,7 @@ private class Logger_Tests {
         Integer countOfLogEntries = [SELECT COUNT() FROM LogEntry__c];
         System.Assert.areEqual(0, countOfLogEntries);
 
-        setUserLoggingLevel(LoggingLevel.DEBUG);
+        setUserLoggingLevel(System.LoggingLevel.DEBUG);
 
         Logger.debug('test log entry');
         Logger.debug('another test log entry');
@@ -1090,8 +1090,8 @@ private class Logger_Tests {
             )
         );
         Logger.getUserSettings().DefaultSaveMethod__c = Logger.SaveMethod.SYNCHRONOUS_DML.name();
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.DEBUG.name();
-        System.Assert.areEqual(LoggingLevel.DEBUG, Logger.getUserLoggingLevel());
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.DEBUG.name();
+        System.Assert.areEqual(System.LoggingLevel.DEBUG, Logger.getUserLoggingLevel());
         System.Assert.areEqual(Logger.SaveMethod.SYNCHRONOUS_DML, Logger.getSaveMethod());
         List<LogEntryEvent__e> logEntryEvents = new List<LogEntryEvent__e>();
         logEntryEvents.add(Logger.debug('test log entry').getLogEntryEvent());
@@ -1250,7 +1250,7 @@ private class Logger_Tests {
     // Start ERROR methods for LogMessage
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1274,7 +1274,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1298,7 +1298,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1322,7 +1322,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1346,7 +1346,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1370,7 +1370,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1394,7 +1394,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1418,7 +1418,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1442,7 +1442,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1466,7 +1466,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1490,7 +1490,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1514,7 +1514,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_successful_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1538,7 +1538,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_failed_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1562,7 +1562,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1586,7 +1586,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1608,7 +1608,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_recordId_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1630,7 +1630,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1652,7 +1652,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_record_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1674,7 +1674,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1696,7 +1696,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_recordList_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1719,7 +1719,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1742,7 +1742,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_logMessage() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1766,7 +1766,7 @@ private class Logger_Tests {
     // Start ERROR methods for String
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1790,7 +1790,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1814,7 +1814,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1838,7 +1838,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1862,7 +1862,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1886,7 +1886,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1910,7 +1910,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1934,7 +1934,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1958,7 +1958,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_successful_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -1982,7 +1982,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_failed_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2006,7 +2006,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2030,7 +2030,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2054,7 +2054,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2078,7 +2078,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2102,7 +2102,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2124,7 +2124,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_recordId_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2146,7 +2146,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2168,7 +2168,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_record_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2190,7 +2190,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2212,7 +2212,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_recordList_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2235,7 +2235,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2258,7 +2258,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_error_entry_for_string_message() {
-        LoggingLevel loggingLevel = LoggingLevel.ERROR;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.ERROR;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2281,7 +2281,7 @@ private class Logger_Tests {
     // Start WARN methods for LogMessage
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2305,7 +2305,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2329,7 +2329,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2353,7 +2353,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2377,7 +2377,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2401,7 +2401,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2425,7 +2425,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2449,7 +2449,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2473,7 +2473,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_successful_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2497,7 +2497,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_failed_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2521,7 +2521,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2543,7 +2543,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_recordId_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2565,7 +2565,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2587,7 +2587,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_record_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2609,7 +2609,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2631,7 +2631,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_recordList_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2654,7 +2654,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2677,7 +2677,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_logMessage() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2701,7 +2701,7 @@ private class Logger_Tests {
     // Start WARN methods for String
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2725,7 +2725,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2749,7 +2749,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2773,7 +2773,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2797,7 +2797,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2821,7 +2821,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2845,7 +2845,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2869,7 +2869,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2893,7 +2893,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_successful_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2917,7 +2917,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_failed_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2941,7 +2941,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2963,7 +2963,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_recordId_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -2985,7 +2985,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3007,7 +3007,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_record_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3029,7 +3029,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3051,7 +3051,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_recordList_and_exception() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3074,7 +3074,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3097,7 +3097,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_warn_entry_for_string_message() {
-        LoggingLevel loggingLevel = LoggingLevel.WARN;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.WARN;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3121,7 +3121,7 @@ private class Logger_Tests {
     // Start INFO methods for LogMessage
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3145,7 +3145,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3169,7 +3169,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3193,7 +3193,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3217,7 +3217,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3241,7 +3241,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3265,7 +3265,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3289,7 +3289,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3313,7 +3313,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3337,7 +3337,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3359,7 +3359,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3381,7 +3381,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3404,7 +3404,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_logMessage() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3428,7 +3428,7 @@ private class Logger_Tests {
     // Start INFO methods for String
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3452,7 +3452,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3476,7 +3476,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3500,7 +3500,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3524,7 +3524,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3548,7 +3548,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3572,7 +3572,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3596,7 +3596,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3620,7 +3620,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3644,7 +3644,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3666,7 +3666,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3688,7 +3688,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3711,7 +3711,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_info_entry_for_string_message() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3735,7 +3735,7 @@ private class Logger_Tests {
     // Start DEBUG methods for LogMessage
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3759,7 +3759,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3783,7 +3783,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3807,7 +3807,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3831,7 +3831,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3855,7 +3855,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3879,7 +3879,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3903,7 +3903,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3927,7 +3927,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3951,7 +3951,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3973,7 +3973,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -3995,7 +3995,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4018,7 +4018,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_logMessage() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4042,7 +4042,7 @@ private class Logger_Tests {
     // Start DEBUG methods for String
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4066,7 +4066,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4090,7 +4090,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4114,7 +4114,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4138,7 +4138,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4162,7 +4162,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4186,7 +4186,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4210,7 +4210,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4234,7 +4234,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4258,7 +4258,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4280,7 +4280,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4302,7 +4302,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4325,7 +4325,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_debug_entry_for_string_message() {
-        LoggingLevel loggingLevel = LoggingLevel.DEBUG;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.DEBUG;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4349,7 +4349,7 @@ private class Logger_Tests {
     // Start FINE methods for LogMessage
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4373,7 +4373,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4397,7 +4397,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4421,7 +4421,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4445,7 +4445,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4469,7 +4469,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4493,7 +4493,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4517,7 +4517,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4541,7 +4541,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4565,7 +4565,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4587,7 +4587,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4609,7 +4609,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4632,7 +4632,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_logMessage() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4656,7 +4656,7 @@ private class Logger_Tests {
     // Start FINE methods for String
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4680,7 +4680,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4704,7 +4704,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4728,7 +4728,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4752,7 +4752,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4776,7 +4776,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4800,7 +4800,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4824,7 +4824,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4848,7 +4848,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4872,7 +4872,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4894,7 +4894,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4916,7 +4916,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4939,7 +4939,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_fine_entry_for_string_message() {
-        LoggingLevel loggingLevel = LoggingLevel.FINE;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINE;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4963,7 +4963,7 @@ private class Logger_Tests {
     // Start FINER methods for LogMessage
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -4987,7 +4987,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5011,7 +5011,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5035,7 +5035,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5059,7 +5059,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5083,7 +5083,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5107,7 +5107,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5131,7 +5131,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5155,7 +5155,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5179,7 +5179,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5201,7 +5201,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5223,7 +5223,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5246,7 +5246,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_logMessage() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5270,7 +5270,7 @@ private class Logger_Tests {
     // Start FINER methods for String
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5294,7 +5294,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5318,7 +5318,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5342,7 +5342,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5366,7 +5366,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5390,7 +5390,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5414,7 +5414,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5438,7 +5438,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5462,7 +5462,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5486,7 +5486,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5508,7 +5508,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5530,7 +5530,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5553,7 +5553,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finer_entry_for_string_message() {
-        LoggingLevel loggingLevel = LoggingLevel.FINER;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINER;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5577,7 +5577,7 @@ private class Logger_Tests {
     // Start FINEST methods for LogMessage
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5601,7 +5601,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5625,7 +5625,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5649,7 +5649,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5673,7 +5673,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5697,7 +5697,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5721,7 +5721,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5745,7 +5745,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5769,7 +5769,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5793,7 +5793,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5815,7 +5815,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5837,7 +5837,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5860,7 +5860,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_logMessage() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5884,7 +5884,7 @@ private class Logger_Tests {
     // Start FINEST methods for String
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_deleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5908,7 +5908,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_saveResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5932,7 +5932,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_undeleteResult() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5956,7 +5956,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_upsertResult_when_insert() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -5980,7 +5980,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_upsertResult_when_update() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6004,7 +6004,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_deleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6028,7 +6028,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_saveResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6052,7 +6052,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_undeleteResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6076,7 +6076,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_upsertResultList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6100,7 +6100,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_recordId() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6122,7 +6122,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_record() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6144,7 +6144,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message_with_recordList() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6167,7 +6167,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_an_finest_entry_for_string_message() {
-        LoggingLevel loggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.FINEST;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6191,7 +6191,7 @@ private class Logger_Tests {
     // Start logDatabaseErrors() test methods
     @IsTest
     static void it_should_skip_logging_database_deleteResult_for_logMessage_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
@@ -6200,7 +6200,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, deleteResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6209,7 +6209,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_deleteResult_for_logMessage_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
@@ -6218,7 +6218,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, deleteResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, deleteResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6227,7 +6227,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_deleteResult_for_logMessage_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
@@ -6248,7 +6248,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_deleteResult_for_string_message_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
@@ -6257,7 +6257,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, deleteResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6266,7 +6266,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_deleteResult_for_string_message_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
@@ -6275,7 +6275,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, deleteResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, deleteResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6284,7 +6284,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_deleteResult_for_string_message_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.DeleteResult successfulResult = LoggerMockDataCreator.createDatabaseDeleteResult(true, recordId);
@@ -6305,7 +6305,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_mergeResult_for_logMessage_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
@@ -6314,7 +6314,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, mergeResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6323,7 +6323,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_mergeResult_for_logMessage_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
@@ -6332,7 +6332,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, mergeResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, mergeResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6341,7 +6341,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_mergeResult_for_logMessage_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
@@ -6362,7 +6362,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_mergeResult_for_string_message_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
@@ -6371,7 +6371,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, mergeResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6380,7 +6380,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_mergeResult_for_string_message_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
@@ -6389,7 +6389,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, mergeResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, mergeResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6398,7 +6398,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_mergeResult_for_string_message_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.MergeResult successfulResult = LoggerMockDataCreator.createDatabaseMergeResult(true, recordId);
@@ -6419,7 +6419,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_saveResult_for_logMessage_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
@@ -6428,7 +6428,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, saveResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6437,7 +6437,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_saveResult_for_logMessage_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
@@ -6446,7 +6446,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, saveResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, saveResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6455,7 +6455,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_saveResult_for_logMessage_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
@@ -6476,7 +6476,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_saveResult_for_string_message_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
@@ -6485,7 +6485,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, saveResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6494,7 +6494,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_saveResult_for_string_message_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
@@ -6503,7 +6503,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, saveResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, saveResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6512,7 +6512,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_saveResult_for_string_message_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.SaveResult successfulResult = LoggerMockDataCreator.createDatabaseSaveResult(true, recordId);
@@ -6533,7 +6533,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_upsertResult_for_logMessage_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
@@ -6542,7 +6542,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, upsertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6551,7 +6551,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_upsertResult_for_logMessage_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
@@ -6560,7 +6560,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, upsertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, upsertResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6569,7 +6569,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_upsertResult_for_logMessage_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
@@ -6590,7 +6590,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_upsertResult_for_string_message_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
@@ -6599,7 +6599,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, upsertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6608,7 +6608,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_upsertResult_for_string_message_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
@@ -6617,7 +6617,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, upsertResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, upsertResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6626,7 +6626,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_upsertResult_for_string_message_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.UpsertResult successfulResult = LoggerMockDataCreator.createDatabaseUpsertResult(true, true, recordId);
@@ -6647,7 +6647,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_undeleteResult_for_logMessage_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
@@ -6656,7 +6656,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, undeleteResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6665,7 +6665,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_undeleteResult_for_logMessage_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
@@ -6674,7 +6674,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, undeleteResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, logMessage, undeleteResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6683,7 +6683,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_undeleteResult_for_logMessage_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         LogMessage logMessage = new LogMessage('Some logMessage for ID {0}', System.UserInfo.getUserId());
         Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
@@ -6704,7 +6704,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_undeleteResult_for_string_message_when_logging_level_is_disabled() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
@@ -6713,7 +6713,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, undeleteResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6722,7 +6722,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_skip_logging_database_undeleteResult_for_string_message_when_no_errors_found() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
@@ -6731,7 +6731,7 @@ private class Logger_Tests {
         System.Assert.areEqual(2, undeleteResults.size());
         System.Assert.areEqual(0, Logger.getBufferSize());
 
-        Logger.getUserSettings().LoggingLevel__c = LoggingLevel.ERROR.name();
+        Logger.getUserSettings().LoggingLevel__c = System.LoggingLevel.ERROR.name();
         LogEntryEventBuilder returnedBuilder = Logger.logDatabaseErrors(logEntryLevel, message, undeleteResults);
 
         System.Assert.areEqual(0, Logger.getBufferSize());
@@ -6740,7 +6740,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_log_database_undeleteResult_for_string_message_when_isSuccess_is_false() {
-        LoggingLevel logEntryLevel = LoggingLevel.WARN;
+        System.LoggingLevel logEntryLevel = System.LoggingLevel.WARN;
         String message = 'Some message';
         Id recordId = System.UserInfo.getUserId();
         Database.UndeleteResult successfulResult = LoggerMockDataCreator.createDatabaseUndeleteResult(true, recordId);
@@ -6763,9 +6763,9 @@ private class Logger_Tests {
     // Start newEntry for LogMessage test methods
     @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldSave_override() {
-        LoggingLevel userLoggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(userLoggingLevel);
-        LoggingLevel logEntryLoggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
         System.Assert.isFalse(Logger.meetsUserLoggingLevel(logEntryLoggingLevel));
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6789,9 +6789,9 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_not_add_a_new_entry_for_loggingLevel_with_logMessage_and_shouldNotSave_override() {
-        LoggingLevel userLoggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(userLoggingLevel);
-        LoggingLevel logEntryLoggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
         System.Assert.isFalse(Logger.meetsUserLoggingLevel(logEntryLoggingLevel));
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6809,7 +6809,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_logMessage() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6834,9 +6834,9 @@ private class Logger_Tests {
     // Start newEntry for String test methods
     @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_string_and_shouldSave_override() {
-        LoggingLevel userLoggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(userLoggingLevel);
-        LoggingLevel logEntryLoggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
         System.Assert.isFalse(Logger.meetsUserLoggingLevel(logEntryLoggingLevel));
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6860,9 +6860,9 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_not_add_a_new_entry_for_loggingLevel_with_string_and_shouldNotSave_override() {
-        LoggingLevel userLoggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel userLoggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(userLoggingLevel);
-        LoggingLevel logEntryLoggingLevel = LoggingLevel.FINEST;
+        System.LoggingLevel logEntryLoggingLevel = System.LoggingLevel.FINEST;
         System.Assert.isFalse(Logger.meetsUserLoggingLevel(logEntryLoggingLevel));
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6880,7 +6880,7 @@ private class Logger_Tests {
 
     @IsTest
     static void it_should_add_a_new_entry_for_loggingLevel_with_string() {
-        LoggingLevel loggingLevel = LoggingLevel.INFO;
+        System.LoggingLevel loggingLevel = System.LoggingLevel.INFO;
         setUserLoggingLevel(loggingLevel);
         System.Assert.areEqual(0, Logger.getBufferSize());
 
@@ -6905,20 +6905,20 @@ private class Logger_Tests {
     // Start tests for utility methods
     @IsTest
     static void it_should_return_logging_levels_for_string_names() {
-        System.Assert.areEqual(LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
-        System.Assert.areEqual(LoggingLevel.NONE, Logger.getLoggingLevel('none'));
-        System.Assert.areEqual(LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
-        System.Assert.areEqual(LoggingLevel.WARN, Logger.getLoggingLevel('warn'));
-        System.Assert.areEqual(LoggingLevel.INFO, Logger.getLoggingLevel('info'));
-        System.Assert.areEqual(LoggingLevel.DEBUG, Logger.getLoggingLevel('debug'));
-        System.Assert.areEqual(LoggingLevel.FINE, Logger.getLoggingLevel('fine'));
-        System.Assert.areEqual(LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
-        System.Assert.areEqual(LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
+        System.Assert.areEqual(System.LoggingLevel.DEBUG, Logger.getLoggingLevel('fake'));
+        System.Assert.areEqual(System.LoggingLevel.NONE, Logger.getLoggingLevel('none'));
+        System.Assert.areEqual(System.LoggingLevel.ERROR, Logger.getLoggingLevel('error'));
+        System.Assert.areEqual(System.LoggingLevel.WARN, Logger.getLoggingLevel('warn'));
+        System.Assert.areEqual(System.LoggingLevel.INFO, Logger.getLoggingLevel('info'));
+        System.Assert.areEqual(System.LoggingLevel.DEBUG, Logger.getLoggingLevel('debug'));
+        System.Assert.areEqual(System.LoggingLevel.FINE, Logger.getLoggingLevel('fine'));
+        System.Assert.areEqual(System.LoggingLevel.FINER, Logger.getLoggingLevel('finer'));
+        System.Assert.areEqual(System.LoggingLevel.FINEST, Logger.getLoggingLevel('finest'));
     }
     // End tests for utility methods
 
     // Helper methods
-    static void setUserLoggingLevel(LoggingLevel loggingLevel) {
+    static void setUserLoggingLevel(System.LoggingLevel loggingLevel) {
         Logger.getUserSettings().LoggingLevel__c = loggingLevel.name();
     }
 
