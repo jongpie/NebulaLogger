@@ -85,7 +85,7 @@ private class LogEntryHandler_Tests {
     }
 
     @IsTest
-    static void it_should_not_populate_related_record_fields_on_log_entry_with_related_case_comment_record_id() {
+    static void it_should_not_populate_related_record_fields_on_log_entry_with_related_template_standard_object_record_id() {
         Log__c log = [SELECT Id FROM Log__c LIMIT 1];
         Id templateSObjectRecordId = LoggerMockDataCreator.createId(Schema.CaseComment.SObjectType);
         LogEntry__c logEntry = new LogEntry__c(Log__c = log.Id, RecordId__c = templateSObjectRecordId);

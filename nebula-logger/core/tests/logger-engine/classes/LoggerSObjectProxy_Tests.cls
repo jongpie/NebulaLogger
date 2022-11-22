@@ -13,12 +13,12 @@ private class LoggerSObjectProxy_Tests {
         List<AuthSession> authSessionRecords = [
             SELECT
                 Id,
-                LoginType,
-                LoginHistoryId,
                 LoginHistory.Application,
                 LoginHistory.Browser,
                 LoginHistory.Platform,
                 LoginHistory.UserId,
+                LoginHistoryId,
+                LoginType,
                 LogoutUrl,
                 SessionSecurityLevel,
                 SessionType,
@@ -29,25 +29,25 @@ private class LoggerSObjectProxy_Tests {
         ];
         if (authSessionRecords.isEmpty() == true) {
             // Since the AuthSession object cannot be mocked, the test can only run as an integration test
-            // No need to fail the test if there isn't a AuthSession record available via quqerying
+            // No need to fail the test if there isn't a AuthSession record available via querying
             return;
         }
         AuthSession authSessionRecord = authSessionRecords.get(0);
 
         LoggerSObjectProxy.AuthSession authSessionProxy = new LoggerSObjectProxy.AuthSession(authSessionRecord);
 
-        System.assertEquals(authSessionRecord.Id, authSessionProxy.Id);
-        System.assertEquals(authSessionRecord.LoginType, authSessionProxy.LoginType);
-        System.assertEquals(authSessionRecord.LoginHistoryId, authSessionProxy.LoginHistoryId);
-        System.assertEquals(authSessionRecord.LoginHistory.Application, authSessionProxy.LoginHistory.Application);
-        System.assertEquals(authSessionRecord.LoginHistory.Browser, authSessionProxy.LoginHistory.Browser);
-        System.assertEquals(authSessionRecord.LoginHistory.Platform, authSessionProxy.LoginHistory.Platform);
-        System.assertEquals(authSessionRecord.LoginHistory.UserId, authSessionProxy.LoginHistory.UserId);
-        System.assertEquals(authSessionRecord.LogoutUrl, authSessionProxy.LogoutUrl);
-        System.assertEquals(authSessionRecord.SessionSecurityLevel, authSessionProxy.SessionSecurityLevel);
-        System.assertEquals(authSessionRecord.SessionType, authSessionProxy.SessionType);
-        System.assertEquals(authSessionRecord.SourceIp, authSessionProxy.SourceIp);
-        System.assertEquals(authSessionRecord.UsersId, authSessionProxy.UsersId);
+        System.Assert.areEqual(authSessionRecord.Id, authSessionProxy.Id);
+        System.Assert.areEqual(authSessionRecord.LoginType, authSessionProxy.LoginType);
+        System.Assert.areEqual(authSessionRecord.LoginHistoryId, authSessionProxy.LoginHistoryId);
+        System.Assert.areEqual(authSessionRecord.LoginHistory.Application, authSessionProxy.LoginHistory.Application);
+        System.Assert.areEqual(authSessionRecord.LoginHistory.Browser, authSessionProxy.LoginHistory.Browser);
+        System.Assert.areEqual(authSessionRecord.LoginHistory.Platform, authSessionProxy.LoginHistory.Platform);
+        System.Assert.areEqual(authSessionRecord.LoginHistory.UserId, authSessionProxy.LoginHistory.UserId);
+        System.Assert.areEqual(authSessionRecord.LogoutUrl, authSessionProxy.LogoutUrl);
+        System.Assert.areEqual(authSessionRecord.SessionSecurityLevel, authSessionProxy.SessionSecurityLevel);
+        System.Assert.areEqual(authSessionRecord.SessionType, authSessionProxy.SessionType);
+        System.Assert.areEqual(authSessionRecord.SourceIp, authSessionProxy.SourceIp);
+        System.Assert.areEqual(authSessionRecord.UsersId, authSessionProxy.UsersId);
     }
 
     @IsTest
@@ -59,17 +59,17 @@ private class LoggerSObjectProxy_Tests {
         ];
         if (loginHistoryRecords.isEmpty() == true) {
             // Since the LoginHistory object cannot be mocked, the test can only run as an integration test
-            // No need to fail the test if there isn't a LoginHistory record available via quqerying
+            // No need to fail the test if there isn't a LoginHistory record available via querying
             return;
         }
         LoginHistory loginHistoryRecord = loginHistoryRecords.get(0);
 
         LoggerSObjectProxy.LoginHistory loginHistoryProxy = new LoggerSObjectProxy.LoginHistory(loginHistoryRecord);
 
-        System.assertEquals(loginHistoryRecord.Application, loginHistoryProxy.Application);
-        System.assertEquals(loginHistoryRecord.Browser, loginHistoryProxy.Browser);
-        System.assertEquals(loginHistoryRecord.Platform, loginHistoryProxy.Platform);
-        System.assertEquals(loginHistoryRecord.UserId, loginHistoryProxy.UserId);
+        System.Assert.areEqual(loginHistoryRecord.Application, loginHistoryProxy.Application);
+        System.Assert.areEqual(loginHistoryRecord.Browser, loginHistoryProxy.Browser);
+        System.Assert.areEqual(loginHistoryRecord.Platform, loginHistoryProxy.Platform);
+        System.Assert.areEqual(loginHistoryRecord.UserId, loginHistoryProxy.UserId);
     }
 
     @IsTest
@@ -83,8 +83,8 @@ private class LoggerSObjectProxy_Tests {
 
         LoggerSObjectProxy.Network networkProxy = new LoggerSObjectProxy.Network(networkRecord);
 
-        System.assertEquals((Id) networkRecord.get('Id'), networkProxy.Id);
-        System.assertEquals((String) networkRecord.get('Name'), networkProxy.Name);
-        System.assertEquals((String) networkRecord.get('UrlPathPrefix'), networkProxy.UrlPathPrefix);
+        System.Assert.areEqual((Id) networkRecord.get('Id'), networkProxy.Id);
+        System.Assert.areEqual((String) networkRecord.get('Name'), networkProxy.Name);
+        System.Assert.areEqual((String) networkRecord.get('UrlPathPrefix'), networkProxy.UrlPathPrefix);
     }
 }

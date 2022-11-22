@@ -10,7 +10,7 @@ private class LogBatchPurgeScheduler_Tests {
     static void it_implements_system_schedulable_interface() {
         Object scheduler = new LogBatchPurgeScheduler();
 
-        System.assertEquals(true, scheduler instanceof System.Schedulable);
+        System.Assert.isInstanceOfType(scheduler, System.Schedulable.class);
     }
 
     @IsTest
