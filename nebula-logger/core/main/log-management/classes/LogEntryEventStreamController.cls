@@ -13,11 +13,11 @@ public with sharing class LogEntryEventStreamController {
     private static final String DISPLAY_FIELDS_PARAMETER_NAME = 'LogEntryEventStreamDisplayFields';
     @TestVisible
     private static final List<String> DEFAULT_DISPLAY_FIELDS = new List<String>{
-        'Timestamp__c',
-        'LoggedByUsername__c',
-        'OriginLocation__c',
-        'LoggingLevel__c',
-        'Message__c'
+        Schema.LogEntryEvent__e.Timestamp__c.getDescribe().getLocalName(),
+        Schema.LogEntryEvent__e.LoggedByUsername__c.getDescribe().getLocalName(),
+        Schema.LogEntryEvent__e.OriginLocation__c.getDescribe().getLocalName(),
+        Schema.LogEntryEvent__e.LoggingLevel__c.getDescribe().getLocalName(),
+        Schema.LogEntryEvent__e.Message__c.getDescribe().getLocalName()
     };
     /**
      * @description Returns the list of columns to be displayed in
@@ -27,7 +27,7 @@ public with sharing class LogEntryEventStreamController {
      * LogEntryEventStream Datatable .
      */
     @AuraEnabled
-    public static List<String> getDataTableDisplayFields() {
+    public static List<String> getDatatableDisplayFields() {
         try {
             return LoggerParameter.getStringList(DISPLAY_FIELDS_PARAMETER_NAME, DEFAULT_DISPLAY_FIELDS);
         } catch (Exception e) {

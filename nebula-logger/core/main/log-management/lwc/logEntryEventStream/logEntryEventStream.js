@@ -7,7 +7,7 @@ import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { subscribe, unsubscribe } from 'lightning/empApi';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
-import getDataTableDisplayFields from '@salesforce/apex/LogEntryEventStreamController.getDataTableDisplayFields';
+import getDatatableDisplayFields from '@salesforce/apex/LogEntryEventStreamController.getDatatableDisplayFields';
 export default class LogEntryEventStream extends LightningElement {
     unfilteredEvents = [];
 
@@ -37,7 +37,7 @@ export default class LogEntryEventStream extends LightningElement {
     //data table
     tableViewDisplayFields = [];
     DEFAULT_DATATABLE_COLUMNS = ['Timestamp__c', 'LoggedByUsername__c', 'OriginLocation__c', 'LoggingLevel__c', 'Message__c'];
-    dataTableColumns = [];
+    datatableColumns = [];
 
     // Filters
     loggedByFilter;
@@ -55,19 +55,19 @@ export default class LogEntryEventStream extends LightningElement {
     async connectedCallback() {
         document.title = 'Log Entry Event Stream';
 
-        Promise.all([getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }), getDataTableDisplayFields()])
+        Promise.all([getSchemaForName({ sobjectApiName: 'LogEntryEvent__e' }), getDatatableDisplayFields()])
             .then(([getSchemaForNameResult, getTableViewFieldsResult]) => {
                 this._logEntryEventSchema = getSchemaForNameResult;
                 this.tableViewDisplayFields = getTableViewFieldsResult;
                 this._channel = '/event/' + this._logEntryEventSchema.apiName;
                 this.createSubscription();
-                this.loadDataTableColumns();
+                this.loadDatatableColumns();
             })
             .catch(this._handleError);
     }
 
-    loadDataTableColumns() {
-        this.dataTableColumns = [];
+    loadDatatableColumns() {
+        this.datatableColumns = [];
         if (this.tableViewDisplayFields) {
             this.tableViewDisplayFields.forEach(column => {
                 const aField = this._logEntryEventSchema.fields[column];
@@ -77,7 +77,7 @@ export default class LogEntryEventStream extends LightningElement {
                         fieldName: aField.apiName,
                         type: aField.type
                     };
-                    this.dataTableColumns.push(formattedColumn);
+                    this.datatableColumns.push(formattedColumn);
                 }
             });
         }

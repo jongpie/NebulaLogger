@@ -13,7 +13,7 @@ private class LogEntryEventStreamController_Tests {
             new LoggerParameter__mdt(DeveloperName = LogEntryEventStreamController.DISPLAY_FIELDS_PARAMETER_NAME, Value__c = fields)
         );
         List<String> mockDisplayFields = (List<String>) JSON.deserialize(fields, List<String>.class);
-        List<String> displayFields = LogEntryEventStreamController.getDataTableDisplayFields();
+        List<String> displayFields = LogEntryEventStreamController.getDatatableDisplayFields();
 
         System.Assert.areEqual(mockDisplayFields.size(), displayFields.size(), 'fields count mismatch');
         for (String aField : mockDisplayFields) {
@@ -22,7 +22,7 @@ private class LogEntryEventStreamController_Tests {
     }
     @isTest
     static void it_should_return_default_fields_when_List_of_Fields_not_configured_in_logParameters() {
-        List<String> displayFields = LogEntryEventStreamController.getDataTableDisplayFields();
+        List<String> displayFields = LogEntryEventStreamController.getDatatableDisplayFields();
 
         System.assertEquals(LogEntryEventStreamController.DEFAULT_DISPLAY_FIELDS.size(), displayFields.size(), 'fields count mismatch');
         for (String aField : LogEntryEventStreamController.DEFAULT_DISPLAY_FIELDS) {

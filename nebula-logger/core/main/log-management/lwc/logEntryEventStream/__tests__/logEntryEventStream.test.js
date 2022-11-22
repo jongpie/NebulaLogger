@@ -2,7 +2,7 @@ import { createElement } from 'lwc';
 import LogEntryEventStream from 'c/logEntryEventStream';
 import { jestMockPublish } from 'lightning/empApi';
 import getSchemaForName from '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName';
-import getDataTableDisplayFields from '@salesforce/apex/LogEntryEventStreamController.getDataTableDisplayFields';
+import getDatatableDisplayFields from '@salesforce/apex/LogEntryEventStreamController.getDatatableDisplayFields';
 
 const loggingLevels = {
     FINEST: 2,
@@ -27,7 +27,7 @@ const mockLogEntryEventTemplate = {
 };
 
 const mockLogEntryEventSchemaTemplate = require('./data/getSchemaForName.json');
-const MockTableViewDisplayFields = require('./data/getDataTableDisplayFields.json');
+const mockTableViewDisplayFields = require('./data/getDatatableDisplayFields.json');
 
 jest.mock(
     '@salesforce/apex/LoggerSObjectMetadata.getSchemaForName',
@@ -39,7 +39,7 @@ jest.mock(
     { virtual: true }
 );
 jest.mock(
-    '@salesforce/apex/LogEntryEventStreamController.getDataTableDisplayFields',
+    '@salesforce/apex/LogEntryEventStreamController.getDatatableDisplayFields',
     () => {
         return {
             default: jest.fn()
@@ -51,7 +51,7 @@ jest.mock(
 const flushPromises = () => new Promise(process.nextTick);
 
 async function createStreamElement(namespace) {
-    getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+    getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
     const mockLogEntryEventSchema = generateLogEntryEventSchema(namespace);
     getSchemaForName.mockResolvedValue(mockLogEntryEventSchema);
     const element = createElement('log-entry-event-stream', {
@@ -227,7 +227,7 @@ describe('LogEntryEventStream tests', () => {
     });
     it('includes matching log entry event for origin type filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
@@ -254,7 +254,7 @@ describe('LogEntryEventStream tests', () => {
     });
     it('excludes non-matching log entry event for origin type filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -280,7 +280,7 @@ describe('LogEntryEventStream tests', () => {
     });
     it('includes matching log entry event for origin location filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -306,7 +306,7 @@ describe('LogEntryEventStream tests', () => {
     });
     it('excludes non-matching log entry event for origin location filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
@@ -333,7 +333,7 @@ describe('LogEntryEventStream tests', () => {
     });
     it('includes matching log entry event for logged by filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
@@ -360,7 +360,7 @@ describe('LogEntryEventStream tests', () => {
     });
     it('excludes non-matching log entry event for logged by filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
@@ -386,7 +386,7 @@ describe('LogEntryEventStream tests', () => {
     });
     it('includes matching log entry event using string for message filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
         });
@@ -412,7 +412,7 @@ describe('LogEntryEventStream tests', () => {
     });
     it('excludes non-matching log entry event for message filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
@@ -439,7 +439,7 @@ describe('LogEntryEventStream tests', () => {
 
     it('includes matching log entry event using regex for message filter', async () => {
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
 
         const element = createElement('log-entry-event-stream', {
             is: LogEntryEventStream
@@ -466,7 +466,7 @@ describe('LogEntryEventStream tests', () => {
     });
 
     it('it should show the splitview as expanded by default', async () => {
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
 
         const element = createElement('log-entry-event-stream', {
@@ -491,7 +491,7 @@ describe('LogEntryEventStream tests', () => {
         const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
     });
     it('it should colapse the split view when user click on the splitview panel button', async () => {
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
 
         const element = createElement('log-entry-event-stream', {
@@ -519,7 +519,7 @@ describe('LogEntryEventStream tests', () => {
     });
 
     it('it should expand the console when user click on the expand button', async () => {
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
 
         const element = createElement('log-entry-event-stream', {
@@ -544,7 +544,7 @@ describe('LogEntryEventStream tests', () => {
     });
 
     it('it should exit full screen mode when user click on the contract button', async () => {
-        getDataTableDisplayFields.mockResolvedValue(MockTableViewDisplayFields);
+        getDatatableDisplayFields.mockResolvedValue(mockTableViewDisplayFields);
         getSchemaForName.mockResolvedValue(mockLogEntryEventSchemaTemplate);
 
         const element = createElement('log-entry-event-stream', {
@@ -580,8 +580,8 @@ describe('LogEntryEventStream tests', () => {
                 buttonMenu.dispatchEvent(new CustomEvent('select', { detail: { value: 'console' } }));
                 await flushPromises();
 
-                const dataTable = element.shadowRoot.querySelector('[data-id="event-stream-datatable"]');
-                expect(dataTable).toBe(null);
+                const datatable = element.shadowRoot.querySelector('[data-id="event-stream-datatable"]');
+                expect(datatable).toBe(null);
                 const expectedStreamText = getPlatformEventText(mockLogEntryEvent, namespace);
                 const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
                 expect(eventStreamDiv.textContent).toBe(expectedStreamText);
@@ -600,9 +600,9 @@ describe('LogEntryEventStream tests', () => {
                 buttonMenu.dispatchEvent(new CustomEvent('select', { detail: { value: 'table' } }));
                 await flushPromises();
 
-                const dataTable = element.shadowRoot.querySelector('[data-id="event-stream-datatable"]');
-                expect(dataTable.columns.length).toBe(2);
-                expect(dataTable.data.length).toBe(1);
+                const datatable = element.shadowRoot.querySelector('[data-id="event-stream-datatable"]');
+                expect(datatable.columns.length).toBe(2);
+                expect(datatable.data.length).toBe(1);
                 const expectedStreamText = getPlatformEventText(mockLogEntryEvent, namespace);
                 const eventStreamDiv = element.shadowRoot.querySelector('.event-stream');
                 expect(eventStreamDiv).toBe(null);

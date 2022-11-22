@@ -45,11 +45,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -98,11 +98,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -130,11 +130,11 @@ jobs:
         environment: 'Base Scratch Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -191,11 +191,11 @@ jobs:
         environment: 'Experience Cloud Scratch Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -265,13 +265,13 @@ jobs:
         environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   ref: ${{ github.event.pull_request.head.ref }}
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -305,13 +305,13 @@ jobs:
         environment: 'Demo Org'
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   ref: ${{ github.event.pull_request.head.ref }}
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
@@ -374,11 +374,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 'Checkout source code'
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: 'Restore node_modules cache'
               id: cache-npm
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: npm-${{ hashFiles('**/package-lock.json') }}
